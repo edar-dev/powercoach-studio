@@ -13,9 +13,7 @@ cp .env.example .env
 
 ## Database (Supabase)
 
-The profile screen reads and writes `public.profiles` (RLS: users can only access their own row). To add coach fields **phone** and **website**, run the migration in the Supabase SQL Editor or via `supabase db push`:
-
-- `supabase/migrations/20260225000001_profiles_add_phone_website.sql`
+The profile screen reads and writes `public.profiles` (columns: `display_name`, `contact_phone`, `bio`, `avatar_url`, `website`, etc.). The schema is managed by **GymBlog.API** via EF Core: when the API starts, it applies migrations that create or update the `profiles` table (including `contact_phone` and `website`). No separate Supabase SQL migration is required. If you use only the Flutter app and never start GymBlog.API, start the API once against your Supabase DB so EF applies the migrations, or add the columns manually in the Supabase SQL Editor (`contact_phone text`, `website text`).
 
 ## Getting Started
 

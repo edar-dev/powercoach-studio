@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _loadError = null;
           if (res != null) {
             _displayNameController.text = res['display_name'] as String? ?? '';
-            _phoneController.text = res['phone'] as String? ?? '';
+            _phoneController.text = res['contact_phone'] as String? ?? '';
             _bioController.text = res['bio'] as String? ?? '';
             _avatarUrlController.text = res['avatar_url'] as String? ?? '';
             _websiteController.text = res['website'] as String? ?? '';
@@ -99,7 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'display_name': _displayNameController.text.trim().isEmpty
                   ? null
                   : _displayNameController.text.trim(),
-              'phone': _phoneController.text.trim().isEmpty
+              'contact_phone': _phoneController.text.trim().isEmpty
                   ? null
                   : _phoneController.text.trim(),
               'bio': _bioController.text.trim().isEmpty
@@ -122,7 +122,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           backgroundColor: theme.colorScheme.primaryContainer,
         ),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('Profile save error: $e');
+      if (e is PostgrestException) {
+        debugPrint('PostgrestException: ${e.message} (code: ${e.code}, details: ${e.details})');
+      }
+      debugPrint(stackTrace?.toString() ?? '');
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
