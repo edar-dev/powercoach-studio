@@ -56,5 +56,16 @@
   "loginSuccessMessage": "Welcome back!",
   "headerProfile": "Profile",
   "profileTitle": "Profile",
-  "profileComingSoon": "Profile page coming soon."
+  "profileComingSoon": "Profile page coming soon.",
+  "profileDisplayName": "Display name",
+  "profileEmail": "Email",
+  "profilePhone": "Phone",
+  "profileBio": "Bio",
+  "profileAvatarUrl": "Avatar URL",
+  "profileWebsite": "Website",
+  "profileSave": "Save",
+  "profileSavedMessage": "Profile saved.",
+  "profileLoadError": "Could not load profile.",
+  "profileSaveError": "Could not save profile.",
+  "profileSignOut": "Sign out"
 }

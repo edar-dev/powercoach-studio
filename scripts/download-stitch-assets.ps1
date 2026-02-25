@@ -30,6 +30,10 @@ $RegistrationHtmlUrl = $env:STITCH_REGISTRATION_HTML_URL
 $LoginScreenshotUrl = $env:STITCH_LOGIN_SCREENSHOT_URL
 $LoginHtmlUrl = $env:STITCH_LOGIN_HTML_URL
 
+# Updated Coach Profile (screen ID 5863bd21319d467b828ad322f8670305)
+$CoachProfileScreenshotUrl = $env:STITCH_COACH_PROFILE_SCREENSHOT_URL
+$CoachProfileHtmlUrl = $env:STITCH_COACH_PROFILE_HTML_URL
+
 function Download-File {
     param ([string]$Url, [string]$OutPath)
     if (-not $Url) { return $false }
@@ -64,6 +68,12 @@ if ($LoginScreenshotUrl -and $LoginHtmlUrl) {
     if (Download-File -Url $LoginHtmlUrl -OutPath (Join-Path $AssetsRoot 'login.html')) { $ok++ }
 } else {
     Write-Host "Login: set STITCH_LOGIN_SCREENSHOT_URL and STITCH_LOGIN_HTML_URL to download."
+}
+if ($CoachProfileScreenshotUrl -and $CoachProfileHtmlUrl) {
+    if (Download-File -Url $CoachProfileScreenshotUrl -OutPath (Join-Path $AssetsRoot 'coach-profile.png')) { $ok++ }
+    if (Download-File -Url $CoachProfileHtmlUrl -OutPath (Join-Path $AssetsRoot 'coach-profile.html')) { $ok++ }
+} else {
+    Write-Host "Updated Coach Profile: set STITCH_COACH_PROFILE_SCREENSHOT_URL and STITCH_COACH_PROFILE_HTML_URL to download."
 }
 if ($ok -eq 0) {
     Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."

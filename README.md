@@ -1,6 +1,6 @@
 # powercoach_studio
 
-PowerCoach Studio – Flutter app (Material 3) with landing and registration. Uses Supabase Auth.
+PowerCoach Studio – Flutter app (Material 3) with landing, registration, login, and coach profile. Uses Supabase Auth and `public.profiles`.
 
 ## Environment
 
@@ -10,6 +10,12 @@ Copy `.env.example` to `.env` and fill in the values. Use the same `SUPABASE_URL
 cp .env.example .env
 # Edit .env and set SUPABASE_URL and SUPABASE_ANON_KEY
 ```
+
+## Database (Supabase)
+
+The profile screen reads and writes `public.profiles` (RLS: users can only access their own row). To add coach fields **phone** and **website**, run the migration in the Supabase SQL Editor or via `supabase db push`:
+
+- `supabase/migrations/20260225000001_profiles_add_phone_website.sql`
 
 ## Getting Started
 

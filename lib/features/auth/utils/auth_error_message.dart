@@ -6,15 +6,16 @@ import '../../../l10n/app_localizations.dart';
 String authErrorMessage(AuthException e, AppLocalizations l10n) {
   final msg = (e.message).toLowerCase();
   final code = e.statusCode;
+  final codeNum = code is int ? code : int.tryParse(code?.toString() ?? '');
 
-  if (code == 429) return l10n.loginErrorTooManyRequests;
-  if (msg.contains('confirm') || msg.contains('verified') || code == 422) {
+  if (codeNum == 429) return l10n.loginErrorTooManyRequests;
+  if (msg.contains('confirm') || msg.contains('verified') || codeNum == 422) {
     return l10n.loginErrorEmailNotConfirmed;
   }
   if (msg.contains('invalid') ||
       msg.contains('credentials') ||
       msg.contains('invalid_login_credentials') ||
-      code == 400) {
+      codeNum == 400) {
     return l10n.loginErrorInvalidCredentials;
   }
   return e.message.isNotEmpty ? e.message : l10n.loginErrorGeneric;

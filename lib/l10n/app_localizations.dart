@@ -439,6 +439,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile page coming soon.'**
   String get profileComingSoon;
+
+  /// No description provided for @profileDisplayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Display name'**
+  String get profileDisplayName;
+
+  /// No description provided for @profileEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get profileEmail;
+
+  /// No description provided for @profilePhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get profilePhone;
+
+  /// No description provided for @profileBio.
+  ///
+  /// In en, this message translates to:
+  /// **'Bio'**
+  String get profileBio;
+
+  /// No description provided for @profileAvatarUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatar URL'**
+  String get profileAvatarUrl;
+
+  /// No description provided for @profileWebsite.
+  ///
+  /// In en, this message translates to:
+  /// **'Website'**
+  String get profileWebsite;
+
+  /// No description provided for @profileSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get profileSave;
+
+  /// No description provided for @profileSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved.'**
+  String get profileSavedMessage;
+
+  /// No description provided for @profileLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load profile.'**
+  String get profileLoadError;
+
+  /// No description provided for @profileSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save profile.'**
+  String get profileSaveError;
+
+  /// No description provided for @profileSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get profileSignOut;
 }
 
 class _AppLocalizationsDelegate

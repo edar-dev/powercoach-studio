@@ -56,5 +56,16 @@
   "loginSuccessMessage": "Bentornato!",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
-  "profileComingSoon": "Pagina profilo in arrivo."
+  "profileComingSoon": "Pagina profilo in arrivo.",
+  "profileDisplayName": "Nome visualizzato",
+  "profileEmail": "Email",
+  "profilePhone": "Telefono",
+  "profileBio": "Bio",
+  "profileAvatarUrl": "URL avatar",
+  "profileWebsite": "Sito web",
+  "profileSave": "Salva",
+  "profileSavedMessage": "Profilo salvato.",
+  "profileLoadError": "Impossibile caricare il profilo.",
+  "profileSaveError": "Impossibile salvare il profilo.",
+  "profileSignOut": "Esci"
 }

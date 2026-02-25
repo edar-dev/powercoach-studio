@@ -186,4 +186,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileComingSoon => 'Profile page coming soon.';
+
+  @override
+  String get profileDisplayName => 'Display name';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profilePhone => 'Phone';
+
+  @override
+  String get profileBio => 'Bio';
+
+  @override
+  String get profileAvatarUrl => 'Avatar URL';
+
+  @override
+  String get profileWebsite => 'Website';
+
+  @override
+  String get profileSave => 'Save';
+
+  @override
+  String get profileSavedMessage => 'Profile saved.';
+
+  @override
+  String get profileLoadError => 'Could not load profile.';
+
+  @override
+  String get profileSaveError => 'Could not save profile.';
+
+  @override
+  String get profileSignOut => 'Sign out';
 }

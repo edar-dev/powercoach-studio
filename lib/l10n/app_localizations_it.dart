@@ -184,4 +184,37 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get profileComingSoon => 'Pagina profilo in arrivo.';
+
+  @override
+  String get profileDisplayName => 'Nome visualizzato';
+
+  @override
+  String get profileEmail => 'Email';
+
+  @override
+  String get profilePhone => 'Telefono';
+
+  @override
+  String get profileBio => 'Bio';
+
+  @override
+  String get profileAvatarUrl => 'URL avatar';
+
+  @override
+  String get profileWebsite => 'Sito web';
+
+  @override
+  String get profileSave => 'Salva';
+
+  @override
+  String get profileSavedMessage => 'Profilo salvato.';
+
+  @override
+  String get profileLoadError => 'Impossibile caricare il profilo.';
+
+  @override
+  String get profileSaveError => 'Impossibile salvare il profilo.';
+
+  @override
+  String get profileSignOut => 'Esci';
 }
