@@ -1,14 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/auth/presentation/screens/profile_screen.dart';
+import 'features/auth/presentation/screens/registration_screen.dart';
 import 'features/landing/presentation/screens/landing_screen.dart';
 import 'l10n/app_localizations.dart';
+
+final _goRouter = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const LandingScreen(),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegistrationScreen(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+    ),
+  ],
+);
 
 class PowerCoachStudioApp extends StatelessWidget {
   const PowerCoachStudioApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'PowerCoach Studio',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -43,7 +69,7 @@ class PowerCoachStudioApp extends StatelessWidget {
         }
         return const Locale('it');
       },
-      home: const LandingScreen(),
+      routerConfig: _goRouter,
     );
   }
 }

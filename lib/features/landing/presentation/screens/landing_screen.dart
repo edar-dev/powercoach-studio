@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -15,6 +19,21 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   final GlobalKey _featuresKey = GlobalKey();
+  StreamSubscription<AuthState>? _authSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
+      (_) => setState(() {}),
+    );
+  }
+
+  @override
+  void dispose() {
+    _authSubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +41,7 @@ class _LandingScreenState extends State<LandingScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final scaffoldBg = theme.scaffoldBackgroundColor;
+    final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
 
     return Scaffold(
       backgroundColor: scaffoldBg,
@@ -38,45 +58,65 @@ class _LandingScreenState extends State<LandingScreen> {
         ),
         centerTitle: false,
         actions: [
-          TextButton(
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              showNotImplementedAlert(context);
-            },
-            child: Text(l10n.headerLogin),
-          ),
-          const SizedBox(width: 8),
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: FilledButton(
+          if (isLoggedIn)
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: TextButton.icon(
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.push('/profile');
+                },
+                icon: const Icon(Icons.person_outline, size: 20),
+                label: Text(l10n.headerProfile),
+              ),
+            )
+          else ...[
+            TextButton(
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                showNotImplementedAlert(context);
+                context.push('/login');
               },
-              style: FilledButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(l10n.headerJoinNow),
+              child: Text(l10n.headerLogin),
             ),
-          ),
+            const SizedBox(width: 8),
+            Padding(
+              padding: const EdgeInsets.only(right: 16),
+              child: FilledButton(
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.push('/register');
+                },
+                style: FilledButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(l10n.headerJoinNow),
+              ),
+            ),
+          ],
         ],
       ),
       body: CustomScrollView(
         slivers: [
-          // Hero – solid light background, chip with expansion icon, left-aligned text
+          // Hero – CTA "Inizia ora" va al profilo se loggato, alla registrazione altrimenti
           SliverToBoxAdapter(
             child: _HeroSection(
               heroBadge: l10n.landingHeroBadge,
               titlePrefix: l10n.landingTitlePrefix,
               titleSuffix: l10n.landingTitleSuffix,
               subtitle: l10n.landingSubtitle,
-              ctaPrimary: l10n.landingCtaPrimary,
+              ctaPrimary: isLoggedIn
+                  ? l10n.landingCtaSectionButtonLoggedIn
+                  : l10n.landingCtaPrimary,
               ctaSecondary: l10n.landingCtaSecondary,
               onPrimary: () {
                 HapticFeedback.mediumImpact();
-                showNotImplementedAlert(context);
+                if (isLoggedIn) {
+                  context.push('/profile');
+                } else {
+                  context.push('/register');
+                }
               },
               onSecondary: () {
                 HapticFeedback.mediumImpact();
@@ -102,15 +142,23 @@ class _LandingScreenState extends State<LandingScreen> {
           SliverToBoxAdapter(
             child: _HowItWorksSection(l10n: l10n),
           ),
-          // CTA
+          // CTA – testo e pulsante diversi se l'utente è loggato
           SliverToBoxAdapter(
             child: _CtaSection(
               title: l10n.landingCtaSectionTitle,
-              subtext: l10n.landingCtaSectionSubtext,
-              buttonLabel: l10n.landingCtaSectionButton,
+              subtext: isLoggedIn
+                  ? l10n.landingCtaSectionSubtextLoggedIn
+                  : l10n.landingCtaSectionSubtext,
+              buttonLabel: isLoggedIn
+                  ? l10n.landingCtaSectionButtonLoggedIn
+                  : l10n.landingCtaSectionButton,
               onCta: () {
                 HapticFeedback.mediumImpact();
-                showNotImplementedAlert(context);
+                if (isLoggedIn) {
+                  context.push('/profile');
+                } else {
+                  context.push('/login');
+                }
               },
               colorScheme: colorScheme,
             ),

@@ -242,6 +242,18 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get landingCtaSectionButton;
 
+  /// No description provided for @landingCtaSectionSubtextLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to your profile to get started.'**
+  String get landingCtaSectionSubtextLoggedIn;
+
+  /// No description provided for @landingCtaSectionButtonLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get landingCtaSectionButtonLoggedIn;
+
   /// No description provided for @headerLogin.
   ///
   /// In en, this message translates to:
@@ -253,6 +265,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Join now'**
   String get headerJoinNow;
+
+  /// No description provided for @registrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get registrationTitle;
+
+  /// No description provided for @registrationEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get registrationEmail;
+
+  /// No description provided for @registrationPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get registrationPassword;
+
+  /// No description provided for @registrationConfirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get registrationConfirmPassword;
+
+  /// No description provided for @registrationSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get registrationSubmit;
+
+  /// No description provided for @registrationSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email to confirm your account.'**
+  String get registrationSuccessMessage;
+
+  /// No description provided for @registrationErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email.'**
+  String get registrationErrorInvalidEmail;
+
+  /// No description provided for @registrationErrorPasswordMismatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get registrationErrorPasswordMismatch;
+
+  /// No description provided for @registrationErrorPasswordEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a password.'**
+  String get registrationErrorPasswordEmpty;
+
+  /// No description provided for @registrationErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed. Please try again.'**
+  String get registrationErrorGeneric;
+
+  /// No description provided for @registrationAlreadyHaveAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account?'**
+  String get registrationAlreadyHaveAccount;
+
+  /// No description provided for @registrationLoginLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get registrationLoginLink;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get loginTitle;
+
+  /// No description provided for @loginEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get loginEmail;
+
+  /// No description provided for @loginPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get loginPassword;
+
+  /// No description provided for @loginSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Log in'**
+  String get loginSubmit;
+
+  /// No description provided for @loginForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get loginForgotPassword;
+
+  /// No description provided for @loginNoAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account?'**
+  String get loginNoAccount;
+
+  /// No description provided for @loginRegisterLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up'**
+  String get loginRegisterLink;
+
+  /// No description provided for @loginErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email.'**
+  String get loginErrorInvalidEmail;
+
+  /// No description provided for @loginErrorPasswordEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your password.'**
+  String get loginErrorPasswordEmpty;
+
+  /// No description provided for @loginErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed. Please try again.'**
+  String get loginErrorGeneric;
+
+  /// No description provided for @loginErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password. Please try again.'**
+  String get loginErrorInvalidCredentials;
+
+  /// No description provided for @loginErrorEmailNotConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Please confirm your email before signing in.'**
+  String get loginErrorEmailNotConfirmed;
+
+  /// No description provided for @loginErrorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Please try again later.'**
+  String get loginErrorTooManyRequests;
+
+  /// No description provided for @loginSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back!'**
+  String get loginSuccessMessage;
+
+  /// No description provided for @headerProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get headerProfile;
+
+  /// No description provided for @profileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileTitle;
+
+  /// No description provided for @profileComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile page coming soon.'**
+  String get profileComingSoon;
 }
 
 class _AppLocalizationsDelegate

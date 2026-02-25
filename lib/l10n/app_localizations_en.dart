@@ -83,8 +83,107 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingCtaSectionButton => 'Sign in';
 
   @override
+  String get landingCtaSectionSubtextLoggedIn =>
+      'Go to your profile to get started.';
+
+  @override
+  String get landingCtaSectionButtonLoggedIn => 'Profile';
+
+  @override
   String get headerLogin => 'Login';
 
   @override
   String get headerJoinNow => 'Join now';
+
+  @override
+  String get registrationTitle => 'Sign up';
+
+  @override
+  String get registrationEmail => 'Email';
+
+  @override
+  String get registrationPassword => 'Password';
+
+  @override
+  String get registrationConfirmPassword => 'Confirm password';
+
+  @override
+  String get registrationSubmit => 'Sign up';
+
+  @override
+  String get registrationSuccessMessage =>
+      'Check your email to confirm your account.';
+
+  @override
+  String get registrationErrorInvalidEmail => 'Please enter a valid email.';
+
+  @override
+  String get registrationErrorPasswordMismatch => 'Passwords do not match.';
+
+  @override
+  String get registrationErrorPasswordEmpty => 'Please enter a password.';
+
+  @override
+  String get registrationErrorGeneric =>
+      'Registration failed. Please try again.';
+
+  @override
+  String get registrationAlreadyHaveAccount => 'Already have an account?';
+
+  @override
+  String get registrationLoginLink => 'Log in';
+
+  @override
+  String get loginTitle => 'Log in';
+
+  @override
+  String get loginEmail => 'Email';
+
+  @override
+  String get loginPassword => 'Password';
+
+  @override
+  String get loginSubmit => 'Log in';
+
+  @override
+  String get loginForgotPassword => 'Forgot password?';
+
+  @override
+  String get loginNoAccount => 'Don\'t have an account?';
+
+  @override
+  String get loginRegisterLink => 'Sign up';
+
+  @override
+  String get loginErrorInvalidEmail => 'Please enter a valid email.';
+
+  @override
+  String get loginErrorPasswordEmpty => 'Please enter your password.';
+
+  @override
+  String get loginErrorGeneric => 'Login failed. Please try again.';
+
+  @override
+  String get loginErrorInvalidCredentials =>
+      'Invalid email or password. Please try again.';
+
+  @override
+  String get loginErrorEmailNotConfirmed =>
+      'Please confirm your email before signing in.';
+
+  @override
+  String get loginErrorTooManyRequests =>
+      'Too many attempts. Please try again later.';
+
+  @override
+  String get loginSuccessMessage => 'Welcome back!';
+
+  @override
+  String get headerProfile => 'Profile';
+
+  @override
+  String get profileTitle => 'Profile';
+
+  @override
+  String get profileComingSoon => 'Profile page coming soon.';
 }

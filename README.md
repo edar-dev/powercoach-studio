@@ -1,6 +1,15 @@
 # powercoach_studio
 
-A new Flutter project.
+PowerCoach Studio – Flutter app (Material 3) with landing and registration. Uses Supabase Auth.
+
+## Environment
+
+Copy `.env.example` to `.env` and fill in the values. Use the same `SUPABASE_URL` and `SUPABASE_ANON_KEY` as in **powercoach-studio-flutter** (same Supabase project):
+
+```bash
+cp .env.example .env
+# Edit .env and set SUPABASE_URL and SUPABASE_ANON_KEY
+```
 
 ## Getting Started
 

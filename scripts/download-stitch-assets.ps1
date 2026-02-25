@@ -18,16 +18,17 @@ foreach ($d in @($DesignRoot, $AssetsRoot)) {
     if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
 }
 
-# Simplified Startup Landing Page
-# Replace with actual URLs from Stitch UI or MCP get_screen when available.
-$ScreenshotUrl = $env:STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL  # optional env override
-$HtmlUrl = $env:STITCH_SIMPLIFIED_LANDING_HTML_URL              # optional env override
+# Simplified Startup Landing Page (screen ID 0b414c91bc8d406ea47ac2570d7b51df)
+$LandingScreenshotUrl = $env:STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL
+$LandingHtmlUrl = $env:STITCH_SIMPLIFIED_LANDING_HTML_URL
 
-if (-not $ScreenshotUrl -or -not $HtmlUrl) {
-    Write-Host "Skipping download: STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL and/or STITCH_SIMPLIFIED_LANDING_HTML_URL not set."
-    Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
-    exit 0
-}
+# Simplified Registration Page (screen ID 76b61a47b6324d31bfd4957cd921aaee)
+$RegistrationScreenshotUrl = $env:STITCH_REGISTRATION_SCREENSHOT_URL
+$RegistrationHtmlUrl = $env:STITCH_REGISTRATION_HTML_URL
+
+# Login Page (screen ID 3e212f412ed849a9b6bcfc0772cf15fd)
+$LoginScreenshotUrl = $env:STITCH_LOGIN_SCREENSHOT_URL
+$LoginHtmlUrl = $env:STITCH_LOGIN_HTML_URL
 
 function Download-File {
     param ([string]$Url, [string]$OutPath)
@@ -45,9 +46,26 @@ function Download-File {
     }
 }
 
-$pngPath = Join-Path $AssetsRoot 'simplified-landing.png'
-$htmlPath = Join-Path $AssetsRoot 'simplified-landing.html'
 $ok = 0
-if (Download-File -Url $ScreenshotUrl -OutPath $pngPath) { $ok++ }
-if (Download-File -Url $HtmlUrl -OutPath $htmlPath) { $ok++ }
+if ($LandingScreenshotUrl -and $LandingHtmlUrl) {
+    if (Download-File -Url $LandingScreenshotUrl -OutPath (Join-Path $AssetsRoot 'simplified-landing.png')) { $ok++ }
+    if (Download-File -Url $LandingHtmlUrl -OutPath (Join-Path $AssetsRoot 'simplified-landing.html')) { $ok++ }
+} else {
+    Write-Host "Landing: set STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL and STITCH_SIMPLIFIED_LANDING_HTML_URL to download."
+}
+if ($RegistrationScreenshotUrl -and $RegistrationHtmlUrl) {
+    if (Download-File -Url $RegistrationScreenshotUrl -OutPath (Join-Path $AssetsRoot 'simplified-registration.png')) { $ok++ }
+    if (Download-File -Url $RegistrationHtmlUrl -OutPath (Join-Path $AssetsRoot 'simplified-registration.html')) { $ok++ }
+} else {
+    Write-Host "Registration: set STITCH_REGISTRATION_SCREENSHOT_URL and STITCH_REGISTRATION_HTML_URL to download."
+}
+if ($LoginScreenshotUrl -and $LoginHtmlUrl) {
+    if (Download-File -Url $LoginScreenshotUrl -OutPath (Join-Path $AssetsRoot 'login.png')) { $ok++ }
+    if (Download-File -Url $LoginHtmlUrl -OutPath (Join-Path $AssetsRoot 'login.html')) { $ok++ }
+} else {
+    Write-Host "Login: set STITCH_LOGIN_SCREENSHOT_URL and STITCH_LOGIN_HTML_URL to download."
+}
+if ($ok -eq 0) {
+    Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
+}
 Write-Host "Done. Downloaded $ok file(s) to $AssetsRoot"

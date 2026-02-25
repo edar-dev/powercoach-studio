@@ -8,21 +8,26 @@ La landing dell’app Flutter è allineata al prototipo **Google Stitch “Landi
 - **Project ID:** `13531110169329089006`  
 - **Screen:** Simplified Startup Landing Page  
 - **Screen ID:** `0b414c91bc8d406ea47ac2570d7b51df`
+- **Screen:** Simplified Registration Page  
+- **Screen ID:** `76b61a47b6324d31bfd4957cd921aaee`
+- **Screen:** Login Page  
+- **Screen ID:** `3e212f412ed849a9b6bcfc0772cf15fd`
 
 ## Asset
 
 Gli screenshot e l’HTML esportati da Stitch vanno in:
 
 - `powercoach-studio/design/stitch-assets/`
-  - `simplified-landing.png` – screenshot dello screen
-  - `simplified-landing.html` – HTML/codice esportato
+  - `simplified-landing.png` / `simplified-landing.html` – Landing
+  - `simplified-registration.png` / `simplified-registration.html` – Registration
+  - `login.png` / `login.html` – Login
 
 ## Come ottenere gli URL
 
 1. **Da Stitch (UI):** apri il progetto su [Stitch](https://stitch.withgoogle.com), seleziona lo screen “Simplified Startup Landing Page” e usa le opzioni di download/export per copiare gli URL di screenshot e HTML.
 2. **Da Stitch MCP:** se usi il server MCP Stitch, chiama `get_screen` con:
    - `projectId`: `13531110169329089006`
-   - `screenId`: `0b414c91bc8d406ea47ac2570d7b51df`  
+   - `screenId`: `0b414c91bc8d406ea47ac2570d7b51df` (Landing), `76b61a47b6324d31bfd4957cd921aaee` (Registration), `3e212f412ed849a9b6bcfc0772cf15fd` (Login)  
    Dalla risposta usa `screenshot.downloadUrl` e `htmlCode.downloadUrl`.
 
 ## Script di download
@@ -41,6 +46,12 @@ Dalla root del repo:
 cd d:\source\Gym\gym-blog
 $env:STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL = "https://..."
 $env:STITCH_SIMPLIFIED_LANDING_HTML_URL = "https://..."
+# Registration (optional):
+$env:STITCH_REGISTRATION_SCREENSHOT_URL = "https://..."
+$env:STITCH_REGISTRATION_HTML_URL = "https://..."
+# Login (optional):
+$env:STITCH_LOGIN_SCREENSHOT_URL = "https://..."
+$env:STITCH_LOGIN_HTML_URL = "https://..."
 .\powercoach-studio\scripts\download-stitch-assets.ps1
 ```
 
@@ -53,4 +64,7 @@ curl -L -o powercoach-studio/design/stitch-assets/simplified-landing.html "<html
 
 ## Implementazione Flutter
 
-La schermata `lib/features/landing/presentation/screens/landing_screen.dart` replica il layout del prototipo (hero, titolo, sottotitolo, CTA). Dopo aver scaricato screenshot e HTML in `stitch-assets/`, puoi affinare layout, colori e testi confrontando con gli asset.
+- `lib/features/landing/presentation/screens/landing_screen.dart` – landing (hero, titolo, CTA).
+- `lib/features/auth/presentation/screens/registration_screen.dart` – registrazione (form email/password, Supabase Auth).
+- `lib/features/auth/presentation/screens/login_screen.dart` – login (form email/password, Supabase Auth).  
+Dopo aver scaricato screenshot e HTML in `stitch-assets/`, puoi affinare layout e testi confrontando con gli asset.
