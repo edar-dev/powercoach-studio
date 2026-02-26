@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -49,22 +50,45 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       );
 
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.registrationSuccessMessage),
-          backgroundColor: theme.colorScheme.primaryContainer,
+          content: Text(
+            l10n.registrationSuccessMessage,
+            style: TextStyle(color: colorScheme.onPrimaryContainer),
+          ),
+          backgroundColor: colorScheme.primaryContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
       context.pop();
     } on AuthException catch (e) {
+      await Sentry.captureException(e);
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
+        SnackBar(
+          content: Text(
+            e.message,
+            style: TextStyle(color: colorScheme.onErrorContainer),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.registrationErrorGeneric)),
+        SnackBar(
+          content: Text(
+            l10n.registrationErrorGeneric,
+            style: TextStyle(color: colorScheme.onErrorContainer),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     } finally {
       if (mounted) setState(() => _isLoading = false);

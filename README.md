@@ -11,6 +11,17 @@ cp .env.example .env
 # Edit .env and set SUPABASE_URL and SUPABASE_ANON_KEY
 ```
 
+## Monitoring (Sentry)
+
+Logs, errors, and performance tracing are sent to [Sentry](https://sentry.io) when `SENTRY_DSN` is set in `.env`. Optional: `SENTRY_ENVIRONMENT` (default `development`).
+
+- **Errors**: unhandled exceptions and `Sentry.captureException()` in auth/profile flows.
+- **Tracing**: `tracesSampleRate: 1.0` and `SentryNavigatorObserver` for navigation spans.
+- **Profiling**: `profilesSampleRate: 1.0` for performance profiles.
+- **Screenshots**: attached to error events when supported.
+
+Get the DSN from Sentry: **Project Settings → Client Keys (DSN)**. Leave `SENTRY_DSN` empty to disable Sentry.
+
 ## Database (Supabase)
 
 The profile screen reads and writes `public.profiles` (columns: `display_name`, `contact_phone`, `bio`, `avatar_url`, `website`, etc.). The schema is managed by **GymBlog.API** via EF Core: when the API starts, it applies migrations that create or update the `profiles` table (including `contact_phone` and `website`). No separate Supabase SQL migration is required. If you use only the Flutter app and never start GymBlog.API, start the API once against your Supabase DB so EF applies the migrations, or add the columns manually in the Supabase SQL Editor (`contact_phone text`, `website text`).

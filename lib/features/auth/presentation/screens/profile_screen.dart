@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -116,10 +117,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
 
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.profileSavedMessage),
-          backgroundColor: theme.colorScheme.primaryContainer,
+          content: Text(
+            l10n.profileSavedMessage,
+            style: TextStyle(color: colorScheme.onPrimaryContainer),
+          ),
+          backgroundColor: colorScheme.primaryContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e, stackTrace) {
@@ -128,11 +134,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
         debugPrint('PostgrestException: ${e.message} (code: ${e.code}, details: ${e.details})');
       }
       debugPrint(stackTrace?.toString() ?? '');
+      await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.profileSaveError),
-          backgroundColor: theme.colorScheme.errorContainer,
+          content: Text(
+            l10n.profileSaveError,
+            style: TextStyle(color: colorScheme.onErrorContainer),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } finally {

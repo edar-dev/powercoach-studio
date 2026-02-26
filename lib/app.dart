@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
@@ -9,6 +10,7 @@ import 'l10n/app_localizations.dart';
 
 final _goRouter = GoRouter(
   initialLocation: '/',
+  observers: [SentryNavigatorObserver()],
   routes: [
     GoRoute(
       path: '/',

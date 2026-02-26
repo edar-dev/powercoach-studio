@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/utils/not_implemented.dart';
@@ -48,27 +49,44 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.loginSuccessMessage),
-          backgroundColor: theme.colorScheme.primaryContainer,
+          content: Text(
+            l10n.loginSuccessMessage,
+            style: TextStyle(color: colorScheme.onPrimaryContainer),
+          ),
+          backgroundColor: colorScheme.primaryContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
       context.go('/');
     } on AuthException catch (e) {
+      await Sentry.captureException(e);
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(authErrorMessage(e, l10n)),
-          backgroundColor: theme.colorScheme.errorContainer,
+          content: Text(
+            authErrorMessage(e, l10n),
+            style: TextStyle(color: colorScheme.onErrorContainer),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
+      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.loginErrorGeneric),
-          backgroundColor: theme.colorScheme.errorContainer,
+          content: Text(
+            l10n.loginErrorGeneric,
+            style: TextStyle(color: colorScheme.onErrorContainer),
+          ),
+          backgroundColor: colorScheme.errorContainer,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } finally {
