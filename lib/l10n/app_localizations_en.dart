@@ -261,4 +261,86 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsLanguageDescription => 'App language';
+
+  @override
+  String get customersTitle => 'Customers';
+
+  @override
+  String get customersEmptyTitle => 'No customers yet';
+
+  @override
+  String get customersEmptyMessage => 'Add your first customer to get started.';
+
+  @override
+  String get customersAddCustomer => 'Add customer';
+
+  @override
+  String get customersNewCustomer => 'New customer';
+
+  @override
+  String get customerName => 'Name';
+
+  @override
+  String get customerNameRequired => 'Name is required';
+
+  @override
+  String get customerEmail => 'Email';
+
+  @override
+  String get customerPhone => 'Phone';
+
+  @override
+  String get customerDateOfBirth => 'Date of birth';
+
+  @override
+  String get customerHeight => 'Height (cm)';
+
+  @override
+  String get customerWeight => 'Weight (kg)';
+
+  @override
+  String get customerNotes => 'Notes';
+
+  @override
+  String get customerGoals => 'Goals';
+
+  @override
+  String get customerSave => 'Save';
+
+  @override
+  String get customerCancel => 'Cancel';
+
+  @override
+  String get customerEdit => 'Edit';
+
+  @override
+  String get customerDelete => 'Delete';
+
+  @override
+  String get customerDeleteConfirmTitle => 'Delete customer?';
+
+  @override
+  String get customerDeleteConfirmMessage => 'This action cannot be undone.';
+
+  @override
+  String get customersLoadError => 'Could not load customers.';
+
+  @override
+  String get customerSaveError => 'Could not save customer.';
+
+  @override
+  String get customerDeleteError => 'Could not delete customer.';
+
+  @override
+  String get customersApiNotConfigured =>
+      'API not configured. Set GYMBLOG_API_URL in .env.';
+
+  @override
+  String get customersSessionExpired => 'Session expired. Please log in again.';
+
+  @override
+  String get customersRetry => 'Retry';
+
+  @override
+  String get customerDeletedMessage => 'Customer deleted.';
 }

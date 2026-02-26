@@ -58,7 +58,15 @@ class _LandingScreenState extends State<LandingScreen> {
         ),
         centerTitle: false,
         actions: [
-          if (isLoggedIn)
+          if (isLoggedIn) ...[
+            TextButton.icon(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                context.push('/customers');
+              },
+              icon: const Icon(Icons.people_outline, size: 20),
+              label: Text(l10n.customersTitle),
+            ),
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: TextButton.icon(
@@ -69,7 +77,8 @@ class _LandingScreenState extends State<LandingScreen> {
                 icon: const Icon(Icons.person_outline, size: 20),
                 label: Text(l10n.headerProfile),
               ),
-            )
+            ),
+          ]
           else ...[
             TextButton(
               onPressed: () {

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/registration_screen.dart';
+import 'features/customers/presentation/screens/customer_creation_screen.dart';
+import 'features/customers/presentation/screens/customer_detail_screen.dart';
+import 'features/customers/presentation/screens/customer_edit_screen.dart';
+import 'features/customers/presentation/screens/customer_list_screen.dart';
 import 'features/landing/presentation/screens/landing_screen.dart';
 import 'features/settings/presentation/screens/personal_info_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
@@ -14,6 +19,14 @@ import 'l10n/app_localizations.dart';
 final _goRouter = GoRouter(
   initialLocation: '/',
   observers: [SentryNavigatorObserver()],
+  redirect: (context, state) {
+    final path = state.uri.path;
+    final isCustomerRoute = path.startsWith('/customers');
+    if (isCustomerRoute && Supabase.instance.client.auth.currentUser == null) {
+      return '/login';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/',
@@ -42,6 +55,32 @@ final _goRouter = GoRouter(
         GoRoute(
           path: 'subscription',
           builder: (context, state) => const SubscriptionScreen(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/customers',
+      builder: (context, state) => const CustomerListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          builder: (context, state) => const CustomerCreationScreen(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) {
+            final id = state.pathParameters['id'] ?? '';
+            return CustomerDetailScreen(customerId: id);
+          },
+          routes: [
+            GoRoute(
+              path: 'edit',
+              builder: (context, state) {
+                final id = state.pathParameters['id'] ?? '';
+                return CustomerEditScreen(customerId: id);
+              },
+            ),
+          ],
         ),
       ],
     ),

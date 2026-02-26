@@ -372,6 +372,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 24),
                 OutlinedButton.icon(
+                  onPressed: _isSaving ? null : () => context.push('/customers'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  icon: const Icon(Icons.people_outline),
+                  label: Text(l10n.customersTitle),
+                ),
+                const SizedBox(height: 16),
+                OutlinedButton.icon(
                   onPressed: _isSaving ? null : () => context.push('/settings'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),

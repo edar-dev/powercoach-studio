@@ -589,6 +589,168 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'App language'**
   String get settingsLanguageDescription;
+
+  /// No description provided for @customersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get customersTitle;
+
+  /// No description provided for @customersEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers yet'**
+  String get customersEmptyTitle;
+
+  /// No description provided for @customersEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add your first customer to get started.'**
+  String get customersEmptyMessage;
+
+  /// No description provided for @customersAddCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Add customer'**
+  String get customersAddCustomer;
+
+  /// No description provided for @customersNewCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'New customer'**
+  String get customersNewCustomer;
+
+  /// No description provided for @customerName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get customerName;
+
+  /// No description provided for @customerNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required'**
+  String get customerNameRequired;
+
+  /// No description provided for @customerEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get customerEmail;
+
+  /// No description provided for @customerPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
+  String get customerPhone;
+
+  /// No description provided for @customerDateOfBirth.
+  ///
+  /// In en, this message translates to:
+  /// **'Date of birth'**
+  String get customerDateOfBirth;
+
+  /// No description provided for @customerHeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Height (cm)'**
+  String get customerHeight;
+
+  /// No description provided for @customerWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get customerWeight;
+
+  /// No description provided for @customerNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get customerNotes;
+
+  /// No description provided for @customerGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get customerGoals;
+
+  /// No description provided for @customerSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get customerSave;
+
+  /// No description provided for @customerCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get customerCancel;
+
+  /// No description provided for @customerEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get customerEdit;
+
+  /// No description provided for @customerDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get customerDelete;
+
+  /// No description provided for @customerDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete customer?'**
+  String get customerDeleteConfirmTitle;
+
+  /// No description provided for @customerDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get customerDeleteConfirmMessage;
+
+  /// No description provided for @customersLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load customers.'**
+  String get customersLoadError;
+
+  /// No description provided for @customerSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save customer.'**
+  String get customerSaveError;
+
+  /// No description provided for @customerDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete customer.'**
+  String get customerDeleteError;
+
+  /// No description provided for @customersApiNotConfigured.
+  ///
+  /// In en, this message translates to:
+  /// **'API not configured. Set GYMBLOG_API_URL in .env.'**
+  String get customersApiNotConfigured;
+
+  /// No description provided for @customersSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Session expired. Please log in again.'**
+  String get customersSessionExpired;
+
+  /// No description provided for @customersRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get customersRetry;
+
+  /// No description provided for @customerDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer deleted.'**
+  String get customerDeletedMessage;
 }
 
 class _AppLocalizationsDelegate

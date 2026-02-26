@@ -259,4 +259,88 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsLanguageDescription => 'Lingua dell\'app';
+
+  @override
+  String get customersTitle => 'Clienti';
+
+  @override
+  String get customersEmptyTitle => 'Nessun cliente ancora';
+
+  @override
+  String get customersEmptyMessage =>
+      'Aggiungi il tuo primo cliente per iniziare.';
+
+  @override
+  String get customersAddCustomer => 'Aggiungi cliente';
+
+  @override
+  String get customersNewCustomer => 'Nuovo cliente';
+
+  @override
+  String get customerName => 'Nome';
+
+  @override
+  String get customerNameRequired => 'Il nome è obbligatorio';
+
+  @override
+  String get customerEmail => 'Email';
+
+  @override
+  String get customerPhone => 'Telefono';
+
+  @override
+  String get customerDateOfBirth => 'Data di nascita';
+
+  @override
+  String get customerHeight => 'Altezza (cm)';
+
+  @override
+  String get customerWeight => 'Peso (kg)';
+
+  @override
+  String get customerNotes => 'Note';
+
+  @override
+  String get customerGoals => 'Obiettivi';
+
+  @override
+  String get customerSave => 'Salva';
+
+  @override
+  String get customerCancel => 'Annulla';
+
+  @override
+  String get customerEdit => 'Modifica';
+
+  @override
+  String get customerDelete => 'Elimina';
+
+  @override
+  String get customerDeleteConfirmTitle => 'Eliminare il cliente?';
+
+  @override
+  String get customerDeleteConfirmMessage =>
+      'Questa azione non può essere annullata.';
+
+  @override
+  String get customersLoadError => 'Impossibile caricare i clienti.';
+
+  @override
+  String get customerSaveError => 'Impossibile salvare il cliente.';
+
+  @override
+  String get customerDeleteError => 'Impossibile eliminare il cliente.';
+
+  @override
+  String get customersApiNotConfigured =>
+      'API non configurata. Imposta GYMBLOG_API_URL in .env.';
+
+  @override
+  String get customersSessionExpired => 'Sessione scaduta. Accedi di nuovo.';
+
+  @override
+  String get customersRetry => 'Riprova';
+
+  @override
+  String get customerDeletedMessage => 'Cliente eliminato.';
 }

@@ -20,6 +20,14 @@ La landing dell’app Flutter è allineata al prototipo **Google Stitch “Landi
 - **Screen ID:** `1224a49f9c5849fcb205e965ebc0b9a4`
 - **Screen:** Simplified App Settings  
 - **Screen ID:** `8ab8a84172594c1c9911b5762e2a7257`
+- **Screen:** Empty Customer List Page  
+- **Screen ID:** `3d09f0f5b58f4867990e02be11ffc7d2`
+- **Screen:** Customer Creation Page  
+- **Screen ID:** `534f6e3664244ba59196220f2909eb46`
+- **Screen:** Customer Detail Page  
+- **Screen ID:** `7a7f3b47bfa1435381554959ca9b72e7`
+- **Screen:** Customer List Page (Populated)  
+- **Screen ID:** `92b1ea1864184682b142aa8ffea211f8`
 
 ## Asset
 
@@ -33,6 +41,10 @@ Gli screenshot e l’HTML esportati da Stitch vanno in:
   - `personal-info-settings.png` / `personal-info-settings.html` – Personal Info Settings
   - `subscription-settings.png` / `subscription-settings.html` – Subscription Settings
   - `app-settings.png` / `app-settings.html` – Simplified App Settings
+  - `empty-customer-list.png` / `empty-customer-list.html` – Empty Customer List Page
+  - `customer-creation.png` / `customer-creation.html` – Customer Creation Page
+  - `customer-detail.png` / `customer-detail.html` – Customer Detail Page
+  - `customer-list-populated.png` / `customer-list-populated.html` – Customer List Page (Populated)
 
 ## Come ottenere gli URL
 
@@ -74,6 +86,15 @@ $env:STITCH_SUBSCRIPTION_SCREENSHOT_URL = "https://..."
 $env:STITCH_SUBSCRIPTION_HTML_URL = "https://..."
 $env:STITCH_APP_SETTINGS_SCREENSHOT_URL = "https://..."
 $env:STITCH_APP_SETTINGS_HTML_URL = "https://..."
+# Customer screens (optional):
+$env:STITCH_EMPTY_CUSTOMER_LIST_SCREENSHOT_URL = "https://..."
+$env:STITCH_EMPTY_CUSTOMER_LIST_HTML_URL = "https://..."
+$env:STITCH_CUSTOMER_CREATION_SCREENSHOT_URL = "https://..."
+$env:STITCH_CUSTOMER_CREATION_HTML_URL = "https://..."
+$env:STITCH_CUSTOMER_DETAIL_SCREENSHOT_URL = "https://..."
+$env:STITCH_CUSTOMER_DETAIL_HTML_URL = "https://..."
+$env:STITCH_CUSTOMER_LIST_POPULATED_SCREENSHOT_URL = "https://..."
+$env:STITCH_CUSTOMER_LIST_POPULATED_HTML_URL = "https://..."
 .\powercoach-studio\scripts\download-stitch-assets.ps1
 ```
 
@@ -92,5 +113,8 @@ curl -L -o powercoach-studio/design/stitch-assets/simplified-landing.html "<html
 - `lib/features/auth/presentation/screens/profile_screen.dart` – profilo coach (form nome, email, telefono, bio, avatar; lettura/salvataggio da Supabase `profiles`).
 - `lib/features/settings/presentation/screens/personal_info_screen.dart` – Personal Info Settings (nome, email, telefono).
 - `lib/features/settings/presentation/screens/subscription_screen.dart` – Subscription Settings (piano corrente, upgrade).
-- `lib/features/settings/presentation/screens/settings_screen.dart` – Simplified App Settings (notifiche, lingua, esci).  
+- `lib/features/settings/presentation/screens/settings_screen.dart` – Simplified App Settings (notifiche, lingua, esci).
+- `lib/features/customers/presentation/screens/customer_list_screen.dart` – lista clienti (vuota o popolata).
+- `lib/features/customers/presentation/screens/customer_creation_screen.dart` – creazione cliente.
+- `lib/features/customers/presentation/screens/customer_detail_screen.dart` – dettaglio cliente.  
 Dopo aver scaricato screenshot e HTML in `stitch-assets/`, puoi affinare layout e testi confrontando con gli asset.

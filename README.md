@@ -1,10 +1,10 @@
 # powercoach_studio
 
-PowerCoach Studio – Flutter app (Material 3) with landing, registration, login, and coach profile. Uses Supabase Auth and `public.profiles`.
+PowerCoach Studio – Flutter app (Material 3) with landing, registration, login, coach profile, settings, and customers. Uses Supabase Auth and `public.profiles`; customers are managed via **GymBlog.API** when `GYMBLOG_API_URL` is set in `.env`.
 
 ## Environment
 
-Copy `.env.example` to `.env` and fill in the values. Use the same `SUPABASE_URL` and `SUPABASE_ANON_KEY` as in **powercoach-studio-flutter** (same Supabase project):
+Copy `.env.example` to `.env` and fill in the values. Use the same `SUPABASE_URL` and `SUPABASE_ANON_KEY` as in **powercoach-studio-flutter** (same Supabase project). Optional: `GYMBLOG_API_URL` (base URL of GymBlog.API) for the customers section; if unset, the customers screen shows "API not configured".
 
 ```bash
 cp .env.example .env

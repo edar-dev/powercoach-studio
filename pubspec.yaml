@@ -50,6 +50,9 @@ dependencies:
   # Local preferences (e.g. notifications toggle)
   shared_preferences: ^2.3.3
 
+  # HTTP client for GymBlog.API (customers, etc.)
+  dio: ^5.7.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

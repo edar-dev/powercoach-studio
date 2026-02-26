@@ -46,6 +46,22 @@ $SubscriptionHtmlUrl = $env:STITCH_SUBSCRIPTION_HTML_URL
 $AppSettingsScreenshotUrl = $env:STITCH_APP_SETTINGS_SCREENSHOT_URL
 $AppSettingsHtmlUrl = $env:STITCH_APP_SETTINGS_HTML_URL
 
+# Empty Customer List Page (screen ID 3d09f0f5b58f4867990e02be11ffc7d2)
+$EmptyCustomerListScreenshotUrl = $env:STITCH_EMPTY_CUSTOMER_LIST_SCREENSHOT_URL
+$EmptyCustomerListHtmlUrl = $env:STITCH_EMPTY_CUSTOMER_LIST_HTML_URL
+
+# Customer Creation Page (screen ID 534f6e3664244ba59196220f2909eb46)
+$CustomerCreationScreenshotUrl = $env:STITCH_CUSTOMER_CREATION_SCREENSHOT_URL
+$CustomerCreationHtmlUrl = $env:STITCH_CUSTOMER_CREATION_HTML_URL
+
+# Customer Detail Page (screen ID 7a7f3b47bfa1435381554959ca9b72e7)
+$CustomerDetailScreenshotUrl = $env:STITCH_CUSTOMER_DETAIL_SCREENSHOT_URL
+$CustomerDetailHtmlUrl = $env:STITCH_CUSTOMER_DETAIL_HTML_URL
+
+# Customer List Page (Populated) (screen ID 92b1ea1864184682b142aa8ffea211f8)
+$CustomerListPopulatedScreenshotUrl = $env:STITCH_CUSTOMER_LIST_POPULATED_SCREENSHOT_URL
+$CustomerListPopulatedHtmlUrl = $env:STITCH_CUSTOMER_LIST_POPULATED_HTML_URL
+
 function Download-File {
     param ([string]$Url, [string]$OutPath)
     if (-not $Url) { return $false }
@@ -99,6 +115,22 @@ if ($AppSettingsScreenshotUrl -and $AppSettingsHtmlUrl) {
     if (Download-File -Url $AppSettingsScreenshotUrl -OutPath (Join-Path $AssetsRoot 'app-settings.png')) { $ok++ }
     if (Download-File -Url $AppSettingsHtmlUrl -OutPath (Join-Path $AssetsRoot 'app-settings.html')) { $ok++ }
 } else { Write-Host "Simplified App Settings: set STITCH_APP_SETTINGS_SCREENSHOT_URL and STITCH_APP_SETTINGS_HTML_URL." }
+if ($EmptyCustomerListScreenshotUrl -and $EmptyCustomerListHtmlUrl) {
+    if (Download-File -Url $EmptyCustomerListScreenshotUrl -OutPath (Join-Path $AssetsRoot 'empty-customer-list.png')) { $ok++ }
+    if (Download-File -Url $EmptyCustomerListHtmlUrl -OutPath (Join-Path $AssetsRoot 'empty-customer-list.html')) { $ok++ }
+} else { Write-Host "Empty Customer List: set STITCH_EMPTY_CUSTOMER_LIST_SCREENSHOT_URL and STITCH_EMPTY_CUSTOMER_LIST_HTML_URL." }
+if ($CustomerCreationScreenshotUrl -and $CustomerCreationHtmlUrl) {
+    if (Download-File -Url $CustomerCreationScreenshotUrl -OutPath (Join-Path $AssetsRoot 'customer-creation.png')) { $ok++ }
+    if (Download-File -Url $CustomerCreationHtmlUrl -OutPath (Join-Path $AssetsRoot 'customer-creation.html')) { $ok++ }
+} else { Write-Host "Customer Creation: set STITCH_CUSTOMER_CREATION_SCREENSHOT_URL and STITCH_CUSTOMER_CREATION_HTML_URL." }
+if ($CustomerDetailScreenshotUrl -and $CustomerDetailHtmlUrl) {
+    if (Download-File -Url $CustomerDetailScreenshotUrl -OutPath (Join-Path $AssetsRoot 'customer-detail.png')) { $ok++ }
+    if (Download-File -Url $CustomerDetailHtmlUrl -OutPath (Join-Path $AssetsRoot 'customer-detail.html')) { $ok++ }
+} else { Write-Host "Customer Detail: set STITCH_CUSTOMER_DETAIL_SCREENSHOT_URL and STITCH_CUSTOMER_DETAIL_HTML_URL." }
+if ($CustomerListPopulatedScreenshotUrl -and $CustomerListPopulatedHtmlUrl) {
+    if (Download-File -Url $CustomerListPopulatedScreenshotUrl -OutPath (Join-Path $AssetsRoot 'customer-list-populated.png')) { $ok++ }
+    if (Download-File -Url $CustomerListPopulatedHtmlUrl -OutPath (Join-Path $AssetsRoot 'customer-list-populated.html')) { $ok++ }
+} else { Write-Host "Customer List Populated: set STITCH_CUSTOMER_LIST_POPULATED_SCREENSHOT_URL and STITCH_CUSTOMER_LIST_POPULATED_HTML_URL." }
 if ($ok -eq 0) {
     Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
 }
