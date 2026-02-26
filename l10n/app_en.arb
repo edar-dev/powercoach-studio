@@ -67,5 +67,19 @@
   "profileSavedMessage": "Profile saved.",
   "profileLoadError": "Could not load profile.",
   "profileSaveError": "Could not save profile.",
-  "profileSignOut": "Sign out"
+  "profileSignOut": "Sign out",
+  "settingsTitle": "Settings",
+  "settingsPersonalInfo": "Personal info",
+  "settingsSubscription": "Subscription",
+  "settingsNotifications": "Notifications",
+  "settingsLanguage": "Language",
+  "settingsPersonalInfoTitle": "Personal info",
+  "settingsSubscriptionTitle": "Subscription",
+  "subscriptionCurrentPlan": "Current plan",
+  "subscriptionPlanFree": "Free",
+  "subscriptionPlanPro": "Pro",
+  "subscriptionUpgrade": "Upgrade",
+  "subscriptionManage": "Manage subscription",
+  "settingsNotificationsDescription": "Receive push notifications",
+  "settingsLanguageDescription": "App language"
 }

@@ -6,6 +6,9 @@ import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/registration_screen.dart';
 import 'features/landing/presentation/screens/landing_screen.dart';
+import 'features/settings/presentation/screens/personal_info_screen.dart';
+import 'features/settings/presentation/screens/settings_screen.dart';
+import 'features/settings/presentation/screens/subscription_screen.dart';
 import 'l10n/app_localizations.dart';
 
 final _goRouter = GoRouter(
@@ -27,6 +30,20 @@ final _goRouter = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsScreen(),
+      routes: [
+        GoRoute(
+          path: 'personal-info',
+          builder: (context, state) => const PersonalInfoScreen(),
+        ),
+        GoRoute(
+          path: 'subscription',
+          builder: (context, state) => const SubscriptionScreen(),
+        ),
+      ],
     ),
   ],
 );

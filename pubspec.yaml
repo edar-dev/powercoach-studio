@@ -47,6 +47,9 @@ dependencies:
   # Monitoring & tracing
   sentry_flutter: ^8.14.0
 
+  # Local preferences (e.g. notifications toggle)
+  shared_preferences: ^2.3.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

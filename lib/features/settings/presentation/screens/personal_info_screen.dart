@@ -6,22 +6,19 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
-/// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
-/// Loads and saves profile to Supabase public.profiles (id, display_name, avatar_url, bio, phone, website).
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+/// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
+/// Edit display name, email (read-only), phone; save to Supabase profiles.
+class PersonalInfoScreen extends StatefulWidget {
+  const PersonalInfoScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<PersonalInfoScreen> createState() => _PersonalInfoScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   final _formKey = GlobalKey<FormState>();
   final _displayNameController = TextEditingController();
   final _phoneController = TextEditingController();
-  final _bioController = TextEditingController();
-  final _avatarUrlController = TextEditingController();
-  final _websiteController = TextEditingController();
   final _emailController = TextEditingController();
   bool _isLoading = true;
   bool _isSaving = false;
@@ -39,9 +36,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void dispose() {
     _displayNameController.dispose();
     _phoneController.dispose();
-    _bioController.dispose();
-    _avatarUrlController.dispose();
-    _websiteController.dispose();
     _emailController.dispose();
     super.dispose();
   }
@@ -68,9 +62,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           if (res != null) {
             _displayNameController.text = res['display_name'] as String? ?? '';
             _phoneController.text = res['contact_phone'] as String? ?? '';
-            _bioController.text = res['bio'] as String? ?? '';
-            _avatarUrlController.text = res['avatar_url'] as String? ?? '';
-            _websiteController.text = res['website'] as String? ?? '';
           }
         });
       }
@@ -91,6 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     setState(() => _isSaving = true);
 
     try {
@@ -103,21 +95,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               'contact_phone': _phoneController.text.trim().isEmpty
                   ? null
                   : _phoneController.text.trim(),
-              'bio': _bioController.text.trim().isEmpty
-                  ? null
-                  : _bioController.text.trim(),
-              'avatar_url': _avatarUrlController.text.trim().isEmpty
-                  ? null
-                  : _avatarUrlController.text.trim(),
-              'website': _websiteController.text.trim().isEmpty
-                  ? null
-                  : _websiteController.text.trim(),
             },
             onConflict: 'id',
           );
 
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -129,14 +111,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       );
     } catch (e, stackTrace) {
-      debugPrint('Profile save error: $e');
-      if (e is PostgrestException) {
-        debugPrint('PostgrestException: ${e.message} (code: ${e.code}, details: ${e.details})');
-      }
-      debugPrint(stackTrace.toString());
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -152,11 +128,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _signOut() async {
-    await Supabase.instance.client.auth.signOut();
-    if (mounted) context.go('/');
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -170,7 +141,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
-          scrolledUnderElevation: 0,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
@@ -179,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           ),
           title: Text(
-            l10n.profileTitle,
+            l10n.settingsPersonalInfoTitle,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
@@ -205,7 +175,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           ),
           title: Text(
-            l10n.profileTitle,
+            l10n.settingsPersonalInfoTitle,
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.bold,
               color: colorScheme.onSurface,
@@ -252,7 +222,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           },
         ),
         title: Text(
-          l10n.profileTitle,
+          l10n.settingsPersonalInfoTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: colorScheme.onSurface,
@@ -304,49 +274,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profilePhone,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _bioController,
-                  maxLines: 4,
-                  textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileBio,
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _avatarUrlController,
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileAvatarUrl,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _websiteController,
-                  keyboardType: TextInputType.url,
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
-                    labelText: l10n.profileWebsite,
+                    labelText: l10n.profilePhone,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -369,29 +299,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(l10n.profileSave),
-                ),
-                const SizedBox(height: 24),
-                OutlinedButton.icon(
-                  onPressed: _isSaving ? null : () => context.push('/settings'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  icon: const Icon(Icons.settings_outlined),
-                  label: Text(l10n.settingsTitle),
-                ),
-                const SizedBox(height: 16),
-                OutlinedButton(
-                  onPressed: _isSaving ? null : _signOut,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: Text(l10n.profileSignOut),
                 ),
               ],
             ),

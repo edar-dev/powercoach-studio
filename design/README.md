@@ -14,6 +14,12 @@ La landing dell’app Flutter è allineata al prototipo **Google Stitch “Landi
 - **Screen ID:** `3e212f412ed849a9b6bcfc0772cf15fd`
 - **Screen:** Updated Coach Profile  
 - **Screen ID:** `5863bd21319d467b828ad322f8670305`
+- **Screen:** Personal Info Settings  
+- **Screen ID:** `0f594d4c05da4c8aa79172ab31ce8790`
+- **Screen:** Subscription Settings  
+- **Screen ID:** `1224a49f9c5849fcb205e965ebc0b9a4`
+- **Screen:** Simplified App Settings  
+- **Screen ID:** `8ab8a84172594c1c9911b5762e2a7257`
 
 ## Asset
 
@@ -24,6 +30,9 @@ Gli screenshot e l’HTML esportati da Stitch vanno in:
   - `simplified-registration.png` / `simplified-registration.html` – Registration
   - `login.png` / `login.html` – Login
   - `coach-profile.png` / `coach-profile.html` – Updated Coach Profile
+  - `personal-info-settings.png` / `personal-info-settings.html` – Personal Info Settings
+  - `subscription-settings.png` / `subscription-settings.html` – Subscription Settings
+  - `app-settings.png` / `app-settings.html` – Simplified App Settings
 
 ## Come ottenere gli URL
 
@@ -58,6 +67,13 @@ $env:STITCH_LOGIN_HTML_URL = "https://..."
 # Updated Coach Profile (optional):
 $env:STITCH_COACH_PROFILE_SCREENSHOT_URL = "https://..."
 $env:STITCH_COACH_PROFILE_HTML_URL = "https://..."
+# Personal Info Settings, Subscription Settings, App Settings (optional):
+$env:STITCH_PERSONAL_INFO_SCREENSHOT_URL = "https://..."
+$env:STITCH_PERSONAL_INFO_HTML_URL = "https://..."
+$env:STITCH_SUBSCRIPTION_SCREENSHOT_URL = "https://..."
+$env:STITCH_SUBSCRIPTION_HTML_URL = "https://..."
+$env:STITCH_APP_SETTINGS_SCREENSHOT_URL = "https://..."
+$env:STITCH_APP_SETTINGS_HTML_URL = "https://..."
 .\powercoach-studio\scripts\download-stitch-assets.ps1
 ```
 
@@ -73,5 +89,8 @@ curl -L -o powercoach-studio/design/stitch-assets/simplified-landing.html "<html
 - `lib/features/landing/presentation/screens/landing_screen.dart` – landing (hero, titolo, CTA).
 - `lib/features/auth/presentation/screens/registration_screen.dart` – registrazione (form email/password, Supabase Auth).
 - `lib/features/auth/presentation/screens/login_screen.dart` – login (form email/password, Supabase Auth).
-- `lib/features/auth/presentation/screens/profile_screen.dart` – profilo coach (form nome, email, telefono, bio, avatar; lettura/salvataggio da Supabase `profiles`).  
+- `lib/features/auth/presentation/screens/profile_screen.dart` – profilo coach (form nome, email, telefono, bio, avatar; lettura/salvataggio da Supabase `profiles`).
+- `lib/features/settings/presentation/screens/personal_info_screen.dart` – Personal Info Settings (nome, email, telefono).
+- `lib/features/settings/presentation/screens/subscription_screen.dart` – Subscription Settings (piano corrente, upgrade).
+- `lib/features/settings/presentation/screens/settings_screen.dart` – Simplified App Settings (notifiche, lingua, esci).  
 Dopo aver scaricato screenshot e HTML in `stitch-assets/`, puoi affinare layout e testi confrontando con gli asset.

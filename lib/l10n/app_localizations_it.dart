@@ -217,4 +217,46 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get profileSignOut => 'Esci';
+
+  @override
+  String get settingsTitle => 'Impostazioni';
+
+  @override
+  String get settingsPersonalInfo => 'Informazioni personali';
+
+  @override
+  String get settingsSubscription => 'Abbonamento';
+
+  @override
+  String get settingsNotifications => 'Notifiche';
+
+  @override
+  String get settingsLanguage => 'Lingua';
+
+  @override
+  String get settingsPersonalInfoTitle => 'Informazioni personali';
+
+  @override
+  String get settingsSubscriptionTitle => 'Abbonamento';
+
+  @override
+  String get subscriptionCurrentPlan => 'Piano attuale';
+
+  @override
+  String get subscriptionPlanFree => 'Gratuito';
+
+  @override
+  String get subscriptionPlanPro => 'Pro';
+
+  @override
+  String get subscriptionUpgrade => 'Passa a Pro';
+
+  @override
+  String get subscriptionManage => 'Gestisci abbonamento';
+
+  @override
+  String get settingsNotificationsDescription => 'Ricevi notifiche push';
+
+  @override
+  String get settingsLanguageDescription => 'Lingua dell\'app';
 }

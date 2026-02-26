@@ -219,4 +219,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileSignOut => 'Sign out';
+
+  @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsPersonalInfo => 'Personal info';
+
+  @override
+  String get settingsSubscription => 'Subscription';
+
+  @override
+  String get settingsNotifications => 'Notifications';
+
+  @override
+  String get settingsLanguage => 'Language';
+
+  @override
+  String get settingsPersonalInfoTitle => 'Personal info';
+
+  @override
+  String get settingsSubscriptionTitle => 'Subscription';
+
+  @override
+  String get subscriptionCurrentPlan => 'Current plan';
+
+  @override
+  String get subscriptionPlanFree => 'Free';
+
+  @override
+  String get subscriptionPlanPro => 'Pro';
+
+  @override
+  String get subscriptionUpgrade => 'Upgrade';
+
+  @override
+  String get subscriptionManage => 'Manage subscription';
+
+  @override
+  String get settingsNotificationsDescription => 'Receive push notifications';
+
+  @override
+  String get settingsLanguageDescription => 'App language';
 }

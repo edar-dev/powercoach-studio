@@ -34,6 +34,18 @@ $LoginHtmlUrl = $env:STITCH_LOGIN_HTML_URL
 $CoachProfileScreenshotUrl = $env:STITCH_COACH_PROFILE_SCREENSHOT_URL
 $CoachProfileHtmlUrl = $env:STITCH_COACH_PROFILE_HTML_URL
 
+# Personal Info Settings (screen ID 0f594d4c05da4c8aa79172ab31ce8790)
+$PersonalInfoScreenshotUrl = $env:STITCH_PERSONAL_INFO_SCREENSHOT_URL
+$PersonalInfoHtmlUrl = $env:STITCH_PERSONAL_INFO_HTML_URL
+
+# Subscription Settings (screen ID 1224a49f9c5849fcb205e965ebc0b9a4)
+$SubscriptionScreenshotUrl = $env:STITCH_SUBSCRIPTION_SCREENSHOT_URL
+$SubscriptionHtmlUrl = $env:STITCH_SUBSCRIPTION_HTML_URL
+
+# Simplified App Settings (screen ID 8ab8a84172594c1c9911b5762e2a7257)
+$AppSettingsScreenshotUrl = $env:STITCH_APP_SETTINGS_SCREENSHOT_URL
+$AppSettingsHtmlUrl = $env:STITCH_APP_SETTINGS_HTML_URL
+
 function Download-File {
     param ([string]$Url, [string]$OutPath)
     if (-not $Url) { return $false }
@@ -75,6 +87,18 @@ if ($CoachProfileScreenshotUrl -and $CoachProfileHtmlUrl) {
 } else {
     Write-Host "Updated Coach Profile: set STITCH_COACH_PROFILE_SCREENSHOT_URL and STITCH_COACH_PROFILE_HTML_URL to download."
 }
+if ($PersonalInfoScreenshotUrl -and $PersonalInfoHtmlUrl) {
+    if (Download-File -Url $PersonalInfoScreenshotUrl -OutPath (Join-Path $AssetsRoot 'personal-info-settings.png')) { $ok++ }
+    if (Download-File -Url $PersonalInfoHtmlUrl -OutPath (Join-Path $AssetsRoot 'personal-info-settings.html')) { $ok++ }
+} else { Write-Host "Personal Info Settings: set STITCH_PERSONAL_INFO_SCREENSHOT_URL and STITCH_PERSONAL_INFO_HTML_URL." }
+if ($SubscriptionScreenshotUrl -and $SubscriptionHtmlUrl) {
+    if (Download-File -Url $SubscriptionScreenshotUrl -OutPath (Join-Path $AssetsRoot 'subscription-settings.png')) { $ok++ }
+    if (Download-File -Url $SubscriptionHtmlUrl -OutPath (Join-Path $AssetsRoot 'subscription-settings.html')) { $ok++ }
+} else { Write-Host "Subscription Settings: set STITCH_SUBSCRIPTION_SCREENSHOT_URL and STITCH_SUBSCRIPTION_HTML_URL." }
+if ($AppSettingsScreenshotUrl -and $AppSettingsHtmlUrl) {
+    if (Download-File -Url $AppSettingsScreenshotUrl -OutPath (Join-Path $AssetsRoot 'app-settings.png')) { $ok++ }
+    if (Download-File -Url $AppSettingsHtmlUrl -OutPath (Join-Path $AssetsRoot 'app-settings.html')) { $ok++ }
+} else { Write-Host "Simplified App Settings: set STITCH_APP_SETTINGS_SCREENSHOT_URL and STITCH_APP_SETTINGS_HTML_URL." }
 if ($ok -eq 0) {
     Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
 }

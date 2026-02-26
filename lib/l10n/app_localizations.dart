@@ -505,6 +505,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out'**
   String get profileSignOut;
+
+  /// No description provided for @settingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsTitle;
+
+  /// No description provided for @settingsPersonalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get settingsPersonalInfo;
+
+  /// No description provided for @settingsSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get settingsSubscription;
+
+  /// No description provided for @settingsNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get settingsNotifications;
+
+  /// No description provided for @settingsLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get settingsLanguage;
+
+  /// No description provided for @settingsPersonalInfoTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal info'**
+  String get settingsPersonalInfoTitle;
+
+  /// No description provided for @settingsSubscriptionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription'**
+  String get settingsSubscriptionTitle;
+
+  /// No description provided for @subscriptionCurrentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Current plan'**
+  String get subscriptionCurrentPlan;
+
+  /// No description provided for @subscriptionPlanFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get subscriptionPlanFree;
+
+  /// No description provided for @subscriptionPlanPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get subscriptionPlanPro;
+
+  /// No description provided for @subscriptionUpgrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade'**
+  String get subscriptionUpgrade;
+
+  /// No description provided for @subscriptionManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get subscriptionManage;
+
+  /// No description provided for @settingsNotificationsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Receive push notifications'**
+  String get settingsNotificationsDescription;
+
+  /// No description provided for @settingsLanguageDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'App language'**
+  String get settingsLanguageDescription;
 }
 
 class _AppLocalizationsDelegate

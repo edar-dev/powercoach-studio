@@ -67,5 +67,19 @@
   "profileSavedMessage": "Profilo salvato.",
   "profileLoadError": "Impossibile caricare il profilo.",
   "profileSaveError": "Impossibile salvare il profilo.",
-  "profileSignOut": "Esci"
+  "profileSignOut": "Esci",
+  "settingsTitle": "Impostazioni",
+  "settingsPersonalInfo": "Informazioni personali",
+  "settingsSubscription": "Abbonamento",
+  "settingsNotifications": "Notifiche",
+  "settingsLanguage": "Lingua",
+  "settingsPersonalInfoTitle": "Informazioni personali",
+  "settingsSubscriptionTitle": "Abbonamento",
+  "subscriptionCurrentPlan": "Piano attuale",
+  "subscriptionPlanFree": "Gratuito",
+  "subscriptionPlanPro": "Pro",
+  "subscriptionUpgrade": "Passa a Pro",
+  "subscriptionManage": "Gestisci abbonamento",
+  "settingsNotificationsDescription": "Ricevi notifiche push",
+  "settingsLanguageDescription": "Lingua dell'app"
 }
