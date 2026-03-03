@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -54,11 +55,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.bg,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 1,
+        shadowColor: Colors.black26,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -69,11 +71,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
         title: Text(
           l10n.settingsTitle,
           style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary,
           ),
         ),
         centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: AppTheme.border, height: 1),
+        ),
       ),
       body: _loadingPrefs
           ? const Center(child: CircularProgressIndicator())
@@ -95,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsNotificationsDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                      color: AppTheme.textMuted,
                     ),
                   ),
                   value: _notificationsEnabled,
@@ -106,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsLanguageDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                      color: AppTheme.textMuted,
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -158,56 +159,19 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     if (_loading) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.customerEdit,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _editAppBar(context, theme, l10n.customerEdit),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.customerEdit,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _editAppBar(context, theme, l10n.customerEdit),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -217,7 +181,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
                 Text(
                   _loadError!,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.error,
+                    color: AppTheme.danger,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -234,26 +198,8 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.customerEdit,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      backgroundColor: AppTheme.bgSecondary,
+      appBar: _editAppBar(context, theme, l10n.customerEdit),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -360,6 +306,34 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _editAppBar(BuildContext context, ThemeData theme, String title) {
+    return AppBar(
+      backgroundColor: AppTheme.bg,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black26,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          context.pop();
+        },
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+      centerTitle: false,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: AppTheme.border, height: 1),
       ),
     );
   }

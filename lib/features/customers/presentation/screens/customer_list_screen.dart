@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../core/theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -80,33 +82,15 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     if (!GymBlogApiClient.isConfigured) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.customersTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _customerListAppBar(context, theme, l10n.customersTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Text(
               l10n.customersApiNotConfigured,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: AppTheme.textMuted,
               ),
               textAlign: TextAlign.center,
             ),
@@ -116,27 +100,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.customersTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      backgroundColor: AppTheme.bgSecondary,
+      appBar: _customerListAppBar(context, theme, l10n.customersTitle),
       body: RefreshIndicator(
         onRefresh: _load,
         child: _loading
@@ -285,6 +250,38 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           ),
         );
       },
+    );
+  }
+
+  PreferredSizeWidget _customerListAppBar(
+    BuildContext context,
+    ThemeData theme,
+    String title,
+  ) {
+    return AppBar(
+      backgroundColor: AppTheme.bg,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black26,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          context.pop();
+        },
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+      centerTitle: false,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: AppTheme.border, height: 1),
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -119,13 +120,14 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.bg,
         elevation: 0,
+        scrolledUnderElevation: 1,
+        shadowColor: Colors.black26,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -136,11 +138,15 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
         title: Text(
           l10n.customersNewCustomer,
           style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary,
           ),
         ),
         centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: AppTheme.border, height: 1),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -155,8 +161,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.customerName,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? l10n.customerNameRequired : null,
@@ -168,8 +172,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.customerEmail,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -179,8 +181,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.customerPhone,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -190,8 +190,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.customerHeight,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -201,8 +199,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.customerWeight,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -213,8 +209,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   decoration: InputDecoration(
                     labelText: l10n.customerNotes,
                     alignLabelWithHint: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -225,16 +219,17 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                   decoration: InputDecoration(
                     labelText: l10n.customerGoals,
                     alignLabelWithHint: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   style: FilledButton.styleFrom(
+                    backgroundColor: AppTheme.accent,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    minimumSize: const Size(0, 44),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusLg)),
                   ),
                   child: _saving
                       ? const SizedBox(

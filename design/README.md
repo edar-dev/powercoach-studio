@@ -28,6 +28,18 @@ La landing dell’app Flutter è allineata al prototipo **Google Stitch “Landi
 - **Screen ID:** `7a7f3b47bfa1435381554959ca9b72e7`
 - **Screen:** Customer List Page (Populated)  
 - **Screen ID:** `92b1ea1864184682b142aa8ffea211f8`
+- **Screen:** Coach Dashboard  
+- **Screen ID:** `285387f9d39c459a989d6060a1c486b0`
+- **Screen:** Coach Dashboard (alt)  
+- **Screen ID:** `bdda2a99124441a98b3ce224cb25a240`
+- **Screen:** Forgot Password  
+- **Screen ID:** `3563377ad3864dfca42385fcd5ea0840`
+- **Screen:** Forgot Password (alt)  
+- **Screen ID:** `ca0f426fda0344b1abcb477319f36080`
+- **Screen:** Workout Builder  
+- **Screen ID:** `3511e408240c40e293d5cbc768272806`
+- **Screen:** Programs Library  
+- **Screen ID:** `319b1461dde3426fb5798fef7fa1945d`
 
 ## Asset
 
@@ -45,6 +57,12 @@ Gli screenshot e l’HTML esportati da Stitch vanno in:
   - `customer-creation.png` / `customer-creation.html` – Customer Creation Page
   - `customer-detail.png` / `customer-detail.html` – Customer Detail Page
   - `customer-list-populated.png` / `customer-list-populated.html` – Customer List Page (Populated)
+  - `coach-dashboard.png` / `coach-dashboard.html` – Coach Dashboard
+  - `coach-dashboard-2.png` / `coach-dashboard-2.html` – Coach Dashboard (alt)
+  - `forgot-password.png` / `forgot-password.html` – Forgot Password
+  - `forgot-password-2.png` / `forgot-password-2.html` – Forgot Password (alt)
+  - `workout-builder.png` / `workout-builder.html` – Workout Builder
+  - `programs-library.png` / `programs-library.html` – Programs Library
 
 ## Come ottenere gli URL
 

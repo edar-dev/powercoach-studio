@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -68,11 +69,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.bg,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 1,
+        shadowColor: Colors.black26,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -83,11 +85,15 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         title: Text(
           l10n.settingsSubscriptionTitle,
           style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary,
           ),
         ),
         centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: AppTheme.border, height: 1),
+        ),
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

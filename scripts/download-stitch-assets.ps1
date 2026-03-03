@@ -62,6 +62,30 @@ $CustomerDetailHtmlUrl = $env:STITCH_CUSTOMER_DETAIL_HTML_URL
 $CustomerListPopulatedScreenshotUrl = $env:STITCH_CUSTOMER_LIST_POPULATED_SCREENSHOT_URL
 $CustomerListPopulatedHtmlUrl = $env:STITCH_CUSTOMER_LIST_POPULATED_HTML_URL
 
+# Coach Dashboard (screen ID 285387f9d39c459a989d6060a1c486b0)
+$CoachDashboardScreenshotUrl = $env:STITCH_COACH_DASHBOARD_SCREENSHOT_URL
+$CoachDashboardHtmlUrl = $env:STITCH_COACH_DASHBOARD_HTML_URL
+
+# Coach Dashboard alt (screen ID bdda2a99124441a98b3ce224cb25a240)
+$CoachDashboard2ScreenshotUrl = $env:STITCH_COACH_DASHBOARD_2_SCREENSHOT_URL
+$CoachDashboard2HtmlUrl = $env:STITCH_COACH_DASHBOARD_2_HTML_URL
+
+# Forgot Password (screen ID 3563377ad3864dfca42385fcd5ea0840)
+$ForgotPasswordScreenshotUrl = $env:STITCH_FORGOT_PASSWORD_SCREENSHOT_URL
+$ForgotPasswordHtmlUrl = $env:STITCH_FORGOT_PASSWORD_HTML_URL
+
+# Forgot Password alt (screen ID ca0f426fda0344b1abcb477319f36080)
+$ForgotPassword2ScreenshotUrl = $env:STITCH_FORGOT_PASSWORD_2_SCREENSHOT_URL
+$ForgotPassword2HtmlUrl = $env:STITCH_FORGOT_PASSWORD_2_HTML_URL
+
+# Workout Builder (screen ID 3511e408240c40e293d5cbc768272806)
+$WorkoutBuilderScreenshotUrl = $env:STITCH_WORKOUT_BUILDER_SCREENSHOT_URL
+$WorkoutBuilderHtmlUrl = $env:STITCH_WORKOUT_BUILDER_HTML_URL
+
+# Programs Library (screen ID 319b1461dde3426fb5798fef7fa1945d)
+$ProgramsLibraryScreenshotUrl = $env:STITCH_PROGRAMS_LIBRARY_SCREENSHOT_URL
+$ProgramsLibraryHtmlUrl = $env:STITCH_PROGRAMS_LIBRARY_HTML_URL
+
 function Download-File {
     param ([string]$Url, [string]$OutPath)
     if (-not $Url) { return $false }
@@ -131,6 +155,30 @@ if ($CustomerListPopulatedScreenshotUrl -and $CustomerListPopulatedHtmlUrl) {
     if (Download-File -Url $CustomerListPopulatedScreenshotUrl -OutPath (Join-Path $AssetsRoot 'customer-list-populated.png')) { $ok++ }
     if (Download-File -Url $CustomerListPopulatedHtmlUrl -OutPath (Join-Path $AssetsRoot 'customer-list-populated.html')) { $ok++ }
 } else { Write-Host "Customer List Populated: set STITCH_CUSTOMER_LIST_POPULATED_SCREENSHOT_URL and STITCH_CUSTOMER_LIST_POPULATED_HTML_URL." }
+if ($CoachDashboardScreenshotUrl -and $CoachDashboardHtmlUrl) {
+    if (Download-File -Url $CoachDashboardScreenshotUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard.png')) { $ok++ }
+    if (Download-File -Url $CoachDashboardHtmlUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard.html')) { $ok++ }
+} else { Write-Host "Coach Dashboard: set STITCH_COACH_DASHBOARD_SCREENSHOT_URL and STITCH_COACH_DASHBOARD_HTML_URL." }
+if ($CoachDashboard2ScreenshotUrl -and $CoachDashboard2HtmlUrl) {
+    if (Download-File -Url $CoachDashboard2ScreenshotUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard-2.png')) { $ok++ }
+    if (Download-File -Url $CoachDashboard2HtmlUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard-2.html')) { $ok++ }
+} else { Write-Host "Coach Dashboard 2: set STITCH_COACH_DASHBOARD_2_SCREENSHOT_URL and STITCH_COACH_DASHBOARD_2_HTML_URL." }
+if ($ForgotPasswordScreenshotUrl -and $ForgotPasswordHtmlUrl) {
+    if (Download-File -Url $ForgotPasswordScreenshotUrl -OutPath (Join-Path $AssetsRoot 'forgot-password.png')) { $ok++ }
+    if (Download-File -Url $ForgotPasswordHtmlUrl -OutPath (Join-Path $AssetsRoot 'forgot-password.html')) { $ok++ }
+} else { Write-Host "Forgot Password: set STITCH_FORGOT_PASSWORD_SCREENSHOT_URL and STITCH_FORGOT_PASSWORD_HTML_URL." }
+if ($ForgotPassword2ScreenshotUrl -and $ForgotPassword2HtmlUrl) {
+    if (Download-File -Url $ForgotPassword2ScreenshotUrl -OutPath (Join-Path $AssetsRoot 'forgot-password-2.png')) { $ok++ }
+    if (Download-File -Url $ForgotPassword2HtmlUrl -OutPath (Join-Path $AssetsRoot 'forgot-password-2.html')) { $ok++ }
+} else { Write-Host "Forgot Password 2: set STITCH_FORGOT_PASSWORD_2_SCREENSHOT_URL and STITCH_FORGOT_PASSWORD_2_HTML_URL." }
+if ($WorkoutBuilderScreenshotUrl -and $WorkoutBuilderHtmlUrl) {
+    if (Download-File -Url $WorkoutBuilderScreenshotUrl -OutPath (Join-Path $AssetsRoot 'workout-builder.png')) { $ok++ }
+    if (Download-File -Url $WorkoutBuilderHtmlUrl -OutPath (Join-Path $AssetsRoot 'workout-builder.html')) { $ok++ }
+} else { Write-Host "Workout Builder: set STITCH_WORKOUT_BUILDER_SCREENSHOT_URL and STITCH_WORKOUT_BUILDER_HTML_URL." }
+if ($ProgramsLibraryScreenshotUrl -and $ProgramsLibraryHtmlUrl) {
+    if (Download-File -Url $ProgramsLibraryScreenshotUrl -OutPath (Join-Path $AssetsRoot 'programs-library.png')) { $ok++ }
+    if (Download-File -Url $ProgramsLibraryHtmlUrl -OutPath (Join-Path $AssetsRoot 'programs-library.html')) { $ok++ }
+} else { Write-Host "Programs Library: set STITCH_PROGRAMS_LIBRARY_SCREENSHOT_URL and STITCH_PROGRAMS_LIBRARY_HTML_URL." }
 if ($ok -eq 0) {
     Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
 }

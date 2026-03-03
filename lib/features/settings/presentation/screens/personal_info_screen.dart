@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
@@ -137,52 +138,16 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.settingsPersonalInfoTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.settingsPersonalInfoTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -209,27 +174,8 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.settingsPersonalInfoTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      backgroundColor: AppTheme.bgSecondary,
+      appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -242,7 +188,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   Text(
                     l10n.profileLoadError,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.error,
+                      color: AppTheme.danger,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -250,46 +196,31 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 TextFormField(
                   controller: _displayNameController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileDisplayName,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
+                  decoration: InputDecoration(labelText: l10n.profileDisplayName),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _emailController,
                   readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileEmail,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
+                  decoration: InputDecoration(labelText: l10n.profileEmail),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: l10n.profilePhone,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
-                  ),
+                  decoration: InputDecoration(labelText: l10n.profilePhone),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _isSaving ? null : _save,
                   style: FilledButton.styleFrom(
+                    backgroundColor: AppTheme.accent,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(0, 44),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                   ),
                   child: _isSaving
@@ -304,6 +235,38 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _appBar(
+    BuildContext context,
+    ThemeData theme,
+    String title,
+  ) {
+    return AppBar(
+      backgroundColor: AppTheme.bg,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black26,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          context.pop();
+        },
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+      centerTitle: false,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: AppTheme.border, height: 1),
       ),
     );
   }

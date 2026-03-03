@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -39,24 +40,62 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final scaffoldBg = theme.scaffoldBackgroundColor;
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
 
     return Scaffold(
-      backgroundColor: scaffoldBg,
+      backgroundColor: AppTheme.bg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.bg,
         elevation: 0,
-        scrolledUnderElevation: 0,
-        title: Text(
-          l10n.appTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
+        scrolledUnderElevation: 2,
+        surfaceTintColor: Colors.transparent,
+        shadowColor: Colors.black26,
+        title: Row(
+          children: [
+            // Logo badge: gradient blue → purple "PCS" (design spec)
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppTheme.logoStart, AppTheme.logoEnd],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+              ),
+              alignment: Alignment.center,
+              child: const Text(
+                'PCS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                l10n.appTitle,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            ),
+          ],
         ),
         centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: AppTheme.border,
+            height: 1,
+          ),
+        ),
         actions: [
           if (isLoggedIn) ...[
             TextButton.icon(
@@ -169,7 +208,6 @@ class _LandingScreenState extends State<LandingScreen> {
                   context.push('/login');
                 }
               },
-              colorScheme: colorScheme,
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 48)),
@@ -203,11 +241,17 @@ class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
+    // Design spec: Hero background gradient from blue-50 to white
     return Container(
       width: double.infinity,
-      color: theme.scaffoldBackgroundColor,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppTheme.accentLight, AppTheme.bg],
+        ),
+      ),
       child: SafeArea(
         bottom: false,
         child: Padding(
@@ -215,16 +259,21 @@ class _HeroSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Chip: light background, dark text, icon = two arrows out (expansion)
+              // Chip: light background, dark text (design spec)
               Center(
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.6),
+                    color: AppTheme.bg,
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.8),
-                    ),
+                    border: Border.all(color: AppTheme.border),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.06),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -232,13 +281,13 @@ class _HeroSection extends StatelessWidget {
                       Icon(
                         Icons.open_in_new,
                         size: 16,
-                        color: colorScheme.onSurface,
+                        color: AppTheme.textPrimary,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         heroBadge,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: colorScheme.onSurface,
+                          color: AppTheme.textPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -247,12 +296,12 @@ class _HeroSection extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              // Title: "Power" dark, "Coach Studio" accent – left-aligned
+              // Title: design spec – text-4xl, bold, "Power" dark, "Coach Studio" accent
               Text(
                 titlePrefix,
                 style: theme.textTheme.displayMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: colorScheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.textPrimary,
                   letterSpacing: -0.5,
                   height: 1.1,
                 ),
@@ -260,8 +309,8 @@ class _HeroSection extends StatelessWidget {
               Text(
                 titleSuffix,
                 style: theme.textTheme.displayMedium?.copyWith(
-                  fontWeight: FontWeight.w900,
-                  color: colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                  color: AppTheme.accent,
                   letterSpacing: -0.5,
                   height: 1.1,
                 ),
@@ -270,21 +319,24 @@ class _HeroSection extends StatelessWidget {
               Text(
                 subtitle,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: AppTheme.textMuted,
                 ),
               ),
               const SizedBox(height: 32),
-              // CTAs centered
+              // CTAs: design spec – min-height 44px, rounded-xl
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FilledButton(
                     onPressed: onPrimary,
                     style: FilledButton.styleFrom(
+                      backgroundColor: AppTheme.accent,
+                      foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      minimumSize: const Size(44, 44),
                       textStyle: theme.textTheme.titleMedium,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                       ),
                     ),
                     child: Text(ctaPrimary),
@@ -293,10 +345,13 @@ class _HeroSection extends StatelessWidget {
                   OutlinedButton(
                     onPressed: onSecondary,
                     style: OutlinedButton.styleFrom(
+                      foregroundColor: AppTheme.accent,
+                      side: const BorderSide(color: AppTheme.border),
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      minimumSize: const Size(44, 44),
                       textStyle: theme.textTheme.titleMedium,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                       ),
                     ),
                     child: Text(ctaSecondary),
@@ -319,21 +374,20 @@ class _FeaturesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
+      decoration: const BoxDecoration(
+        color: AppTheme.bg,
       ),
       child: Column(
         children: [
           Text(
             l10n.landingFeaturesTitle.toUpperCase(),
             style: theme.textTheme.labelLarge?.copyWith(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
+              color: AppTheme.accent,
+              fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
           ),
@@ -341,7 +395,8 @@ class _FeaturesSection extends StatelessWidget {
           Text(
             l10n.landingFeaturesHeadline,
             style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -349,7 +404,7 @@ class _FeaturesSection extends StatelessWidget {
           Text(
             l10n.landingFeaturesDesc,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
+              color: AppTheme.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -363,19 +418,16 @@ class _FeaturesSection extends StatelessWidget {
                 icon: Icons.people_outline,
                 title: l10n.landingFeaturesCustomers,
                 subtitle: l10n.landingFeaturesEditor,
-                color: colorScheme.primaryContainer,
               ),
               _FeatureCard(
                 icon: Icons.analytics_outlined,
                 title: l10n.landingFeaturesClientData,
                 subtitle: l10n.landingFeaturesExport,
-                color: colorScheme.tertiaryContainer,
               ),
               _FeatureCard(
                 icon: Icons.picture_as_pdf_outlined,
                 title: l10n.landingFeaturesExport,
                 subtitle: l10n.landingFeaturesEditor,
-                color: colorScheme.secondaryContainer,
               ),
             ],
           ),
@@ -390,26 +442,31 @@ class _FeatureCard extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
   });
 
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
+    // Design spec: Cards white, rounded-xl, shadow-sm, border gray-200
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 280),
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: colorScheme.outlineVariant),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.bg,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          border: Border.all(color: AppTheme.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -421,23 +478,24 @@ class _FeatureCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: color,
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppTheme.accentLight,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                 ),
-                child: Icon(icon, size: 28, color: colorScheme.primary),
+                child: Icon(icon, size: 28, color: AppTheme.accent),
               ),
               const SizedBox(height: 16),
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                  color: AppTheme.textMuted,
                 ),
               ),
             ],
@@ -467,16 +525,16 @@ class _HowItWorksSection extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+      decoration: const BoxDecoration(
+        color: AppTheme.bgSecondary,
       ),
       child: Column(
         children: [
           Text(
             l10n.landingHowItWorksLabel.toUpperCase(),
             style: theme.textTheme.labelLarge?.copyWith(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.bold,
+              color: AppTheme.accent,
+              fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
           ),
@@ -484,7 +542,8 @@ class _HowItWorksSection extends StatelessWidget {
           Text(
             l10n.landingHowItWorksTitle,
             style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w900,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -562,7 +621,7 @@ class _StepItem extends StatelessWidget {
               step,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+                color: AppTheme.textMuted,
               ),
             ),
           ),
@@ -578,26 +637,32 @@ class _CtaSection extends StatelessWidget {
     required this.subtext,
     required this.buttonLabel,
     required this.onCta,
-    required this.colorScheme,
   });
 
   final String title;
   final String subtext;
   final String buttonLabel;
   final VoidCallback onCta;
-  final ColorScheme colorScheme;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Design spec: CTA full-width bg-blue-600, white text, CTA button
     return Padding(
       padding: const EdgeInsets.all(24),
-      child: Card(
-        elevation: 4,
-        color: colorScheme.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: AppTheme.accent,
+          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.accent.withValues(alpha: 0.3),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(32),
@@ -606,8 +671,8 @@ class _CtaSection extends StatelessWidget {
               Text(
                 title,
                 style: theme.textTheme.headlineSmall?.copyWith(
-                  color: colorScheme.onPrimary,
-                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -615,28 +680,27 @@ class _CtaSection extends StatelessWidget {
               Text(
                 subtext,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onPrimary.withValues(alpha: 0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 24),
-              FilledButton.tonal(
+              FilledButton(
                 onPressed: onCta,
                 style: FilledButton.styleFrom(
-                  backgroundColor: colorScheme.onPrimary,
-                  foregroundColor: colorScheme.primary,
+                  backgroundColor: Colors.white,
+                  foregroundColor: AppTheme.accent,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
+                  minimumSize: const Size(44, 44),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                   ),
+                  textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                child: Text(
-                  buttonLabel,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
+                child: Text(buttonLabel),
               ),
             ],
           ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -128,64 +129,28 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
 
     if (_loading) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.customersTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _detailAppBar(context, theme, l10n.customersTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_error != null || _customer == null) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.customersTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _detailAppBar(context, theme, l10n.customersTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                Icon(Icons.error_outline, size: 48, color: AppTheme.danger),
                 const SizedBox(height: 16),
                 Text(
                   _error ?? l10n.customersLoadError,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                    color: AppTheme.textMuted,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -204,11 +169,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
     final c = _customer!;
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
+      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppTheme.bg,
         elevation: 0,
-        scrolledUnderElevation: 0,
+        scrolledUnderElevation: 1,
+        shadowColor: Colors.black26,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -219,11 +185,15 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
         title: Text(
           c.name,
           style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            color: AppTheme.textPrimary,
           ),
         ),
         centerTitle: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: AppTheme.border, height: 1),
+        ),
         actions: [
           TextButton.icon(
             onPressed: () => context.push('/customers/${c.id}/edit'),
@@ -307,6 +277,34 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
     );
   }
 
+  PreferredSizeWidget _detailAppBar(BuildContext context, ThemeData theme, String title) {
+    return AppBar(
+      backgroundColor: AppTheme.bg,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black26,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          context.pop();
+        },
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+      centerTitle: false,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: AppTheme.border, height: 1),
+      ),
+    );
+  }
+
   Widget _detailRow(ThemeData theme, ColorScheme colorScheme, String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -316,7 +314,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
           child: Text(
             label,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: colorScheme.onSurfaceVariant,
+              color: AppTheme.textMuted,
             ),
           ),
         ),
@@ -324,7 +322,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
           child: Text(
             value,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurface,
+              color: AppTheme.textPrimary,
             ),
           ),
         ),

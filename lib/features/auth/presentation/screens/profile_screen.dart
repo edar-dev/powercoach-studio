@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
@@ -161,58 +162,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final user = Supabase.instance.client.auth.currentUser;
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.profileTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _profileAppBar(context, theme, l10n.profileTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              context.pop();
-            },
-          ),
-          title: Text(
-            l10n.profileTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
-            ),
-          ),
-          centerTitle: false,
-        ),
+        backgroundColor: AppTheme.bgSecondary,
+        appBar: _profileAppBar(context, theme, l10n.profileTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -222,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   l10n.profileLoadError,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+                    color: AppTheme.textMuted,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -239,27 +202,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.profileTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-      ),
+      backgroundColor: AppTheme.bgSecondary,
+      appBar: _profileAppBar(context, theme, l10n.profileTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -271,9 +215,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 if (_loadError != null) ...[
                   Text(
                     l10n.profileLoadError,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.error,
-                    ),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.danger,
+                  ),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -282,10 +226,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.profileDisplayName,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -294,10 +234,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   readOnly: true,
                   decoration: InputDecoration(
                     labelText: l10n.profileEmail,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -307,10 +243,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.profilePhone,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -321,10 +253,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: InputDecoration(
                     labelText: l10n.profileBio,
                     alignLabelWithHint: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -334,10 +262,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   textInputAction: TextInputAction.next,
                   decoration: InputDecoration(
                     labelText: l10n.profileAvatarUrl,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -347,19 +271,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   textInputAction: TextInputAction.done,
                   decoration: InputDecoration(
                     labelText: l10n.profileWebsite,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    filled: true,
                   ),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _isSaving ? null : _save,
                   style: FilledButton.styleFrom(
+                    backgroundColor: AppTheme.accent,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
+                    minimumSize: const Size(0, 44),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                   ),
                   child: _isSaving
@@ -376,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                   ),
                   icon: const Icon(Icons.people_outline),
@@ -388,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                   ),
                   icon: const Icon(Icons.settings_outlined),
@@ -400,7 +323,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
                     ),
                   ),
                   child: Text(l10n.profileSignOut),
@@ -409,6 +332,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  PreferredSizeWidget _profileAppBar(
+    BuildContext context,
+    ThemeData theme,
+    String title,
+  ) {
+    return AppBar(
+      backgroundColor: AppTheme.bg,
+      elevation: 0,
+      scrolledUnderElevation: 1,
+      shadowColor: Colors.black26,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          context.pop();
+        },
+      ),
+      title: Text(
+        title,
+        style: theme.textTheme.titleLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+      centerTitle: false,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(1),
+        child: Container(color: AppTheme.border, height: 1),
       ),
     );
   }

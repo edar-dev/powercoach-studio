@@ -4,13 +4,14 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'screens/home_screen.dart';
+import 'theme/stitch_m3_theme.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/registration_screen.dart';
 import 'features/customers/presentation/screens/customer_creation_screen.dart';
 import 'features/customers/presentation/screens/customer_detail_screen.dart';
 import 'features/customers/presentation/screens/customer_edit_screen.dart';
 import 'features/customers/presentation/screens/customer_list_screen.dart';
-import 'features/landing/presentation/screens/landing_screen.dart';
 import 'features/settings/presentation/screens/personal_info_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/settings/presentation/screens/subscription_screen.dart';
@@ -30,7 +31,7 @@ final _goRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const LandingScreen(),
+      builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
       path: '/register',
@@ -95,24 +96,8 @@ class PowerCoachStudioApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'PowerCoach Studio',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5B6EE8),
-          brightness: Brightness.light,
-        ).copyWith(
-          surface: const Color(0xFFF8F7FC),
-          surfaceContainerHighest: const Color(0xFFEBE9F2),
-        ),
-        scaffoldBackgroundColor: const Color(0xFFF8F7FC),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF5B6EE8),
-          brightness: Brightness.dark,
-        ).copyWith(surface: const Color(0xFF1C1B2E)),
-      ),
+      theme: StitchM3Theme.light,
+      darkTheme: StitchM3Theme.light,
       locale: const Locale('it'),
       supportedLocales: const [
         Locale('it'),
