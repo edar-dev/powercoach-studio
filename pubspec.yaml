@@ -53,6 +53,9 @@ dependencies:
   # HTTP client for GymBlog.API (customers, etc.)
   dio: ^5.7.0
 
+  # Contact picker for "Import from contacts" (customer prefill)
+  flutter_contacts: ^1.1.9
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

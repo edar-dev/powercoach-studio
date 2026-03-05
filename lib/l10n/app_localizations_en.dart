@@ -305,6 +305,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersImportContacts => 'Import from contacts';
 
   @override
+  String get customersImportContactsDenied =>
+      'Contacts permission is required to import.';
+
+  @override
   String get customersNewCustomer => 'New customer';
 
   @override

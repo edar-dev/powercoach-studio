@@ -170,6 +170,38 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
+  void _updateMobilityItem(String id, String title, String subtitle) {
+    setState(() {
+      _routine = _routine.copyWith(
+        mobilityItems: _routine.mobilityItems.map((e) => e.id == id ? e.copyWith(title: title, subtitle: subtitle) : e).toList(),
+      );
+    });
+  }
+
+  void _updateExercise(int weekIndex, int dayIndex, String exerciseId, {String? name, String? sets, String? reps, String? rpe, String? note}) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final week = _routine.weeks[weekIndex];
+    if (dayIndex < 0 || dayIndex >= week.days.length) return;
+    setState(() {
+      final day = week.days[dayIndex];
+      final newEx = day.exercises.map((e) {
+        if (e.id != exerciseId) return e;
+        return e.copyWith(
+          name: name ?? e.name,
+          sets: sets ?? e.sets,
+          reps: reps ?? e.reps,
+          rpe: rpe ?? e.rpe,
+          note: note ?? e.note,
+        );
+      }).toList();
+      final newDays = List<Day>.from(week.days);
+      newDays[dayIndex] = day.copyWith(exercises: newEx);
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
+  }
+
   bool get _showMobilityContent => widget.variant == WorkoutBuilderVariant.mobility && _mobilityExpanded;
   _TrainingVariant get _trainingVariant {
     switch (widget.variant) {
@@ -337,6 +369,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                                   index: index,
                                   title: item.title,
                                   subtitle: item.subtitle,
+                                  onEdit: (t, s) => _updateMobilityItem(item.id, t, s),
                                   onDelete: () => _removeMobilityItem(item.id),
                                 ),
                               );
@@ -370,6 +403,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                     onAddDay: _addDayToWeek,
                     onAddExercise: _addExerciseToDay,
                     onRemoveExercise: _removeExercise,
+                    onUpdateExercise: _updateExercise,
                     onSelectWeek: (i) => setState(() => _selectedWeekIndex = i),
                     onSelectDay: (i) => setState(() => _selectedDayIndex = i),
                     variant: _trainingVariant,
@@ -435,12 +469,14 @@ class _MobilityItem extends StatelessWidget {
     required this.index,
     required this.title,
     required this.subtitle,
+    this.onEdit,
     this.onDelete,
   });
 
   final int index;
   final String title;
   final String subtitle;
+  final void Function(String title, String subtitle)? onEdit;
   final VoidCallback? onDelete;
 
   @override
@@ -471,8 +507,12 @@ class _MobilityItem extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
-          const SizedBox(width: 8),
+          if (onEdit != null)
+            InkWell(
+              onTap: () => _showEditMobilityDialog(context, theme, cs, title, subtitle, onEdit!),
+              child: Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+            ),
+          if (onEdit != null) const SizedBox(width: 8),
           InkWell(
             onTap: onDelete,
             child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
@@ -481,6 +521,106 @@ class _MobilityItem extends StatelessWidget {
       ),
     );
   }
+}
+
+void _showEditMobilityDialog(
+  BuildContext context,
+  ThemeData theme,
+  ColorScheme cs,
+  String initialTitle,
+  String initialSubtitle,
+  void Function(String title, String subtitle) onSave,
+) {
+  final titleController = TextEditingController(text: initialTitle);
+  final subtitleController = TextEditingController(text: initialSubtitle);
+  showDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text('Edit mobility exercise', style: theme.textTheme.titleMedium),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: titleController,
+            decoration: const InputDecoration(labelText: 'Title'),
+            autofocus: true,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: subtitleController,
+            decoration: const InputDecoration(labelText: 'Subtitle'),
+            maxLines: 2,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
+        FilledButton(
+          onPressed: () {
+            onSave(titleController.text.trim(), subtitleController.text.trim());
+            Navigator.of(ctx).pop();
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
+}
+
+void _showEditExerciseDialog(
+  BuildContext context,
+  ThemeData theme,
+  ColorScheme cs,
+  String initialName,
+  String initialSets,
+  String initialReps,
+  String initialRpe,
+  String initialNote,
+  void Function(String name, String sets, String reps, String rpe, String note) onSave,
+) {
+  final nameController = TextEditingController(text: initialName);
+  final setsController = TextEditingController(text: initialSets);
+  final repsController = TextEditingController(text: initialReps);
+  final rpeController = TextEditingController(text: initialRpe);
+  final noteController = TextEditingController(text: initialNote);
+  showDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text('Edit exercise', style: theme.textTheme.titleMedium),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Name'), autofocus: true),
+            const SizedBox(height: 12),
+            TextField(controller: setsController, decoration: const InputDecoration(labelText: 'Sets'), keyboardType: TextInputType.number),
+            const SizedBox(height: 12),
+            TextField(controller: repsController, decoration: const InputDecoration(labelText: 'Reps')),
+            const SizedBox(height: 12),
+            TextField(controller: rpeController, decoration: const InputDecoration(labelText: 'RPE / Load')),
+            const SizedBox(height: 12),
+            TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
+        FilledButton(
+          onPressed: () {
+            onSave(
+              nameController.text.trim(),
+              setsController.text.trim(),
+              repsController.text.trim(),
+              rpeController.text.trim(),
+              noteController.text.trim(),
+            );
+            Navigator.of(ctx).pop();
+          },
+          child: const Text('Save'),
+        ),
+      ],
+    ),
+  );
 }
 
 class _DashedButton extends StatelessWidget {
@@ -526,6 +666,7 @@ class _TrainingSection extends StatelessWidget {
     required this.onAddDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onUpdateExercise,
     required this.onSelectWeek,
     required this.onSelectDay,
     required this.variant,
@@ -545,6 +686,7 @@ class _TrainingSection extends StatelessWidget {
   final void Function(int) onAddDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note}) onUpdateExercise;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
   final _TrainingVariant variant;
@@ -609,6 +751,7 @@ class _TrainingSection extends StatelessWidget {
                     onAddDay: () => onAddDay(e.key),
                     onAddExercise: onAddExercise,
                     onRemoveExercise: onRemoveExercise,
+                    onUpdateExercise: onUpdateExercise,
                     theme: theme,
                     cs: cs,
                   )),
@@ -624,6 +767,7 @@ class _TrainingSection extends StatelessWidget {
                 onSelectDay: onSelectDay,
                 onAddExercise: onAddExercise,
                 onRemoveExercise: onRemoveExercise,
+                onUpdateExercise: onUpdateExercise,
                 onAddDay: onAddDay,
               ),
             if (variant == _TrainingVariant.superset)
@@ -638,6 +782,7 @@ class _TrainingSection extends StatelessWidget {
                 onSelectDay: onSelectDay,
                 onAddExercise: onAddExercise,
                 onRemoveExercise: onRemoveExercise,
+                onUpdateExercise: onUpdateExercise,
                 onAddDay: onAddDay,
               ),
           ],
@@ -658,6 +803,7 @@ class _WeekAccordion extends StatelessWidget {
     required this.onAddDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onUpdateExercise,
     required this.theme,
     required this.cs,
   });
@@ -670,6 +816,7 @@ class _WeekAccordion extends StatelessWidget {
   final VoidCallback onAddDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note}) onUpdateExercise;
   final ThemeData theme;
   final ColorScheme cs;
 
@@ -744,10 +891,12 @@ class _WeekAccordion extends StatelessWidget {
                           sets: ex.sets,
                           reps: ex.reps,
                           rpe: ex.rpe,
+                          note: ex.note,
                           compact: true,
                           showAddExercise: isLast,
                           onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
                           onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                          onEdit: (name, sets, reps, rpe, note) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note),
                         ),
                       );
                     }),
@@ -782,6 +931,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
     required this.onSelectDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onUpdateExercise,
     required this.onAddDay,
   });
 
@@ -795,6 +945,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
   final void Function(int) onSelectDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note}) onUpdateExercise;
   final void Function(int) onAddDay;
 
   @override
@@ -860,6 +1011,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
               exercises: day.exercises,
               onAddExercise: () => onAddExercise(weekIndex, dayIndex),
               onRemoveExercise: onRemoveExercise,
+              onUpdateExercise: onUpdateExercise,
             )
           else ...[
             ...day.exercises.asMap().entries.map((exEntry) {
@@ -874,10 +1026,12 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                   sets: ex.sets,
                   reps: ex.reps,
                   rpe: ex.rpe,
+                  note: ex.note,
                   compact: false,
                   showAddExercise: isLast,
                   onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
                   onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                  onEdit: (name, sets, reps, rpe, note) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note),
                 ),
               );
             }),
@@ -1006,6 +1160,7 @@ class _SuperSetBlock extends StatelessWidget {
     required this.exercises,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onUpdateExercise,
   });
 
   final ThemeData theme;
@@ -1015,6 +1170,7 @@ class _SuperSetBlock extends StatelessWidget {
   final List<Exercise> exercises;
   final VoidCallback onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note}) onUpdateExercise;
 
   @override
   Widget build(BuildContext context) {
@@ -1051,9 +1207,11 @@ class _SuperSetBlock extends StatelessWidget {
               sets: ex.sets,
               reps: ex.reps,
               rpe: ex.rpe,
+              note: ex.note,
               compact: false,
               linked: true,
               onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+              onEdit: (name, sets, reps, rpe, note) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note),
             ),
           )),
           const SizedBox(height: 8),
@@ -1073,10 +1231,12 @@ class _ExerciseCard extends StatelessWidget {
     required this.reps,
     required this.rpe,
     required this.compact,
+    this.note = '',
     this.showAddExercise = false,
     this.linked = false,
     this.onAddExercise,
     this.onRemove,
+    this.onEdit,
   });
 
   final ThemeData theme;
@@ -1086,10 +1246,12 @@ class _ExerciseCard extends StatelessWidget {
   final String reps;
   final String rpe;
   final bool compact;
+  final String note;
   final bool showAddExercise;
   final bool linked;
   final VoidCallback? onAddExercise;
   final VoidCallback? onRemove;
+  final void Function(String name, String sets, String reps, String rpe, String note)? onEdit;
 
   @override
   Widget build(BuildContext context) {
@@ -1113,6 +1275,12 @@ class _ExerciseCard extends StatelessWidget {
               ),
               if (linked) Icon(Icons.link_off, size: 20, color: StitchM3Theme.accent),
               if (linked) const SizedBox(width: 8),
+              if (onEdit != null)
+                InkWell(
+                  onTap: () => _showEditExerciseDialog(context, theme, cs, name, sets, reps, rpe, note, onEdit!),
+                  child: Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+                ),
+              if (onEdit != null) const SizedBox(width: 8),
               if (onRemove != null)
                 InkWell(
                   onTap: onRemove,

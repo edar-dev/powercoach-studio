@@ -12,7 +12,7 @@ class CacheInterceptor extends Interceptor {
     this.pathTtl,
   });
 
-  final ApiCache cache;
+  final IApiCache cache;
   final bool cacheGet;
 
   /// Optional TTL per path. Return null to use cache default. Example: (path) => path.contains('/list') ? Duration(minutes: 2) : null.

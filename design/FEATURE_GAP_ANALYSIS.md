@@ -29,7 +29,7 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 
 | Feature | Dettaglio | Stato |
 |--------|-----------|--------|
-| **Import from contacts** | Pulsante nella lista clienti (stato vuoto). | **Placeholder.** `onPressed` con commento "Import from contacts - not implemented". Richiederebbe integrazione con contacts (es. platform channel / plugin). |
+| **Import from contacts** | Pulsante nella lista clienti (stato vuoto). | **Implementato.** `flutter_contacts`: richiesta permesso, `openExternalPick()`, nome e telefono prefilled in Customer Creation via query params (`/customers/new?name=...&phone=...`). Permessi: Android `READ_CONTACTS`, iOS `NSContactsUsageDescription`. |
 | **View All (Recent Workouts)** | Link "View All" nella sezione Recent Workouts del Customer Detail. | **Implementato.** Route `/customers/:id/workouts` → `CustomerWorkoutsScreen`; lista placeholder (stessi dati mock); link da Customer Detail. |
 | **Recent Workouts** | Due card esempio ("Heavy Upper Body A", "Leg Day Focus") nel Customer Detail. | **Dati fissi.** Nessuna chiamata API o modello; dati hardcoded. |
 | **Progress Overview** | Grafico a barre (Mon–Sun) nel Customer Detail. | **Placeholder.** Altezze barre e label fissi; nessun dato da backend. |
@@ -44,7 +44,7 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 |--------|-----------|--------|
 | **Save routine** | Pulsante "Save" in AppBar. | **Implementato.** Salvataggio in SharedPreferences (`WorkoutRoutineStorage.save`); SnackBar di conferma. |
 | **Add / Add Exercise / Add Set** | Pulsanti "Add", "Add Exercise", "New Week", "Add Day to Week N". | **Implementato.** Modello `WorkoutRoutine` (mobility, weeks, days, exercises); Add mobility, New Week, Add Day, Add Exercise aggiornano lo stato. |
-| **Edit / Delete** | Edit/Delete su tab mobility, week, day, esercizi. | **Implementato.** Delete su mobility item ed esercizi (icona delete); Edit solo UI (logica modifica testuale in backlog). |
+| **Edit / Delete** | Edit/Delete su tab mobility, week, day, esercizi. | **Implementato.** Delete su mobility item ed esercizi (icona delete); Edit testuale: dialog per mobility (title, subtitle) e per esercizi (name, sets, reps, rpe, note); salvataggio nello stato e al Save. |
 | **Clone week** | Pulsante "Clone" nella week accordion. | **Implementato.** Duplica la settimana con nuovi id e giorni/esercizi. |
 | **Drag & drop** | Icone `drag_indicator` su mobility. | **Implementato.** `ReorderableListView` per mobility items con `ReorderableDragStartListener`; reorder persistito al Save. |
 | **API workout/routine** | Nessun endpoint chiamato per routine o workout. | **Assente.** Persistenza solo locale (SharedPreferences); GymBlogApiClient da integrare quando l’API sarà disponibile. |
@@ -89,9 +89,9 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 | **Cache client-side** | Cache in-memory per GET (GymBlog API). | **Implementato.** `ApiCache` + `CacheInterceptor`; TTL 5 min, max 100 entry, invalidazione per prefisso su POST/PUT/DELETE; `GymBlogApiClient.clearCache()` al logout (Profile, Settings). |
 | **Retry automatico (Polly-like)** | Retry su errori transitori. | **Implementato.** `RetryPolicy` + `RetryInterceptor`; max 3 retry, exponential backoff + jitter; retry su timeout, connection error, 408, 429, 5xx. File: `retry_policy.dart`, `retry_interceptor.dart`. |
 | **Skip cache per richiesta** | Opzione per bypassare la cache (es. pull-to-refresh "forza reload"). | **Implementato.** `options.extra['skip_cache'] = true` in `CacheInterceptor`; `GymBlogApiClient.getList(path, skipCache: true)` e `get(path, skipCache: true)`. Pull-to-refresh e pulsante Retry nella lista clienti usano `skipCache: true`. |
-| **Cache persistente** | Persistere cache su disco (SharedPreferences o file) per sopravvivere al kill dell’app. | **Mancante.** Solo in-memory; per offline-first andrebbe esteso con storage e policy di scadenza. |
+| **Cache persistente** | Persistere cache su disco (SharedPreferences o file) per sopravvivere al kill dell’app. | **Implementato.** `PersistentApiCache` (wrapper su `ApiCache`): persiste chiavi `/api/customers*` in SharedPreferences; `PersistentApiCache.restore(apiCache)` in `main()` all'avvio; max 30 chiavi; invalidazione e clear sincronizzati. |
 | **TTL per endpoint** | TTL diverso per path (es. lista clienti 2 min, dettaglio 5 min). | **Implementato.** `CacheInterceptor.pathTtl`: callback `Duration? Function(String path)?`; nel client lista `/api/customers` usa 2 min, resto default 5 min. |
-| **Metriche / logging retry** | Log o metriche su numero di retry e fallimenti. | **Mancante.** Utile per Sentry/debug; si può loggare in `RetryInterceptor` o esporre callback. |
+| **Metriche / logging retry** | Log o metriche su numero di retry e fallimenti. | **Implementato.** `RetryInterceptor.onRetry` callback; in debug `debugPrint` con attempt/path/delay; in client `onRetry` invia breadcrumb a Sentry (`Sentry.addBreadcrumb` con category `http.retry`). |
 
 ---
 
@@ -103,12 +103,11 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 2. **Media (completate)**  
    - ~~Customer Detail – View All~~ · ~~Dashboard – See All + tap sessione~~ · ~~Skip cache / TTL per endpoint~~.
 
-3. **Bassa / Backlog**  
-   - Import from contacts (dipende da plugin/permessi).  
-   - Dati reali per Recent Workouts, Progress Overview, statistiche (dipende da API).  
-   - Edit testuale nel Workout Builder (nome mobility item, nome esercizio, sets/reps).  
-   - Cache persistente e offline-first (storage + policy).  
-   - Metriche/logging retry per Sentry o debug.
+3. **Bassa / Backlog (completate)**  
+   - ~~Import from contacts~~ · ~~Edit testuale Workout Builder~~ · ~~Cache persistente~~ · ~~Metriche/logging retry~~.
+
+4. **Rimasto in backlog**  
+   - Dati reali per Recent Workouts, Progress Overview, statistiche (dipende da API backend).
 
 ---
 
@@ -118,5 +117,6 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 - **Dashboard:** `coach_dashboard_screen.dart`, `schedule_screen.dart`, `schedule_detail_screen.dart`; route `/dashboard`, `/dashboard/schedule`, `/dashboard/schedule/detail` in `lib/app.dart`.
 - **Customer workouts (View All):** `customer_workouts_screen.dart`; route `/customers/:id/workouts`; link in `customer_detail_screen.dart`.
 - **Workout Builder:** `workout_builder_mobility_screen.dart` (varianti mobility, multiset, superset, intuitiveSuperset); `workout_routine_model.dart`, `workout_routine_storage.dart`; route `/workouts/builder`, `/workouts/builder/intuitive-superset`.
-- **Rete:** `lib/core/network/gymblog_api_client.dart` (Dio + cache + retry); `api_cache.dart`, `cache_interceptor.dart`, `retry_policy.dart`, `retry_interceptor.dart`.
+- **Rete:** `lib/core/network/gymblog_api_client.dart` (Dio + cache + retry); `api_cache.dart`, `cache_interceptor.dart`, `persistent_api_cache.dart` (restore in `main.dart`), `retry_policy.dart`, `retry_interceptor.dart` (onRetry + Sentry breadcrumb).
+- **Import from contacts:** `customer_list_screen.dart` (`_importFromContacts`, `FlutterContacts.requestPermission` + `openExternalPick`); `customer_creation_screen.dart` (prefill da `GoRouterState.uri.queryParameters`: `name`, `phone`); permessi in `AndroidManifest.xml` e `ios/Runner/Info.plist`.
 - **Customer Detail – Assign Workout:** `context.push('/workouts/builder?customerId=${c.id}')` in `customer_detail_screen.dart`.

@@ -1,14 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'api_cache.dart';
 import 'cache_interceptor.dart';
+import 'persistent_api_cache.dart';
 import 'retry_interceptor.dart';
 import 'retry_policy.dart';
 
 /// HTTP client for GymBlog.API. Uses Supabase session token for auth.
-/// Includes client-side cache (GET) and Polly-style retry for transient failures.
+/// Includes client-side cache (GET), persistent cache for offline, and Polly-style retry.
 /// Requires GYMBLOG_API_URL in .env (no-op / "not configured" if missing).
 class GymBlogApiClient {
   GymBlogApiClient() : _dio = _createDio();
@@ -26,6 +28,13 @@ class GymBlogApiClient {
     maxEntries: 100,
   );
 
+  /// Persistent layer: customers list/detail are saved to SharedPreferences for offline use.
+  static final PersistentApiCache persistentCache = PersistentApiCache(
+    inner: apiCache,
+    persistKeyPrefix: '/api/customers',
+    maxPersistedKeys: 30,
+  );
+
   final Dio _dio;
 
   static Dio _createDio() {
@@ -39,7 +48,7 @@ class GymBlogApiClient {
       ),
     );
     dio.interceptors.add(CacheInterceptor(
-      cache: apiCache,
+      cache: persistentCache,
       pathTtl: (path) {
         if (path.contains('/api/customers') && !RegExp(r'/api/customers/[\w-]+$').hasMatch(path)) {
           return const Duration(minutes: 2);
@@ -68,13 +77,26 @@ class GymBlogApiClient {
         useExponentialBackoff: true,
         jitter: true,
       ),
+      onRetry: (err, attempt, delay) {
+        Sentry.addBreadcrumb(Breadcrumb(
+          message: 'API retry',
+          category: 'http.retry',
+          data: <String, dynamic>{
+            'path': err.requestOptions.path,
+            'method': err.requestOptions.method,
+            'attempt': attempt + 1,
+            'delay_ms': delay.inMilliseconds,
+            'error_type': err.type.toString(),
+          },
+        ));
+      },
     ));
     return dio;
   }
 
-  /// Clears the shared API cache (e.g. after logout or manual refresh).
+  /// Clears the shared API cache and persisted cache (e.g. after logout or manual refresh).
   static void clearCache() {
-    apiCache.clear();
+    persistentCache.clear();
   }
 
   void _ensureConfigured() {

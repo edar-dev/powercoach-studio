@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-
-import '../../../../theme/stitch_m3_theme.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
 
@@ -30,6 +30,34 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   void initState() {
     super.initState();
     _load();
+  }
+
+  Future<void> _importFromContacts() async {
+    final granted = await FlutterContacts.requestPermission();
+    if (!granted) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).customersImportContactsDenied),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    final contact = await FlutterContacts.openExternalPick();
+    if (!mounted || contact == null) return;
+    final name = contact.displayName.isNotEmpty
+        ? contact.displayName
+        : '${contact.name.first} ${contact.name.last}'.trim();
+    final phone = contact.phones.isNotEmpty ? contact.phones.first.number : '';
+    final uri = Uri(
+      path: '/customers/new',
+      queryParameters: <String, String>{
+        if (name.isNotEmpty) 'name': name,
+        if (phone.isNotEmpty) 'phone': phone,
+      },
+    );
+    context.push(uri.toString());
   }
 
   Future<void> _load({bool skipCache = false}) async {
@@ -252,7 +280,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 ),
                 const SizedBox(height: 32),
                 OutlinedButton(
-                  onPressed: () { /* Import from contacts - not implemented */ },
+                  onPressed: _importFromContacts,
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(

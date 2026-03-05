@@ -45,5 +45,7 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSContactsUsageDescription</key>
+	<string>PowerCoach Studio uses contacts to prefill name and phone when adding a new client.</string>
 </dict>
 </plist>

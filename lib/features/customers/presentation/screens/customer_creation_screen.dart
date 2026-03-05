@@ -27,6 +27,21 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
   bool _saving = false;
+  bool _prefillApplied = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_prefillApplied) return;
+    _prefillApplied = true;
+    final q = GoRouterState.of(context).uri.queryParameters;
+    if (q['name'] != null && q['name']!.isNotEmpty) {
+      _nameController.text = q['name']!;
+    }
+    if (q['phone'] != null && q['phone']!.isNotEmpty) {
+      _phoneController.text = q['phone']!;
+    }
+  }
 
   @override
   void dispose() {

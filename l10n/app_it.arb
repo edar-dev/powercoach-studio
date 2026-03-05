@@ -95,6 +95,7 @@
   "customersAddCustomer": "Aggiungi cliente",
   "customersAddFirstClient": "Aggiungi il tuo primo cliente",
   "customersImportContacts": "Importa dai contatti",
+  "customersImportContactsDenied": "È necessario il permesso contatti per importare.",
   "customersNewCustomer": "Nuovo cliente",
   "customerName": "Nome",
   "customerNameRequired": "Il nome è obbligatorio",

@@ -303,6 +303,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customersImportContacts => 'Importa dai contatti';
 
   @override
+  String get customersImportContactsDenied =>
+      'È necessario il permesso contatti per importare.';
+
+  @override
   String get customersNewCustomer => 'Nuovo cliente';
 
   @override

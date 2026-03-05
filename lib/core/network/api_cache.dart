@@ -1,5 +1,12 @@
+/// Interface for API response cache (in-memory or persistent).
+abstract class IApiCache {
+  dynamic get(String key);
+  void set(String key, dynamic data, {Duration? ttl});
+  void invalidatePrefix(String prefix);
+}
+
 /// In-memory cache for API GET responses with TTL and prefix invalidation.
-class ApiCache {
+class ApiCache implements IApiCache {
   ApiCache({
     this.defaultTtl = const Duration(minutes: 5),
     this.maxEntries = 100,
@@ -11,6 +18,7 @@ class ApiCache {
   final Map<String, _Entry> _store = {};
 
   /// Returns cached data if present and not expired; otherwise null.
+  @override
   dynamic get(String key) {
     final entry = _store[key];
     if (entry == null) {
@@ -23,6 +31,7 @@ class ApiCache {
     return entry.data;
   }
 
+  @override
   void set(String key, dynamic data, {Duration? ttl}) {
     if (_store.length >= maxEntries && !_store.containsKey(key)) {
       _evictOldest();
@@ -36,6 +45,7 @@ class ApiCache {
   }
 
   /// Removes all entries whose key starts with [prefix] (e.g. "/api/customers").
+  @override
   void invalidatePrefix(String prefix) {
     final toRemove = _store.keys.where((k) => k.startsWith(prefix)).toList();
     for (final k in toRemove) {

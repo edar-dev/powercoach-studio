@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:powercoach_studio/core/network/gymblog_api_client.dart';
+import 'package:powercoach_studio/core/network/persistent_api_cache.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -42,6 +44,8 @@ Future<void> main() async {
           anonKey: supabaseAnonKey,
         );
       }
+
+      await PersistentApiCache.restore(GymBlogApiClient.apiCache);
 
       runApp(SentryWidget(child: const PowerCoachStudioApp()));
     },

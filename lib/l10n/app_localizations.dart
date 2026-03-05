@@ -668,6 +668,12 @@ abstract class AppLocalizations {
   /// **'Import from contacts'**
   String get customersImportContacts;
 
+  /// No description provided for @customersImportContactsDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Contacts permission is required to import.'**
+  String get customersImportContactsDenied;
+
   /// No description provided for @customersNewCustomer.
   ///
   /// In en, this message translates to:
