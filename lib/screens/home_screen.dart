@@ -7,15 +7,22 @@ import '../widgets/stitch_app_bar.dart';
 import '../widgets/stitch_card.dart';
 
 /// Simplified Startup Landing Page – Stitch ID 0b414c91bc8d406ea47ac2570d7b51df.
-/// Layout, colori HEX, typography, spacing da spec. Solo Material widgets.
+/// Pixel-perfect: layout, colori HEX, typography (fontSize/weight), spacing (16/24), radius 12,
+/// elevation/shadows (card shadow-sm blur 10 offset 0,2; chip shadow blur 4 offset 0,1).
+/// Responsive: MediaQuery width < 600 → padding 24, else 32. Solo Material widgets.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
+  static const double _breakpoint = 600;
+  static const double _paddingMobile = 24;
+  static const double _paddingDesktop = 32;
+  static const double _radiusLg = 12;
+
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.of(context);
-    final isNarrow = mq.size.width < 600;
-    final padding = isNarrow ? 24.0 : 32.0;
+    final width = MediaQuery.sizeOf(context).width;
+    final isNarrow = width < _breakpoint;
+    final padding = isNarrow ? _paddingMobile : _paddingDesktop;
 
     return Scaffold(
       backgroundColor: StitchM3Theme.bg,
@@ -37,6 +44,12 @@ class HomeScreen extends StatelessWidget {
                 HapticFeedback.mediumImpact();
                 context.push('/register');
               },
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(44, 44),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(_radiusLg),
+                ),
+              ),
               child: const Text('Join now'),
             ),
           ),
@@ -88,6 +101,13 @@ class _HeroSection extends StatelessWidget {
                       color: StitchM3Theme.bg,
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(color: StitchM3Theme.border),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.06),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -140,6 +160,13 @@ class _HeroSection extends StatelessWidget {
                         HapticFeedback.mediumImpact();
                         context.push('/register');
                       },
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(44, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                        ),
+                      ),
                       child: const Text('Inizia ora'),
                     ),
                     const SizedBox(width: 16),
@@ -148,6 +175,13 @@ class _HeroSection extends StatelessWidget {
                         HapticFeedback.mediumImpact();
                         // scroll to features
                       },
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(44, 44),
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                        ),
+                      ),
                       child: const Text('Scopri di più'),
                     ),
                   ],
@@ -394,10 +428,10 @@ class _CtaSection extends StatelessWidget {
         padding: EdgeInsets.all(padding),
         child: Container(
           width: double.infinity,
-          padding: StitchM3Theme.padding24,
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             color: StitchM3Theme.accent,
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
                 color: StitchM3Theme.accent.withValues(alpha: 0.3),
@@ -434,6 +468,10 @@ class _CtaSection extends StatelessWidget {
                   backgroundColor: Colors.white,
                   foregroundColor: StitchM3Theme.accent,
                   minimumSize: const Size(44, 44),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                  ),
                 ),
                 child: const Text('Accedi'),
               ),

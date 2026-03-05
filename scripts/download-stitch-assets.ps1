@@ -18,6 +18,22 @@ foreach ($d in @($DesignRoot, $AssetsRoot)) {
     if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
 }
 
+# Load URLs from design/stitch-urls.json if present (per confronto con prototipo Stitch)
+$urlsFile = Join-Path $DesignRoot 'stitch-urls.json'
+if (Test-Path $urlsFile) {
+    try {
+        $urls = Get-Content $urlsFile -Raw -Encoding UTF8 | ConvertFrom-Json
+        $urls.PSObject.Properties | ForEach-Object {
+            if ($_.Value -and [string]::IsNullOrWhiteSpace($_.Value) -eq $false) {
+                Set-Item -Path "env:$($_.Name)" -Value $_.Value.Trim()
+            }
+        }
+        Write-Host "Loaded URLs from stitch-urls.json"
+    } catch {
+        Write-Warning "Could not load stitch-urls.json: $_"
+    }
+}
+
 # Simplified Startup Landing Page (screen ID 0b414c91bc8d406ea47ac2570d7b51df)
 $LandingScreenshotUrl = $env:STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL
 $LandingHtmlUrl = $env:STITCH_SIMPLIFIED_LANDING_HTML_URL

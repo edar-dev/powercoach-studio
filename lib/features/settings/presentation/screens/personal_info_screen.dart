@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
@@ -138,7 +138,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -146,7 +146,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
         body: Center(
           child: Padding(
@@ -174,7 +174,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -188,7 +188,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   Text(
                     l10n.profileLoadError,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.danger,
+                      color: StitchM3Theme.danger,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -215,12 +215,12 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                 FilledButton(
                   onPressed: _isSaving ? null : _save,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppTheme.accent,
+                    backgroundColor: StitchM3Theme.accent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(0, 44),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     ),
                   ),
                   child: _isSaving
@@ -245,7 +245,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     String title,
   ) {
     return AppBar(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: StitchM3Theme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
       shadowColor: Colors.black26,
@@ -260,13 +260,13 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: AppTheme.textPrimary,
+          color: StitchM3Theme.textPrimary,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: AppTheme.border, height: 1),
+        child: Container(color: StitchM3Theme.border, height: 1),
       ),
     );
   }

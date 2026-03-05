@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -55,9 +55,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
+        backgroundColor: StitchM3Theme.bg,
         elevation: 0,
         scrolledUnderElevation: 1,
         shadowColor: Colors.black26,
@@ -72,19 +72,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
           l10n.settingsTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            color: StitchM3Theme.textPrimary,
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppTheme.border, height: 1),
+          child: Container(color: StitchM3Theme.border, height: 1),
         ),
       ),
       body: _loadingPrefs
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               children: [
                 ListTile(
                   title: Text(l10n.settingsPersonalInfo),
@@ -101,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsNotificationsDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textMuted,
+                      color: StitchM3Theme.textMuted,
                     ),
                   ),
                   value: _notificationsEnabled,
@@ -112,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsLanguageDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: AppTheme.textMuted,
+                      color: StitchM3Theme.textMuted,
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right),

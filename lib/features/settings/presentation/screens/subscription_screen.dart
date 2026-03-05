@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -66,12 +66,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
+        backgroundColor: StitchM3Theme.bg,
         elevation: 0,
         scrolledUnderElevation: 1,
         shadowColor: Colors.black26,
@@ -86,13 +85,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
           l10n.settingsSubscriptionTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            color: StitchM3Theme.textPrimary,
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppTheme.border, height: 1),
+          child: Container(color: StitchM3Theme.border, height: 1),
         ),
       ),
       body: _isLoading
@@ -105,10 +104,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                   Card(
                     elevation: 0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      side: BorderSide(
-                        color: colorScheme.outlineVariant,
-                      ),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      side: const BorderSide(color: StitchM3Theme.border),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -118,7 +115,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           Text(
                             l10n.subscriptionCurrentPlan,
                             style: theme.textTheme.labelLarge?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+                              color: StitchM3Theme.textMuted,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -126,7 +123,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             _planLabel(l10n),
                             style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
+                              color: StitchM3Theme.textPrimary,
                             ),
                           ),
                         ],
@@ -140,7 +137,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                         ),
                       ),
                       child: Text(l10n.subscriptionUpgrade),
@@ -151,7 +148,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                         ),
                       ),
                       child: Text(l10n.subscriptionManage),

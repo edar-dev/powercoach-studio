@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PowerCoach Studio - Clients</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-20 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between px-4 h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu</span>
+<h1 class="text-xl font-bold tracking-tight">Clients</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center overflow-hidden border border-primary/30">
+<img alt="Coach Profile" class="w-full h-full object-cover" data-alt="Headshot of a fitness coach smiling" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPhcIuJwy_WGbX-b-7N3hTK_ENDBjtW0a5w07TIeXQYPK8TQ23Yysb97clpvSInF0Q8rIscnR942E8cvq4uIUPu44ZeDWSIA0PpvOGAhfjwG8PHW3fHYBguzueNxYngFsB7to5dasSzJlnndD4bjT-WaE9TDJWHP1PQdZ3bFlUWuF5ppA9Kja3jRVuBPs_KtWwKZbR7fV4O-2-7HwaJCGojEzG2MJ5lXRVDz9TuroPahKkfDMlzcd2PLXu7Em24H4vNsHt3ClDbmB0"/>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col max-w-2xl mx-auto w-full pb-24">
+<!-- Search & Filter Bar -->
+<div class="px-4 py-4 space-y-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-slate-200 dark:bg-slate-800 border-none rounded-xl py-3 pl-11 pr-4 focus:ring-2 focus:ring-primary transition-all placeholder:text-slate-500 text-slate-900 dark:text-slate-100" placeholder="Search clients by name or goal" type="text"/>
+</div>
+<!-- Horizontal Filter Chips -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+<button class="px-4 py-1.5 rounded-full bg-primary text-white text-sm font-medium whitespace-nowrap">All</button>
+<button class="px-4 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-sm font-medium whitespace-nowrap transition-colors">Weight Loss</button>
+<button class="px-4 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-sm font-medium whitespace-nowrap transition-colors">Muscle Gain</button>
+<button class="px-4 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-sm font-medium whitespace-nowrap transition-colors">Endurance</button>
+<button class="px-4 py-1.5 rounded-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-sm font-medium whitespace-nowrap transition-colors">Rehab</button>
+</div>
+</div>
+<!-- Client List -->
+<div class="divide-y divide-slate-200 dark:divide-slate-800 px-2">
+<!-- Client Item 1 -->
+<div class="flex items-center gap-4 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+<div class="relative w-14 h-14 shrink-0">
+<img alt="Sarah J." class="w-full h-full rounded-full object-cover border-2 border-primary/20" data-alt="Portrait of a young woman client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8MCTdmsshogclZJL_eRuuqy0zW576D9Gozh14q-imUfNvzBpPwGbBaFgSdzRqU8hUJZtgM-_X26XSVJHEtWRP5EzfPozVtAjW9qP3SwERIzXdcjBxyjfqCHweYMxfsaI1TAKPuoA6VS-l9WYiYcZ2gfdCqtPTTB67GAQSFPsrUkdzCGtMDJyf_NXWytyaBog8mEDQXFg0WlrGdxONMOG9URWZxtCFpFb-3iABzkkH-U5jYNtgH5EMd-zZ1TOkP853z3AkibFx3jJD"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-green-500 border-2 border-background-light dark:border-background-dark rounded-full"></div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate">Sarah Jenkins</h3>
+<span class="text-xs text-slate-500">2h ago</span>
+</div>
+<p class="text-sm text-primary font-medium">Weight Loss</p>
+<p class="text-xs text-slate-500 truncate italic">"Feeling stronger today!"</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Client Item 2 -->
+<div class="flex items-center gap-4 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+<div class="w-14 h-14 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden border-2 border-transparent">
+<img alt="Marcus T." class="w-full h-full object-cover" data-alt="Portrait of a middle aged male client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuZ5YYK4DM1BJ_HXASSUhcj8m9qUauoN83FFBuVQl6KI7KJTaRuYf0KIy7iXQ5NfZgUTIF0ExFqDBsbo9Ycv3gIRv1zmqC9kpbqW_1P1kejKYrH-d_h6EvAKlgszyE2TH_RzwkvPswQWVwnBlvZwoMriDoDqtznjV7W3NctM9SyjhtYABvx_d5EvkyE0A8YodbRo7uCp6jEyKh9tJzwDbObJBFNajXFXZSTzJontLDR2pMhr_KoTcGOAusajl7d2-RoEuWASMtNXWJ"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate">Marcus Thompson</h3>
+<span class="text-xs text-slate-500">5h ago</span>
+</div>
+<p class="text-sm text-primary font-medium">Muscle Gain</p>
+<p class="text-xs text-slate-500 truncate">Bench press PR: 225lbs</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Client Item 3 -->
+<div class="flex items-center gap-4 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+<div class="w-14 h-14 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden border-2 border-transparent">
+<img alt="Elena R." class="w-full h-full object-cover" data-alt="Portrait of a woman athlete client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV2Rn_7d1W50MbfCZKtBEhc8hRPDfGJD847lCv2GAF5Nb9gUqJf9tBwWlbgkQI3CFDnPvdl1JiPSfNaN3djnRrkltcnQ9NPTqPsU7Mza9G1xwzH4nwZ-jsmpH6QZFJQVsKiyJgVJGFoWujRtZfVfVYYcrYja-SDJLrltk__J7zjPrtBvWx05s63gImbzbny53rjAO5PLTvLlm2cOuzWGpYN7P1OwX5KfIhNqPIGtGsyFEDDo2l_IbOf7myoFiplIgoZ23ii-CuNGAw"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate">Elena Rodriguez</h3>
+<span class="text-xs text-slate-500">Yesterday</span>
+</div>
+<p class="text-sm text-primary font-medium">Endurance</p>
+<p class="text-xs text-slate-500 truncate">Marathon training - Week 4</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Client Item 4 -->
+<div class="flex items-center gap-4 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+<div class="w-14 h-14 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden border-2 border-transparent">
+<img alt="David W." class="w-full h-full object-cover" data-alt="Portrait of a male client in gym attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAos4PcWW92tUNx5CBEAvmEXzcEvO7vT-WsQpQb4exF9Zb3PE0rWJEV2HLG507JKhG4dD1F3iav_LXsnVB6zs5u09SEG5KkN-y5Q4Q7xE0HK9cduUmdrEsgV0P3mTWksEQv_aeMZTN7SW7qWAl6zOawStyC7nLdSd1laZAPIXNmEhEVPv0FFFXRPgO1fofcK2R-CtcWg4s_EKbTJjgaDIqUbzzHZm_fHAEfLrdLIJ-Hl_0G43WY4BnRJ5Hed5kvprapsC4wzUoGk6YO"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate">David Wu</h3>
+<span class="text-xs text-slate-500">2d ago</span>
+</div>
+<p class="text-sm text-primary font-medium">Muscle Gain</p>
+<p class="text-xs text-slate-500 truncate">Nutrition plan updated</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+<!-- Client Item 5 -->
+<div class="flex items-center gap-4 p-3 hover:bg-slate-100 dark:hover:bg-slate-800/50 rounded-xl transition-colors cursor-pointer">
+<div class="w-14 h-14 shrink-0 rounded-full bg-slate-300 dark:bg-slate-700 overflow-hidden border-2 border-transparent">
+<img alt="Chloe B." class="w-full h-full object-cover" data-alt="Portrait of a young black woman client" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMiSyJxmz4SHETYPcBByAA25keB73Uyc8Raw2YsQ8Deo-_-nPV4ZIiiJ5mw97hADrJTYCtfjZfZQDIXEfZ6plppzOgg6u7Jl-lKbfjy0vRqt5dEg5ewmTjfv4d42yEtvKtnu0_gr8Ii2hy1hK9uYkTGWm3C0ArO6EMhb8AFM7naJWoAywEDO2qBqICR-c5iwEjRalmvB3wjjjFIDnLmB9IOVTFTKsCIN4g6iRbGwC-tsgyShpc0vnNqETvOe5qvSyvStD1asD5D_AA"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<h3 class="font-semibold text-slate-900 dark:text-slate-100 truncate">Chloe Baptiste</h3>
+<span class="text-xs text-slate-500">3d ago</span>
+</div>
+<p class="text-sm text-primary font-medium">Rehab</p>
+<p class="text-xs text-slate-500 truncate">Post-ACL recovery</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</div>
+</div>
+</main>
+<!-- Floating Action Button (FAB) -->
+<button class="fixed right-6 bottom-24 z-30 flex items-center justify-center w-14 h-14 rounded-2xl bg-primary text-white shadow-lg shadow-primary/30 hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-3xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-40 bg-background-light dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 px-6 pb-6 pt-2">
+<div class="flex items-center justify-between max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined filled-icon">group</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Clients</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Workouts</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Reports</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -6,86 +6,81 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../utils/auth_error_message.dart';
 
-/// Login Page – matches Stitch prototype (screen ID 3e212f412ed849a9b6bcfc0772cf15fd).
-/// Uses Supabase Auth signInWithPassword.
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+/// Forgot Password – Stitch ID 3563377ad3864dfca42385fcd5ea0840.
+/// Sends reset link via Supabase Auth resetPasswordForEmail.
+class ForgotPasswordScreen extends StatefulWidget {
+  const ForgotPasswordScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
   bool _isLoading = false;
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
 
   static final _emailRegex = RegExp(
     r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
   );
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
     final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     setState(() => _isLoading = true);
 
-    final theme = Theme.of(context);
     try {
-      await Supabase.instance.client.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text,
+      await Supabase.instance.client.auth.resetPasswordForEmail(
+        _emailController.text.trim(),
       );
 
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final cs = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.loginSuccessMessage,
-            style: TextStyle(color: colorScheme.onPrimaryContainer),
+            l10n.forgotPasswordSuccessMessage,
+            style: TextStyle(color: cs.onPrimaryContainer),
           ),
-          backgroundColor: colorScheme.primaryContainer,
+          backgroundColor: cs.primaryContainer,
           behavior: SnackBarBehavior.floating,
         ),
       );
-      context.go('/customers');
+      context.go('/login');
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final cs = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            authErrorMessage(e, l10n),
-            style: TextStyle(color: colorScheme.onErrorContainer),
+            l10n.forgotPasswordError,
+            style: TextStyle(color: cs.onErrorContainer),
           ),
-          backgroundColor: colorScheme.errorContainer,
+          backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
         ),
       );
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final cs = theme.colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.loginErrorGeneric,
-            style: TextStyle(color: colorScheme.onErrorContainer),
+            l10n.forgotPasswordError,
+            style: TextStyle(color: cs.onErrorContainer),
           ),
-          backgroundColor: colorScheme.errorContainer,
+          backgroundColor: cs.errorContainer,
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -98,13 +93,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
         elevation: 0,
-        scrolledUnderElevation: 1,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -113,19 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
           },
         ),
         title: Text(
-          l10n.loginTitle,
+          l10n.forgotPasswordTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: StitchM3Theme.textPrimary,
+            color: cs.onSurface,
           ),
         ),
-        centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: StitchM3Theme.border,
-            height: 1,
-          ),
+          child: Container(color: cs.outline, height: 1),
         ),
       ),
       body: SafeArea(
@@ -135,9 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: StitchM3Theme.authCardMaxWidth),
               decoration: BoxDecoration(
-                color: StitchM3Theme.bg,
+                color: cs.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: StitchM3Theme.border),
+                border: Border.all(color: cs.outline),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -163,14 +152,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               color: StitchM3Theme.accent,
                               borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
                             ),
-                            child: const Icon(Icons.bolt, color: Colors.white, size: 28),
+                            child: const Icon(Icons.lock_reset, color: Colors.white, size: 28),
                           ),
                           const SizedBox(height: 16),
                           Text(
                             'PowerCoach Studio',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              color: StitchM3Theme.textPrimary,
+                              color: cs.onSurface,
                               letterSpacing: 1.2,
                             ),
                           ),
@@ -183,20 +172,19 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            l10n.loginSuccessMessage.replaceAll('!', ''),
-                            style: theme.textTheme.headlineMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: StitchM3Theme.textPrimary,
+                            l10n.forgotPasswordInstruction,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cs.onSurfaceVariant,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 32),
+                          const SizedBox(height: 24),
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
+                            textInputAction: TextInputAction.done,
                             decoration: InputDecoration(
-                              labelText: l10n.loginEmail,
+                              labelText: l10n.forgotPasswordEmailLabel,
                               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             ),
                             validator: (value) {
@@ -205,41 +193,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (!_emailRegex.hasMatch(t)) return l10n.loginErrorInvalidEmail;
                               return null;
                             },
-                          ),
-                          const SizedBox(height: StitchM3Theme.formFieldSpacing),
-                          TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            textInputAction: TextInputAction.done,
-                            decoration: InputDecoration(
-                              labelText: l10n.loginPassword,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                  color: StitchM3Theme.textMuted,
-                                ),
-                                onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                              ),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) return l10n.loginErrorPasswordEmpty;
-                              return null;
-                            },
                             onFieldSubmitted: (_) => _submit(),
                           ),
-                          const SizedBox(height: 12),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                HapticFeedback.mediumImpact();
-                                context.push('/forgot-password');
-                              },
-                              child: Text(l10n.loginForgotPassword),
-                            ),
-                          ),
-                          const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                          const SizedBox(height: 24),
                           SizedBox(
                             height: StitchM3Theme.inputHeight,
                             child: FilledButton(
@@ -255,27 +211,18 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ? const SizedBox(
                                       height: 20,
                                       width: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                     )
-                                  : Text(l10n.loginSubmit),
+                                  : Text(l10n.forgotPasswordSubmit),
                             ),
                           ),
-                          const SizedBox(height: 24),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                l10n.loginNoAccount,
-                                style: theme.textTheme.bodyMedium?.copyWith(color: StitchM3Theme.textMuted),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  HapticFeedback.mediumImpact();
-                                  context.push('/register');
-                                },
-                                child: Text(l10n.loginRegisterLink),
-                              ),
-                            ],
+                          const SizedBox(height: 16),
+                          TextButton(
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              context.go('/login');
+                            },
+                            child: Text(l10n.forgotPasswordBackToLogin),
                           ),
                         ],
                       ),

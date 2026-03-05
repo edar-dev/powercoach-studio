@@ -422,6 +422,48 @@ abstract class AppLocalizations {
   /// **'Welcome back!'**
   String get loginSuccessMessage;
 
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email and we\'ll send you a link to reset your password.'**
+  String get forgotPasswordInstruction;
+
+  /// No description provided for @forgotPasswordEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get forgotPasswordEmailLabel;
+
+  /// No description provided for @forgotPasswordSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link'**
+  String get forgotPasswordSubmit;
+
+  /// No description provided for @forgotPasswordSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email for the reset link.'**
+  String get forgotPasswordSuccessMessage;
+
+  /// No description provided for @forgotPasswordBackToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get forgotPasswordBackToLogin;
+
+  /// No description provided for @forgotPasswordError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send reset email. Try again.'**
+  String get forgotPasswordError;
+
   /// No description provided for @headerProfile.
   ///
   /// In en, this message translates to:
@@ -599,13 +641,13 @@ abstract class AppLocalizations {
   /// No description provided for @customersEmptyTitle.
   ///
   /// In en, this message translates to:
-  /// **'No customers yet'**
+  /// **'No clients yet'**
   String get customersEmptyTitle;
 
   /// No description provided for @customersEmptyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Add your first customer to get started.'**
+  /// **'Let\'s grow your studio! Start by adding your first client to track their progress and manage their workouts.'**
   String get customersEmptyMessage;
 
   /// No description provided for @customersAddCustomer.
@@ -613,6 +655,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add customer'**
   String get customersAddCustomer;
+
+  /// No description provided for @customersAddFirstClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Your First Client'**
+  String get customersAddFirstClient;
+
+  /// No description provided for @customersImportContacts.
+  ///
+  /// In en, this message translates to:
+  /// **'Import from contacts'**
+  String get customersImportContacts;
 
   /// No description provided for @customersNewCustomer.
   ///

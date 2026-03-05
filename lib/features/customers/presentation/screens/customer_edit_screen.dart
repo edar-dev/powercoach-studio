@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -162,7 +162,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
 
     if (_loading) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _editAppBar(context, theme, l10n.customerEdit),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -170,7 +170,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
 
     if (_loadError != null) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _editAppBar(context, theme, l10n.customerEdit),
         body: Center(
           child: Padding(
@@ -181,7 +181,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
                 Text(
                   _loadError!,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppTheme.danger,
+                    color: StitchM3Theme.danger,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -198,7 +198,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: _editAppBar(context, theme, l10n.customerEdit),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -312,7 +312,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
 
   PreferredSizeWidget _editAppBar(BuildContext context, ThemeData theme, String title) {
     return AppBar(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: StitchM3Theme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
       shadowColor: Colors.black26,
@@ -327,13 +327,13 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: AppTheme.textPrimary,
+          color: StitchM3Theme.textPrimary,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: AppTheme.border, height: 1),
+        child: Container(color: StitchM3Theme.border, height: 1),
       ),
     );
   }

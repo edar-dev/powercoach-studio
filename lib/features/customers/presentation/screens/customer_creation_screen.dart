@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -108,6 +108,33 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     }
   }
 
+  Widget _formLabel(BuildContext context, String label) {
+    final theme = Theme.of(context);
+    return Text(
+      label,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w500,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(BuildContext context, {required IconData prefixIcon, String? hint}) {
+    final cs = Theme.of(context).colorScheme;
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: cs.onSurfaceVariant),
+      prefixIcon: Icon(prefixIcon, size: 22, color: cs.onSurfaceVariant),
+      filled: true,
+      fillColor: cs.surfaceContainerHighest,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+        borderSide: BorderSide(color: cs.outline),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = Supabase.instance.client.auth.currentUser;
@@ -120,14 +147,12 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
         elevation: 0,
         scrolledUnderElevation: 1,
-        shadowColor: Colors.black26,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -136,16 +161,16 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
           },
         ),
         title: Text(
-          l10n.customersNewCustomer,
+          'Add New Client',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            color: colorScheme.onSurface,
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppTheme.border, height: 1),
+          child: Container(color: colorScheme.outline, height: 1),
         ),
       ),
       body: SafeArea(
@@ -156,88 +181,163 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Hero: Stitch "Start a New Journey"
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                    border: Border.all(color: StitchM3Theme.accent.withValues(alpha: 0.15)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        StitchM3Theme.accent.withValues(alpha: 0.12),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: StitchM3Theme.accent,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: StitchM3Theme.accent.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.person_add, color: Colors.white, size: 32),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Start a New Journey',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Capture your client's initial details to begin tracking their progress.",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 32),
+                _formLabel(context, l10n.customerName),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _nameController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerName,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.person, hint: 'e.g. Alex Johnson'),
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? l10n.customerNameRequired : null,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerEmail),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerEmail,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.mail, hint: 'alex@example.com'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerPhone),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerPhone,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.phone_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerGoals),
+                const SizedBox(height: 8),
                 TextFormField(
-                  controller: _heightController,
-                  keyboardType: TextInputType.number,
+                  controller: _goalsController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerHeight,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.flag_outlined, hint: 'e.g. Muscle Gain'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerWeight),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _weightController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerWeight,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.monitor_weight_outlined, hint: '0.0'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerHeight),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _heightController,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  decoration: _inputDecoration(context, prefixIcon: Icons.height),
+                ),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerNotes),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _notesController,
                   maxLines: 3,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    labelText: l10n.customerNotes,
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _goalsController,
-                  maxLines: 2,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerGoals,
-                    alignLabelWithHint: true,
+                    hintText: l10n.customerNotes,
+                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                    filled: true,
+                    fillColor: colorScheme.surfaceContainerHighest,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppTheme.accent,
+                    backgroundColor: StitchM3Theme.accent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(0, 44),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusLg)),
+                    minimumSize: const Size(0, 48),
+                    elevation: 4,
+                    shadowColor: StitchM3Theme.accent.withValues(alpha: 0.35),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg)),
                   ),
                   child: _saving
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : Text(l10n.customerSave),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.save, size: 20),
+                            const SizedBox(width: 8),
+                            Text(l10n.customerSave),
+                          ],
+                        ),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'By adding a client, they will receive a welcome email automatically.',
+                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),

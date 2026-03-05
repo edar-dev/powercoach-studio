@@ -179,6 +179,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSuccessMessage => 'Welcome back!';
 
   @override
+  String get forgotPasswordTitle => 'Reset password';
+
+  @override
+  String get forgotPasswordInstruction =>
+      'Enter your email and we\'ll send you a link to reset your password.';
+
+  @override
+  String get forgotPasswordEmailLabel => 'Email';
+
+  @override
+  String get forgotPasswordSubmit => 'Send reset link';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'Check your email for the reset link.';
+
+  @override
+  String get forgotPasswordBackToLogin => 'Back to login';
+
+  @override
+  String get forgotPasswordError => 'Could not send reset email. Try again.';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override
@@ -266,13 +289,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersTitle => 'Customers';
 
   @override
-  String get customersEmptyTitle => 'No customers yet';
+  String get customersEmptyTitle => 'No clients yet';
 
   @override
-  String get customersEmptyMessage => 'Add your first customer to get started.';
+  String get customersEmptyMessage =>
+      'Let\'s grow your studio! Start by adding your first client to track their progress and manage their workouts.';
 
   @override
   String get customersAddCustomer => 'Add customer';
+
+  @override
+  String get customersAddFirstClient => 'Add Your First Client';
+
+  @override
+  String get customersImportContacts => 'Import from contacts';
 
   @override
   String get customersNewCustomer => 'New customer';

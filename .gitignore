@@ -3,6 +3,9 @@
 .env.local
 .env.*.local
 
+# Stitch URLs (copy from design/stitch-urls.example.json, do not commit real URLs)
+design/stitch-urls.json
+
 # Miscellaneous
 *.class
 *.log

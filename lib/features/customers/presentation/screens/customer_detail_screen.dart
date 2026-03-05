@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/models/customer.dart';
@@ -129,7 +129,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
 
     if (_loading) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
         appBar: _detailAppBar(context, theme, l10n.customersTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -137,7 +136,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
 
     if (_error != null || _customer == null) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
         appBar: _detailAppBar(context, theme, l10n.customersTitle),
         body: Center(
           child: Padding(
@@ -145,12 +143,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.error_outline, size: 48, color: AppTheme.danger),
+                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
                 const SizedBox(height: 16),
                 Text(
                   _error ?? l10n.customersLoadError,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppTheme.textMuted,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -167,14 +165,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
     }
 
     final c = _customer!;
+    final goalLabel = c.goals ?? '';
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
         elevation: 0,
-        scrolledUnderElevation: 1,
-        shadowColor: Colors.black26,
+        scrolledUnderElevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -183,93 +179,231 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
           },
         ),
         title: Text(
-          c.name,
+          'Customer Detail',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            color: colorScheme.onSurface,
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppTheme.border, height: 1),
+          child: Container(color: colorScheme.outline, height: 1),
         ),
         actions: [
-          TextButton.icon(
-            onPressed: () => context.push('/customers/${c.id}/edit'),
-            icon: const Icon(Icons.edit_outlined, size: 20),
-            label: Text(l10n.customerEdit),
-          ),
           IconButton(
-            onPressed: _delete,
-            icon: Icon(Icons.delete_outline, color: colorScheme.error),
-            tooltip: l10n.customerDelete,
+            onPressed: () {
+              // More menu: edit / delete
+              showModalBottomSheet(
+                context: context,
+                builder: (ctx) => SafeArea(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        leading: const Icon(Icons.edit_outlined),
+                        title: Text(l10n.customerEdit),
+                        onTap: () {
+                          Navigator.pop(ctx);
+                          context.push('/customers/${c.id}/edit');
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.delete_outline, color: colorScheme.error),
+                        title: Text(l10n.customerDelete, style: TextStyle(color: colorScheme.error)),
+                        onTap: () {
+                          Navigator.pop(ctx);
+                          _delete();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(Icons.more_vert),
           ),
         ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (c.email != null && c.email!.isNotEmpty)
-                _detailRow(theme, colorScheme, l10n.customerEmail, c.email!),
-              if (c.phone != null && c.phone!.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                _detailRow(theme, colorScheme, l10n.customerPhone, c.phone!),
-              ],
-              if (c.notes != null && c.notes!.isNotEmpty) ...[
-                const SizedBox(height: 20),
-                Text(
-                  l10n.customerNotes,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  c.notes!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-              if (c.goals != null && c.goals!.isNotEmpty) ...[
-                const SizedBox(height: 20),
-                Text(
-                  l10n.customerGoals,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  c.goals!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-              ],
-              if (c.heightCm != null || c.weightKg != null) ...[
-                const SizedBox(height: 20),
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 8,
-                  children: [
-                    if (c.heightCm != null)
-                      Chip(
-                        avatar: Icon(Icons.height, size: 18, color: colorScheme.onSurfaceVariant),
-                        label: Text('${c.heightCm!.round()} cm'),
+              // Profile section (Stitch)
+              Column(
+                children: [
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      Container(
+                        width: 128,
+                        height: 128,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: StitchM3Theme.accentLight,
+                          border: Border.all(
+                            color: StitchM3Theme.accent.withValues(alpha: 0.25),
+                            width: 4,
+                          ),
+                        ),
+                        child: Icon(Icons.person, size: 64, color: StitchM3Theme.accent.withValues(alpha: 0.6)),
                       ),
-                    if (c.weightKg != null)
-                      Chip(
-                        avatar: Icon(Icons.monitor_weight_outlined, size: 18, color: colorScheme.onSurfaceVariant),
-                        label: Text('${c.weightKg} kg'),
+                      Positioned(
+                        right: 4,
+                        bottom: 4,
+                        child: Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: StitchM3Theme.accent,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: colorScheme.surface, width: 2),
+                          ),
+                          child: const Icon(Icons.check, color: Colors.white, size: 18),
+                        ),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    c.name,
+                    style: theme.textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  if (goalLabel.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: StitchM3Theme.accentLight,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        'Goal: $goalLabel',
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchM3Theme.accent,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
                   ],
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => context.push('/customers/${c.id}/edit'),
+                          icon: const Icon(Icons.edit, size: 20),
+                          label: const Text('Edit Profile'),
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor: colorScheme.surfaceContainerHighest,
+                            foregroundColor: colorScheme.onSurface,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => context.push('/workouts/builder?customerId=${c.id}'),
+                          icon: const Icon(Icons.add_task, size: 20),
+                          label: const Text('Assign Workout'),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: StitchM3Theme.accent,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            elevation: 2,
+                            shadowColor: StitchM3Theme.accent.withValues(alpha: 0.3),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Stats grid
+              Row(
+                children: [
+                  Expanded(
+                    child: _statCard(context, 'Current Weight', c.weightKg != null ? '${c.weightKg}' : '—', 'kg', '+1.2%'),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _statCard(context, 'Muscle Mass', '—', 'kg', '+0.5%'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              // Progress overview
+              Text(
+                'Progress Overview',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: colorScheme.onSurface,
                 ),
-              ],
+              ),
+              const SizedBox(height: 12),
+              Container(
+                height: 192,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
+                  border: Border.all(color: colorScheme.outline),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [40, 55, 50, 75, 65, 85, 70].map((h) => Container(
+                    width: 24,
+                    height: h * 1.2,
+                    decoration: BoxDecoration(
+                      color: h == 75 ? StitchM3Theme.accent : StitchM3Theme.accent.withValues(alpha: 0.25),
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                    ),
+                  )).toList(),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                    .map((d) => Text(d, style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w700)))
+                    .toList(),
+              ),
+              const SizedBox(height: 24),
+              // Recent workouts
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Recent Workouts',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: colorScheme.onSurface,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('View All', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _workoutCard(context, 'Heavy Upper Body A', 'Yesterday • 65 mins', 'Completed', 'NEW PR', true),
+              const SizedBox(height: 12),
+              _workoutCard(context, 'Leg Day Focus', '3 days ago • 72 mins', 'Completed', '14,200 KG VOLUME', false),
             ],
           ),
         ),
@@ -278,11 +412,10 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
   }
 
   PreferredSizeWidget _detailAppBar(BuildContext context, ThemeData theme, String title) {
+    final cs = theme.colorScheme;
     return AppBar(
-      backgroundColor: AppTheme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
-      shadowColor: Colors.black26,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
@@ -294,39 +427,140 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: AppTheme.textPrimary,
+          color: cs.onSurface,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: AppTheme.border, height: 1),
+        child: Container(color: cs.outline, height: 1),
       ),
     );
   }
 
-  Widget _detailRow(ThemeData theme, ColorScheme colorScheme, String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          width: 100,
-          child: Text(
+  Widget _statCard(BuildContext context, String label, String value, String unit, String trend) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
+        border: Border.all(color: cs.outline),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
             label,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: AppTheme.textMuted,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
             ),
           ),
-        ),
-        Expanded(
-          child: Text(
-            value,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              color: AppTheme.textPrimary,
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                value,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                unit,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: cs.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Icon(Icons.trending_up, size: 14, color: StitchM3Theme.success),
+              const SizedBox(width: 4),
+              Text(
+                trend,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: StitchM3Theme.success,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _workoutCard(BuildContext context, String title, String subtitle, String status, String extra, bool isNewPr) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
+        border: Border.all(color: cs.outline),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: StitchM3Theme.accent.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+            ),
+            child: Icon(Icons.fitness_center, color: StitchM3Theme.accent, size: 24),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+              ],
             ),
           ),
-        ),
-      ],
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                status,
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
+              ),
+              Text(
+                extra,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: isNewPr ? StitchM3Theme.success : cs.onSurfaceVariant,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

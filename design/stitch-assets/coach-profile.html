@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Coach Profile - PowerCoach Studio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 antialiased">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<header class="flex items-center bg-background-light dark:bg-background-dark p-4 justify-between sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800">
+<div class="flex size-12 shrink-0 items-center justify-center cursor-pointer hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight flex-1 text-center">Coach Profile</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex size-10 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-slate-900 dark:text-slate-100">settings</span>
+</button>
+</div>
+</header>
+<main class="flex-1 pb-24">
+<section class="flex p-6 @container">
+<div class="flex w-full flex-col gap-6 items-center">
+<div class="flex gap-4 flex-col items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-primary/20" data-alt="Professional portrait of a fitness coach looking confident" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCtDYaPRd7OpP5muCZtiEs2YeGA-oCxPU5IBJl9dyPmRUXBJWfaigE64enNyOtvTrTpeeKMe7UXKmd5kGhucsk8w7LU3JyD8voMjMcedIzgI2Jo9uOAbXy5Y32jt7OoNq3Wn01tgwL2vtFDxtNA1Uhni1JIodgHMZkU2twlQLUBUQec5P_82C-LCsGMKuX_UjOoMloz8_j5XlyBqzjumS8-UZHohWn3dAfXqyafsJp04g4JKuqtliWlf1xvb4EeAIFsDxZW2xapr_6c");'>
+</div>
+<div class="absolute bottom-1 right-1 bg-primary text-white p-1.5 rounded-full border-2 border-background-dark">
+<span class="material-symbols-outlined text-sm block">edit</span>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center">
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold leading-tight tracking-tight text-center">Alex Rivera</p>
+<p class="text-primary text-base font-semibold leading-normal text-center">Elite Strength Coach</p>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium leading-normal text-center">PowerCoach Studio • Austin, TX</p>
+</div>
+</div>
+</div>
+</section>
+<section class="flex flex-wrap gap-4 px-4">
+<div class="flex min-w-[100px] flex-1 flex-col gap-1 rounded-xl p-4 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Clients</p>
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold">15</p>
+</div>
+
+<div class="flex min-w-[100px] flex-1 flex-col gap-1 rounded-xl p-4 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-medium uppercase tracking-wider">Experience</p>
+<p class="text-slate-900 dark:text-slate-100 text-2xl font-bold">8y</p>
+</div>
+</section>
+<section class="mt-8 px-4 flex flex-col gap-2">
+<h3 class="text-slate-900 dark:text-slate-100 text-sm font-bold uppercase tracking-widest px-1 mb-2 opacity-70">Account Settings</h3>
+<div class="bg-slate-100 dark:bg-slate-800/30 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border-b border-slate-200 dark:border-slate-800 last:border-0" href="#">
+<div class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-slate-900 dark:text-slate-100 font-semibold">Personal Info</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Profile details and credentials</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border-b border-slate-200 dark:border-slate-800 last:border-0" href="#">
+<div class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">subscriptions</span>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-slate-900 dark:text-slate-100 font-semibold">Subscription</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Manage your coach plan</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+<a class="flex items-center gap-4 p-4 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors border-b border-slate-200 dark:border-slate-800 last:border-0" href="#">
+<div class="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined">tune</span>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-slate-900 dark:text-slate-100 font-semibold">App Settings</p>
+<p class="text-slate-500 dark:text-slate-400 text-xs">Notifications and appearance</p>
+</div>
+<span class="material-symbols-outlined text-slate-400">chevron_right</span>
+</a>
+</div>
+<div class="mt-4 bg-slate-100 dark:bg-slate-800/30 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+<a class="flex items-center gap-4 p-4 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors" href="#">
+<div class="flex size-10 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+<span class="material-symbols-outlined">logout</span>
+</div>
+<div class="flex flex-1 flex-col">
+<p class="text-red-500 font-semibold">Log Out</p>
+</div>
+</a>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 border-t border-slate-200 dark:border-slate-800 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 pb-6 pt-3">
+<div class="flex gap-2 max-w-md mx-auto">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Clients</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400" href="#">
+<span class="material-symbols-outlined">fitness_center</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Programs</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">person</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

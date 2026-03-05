@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -43,9 +43,9 @@ class _LandingScreenState extends State<LandingScreen> {
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
 
     return Scaffold(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: StitchM3Theme.bg,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
+        backgroundColor: StitchM3Theme.bg,
         elevation: 0,
         scrolledUnderElevation: 2,
         surfaceTintColor: Colors.transparent,
@@ -58,11 +58,11 @@ class _LandingScreenState extends State<LandingScreen> {
               height: 32,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [AppTheme.logoStart, AppTheme.logoEnd],
+                  colors: [StitchM3Theme.logoStart, StitchM3Theme.logoEnd],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(AppTheme.radiusMd),
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
               ),
               alignment: Alignment.center,
               child: const Text(
@@ -80,7 +80,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 l10n.appTitle,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
+                  color: StitchM3Theme.textPrimary,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -92,7 +92,7 @@ class _LandingScreenState extends State<LandingScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            color: AppTheme.border,
+            color: StitchM3Theme.border,
             height: 1,
           ),
         ),
@@ -249,7 +249,7 @@ class _HeroSection extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [AppTheme.accentLight, AppTheme.bg],
+          colors: [StitchM3Theme.accentLight, StitchM3Theme.bg],
         ),
       ),
       child: SafeArea(
@@ -264,9 +264,9 @@ class _HeroSection extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppTheme.bg,
+                    color: StitchM3Theme.bg,
                     borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: AppTheme.border),
+                    border: Border.all(color: StitchM3Theme.border),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.06),
@@ -281,13 +281,13 @@ class _HeroSection extends StatelessWidget {
                       Icon(
                         Icons.open_in_new,
                         size: 16,
-                        color: AppTheme.textPrimary,
+                        color: StitchM3Theme.textPrimary,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         heroBadge,
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: AppTheme.textPrimary,
+                          color: StitchM3Theme.textPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -301,7 +301,7 @@ class _HeroSection extends StatelessWidget {
                 titlePrefix,
                 style: theme.textTheme.displayMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.textPrimary,
+                  color: StitchM3Theme.textPrimary,
                   letterSpacing: -0.5,
                   height: 1.1,
                 ),
@@ -310,7 +310,7 @@ class _HeroSection extends StatelessWidget {
                 titleSuffix,
                 style: theme.textTheme.displayMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppTheme.accent,
+                  color: StitchM3Theme.accent,
                   letterSpacing: -0.5,
                   height: 1.1,
                 ),
@@ -319,7 +319,7 @@ class _HeroSection extends StatelessWidget {
               Text(
                 subtitle,
                 style: theme.textTheme.titleMedium?.copyWith(
-                  color: AppTheme.textMuted,
+                  color: StitchM3Theme.textMuted,
                 ),
               ),
               const SizedBox(height: 32),
@@ -330,13 +330,13 @@ class _HeroSection extends StatelessWidget {
                   FilledButton(
                     onPressed: onPrimary,
                     style: FilledButton.styleFrom(
-                      backgroundColor: AppTheme.accent,
+                      backgroundColor: StitchM3Theme.accent,
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                       minimumSize: const Size(44, 44),
                       textStyle: theme.textTheme.titleMedium,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                       ),
                     ),
                     child: Text(ctaPrimary),
@@ -345,13 +345,13 @@ class _HeroSection extends StatelessWidget {
                   OutlinedButton(
                     onPressed: onSecondary,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppTheme.accent,
-                      side: const BorderSide(color: AppTheme.border),
+                      foregroundColor: StitchM3Theme.accent,
+                      side: const BorderSide(color: StitchM3Theme.border),
                       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                       minimumSize: const Size(44, 44),
                       textStyle: theme.textTheme.titleMedium,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                       ),
                     ),
                     child: Text(ctaSecondary),
@@ -379,14 +379,14 @@ class _FeaturesSection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
       decoration: const BoxDecoration(
-        color: AppTheme.bg,
+        color: StitchM3Theme.bg,
       ),
       child: Column(
         children: [
           Text(
             l10n.landingFeaturesTitle.toUpperCase(),
             style: theme.textTheme.labelLarge?.copyWith(
-              color: AppTheme.accent,
+              color: StitchM3Theme.accent,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
@@ -396,7 +396,7 @@ class _FeaturesSection extends StatelessWidget {
             l10n.landingFeaturesHeadline,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
+              color: StitchM3Theme.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -404,7 +404,7 @@ class _FeaturesSection extends StatelessWidget {
           Text(
             l10n.landingFeaturesDesc,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.textMuted,
+              color: StitchM3Theme.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -457,9 +457,9 @@ class _FeatureCard extends StatelessWidget {
       constraints: const BoxConstraints(maxWidth: 280),
       child: Container(
         decoration: BoxDecoration(
-          color: AppTheme.bg,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-          border: Border.all(color: AppTheme.border),
+          color: StitchM3Theme.bg,
+          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+          border: Border.all(color: StitchM3Theme.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.05),
@@ -478,24 +478,24 @@ class _FeatureCard extends StatelessWidget {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppTheme.accentLight,
-                  borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                  color: StitchM3Theme.accentLight,
+                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                 ),
-                child: Icon(icon, size: 28, color: AppTheme.accent),
+                child: Icon(icon, size: 28, color: StitchM3Theme.accent),
               ),
               const SizedBox(height: 16),
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppTheme.textPrimary,
+                  color: StitchM3Theme.textPrimary,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 subtitle,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.textMuted,
+                  color: StitchM3Theme.textMuted,
                 ),
               ),
             ],
@@ -526,14 +526,14 @@ class _HowItWorksSection extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
       decoration: const BoxDecoration(
-        color: AppTheme.bgSecondary,
+        color: StitchM3Theme.bgSecondary,
       ),
       child: Column(
         children: [
           Text(
             l10n.landingHowItWorksLabel.toUpperCase(),
             style: theme.textTheme.labelLarge?.copyWith(
-              color: AppTheme.accent,
+              color: StitchM3Theme.accent,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
@@ -543,7 +543,7 @@ class _HowItWorksSection extends StatelessWidget {
             l10n.landingHowItWorksTitle,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              color: AppTheme.textPrimary,
+              color: StitchM3Theme.textPrimary,
             ),
             textAlign: TextAlign.center,
           ),
@@ -621,7 +621,7 @@ class _StepItem extends StatelessWidget {
               step,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textMuted,
+                color: StitchM3Theme.textMuted,
               ),
             ),
           ),
@@ -654,11 +654,11 @@ class _CtaSection extends StatelessWidget {
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          color: AppTheme.accent,
-          borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+          color: StitchM3Theme.accent,
+          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
           boxShadow: [
             BoxShadow(
-              color: AppTheme.accent.withValues(alpha: 0.3),
+              color: StitchM3Theme.accent.withValues(alpha: 0.3),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -689,14 +689,14 @@ class _CtaSection extends StatelessWidget {
                 onPressed: onCta,
                 style: FilledButton.styleFrom(
                   backgroundColor: Colors.white,
-                  foregroundColor: AppTheme.accent,
+                  foregroundColor: StitchM3Theme.accent,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 32,
                     vertical: 16,
                   ),
                   minimumSize: const Size(44, 44),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                   ),
                   textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),

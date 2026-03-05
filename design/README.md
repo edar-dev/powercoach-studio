@@ -72,15 +72,19 @@ Gli screenshot e l’HTML esportati da Stitch vanno in:
    - `screenId`: `0b414c91bc8d406ea47ac2570d7b51df` (Landing), `76b61a47b6324d31bfd4957cd921aaee` (Registration), `3e212f412ed849a9b6bcfc0772cf15fd` (Login), `5863bd21319d467b828ad322f8670305` (Updated Coach Profile)  
    Dalla risposta usa `screenshot.downloadUrl` e `htmlCode.downloadUrl`.
 
-## Script di download
+## Script di download (per il confronto)
 
-Dopo aver ottenuto gli URL, imposta le variabili d’ambiente e lancia lo script:
+Per scaricare screenshot e HTML in `design/stitch-assets/` e confrontarli con le schermate Flutter:
 
-```powershell
-$env:STITCH_SIMPLIFIED_LANDING_SCREENSHOT_URL = "<screenshot-download-URL>"
-$env:STITCH_SIMPLIFIED_LANDING_HTML_URL = "<html-download-URL>"
-.\powercoach-studio\scripts\download-stitch-assets.ps1
-```
+### Opzione A: file `stitch-urls.json` (consigliata)
+
+1. Copia il template: `Copy-Item design\stitch-urls.example.json design\stitch-urls.json`
+2. Apri `design/stitch-urls.json` e incolla gli URL da Stitch (o da MCP `get_screen`) nelle chiavi corrispondenti.
+3. Dalla root del repo: `.\powercoach-studio\scripts\download-stitch-assets.ps1`
+
+Lo script legge gli URL da `design/stitch-urls.json` se esiste. Il file `stitch-urls.json` è in `.gitignore` (non committare URL con token). Vedi anche `design/stitch-assets/README.md`.
+
+### Opzione B: variabili d’ambiente
 
 Dalla root del repo:
 

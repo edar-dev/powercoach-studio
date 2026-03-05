@@ -177,6 +177,29 @@ class AppLocalizationsIt extends AppLocalizations {
   String get loginSuccessMessage => 'Bentornato!';
 
   @override
+  String get forgotPasswordTitle => 'Reimposta password';
+
+  @override
+  String get forgotPasswordInstruction =>
+      'Inserisci la tua email e ti invieremo un link per reimpostare la password.';
+
+  @override
+  String get forgotPasswordEmailLabel => 'Email';
+
+  @override
+  String get forgotPasswordSubmit => 'Invia link';
+
+  @override
+  String get forgotPasswordSuccessMessage =>
+      'Controlla la tua email per il link di reset.';
+
+  @override
+  String get forgotPasswordBackToLogin => 'Torna al login';
+
+  @override
+  String get forgotPasswordError => 'Impossibile inviare l\'email. Riprova.';
+
+  @override
   String get headerProfile => 'Profilo';
 
   @override
@@ -268,10 +291,16 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get customersEmptyMessage =>
-      'Aggiungi il tuo primo cliente per iniziare.';
+      'Facciamo crescere il tuo studio! Inizia aggiungendo il tuo primo cliente per tracciare i progressi e gestire gli allenamenti.';
 
   @override
   String get customersAddCustomer => 'Aggiungi cliente';
+
+  @override
+  String get customersAddFirstClient => 'Aggiungi il tuo primo cliente';
+
+  @override
+  String get customersImportContacts => 'Importa dai contatti';
 
   @override
   String get customersNewCustomer => 'Nuovo cliente';

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Simplified Registration Page – matches Stitch prototype.
@@ -102,9 +102,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: AppBar(
-        backgroundColor: AppTheme.bg,
+        backgroundColor: StitchM3Theme.bg,
         elevation: 0,
         scrolledUnderElevation: 1,
         shadowColor: Colors.black26,
@@ -119,151 +119,159 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           l10n.registrationTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
-            color: AppTheme.textPrimary,
+            color: StitchM3Theme.textPrimary,
           ),
         ),
         centerTitle: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
-          child: Container(color: AppTheme.border, height: 1),
+          child: Container(color: StitchM3Theme.border, height: 1),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Container(
-            constraints: const BoxConstraints(maxWidth: 448),
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppTheme.bg,
-              borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-              border: Border.all(color: AppTheme.border),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: l10n.registrationEmail,
-                    ),
-                  validator: (value) {
-                    final t = value?.trim() ?? '';
-                    if (t.isEmpty) return l10n.registrationErrorInvalidEmail;
-                    if (!_emailRegex.hasMatch(t)) {
-                      return l10n.registrationErrorInvalidEmail;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.registrationPassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() => _obscurePassword = !_obscurePassword);
-                      },
-                    ),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(
+                maxWidth: StitchM3Theme.authCardMaxWidth,
+              ),
+              decoration: BoxDecoration(
+                color: StitchM3Theme.bg,
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                border: Border.all(color: StitchM3Theme.border),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.registrationErrorPasswordEmpty;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _confirmPasswordController,
-                  obscureText: _obscureConfirm,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: l10n.registrationConfirmPassword,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureConfirm
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() => _obscureConfirm = !_obscureConfirm);
-                      },
-                    ),
-                  ),
-                  validator: (value) {
-                    if (value != _passwordController.text) {
-                      return l10n.registrationErrorPasswordMismatch;
-                    }
-                    return null;
-                  },
-                  onFieldSubmitted: (_) => _submit(),
-                ),
-                const SizedBox(height: 32),
-                FilledButton(
-                  onPressed: _isLoading ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: AppTheme.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(0, 44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.registrationSubmit),
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                ],
+              ),
+              padding: const EdgeInsets.all(24),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      l10n.registrationAlreadyHaveAccount,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.textMuted,
+                    TextFormField(
+                      controller: _emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        labelText: l10n.registrationEmail,
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        context.push('/login');
+                      validator: (value) {
+                        final t = value?.trim() ?? '';
+                        if (t.isEmpty) {
+                          return l10n.registrationErrorInvalidEmail;
+                        }
+                        if (!_emailRegex.hasMatch(t)) {
+                          return l10n.registrationErrorInvalidEmail;
+                        }
+                        return null;
                       },
-                      child: Text(l10n.registrationLoginLink),
+                    ),
+                    const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                    TextFormField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      textInputAction: TextInputAction.next,
+                      decoration: InputDecoration(
+                        labelText: l10n.registrationPassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(
+                              () => _obscurePassword = !_obscurePassword,
+                            );
+                          },
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return l10n.registrationErrorPasswordEmpty;
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscureConfirm,
+                      textInputAction: TextInputAction.done,
+                      decoration: InputDecoration(
+                        labelText: l10n.registrationConfirmPassword,
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscureConfirm
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                          onPressed: () {
+                            setState(() => _obscureConfirm = !_obscureConfirm);
+                          },
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value != _passwordController.text) {
+                          return l10n.registrationErrorPasswordMismatch;
+                        }
+                        return null;
+                      },
+                      onFieldSubmitted: (_) => _submit(),
+                    ),
+                    const SizedBox(height: 32),
+                    FilledButton(
+                      onPressed: _isLoading ? null : _submit,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: StitchM3Theme.accent,
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(0, StitchM3Theme.inputHeight),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            StitchM3Theme.radiusMd,
+                          ),
+                        ),
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : Text(l10n.registrationSubmit),
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          l10n.registrationAlreadyHaveAccount,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: StitchM3Theme.textMuted,
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            context.push('/login');
+                          },
+                          child: Text(l10n.registrationLoginLink),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 }

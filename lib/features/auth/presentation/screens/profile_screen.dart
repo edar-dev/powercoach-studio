@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
@@ -166,7 +166,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _profileAppBar(context, theme, l10n.profileTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
+        backgroundColor: StitchM3Theme.bgSecondary,
         appBar: _profileAppBar(context, theme, l10n.profileTitle),
         body: Center(
           child: Padding(
@@ -185,7 +185,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   l10n.profileLoadError,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppTheme.textMuted,
+                    color: StitchM3Theme.textMuted,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -202,7 +202,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
+      backgroundColor: StitchM3Theme.bgSecondary,
       appBar: _profileAppBar(context, theme, l10n.profileTitle),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -216,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Text(
                     l10n.profileLoadError,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.danger,
+                    color: StitchM3Theme.danger,
                   ),
                   ),
                   const SizedBox(height: 16),
@@ -277,12 +277,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 FilledButton(
                   onPressed: _isSaving ? null : _save,
                   style: FilledButton.styleFrom(
-                    backgroundColor: AppTheme.accent,
+                    backgroundColor: StitchM3Theme.accent,
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     minimumSize: const Size(0, 44),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     ),
                   ),
                   child: _isSaving
@@ -299,7 +299,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     ),
                   ),
                   icon: const Icon(Icons.people_outline),
@@ -311,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     ),
                   ),
                   icon: const Icon(Icons.settings_outlined),
@@ -323,7 +323,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(AppTheme.radiusLg),
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     ),
                   ),
                   child: Text(l10n.profileSignOut),
@@ -342,7 +342,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String title,
   ) {
     return AppBar(
-      backgroundColor: AppTheme.bg,
+      backgroundColor: StitchM3Theme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
       shadowColor: Colors.black26,
@@ -357,13 +357,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: AppTheme.textPrimary,
+          color: StitchM3Theme.textPrimary,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: AppTheme.border, height: 1),
+        child: Container(color: StitchM3Theme.border, height: 1),
       ),
     );
   }

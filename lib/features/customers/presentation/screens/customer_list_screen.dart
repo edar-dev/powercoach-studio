@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,6 +22,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   List<Customer> _customers = [];
   bool _loading = true;
   String? _error;
+  String _searchQuery = '';
+  int _filterChipIndex = 0; // 0 = All, 1 = Weight Loss, 2 = Muscle Gain, etc.
+  static const List<String> _filterChips = ['All', 'Weight Loss', 'Muscle Gain', 'Endurance', 'Rehab'];
 
   @override
   void initState() {
@@ -82,7 +85,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     if (!GymBlogApiClient.isConfigured) {
       return Scaffold(
-        backgroundColor: AppTheme.bgSecondary,
         appBar: _customerListAppBar(context, theme, l10n.customersTitle),
         body: Center(
           child: Padding(
@@ -90,7 +92,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             child: Text(
               l10n.customersApiNotConfigured,
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: AppTheme.textMuted,
+                color: colorScheme.onSurfaceVariant,
               ),
               textAlign: TextAlign.center,
             ),
@@ -100,23 +102,28 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppTheme.bgSecondary,
       appBar: _customerListAppBar(context, theme, l10n.customersTitle),
       body: RefreshIndicator(
         onRefresh: _load,
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _error != null
-                ? _errorBody(context, l10n, theme, colorScheme)
-                : _customers.isEmpty
-                    ? _emptyBody(context, l10n, theme, colorScheme)
-                    : _listBody(context, l10n, theme, colorScheme),
+            ? _errorBody(context, l10n, theme, colorScheme)
+            : _customers.isEmpty
+            ? _emptyBody(context, l10n, theme, colorScheme)
+            : _listBodyWithSearch(context, l10n, theme, colorScheme),
       ),
       floatingActionButton: GymBlogApiClient.isConfigured && _error == null
           ? FloatingActionButton.extended(
               onPressed: () => context.push('/customers/new'),
               icon: const Icon(Icons.add),
-              label: Text(l10n.customersAddCustomer),
+              label: Text(_customers.isEmpty ? l10n.customersAddFirstClient : l10n.customersAddCustomer),
+              backgroundColor: _customers.isEmpty ? StitchM3Theme.accent : StitchM3Theme.accentLight,
+              foregroundColor: _customers.isEmpty ? Colors.white : StitchM3Theme.accent,
+              elevation: _customers.isEmpty ? 4 : 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+              ),
             )
           : null,
     );
@@ -179,23 +186,57 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.7,
+        height: MediaQuery.of(context).size.height * 0.75,
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(32),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  Icons.people_outline,
-                  size: 80,
-                  color: colorScheme.outline,
+                // Illustration: gradient circles + icon (Stitch empty state)
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Container(
+                      width: 256,
+                      height: 256,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            StitchM3Theme.accent.withValues(alpha: 0.12),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: 192,
+                      height: 192,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: StitchM3Theme.accent.withValues(alpha: 0.06),
+                        border: Border.all(
+                          color: StitchM3Theme.accent.withValues(alpha: 0.2),
+                          width: 1,
+                          strokeAlign: BorderSide.strokeAlignInside,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.group_add,
+                        size: 80,
+                        color: StitchM3Theme.accent.withValues(alpha: 0.45),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
                 Text(
                   l10n.customersEmptyTitle,
                   style: theme.textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w700,
                     color: colorScheme.onSurface,
                   ),
                   textAlign: TextAlign.center,
@@ -203,16 +244,22 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 const SizedBox(height: 12),
                 Text(
                   l10n.customersEmptyMessage,
-                  style: theme.textTheme.bodyLarge?.copyWith(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: colorScheme.onSurfaceVariant,
+                    height: 1.4,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 32),
-                FilledButton.icon(
-                  onPressed: () => context.push('/customers/new'),
-                  icon: const Icon(Icons.add),
-                  label: Text(l10n.customersAddCustomer),
+                OutlinedButton(
+                  onPressed: () { /* Import from contacts - not implemented */ },
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  child: Text(l10n.customersImportContacts),
                 ),
               ],
             ),
@@ -222,34 +269,166 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     );
   }
 
-  Widget _listBody(
+  List<Customer> get _filteredCustomers {
+    var list = _customers;
+    final q = _searchQuery.trim().toLowerCase();
+    if (q.isNotEmpty) {
+      list = list.where((c) => c.name.toLowerCase().contains(q) || (c.goals?.toLowerCase().contains(q) ?? false)).toList();
+    }
+    if (_filterChipIndex > 0) {
+      final goal = _filterChips[_filterChipIndex].toLowerCase();
+      list = list.where((c) => (c.goals?.toLowerCase().contains(goal) ?? false)).toList();
+    }
+    return list;
+  }
+
+  Widget _listBodyWithSearch(
     BuildContext context,
     AppLocalizations l10n,
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      itemCount: _customers.length,
-      itemBuilder: (context, index) {
-        final c = _customers[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 8),
-          child: ListTile(
-            title: Text(c.name),
-            subtitle: Text(
-              [
-                if (c.email != null && c.email!.isNotEmpty) c.email!,
-                if (c.phone != null && c.phone!.isNotEmpty) c.phone!,
-              ].join(' · '),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+    final filtered = _filteredCustomers;
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+            child: TextField(
+              onChanged: (v) => setState(() => _searchQuery = v),
+              decoration: InputDecoration(
+                hintText: 'Search clients by name or goal',
+                hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+                prefixIcon: Icon(Icons.search, color: colorScheme.onSurfaceVariant, size: 22),
+                filled: true,
+                fillColor: colorScheme.surfaceContainerHighest,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              ),
             ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () => context.push('/customers/${c.id}'),
           ),
-        );
-      },
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: 40,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: _filterChips.length,
+              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              itemBuilder: (context, i) {
+                final selected = i == _filterChipIndex;
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => setState(() => _filterChipIndex = i),
+                    borderRadius: BorderRadius.circular(999),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: selected ? StitchM3Theme.accent : colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        _filterChips[i],
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: selected ? Colors.white : colorScheme.onSurface,
+                          fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index.isOdd) return const SizedBox(height: 12);
+                final itemIndex = index ~/ 2;
+                final c = filtered[itemIndex];
+                final subtitle = [
+                  if (c.email != null && c.email!.isNotEmpty) c.email!,
+                  if (c.phone != null && c.phone!.isNotEmpty) c.phone!,
+                ].join(' · ');
+                final goalLabel = c.goals ?? '';
+                return Padding(
+                  padding: EdgeInsets.only(bottom: itemIndex < filtered.length - 1 ? 12 : 0),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                    onTap: () => context.push('/customers/${c.id}'),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                        border: Border.all(color: colorScheme.outline),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.04),
+                            blurRadius: 8,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  c.name,
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                                if (goalLabel.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: Text(
+                                      goalLabel,
+                                      style: theme.textTheme.bodySmall?.copyWith(
+                                        color: StitchM3Theme.accent,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                if (subtitle.isNotEmpty) ...[
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    subtitle,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              childCount: filtered.isEmpty ? 0 : filtered.length * 2 - 1,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -258,29 +437,33 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     ThemeData theme,
     String title,
   ) {
+    final cs = theme.colorScheme;
     return AppBar(
-      backgroundColor: AppTheme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
-      shadowColor: Colors.black26,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          context.pop();
+          final router = GoRouter.of(context);
+          if (router.canPop()) {
+            router.pop();
+          } else {
+            router.go('/');
+          }
         },
       ),
       title: Text(
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: AppTheme.textPrimary,
+          color: cs.onSurface,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: AppTheme.border, height: 1),
+        child: Container(color: cs.outline, height: 1),
       ),
     );
   }
