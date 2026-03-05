@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
 import 'features/dashboard/presentation/screens/coach_dashboard_screen.dart';
+import 'features/dashboard/presentation/screens/schedule_detail_screen.dart';
+import 'features/dashboard/presentation/screens/schedule_screen.dart';
 import 'features/landing/presentation/screens/landing_screen.dart';
 import 'theme/stitch_m3_theme.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
@@ -14,6 +16,7 @@ import 'features/customers/presentation/screens/customer_creation_screen.dart';
 import 'features/customers/presentation/screens/customer_detail_screen.dart';
 import 'features/customers/presentation/screens/customer_edit_screen.dart';
 import 'features/customers/presentation/screens/customer_list_screen.dart';
+import 'features/customers/presentation/screens/customer_workouts_screen.dart';
 import 'features/settings/presentation/screens/personal_info_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/settings/presentation/screens/subscription_screen.dart';
@@ -28,7 +31,7 @@ final _goRouter = GoRouter(
     final path = state.uri.path;
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final isCustomerRoute = path.startsWith('/customers');
-    final isProtectedRoute = isCustomerRoute || path == '/dashboard' || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings');
+    final isProtectedRoute = isCustomerRoute || path.startsWith('/dashboard') || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings');
     if (isProtectedRoute && !isLoggedIn) {
       return '/login';
     }
@@ -57,6 +60,18 @@ final _goRouter = GoRouter(
     GoRoute(
       path: '/dashboard',
       builder: (context, state) => const CoachDashboardScreen(),
+      routes: [
+        GoRoute(
+          path: 'schedule',
+          builder: (context, state) => const ScheduleScreen(),
+          routes: [
+            GoRoute(
+              path: 'detail',
+              builder: (context, state) => const ScheduleDetailScreen(),
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
       path: '/profile',
@@ -96,6 +111,13 @@ final _goRouter = GoRouter(
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 return CustomerEditScreen(customerId: id);
+              },
+            ),
+            GoRoute(
+              path: 'workouts',
+              builder: (context, state) {
+                final id = state.pathParameters['id'] ?? '';
+                return CustomerWorkoutsScreen(customerId: id);
               },
             ),
           ],

@@ -207,14 +207,14 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                   TextButton(
                     onPressed: () {
                       HapticFeedback.mediumImpact();
-                      // Placeholder: future schedule list screen
+                      context.push('/dashboard/schedule');
                     },
                     child: Text('See All', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w600)),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              ..._todayScheduleItems(theme, cs),
+              ..._todayScheduleItems(context, theme, cs),
             ],
           ),
         ),
@@ -222,7 +222,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     );
   }
 
-  List<Widget> _todayScheduleItems(ThemeData theme, ColorScheme cs) {
+  List<Widget> _todayScheduleItems(BuildContext context, ThemeData theme, ColorScheme cs) {
     const items = [
       ('08:00', 'AM', 'Marcus Wright', 'Hypertrophy - Legs'),
       ('10:30', 'AM', 'Sarah Jenkins', 'Mobility & Core'),
@@ -242,7 +242,12 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           programName: program,
           onTap: () {
             HapticFeedback.mediumImpact();
-            // Placeholder: navigate to session detail
+            context.push(
+              Uri(
+                path: '/dashboard/schedule/detail',
+                queryParameters: {'time': time, 'period': period, 'client': client, 'program': program},
+              ).toString(),
+            );
           },
         ),
       );

@@ -32,7 +32,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     _load();
   }
 
-  Future<void> _load() async {
+  Future<void> _load({bool skipCache = false}) async {
     if (!GymBlogApiClient.isConfigured) {
       setState(() {
         _loading = false;
@@ -46,7 +46,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       _error = null;
     });
     try {
-      final list = await _api.getList('/api/customers');
+      final list = await _api.getList('/api/customers', skipCache: skipCache);
       final customers = list
           .whereType<Map<String, dynamic>>()
           .map((e) => Customer.fromJson(e))
@@ -104,7 +104,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     return Scaffold(
       appBar: _customerListAppBar(context, theme, l10n.customersTitle),
       body: RefreshIndicator(
-        onRefresh: _load,
+        onRefresh: () => _load(skipCache: true),
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _error != null
@@ -166,7 +166,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 ],
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: _load,
+                  onPressed: () => _load(skipCache: true),
                   child: Text(l10n.customersRetry),
                 ),
               ],

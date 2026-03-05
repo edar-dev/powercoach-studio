@@ -4,8 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 
 /// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
 /// Loads and saves profile to Supabase public.profiles (id, display_name, avatar_url, bio, phone, website).
@@ -154,6 +155,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
+    GymBlogApiClient.clearCache();
     await Supabase.instance.client.auth.signOut();
     if (mounted) context.go('/');
   }

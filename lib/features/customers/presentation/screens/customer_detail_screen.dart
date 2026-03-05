@@ -395,7 +395,10 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      context.push('/customers/${widget.customerId}/workouts');
+                    },
                     child: Text('View All', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
                   ),
                 ],

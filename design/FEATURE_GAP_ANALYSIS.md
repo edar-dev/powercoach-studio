@@ -1,14 +1,16 @@
 # Analisi feature mancanti – PowerCoach Studio
 
-Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora implementate** (placeholder, link vuoti, schermate assenti, assenza di backend).
+Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora implementate** (placeholder, link vuoti, schermate assenti, assenza di backend), più **improvements tecnici** implementati o da fare.
 
 ---
 
-## 1. Schermate Stitch non implementate
+## 1. Schermate Stitch
 
 | Feature | Riferimento | Stato |
 |--------|-------------|--------|
-| **Forgot Password** | Stitch ID `3563377ad3864dfca42385fcd5ea0840`, `STITCH_SCREENS.md` "(da creare)" | **Mancante.** In Login c’è il link "Password dimenticata?" che mostra solo `showNotImplementedAlert`. Manca la schermata e l’integrazione con Supabase (reset password / magic link). |
+| **Forgot Password** | Stitch ID `3563377ad3864dfca42385fcd5ea0840` | **Implementato.** `ForgotPasswordScreen`, route `/forgot-password`, `resetPasswordForEmail` Supabase. |
+| **Coach Dashboard** | Stitch ID `285387f9d39c459a989d6060a1c486b0` | **Implementato.** `CoachDashboardScreen`, route `/dashboard`; post-login redirect a `/dashboard`. Weekly progress, Total Clients (API), Active Programs (placeholder), Add Client / Create Program, Today's Schedule (mock). |
+| **Workout Builder – Intuitive Super Set** | Stitch ID `7ce630e5879044e7bdc10852d9b5adb1` | **Implementato.** Variante `intuitiveSuperset`, route `/workouts/builder/intuitive-superset`; UI condivisa con superset. |
 
 ---
 
@@ -17,6 +19,7 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 | Feature | Dettaglio | Stato |
 |--------|-----------|--------|
 | **Landing vs Home** | Route `/` usa `LandingScreen` (Stitch "Simplified Startup Landing Page"). | **Implementato.** Route `/` → `LandingScreen`; `HomeScreen` non più usato alla root. |
+| **Post-login → Dashboard** | Dopo login redirect alla home autenticata. | **Implementato.** Redirect a `/dashboard`; route protette (dashboard, customers, workouts, profile, settings) richiedono login. |
 | **Workout Builder – bottom nav** | Library, Builder, Diary, Stats, Profile nella bottom bar del Workout Builder. | **Implementato.** Library → `/workouts/library`, Builder → `/workouts/builder`, Diary → `/workouts/diary`, Stats → `/workouts/stats`, Profile → `/profile`. Placeholder screen per Library/Diary/Stats (`WorkoutPlaceholderScreen`). |
 | **Assign Workout → Builder** | Pulsante "Assign Workout" nel Customer Detail. | **Implementato.** `context.push('/workouts/builder?customerId=${c.id}')`. |
 
@@ -27,7 +30,7 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 | Feature | Dettaglio | Stato |
 |--------|-----------|--------|
 | **Import from contacts** | Pulsante nella lista clienti (stato vuoto). | **Placeholder.** `onPressed` con commento "Import from contacts - not implemented". Richiederebbe integrazione con contacts (es. platform channel / plugin). |
-| **View All (Recent Workouts)** | Link "View All" nella sezione Recent Workouts del Customer Detail. | **Vuoto.** `onPressed: () {}`; nessuna lista workout reale né route. |
+| **View All (Recent Workouts)** | Link "View All" nella sezione Recent Workouts del Customer Detail. | **Implementato.** Route `/customers/:id/workouts` → `CustomerWorkoutsScreen`; lista placeholder (stessi dati mock); link da Customer Detail. |
 | **Recent Workouts** | Due card esempio ("Heavy Upper Body A", "Leg Day Focus") nel Customer Detail. | **Dati fissi.** Nessuna chiamata API o modello; dati hardcoded. |
 | **Progress Overview** | Grafico a barre (Mon–Sun) nel Customer Detail. | **Placeholder.** Altezze barre e label fissi; nessun dato da backend. |
 | **Statistiche cliente** | Current Weight (da `customer.weightKg`), Muscle Mass, trend (+1.2%, +0.5%). | **Parziale.** Peso da modello; "Muscle Mass" e percentuali sono fissi. |
@@ -56,7 +59,19 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 
 ---
 
-## 6. Backend / API (GymBlog.API)
+## 6. Dashboard – azioni e dati
+
+| Feature | Dettaglio | Stato |
+|--------|-----------|--------|
+| **Weekly Progress (88)** | Card "Workouts This Week". | **Mock.** Valore fisso 88; nessun dato da API o da routine salvate. |
+| **Active Programs** | Stat card. | **Placeholder.** Valore fisso 15. |
+| **Today's Schedule – See All** | Link "See All" sotto Today's Schedule. | **Implementato.** Route `/dashboard/schedule` → `ScheduleScreen`; lista completa sessioni (mock). |
+| **Today's Schedule – tap sessione** | Tap su una card (es. Marcus Wright, Hypertrophy - Legs). | **Implementato.** Navigazione a `/dashboard/schedule/detail` con query (time, period, client, program); `ScheduleDetailScreen` mostra dettaglio placeholder. |
+| **Dati schedule** | Le 4 sessioni (orario, cliente, programma). | **Mock.** Lista hardcoded; nessuna API schedule/sessioni. |
+
+---
+
+## 7. Backend / API (GymBlog.API)
 
 | Area | Dettaglio | Stato |
 |------|-----------|--------|
@@ -67,28 +82,41 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 
 ---
 
-## 7. Riepilogo priorità suggerite
+## 8. Improvements tecnici (rete, cache, retry)
 
-1. **Alta**  
-   - **Forgot Password:** schermata + integrazione Supabase reset (magic link / reset password).  
-   - **Assign Workout:** da Customer Detail navigare a `/workouts` (o `/workouts/builder`) passando `customerId` se serve.
+| Area | Dettaglio | Stato |
+|------|-----------|--------|
+| **Cache client-side** | Cache in-memory per GET (GymBlog API). | **Implementato.** `ApiCache` + `CacheInterceptor`; TTL 5 min, max 100 entry, invalidazione per prefisso su POST/PUT/DELETE; `GymBlogApiClient.clearCache()` al logout (Profile, Settings). |
+| **Retry automatico (Polly-like)** | Retry su errori transitori. | **Implementato.** `RetryPolicy` + `RetryInterceptor`; max 3 retry, exponential backoff + jitter; retry su timeout, connection error, 408, 429, 5xx. File: `retry_policy.dart`, `retry_interceptor.dart`. |
+| **Skip cache per richiesta** | Opzione per bypassare la cache (es. pull-to-refresh "forza reload"). | **Implementato.** `options.extra['skip_cache'] = true` in `CacheInterceptor`; `GymBlogApiClient.getList(path, skipCache: true)` e `get(path, skipCache: true)`. Pull-to-refresh e pulsante Retry nella lista clienti usano `skipCache: true`. |
+| **Cache persistente** | Persistere cache su disco (SharedPreferences o file) per sopravvivere al kill dell’app. | **Mancante.** Solo in-memory; per offline-first andrebbe esteso con storage e policy di scadenza. |
+| **TTL per endpoint** | TTL diverso per path (es. lista clienti 2 min, dettaglio 5 min). | **Implementato.** `CacheInterceptor.pathTtl`: callback `Duration? Function(String path)?`; nel client lista `/api/customers` usa 2 min, resto default 5 min. |
+| **Metriche / logging retry** | Log o metriche su numero di retry e fallimenti. | **Mancante.** Utile per Sentry/debug; si può loggare in `RetryInterceptor` o esporre callback. |
 
-2. **Media**  
-   - **Workout Builder – Save:** stato locale (es. in-memory o storage) e/o API per salvare routine.  
-   - **Workout Builder – bottom nav:** route e schermate placeholder per Library, Diary, Stats, Profile (o `showNotImplementedAlert`).  
-   - **Customer Detail – View All:** route (es. `/customers/:id/workouts`) e schermata lista workout (anche solo placeholder).
+---
+
+## 9. Riepilogo priorità suggerite
+
+1. **Alta (completate)**  
+   - ~~Forgot Password~~ · ~~Assign Workout~~ · ~~Post-login Dashboard~~ · ~~Workout Builder Save/Clone/Reorder~~ · ~~Cache e retry API~~.
+
+2. **Media (completate)**  
+   - ~~Customer Detail – View All~~ · ~~Dashboard – See All + tap sessione~~ · ~~Skip cache / TTL per endpoint~~.
 
 3. **Bassa / Backlog**  
    - Import from contacts (dipende da plugin/permessi).  
    - Dati reali per Recent Workouts, Progress Overview, statistiche (dipende da API).  
-   - Clone week, drag & drop, edit/delete nel Workout Builder (dipende da modello dati e API).  
-   - Allineamento Landing vs Home (scelta UX e rimozione duplicati).
+   - Edit testuale nel Workout Builder (nome mobility item, nome esercizio, sets/reps).  
+   - Cache persistente e offline-first (storage + policy).  
+   - Metriche/logging retry per Sentry o debug.
 
 ---
 
-## 8. File utili per estendere
+## 10. File utili per estendere
 
-- **Nuova schermata Forgot Password:** `lib/features/auth/presentation/screens/forgot_password_screen.dart` (da creare); route in `lib/app.dart`; link in `login_screen.dart` → `context.push('/forgot-password')`.
-- **Assign Workout:** in `customer_detail_screen.dart` sostituire `onPressed: () { }` con `context.push('/workouts/builder')` (o con query param `?customerId=...` se l’API lo richiederà).
-- **Workout Builder – Save:** aggiungere stato (es. `ChangeNotifier` o bloc) in `workout_builder_mobility_screen.dart` e chiamata API quando l’endpoint sarà disponibile.
-- **Bottom nav Workout Builder:** in `_WorkoutBuilderBottomNav` usare `context.go('/workouts/...')` o `showNotImplementedAlert(context)` per Library / Diary / Stats / Profile.
+- **Auth:** `forgot_password_screen.dart`, `login_screen.dart`, `profile_screen.dart`, `settings_screen.dart` (logout + `GymBlogApiClient.clearCache()`).
+- **Dashboard:** `coach_dashboard_screen.dart`, `schedule_screen.dart`, `schedule_detail_screen.dart`; route `/dashboard`, `/dashboard/schedule`, `/dashboard/schedule/detail` in `lib/app.dart`.
+- **Customer workouts (View All):** `customer_workouts_screen.dart`; route `/customers/:id/workouts`; link in `customer_detail_screen.dart`.
+- **Workout Builder:** `workout_builder_mobility_screen.dart` (varianti mobility, multiset, superset, intuitiveSuperset); `workout_routine_model.dart`, `workout_routine_storage.dart`; route `/workouts/builder`, `/workouts/builder/intuitive-superset`.
+- **Rete:** `lib/core/network/gymblog_api_client.dart` (Dio + cache + retry); `api_cache.dart`, `cache_interceptor.dart`, `retry_policy.dart`, `retry_interceptor.dart`.
+- **Customer Detail – Assign Workout:** `context.push('/workouts/builder?customerId=${c.id}')` in `customer_detail_screen.dart`.

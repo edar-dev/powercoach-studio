@@ -4,9 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../theme/stitch_m3_theme.dart';
 
 const _keyNotificationsEnabled = 'settings_notifications_enabled';
 
@@ -44,6 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _signOut() async {
+    GymBlogApiClient.clearCache();
     await Supabase.instance.client.auth.signOut();
     if (mounted) context.go('/');
   }

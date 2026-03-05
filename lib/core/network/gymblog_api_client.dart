@@ -2,7 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'api_cache.dart';
+import 'cache_interceptor.dart';
+import 'retry_interceptor.dart';
+import 'retry_policy.dart';
+
 /// HTTP client for GymBlog.API. Uses Supabase session token for auth.
+/// Includes client-side cache (GET) and Polly-style retry for transient failures.
 /// Requires GYMBLOG_API_URL in .env (no-op / "not configured" if missing).
 class GymBlogApiClient {
   GymBlogApiClient() : _dio = _createDio();
@@ -13,6 +19,12 @@ class GymBlogApiClient {
   }
 
   static bool get isConfigured => baseUrl != null;
+
+  /// Shared in-memory cache for GET responses (TTL 5 min, invalidated on POST/PUT/DELETE).
+  static final ApiCache apiCache = ApiCache(
+    defaultTtl: const Duration(minutes: 5),
+    maxEntries: 100,
+  );
 
   final Dio _dio;
 
@@ -26,6 +38,15 @@ class GymBlogApiClient {
         sendTimeout: const Duration(seconds: 30),
       ),
     );
+    dio.interceptors.add(CacheInterceptor(
+      cache: apiCache,
+      pathTtl: (path) {
+        if (path.contains('/api/customers') && !RegExp(r'/api/customers/[\w-]+$').hasMatch(path)) {
+          return const Duration(minutes: 2);
+        }
+        return null;
+      },
+    ));
     dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
         final session = Supabase.instance.client.auth.currentSession;
@@ -38,7 +59,22 @@ class GymBlogApiClient {
         handler.next(err);
       },
     ));
+    dio.interceptors.add(RetryInterceptor(
+      dio: dio,
+      policy: const RetryPolicy(
+        maxRetryCount: 3,
+        initialDelay: Duration(milliseconds: 500),
+        maxDelay: Duration(seconds: 10),
+        useExponentialBackoff: true,
+        jitter: true,
+      ),
+    ));
     return dio;
+  }
+
+  /// Clears the shared API cache (e.g. after logout or manual refresh).
+  static void clearCache() {
+    apiCache.clear();
   }
 
   void _ensureConfigured() {
@@ -50,12 +86,14 @@ class GymBlogApiClient {
   Future<List<dynamic>> getList(
     String path, {
     Map<String, dynamic>? queryParameters,
+    bool skipCache = false,
   }) async {
     _ensureConfigured();
     try {
       final response = await _dio.get<List<dynamic>>(
         path,
         queryParameters: queryParameters,
+        options: skipCache ? Options(extra: {'skip_cache': true}) : null,
       );
       final data = response.data;
       return data is List<dynamic> ? data : <dynamic>[];
@@ -64,10 +102,16 @@ class GymBlogApiClient {
     }
   }
 
-  Future<Map<String, dynamic>> get(String path) async {
+  Future<Map<String, dynamic>> get(
+    String path, {
+    bool skipCache = false,
+  }) async {
     _ensureConfigured();
     try {
-      final response = await _dio.get<Map<String, dynamic>>(path);
+      final response = await _dio.get<Map<String, dynamic>>(
+        path,
+        options: skipCache ? Options(extra: {'skip_cache': true}) : null,
+      );
       final data = response.data;
       if (data == null) throw GymBlogApiException('Empty response', 0);
       return data;
