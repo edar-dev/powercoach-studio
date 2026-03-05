@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../data/workout_routine_model.dart';
+import '../../data/workout_routine_storage.dart';
 
 /// Workout Builder variant: Enhanced Mobility (Stitch 694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6).
 enum WorkoutBuilderVariant { mobility, multiset, superset }
@@ -19,9 +21,17 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
 
 class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen> {
   final _routineNameController = TextEditingController(text: 'Hypertrophy Phase 1');
+  WorkoutRoutine _routine = WorkoutRoutine(
+    name: 'Hypertrophy Phase 1',
+    mobilityItems: WorkoutRoutine.defaultMobilityItems(),
+    weeks: WorkoutRoutine.defaultWeeks(),
+  );
+  bool _loading = true;
   int _mobilityTabIndex = 0;
   bool _trainingExpanded = true;
-  bool _week1Expanded = true;
+  final Set<String> _expandedWeekIds = {'w1'};
+  int _selectedWeekIndex = 0;
+  int _selectedDayIndex = 0;
 
   bool _mobilityExpanded = true;
 
@@ -31,6 +41,133 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     if (widget.variant != WorkoutBuilderVariant.mobility) {
       _mobilityExpanded = false;
     }
+    _loadRoutine();
+  }
+
+  Future<void> _loadRoutine() async {
+    final loaded = await WorkoutRoutineStorage.load();
+    if (!mounted) return;
+    setState(() {
+      _routine = loaded;
+      _routineNameController.text = loaded.name;
+      _expandedWeekIds.clear();
+      if (loaded.weeks.isNotEmpty) {
+        _expandedWeekIds.add(loaded.weeks.first.id);
+      }
+      _loading = false;
+    });
+  }
+
+  Future<void> _saveRoutine() async {
+    final name = _routineNameController.text.trim();
+    final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    await WorkoutRoutineStorage.save(toSave);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Routine saved'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: StitchM3Theme.accent,
+      ),
+    );
+  }
+
+  void _addMobilityItem() {
+    setState(() {
+      final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
+      _routine = _routine.copyWith(
+        mobilityItems: [..._routine.mobilityItems, MobilityItem(id: id, title: 'New exercise', subtitle: 'Add details', categoryIndex: _mobilityTabIndex)],
+      );
+    });
+  }
+
+  void _removeMobilityItem(String id) {
+    setState(() {
+      _routine = _routine.copyWith(
+        mobilityItems: _routine.mobilityItems.where((e) => e.id != id).toList(),
+      );
+    });
+  }
+
+  void _reorderMobility(int oldIndex, int newIndex) {
+    setState(() {
+      final list = List<MobilityItem>.from(_routine.mobilityItems);
+      if (newIndex > oldIndex) newIndex--;
+      final item = list.removeAt(oldIndex);
+      list.insert(newIndex, item);
+      _routine = _routine.copyWith(mobilityItems: list);
+    });
+  }
+
+  void _addWeek() {
+    setState(() {
+      final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
+      _routine = _routine.copyWith(
+        weeks: [..._routine.weeks, Week(id: id, name: 'WEEK ${_routine.weeks.length + 1}', days: [Day(id: '${id}_d1', name: 'DAY 1', exercises: [])])],
+      );
+      _expandedWeekIds.add(id);
+    });
+  }
+
+  void _cloneWeek(int weekIndex) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    setState(() {
+      final source = _routine.weeks[weekIndex];
+      final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
+      final newDays = source.days
+          .map((d) => Day(
+                id: '${newId}_d_${d.id}',
+                name: d.name,
+                exercises: d.exercises.map((e) => Exercise(id: '${e.id}_$newId', name: e.name, sets: e.sets, reps: e.reps, rpe: e.rpe, note: e.note)).toList(),
+              ))
+          .toList();
+      final newWeek = Week(id: newId, name: '${source.name} (copy)', days: newDays);
+      _routine = _routine.copyWith(weeks: [..._routine.weeks, newWeek]);
+      _expandedWeekIds.add(newId);
+    });
+  }
+
+  void _addDayToWeek(int weekIndex) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    setState(() {
+      final week = _routine.weeks[weekIndex];
+      final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
+      final newDays = [...week.days, Day(id: dayId, name: 'DAY ${week.days.length + 1}', exercises: [])];
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
+  }
+
+  void _addExerciseToDay(int weekIndex, int dayIndex) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final week = _routine.weeks[weekIndex];
+    if (dayIndex < 0 || dayIndex >= week.days.length) return;
+    setState(() {
+      final day = week.days[dayIndex];
+      final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+      final newEx = [...day.exercises, Exercise(id: exId, name: 'New exercise', sets: '3', reps: '8', rpe: '@8', note: '')];
+      final newDays = List<Day>.from(week.days);
+      newDays[dayIndex] = day.copyWith(exercises: newEx);
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
+  }
+
+  void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final week = _routine.weeks[weekIndex];
+    if (dayIndex < 0 || dayIndex >= week.days.length) return;
+    setState(() {
+      final day = week.days[dayIndex];
+      final newEx = day.exercises.where((e) => e.id != exerciseId).toList();
+      final newDays = List<Day>.from(week.days);
+      newDays[dayIndex] = day.copyWith(exercises: newEx);
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
   }
 
   bool get _showMobilityContent => widget.variant == WorkoutBuilderVariant.mobility && _mobilityExpanded;
@@ -81,7 +218,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TextButton(
-              onPressed: () {},
+              onPressed: _loading ? null : _saveRoutine,
               style: TextButton.styleFrom(
                 backgroundColor: StitchM3Theme.accent,
                 foregroundColor: Colors.white,
@@ -97,7 +234,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           child: Container(color: cs.outline, height: 1),
         ),
       ),
-      body: Column(
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -163,7 +302,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                                 ],
                               ),
                               TextButton.icon(
-                                onPressed: () {},
+                                onPressed: _addMobilityItem,
                                 icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
                                 label: Text('Add', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w600)),
                               ),
@@ -182,11 +321,28 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                             ],
                           ),
                           const SizedBox(height: 16),
-                          _MobilityItem(title: 'T-Spine Rotation', subtitle: 'Focus on breathing and rib cage position'),
-                          const SizedBox(height: 12),
-                          _MobilityItem(title: '90/90 Hip Switch', subtitle: 'Keep torso upright, 10 reps per side'),
+                          ReorderableListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            buildDefaultDragHandles: false,
+                            onReorder: _reorderMobility,
+                            itemCount: _routine.mobilityItems.length,
+                            itemBuilder: (context, index) {
+                              final item = _routine.mobilityItems[index];
+                              return Padding(
+                                key: ValueKey(item.id),
+                                padding: EdgeInsets.only(bottom: index < _routine.mobilityItems.length - 1 ? 12 : 0),
+                                child: _MobilityItem(
+                                  index: index,
+                                  title: item.title,
+                                  subtitle: item.subtitle,
+                                  onDelete: () => _removeMobilityItem(item.id),
+                                ),
+                              );
+                            },
+                          ),
                           const SizedBox(height: 16),
-                          _DashedButton(icon: Icons.add, label: 'Add Exercise'),
+                          _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: _addMobilityItem),
                         ],
                       ],
                     ),
@@ -196,9 +352,25 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                     theme: theme,
                     cs: cs,
                     expanded: _trainingExpanded,
-                    week1Expanded: _week1Expanded,
+                    expandedWeekIds: _expandedWeekIds,
+                    weeks: _routine.weeks,
+                    selectedWeekIndex: _selectedWeekIndex,
+                    selectedDayIndex: _selectedDayIndex,
                     onTrainingToggle: () => setState(() => _trainingExpanded = !_trainingExpanded),
-                    onWeek1Toggle: () => setState(() => _week1Expanded = !_week1Expanded),
+                    onToggleWeek: (id) => setState(() {
+                      if (_expandedWeekIds.contains(id)) {
+                        _expandedWeekIds.remove(id);
+                      } else {
+                        _expandedWeekIds.add(id);
+                      }
+                    }),
+                    onNewWeek: _addWeek,
+                    onCloneWeek: _cloneWeek,
+                    onAddDay: _addDayToWeek,
+                    onAddExercise: _addExerciseToDay,
+                    onRemoveExercise: _removeExercise,
+                    onSelectWeek: (i) => setState(() => _selectedWeekIndex = i),
+                    onSelectDay: (i) => setState(() => _selectedDayIndex = i),
                     variant: _trainingVariant,
                   ),
                 ],
@@ -258,10 +430,17 @@ class _MobilityTab extends StatelessWidget {
 }
 
 class _MobilityItem extends StatelessWidget {
-  const _MobilityItem({required this.title, required this.subtitle});
+  const _MobilityItem({
+    required this.index,
+    required this.title,
+    required this.subtitle,
+    this.onDelete,
+  });
 
+  final int index;
   final String title;
   final String subtitle;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -276,7 +455,10 @@ class _MobilityItem extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
+          ReorderableDragStartListener(
+            index: index,
+            child: Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -290,7 +472,10 @@ class _MobilityItem extends StatelessWidget {
           ),
           Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
           const SizedBox(width: 8),
-          Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
+          InkWell(
+            onTap: onDelete,
+            child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
+          ),
         ],
       ),
     );
@@ -298,17 +483,18 @@ class _MobilityItem extends StatelessWidget {
 }
 
 class _DashedButton extends StatelessWidget {
-  const _DashedButton({required this.icon, required this.label});
+  const _DashedButton({required this.icon, required this.label, this.onPressed});
 
   final IconData icon;
   final String label;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     return OutlinedButton.icon(
-      onPressed: () {},
+      onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 14),
         side: BorderSide(color: cs.outline),
@@ -328,18 +514,38 @@ class _TrainingSection extends StatelessWidget {
     required this.theme,
     required this.cs,
     required this.expanded,
-    required this.week1Expanded,
+    required this.expandedWeekIds,
+    required this.weeks,
+    required this.selectedWeekIndex,
+    required this.selectedDayIndex,
     required this.onTrainingToggle,
-    required this.onWeek1Toggle,
+    required this.onToggleWeek,
+    required this.onNewWeek,
+    required this.onCloneWeek,
+    required this.onAddDay,
+    required this.onAddExercise,
+    required this.onRemoveExercise,
+    required this.onSelectWeek,
+    required this.onSelectDay,
     required this.variant,
   });
 
   final ThemeData theme;
   final ColorScheme cs;
   final bool expanded;
-  final bool week1Expanded;
+  final Set<String> expandedWeekIds;
+  final List<Week> weeks;
+  final int selectedWeekIndex;
+  final int selectedDayIndex;
   final VoidCallback onTrainingToggle;
-  final VoidCallback onWeek1Toggle;
+  final void Function(String) onToggleWeek;
+  final VoidCallback onNewWeek;
+  final void Function(int) onCloneWeek;
+  final void Function(int) onAddDay;
+  final void Function(int, int) onAddExercise;
+  final void Function(int, int, String) onRemoveExercise;
+  final void Function(int) onSelectWeek;
+  final void Function(int) onSelectDay;
   final _TrainingVariant variant;
 
   @override
@@ -369,27 +575,70 @@ class _TrainingSection extends StatelessWidget {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: StitchM3Theme.accent.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
-                    const SizedBox(width: 4),
-                    Text('New Week', style: theme.textTheme.labelSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
-                  ],
+              InkWell(
+                onTap: onNewWeek,
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: StitchM3Theme.accent.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
+                      const SizedBox(width: 4),
+                      Text('New Week', style: theme.textTheme.labelSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
           if (expanded) ...[
-            if (variant == _TrainingVariant.mobility) _WeekAccordion(expanded: week1Expanded, onToggle: onWeek1Toggle, theme: theme, cs: cs),
-            if (variant == _TrainingVariant.multiset) _WeekDayChipsAndCards(theme: theme, cs: cs, superset: false),
-            if (variant == _TrainingVariant.superset) _WeekDayChipsAndCards(theme: theme, cs: cs, superset: true),
+            if (variant == _TrainingVariant.mobility)
+              ...weeks.asMap().entries.map((e) => _WeekAccordion(
+                    key: ValueKey(e.value.id),
+                    weekIndex: e.key,
+                    week: e.value,
+                    expanded: expandedWeekIds.contains(e.value.id),
+                    onToggle: () => onToggleWeek(e.value.id),
+                    onClone: () => onCloneWeek(e.key),
+                    onAddDay: () => onAddDay(e.key),
+                    onAddExercise: onAddExercise,
+                    onRemoveExercise: onRemoveExercise,
+                    theme: theme,
+                    cs: cs,
+                  )),
+            if (variant == _TrainingVariant.multiset)
+              _WeekDayChipsAndCards(
+                theme: theme,
+                cs: cs,
+                superset: false,
+                weeks: weeks,
+                selectedWeekIndex: selectedWeekIndex,
+                selectedDayIndex: selectedDayIndex,
+                onSelectWeek: onSelectWeek,
+                onSelectDay: onSelectDay,
+                onAddExercise: onAddExercise,
+                onRemoveExercise: onRemoveExercise,
+                onAddDay: onAddDay,
+              ),
+            if (variant == _TrainingVariant.superset)
+              _WeekDayChipsAndCards(
+                theme: theme,
+                cs: cs,
+                superset: true,
+                weeks: weeks,
+                selectedWeekIndex: selectedWeekIndex,
+                selectedDayIndex: selectedDayIndex,
+                onSelectWeek: onSelectWeek,
+                onSelectDay: onSelectDay,
+                onAddExercise: onAddExercise,
+                onRemoveExercise: onRemoveExercise,
+                onAddDay: onAddDay,
+              ),
           ],
         ],
       ),
@@ -398,10 +647,28 @@ class _TrainingSection extends StatelessWidget {
 }
 
 class _WeekAccordion extends StatelessWidget {
-  const _WeekAccordion({required this.expanded, required this.onToggle, required this.theme, required this.cs});
+  const _WeekAccordion({
+    super.key,
+    required this.weekIndex,
+    required this.week,
+    required this.expanded,
+    required this.onToggle,
+    required this.onClone,
+    required this.onAddDay,
+    required this.onAddExercise,
+    required this.onRemoveExercise,
+    required this.theme,
+    required this.cs,
+  });
 
+  final int weekIndex;
+  final Week week;
   final bool expanded;
   final VoidCallback onToggle;
+  final VoidCallback onClone;
+  final VoidCallback onAddDay;
+  final void Function(int, int) onAddExercise;
+  final void Function(int, int, String) onRemoveExercise;
   final ThemeData theme;
   final ColorScheme cs;
 
@@ -423,7 +690,7 @@ class _WeekAccordion extends StatelessWidget {
                   children: [
                     Icon(expanded ? Icons.expand_more : Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
                     Text(
-                      'WEEK 1: ACCLIMATION',
+                      week.name,
                       style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: cs.onSurface),
                     ),
                   ],
@@ -431,7 +698,7 @@ class _WeekAccordion extends StatelessWidget {
                 Row(
                   children: [
                     TextButton.icon(
-                      onPressed: () {},
+                      onPressed: onClone,
                       icon: Icon(Icons.copy, size: 14, color: cs.onSurfaceVariant),
                       label: Text('Clone', style: theme.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant, fontWeight: FontWeight.w700)),
                     ),
@@ -448,22 +715,51 @@ class _WeekAccordion extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'DAY 1 - Lower Body Push',
-                      style: theme.textTheme.titleSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700),
+                ...week.days.asMap().entries.expand((dayEntry) {
+                  final dayIndex = dayEntry.key;
+                  final day = dayEntry.value;
+                  return [
+                    if (dayIndex > 0) const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          day.name,
+                          style: theme.textTheme.titleSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700),
+                        ),
+                        Icon(Icons.settings, size: 18, color: cs.onSurfaceVariant),
+                      ],
                     ),
-                    Icon(Icons.settings, size: 18, color: cs.onSurfaceVariant),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _ExerciseCard(theme: theme, cs: cs, name: 'Barbell Back Squat', sets: '3', reps: '8-10', rpe: '@8', compact: true),
-                const SizedBox(height: 12),
-                _ExerciseCard(theme: theme, cs: cs, name: 'Leg Press', sets: '3', reps: '12', rpe: '315lb', compact: true, showAddExercise: true),
+                    const SizedBox(height: 12),
+                    ...day.exercises.asMap().entries.map((exEntry) {
+                      final ex = exEntry.value;
+                      final isLast = exEntry.key == day.exercises.length - 1;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: _ExerciseCard(
+                          theme: theme,
+                          cs: cs,
+                          name: ex.name,
+                          sets: ex.sets,
+                          reps: ex.reps,
+                          rpe: ex.rpe,
+                          compact: true,
+                          showAddExercise: isLast,
+                          onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
+                          onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                        ),
+                      );
+                    }),
+                    if (day.exercises.isEmpty)
+                      _DashedButton(
+                        icon: Icons.add,
+                        label: 'Add Exercise',
+                        onPressed: () => onAddExercise(weekIndex, dayIndex),
+                      ),
+                  ];
+                }),
                 const SizedBox(height: 16),
-                _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week 1'),
+                _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
               ],
             ),
           ),
@@ -474,14 +770,40 @@ class _WeekAccordion extends StatelessWidget {
 }
 
 class _WeekDayChipsAndCards extends StatelessWidget {
-  const _WeekDayChipsAndCards({required this.theme, required this.cs, required this.superset});
+  const _WeekDayChipsAndCards({
+    required this.theme,
+    required this.cs,
+    required this.superset,
+    required this.weeks,
+    required this.selectedWeekIndex,
+    required this.selectedDayIndex,
+    required this.onSelectWeek,
+    required this.onSelectDay,
+    required this.onAddExercise,
+    required this.onRemoveExercise,
+    required this.onAddDay,
+  });
 
   final ThemeData theme;
   final ColorScheme cs;
   final bool superset;
+  final List<Week> weeks;
+  final int selectedWeekIndex;
+  final int selectedDayIndex;
+  final void Function(int) onSelectWeek;
+  final void Function(int) onSelectDay;
+  final void Function(int, int) onAddExercise;
+  final void Function(int, int, String) onRemoveExercise;
+  final void Function(int) onAddDay;
 
   @override
   Widget build(BuildContext context) {
+    final weekIndex = weeks.isEmpty ? 0 : selectedWeekIndex.clamp(0, weeks.length - 1);
+    final week = weeks.isEmpty ? null : weeks[weekIndex];
+    final days = week?.days ?? [];
+    final dayIndex = selectedDayIndex.clamp(0, days.isNotEmpty ? days.length - 1 : 0);
+    final day = days.isEmpty ? null : days[dayIndex];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -491,13 +813,14 @@ class _WeekDayChipsAndCards extends StatelessWidget {
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
-              _Chip(label: 'Week 1', selected: true),
-              const SizedBox(width: 8),
-              _Chip(label: 'Week 2', selected: false),
-              const SizedBox(width: 8),
-              _Chip(label: 'Week 3', selected: false),
-              const SizedBox(width: 8),
-              _Chip(label: 'Week 4', selected: false),
+              for (var i = 0; i < weeks.length; i++) ...[
+                if (i > 0) const SizedBox(width: 8),
+                _Chip(
+                  label: 'Week ${i + 1}',
+                  selected: i == weekIndex,
+                  onTap: () => onSelectWeek(i),
+                ),
+              ],
             ],
           ),
         ),
@@ -510,13 +833,14 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    _DayChip(label: 'Day 1', selected: true),
-                    const SizedBox(width: 8),
-                    _DayChip(label: 'Day 2', selected: false),
-                    const SizedBox(width: 8),
-                    _DayChip(label: 'Day 3', selected: false),
-                    const SizedBox(width: 8),
-                    _DayChip(label: 'Day 4', selected: false),
+                    for (var i = 0; i < days.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      _DayChip(
+                        label: days[i].name.startsWith('DAY') ? days[i].name : 'Day ${i + 1}',
+                        selected: i == dayIndex,
+                        onTap: () => onSelectDay(i),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -525,33 +849,74 @@ class _WeekDayChipsAndCards extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        if (superset)
-          _SuperSetBlock(
-            theme: theme,
-            cs: cs,
-            children: [
-              _ExerciseCard(theme: theme, cs: cs, name: 'Barbell Back Squat', sets: '3', reps: '8-10', rpe: '@8', compact: false, linked: true),
-              const SizedBox(height: 12),
-              _ExerciseCard(theme: theme, cs: cs, name: 'Leg Press', sets: '3', reps: '12', rpe: '315lb', compact: false, linked: true),
-            ],
-          )
-        else ...[
-          _ExerciseCard(theme: theme, cs: cs, name: 'Barbell Back Squat', sets: '3', reps: '8-10', rpe: '@8', compact: false),
+        if (day != null) ...[
+          if (superset)
+            _SuperSetBlock(
+              theme: theme,
+              cs: cs,
+              weekIndex: weekIndex,
+              dayIndex: dayIndex,
+              exercises: day.exercises,
+              onAddExercise: () => onAddExercise(weekIndex, dayIndex),
+              onRemoveExercise: onRemoveExercise,
+            )
+          else ...[
+            ...day.exercises.asMap().entries.map((exEntry) {
+              final ex = exEntry.value;
+              final isLast = exEntry.key == day.exercises.length - 1;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: _ExerciseCard(
+                  theme: theme,
+                  cs: cs,
+                  name: ex.name,
+                  sets: ex.sets,
+                  reps: ex.reps,
+                  rpe: ex.rpe,
+                  compact: false,
+                  showAddExercise: isLast,
+                  onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
+                  onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                ),
+              );
+            }),
+            if (day.exercises.isEmpty)
+              _DashedButton(
+                icon: Icons.add,
+                label: 'Add Exercise',
+                onPressed: () => onAddExercise(weekIndex, dayIndex),
+              ),
+          ],
           const SizedBox(height: 16),
-          _ExerciseCard(theme: theme, cs: cs, name: 'Leg Press', sets: '3', reps: '12', rpe: '315lb', compact: false, showAddExercise: true),
-        ],
-        const SizedBox(height: 16),
-        _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week 1'),
+          _DashedButton(
+            icon: Icons.calendar_today,
+            label: 'Add Day to Week ${weekIndex + 1}',
+            onPressed: () => onAddDay(weekIndex),
+          ),
+        ] else if (week != null && days.isEmpty)
+          _DashedButton(
+            icon: Icons.calendar_today,
+            label: 'Add Day to Week ${weekIndex + 1}',
+            onPressed: () => onAddDay(weekIndex),
+          )
+        else if (weeks.isEmpty)
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text('No weeks yet. Add a week above.', style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+            ),
+          ),
       ],
     );
   }
 }
 
 class _Chip extends StatelessWidget {
-  const _Chip({required this.label, required this.selected});
+  const _Chip({required this.label, required this.selected, this.onTap});
 
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -561,7 +926,7 @@ class _Chip extends StatelessWidget {
       color: selected ? StitchM3Theme.accent : cs.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
-        onTap: () {},
+        onTap: onTap,
         borderRadius: BorderRadius.circular(999),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
@@ -589,49 +954,66 @@ class _Chip extends StatelessWidget {
 }
 
 class _DayChip extends StatelessWidget {
-  const _DayChip({required this.label, required this.selected});
+  const _DayChip({required this.label, required this.selected, this.onTap});
 
   final String label;
   final bool selected;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: selected ? StitchM3Theme.accent.withValues(alpha: 0.2) : cs.surfaceContainerHighest,
-        border: Border.all(color: selected ? StitchM3Theme.accent.withValues(alpha: 0.4) : Colors.transparent),
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: selected ? StitchM3Theme.accent : cs.onSurfaceVariant,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: selected ? StitchM3Theme.accent.withValues(alpha: 0.2) : cs.surfaceContainerHighest,
+          border: Border.all(color: selected ? StitchM3Theme.accent.withValues(alpha: 0.4) : Colors.transparent),
+          borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: selected ? StitchM3Theme.accent : cs.onSurfaceVariant,
+              ),
             ),
-          ),
-          if (selected) ...[
-            const SizedBox(width: 4),
-            Icon(Icons.edit, size: 12, color: StitchM3Theme.accent),
-            Icon(Icons.delete_outline, size: 12, color: StitchM3Theme.accent),
+            if (selected) ...[
+              const SizedBox(width: 4),
+              Icon(Icons.edit, size: 12, color: StitchM3Theme.accent),
+              Icon(Icons.delete_outline, size: 12, color: StitchM3Theme.accent),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }
 }
 
 class _SuperSetBlock extends StatelessWidget {
-  const _SuperSetBlock({required this.theme, required this.cs, required this.children});
+  const _SuperSetBlock({
+    required this.theme,
+    required this.cs,
+    required this.weekIndex,
+    required this.dayIndex,
+    required this.exercises,
+    required this.onAddExercise,
+    required this.onRemoveExercise,
+  });
 
   final ThemeData theme;
   final ColorScheme cs;
-  final List<Widget> children;
+  final int weekIndex;
+  final int dayIndex;
+  final List<Exercise> exercises;
+  final VoidCallback onAddExercise;
+  final void Function(int, int, String) onRemoveExercise;
 
   @override
   Widget build(BuildContext context) {
@@ -659,9 +1041,22 @@ class _SuperSetBlock extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          ...children,
+          ...exercises.map((ex) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _ExerciseCard(
+              theme: theme,
+              cs: cs,
+              name: ex.name,
+              sets: ex.sets,
+              reps: ex.reps,
+              rpe: ex.rpe,
+              compact: false,
+              linked: true,
+              onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+            ),
+          )),
           const SizedBox(height: 8),
-          _DashedButton(icon: Icons.add, label: 'Add Exercise'),
+          _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: onAddExercise),
         ],
       ),
     );
@@ -679,6 +1074,8 @@ class _ExerciseCard extends StatelessWidget {
     required this.compact,
     this.showAddExercise = false,
     this.linked = false,
+    this.onAddExercise,
+    this.onRemove,
   });
 
   final ThemeData theme;
@@ -690,6 +1087,8 @@ class _ExerciseCard extends StatelessWidget {
   final bool compact;
   final bool showAddExercise;
   final bool linked;
+  final VoidCallback? onAddExercise;
+  final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -713,6 +1112,12 @@ class _ExerciseCard extends StatelessWidget {
               ),
               if (linked) Icon(Icons.link_off, size: 20, color: StitchM3Theme.accent),
               if (linked) const SizedBox(width: 8),
+              if (onRemove != null)
+                InkWell(
+                  onTap: onRemove,
+                  child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
+                ),
+              if (onRemove != null) const SizedBox(width: 8),
               Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
             ],
           ),
@@ -752,7 +1157,7 @@ class _ExerciseCard extends StatelessWidget {
           ),
           if (showAddExercise) ...[
             const SizedBox(height: 12),
-            _DashedButton(icon: Icons.add, label: 'Add Exercise'),
+            _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: onAddExercise),
           ],
         ],
       ),

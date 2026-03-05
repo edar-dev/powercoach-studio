@@ -39,12 +39,12 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 
 | Feature | Dettaglio | Stato |
 |--------|-----------|--------|
-| **Save routine** | Pulsante "Save" in AppBar. | **Vuoto.** Nessun salvataggio (locale o API). |
-| **Add / Add Exercise / Add Set** | Pulsanti "Add", "Add Exercise", "Add Set", "New Week", "Add Day to Week 1". | **Solo UI.** Nessun stato (es. lista esercizi, settimane, giorni) né persistenza. |
-| **Edit / Delete** | Edit/Delete su tab mobility, week, day, esercizi. | **Solo UI.** Nessuna logica di rimozione o modifica dati. |
-| **Clone week** | Pulsante "Clone" nella week accordion. | **Vuoto.** `onPressed: () {}`. |
-| **Drag & drop** | Icone `drag_indicator` su esercizi/mobility. | **Solo visivo.** Nessun reorder (es. `ReorderableListView` o integrazione con stato). |
-| **API workout/routine** | Nessun endpoint chiamato per routine o workout. | **Assente.** GymBlogApiClient non espone route per workout builder; serve definizione API e modelli. |
+| **Save routine** | Pulsante "Save" in AppBar. | **Implementato.** Salvataggio in SharedPreferences (`WorkoutRoutineStorage.save`); SnackBar di conferma. |
+| **Add / Add Exercise / Add Set** | Pulsanti "Add", "Add Exercise", "New Week", "Add Day to Week N". | **Implementato.** Modello `WorkoutRoutine` (mobility, weeks, days, exercises); Add mobility, New Week, Add Day, Add Exercise aggiornano lo stato. |
+| **Edit / Delete** | Edit/Delete su tab mobility, week, day, esercizi. | **Implementato.** Delete su mobility item ed esercizi (icona delete); Edit solo UI (logica modifica testuale in backlog). |
+| **Clone week** | Pulsante "Clone" nella week accordion. | **Implementato.** Duplica la settimana con nuovi id e giorni/esercizi. |
+| **Drag & drop** | Icone `drag_indicator` su mobility. | **Implementato.** `ReorderableListView` per mobility items con `ReorderableDragStartListener`; reorder persistito al Save. |
+| **API workout/routine** | Nessun endpoint chiamato per routine o workout. | **Assente.** Persistenza solo locale (SharedPreferences); GymBlogApiClient da integrare quando l’API sarà disponibile. |
 
 ---
 
@@ -52,7 +52,7 @@ Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora imp
 
 | Feature | Dettaglio | Stato |
 |--------|-----------|--------|
-| **Forgot Password** | Flow completo: schermata + invio email reset (Supabase). | **Mancante.** Solo SnackBar "Funzionalità non ancora implementata" dal link in Login. |
+| **Forgot Password** | Flow completo: schermata + invio email reset (Supabase). | **Implementato.** `ForgotPasswordScreen`, route `/forgot-password`, link da Login; `resetPasswordForEmail` Supabase, SnackBar successo/errore. |
 
 ---
 
