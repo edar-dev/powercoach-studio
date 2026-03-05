@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/dashboard/presentation/screens/coach_dashboard_screen.dart';
 import 'features/landing/presentation/screens/landing_screen.dart';
 import 'theme/stitch_m3_theme.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
@@ -27,11 +28,12 @@ final _goRouter = GoRouter(
     final path = state.uri.path;
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final isCustomerRoute = path.startsWith('/customers');
-    if (isCustomerRoute && !isLoggedIn) {
+    final isProtectedRoute = isCustomerRoute || path == '/dashboard' || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings');
+    if (isProtectedRoute && !isLoggedIn) {
       return '/login';
     }
     if (isLoggedIn && (path == '/' || path == '/login')) {
-      return '/customers';
+      return '/dashboard';
     }
     return null;
   },
@@ -51,6 +53,10 @@ final _goRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => const CoachDashboardScreen(),
     ),
     GoRoute(
       path: '/profile',
@@ -111,6 +117,10 @@ final _goRouter = GoRouter(
             GoRoute(
               path: 'superset',
               builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.superset),
+            ),
+            GoRoute(
+              path: 'intuitive-superset',
+              builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.intuitiveSuperset),
             ),
           ],
         ),

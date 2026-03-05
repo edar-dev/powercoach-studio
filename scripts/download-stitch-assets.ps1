@@ -98,6 +98,10 @@ $ForgotPassword2HtmlUrl = $env:STITCH_FORGOT_PASSWORD_2_HTML_URL
 $WorkoutBuilderScreenshotUrl = $env:STITCH_WORKOUT_BUILDER_SCREENSHOT_URL
 $WorkoutBuilderHtmlUrl = $env:STITCH_WORKOUT_BUILDER_HTML_URL
 
+# Workout Builder - Intuitive Super Set Linking (screen ID 7ce630e5879044e7bdc10852d9b5adb1)
+$IntuitiveSupersetScreenshotUrl = $env:STITCH_INTUITIVE_SUPERSET_SCREENSHOT_URL
+$IntuitiveSupersetHtmlUrl = $env:STITCH_INTUITIVE_SUPERSET_HTML_URL
+
 # Programs Library (screen ID 319b1461dde3426fb5798fef7fa1945d)
 $ProgramsLibraryScreenshotUrl = $env:STITCH_PROGRAMS_LIBRARY_SCREENSHOT_URL
 $ProgramsLibraryHtmlUrl = $env:STITCH_PROGRAMS_LIBRARY_HTML_URL
@@ -179,6 +183,10 @@ if ($CoachDashboard2ScreenshotUrl -and $CoachDashboard2HtmlUrl) {
     if (Download-File -Url $CoachDashboard2ScreenshotUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard-2.png')) { $ok++ }
     if (Download-File -Url $CoachDashboard2HtmlUrl -OutPath (Join-Path $AssetsRoot 'coach-dashboard-2.html')) { $ok++ }
 } else { Write-Host "Coach Dashboard 2: set STITCH_COACH_DASHBOARD_2_SCREENSHOT_URL and STITCH_COACH_DASHBOARD_2_HTML_URL." }
+if ($IntuitiveSupersetScreenshotUrl -and $IntuitiveSupersetHtmlUrl) {
+    if (Download-File -Url $IntuitiveSupersetScreenshotUrl -OutPath (Join-Path $AssetsRoot 'workout-builder-intuitive-superset.png')) { $ok++ }
+    if (Download-File -Url $IntuitiveSupersetHtmlUrl -OutPath (Join-Path $AssetsRoot 'workout-builder-intuitive-superset.html')) { $ok++ }
+} else { Write-Host "Intuitive Super Set: set STITCH_INTUITIVE_SUPERSET_SCREENSHOT_URL and STITCH_INTUITIVE_SUPERSET_HTML_URL." }
 if ($ForgotPasswordScreenshotUrl -and $ForgotPasswordHtmlUrl) {
     if (Download-File -Url $ForgotPasswordScreenshotUrl -OutPath (Join-Path $AssetsRoot 'forgot-password.png')) { $ok++ }
     if (Download-File -Url $ForgotPasswordHtmlUrl -OutPath (Join-Path $AssetsRoot 'forgot-password.html')) { $ok++ }

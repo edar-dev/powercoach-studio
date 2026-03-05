@@ -6,8 +6,8 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
 import '../../data/workout_routine_storage.dart';
 
-/// Workout Builder variant: Enhanced Mobility (Stitch 694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6).
-enum WorkoutBuilderVariant { mobility, multiset, superset }
+/// Workout Builder variant: Enhanced Mobility (694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6), Intuitive Super Set (7ce630e5).
+enum WorkoutBuilderVariant { mobility, multiset, superset, intuitiveSuperset }
 
 /// Workout Builder – Enhanced Mobility Controls (Stitch 694ace9b83514965989f12ac2a3d54fa).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
@@ -178,6 +178,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       case WorkoutBuilderVariant.multiset:
         return _TrainingVariant.multiset;
       case WorkoutBuilderVariant.superset:
+      case WorkoutBuilderVariant.intuitiveSuperset:
         return _TrainingVariant.superset;
     }
   }

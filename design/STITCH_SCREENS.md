@@ -24,9 +24,11 @@ Implementazione Flutter: `lib/screens/`, `lib/widgets/`, Material 3 (`ThemeData(
 | 10 | Customer Creation Page    | `534f6e3664244ba59196220f2909eb46` | `lib/features/customers/.../customer_creation_screen.dart` |
 | 11 | Customer Detail Page      | `7a7f3b47bfa1435381554959ca9b72e7` | `lib/features/customers/.../customer_detail_screen.dart` |
 | 12 | Customer List (Populated) | `92b1ea1864184682b142aa8ffea211f8` | `lib/features/customers/.../customer_list_screen.dart` (list + search + chips) |
-| 13 | Workout Builder - Enhanced Mobility Controls | `694ace9b83514965989f12ac2a3d54fa` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: mobility) |
-| 14 | Workout Builder - Multi-set with Large Fields | `9ffa631fd06348a7825d21888f1f20dd` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: multiset) |
-| 15 | Workout Builder - Super Set Linking | `e63b1ef6de2747319b80346360090548` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: superset) |
+| 13 | Coach Dashboard | `285387f9d39c459a989d6060a1c486b0` | `lib/features/dashboard/presentation/screens/coach_dashboard_screen.dart` |
+| 14 | Workout Builder - Enhanced Mobility Controls | `694ace9b83514965989f12ac2a3d54fa` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: mobility) |
+| 15 | Workout Builder - Multi-set with Large Fields | `9ffa631fd06348a7825d21888f1f20dd` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: multiset) |
+| 16 | Workout Builder - Super Set Linking | `e63b1ef6de2747319b80346360090548` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: superset) |
+| 17 | Workout Builder - Intuitive Super Set Linking | `7ce630e5879044e7bdc10852d9b5adb1` | `lib/features/workouts/.../workout_builder_mobility_screen.dart` (variant: intuitiveSuperset), route `/workouts/builder/intuitive-superset` |
 
 ---
 
