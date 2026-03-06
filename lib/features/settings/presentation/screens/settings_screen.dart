@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,7 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 const _keyNotificationsEnabled = 'settings_notifications_enabled';
 
@@ -57,32 +56,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final colorScheme = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        shadowColor: Colors.black26,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.settingsTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: StitchM3Theme.textPrimary,
-          ),
-        ),
-        centerTitle: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: StitchM3Theme.border, height: 1),
-        ),
-      ),
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.settingsTitle),
       body: _loadingPrefs
           ? const Center(child: CircularProgressIndicator())
           : ListView(
@@ -103,7 +78,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsNotificationsDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: StitchM3Theme.textMuted,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   value: _notificationsEnabled,
@@ -114,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: Text(
                     l10n.settingsLanguageDescription,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: StitchM3Theme.textMuted,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right),

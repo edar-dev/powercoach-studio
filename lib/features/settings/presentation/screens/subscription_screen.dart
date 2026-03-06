@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Subscription Settings – Stitch screen ID 1224a49f9c5849fcb205e965ebc0b9a4.
 /// Shows current plan (from profiles.subscription_plan, default free), Upgrade / Manage.
@@ -67,33 +66,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
+    final cs = theme.colorScheme;
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        shadowColor: Colors.black26,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.settingsSubscriptionTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: StitchM3Theme.textPrimary,
-          ),
-        ),
-        centerTitle: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: StitchM3Theme.border, height: 1),
-        ),
-      ),
+      backgroundColor: cs.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.settingsSubscriptionTitle),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -103,9 +79,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 children: [
                   Card(
                     elevation: 0,
+                    color: cs.surface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                      side: const BorderSide(color: StitchM3Theme.border),
+                      side: BorderSide(color: cs.outline),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(20),
@@ -115,7 +92,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           Text(
                             l10n.subscriptionCurrentPlan,
                             style: theme.textTheme.labelLarge?.copyWith(
-                              color: StitchM3Theme.textMuted,
+                              color: cs.onSurfaceVariant,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -123,7 +100,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                             _planLabel(l10n),
                             style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: StitchM3Theme.textPrimary,
+                              color: cs.onSurface,
                             ),
                           ),
                         ],

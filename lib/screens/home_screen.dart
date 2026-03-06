@@ -24,8 +24,9 @@ class HomeScreen extends StatelessWidget {
     final isNarrow = width < _breakpoint;
     final padding = isNarrow ? _paddingMobile : _paddingDesktop;
 
+    final cs = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: StitchM3Theme.bg,
+      backgroundColor: cs.surface,
       appBar: StitchAppBar(
         title: 'PowerCoach Studio',
         actions: [

@@ -22,9 +22,10 @@ class ScheduleScreen extends StatelessWidget {
     final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
+      backgroundColor: cs.surfaceContainerHighest,
       appBar: AppBar(
         elevation: 0,
+        scrolledUnderElevation: 1,
         backgroundColor: cs.surface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -43,6 +44,10 @@ class ScheduleScreen extends StatelessWidget {
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
           ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: cs.outline, height: 1),
         ),
       ),
       body: ListView.builder(

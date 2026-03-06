@@ -58,9 +58,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
+      backgroundColor: cs.surfaceContainerHighest,
       appBar: AppBar(
         elevation: 0,
+        scrolledUnderElevation: 1,
         backgroundColor: cs.surface,
         title: Text(
           'Dashboard',
@@ -87,6 +88,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(color: cs.outline, height: 1),
+        ),
       ),
       drawer: _DashboardDrawer(theme: theme, cs: cs),
       body: RefreshIndicator(

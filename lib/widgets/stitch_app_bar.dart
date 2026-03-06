@@ -20,8 +20,10 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
     return AppBar(
-      backgroundColor: StitchM3Theme.bg,
+      backgroundColor: cs.surface,
       elevation: 0,
       scrolledUnderElevation: 1,
       leading: leading,
@@ -32,10 +34,10 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
           Expanded(
             child: Text(
               title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: StitchM3Theme.textPrimary,
-                  ),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: cs.onSurface,
+              ),
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
@@ -45,10 +47,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: actions,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(
-          color: StitchM3Theme.border,
-          height: 1,
-        ),
+        child: Container(color: cs.outline, height: 1),
       ),
     );
   }

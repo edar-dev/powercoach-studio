@@ -59,6 +59,7 @@ class StitchM3Theme {
       onSurface: textPrimary,
       onSurfaceVariant: textMuted,
       outline: border,
+      surfaceContainerHighest: bgSecondary,
       error: Color(0xFFEF4444),
       onError: Colors.white,
     );

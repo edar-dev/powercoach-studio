@@ -113,6 +113,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     if (!GymBlogApiClient.isConfigured) {
       return Scaffold(
+        backgroundColor: colorScheme.surfaceContainerHighest,
         appBar: _customerListAppBar(context, theme, l10n.customersTitle),
         body: Center(
           child: Padding(
@@ -130,6 +131,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     }
 
     return Scaffold(
+      backgroundColor: colorScheme.surfaceContainerHighest,
       appBar: _customerListAppBar(context, theme, l10n.customersTitle),
       body: RefreshIndicator(
         onRefresh: () => _load(skipCache: true),
@@ -467,6 +469,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   ) {
     final cs = theme.colorScheme;
     return AppBar(
+      backgroundColor: cs.surface,
       elevation: 0,
       scrolledUnderElevation: 1,
       leading: IconButton(

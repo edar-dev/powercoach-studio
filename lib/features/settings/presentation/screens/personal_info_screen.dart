@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../widgets/stitch_card.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
 /// Edit display name, email (read-only), phone; save to Supabase profiles.
@@ -138,16 +139,16 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        appBar: StitchSecondaryAppBar(title: l10n.settingsPersonalInfoTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        appBar: StitchSecondaryAppBar(title: l10n.settingsPersonalInfoTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -174,99 +175,68 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     }
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: _appBar(context, theme, l10n.settingsPersonalInfoTitle),
+      backgroundColor: colorScheme.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.settingsPersonalInfoTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_loadError != null) ...[
-                  Text(
-                    l10n.profileLoadError,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: StitchM3Theme.danger,
+          child: StitchCard(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_loadError != null) ...[
+                    Text(
+                      l10n.profileLoadError,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.error,
+                      ),
                     ),
+                    const SizedBox(height: 16),
+                  ],
+                  TextFormField(
+                    controller: _displayNameController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(labelText: l10n.profileDisplayName),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _emailController,
+                    readOnly: true,
+                    decoration: InputDecoration(labelText: l10n.profileEmail),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(labelText: l10n.profilePhone),
+                  ),
+                  const SizedBox(height: 32),
+                  FilledButton(
+                    onPressed: _isSaving ? null : _save,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      minimumSize: const Size(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      ),
+                    ),
+                    child: _isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(l10n.profileSave),
+                  ),
                 ],
-                TextFormField(
-                  controller: _displayNameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(labelText: l10n.profileDisplayName),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  readOnly: true,
-                  decoration: InputDecoration(labelText: l10n.profileEmail),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(labelText: l10n.profilePhone),
-                ),
-                const SizedBox(height: 32),
-                FilledButton(
-                  onPressed: _isSaving ? null : _save,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: StitchM3Theme.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(0, 44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                  ),
-                  child: _isSaving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.profileSave),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _appBar(
-    BuildContext context,
-    ThemeData theme,
-    String title,
-  ) {
-    return AppBar(
-      backgroundColor: StitchM3Theme.bg,
-      elevation: 0,
-      scrolledUnderElevation: 1,
-      shadowColor: Colors.black26,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          context.pop();
-        },
-      ),
-      title: Text(
-        title,
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: StitchM3Theme.textPrimary,
-        ),
-      ),
-      centerTitle: false,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: StitchM3Theme.border, height: 1),
       ),
     );
   }

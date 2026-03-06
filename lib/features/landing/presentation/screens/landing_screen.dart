@@ -42,10 +42,11 @@ class _LandingScreenState extends State<LandingScreen> {
     final theme = Theme.of(context);
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
 
+    final cs = theme.colorScheme;
     return Scaffold(
-      backgroundColor: StitchM3Theme.bg,
+      backgroundColor: cs.surface,
       appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
+        backgroundColor: cs.surface,
         elevation: 0,
         scrolledUnderElevation: 2,
         surfaceTintColor: Colors.transparent,
@@ -80,7 +81,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 l10n.appTitle,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: StitchM3Theme.textPrimary,
+                  color: cs.onSurface,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -92,7 +93,7 @@ class _LandingScreenState extends State<LandingScreen> {
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(
-            color: StitchM3Theme.border,
+            color: cs.outline,
             height: 1,
           ),
         ),

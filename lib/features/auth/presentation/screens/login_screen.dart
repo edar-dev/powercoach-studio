@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 import '../../utils/auth_error_message.dart';
 
 /// Login Page – matches Stitch prototype (screen ID 3e212f412ed849a9b6bcfc0772cf15fd).
@@ -99,35 +100,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
+    final cs = theme.colorScheme;
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.loginTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: StitchM3Theme.textPrimary,
-          ),
-        ),
-        centerTitle: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(
-            color: StitchM3Theme.border,
-            height: 1,
-          ),
-        ),
-      ),
+      backgroundColor: cs.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.loginTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -135,9 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Container(
               constraints: const BoxConstraints(maxWidth: StitchM3Theme.authCardMaxWidth),
               decoration: BoxDecoration(
-                color: StitchM3Theme.bg,
+                color: cs.surface,
                 borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: StitchM3Theme.border),
+                border: Border.all(color: cs.outline),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.05),
@@ -170,7 +146,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             'PowerCoach Studio',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              color: StitchM3Theme.textPrimary,
+                              color: cs.onSurface,
                               letterSpacing: 1.2,
                             ),
                           ),
@@ -186,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             l10n.loginSuccessMessage.replaceAll('!', ''),
                             style: theme.textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              color: StitchM3Theme.textPrimary,
+                              color: cs.onSurface,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -217,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                  color: StitchM3Theme.textMuted,
+                                  color: cs.onSurfaceVariant,
                                 ),
                                 onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                               ),
@@ -245,8 +221,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: FilledButton(
                               onPressed: _isLoading ? null : _submit,
                               style: FilledButton.styleFrom(
-                                backgroundColor: StitchM3Theme.accent,
-                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
                                 ),
@@ -266,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               Text(
                                 l10n.loginNoAccount,
-                                style: theme.textTheme.bodyMedium?.copyWith(color: StitchM3Theme.textMuted),
+                                style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                               ),
                               TextButton(
                                 onPressed: () {

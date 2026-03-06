@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -7,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/stitch_card.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
 /// Loads and saves profile to Supabase public.profiles (id, display_name, avatar_url, bio, phone, website).
@@ -166,18 +167,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
     final user = Supabase.instance.client.auth.currentUser;
 
+    final cs = theme.colorScheme;
+
     if (_isLoading) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _profileAppBar(context, theme, l10n.profileTitle),
+        backgroundColor: cs.surfaceContainerHighest,
+        appBar: StitchSecondaryAppBar(title: l10n.profileTitle),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null && user == null) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _profileAppBar(context, theme, l10n.profileTitle),
+        backgroundColor: cs.surfaceContainerHighest,
+        appBar: StitchSecondaryAppBar(title: l10n.profileTitle),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -187,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Text(
                   l10n.profileLoadError,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: StitchM3Theme.textMuted,
+                    color: cs.onSurfaceVariant,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -204,168 +207,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: _profileAppBar(context, theme, l10n.profileTitle),
+      backgroundColor: cs.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.profileTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (_loadError != null) ...[
-                  Text(
-                    l10n.profileLoadError,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: StitchM3Theme.danger,
+          child: StitchCard(
+            padding: const EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (_loadError != null) ...[
+                    Text(
+                      l10n.profileLoadError,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.error,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                  TextFormField(
+                    controller: _displayNameController,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileDisplayName,
+                    ),
                   ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _emailController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileEmail,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.profilePhone,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _bioController,
+                    maxLines: 4,
+                    textInputAction: TextInputAction.newline,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileBio,
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _avatarUrlController,
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileAvatarUrl,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _websiteController,
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileWebsite,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  FilledButton(
+                    onPressed: _isSaving ? null : _save,
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      minimumSize: const Size(0, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      ),
+                    ),
+                    child: _isSaving
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : Text(l10n.profileSave),
+                  ),
+                  const SizedBox(height: 24),
+                  OutlinedButton.icon(
+                    onPressed: _isSaving ? null : () => context.push('/customers'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      ),
+                    ),
+                    icon: const Icon(Icons.people_outline),
+                    label: Text(l10n.customersTitle),
                   ),
                   const SizedBox(height: 16),
+                  OutlinedButton.icon(
+                    onPressed: _isSaving ? null : () => context.push('/settings'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      ),
+                    ),
+                    icon: const Icon(Icons.settings_outlined),
+                    label: Text(l10n.settingsTitle),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    onPressed: _isSaving ? null : _signOut,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                      ),
+                    ),
+                    child: Text(l10n.profileSignOut),
+                  ),
                 ],
-                TextFormField(
-                  controller: _displayNameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileDisplayName,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _emailController,
-                  readOnly: true,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileEmail,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profilePhone,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _bioController,
-                  maxLines: 4,
-                  textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileBio,
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _avatarUrlController,
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileAvatarUrl,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _websiteController,
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: l10n.profileWebsite,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                FilledButton(
-                  onPressed: _isSaving ? null : _save,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: StitchM3Theme.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(0, 44),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                  ),
-                  child: _isSaving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : Text(l10n.profileSave),
-                ),
-                const SizedBox(height: 24),
-                OutlinedButton.icon(
-                  onPressed: _isSaving ? null : () => context.push('/customers'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                  ),
-                  icon: const Icon(Icons.people_outline),
-                  label: Text(l10n.customersTitle),
-                ),
-                const SizedBox(height: 16),
-                OutlinedButton.icon(
-                  onPressed: _isSaving ? null : () => context.push('/settings'),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                  ),
-                  icon: const Icon(Icons.settings_outlined),
-                  label: Text(l10n.settingsTitle),
-                ),
-                const SizedBox(height: 16),
-                OutlinedButton(
-                  onPressed: _isSaving ? null : _signOut,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                  ),
-                  child: Text(l10n.profileSignOut),
-                ),
-              ],
+              ),
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  PreferredSizeWidget _profileAppBar(
-    BuildContext context,
-    ThemeData theme,
-    String title,
-  ) {
-    return AppBar(
-      backgroundColor: StitchM3Theme.bg,
-      elevation: 0,
-      scrolledUnderElevation: 1,
-      shadowColor: Colors.black26,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          context.pop();
-        },
-      ),
-      title: Text(
-        title,
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: StitchM3Theme.textPrimary,
-        ),
-      ),
-      centerTitle: false,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: StitchM3Theme.border, height: 1),
       ),
     );
   }

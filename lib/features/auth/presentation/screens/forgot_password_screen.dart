@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Forgot Password – Stitch ID 3563377ad3864dfca42385fcd5ea0840.
 /// Sends reset link via Supabase Auth resetPasswordForEmail.
@@ -96,27 +97,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final cs = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.forgotPasswordTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: cs.onSurface,
-          ),
-        ),
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: cs.outline, height: 1),
-        ),
-      ),
+      backgroundColor: cs.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.forgotPasswordTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
