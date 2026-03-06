@@ -811,6 +811,192 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Customer deleted.'**
   String get customerDeletedMessage;
+
+  /// No description provided for @workoutExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get workoutExport;
+
+  /// No description provided for @workoutExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to PDF'**
+  String get workoutExportPdf;
+
+  /// No description provided for @workoutExportExcel.
+  ///
+  /// In en, this message translates to:
+  /// **'Export to Excel'**
+  String get workoutExportExcel;
+
+  /// No description provided for @workoutExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'File ready to share.'**
+  String get workoutExportSuccess;
+
+  /// No description provided for @workoutExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed. Try again.'**
+  String get workoutExportError;
+
+  /// No description provided for @workoutShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get workoutShare;
+
+  /// No description provided for @customerDetailOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get customerDetailOverview;
+
+  /// No description provided for @customerDetailMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurements'**
+  String get customerDetailMeasurements;
+
+  /// No description provided for @measurementsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No measurements yet'**
+  String get measurementsEmpty;
+
+  /// No description provided for @measurementsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a measurement to track 1RM, body composition, and circumferences.'**
+  String get measurementsEmptyHint;
+
+  /// No description provided for @measurementAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add measurement'**
+  String get measurementAdd;
+
+  /// No description provided for @measurementEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit measurement'**
+  String get measurementEdit;
+
+  /// No description provided for @measurementDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get measurementDate;
+
+  /// No description provided for @measurement1RM.
+  ///
+  /// In en, this message translates to:
+  /// **'1RM (kg)'**
+  String get measurement1RM;
+
+  /// No description provided for @measurementSquat.
+  ///
+  /// In en, this message translates to:
+  /// **'Squat'**
+  String get measurementSquat;
+
+  /// No description provided for @measurementBench.
+  ///
+  /// In en, this message translates to:
+  /// **'Bench press'**
+  String get measurementBench;
+
+  /// No description provided for @measurementDeadlift.
+  ///
+  /// In en, this message translates to:
+  /// **'Deadlift'**
+  String get measurementDeadlift;
+
+  /// No description provided for @measurementSkinfolds.
+  ///
+  /// In en, this message translates to:
+  /// **'Skinfolds (mm)'**
+  String get measurementSkinfolds;
+
+  /// No description provided for @measurementBodyFat.
+  ///
+  /// In en, this message translates to:
+  /// **'Body fat %'**
+  String get measurementBodyFat;
+
+  /// No description provided for @measurementMuscleMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscle mass (kg)'**
+  String get measurementMuscleMass;
+
+  /// No description provided for @measurementCircumferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Circumferences (cm)'**
+  String get measurementCircumferences;
+
+  /// No description provided for @measurementChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest'**
+  String get measurementChest;
+
+  /// No description provided for @measurementWaist.
+  ///
+  /// In en, this message translates to:
+  /// **'Waist'**
+  String get measurementWaist;
+
+  /// No description provided for @measurementArms.
+  ///
+  /// In en, this message translates to:
+  /// **'Arms'**
+  String get measurementArms;
+
+  /// No description provided for @measurementThighs.
+  ///
+  /// In en, this message translates to:
+  /// **'Thighs'**
+  String get measurementThighs;
+
+  /// No description provided for @measurementNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get measurementNotes;
+
+  /// No description provided for @measurementSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement saved.'**
+  String get measurementSaved;
+
+  /// No description provided for @measurementSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save measurement.'**
+  String get measurementSaveError;
+
+  /// No description provided for @measurementDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement deleted.'**
+  String get measurementDeleted;
+
+  /// No description provided for @measurementDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete measurement.'**
+  String get measurementDeleteError;
+
+  /// No description provided for @measurementDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this measurement?'**
+  String get measurementDeleteConfirm;
 }
 
 class _AppLocalizationsDelegate

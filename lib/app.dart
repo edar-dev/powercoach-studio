@@ -129,6 +129,32 @@ final _goRouter = GoRouter(
       builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.mobility),
       routes: [
         GoRoute(
+          path: 'editor',
+          builder: (context, state) {
+            final customerId = state.uri.queryParameters['customerId'];
+            return WorkoutBuilderMobilityScreen(
+              variant: WorkoutBuilderVariant.mobility,
+              customerId: customerId,
+              editorMode: true,
+            );
+          },
+          routes: [
+            GoRoute(
+              path: ':planId',
+              builder: (context, state) {
+                final planId = state.pathParameters['planId'];
+                final customerId = state.uri.queryParameters['customerId'];
+                return WorkoutBuilderMobilityScreen(
+                  variant: WorkoutBuilderVariant.mobility,
+                  customerId: customerId,
+                  planId: planId,
+                  editorMode: true,
+                );
+              },
+            ),
+          ],
+        ),
+        GoRoute(
           path: 'builder',
           builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.mobility),
           routes: [

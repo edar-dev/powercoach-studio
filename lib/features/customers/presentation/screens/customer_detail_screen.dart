@@ -7,7 +7,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
+import '../../data/models/customer_measurement.dart';
+import 'customer_measurement_form_screen.dart';
 
 /// Customer Detail Page – Stitch screen ID 7a7f3b47bfa1435381554959ca9b72e7.
 class CustomerDetailScreen extends StatefulWidget {
@@ -19,16 +22,45 @@ class CustomerDetailScreen extends StatefulWidget {
   State<CustomerDetailScreen> createState() => _CustomerDetailScreenState();
 }
 
-class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
+class _CustomerDetailScreenState extends State<CustomerDetailScreen> with SingleTickerProviderStateMixin {
   final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
   Customer? _customer;
   bool _loading = true;
   String? _error;
+  List<CustomerMeasurement> _measurements = [];
+  bool _measurementsLoading = false;
+  late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _load();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadMeasurements() async {
+    if (!GymBlogApiClient.isConfigured) return;
+    setState(() => _measurementsLoading = true);
+    try {
+      final list = await _measurementRepo.getByCustomerId(widget.customerId);
+      if (mounted) {
+        setState(() {
+          _measurements = list;
+          _measurementsLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _measurementsLoading = false);
+      }
+    }
   }
 
   Future<void> _load() async {
@@ -46,6 +78,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
           _loading = false;
           _error = null;
         });
+        _loadMeasurements();
       }
     } catch (e) {
       if (mounted) {
@@ -187,8 +220,19 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
         ),
         centerTitle: false,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: colorScheme.outline, height: 1),
+          preferredSize: const Size.fromHeight(48),
+          child: Column(
+            children: [
+              TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(text: l10n.customerDetailOverview),
+                  Tab(text: l10n.customerDetailMeasurements),
+                ],
+              ),
+              Container(color: colorScheme.outline, height: 1),
+            ],
+          ),
         ),
         actions: [
           IconButton(
@@ -226,12 +270,30 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
         ],
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Profile section (Stitch)
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            _buildOverviewTab(context, c, theme, colorScheme, goalLabel),
+            _buildMeasurementsTab(context, theme, colorScheme),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOverviewTab(
+    BuildContext context,
+    Customer c,
+    ThemeData theme,
+    ColorScheme colorScheme,
+    String goalLabel,
+  ) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Profile section (Stitch)
               Column(
                 children: [
                   Stack(
@@ -312,7 +374,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: FilledButton.icon(
-                          onPressed: () => context.push('/workouts/builder?customerId=${c.id}'),
+                          onPressed: () => context.push('/workouts/editor?customerId=${c.id}'),
                           icon: const Icon(Icons.add_task, size: 20),
                           label: const Text('Assign Workout'),
                           style: FilledButton.styleFrom(
@@ -404,13 +466,172 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              _workoutCard(context, 'Heavy Upper Body A', 'Yesterday • 65 mins', 'Completed', 'NEW PR', true),
-              const SizedBox(height: 12),
-              _workoutCard(context, 'Leg Day Focus', '3 days ago • 72 mins', 'Completed', '14,200 KG VOLUME', false),
+          _workoutCard(context, 'Heavy Upper Body A', 'Yesterday • 65 mins', 'Completed', 'NEW PR', true),
+          const SizedBox(height: 12),
+          _workoutCard(context, 'Leg Day Focus', '3 days ago • 72 mins', 'Completed', '14,200 KG VOLUME', false),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMeasurementsTab(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+    final l10n = AppLocalizations.of(context);
+    if (!GymBlogApiClient.isConfigured) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.straighten, size: 48, color: colorScheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              Text(
+                l10n.measurementsEmpty,
+                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.measurementsEmptyHint,
+                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
             ],
           ),
         ),
-      ),
+      );
+    }
+    if (_measurementsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_measurements.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.straighten, size: 48, color: colorScheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              Text(
+                l10n.measurementsEmpty,
+                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.measurementsEmptyHint,
+                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: () async {
+                  final added = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (ctx) => CustomerMeasurementFormScreen(customerId: widget.customerId),
+                    ),
+                  );
+                  if (added == true) _loadMeasurements();
+                },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.measurementAdd),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    return Stack(
+      children: [
+        ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          itemCount: _measurements.length,
+          itemBuilder: (context, index) {
+            final m = _measurements[index];
+            final dateStr = CustomerMeasurement.toDateString(m.measurementDate);
+            final summary = [
+              if (m.squat1RM != null) 'S ${m.squat1RM}',
+              if (m.benchPress1RM != null) 'B ${m.benchPress1RM}',
+              if (m.deadlift1RM != null) 'D ${m.deadlift1RM}',
+              if (m.bodyFatPercent != null) 'BF ${m.bodyFatPercent}%',
+            ].join(' · ');
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: ListTile(
+                title: Text(dateStr, style: theme.textTheme.titleMedium),
+                subtitle: summary.isEmpty ? null : Text(summary, style: theme.textTheme.bodySmall),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  final updated = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (ctx) => CustomerMeasurementFormScreen(
+                        customerId: widget.customerId,
+                        measurement: m,
+                      ),
+                    ),
+                  );
+                  if (updated == true) _loadMeasurements();
+                },
+                onLongPress: () async {
+                  final confirm = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l10n.measurementDeleteConfirm),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(l10n.customerCancel),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
+                          child: Text(l10n.customerDelete),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirm != true || !mounted) return;
+                  try {
+                    await _measurementRepo.delete(widget.customerId, m.id);
+                    if (!mounted) return;
+                    final messenger = ScaffoldMessenger.maybeOf(context);
+                    if (messenger != null) {
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(l10n.measurementDeleted), behavior: SnackBarBehavior.floating),
+                      );
+                    }
+                    _loadMeasurements();
+                  } catch (_) {
+                    if (!mounted) return;
+                    final messengerErr = ScaffoldMessenger.maybeOf(context);
+                    if (messengerErr != null) {
+                      messengerErr.showSnackBar(
+                        SnackBar(content: Text(l10n.measurementDeleteError), behavior: SnackBarBehavior.floating, backgroundColor: colorScheme.errorContainer),
+                      );
+                    }
+                  }
+                },
+              ),
+            );
+          },
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton(
+            onPressed: () async {
+              final added = await Navigator.of(context).push<bool>(
+                MaterialPageRoute(
+                  builder: (ctx) => CustomerMeasurementFormScreen(customerId: widget.customerId),
+                ),
+              );
+              if (added == true) _loadMeasurements();
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
     );
   }
 

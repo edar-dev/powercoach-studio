@@ -376,4 +376,98 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get customerDeletedMessage => 'Cliente eliminato.';
+
+  @override
+  String get workoutExport => 'Esporta';
+
+  @override
+  String get workoutExportPdf => 'Esporta in PDF';
+
+  @override
+  String get workoutExportExcel => 'Esporta in Excel';
+
+  @override
+  String get workoutExportSuccess => 'File pronto per la condivisione.';
+
+  @override
+  String get workoutExportError => 'Esportazione fallita. Riprova.';
+
+  @override
+  String get workoutShare => 'Condividi';
+
+  @override
+  String get customerDetailOverview => 'Panoramica';
+
+  @override
+  String get customerDetailMeasurements => 'Misure';
+
+  @override
+  String get measurementsEmpty => 'Nessuna misura ancora';
+
+  @override
+  String get measurementsEmptyHint =>
+      'Aggiungi una misura per tracciare 1RM, composizione corporea e circonferenze.';
+
+  @override
+  String get measurementAdd => 'Aggiungi misura';
+
+  @override
+  String get measurementEdit => 'Modifica misura';
+
+  @override
+  String get measurementDate => 'Data';
+
+  @override
+  String get measurement1RM => '1RM (kg)';
+
+  @override
+  String get measurementSquat => 'Squat';
+
+  @override
+  String get measurementBench => 'Panca piana';
+
+  @override
+  String get measurementDeadlift => 'Stacco';
+
+  @override
+  String get measurementSkinfolds => 'Pliche (mm)';
+
+  @override
+  String get measurementBodyFat => 'Massa grassa %';
+
+  @override
+  String get measurementMuscleMass => 'Massa muscolare (kg)';
+
+  @override
+  String get measurementCircumferences => 'Circonferenze (cm)';
+
+  @override
+  String get measurementChest => 'Petto';
+
+  @override
+  String get measurementWaist => 'Vita';
+
+  @override
+  String get measurementArms => 'Braccia';
+
+  @override
+  String get measurementThighs => 'Cosce';
+
+  @override
+  String get measurementNotes => 'Note';
+
+  @override
+  String get measurementSaved => 'Misura salvata.';
+
+  @override
+  String get measurementSaveError => 'Impossibile salvare la misura.';
+
+  @override
+  String get measurementDeleted => 'Misura eliminata.';
+
+  @override
+  String get measurementDeleteError => 'Impossibile eliminare la misura.';
+
+  @override
+  String get measurementDeleteConfirm => 'Eliminare questa misura?';
 }

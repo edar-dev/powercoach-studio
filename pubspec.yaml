@@ -56,6 +56,12 @@ dependencies:
   # Contact picker for "Import from contacts" (customer prefill)
   flutter_contacts: ^1.1.9
 
+  # Export workout plans (PDF, Excel) and share
+  pdf: ^3.11.0
+  excel: ^4.0.0
+  path_provider: ^2.1.0
+  share_plus: ^10.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

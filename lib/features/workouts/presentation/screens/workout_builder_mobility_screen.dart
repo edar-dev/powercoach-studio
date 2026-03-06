@@ -1,19 +1,38 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/network/gymblog_api_client.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
 import '../../data/workout_routine_storage.dart';
+import '../../data/workout_plan_repository.dart';
+import '../../domain/export_excel_usecase.dart';
+import '../../domain/export_pdf_usecase.dart';
+import '../../../customers/data/models/customer.dart' show Customer;
 
 /// Workout Builder variant: Enhanced Mobility (694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6), Intuitive Super Set (7ce630e5).
 enum WorkoutBuilderVariant { mobility, multiset, superset, intuitiveSuperset }
 
 /// Workout Builder – Enhanced Mobility Controls (Stitch 694ace9b83514965989f12ac2a3d54fa).
+/// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
-  const WorkoutBuilderMobilityScreen({super.key, this.variant = WorkoutBuilderVariant.mobility});
+  const WorkoutBuilderMobilityScreen({
+    super.key,
+    this.variant = WorkoutBuilderVariant.mobility,
+    this.customerId,
+    this.planId,
+    this.editorMode = false,
+  });
 
   final WorkoutBuilderVariant variant;
+  final String? customerId;
+  final String? planId;
+  final bool editorMode;
 
   @override
   State<WorkoutBuilderMobilityScreen> createState() => _WorkoutBuilderMobilityScreenState();
@@ -21,6 +40,10 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
 
 class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen> {
   final _routineNameController = TextEditingController(text: 'Hypertrophy Phase 1');
+  final _api = GymBlogApiClient();
+  final _planRepo = WorkoutPlanRepository();
+  String? _loadedPlanId;
+  Customer? _editorCustomer;
   WorkoutRoutine _routine = WorkoutRoutine(
     name: 'Hypertrophy Phase 1',
     mobilityItems: WorkoutRoutine.defaultMobilityItems(),
@@ -45,6 +68,10 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   }
 
   Future<void> _loadRoutine() async {
+    if (widget.editorMode && widget.customerId != null) {
+      await _loadForEditorMode();
+      return;
+    }
     final loaded = await WorkoutRoutineStorage.load();
     if (!mounted) return;
     setState(() {
@@ -58,9 +85,98 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
+  Future<void> _loadForEditorMode() async {
+    final customerId = widget.customerId!;
+    if (!GymBlogApiClient.isConfigured) {
+      if (!mounted) return;
+      setState(() {
+        _routineNameController.text = _routine.name;
+        _loading = false;
+      });
+      return;
+    }
+    try {
+      Customer? customer;
+      if (widget.planId != null && widget.planId!.isNotEmpty) {
+        final plan = await _planRepo.getById(widget.planId!);
+        if (plan != null && mounted) {
+          final routine = planDataToRoutine(plan.planData);
+          setState(() {
+            _routine = routine;
+            _routineNameController.text = routine.name;
+            _loadedPlanId = plan.id;
+            _expandedWeekIds.clear();
+            if (routine.weeks.isNotEmpty) _expandedWeekIds.add(routine.weeks.first.id);
+          });
+        }
+      } else {
+        setState(() {
+          _expandedWeekIds.clear();
+          if (_routine.weeks.isNotEmpty) _expandedWeekIds.add(_routine.weeks.first.id);
+        });
+      }
+      try {
+        final data = await _api.get('/api/customers/$customerId');
+        customer = Customer.fromJson(data);
+      } catch (_) {}
+      if (!mounted) return;
+      setState(() {
+        _editorCustomer = customer;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _expandedWeekIds.clear();
+        if (_routine.weeks.isNotEmpty) _expandedWeekIds.add(_routine.weeks.first.id);
+        _loading = false;
+      });
+    }
+  }
+
   Future<void> _saveRoutine() async {
     final name = _routineNameController.text.trim();
     final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+
+    if (widget.editorMode && widget.customerId != null && GymBlogApiClient.isConfigured) {
+      try {
+        if (_loadedPlanId != null) {
+          await _planRepo.update(
+            planId: _loadedPlanId!,
+            name: toSave.name,
+            planDataJson: _encodeRoutine(toSave),
+          );
+        } else {
+          final created = await _planRepo.create(
+            customerId: widget.customerId!,
+            name: toSave.name,
+            planDataJson: _encodeRoutine(toSave),
+            pdfHeader: _editorCustomer?.pdfHeader,
+            useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
+          );
+          if (mounted) setState(() => _loadedPlanId = created.id);
+        }
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Plan saved'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: StitchM3Theme.accent,
+          ),
+        );
+      } catch (_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).workoutExportError),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ),
+        );
+      }
+      return;
+    }
+
     await WorkoutRoutineStorage.save(toSave);
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -70,6 +186,80 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         backgroundColor: StitchM3Theme.accent,
       ),
     );
+  }
+
+  static String _encodeRoutine(WorkoutRoutine r) {
+    return jsonEncode(r.toJson());
+  }
+
+  Future<Customer?> _loadCustomerIfNeeded() async {
+    if (widget.editorMode && _editorCustomer != null) return _editorCustomer;
+    final customerId = widget.customerId ?? GoRouterState.of(context).uri.queryParameters['customerId'];
+    if (customerId == null || customerId.isEmpty) return null;
+    if (!GymBlogApiClient.isConfigured) return null;
+    try {
+      final data = await _api.get('/api/customers/$customerId');
+      return Customer.fromJson(data);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _exportPdfAndShare() async {
+    final l10n = AppLocalizations.of(context);
+    final name = _routineNameController.text.trim();
+    final routine = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    try {
+      final customer = await _loadCustomerIfNeeded();
+      final path = await exportWorkoutRoutineToPdf(routine, customer: customer);
+      if (!mounted) return;
+      await Share.shareXFiles([XFile(path)]);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  Future<void> _exportExcelAndShare() async {
+    final l10n = AppLocalizations.of(context);
+    final name = _routineNameController.text.trim();
+    final routine = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    try {
+      final path = await exportWorkoutRoutineToExcel(routine);
+      if (!mounted) return;
+      await Share.shareXFiles([XFile(path)]);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   void _addMobilityItem() {
@@ -248,6 +438,19 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           ),
         ),
         actions: [
+          if (!_loading)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.ios_share),
+              tooltip: AppLocalizations.of(context).workoutExport,
+              onSelected: (value) {
+                if (value == 'pdf') _exportPdfAndShare();
+                if (value == 'excel') _exportExcelAndShare();
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem(value: 'pdf', child: Text(AppLocalizations.of(context).workoutExportPdf)),
+                PopupMenuItem(value: 'excel', child: Text(AppLocalizations.of(context).workoutExportExcel)),
+              ],
+            ),
           Padding(
             padding: const EdgeInsets.only(right: 12),
             child: TextButton(

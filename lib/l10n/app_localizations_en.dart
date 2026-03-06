@@ -377,4 +377,98 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerDeletedMessage => 'Customer deleted.';
+
+  @override
+  String get workoutExport => 'Export';
+
+  @override
+  String get workoutExportPdf => 'Export to PDF';
+
+  @override
+  String get workoutExportExcel => 'Export to Excel';
+
+  @override
+  String get workoutExportSuccess => 'File ready to share.';
+
+  @override
+  String get workoutExportError => 'Export failed. Try again.';
+
+  @override
+  String get workoutShare => 'Share';
+
+  @override
+  String get customerDetailOverview => 'Overview';
+
+  @override
+  String get customerDetailMeasurements => 'Measurements';
+
+  @override
+  String get measurementsEmpty => 'No measurements yet';
+
+  @override
+  String get measurementsEmptyHint =>
+      'Add a measurement to track 1RM, body composition, and circumferences.';
+
+  @override
+  String get measurementAdd => 'Add measurement';
+
+  @override
+  String get measurementEdit => 'Edit measurement';
+
+  @override
+  String get measurementDate => 'Date';
+
+  @override
+  String get measurement1RM => '1RM (kg)';
+
+  @override
+  String get measurementSquat => 'Squat';
+
+  @override
+  String get measurementBench => 'Bench press';
+
+  @override
+  String get measurementDeadlift => 'Deadlift';
+
+  @override
+  String get measurementSkinfolds => 'Skinfolds (mm)';
+
+  @override
+  String get measurementBodyFat => 'Body fat %';
+
+  @override
+  String get measurementMuscleMass => 'Muscle mass (kg)';
+
+  @override
+  String get measurementCircumferences => 'Circumferences (cm)';
+
+  @override
+  String get measurementChest => 'Chest';
+
+  @override
+  String get measurementWaist => 'Waist';
+
+  @override
+  String get measurementArms => 'Arms';
+
+  @override
+  String get measurementThighs => 'Thighs';
+
+  @override
+  String get measurementNotes => 'Notes';
+
+  @override
+  String get measurementSaved => 'Measurement saved.';
+
+  @override
+  String get measurementSaveError => 'Could not save measurement.';
+
+  @override
+  String get measurementDeleted => 'Measurement deleted.';
+
+  @override
+  String get measurementDeleteError => 'Could not delete measurement.';
+
+  @override
+  String get measurementDeleteConfirm => 'Delete this measurement?';
 }
