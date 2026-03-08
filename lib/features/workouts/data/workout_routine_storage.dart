@@ -12,21 +12,13 @@ class WorkoutRoutineStorage {
     final prefs = await SharedPreferences.getInstance();
     final jsonStr = prefs.getString(_keyRoutine);
     if (jsonStr == null || jsonStr.isEmpty) {
-      return WorkoutRoutine(
-        name: 'Hypertrophy Phase 1',
-        mobilityItems: WorkoutRoutine.defaultMobilityItems(),
-        weeks: WorkoutRoutine.defaultWeeks(),
-      );
+      return WorkoutRoutine.empty();
     }
     try {
       final map = jsonDecode(jsonStr) as Map<String, dynamic>;
       return WorkoutRoutine.fromJson(map);
     } catch (_) {
-      return WorkoutRoutine(
-        name: 'Hypertrophy Phase 1',
-        mobilityItems: WorkoutRoutine.defaultMobilityItems(),
-        weeks: WorkoutRoutine.defaultWeeks(),
-      );
+      return WorkoutRoutine.empty();
     }
   }
 

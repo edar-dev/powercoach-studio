@@ -34,13 +34,54 @@ Future<String> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue('Notes');
       row += 1;
 
-      for (final ex in day.exercises) {
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(ex.name);
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(ex.sets);
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(ex.reps);
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(ex.rpe);
-        sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(ex.note);
-        row += 1;
+      for (final item in partitionExercisesBySuperset(day.exercises)) {
+        if (item is Exercise) {
+          final ex = item;
+          final details = ex.effectiveSetDetails;
+          if (details.length > 1) {
+            for (var i = 0; i < details.length; i++) {
+              final s = details[i];
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(s.reps);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(s.rpe);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(s.note.isNotEmpty ? s.note : (i == 0 ? ex.note : ''));
+              row += 1;
+            }
+          } else {
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(ex.name);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(ex.sets);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(ex.reps);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(ex.rpe);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(ex.note);
+            row += 1;
+          }
+        } else {
+          final group = item as List<Exercise>;
+          sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue('Superset');
+          row += 1;
+          for (final ex in group) {
+            final details = ex.effectiveSetDetails;
+            if (details.length > 1) {
+              for (var i = 0; i < details.length; i++) {
+                final s = details[i];
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(s.reps);
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(s.rpe);
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(s.note.isNotEmpty ? s.note : (i == 0 ? ex.note : ''));
+                row += 1;
+              }
+            } else {
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(ex.name);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(ex.sets);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(ex.reps);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(ex.rpe);
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(ex.note);
+              row += 1;
+            }
+          }
+        }
       }
       row += 1;
     }

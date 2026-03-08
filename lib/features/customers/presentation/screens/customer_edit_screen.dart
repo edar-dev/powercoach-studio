@@ -160,29 +160,29 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
+    final colorScheme = theme.colorScheme;
+
     if (_loading) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _editAppBar(context, theme, l10n.customerEdit),
+        appBar: _editAppBar(context, theme, colorScheme, l10n.customerEdit),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     if (_loadError != null) {
       return Scaffold(
-        backgroundColor: StitchM3Theme.bgSecondary,
-        appBar: _editAppBar(context, theme, l10n.customerEdit),
+        appBar: _editAppBar(context, theme, colorScheme, l10n.customerEdit),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+                const SizedBox(height: 16),
                 Text(
                   _loadError!,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: StitchM3Theme.danger,
-                  ),
+                  style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
@@ -198,8 +198,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     }
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: _editAppBar(context, theme, l10n.customerEdit),
+      appBar: _editAppBar(context, theme, colorScheme, l10n.customerEdit),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -208,99 +207,105 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                _formLabel(context, l10n.customerName),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _nameController,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerName,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.person, hint: l10n.customerName),
                   validator: (v) =>
                       v == null || v.trim().isEmpty ? l10n.customerNameRequired : null,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerEmail),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerEmail,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.mail, hint: 'email@example.com'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerPhone),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerPhone,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.phone_outlined),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerGoals),
+                const SizedBox(height: 8),
                 TextFormField(
-                  controller: _heightController,
-                  keyboardType: TextInputType.number,
+                  controller: _goalsController,
+                  maxLines: 2,
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerHeight,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.flag_outlined, hint: l10n.customerGoals),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerWeight),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _weightController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   textInputAction: TextInputAction.next,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerWeight,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
-                  ),
+                  decoration: _inputDecoration(context, prefixIcon: Icons.monitor_weight_outlined, hint: '0.0'),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerHeight),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _heightController,
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.next,
+                  decoration: _inputDecoration(context, prefixIcon: Icons.height),
+                ),
+                const SizedBox(height: 24),
+                _formLabel(context, l10n.customerNotes),
+                const SizedBox(height: 8),
                 TextFormField(
                   controller: _notesController,
                   maxLines: 3,
                   textInputAction: TextInputAction.newline,
                   decoration: InputDecoration(
-                    labelText: l10n.customerNotes,
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    hintText: l10n.customerNotes,
+                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
                     filled: true,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                TextFormField(
-                  controller: _goalsController,
-                  maxLines: 2,
-                  textInputAction: TextInputAction.done,
-                  decoration: InputDecoration(
-                    labelText: l10n.customerGoals,
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    filled: true,
+                    fillColor: colorScheme.surfaceContainerHighest,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                      borderSide: BorderSide(color: colorScheme.outline),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _saving ? null : _submit,
                   style: FilledButton.styleFrom(
+                    backgroundColor: StitchM3Theme.accent,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    minimumSize: const Size(0, 48),
+                    elevation: 4,
+                    shadowColor: StitchM3Theme.accent.withValues(alpha: 0.35),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg)),
                   ),
                   child: _saving
                       ? const SizedBox(
                           height: 20,
                           width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : Text(l10n.customerSave),
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.save, size: 20),
+                            const SizedBox(width: 8),
+                            Text(l10n.customerSave),
+                          ],
+                        ),
                 ),
               ],
             ),
@@ -310,12 +315,37 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     );
   }
 
-  PreferredSizeWidget _editAppBar(BuildContext context, ThemeData theme, String title) {
+  Widget _formLabel(BuildContext context, String label) {
+    final theme = Theme.of(context);
+    return Text(
+      label,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w500,
+        color: theme.colorScheme.onSurfaceVariant,
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration(BuildContext context, {required IconData prefixIcon, String? hint}) {
+    final cs = Theme.of(context).colorScheme;
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: cs.onSurfaceVariant),
+      prefixIcon: Icon(prefixIcon, size: 22, color: cs.onSurfaceVariant),
+      filled: true,
+      fillColor: cs.surfaceContainerHighest,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+        borderSide: BorderSide(color: cs.outline),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    );
+  }
+
+  PreferredSizeWidget _editAppBar(BuildContext context, ThemeData theme, ColorScheme colorScheme, String title) {
     return AppBar(
-      backgroundColor: StitchM3Theme.bg,
       elevation: 0,
       scrolledUnderElevation: 1,
-      shadowColor: Colors.black26,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
@@ -327,13 +357,13 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
         title,
         style: theme.textTheme.titleLarge?.copyWith(
           fontWeight: FontWeight.w700,
-          color: StitchM3Theme.textPrimary,
+          color: colorScheme.onSurface,
         ),
       ),
       centerTitle: false,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
-        child: Container(color: StitchM3Theme.border, height: 1),
+        child: Container(color: colorScheme.outline, height: 1),
       ),
     );
   }

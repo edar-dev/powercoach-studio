@@ -43,25 +43,32 @@ Future<String> exportWorkoutRoutineToPdf(
         ],
       ),
       build: (context) => [
-        // Mobility section (optional summary)
+        // Mobility (optional, grouped by section)
         if (routine.mobilityItems.isNotEmpty) ...[
-          pw.Text(
-            'Mobility',
-            style: pw.TextStyle(
-              fontSize: 14,
-              fontWeight: pw.FontWeight.bold,
-            ),
-          ),
-          pw.SizedBox(height: 4),
-          ...routine.mobilityItems.map(
-            (m) => pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 2),
-              child: pw.Text(
-                '${m.title}: ${m.subtitle}',
-                style: const pw.TextStyle(fontSize: 10),
+          ...routine.mobilitySections.expand((section) {
+            final items = routine.mobilityItems.where((m) => m.sectionId == section.id).toList();
+            if (items.isEmpty) return <pw.Widget>[];
+            return [
+              pw.Text(
+                section.name.isNotEmpty ? section.name : 'Mobility',
+                style: pw.TextStyle(
+                  fontSize: 14,
+                  fontWeight: pw.FontWeight.bold,
+                ),
               ),
-            ),
-          ),
+              pw.SizedBox(height: 4),
+              ...items.map(
+                (m) => pw.Padding(
+                  padding: const pw.EdgeInsets.only(bottom: 2),
+                  child: pw.Text(
+                    '${m.title}: ${m.subtitle}',
+                    style: const pw.TextStyle(fontSize: 10),
+                  ),
+                ),
+              ),
+              pw.SizedBox(height: 12),
+            ];
+          }),
           pw.SizedBox(height: 16),
         ],
         // Weeks and exercises
@@ -107,17 +114,80 @@ Future<String> exportWorkoutRoutineToPdf(
                         _cell('Notes'),
                       ],
                     ),
-                    ...day.exercises.map(
-                      (e) => pw.TableRow(
-                        children: [
-                          _cell(e.name),
-                          _cell(e.sets),
-                          _cell(e.reps),
-                          _cell(e.rpe),
-                          _cell(e.note),
-                        ],
-                      ),
-                    ),
+                    ...partitionExercisesBySuperset(day.exercises).expand((item) {
+                      if (item is Exercise) {
+                        final e = item;
+                        final details = e.effectiveSetDetails;
+                        if (details.length > 1) {
+                          return details.asMap().entries.map((entry) {
+                            final i = entry.key;
+                            final s = entry.value;
+                            return pw.TableRow(
+                              children: [
+                                _cell(i == 0 ? e.name : ''),
+                                _cell(i == 0 ? '${details.length}' : ''),
+                                _cell(s.reps),
+                                _cell(s.rpe),
+                                _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
+                              ],
+                            );
+                          });
+                        }
+                        return [
+                          pw.TableRow(
+                            children: [
+                              _cell(e.name),
+                              _cell(e.sets),
+                              _cell(e.reps),
+                              _cell(e.rpe),
+                              _cell(e.note),
+                            ],
+                          ),
+                        ];
+                      }
+                      final group = item as List<Exercise>;
+                      return [
+                        pw.TableRow(
+                          decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                          children: [
+                            _cell('Superset'),
+                            _cell(''),
+                            _cell(''),
+                            _cell(''),
+                            _cell(''),
+                          ],
+                        ),
+                        ...group.expand((e) {
+                          final details = e.effectiveSetDetails;
+                          if (details.length > 1) {
+                            return details.asMap().entries.map((entry) {
+                              final i = entry.key;
+                              final s = entry.value;
+                              return pw.TableRow(
+                                children: [
+                                  _cell(i == 0 ? e.name : ''),
+                                  _cell(i == 0 ? '${details.length}' : ''),
+                                  _cell(s.reps),
+                                  _cell(s.rpe),
+                                  _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
+                                ],
+                              );
+                            });
+                          }
+                          return [
+                            pw.TableRow(
+                              children: [
+                                _cell(e.name),
+                                _cell(e.sets),
+                                _cell(e.reps),
+                                _cell(e.rpe),
+                                _cell(e.note),
+                              ],
+                            ),
+                          ];
+                        }),
+                      ];
+                    }),
                   ],
                 ),
                 pw.SizedBox(height: 12),

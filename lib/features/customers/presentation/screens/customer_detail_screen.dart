@@ -10,6 +10,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
 import '../../data/models/customer_measurement.dart';
+import '../../../workouts/data/workout_plan_api_model.dart';
+import '../../../workouts/data/workout_plan_repository.dart';
 import 'customer_measurement_form_screen.dart';
 
 /// Customer Detail Page – Stitch screen ID 7a7f3b47bfa1435381554959ca9b72e7.
@@ -25,11 +27,14 @@ class CustomerDetailScreen extends StatefulWidget {
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> with SingleTickerProviderStateMixin {
   final GymBlogApiClient _api = GymBlogApiClient();
   final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
+  final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
   Customer? _customer;
   bool _loading = true;
   String? _error;
   List<CustomerMeasurement> _measurements = [];
   bool _measurementsLoading = false;
+  List<WorkoutPlanApiModel> _workoutPlans = [];
+  bool _workoutPlansLoading = false;
   late TabController _tabController;
 
   @override
@@ -43,6 +48,22 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadWorkoutPlans() async {
+    setState(() => _workoutPlansLoading = true);
+    try {
+      final list = await _planRepo.getByCustomerId(widget.customerId);
+      if (mounted) {
+        list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+        setState(() {
+          _workoutPlans = list;
+          _workoutPlansLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _workoutPlansLoading = false);
+    }
   }
 
   Future<void> _loadMeasurements() async {
@@ -79,6 +100,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           _error = null;
         });
         _loadMeasurements();
+        _loadWorkoutPlans();
       }
     } catch (e) {
       if (mounted) {
@@ -407,68 +429,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 ],
               ),
               const SizedBox(height: 24),
-              // Progress overview
-              Text(
-                'Progress Overview',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                height: 192,
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
-                  border: Border.all(color: colorScheme.outline),
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [40, 55, 50, 75, 65, 85, 70].map((h) => Container(
-                    width: 24,
-                    height: h * 1.2,
-                    decoration: BoxDecoration(
-                      color: h == 75 ? StitchM3Theme.accent : StitchM3Theme.accent.withValues(alpha: 0.25),
-                      borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
-                    ),
-                  )).toList(),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-                    .map((d) => Text(d, style: theme.textTheme.labelSmall?.copyWith(color: colorScheme.onSurfaceVariant, fontWeight: FontWeight.w700)))
-                    .toList(),
-              ),
-              const SizedBox(height: 24),
-              // Recent workouts
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Recent Workouts',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      context.push('/customers/${widget.customerId}/workouts');
-                    },
-                    child: Text('View All', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-          _workoutCard(context, 'Heavy Upper Body A', 'Yesterday • 65 mins', 'Completed', 'NEW PR', true),
-          const SizedBox(height: 12),
-          _workoutCard(context, 'Leg Day Focus', '3 days ago • 72 mins', 'Completed', '14,200 KG VOLUME', false),
+              // Workout plans – in evidenza
+              _buildWorkoutPlansSection(context, c, theme, colorScheme),
         ],
       ),
     );
@@ -723,68 +685,161 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     );
   }
 
-  Widget _workoutCard(BuildContext context, String title, String subtitle, String status, String extra, bool isNewPr) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
+  Widget _buildWorkoutPlansSection(
+    BuildContext context,
+    Customer c,
+    ThemeData theme,
+    ColorScheme colorScheme,
+  ) {
+    const int maxRecent = 5;
+    final recentPlans = _workoutPlans.take(maxRecent).toList();
+
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
+        color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
-        border: Border.all(color: cs.outline),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              color: StitchM3Theme.accent.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            ),
-            child: Icon(Icons.fitness_center, color: StitchM3Theme.accent, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: cs.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                status,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-              Text(
-                extra,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: isNewPr ? StitchM3Theme.success : cs.onSurfaceVariant,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
+        border: Border.all(color: StitchM3Theme.accent.withValues(alpha: 0.4), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: StitchM3Theme.accent.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: StitchM3Theme.accent.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                ),
+                child: Icon(Icons.fitness_center, color: StitchM3Theme.accent, size: 24),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  'Workout plans',
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
+                ),
+              ),
+              if (_workoutPlans.isNotEmpty)
+                TextButton(
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    context.push('/customers/${widget.customerId}/workouts').then((_) {
+                      if (mounted) _loadWorkoutPlans();
+                    });
+                  },
+                  child: Text('View all', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_workoutPlansLoading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: SizedBox(width: 28, height: 28, child: CircularProgressIndicator(strokeWidth: 2))),
+            )
+          else if (_workoutPlans.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: Column(
+                children: [
+                  Text(
+                    'No workout plans yet',
+                    style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      context.push('/workouts/editor?customerId=${c.id}').then((_) {
+                        if (mounted) _loadWorkoutPlans();
+                      });
+                    },
+                    icon: const Icon(Icons.add_task, size: 20),
+                    label: const Text('Assign workout'),
+                    style: FilledButton.styleFrom(
+                      backgroundColor: StitchM3Theme.accent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            ...recentPlans.asMap().entries.map((e) {
+              final plan = e.value;
+              final isLast = e.key == recentPlans.length - 1;
+              return Padding(
+                padding: EdgeInsets.only(bottom: isLast ? 0 : 12),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () {
+                      HapticFeedback.mediumImpact();
+                      context.push('/workouts/editor/${plan.id}?customerId=${widget.customerId}').then((_) {
+                        if (mounted) _loadWorkoutPlans();
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  plan.name.isNotEmpty ? plan.name : 'Unnamed plan',
+                                  style: theme.textTheme.titleSmall?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _formatPlanUpdated(plan.updatedAt),
+                                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(Icons.chevron_right, color: colorScheme.onSurfaceVariant, size: 24),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+        ],
+      ),
     );
+  }
+
+  static String _formatPlanUpdated(DateTime updatedAt) {
+    final now = DateTime.now();
+    final diff = now.difference(updatedAt);
+    if (diff.inDays > 0) return 'Updated ${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
+    if (diff.inHours > 0) return 'Updated ${diff.inHours}h ago';
+    if (diff.inMinutes > 0) return 'Updated ${diff.inMinutes}m ago';
+    return 'Just now';
   }
 }
