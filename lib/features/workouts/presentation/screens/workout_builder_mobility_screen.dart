@@ -286,15 +286,29 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   void _addMobilityItem() {
     final sectionId = _selectedSectionId;
     if (sectionId == null) return;
-    setState(() {
-      final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-      _routine = _routine.copyWith(
-        mobilityItems: [
-          ..._routine.mobilityItems,
-          MobilityItem(id: id, title: 'New exercise', subtitle: 'Add details', sectionId: sectionId),
-        ],
-      );
-    });
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    _showEditMobilityDialog(
+      context,
+      theme,
+      cs,
+      '',
+      '',
+      (title, subtitle) {
+        final t = title.trim();
+        final s = subtitle.trim();
+        if (t.isEmpty && s.isEmpty) return;
+        setState(() {
+          final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
+          _routine = _routine.copyWith(
+            mobilityItems: [
+              ..._routine.mobilityItems,
+              MobilityItem(id: id, title: t.isEmpty ? 'New exercise' : t, subtitle: s, sectionId: sectionId),
+            ],
+          );
+        });
+      },
+    );
   }
 
   void _removeMobilityItem(String id) {
@@ -507,26 +521,44 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _addExerciseToDay(int weekIndex, int dayIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-      final newEx = [...day.exercises, Exercise(
-        id: exId,
-        name: 'New exercise',
-        sets: '3',
-        reps: '8',
-        rpe: '@8',
-        note: '',
-        setDetails: [const ExerciseSet(reps: '8', rpe: '@8')],
-      )];
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) return;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+    _showEditExerciseDialog(
+      context,
+      theme,
+      cs,
+      '',
+      '',
+      '',
+      '',
+      '',
+      (name, sets, reps, rpe, note) {
+        final trimmedName = name.trim();
+        if (trimmedName.isEmpty) return;
+        setState(() {
+          final week = _routine.weeks[weekIndex];
+          if (dayIndex < 0 || dayIndex >= week.days.length) return;
+          final day = week.days[dayIndex];
+          final newExercise = Exercise(
+            id: exId,
+            name: trimmedName,
+            sets: sets.isEmpty ? '3' : sets,
+            reps: reps,
+            rpe: rpe,
+            note: note,
+            setDetails: reps.isNotEmpty || rpe.isNotEmpty ? [ExerciseSet(reps: reps, rpe: rpe)] : null,
+          );
+          final newEx = [...day.exercises, newExercise];
+          final newDays = List<Day>.from(week.days);
+          newDays[dayIndex] = day.copyWith(exercises: newEx);
+          final newWeeks = List<Week>.from(_routine.weeks);
+          newWeeks[weekIndex] = week.copyWith(days: newDays);
+          _routine = _routine.copyWith(weeks: newWeeks);
+        });
+      },
+    );
   }
 
   /// Adds a new exercise to the day and assigns it to the given superset group.
@@ -809,18 +841,26 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: StitchM3Theme.accent,
                             fontWeight: FontWeight.w600,
+                            letterSpacing: 0.6,
                           ),
                         ),
+                        const SizedBox(height: 6),
                         TextField(
                           controller: _routineNameController,
-                          style: theme.textTheme.headlineSmall?.copyWith(
+                          style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: cs.onSurface,
                           ),
-                          decoration: const InputDecoration(
+                          maxLines: 2,
+                          decoration: InputDecoration(
                             border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true,
+                            isDense: false,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 6),
+                            hintText: 'Add routine title',
+                            hintStyle: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              color: cs.onSurfaceVariant,
+                            ),
                           ),
                         ),
                       ],
@@ -1015,18 +1055,24 @@ class _MobilitySectionChip extends StatelessWidget {
                 ),
               ),
               if (selected) ...[
-                const SizedBox(width: 4),
+                const SizedBox(width: 6),
                 InkWell(
                   onTap: onEdit,
-                  borderRadius: BorderRadius.circular(4),
-                  child: Icon(Icons.edit, size: 14, color: cs.onSurfaceVariant),
+                  borderRadius: BorderRadius.circular(999),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4),
+                    child: Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
+                  ),
                 ),
                 if (onDelete != null) ...[
-                  const SizedBox(width: 2),
+                  const SizedBox(width: 4),
                   InkWell(
                     onTap: onDelete,
-                    borderRadius: BorderRadius.circular(4),
-                    child: Icon(Icons.delete_outline, size: 14, color: StitchM3Theme.danger),
+                    borderRadius: BorderRadius.circular(999),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger),
+                    ),
                   ),
                 ],
               ],
