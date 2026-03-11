@@ -126,8 +126,8 @@ Future<String> exportWorkoutRoutineToPdf(
                               children: [
                                 _cell(i == 0 ? e.name : ''),
                                 _cell(i == 0 ? '${details.length}' : ''),
-                                _cell(s.reps),
-                                _cell(s.rpe),
+                                _cell(s.displayText.isNotEmpty ? s.displayText : s.reps),
+                                _cell(s.displayText.isNotEmpty ? '' : s.rpe),
                                 _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
                               ],
                             );
@@ -167,8 +167,8 @@ Future<String> exportWorkoutRoutineToPdf(
                                 children: [
                                   _cell(i == 0 ? e.name : ''),
                                   _cell(i == 0 ? '${details.length}' : ''),
-                                  _cell(s.reps),
-                                  _cell(s.rpe),
+                                  _cell(s.displayText.isNotEmpty ? s.displayText : s.reps),
+                                  _cell(s.displayText.isNotEmpty ? '' : s.rpe),
                                   _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
                                 ],
                               );

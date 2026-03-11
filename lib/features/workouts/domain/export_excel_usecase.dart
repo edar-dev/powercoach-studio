@@ -43,8 +43,9 @@ Future<String> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
               final s = details[i];
               sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
               sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
-              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(s.reps);
-              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(s.rpe);
+            final disp = s.displayText;
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? disp : s.reps);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? '' : s.rpe);
               sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(s.note.isNotEmpty ? s.note : (i == 0 ? ex.note : ''));
               row += 1;
             }
@@ -67,8 +68,9 @@ Future<String> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
                 final s = details[i];
                 sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
                 sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
-                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(s.reps);
-                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(s.rpe);
+            final disp = s.displayText;
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? disp : s.reps);
+            sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? '' : s.rpe);
                 sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue(s.note.isNotEmpty ? s.note : (i == 0 ? ex.note : ''));
                 row += 1;
               }

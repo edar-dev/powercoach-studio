@@ -237,30 +237,51 @@ List<Object> partitionExercisesBySuperset(List<Exercise> exercises) {
 }
 
 /// Single set prescription (e.g. top set 1x5 @9, backoff 2x8 @7).
+/// [line] optional single-line text (e.g. "1x3 75kg", "3x3 60kg") — when set, used as main display instead of reps/rpe.
 class ExerciseSet {
   const ExerciseSet({
+    this.line = '',
     this.reps = '',
     this.rpe = '',
     this.note = '',
   });
 
+  /// Full prescription on one line (e.g. "1x3 75kg"). Takes precedence over [reps]/[rpe] for display when non-empty.
+  final String line;
   final String reps;
   final String rpe;
   final String note;
 
+  /// Text to show in lists/PDF when [line] is set; otherwise reps + rpe.
+  String get displayText {
+    if (line.trim().isNotEmpty) return line.trim();
+    final r = reps.trim();
+    final p = rpe.trim();
+    if (r.isEmpty && p.isEmpty) return '';
+    if (r.isEmpty) return p;
+    if (p.isEmpty) return r;
+    return '$r $p';
+  }
+
   Map<String, dynamic> toJson() => {
+        if (line.isNotEmpty) 'line': line,
         'reps': reps,
         'rpe': rpe,
         if (note.isNotEmpty) 'note': note,
       };
 
-  static ExerciseSet fromJson(Map<String, dynamic> json) => ExerciseSet(
-        reps: json['reps'] as String? ?? '',
-        rpe: json['rpe'] as String? ?? '',
-        note: json['note'] as String? ?? '',
-      );
+  static ExerciseSet fromJson(Map<String, dynamic> json) {
+    final lineStr = json['line'] as String? ?? '';
+    return ExerciseSet(
+      line: lineStr,
+      reps: json['reps'] as String? ?? '',
+      rpe: json['rpe'] as String? ?? '',
+      note: json['note'] as String? ?? '',
+    );
+  }
 
-  ExerciseSet copyWith({String? reps, String? rpe, String? note}) => ExerciseSet(
+  ExerciseSet copyWith({String? line, String? reps, String? rpe, String? note}) => ExerciseSet(
+        line: line ?? this.line,
         reps: reps ?? this.reps,
         rpe: rpe ?? this.rpe,
         note: note ?? this.note,

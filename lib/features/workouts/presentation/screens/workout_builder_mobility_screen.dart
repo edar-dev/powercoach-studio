@@ -432,7 +432,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   reps: e.reps,
                   rpe: e.rpe,
                   note: e.note,
-                  setDetails: e.setDetails?.map((s) => ExerciseSet(reps: s.reps, rpe: s.rpe, note: s.note)).toList(),
+                  setDetails: e.setDetails?.map((s) => ExerciseSet(line: s.line, reps: s.reps, rpe: s.rpe, note: s.note)).toList(),
                   supersetGroupId: null,
                 )).toList(),
               ))
@@ -525,6 +525,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+    // Apri sempre con UI multi-serie (top set / backoff): una riga vuota + "Add set"
     _showEditExerciseDialog(
       context,
       theme,
@@ -534,9 +535,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       '',
       '',
       '',
-      (name, sets, reps, rpe, note) {
+      (_, __, ___, ____, _____) {},
+      initialSetDetails: [const ExerciseSet()],
+      onSaveWithSets: (name, note, details) {
         final trimmedName = name.trim();
         if (trimmedName.isEmpty) return;
+        final list = details.isEmpty ? [const ExerciseSet()] : details;
         setState(() {
           final week = _routine.weeks[weekIndex];
           if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -544,11 +548,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           final newExercise = Exercise(
             id: exId,
             name: trimmedName,
-            sets: sets.isEmpty ? '3' : sets,
-            reps: reps,
-            rpe: rpe,
+            sets: '${list.length}',
+            reps: list.map((s) => s.displayText).where((r) => r.isNotEmpty).join(' | '),
+            rpe: '',
             note: note,
-            setDetails: reps.isNotEmpty || rpe.isNotEmpty ? [ExerciseSet(reps: reps, rpe: rpe)] : null,
+            setDetails: list,
           );
           final newEx = [...day.exercises, newExercise];
           final newDays = List<Day>.from(week.days);
@@ -563,38 +567,61 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   /// Adds a new exercise to the day and assigns it to the given superset group.
   /// The new exercise is inserted immediately after the last exercise of that group.
+  /// Stesso dialog multi-serie della creazione normale.
   void _addExerciseToSuperset(int weekIndex, int dayIndex, String supersetGroupId) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      int insertIndex = -1;
-      for (var i = day.exercises.length - 1; i >= 0; i--) {
-        if (day.exercises[i].supersetGroupId == supersetGroupId) {
-          insertIndex = i + 1;
-          break;
-        }
+    final day = week.days[dayIndex];
+    int insertIndex = -1;
+    for (var i = day.exercises.length - 1; i >= 0; i--) {
+      if (day.exercises[i].supersetGroupId == supersetGroupId) {
+        insertIndex = i + 1;
+        break;
       }
-      if (insertIndex < 0) insertIndex = day.exercises.length;
-      final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-      final newExercise = Exercise(
-        id: exId,
-        name: 'New exercise',
-        sets: '3',
-        reps: '8',
-        rpe: '@8',
-        note: '',
-        setDetails: [const ExerciseSet(reps: '8', rpe: '@8')],
-        supersetGroupId: supersetGroupId,
-      );
-      final newEx = List<Exercise>.from(day.exercises)..insert(insertIndex, newExercise);
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    }
+    if (insertIndex < 0) insertIndex = day.exercises.length;
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+    _showEditExerciseDialog(
+      context,
+      theme,
+      cs,
+      '',
+      '',
+      '',
+      '',
+      '',
+      (_, __, ___, ____, _____) {},
+      initialSetDetails: [const ExerciseSet()],
+      onSaveWithSets: (name, note, details) {
+        final trimmedName = name.trim();
+        if (trimmedName.isEmpty) return;
+        final list = details.isEmpty ? [const ExerciseSet()] : details;
+        setState(() {
+          final w = _routine.weeks[weekIndex];
+          if (dayIndex < 0 || dayIndex >= w.days.length) return;
+          final d = w.days[dayIndex];
+          final newExercise = Exercise(
+            id: exId,
+            name: trimmedName,
+            sets: '${list.length}',
+            reps: list.map((s) => s.displayText).where((r) => r.isNotEmpty).join(' | '),
+            rpe: '',
+            note: note,
+            setDetails: list,
+            supersetGroupId: supersetGroupId,
+          );
+          final newEx = List<Exercise>.from(d.exercises)..insert(insertIndex, newExercise);
+          final newDays = List<Day>.from(w.days);
+          newDays[dayIndex] = d.copyWith(exercises: newEx);
+          final newWeeks = List<Week>.from(_routine.weeks);
+          newWeeks[weekIndex] = w.copyWith(days: newDays);
+          _routine = _routine.copyWith(weeks: newWeeks);
+        });
+      },
+    );
   }
 
   void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
@@ -664,7 +691,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _updateExerciseSet(int weekIndex, int dayIndex, String exerciseId, int setIndex, {String? reps, String? rpe, String? note}) {
+  void _updateExerciseSet(int weekIndex, int dayIndex, String exerciseId, int setIndex, {String? line, String? reps, String? rpe, String? note}) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -675,11 +702,21 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         final details = e.effectiveSetDetails;
         if (setIndex < 0 || setIndex >= details.length) return e;
         final newDetails = List<ExerciseSet>.from(details);
-        newDetails[setIndex] = details[setIndex].copyWith(
-          reps: reps ?? details[setIndex].reps,
-          rpe: rpe ?? details[setIndex].rpe,
-          note: note ?? details[setIndex].note,
-        );
+        final cur = details[setIndex];
+        if (line != null) {
+          final trimmed = line.trim();
+          if (trimmed.isNotEmpty) {
+            newDetails[setIndex] = ExerciseSet(line: trimmed, reps: '', rpe: '', note: note ?? cur.note);
+          } else {
+            newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
+          }
+        } else {
+          newDetails[setIndex] = cur.copyWith(
+            reps: reps ?? cur.reps,
+            rpe: rpe ?? cur.rpe,
+            note: note ?? cur.note,
+          );
+        }
         return e.copyWith(setDetails: newDetails);
       }).toList();
       final newDays = List<Day>.from(week.days);
@@ -1250,7 +1287,10 @@ void _showEditExerciseDialog(
   final rpeController = TextEditingController(text: initialRpe);
   final useMultiSet = onSaveWithSets != null && initialSetDetails != null && initialSetDetails.isNotEmpty;
   final setControllers = useMultiSet
-      ? initialSetDetails.map((s) => _SetEditControllers(TextEditingController(text: s.reps), TextEditingController(text: s.rpe), TextEditingController(text: s.note))).toList()
+      ? initialSetDetails.map((s) {
+          final text = s.line.trim().isNotEmpty ? s.line : s.displayText;
+          return _SetEditControllers(TextEditingController(text: text), TextEditingController(text: s.note));
+        }).toList()
       : <_SetEditControllers>[];
 
   showDialog<void>(
@@ -1259,7 +1299,7 @@ void _showEditExerciseDialog(
       builder: (context, setState) {
         void addSetRow() {
           setState(() {
-            setControllers.add(_SetEditControllers(TextEditingController(), TextEditingController(), TextEditingController()));
+            setControllers.add(_SetEditControllers(TextEditingController(), TextEditingController()));
           });
         }
 
@@ -1271,7 +1311,7 @@ void _showEditExerciseDialog(
         }
 
         return AlertDialog(
-          title: Text('Edit exercise', style: theme.textTheme.titleMedium),
+          title: Text(initialName.trim().isEmpty ? 'Add exercise' : 'Edit exercise', style: theme.textTheme.titleMedium),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -1290,10 +1330,19 @@ void _showEditExerciseDialog(
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(child: TextField(controller: c.reps, decoration: const InputDecoration(labelText: 'Reps'), keyboardType: TextInputType.text)),
-                          const SizedBox(width: 8),
-                          Expanded(child: TextField(controller: c.rpe, decoration: const InputDecoration(labelText: 'RPE'))),
+                          Expanded(
+                            child: TextField(
+                              controller: c.line,
+                              decoration: const InputDecoration(
+                                labelText: 'Serie',
+                                hintText: 'es. 1x3 75kg',
+                                alignLabelWithHint: true,
+                              ),
+                              keyboardType: TextInputType.text,
+                            ),
+                          ),
                           IconButton(
                             icon: Icon(Icons.delete_outline, size: 20, color: setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
                             onPressed: setControllers.length > 1 ? () => removeSetRow(i) : null,
@@ -1325,7 +1374,13 @@ void _showEditExerciseDialog(
                 final name = nameController.text.trim();
                 final note = noteController.text.trim();
                 if (useMultiSet) {
-                  final details = setControllers.map((c) => ExerciseSet(reps: c.reps.text.trim(), rpe: c.rpe.text.trim(), note: c.note.text.trim())).toList();
+                  final details = setControllers.map((c) {
+                    final l = c.line.text.trim();
+                    if (l.isNotEmpty) {
+                      return ExerciseSet(line: l, note: c.note.text.trim());
+                    }
+                    return ExerciseSet(note: c.note.text.trim());
+                  }).toList();
                   onSaveWithSets(name, note, details);
                 } else {
                   onSave(name, setsController.text.trim(), repsController.text.trim(), rpeController.text.trim(), note);
@@ -1342,9 +1397,8 @@ void _showEditExerciseDialog(
 }
 
 class _SetEditControllers {
-  _SetEditControllers(this.reps, this.rpe, this.note);
-  final TextEditingController reps;
-  final TextEditingController rpe;
+  _SetEditControllers(this.line, this.note);
+  final TextEditingController line;
   final TextEditingController note;
 }
 
@@ -1425,7 +1479,7 @@ class _TrainingSection extends StatelessWidget {
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(int, int, String, int, {String? line, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -1598,7 +1652,7 @@ class _WeekAccordion extends StatelessWidget {
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(int, int, String, int, {String? line, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -1706,7 +1760,7 @@ class _WeekAccordion extends StatelessWidget {
                             onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
                             onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
                             onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                            onUpdateSet: (setIndex, reps, rpe, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, reps: reps, rpe: rpe, note: note),
+                            onUpdateSet: (setIndex, line, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, line: line, note: note),
                             onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
                             supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
                             onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
@@ -1802,7 +1856,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(int, int, String, int, {String? line, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -1896,7 +1950,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                     onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
                     onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
                     onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                    onUpdateSet: (setIndex, reps, rpe, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, reps: reps, rpe: rpe, note: note),
+                    onUpdateSet: (setIndex, line, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, line: line, note: note),
                     onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
                     supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
                     onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
@@ -2083,7 +2137,7 @@ class _SuperSetBlock extends StatelessWidget {
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(int, int, String, int, {String? line, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String)? onAssignToSuperset;
   final void Function(int, int, String)? onRemoveFromSuperset;
@@ -2126,7 +2180,7 @@ class _SuperSetBlock extends StatelessWidget {
               onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
               onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
               onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-              onUpdateSet: (setIndex, reps, rpe, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, reps: reps, rpe: rpe, note: note),
+              onUpdateSet: (setIndex, line, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, line: line, note: note),
               onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
               supersetOptions: supersetOptionsForDay.where((o) => o.id != ex.supersetGroupId).toList(),
               onAssignToSuperset: onAssignToSuperset != null ? (groupId) => onAssignToSuperset!(weekIndex, dayIndex, ex.id, groupId) : null,
@@ -2176,7 +2230,7 @@ class _ExerciseCard extends StatelessWidget {
   final VoidCallback? onRemove;
   final void Function(String name, String sets, String reps, String rpe, String note, {List<ExerciseSet>? setDetails})? onEdit;
   final VoidCallback? onAddSet;
-  final void Function(int setIndex, String reps, String rpe, String note)? onUpdateSet;
+  final void Function(int setIndex, String line, String note)? onUpdateSet;
   final void Function(int setIndex)? onRemoveSet;
   final List<({String id, String label})> supersetOptions;
   final void Function(String groupId)? onAssignToSuperset;
@@ -2261,16 +2315,15 @@ class _ExerciseCard extends StatelessWidget {
             ...details.asMap().entries.map((entry) {
               final i = entry.key;
               final s = entry.value;
+              final text = s.displayText.isNotEmpty ? s.displayText : '${s.reps} ${s.rpe}'.trim();
               return Padding(
                 padding: EdgeInsets.only(bottom: i < details.length - 1 ? 8 : 0),
                 child: Row(
                   children: [
-                    Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'Reps', value: s.reps, compact: compact)),
-                    const SizedBox(width: 8),
-                    Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'RPE / Load', value: s.rpe, compact: compact)),
+                    Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'Serie', value: text, compact: compact)),
                     if (onUpdateSet != null)
                       InkWell(
-                        onTap: () => _showEditSetDialog(context, theme, cs, s.reps, s.rpe, s.note, (reps, rpe, note) => onUpdateSet!(i, reps, rpe, note)),
+                        onTap: () => _showEditSetDialog(context, theme, cs, s.displayText.isNotEmpty ? s.line : text, s.note, (line, note) => onUpdateSet!(i, line, note)),
                         child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
                       ),
                     if (onRemoveSet != null && details.length > 1)
@@ -2285,14 +2338,21 @@ class _ExerciseCard extends StatelessWidget {
           else
             Row(
               children: [
-                Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'Reps', value: details.first.reps, compact: compact)),
-                const SizedBox(width: 8),
-                Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'RPE / Load', value: details.first.rpe, compact: compact)),
+                Expanded(
+                  child: _SetRepCell(
+                    theme: theme,
+                    cs: cs,
+                    label: 'Serie',
+                    value: details.first.displayText.isNotEmpty ? details.first.displayText : '${details.first.reps} ${details.first.rpe}'.trim(),
+                    compact: compact,
+                  ),
+                ),
                 if (onUpdateSet != null)
                   InkWell(
                     onTap: () {
                       final s = details.first;
-                      _showEditSetDialog(context, theme, cs, s.reps, s.rpe, s.note, (reps, rpe, note) => onUpdateSet!(0, reps, rpe, note));
+                      final text = s.displayText.isNotEmpty ? s.displayText : '${s.reps} ${s.rpe}'.trim();
+                      _showEditSetDialog(context, theme, cs, s.line.isNotEmpty ? s.line : text, s.note, (line, note) => onUpdateSet!(0, line, note));
                     },
                     child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
                   ),
@@ -2328,13 +2388,11 @@ void _showEditSetDialog(
   BuildContext context,
   ThemeData theme,
   ColorScheme cs,
-  String initialReps,
-  String initialRpe,
+  String initialLine,
   String initialNote,
-  void Function(String reps, String rpe, String note) onSave,
+  void Function(String line, String note) onSave,
 ) {
-  final repsController = TextEditingController(text: initialReps);
-  final rpeController = TextEditingController(text: initialRpe);
+  final lineController = TextEditingController(text: initialLine);
   final noteController = TextEditingController(text: initialNote);
   showDialog<void>(
     context: context,
@@ -2343,9 +2401,15 @@ void _showEditSetDialog(
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          TextField(controller: repsController, decoration: const InputDecoration(labelText: 'Reps'), keyboardType: TextInputType.text),
-          const SizedBox(height: 12),
-          TextField(controller: rpeController, decoration: const InputDecoration(labelText: 'RPE / Load')),
+          TextField(
+            controller: lineController,
+            decoration: const InputDecoration(
+              labelText: 'Serie',
+              hintText: 'es. 1x3 75kg',
+            ),
+            keyboardType: TextInputType.text,
+            autofocus: true,
+          ),
           const SizedBox(height: 12),
           TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
         ],
@@ -2354,7 +2418,7 @@ void _showEditSetDialog(
         TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
         FilledButton(
           onPressed: () {
-            onSave(repsController.text.trim(), rpeController.text.trim(), noteController.text.trim());
+            onSave(lineController.text.trim(), noteController.text.trim());
             Navigator.of(ctx).pop();
           },
           child: const Text('Save'),
