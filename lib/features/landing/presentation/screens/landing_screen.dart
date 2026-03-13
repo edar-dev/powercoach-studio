@@ -53,25 +53,32 @@ class _LandingScreenState extends State<LandingScreen> {
         shadowColor: Colors.black26,
         title: Row(
           children: [
-            // Logo badge: gradient blue → purple "PCS" (design spec)
-            Container(
+            SizedBox(
               width: 32,
               height: 32,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [StitchM3Theme.logoStart, StitchM3Theme.logoEnd],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                'PCS',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
+              child: Image.asset(
+                'assets/images/powercoach_logo.png',
+                fit: BoxFit.contain,
+                errorBuilder: (_, __, ___) => Container(
+                  width: 32,
+                  height: 32,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [StitchM3Theme.logoStart, StitchM3Theme.logoEnd],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                  ),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'PCS',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
             ),

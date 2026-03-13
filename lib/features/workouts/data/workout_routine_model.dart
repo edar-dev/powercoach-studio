@@ -236,35 +236,43 @@ List<Object> partitionExercisesBySuperset(List<Exercise> exercises) {
   return result;
 }
 
-/// Single set prescription (e.g. top set 1x5 @9, backoff 2x8 @7).
-/// [line] optional single-line text (e.g. "1x3 75kg", "3x3 60kg") — when set, used as main display instead of reps/rpe.
+/// Single set prescription: combo of sets × reps (e.g. 1×3 75kg, 3×3 60kg).
+/// [line] optional free-form; when empty, display uses [sets]×[reps] + [rpe] (load).
 class ExerciseSet {
   const ExerciseSet({
     this.line = '',
+    this.sets = '1',
     this.reps = '',
     this.rpe = '',
     this.note = '',
   });
 
-  /// Full prescription on one line (e.g. "1x3 75kg"). Takes precedence over [reps]/[rpe] for display when non-empty.
+  /// Free-form line (e.g. "1x3 75kg"). When set, used as display.
   final String line;
+  /// Number of sets for this block (e.g. "1", "3").
+  final String sets;
   final String reps;
+  /// Load or RPE (e.g. "75kg", "@8").
   final String rpe;
   final String note;
 
-  /// Text to show in lists/PDF when [line] is set; otherwise reps + rpe.
+  /// Text to show in lists/PDF: [line] if set, else "sets×reps" + optional load.
   String get displayText {
     if (line.trim().isNotEmpty) return line.trim();
+    final n = sets.trim();
     final r = reps.trim();
     final p = rpe.trim();
-    if (r.isEmpty && p.isEmpty) return '';
-    if (r.isEmpty) return p;
-    if (p.isEmpty) return r;
-    return '$r $p';
+    if (n.isEmpty && r.isEmpty && p.isEmpty) return '';
+    if (n.isEmpty && r.isEmpty) return p;
+    if (n.isEmpty) return r.isEmpty ? p : '$r ${p.isEmpty ? '' : p}'.trim();
+    if (r.isEmpty) return n + (p.isEmpty ? '' : ' $p').trim();
+    final combo = '${n}x$r';
+    return p.isEmpty ? combo : '$combo $p';
   }
 
   Map<String, dynamic> toJson() => {
         if (line.isNotEmpty) 'line': line,
+        if (sets != '1') 'sets': sets,
         'reps': reps,
         'rpe': rpe,
         if (note.isNotEmpty) 'note': note,
@@ -274,14 +282,16 @@ class ExerciseSet {
     final lineStr = json['line'] as String? ?? '';
     return ExerciseSet(
       line: lineStr,
+      sets: json['sets'] as String? ?? '1',
       reps: json['reps'] as String? ?? '',
       rpe: json['rpe'] as String? ?? '',
       note: json['note'] as String? ?? '',
     );
   }
 
-  ExerciseSet copyWith({String? line, String? reps, String? rpe, String? note}) => ExerciseSet(
+  ExerciseSet copyWith({String? line, String? sets, String? reps, String? rpe, String? note}) => ExerciseSet(
         line: line ?? this.line,
+        sets: sets ?? this.sets,
         reps: reps ?? this.reps,
         rpe: rpe ?? this.rpe,
         note: note ?? this.note,

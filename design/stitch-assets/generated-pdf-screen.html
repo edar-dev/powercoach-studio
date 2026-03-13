@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hypertrophy Phase 1 - Workout Routine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="pdf-configuration">
+    /* A4 Paper Styling for Screen and Print */
+    body {
+      background-color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container to mimic A4 paper size */
+    .a4-page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 24pt; /* Specified 24pt margin */
+      margin: 20mm auto;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-sizing: border-box;
+      color: #1a1a1a;
+    }
+
+    @media print {
+      body {
+        background: none;
+      }
+      .a4-page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* Standardized typography based on prompt requirements */
+    .header-text { font-size: 10pt; }
+    .title-text { font-size: 18pt; font-weight: 700; }
+    .section-title { font-size: 14pt; font-weight: 700; }
+    .day-title { font-size: 12pt; font-weight: 700; }
+    .table-text { font-size: 10pt; }
+  </style>
+<style data-purpose="table-layout">
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background-color: #f3f4f6; /* Light grey background */
+      text-align: left;
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 10pt;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td {
+      padding: 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 10pt;
+    }
+    .superset-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      font-size: 9pt;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<!-- BEGIN: A4 Document Container -->
+<main class="a4-page">
+<!-- BEGIN: Header Section -->
+<header class="border-b border-gray-200 pb-4 mb-6">
+<div class="flex justify-between items-center header-text text-gray-500 uppercase tracking-wide">
+<span>My Gym – Personal Training</span>
+<span>Coach: John Doe</span>
+<span>john@mygym.com</span>
+</div>
+<h1 class="title-text mt-4">Hypertrophy Phase 1</h1>
+</header>
+<!-- END: Header Section -->
+<!-- BEGIN: Mobility Section -->
+<section class="mb-8" data-purpose="mobility-warmup">
+<div class="grid grid-cols-2 gap-8">
+<div>
+<h2 class="section-title mb-2">Upper Body</h2>
+<p class="table-text text-gray-700">Band pull-apart: 2x15</p>
+</div>
+<div>
+<h2 class="section-title mb-2">Lower Body</h2>
+<p class="table-text text-gray-700">Hip circle: 1 min each direction</p>
+</div>
+</div>
+</section>
+<!-- END: Mobility Section -->
+<!-- BEGIN: Weekly Programming -->
+<section data-purpose="workout-schedule">
+<h2 class="section-title uppercase border-b-2 border-black pb-1 mb-6">WEEK 1: ACCLIMATION</h2>
+<!-- BEGIN: Day 1 -->
+<div class="mb-10" data-purpose="day-1-program">
+<h3 class="day-title mb-3">DAY 1 - Lower Body Push</h3>
+<table id="day-1-table">
+<thead>
+<tr>
+<th class="w-2/5">Exercise</th>
+<th class="w-1/12 text-center">Sets</th>
+<th class="w-1/6 text-center">Reps</th>
+<th class="w-1/6 text-center">Load/RPE</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Barbell Back Squat</td>
+<td class="text-center">3</td>
+<td class="text-center">8-10</td>
+<td class="text-center">@8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Leg Press</td>
+<td class="text-center">3</td>
+<td class="text-center">12</td>
+<td class="text-center">315lb</td>
+<td>Foot placement high</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- END: Day 1 -->
+<!-- BEGIN: Day 2 -->
+<div class="mb-10" data-purpose="day-2-program">
+<h3 class="day-title mb-3">DAY 2 - Upper Body</h3>
+<table id="day-2-table">
+<thead>
+<tr>
+<th class="w-2/5">Exercise</th>
+<th class="w-1/12 text-center">Sets</th>
+<th class="w-1/6 text-center">Reps</th>
+<th class="w-1/6 text-center">Load/RPE</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<!-- Bench Press Detail Block -->
+<tr>
+<td>Bench Press</td>
+<td class="text-center">1</td>
+<td class="text-center">1x6 100kg</td>
+<td class="text-center">-</td>
+<td>-</td>
+</tr>
+<tr>
+<td class="bg-gray-50"></td> <!-- Empty Name Row -->
+<td class="text-center">2</td>
+<td class="text-center">2x6 90kg</td>
+<td class="text-center">-</td>
+<td>Backoff</td>
+</tr>
+<!-- Superset Block -->
+<tr>
+<td class="superset-header px-2 py-1" colspan="5">Superset</td>
+</tr>
+<tr>
+<td class="pl-6">Dumbbell Row</td>
+<td class="text-center">3</td>
+<td class="text-center">10</td>
+<td class="text-center">@7</td>
+<td>-</td>
+</tr>
+<tr>
+<td class="pl-6">Cable Fly</td>
+<td class="text-center">3</td>
+<td class="text-center">12</td>
+<td class="text-center">@6</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- END: Day 2 -->
+</section>
+<!-- END: Weekly Programming -->
+<!-- BEGIN: Footer Branding -->
+<footer class="mt-auto pt-10 text-center border-t border-gray-100">
+<p class="text-[8pt] text-gray-400 italic">This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.</p>
+</footer>
+<!-- END: Footer Branding -->
+</main>
+<!-- END: A4 Document Container -->
+</body></html>

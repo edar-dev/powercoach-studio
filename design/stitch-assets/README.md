@@ -41,4 +41,10 @@ Puoi anche impostare le variabili d’ambiente e lanciare lo script (vedi `desig
 | Simplified Registration    | 76b61a47b6324d31bfd4957cd921aaee | simplified-registration.png / .html |
 | Simplified App Settings    | 8ab8a84172594c1c9911b5762e2a7257 | app-settings.png / .html         |
 
+**Progetto PDF (Workout export):** Project ID `15732533611981325178`
+
+| Screen           | Screen ID        | File scaricati                          |
+|------------------|------------------|-----------------------------------------|
+| Generated Screen | 80e27a86da484d75b1dc9481a2d61b1c | generated-pdf-screen.png / .html |
+
 `stitch-urls.json` non va committato se contiene URL con token; usa `stitch-urls.example.json` come template.

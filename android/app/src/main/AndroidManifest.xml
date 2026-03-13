@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <application
         android:name=".PowerCoachStudioApplication"
-        android:label="powercoach_studio"
+        android:label="PowerCoach Studio"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

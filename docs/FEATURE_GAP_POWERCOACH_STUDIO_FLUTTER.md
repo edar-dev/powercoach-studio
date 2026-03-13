@@ -24,7 +24,7 @@ Analisi delle funzionalità **presenti in powercoach-studio-flutter** ma **non (
 | Feature | Dettaglio | Riferimento (flutter) |
 |--------|-----------|------------------------|
 | **Export Excel** | Use case `export_excel_usecase.dart`: layout readable / compact / notesFirst, salvataggio in temp, path per condivisione | `domain/usecases/export_excel_usecase.dart`, `export_options_dialog.dart` |
-| **Export PDF** | Use case `export_pdf_usecase.dart`: header personalizzato (`pdfHeader`, `useCustomPdfHeader`), tabella esercizi | `domain/usecases/export_pdf_usecase.dart` |
+| **Export PDF** | Use case `export_pdf_usecase.dart`: header personalizzato (`pdfHeader`, `useCustomPdfHeader`), tabella esercizi. Layout allineato al prototipo Stitch "Generated Screen" (progetto 15732533611981325178). | `lib/features/workouts/domain/export_pdf_usecase.dart` |
 | **Share** | Integrazione `share_plus` per condividere file generati | WorkoutPlanEditorScreen (Export → share) |
 
 In powercoach-studio: landing e home menzionano “Export to PDF” ma non c’è implementazione; il modello `Customer` ha già `pdfHeader` e `useCustomPdfHeader`.

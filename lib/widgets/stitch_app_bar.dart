@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../theme/stitch_m3_theme.dart';
 
-/// App bar Stitch: logo gradient PCS + titolo, bordo inferiore, solo Material.
+/// App bar Stitch: logo + titolo, bordo inferiore, solo Material.
 class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StitchAppBar({
     super.key,
@@ -14,6 +14,8 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
+
+  static const String _logoAsset = 'assets/images/powercoach_logo.png';
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -29,7 +31,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       title: Row(
         children: [
-          _LogoBadge(),
+          _LogoBadge(logoAsset: _logoAsset),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
@@ -54,6 +56,25 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _LogoBadge extends StatelessWidget {
+  const _LogoBadge({required this.logoAsset});
+
+  final String logoAsset;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: Image.asset(
+        logoAsset,
+        fit: BoxFit.contain,
+        errorBuilder: (_, __, ___) => _FallbackLogoBadge(),
+      ),
+    );
+  }
+}
+
+class _FallbackLogoBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(

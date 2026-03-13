@@ -73,8 +73,32 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
+  # Generate app launcher icons from assets/images/powercoach_logo.png
+  flutter_launcher_icons: ^0.14.3
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+# App launcher icons (run: dart run flutter_launcher_icons)
+# Usa icona con sfondo trasparente per evitare taglio su Android (adaptive icon)
+flutter_launcher_icons:
+  image_path: assets/images/powercoach_icon_foreground.png
+  android: true
+  adaptive_icon_background: "#0D59F2"
+  adaptive_icon_foreground: assets/images/powercoach_icon_foreground.png
+  adaptive_icon_foreground_inset: 18
+  ios: true
+  web:
+    generate: true
+    image_path: assets/images/powercoach_icon_foreground.png
+    background_color: "#0D59F2"
+    theme_color: "#0D59F2"
+  windows:
+    generate: true
+    image_path: assets/images/powercoach_icon_foreground.png
+  macos:
+    generate: true
+    image_path: assets/images/powercoach_icon_foreground.png
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -83,6 +107,7 @@ flutter:
 
   assets:
     - .env
+    - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

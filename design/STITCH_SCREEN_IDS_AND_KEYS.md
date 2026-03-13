@@ -17,3 +17,13 @@ Quando ottieni da Stitch gli URL di download (screenshot + HTML), usa queste chi
 | 8 | Simplified App Settings | 8ab8a84172594c1c9911b5762e2a7257 | STITCH_APP_SETTINGS_SCREENSHOT_URL | STITCH_APP_SETTINGS_HTML_URL | app-settings.png / .html |
 
 **Come ottenere gli URL:** da [Stitch](https://stitch.withgoogle.com) apri il progetto, seleziona lo screen, usa Export/Download e copia gli URL; oppure usa l’MCP Stitch `get_screen` con `projectId` e `screenId` e prendi `screenshot.downloadUrl` e `htmlCode.downloadUrl`.
+
+---
+
+## Progetto: PDF prototype (Workout export)
+
+**Project ID:** `15732533611981325178`
+
+| Screen name      | Screen ID        | Chiave screenshot              | Chiave HTML                | File scaricati                    |
+|------------------|------------------|--------------------------------|-----------------------------|-----------------------------------|
+| Generated Screen | 80e27a86da484d75b1dc9481a2d61b1c | STITCH_GENERATED_PDF_SCREENSHOT_URL | STITCH_GENERATED_PDF_HTML_URL | generated-pdf-screen.png / .html |

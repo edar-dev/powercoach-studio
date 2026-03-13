@@ -106,6 +106,10 @@ $IntuitiveSupersetHtmlUrl = $env:STITCH_INTUITIVE_SUPERSET_HTML_URL
 $ProgramsLibraryScreenshotUrl = $env:STITCH_PROGRAMS_LIBRARY_SCREENSHOT_URL
 $ProgramsLibraryHtmlUrl = $env:STITCH_PROGRAMS_LIBRARY_HTML_URL
 
+# Generated Screen – PDF prototype (project 15732533611981325178, screen ID 80e27a86da484d75b1dc9481a2d61b1c)
+$GeneratedPdfScreenshotUrl = $env:STITCH_GENERATED_PDF_SCREENSHOT_URL
+$GeneratedPdfHtmlUrl = $env:STITCH_GENERATED_PDF_HTML_URL
+
 function Download-File {
     param ([string]$Url, [string]$OutPath)
     if (-not $Url) { return $false }
@@ -203,6 +207,10 @@ if ($ProgramsLibraryScreenshotUrl -and $ProgramsLibraryHtmlUrl) {
     if (Download-File -Url $ProgramsLibraryScreenshotUrl -OutPath (Join-Path $AssetsRoot 'programs-library.png')) { $ok++ }
     if (Download-File -Url $ProgramsLibraryHtmlUrl -OutPath (Join-Path $AssetsRoot 'programs-library.html')) { $ok++ }
 } else { Write-Host "Programs Library: set STITCH_PROGRAMS_LIBRARY_SCREENSHOT_URL and STITCH_PROGRAMS_LIBRARY_HTML_URL." }
+if ($GeneratedPdfScreenshotUrl -and $GeneratedPdfHtmlUrl) {
+    if (Download-File -Url $GeneratedPdfScreenshotUrl -OutPath (Join-Path $AssetsRoot 'generated-pdf-screen.png')) { $ok++ }
+    if (Download-File -Url $GeneratedPdfHtmlUrl -OutPath (Join-Path $AssetsRoot 'generated-pdf-screen.html')) { $ok++ }
+} else { Write-Host "Generated Screen (PDF): set STITCH_GENERATED_PDF_SCREENSHOT_URL and STITCH_GENERATED_PDF_HTML_URL." }
 if ($ok -eq 0) {
     Write-Host "See powercoach-studio/design/README.md for how to obtain URLs from Stitch."
 }

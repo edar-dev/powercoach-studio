@@ -7,7 +7,23 @@ import 'package:pdf/widgets.dart' as pw;
 import '../data/workout_routine_model.dart';
 import '../../customers/data/models/customer.dart';
 
+// PDF layout aligned to Stitch prototype "Generated Screen" (project 15732533611981325178, screen 80e27a86da484d75b1dc9481a2d61b1c).
+// design/stitch-assets/generated-pdf-screen.html | .png
+const double _pdfHeaderFontSize = 10;
+const double _pdfTitleFontSize = 18;
+const double _pdfSectionFontSize = 14;
+const double _pdfDayFontSize = 12;
+const double _pdfTableFontSize = 10;
+const double _pdfSupersetFontSize = 9;
+const double _pdfFooterFontSize = 8;
+const double _pdfCellPadding = 8;
+final PdfColor _pdfTableHeaderBg = PdfColor.fromHex('#f3f4f6');
+final PdfColor _pdfBorder = PdfColor.fromHex('#e5e7eb');
+final PdfColor _pdfSupersetBg = PdfColor.fromHex('#f9fafb');
+final PdfColor _pdfFooterMuted = PdfColor.fromHex('#9ca3af');
+
 /// Generates a PDF from [WorkoutRoutine]. Optionally uses [Customer] pdfHeader when [Customer.useCustomPdfHeader] is true.
+/// Layout matches Stitch prototype "Generated Screen" (project 15732533611981325178).
 /// Returns the path to the saved file in the temp directory for sharing.
 Future<String> exportWorkoutRoutineToPdf(
   WorkoutRoutine routine, {
@@ -29,18 +45,26 @@ Future<String> exportWorkoutRoutineToPdf(
           if (headerText != null)
             pw.Text(
               headerText,
-              style: pw.TextStyle(fontSize: 10),
+              style: pw.TextStyle(fontSize: _pdfHeaderFontSize, color: _pdfFooterMuted),
             ),
-          if (headerText != null) pw.SizedBox(height: 8),
+          if (headerText != null) pw.SizedBox(height: 4),
           pw.Text(
             routine.name,
             style: pw.TextStyle(
-              fontSize: 18,
+              fontSize: _pdfTitleFontSize,
               fontWeight: pw.FontWeight.bold,
             ),
           ),
           pw.SizedBox(height: 12),
         ],
+      ),
+      footer: (context) => pw.Padding(
+        padding: const pw.EdgeInsets.only(top: 24),
+        child: pw.Text(
+          'This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.',
+          style: pw.TextStyle(fontSize: _pdfFooterFontSize, color: _pdfFooterMuted),
+          textAlign: pw.TextAlign.center,
+        ),
       ),
       build: (context) => [
         // Mobility (optional, grouped by section)
@@ -52,17 +76,17 @@ Future<String> exportWorkoutRoutineToPdf(
               pw.Text(
                 section.name.isNotEmpty ? section.name : 'Mobility',
                 style: pw.TextStyle(
-                  fontSize: 14,
+                  fontSize: _pdfSectionFontSize,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
-              pw.SizedBox(height: 4),
+              pw.SizedBox(height: 8),
               ...items.map(
                 (m) => pw.Padding(
                   padding: const pw.EdgeInsets.only(bottom: 2),
                   child: pw.Text(
                     '${m.title}: ${m.subtitle}',
-                    style: const pw.TextStyle(fontSize: 10),
+                    style: pw.TextStyle(fontSize: _pdfTableFontSize),
                   ),
                 ),
               ),
@@ -77,7 +101,7 @@ Future<String> exportWorkoutRoutineToPdf(
             pw.Text(
               week.name,
               style: pw.TextStyle(
-                fontSize: 14,
+                fontSize: _pdfSectionFontSize,
                 fontWeight: pw.FontWeight.bold,
               ),
             ),
@@ -87,13 +111,13 @@ Future<String> exportWorkoutRoutineToPdf(
                 pw.Text(
                   day.name,
                   style: pw.TextStyle(
-                    fontSize: 12,
+                    fontSize: _pdfDayFontSize,
                     fontWeight: pw.FontWeight.bold,
                   ),
                 ),
                 pw.SizedBox(height: 4),
                 pw.Table(
-                  border: pw.TableBorder.all(color: PdfColors.grey300),
+                  border: pw.TableBorder.all(color: _pdfBorder),
                   columnWidths: {
                     0: const pw.FlexColumnWidth(2.5),
                     1: const pw.FlexColumnWidth(0.6),
@@ -103,15 +127,15 @@ Future<String> exportWorkoutRoutineToPdf(
                   },
                   children: [
                     pw.TableRow(
-                      decoration: const pw.BoxDecoration(
-                        color: PdfColors.grey200,
+                      decoration: pw.BoxDecoration(
+                        color: _pdfTableHeaderBg,
                       ),
                       children: [
-                        _cell('Exercise'),
-                        _cell('Sets'),
-                        _cell('Reps'),
-                        _cell('Load/RPE'),
-                        _cell('Notes'),
+                        _cell('Exercise', isHeader: true),
+                        _cell('Sets', isHeader: true),
+                        _cell('Reps', isHeader: true),
+                        _cell('Load/RPE', isHeader: true),
+                        _cell('Notes', isHeader: true),
                       ],
                     ),
                     ...partitionExercisesBySuperset(day.exercises).expand((item) {
@@ -148,9 +172,9 @@ Future<String> exportWorkoutRoutineToPdf(
                       final group = item as List<Exercise>;
                       return [
                         pw.TableRow(
-                          decoration: const pw.BoxDecoration(color: PdfColors.grey100),
+                          decoration: pw.BoxDecoration(color: _pdfSupersetBg),
                           children: [
-                            _cell('Superset'),
+                            _cell('Superset', isSupersetHeader: true),
                             _cell(''),
                             _cell(''),
                             _cell(''),
@@ -209,12 +233,16 @@ Future<String> exportWorkoutRoutineToPdf(
   return file.path;
 }
 
-pw.Widget _cell(String text) {
+pw.Widget _cell(String text, {bool isHeader = false, bool isSupersetHeader = false}) {
+  final fontSize = isSupersetHeader ? _pdfSupersetFontSize : _pdfTableFontSize;
   return pw.Padding(
-    padding: const pw.EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+    padding: pw.EdgeInsets.symmetric(horizontal: _pdfCellPadding, vertical: _pdfCellPadding),
     child: pw.Text(
       text,
-      style: const pw.TextStyle(fontSize: 9),
+      style: pw.TextStyle(
+        fontSize: fontSize,
+        fontWeight: (isHeader || isSupersetHeader) ? pw.FontWeight.bold : null,
+      ),
     ),
   );
 }
