@@ -26,6 +26,14 @@ Get the DSN from Sentry: **Project Settings → Client Keys (DSN)**. Leave `SENT
 
 The profile screen reads and writes `public.profiles` (columns: `display_name`, `contact_phone`, `bio`, `avatar_url`, `website`, etc.). The schema is managed by **GymBlog.API** via EF Core: when the API starts, it applies migrations that create or update the `profiles` table (including `contact_phone` and `website`). No separate Supabase SQL migration is required. If you use only the Flutter app and never start GymBlog.API, start the API once against your Supabase DB so EF applies the migrations, or add the columns manually in the Supabase SQL Editor (`contact_phone text`, `website text`).
 
+## Testing
+
+- **Widget tests** (schermate auth, validazione form, nessun backend):  
+  `flutter test test/`
+- **E2E (integration test)** (app completa, navigazione, richiede `.env` e dispositivo/emulatore):  
+  `flutter test integration_test/`  
+  Vedi `integration_test/README.md` per requisiti (`.env` con `SUPABASE_URL` e `SUPABASE_ANON_KEY`) e note su Windows (Developer Mode).
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

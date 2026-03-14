@@ -247,8 +247,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           : Text(l10n.registrationSubmit),
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         Text(
                           l10n.registrationAlreadyHaveAccount,
