@@ -545,6 +545,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recordSelectExercise => 'Select exercise';
 
   @override
+  String get recordSearchExerciseHint => 'Search by name...';
+
+  @override
+  String get recordDeleteButton => 'Delete record';
+
+  @override
   String get measurementsEmpty => 'No measurements yet';
 
   @override

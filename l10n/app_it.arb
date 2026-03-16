@@ -172,6 +172,8 @@
   "recordDeleted": "Record eliminato.",
   "recordDeleteError": "Impossibile eliminare il record.",
   "recordSelectExercise": "Seleziona esercizio",
+  "recordSearchExerciseHint": "Cerca per nome...",
+  "recordDeleteButton": "Elimina record",
   "measurementsEmpty": "Nessuna misura ancora",
   "measurementsEmptyHint": "Aggiungi una misura per tracciare 1RM, composizione corporea e circonferenze.",
   "measurementAdd": "Aggiungi misura",

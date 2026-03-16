@@ -1130,6 +1130,18 @@ abstract class AppLocalizations {
   /// **'Select exercise'**
   String get recordSelectExercise;
 
+  /// No description provided for @recordSearchExerciseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name...'**
+  String get recordSearchExerciseHint;
+
+  /// No description provided for @recordDeleteButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete record'**
+  String get recordDeleteButton;
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:

@@ -172,6 +172,8 @@
   "recordDeleted": "Record deleted.",
   "recordDeleteError": "Could not delete record.",
   "recordSelectExercise": "Select exercise",
+  "recordSearchExerciseHint": "Search by name...",
+  "recordDeleteButton": "Delete record",
   "measurementsEmpty": "No measurements yet",
   "measurementsEmptyHint": "Add a measurement to track 1RM, body composition, and circumferences.",
   "measurementAdd": "Add measurement",

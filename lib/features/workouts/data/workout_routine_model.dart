@@ -308,6 +308,7 @@ class Exercise {
     this.note = '',
     this.setDetails,
     this.supersetGroupId,
+    this.customExerciseId,
   });
 
   final String id;
@@ -320,6 +321,8 @@ class Exercise {
   final List<ExerciseSet>? setDetails;
   /// When non-null, exercises in the same day with the same id form a superset.
   final String? supersetGroupId;
+  /// When set, this exercise is linked to the user's custom exercise library (GymBlog.API).
+  final String? customExerciseId;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -331,6 +334,7 @@ class Exercise {
         if (setDetails != null && setDetails!.isNotEmpty)
           'setDetails': setDetails!.map((s) => s.toJson()).toList(),
         if (supersetGroupId != null && supersetGroupId!.isNotEmpty) 'supersetGroupId': supersetGroupId,
+        if (customExerciseId != null && customExerciseId!.isNotEmpty) 'customExerciseId': customExerciseId,
       };
 
   static Exercise fromJson(Map<String, dynamic> json) {
@@ -354,6 +358,7 @@ class Exercise {
       note: json['note'] as String? ?? '',
       setDetails: setDetails,
       supersetGroupId: json['supersetGroupId'] as String?,
+      customExerciseId: json['customExerciseId'] as String?,
     );
   }
 
@@ -370,6 +375,7 @@ class Exercise {
     String? note,
     List<ExerciseSet>? setDetails,
     String? supersetGroupId,
+    String? customExerciseId,
     bool clearSupersetGroupId = false,
   }) =>
       Exercise(
@@ -381,5 +387,6 @@ class Exercise {
         note: note ?? this.note,
         setDetails: setDetails ?? this.setDetails,
         supersetGroupId: clearSupersetGroupId ? null : (supersetGroupId ?? this.supersetGroupId),
+        customExerciseId: customExerciseId ?? this.customExerciseId,
       );
 }

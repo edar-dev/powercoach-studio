@@ -33,6 +33,10 @@ class _CustomerExerciseRecordFormScreenState
   final _repo = CustomerExerciseRecordRepository();
   final _formKey = GlobalKey<FormState>();
   List<CustomExerciseItem> _exerciseOptions = [];
+  /// Depth in tree (0 = root, 1 = child).
+  final Map<String, int> _exerciseDepth = {};
+  /// Parent exercise name for display (e.g. "Parent › Child").
+  final Map<String, String> _exerciseParentName = {};
   bool _loadingExercises = true;
   String? _selectedExerciseId;
   final _valueController = TextEditingController();
@@ -48,6 +52,20 @@ class _CustomerExerciseRecordFormScreenState
     (value: 'min', labelKey: 'recordUnitMin'),
     (value: 'other', labelKey: 'recordUnitOther'),
   ];
+
+  CustomExerciseItem? get _selectedExercise {
+    if (_selectedExerciseId == null) return null;
+    try {
+      return _exerciseOptions.firstWhere((e) => e.id == _selectedExerciseId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  String _exerciseDisplayName(CustomExerciseItem e) {
+    final parentName = _exerciseParentName[e.id];
+    return parentName != null ? '$parentName › ${e.name}' : e.name;
+  }
 
   @override
   void initState() {
@@ -87,17 +105,21 @@ class _CustomerExerciseRecordFormScreenState
           .map((e) => CustomExerciseItem.fromJson(e))
           .toList();
       final flat = <CustomExerciseItem>[];
+      void visit(CustomExerciseItem node, int depth, String? parentName) {
+        flat.add(node);
+        _exerciseDepth[node.id] = depth;
+        if (parentName != null) _exerciseParentName[node.id] = parentName;
+        for (final c in node.children) {
+          visit(c, depth + 1, node.name);
+        }
+      }
       for (final root in items) {
-        flat.add(root);
-        flat.addAll(root.flat.skip(1));
+        visit(root, 0, null);
       }
       if (mounted) {
         setState(() {
           _exerciseOptions = flat;
           _loadingExercises = false;
-          if (_selectedExerciseId == null && flat.isNotEmpty && widget.record == null) {
-            _selectedExerciseId = flat.first.id;
-          }
         });
       }
     } catch (_) {
@@ -240,20 +262,69 @@ class _CustomerExerciseRecordFormScreenState
                       style: theme.textTheme.labelLarge,
                     ),
                     const SizedBox(height: 8),
-                    DropdownButtonFormField<String>(
-                      initialValue: _selectedExerciseId,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                      items: _exerciseOptions
-                          .map(
-                            (e) => DropdownMenuItem(
-                              value: e.id,
-                              child: Text(e.name),
+                    Autocomplete<CustomExerciseItem>(
+                      initialValue: _selectedExercise != null
+                          ? TextEditingValue(text: _exerciseDisplayName(_selectedExercise!))
+                          : const TextEditingValue(),
+                      optionsBuilder: (TextEditingValue value) {
+                        final query = value.text.trim().toLowerCase();
+                        if (query.isEmpty) return _exerciseOptions;
+                        return _exerciseOptions.where((e) =>
+                            _exerciseDisplayName(e).toLowerCase().contains(query));
+                      },
+                      displayStringForOption: _exerciseDisplayName,
+                      onSelected: (e) => setState(() => _selectedExerciseId = e.id),
+                      fieldViewBuilder: (
+                        context,
+                        controller,
+                        focusNode,
+                        onFieldSubmitted,
+                      ) {
+                        return TextFormField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          decoration: InputDecoration(
+                            hintText: l10n.recordSearchExerciseHint,
+                            border: const OutlineInputBorder(),
+                          ),
+                        );
+                      },
+                      optionsViewBuilder: (context, onSelected, options) {
+                        return Align(
+                          alignment: Alignment.topLeft,
+                          child: Material(
+                            elevation: 4,
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxHeight: 280),
+                              child: ListView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                itemCount: options.length,
+                                itemBuilder: (context, index) {
+                                  final e = options.elementAt(index);
+                                  final depth = _exerciseDepth[e.id] ?? 0;
+                                  return Padding(
+                                    padding: EdgeInsets.only(
+                                        left: 16.0 + (depth * 16.0)),
+                                    child: ListTile(
+                                      dense: depth > 0,
+                                      title: Text(
+                                        depth > 0 ? e.name : _exerciseDisplayName(e),
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          fontWeight: depth == 0
+                                              ? FontWeight.w600
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                      onTap: () => onSelected(e),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                          )
-                          .toList(),
-                      onChanged: (v) => setState(() => _selectedExerciseId = v),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: 20),
                   ],
@@ -319,9 +390,74 @@ class _CustomerExerciseRecordFormScreenState
                     ),
                     maxLines: 2,
                   ),
+                  if (isEdit && widget.record != null) ...[
+                    const SizedBox(height: 24),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: TextButton.icon(
+                        onPressed: _saving ? null : _deleteRecord,
+                        icon: Icon(Icons.delete_outline, size: 20, color: cs.error),
+                        label: Text(
+                          l10n.recordDeleteButton,
+                          style: TextStyle(color: cs.error),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
     );
+  }
+
+  Future<void> _deleteRecord() async {
+    final r = widget.record;
+    if (r == null) return;
+    final l10n = AppLocalizations.of(context);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.recordDeleteConfirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.customerCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+            ),
+            child: Text(l10n.customerDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true || !mounted) return;
+    setState(() => _saving = true);
+    final cs = Theme.of(context).colorScheme;
+    try {
+      await _repo.delete(widget.customerId, r.id);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.recordDeleted),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+      Navigator.of(context).pop(true);
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.recordDeleteError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: cs.errorContainer,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
   }
 }

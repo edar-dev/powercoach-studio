@@ -14,6 +14,7 @@ import '../../data/workout_plan_repository.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_pdf_usecase.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
+import '../../../exercise_library/data/custom_exercise_item.dart';
 
 /// Returns list of superset group options for the day (id + label) for "Add to superset" menu.
 List<({String id, String label})> _getSupersetGroupOptions(Day day) {
@@ -531,19 +532,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    // Apri sempre con UI multi-serie (top set / backoff): una riga vuota + "Add set"
-    _showEditExerciseDialog(
+    _showAddExerciseDialog(
       context,
       theme,
       cs,
-      '',
-      '',
-      '',
-      '',
-      '',
-      (_, __, ___, ____, _____) {},
-      initialSetDetails: [const ExerciseSet()],
-      onSaveWithSets: (name, note, details) {
+      (name, note, details, [customExerciseId]) {
         final trimmedName = name.trim();
         if (trimmedName.isEmpty) return;
         final list = details.isEmpty ? [const ExerciseSet()] : details;
@@ -559,6 +552,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             rpe: '',
             note: note,
             setDetails: list,
+            customExerciseId: customExerciseId,
           );
           final newEx = [...day.exercises, newExercise];
           final newDays = List<Day>.from(week.days);
@@ -590,18 +584,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    _showEditExerciseDialog(
+    _showAddExerciseDialog(
       context,
       theme,
       cs,
-      '',
-      '',
-      '',
-      '',
-      '',
-      (_, __, ___, ____, _____) {},
-      initialSetDetails: [const ExerciseSet()],
-      onSaveWithSets: (name, note, details) {
+      (name, note, details, [customExerciseId]) {
         final trimmedName = name.trim();
         if (trimmedName.isEmpty) return;
         final list = details.isEmpty ? [const ExerciseSet()] : details;
@@ -616,6 +603,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             reps: list.map((s) => s.displayText).where((r) => r.isNotEmpty).join(' | '),
             rpe: '',
             note: note,
+            customExerciseId: customExerciseId,
             setDetails: list,
             supersetGroupId: supersetGroupId,
           );
@@ -1288,6 +1276,417 @@ void _showEditMobilityDialog(
       ],
     ),
   );
+}
+
+/// Shows the "Add exercise" dialog: choose from custom exercise library or create new on the fly.
+void _showAddExerciseDialog(
+  BuildContext context,
+  ThemeData theme,
+  ColorScheme cs,
+  void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets,
+) {
+  showDialog<void>(
+    context: context,
+    builder: (ctx) => _AddExerciseDialogContent(
+      theme: theme,
+      cs: cs,
+      onSaveWithSets: onSaveWithSets,
+      onCancel: () => Navigator.of(ctx).pop(),
+    ),
+  );
+}
+
+class _AddExerciseDialogContent extends StatefulWidget {
+  const _AddExerciseDialogContent({
+    required this.theme,
+    required this.cs,
+    required this.onSaveWithSets,
+    required this.onCancel,
+  });
+
+  final ThemeData theme;
+  final ColorScheme cs;
+  final void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets;
+  final VoidCallback onCancel;
+
+  @override
+  State<_AddExerciseDialogContent> createState() => _AddExerciseDialogContentState();
+}
+
+class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
+  final _api = GymBlogApiClient();
+  List<CustomExerciseItem> _exerciseOptions = [];
+  final Map<String, int> _exerciseDepth = {};
+  final Map<String, String> _exerciseParentName = {};
+  bool _loadingExercises = true;
+  bool _fromLibrary = true;
+  CustomExerciseItem? _selectedExercise;
+  final _nameController = TextEditingController();
+  final _noteController = TextEditingController();
+  final List<_SetEditControllers> _setControllers = [];
+  bool _saving = false;
+
+  bool get _apiConfigured => GymBlogApiClient.isConfigured;
+
+  String _exerciseDisplayName(CustomExerciseItem e) {
+    final parentName = _exerciseParentName[e.id];
+    return parentName != null ? '$parentName › ${e.name}' : e.name;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _setControllers.add(_SetEditControllers(
+      TextEditingController(),
+      TextEditingController(),
+      TextEditingController(),
+      TextEditingController(),
+    ));
+    _loadExercises();
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _noteController.dispose();
+    for (final c in _setControllers) {
+      c.sets.dispose();
+      c.reps.dispose();
+      c.load.dispose();
+      c.note.dispose();
+    }
+    super.dispose();
+  }
+
+  Future<void> _loadExercises() async {
+    if (!_apiConfigured) {
+      setState(() => _loadingExercises = false);
+      return;
+    }
+    try {
+      final list = await _api.getList(
+        '/api/custom-exercises',
+        queryParameters: {'tree': 'true'},
+      );
+      final items = list
+          .whereType<Map<String, dynamic>>()
+          .map((e) => CustomExerciseItem.fromJson(e))
+          .toList();
+      final flat = <CustomExerciseItem>[];
+      void visit(CustomExerciseItem node, int depth, String? parentName) {
+        flat.add(node);
+        _exerciseDepth[node.id] = depth;
+        if (parentName != null) _exerciseParentName[node.id] = parentName;
+        for (final c in node.children) {
+          visit(c, depth + 1, node.name);
+        }
+      }
+      for (final root in items) {
+        visit(root, 0, null);
+      }
+      if (mounted) {
+        setState(() {
+          _exerciseOptions = flat;
+          _loadingExercises = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _loadingExercises = false);
+    }
+  }
+
+  Future<void> _createCustomExerciseAndSave(String name, String note, List<ExerciseSet> details) async {
+    if (!_apiConfigured) {
+      widget.onSaveWithSets(name, note, details, null);
+      widget.onCancel();
+      return;
+    }
+    setState(() => _saving = true);
+    try {
+      final body = <String, dynamic>{
+        'name': name.trim(),
+        if (note.trim().isNotEmpty) 'description': note.trim(),
+      };
+      final res = await _api.post('/api/custom-exercises', body);
+      if (!mounted) return;
+      final id = res['id']?.toString();
+      final createdName = res['name'] as String? ?? name.trim();
+      widget.onSaveWithSets(createdName, note, details, id);
+      widget.onCancel();
+    } catch (_) {
+      if (mounted) {
+        setState(() => _saving = false);
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(
+            content: const Text('Could not create exercise. Try again or add without saving to library.'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: widget.cs.errorContainer,
+          ),
+        );
+      }
+    }
+  }
+
+  void _doSave() {
+    final note = _noteController.text.trim();
+    final details = _setControllers.map((c) {
+      final sets = c.sets.text.trim();
+      final reps = c.reps.text.trim();
+      final load = c.load.text.trim();
+      final noteSet = c.note.text.trim();
+      if (sets.isNotEmpty || reps.isNotEmpty || load.isNotEmpty) {
+        return ExerciseSet(sets: sets.isEmpty ? '1' : sets, reps: reps, rpe: load, note: noteSet);
+      }
+      return ExerciseSet(note: noteSet);
+    }).toList();
+
+    if (_fromLibrary && _selectedExercise != null) {
+      widget.onSaveWithSets(_selectedExercise!.name, note, details.isEmpty ? [const ExerciseSet()] : details, _selectedExercise!.id);
+      widget.onCancel();
+      return;
+    }
+
+    final name = (!_apiConfigured || !_fromLibrary)
+        ? _nameController.text.trim()
+        : (_selectedExercise?.name ?? '').trim();
+    if (name.isEmpty) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: const Text('Enter a name or select an exercise.'),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: widget.cs.errorContainer,
+        ),
+      );
+      return;
+    }
+
+    if (!_fromLibrary && _apiConfigured) {
+      _createCustomExerciseAndSave(name, note, details.isEmpty ? [const ExerciseSet()] : details);
+      return;
+    }
+
+    if (!_fromLibrary) {
+      widget.onSaveWithSets(name, note, details.isEmpty ? [const ExerciseSet()] : details, null);
+      widget.onCancel();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = widget.theme;
+    final cs = widget.cs;
+    final denseDecoration = InputDecoration(
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    );
+
+    if (_loadingExercises && _apiConfigured) {
+      return AlertDialog(
+        title: Text('Add exercise', style: theme.textTheme.titleMedium),
+        content: const SizedBox(
+          width: 200,
+          height: 80,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+        actions: [
+          TextButton(onPressed: widget.onCancel, child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
+        ],
+      );
+    }
+
+    return AlertDialog(
+      title: Text('Add exercise', style: theme.textTheme.titleMedium),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 520),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_apiConfigured) ...[
+                SegmentedButton<bool>(
+                  segments: const [
+                    ButtonSegment(value: true, label: Text('From library'), icon: Icon(Icons.fitness_center, size: 18)),
+                    ButtonSegment(value: false, label: Text('Create new'), icon: Icon(Icons.add, size: 18)),
+                  ],
+                  selected: {_fromLibrary},
+                  onSelectionChanged: (s) => setState(() {
+                    _fromLibrary = s.first;
+                    if (!_fromLibrary) _selectedExercise = null;
+                  }),
+                ),
+                const SizedBox(height: 12),
+              ],
+              if (_apiConfigured && _fromLibrary && _exerciseOptions.isNotEmpty) ...[
+                Text('Exercise', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+                const SizedBox(height: 6),
+                Autocomplete<CustomExerciseItem>(
+                  initialValue: _selectedExercise != null
+                      ? TextEditingValue(text: _exerciseDisplayName(_selectedExercise!))
+                      : const TextEditingValue(),
+                  optionsBuilder: (TextEditingValue value) {
+                    final query = value.text.trim().toLowerCase();
+                    if (query.isEmpty) return _exerciseOptions;
+                    return _exerciseOptions.where((e) => _exerciseDisplayName(e).toLowerCase().contains(query));
+                  },
+                  displayStringForOption: _exerciseDisplayName,
+                  onSelected: (e) => setState(() => _selectedExercise = e),
+                  fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) => TextFormField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: const InputDecoration(
+                      hintText: 'Search by name...',
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    ),
+                  ),
+                  optionsViewBuilder: (context, onSelected, options) => Align(
+                    alignment: Alignment.topLeft,
+                    child: Material(
+                      elevation: 4,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 200),
+                        child: ListView.builder(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          itemCount: options.length,
+                          itemBuilder: (context, index) {
+                            final e = options.elementAt(index);
+                            final depth = _exerciseDepth[e.id] ?? 0;
+                            return Padding(
+                              padding: EdgeInsets.only(left: 16.0 + (depth * 16.0)),
+                              child: ListTile(
+                                dense: depth > 0,
+                                title: Text(
+                                  depth > 0 ? e.name : _exerciseDisplayName(e),
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: depth == 0 ? FontWeight.w600 : FontWeight.normal,
+                                  ),
+                                ),
+                                onTap: () => onSelected(e),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ] else ...[
+                // Create new (or no API): show name field
+                TextField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Name',
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    border: const OutlineInputBorder(),
+                  ),
+                  autofocus: !_apiConfigured,
+                ),
+                const SizedBox(height: 12),
+              ],
+              TextField(
+                controller: _noteController,
+                decoration: InputDecoration(
+                  labelText: 'Note (optional)',
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  border: const OutlineInputBorder(),
+                ),
+                maxLines: 1,
+              ),
+              const SizedBox(height: 12),
+              Text('Serie (Set × Reps + Carico)', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+              const SizedBox(height: 6),
+              ...List.generate(_setControllers.length, (i) {
+                final c = _setControllers[i];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          controller: c.sets,
+                          decoration: denseDecoration.copyWith(labelText: 'Set', hintText: '1'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          controller: c.reps,
+                          decoration: denseDecoration.copyWith(labelText: 'Reps', hintText: '3'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          controller: c.load,
+                          decoration: denseDecoration.copyWith(labelText: 'Carico', hintText: '75kg'),
+                          keyboardType: TextInputType.text,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline, size: 22, color: _setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
+                        onPressed: _setControllers.length > 1
+                            ? () {
+                                final removed = _setControllers.removeAt(i);
+                                removed.sets.dispose();
+                                removed.reps.dispose();
+                                removed.load.dispose();
+                                removed.note.dispose();
+                                setState(() {});
+                              }
+                            : null,
+                        style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              const SizedBox(height: 4),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => setState(() => _setControllers.add(_SetEditControllers(
+                    TextEditingController(),
+                    TextEditingController(),
+                    TextEditingController(),
+                    TextEditingController(),
+                  ))),
+                  icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
+                  label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: _saving ? null : widget.onCancel,
+          child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant)),
+        ),
+        _saving
+            ? const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
+                child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+              )
+            : FilledButton(
+                onPressed: _doSave,
+                child: const Text('Save'),
+              ),
+      ],
+    );
+  }
 }
 
 void _showEditExerciseDialog(
