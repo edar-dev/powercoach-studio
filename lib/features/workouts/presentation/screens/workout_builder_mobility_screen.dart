@@ -13,7 +13,9 @@ import '../../data/workout_routine_storage.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../../customers/data/customer_exercise_record_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
+import '../../../customers/data/models/customer_exercise_record.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 
 /// Returns list of superset group options for the day (id + label) for "Add to superset" menu.
@@ -562,6 +564,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           _routine = _routine.copyWith(weeks: newWeeks);
         });
       },
+      customerId: widget.customerId,
     );
   }
 
@@ -615,6 +618,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           _routine = _routine.copyWith(weeks: newWeeks);
         });
       },
+      customerId: widget.customerId,
     );
   }
 
@@ -1279,17 +1283,20 @@ void _showEditMobilityDialog(
 }
 
 /// Shows the "Add exercise" dialog: choose from custom exercise library or create new on the fly.
+/// When [customerId] is set, records for the selected exercise are loaded and shown.
 void _showAddExerciseDialog(
   BuildContext context,
   ThemeData theme,
   ColorScheme cs,
-  void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets,
-) {
+  void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets, {
+  String? customerId,
+}) {
   showDialog<void>(
     context: context,
     builder: (ctx) => _AddExerciseDialogContent(
       theme: theme,
       cs: cs,
+      customerId: customerId,
       onSaveWithSets: onSaveWithSets,
       onCancel: () => Navigator.of(ctx).pop(),
     ),
@@ -1300,12 +1307,14 @@ class _AddExerciseDialogContent extends StatefulWidget {
   const _AddExerciseDialogContent({
     required this.theme,
     required this.cs,
+    this.customerId,
     required this.onSaveWithSets,
     required this.onCancel,
   });
 
   final ThemeData theme;
   final ColorScheme cs;
+  final String? customerId;
   final void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets;
   final VoidCallback onCancel;
 
@@ -1315,6 +1324,7 @@ class _AddExerciseDialogContent extends StatefulWidget {
 
 class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   final _api = GymBlogApiClient();
+  final _recordRepo = CustomerExerciseRecordRepository();
   List<CustomExerciseItem> _exerciseOptions = [];
   final Map<String, int> _exerciseDepth = {};
   final Map<String, String> _exerciseParentName = {};
@@ -1325,12 +1335,23 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   final _noteController = TextEditingController();
   final List<_SetEditControllers> _setControllers = [];
   bool _saving = false;
+  List<CustomerExerciseRecord> _recordsForExercise = [];
+  bool _loadingRecords = false;
 
   bool get _apiConfigured => GymBlogApiClient.isConfigured;
+  bool get _hasCustomerContext => widget.customerId != null && widget.customerId!.isNotEmpty;
 
   String _exerciseDisplayName(CustomExerciseItem e) {
     final parentName = _exerciseParentName[e.id];
     return parentName != null ? '$parentName › ${e.name}' : e.name;
+  }
+
+  Widget _buildRecordLine(ThemeData theme, ColorScheme cs, CustomerExerciseRecord r) {
+    final dateStr = '${r.recordedAt.day.toString().padLeft(2, '0')}/${r.recordedAt.month.toString().padLeft(2, '0')}/${r.recordedAt.year}';
+    return Text(
+      '${r.value} ${r.unit} · $dateStr${r.note != null && r.note!.isNotEmpty ? ' · ${r.note}' : ''}',
+      style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurface),
+    );
   }
 
   @override
@@ -1392,6 +1413,37 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
       }
     } catch (_) {
       if (mounted) setState(() => _loadingExercises = false);
+    }
+  }
+
+  Future<void> _loadRecordsForExercise(String? customExerciseId) async {
+    final customerId = widget.customerId;
+    if (customerId == null || customExerciseId == null || !_apiConfigured) {
+      if (mounted) {
+        setState(() {
+          _recordsForExercise = [];
+          _loadingRecords = false;
+        });
+      }
+      return;
+    }
+    setState(() => _loadingRecords = true);
+    try {
+      final list = await _recordRepo.getByCustomerId(customerId, customExerciseId: customExerciseId);
+      if (mounted) {
+        list.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
+        setState(() {
+          _recordsForExercise = list;
+          _loadingRecords = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _recordsForExercise = [];
+          _loadingRecords = false;
+        });
+      }
     }
   }
 
@@ -1530,7 +1582,10 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                     return _exerciseOptions.where((e) => _exerciseDisplayName(e).toLowerCase().contains(query));
                   },
                   displayStringForOption: _exerciseDisplayName,
-                  onSelected: (e) => setState(() => _selectedExercise = e),
+                  onSelected: (e) {
+                    setState(() => _selectedExercise = e);
+                    _loadRecordsForExercise(e.id);
+                  },
                   fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) => TextFormField(
                     controller: controller,
                     focusNode: focusNode,
@@ -1573,6 +1628,29 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                     ),
                   ),
                 ),
+                if (_hasCustomerContext && _selectedExercise != null) ...[
+                  const SizedBox(height: 10),
+                  Text('Record cliente', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+                  const SizedBox(height: 4),
+                  if (_loadingRecords)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+                    )
+                  else if (_recordsForExercise.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: Text(
+                        'Nessun record per questo esercizio.',
+                        style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant, fontStyle: FontStyle.italic),
+                      ),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: _buildRecordLine(theme, cs, _recordsForExercise.first),
+                    ),
+                ],
                 const SizedBox(height: 12),
               ] else ...[
                 // Create new (or no API): show name field
