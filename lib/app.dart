@@ -21,6 +21,7 @@ import 'features/settings/presentation/screens/personal_info_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
 import 'features/settings/presentation/screens/subscription_screen.dart';
 import 'features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
+import 'features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'features/workouts/presentation/screens/workout_placeholder_screen.dart';
 import 'l10n/app_localizations.dart';
 
@@ -31,7 +32,7 @@ final _goRouter = GoRouter(
     final path = state.uri.path;
     final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
     final isCustomerRoute = path.startsWith('/customers');
-    final isProtectedRoute = isCustomerRoute || path.startsWith('/dashboard') || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings');
+    final isProtectedRoute = isCustomerRoute || path.startsWith('/dashboard') || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings') || path == '/exercise-library';
     if (isProtectedRoute && !isLoggedIn) {
       return '/login';
     }
@@ -90,6 +91,10 @@ final _goRouter = GoRouter(
           builder: (context, state) => const SubscriptionScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/exercise-library',
+      builder: (context, state) => const ExerciseLibraryScreen(),
     ),
     GoRoute(
       path: '/customers',

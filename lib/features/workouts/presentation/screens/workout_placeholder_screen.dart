@@ -4,12 +4,22 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 
-/// Placeholder for Workout Builder bottom nav: Library, Diary, Stats.
-/// Shows a "Coming soon" message and back navigation to Builder.
+/// Placeholder for Workout Builder bottom nav: Library, Diary, Stats,
+/// or for other routes (e.g. exercise-library) with custom back destination.
+/// Shows a "Coming soon" message and back navigation.
 class WorkoutPlaceholderScreen extends StatelessWidget {
-  const WorkoutPlaceholderScreen({super.key, required this.title});
+  const WorkoutPlaceholderScreen({
+    super.key,
+    required this.title,
+    this.backRoute,
+    this.backLabel,
+  });
 
   final String title;
+  /// When set, back arrow and bottom button navigate here instead of /workouts/builder.
+  final String? backRoute;
+  /// Label for the bottom button when [backRoute] is set (e.g. "Back to Dashboard").
+  final String? backLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +36,7 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/workouts/builder');
+              context.go(backRoute ?? '/workouts/builder');
             }
           },
         ),
@@ -67,10 +77,10 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
               FilledButton.icon(
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.go('/workouts/builder');
+                  context.go(backRoute ?? '/workouts/builder');
                 },
-                icon: const Icon(Icons.add_circle, size: 20),
-                label: const Text('Back to Builder'),
+                icon: const Icon(Icons.arrow_back, size: 20),
+                label: Text(backLabel ?? 'Back to Builder'),
                 style: FilledButton.styleFrom(
                   backgroundColor: StitchM3Theme.accent,
                   foregroundColor: Colors.white,

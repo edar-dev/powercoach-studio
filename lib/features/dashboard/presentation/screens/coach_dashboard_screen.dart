@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 
 /// Coach Dashboard – Stitch screen ID 285387f9d39c459a989d6060a1c486b0.
@@ -439,6 +440,14 @@ class _DashboardDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.push('/workouts/builder');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.library_books_outlined),
+              title: Text(AppLocalizations.of(context).exerciseLibraryTitle),
+              onTap: () {
+                Navigator.of(context).pop();
+                if (context.mounted) context.push('/exercise-library');
               },
             ),
             const Divider(),

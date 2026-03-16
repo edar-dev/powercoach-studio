@@ -289,6 +289,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersTitle => 'Customers';
 
   @override
+  String get exerciseLibraryTitle => 'Exercise library';
+
+  @override
+  String get exerciseLibraryBack => 'Back';
+
+  @override
+  String get exerciseLibraryImport => 'Import';
+
+  @override
+  String get exerciseLibraryExport => 'Export';
+
+  @override
+  String get exerciseLibraryAddExercise => 'Add exercise';
+
+  @override
+  String get exerciseLibraryEditExercise => 'Edit exercise';
+
+  @override
+  String get exerciseLibraryEdit => 'Edit';
+
+  @override
+  String get exerciseLibraryDelete => 'Delete';
+
+  @override
+  String get exerciseLibraryCancel => 'Cancel';
+
+  @override
+  String get exerciseLibrarySave => 'Save';
+
+  @override
+  String get exerciseLibraryRetry => 'Retry';
+
+  @override
+  String get exerciseLibraryEmpty => 'No custom exercises yet.';
+
+  @override
+  String get exerciseLibraryEmptyHint =>
+      'Add exercises and variants (e.g. Squat → Squat low bar) to use them in plans.';
+
+  @override
+  String get exerciseLibraryExportEmpty =>
+      'Nothing to export. Add exercises first.';
+
+  @override
+  String get exerciseLibraryImportInvalidFormat =>
+      'Invalid file. Use a JSON array of exercises.';
+
+  @override
+  String get exerciseLibraryImportSuccess => 'Import completed successfully.';
+
+  @override
+  String get exerciseLibraryDeleteTitle => 'Delete exercise';
+
+  @override
+  String exerciseLibraryDeleteConfirm(Object name) {
+    return 'Delete \"$name\"?';
+  }
+
+  @override
+  String get exerciseLibraryDeleteHasChildren =>
+      'Remove child exercises (variants) first, then delete this one.';
+
+  @override
+  String get exerciseLibraryNameHint => 'Exercise name';
+
+  @override
+  String get exerciseLibraryDescriptionHint => 'Description (optional)';
+
+  @override
+  String get exerciseLibraryParentLabel => 'Parent exercise (variant of)';
+
+  @override
+  String get exerciseLibraryParentNone => 'None';
+
+  @override
+  String get exerciseLibraryAddVariant => 'Add variant';
+
+  @override
+  String get placeholderBackToDashboard => 'Back to Dashboard';
+
+  @override
   String get customersEmptyTitle => 'No clients yet';
 
   @override

@@ -114,7 +114,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     if (!GymBlogApiClient.isConfigured) {
       return Scaffold(
         backgroundColor: colorScheme.surfaceContainerHighest,
-        appBar: _customerListAppBar(context, theme, l10n.customersTitle),
+        appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: true),
+        drawer: _buildDrawer(context, theme, l10n),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -132,7 +133,8 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerHighest,
-      appBar: _customerListAppBar(context, theme, l10n.customersTitle),
+      appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: true),
+      drawer: _buildDrawer(context, theme, l10n),
       body: RefreshIndicator(
         onRefresh: () => _load(skipCache: true),
         child: _loading
@@ -462,28 +464,79 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     );
   }
 
+  Widget _buildDrawer(BuildContext context, ThemeData theme, AppLocalizations l10n) {
+    final cs = theme.colorScheme;
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            decoration: BoxDecoration(color: cs.primaryContainer),
+            child: Text(
+              l10n.appTitle,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: cs.onPrimaryContainer,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.people_outline),
+            title: Text(l10n.customersTitle),
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.fitness_center_outlined),
+            title: Text(l10n.exerciseLibraryTitle),
+            onTap: () {
+              Navigator.of(context).pop();
+              context.push('/exercise-library');
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings_outlined),
+            title: Text(l10n.settingsTitle),
+            onTap: () {
+              Navigator.of(context).pop();
+              context.push('/settings');
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   PreferredSizeWidget _customerListAppBar(
     BuildContext context,
     ThemeData theme,
-    String title,
-  ) {
+    String title, {
+    bool showMenu = false,
+  }) {
     final cs = theme.colorScheme;
     return AppBar(
       backgroundColor: cs.surface,
       elevation: 0,
       scrolledUnderElevation: 1,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          final router = GoRouter.of(context);
-          if (router.canPop()) {
-            router.pop();
-          } else {
-            router.go('/');
-          }
-        },
-      ),
+      leading: showMenu
+          ? IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () => Scaffold.of(context).openDrawer(),
+              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+            )
+          : IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                final router = GoRouter.of(context);
+                if (router.canPop()) {
+                  router.pop();
+                } else {
+                  router.go('/');
+                }
+              },
+            ),
       title: Text(
         title,
         style: theme.textTheme.titleLarge?.copyWith(

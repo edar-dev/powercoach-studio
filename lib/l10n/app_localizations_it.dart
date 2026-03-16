@@ -287,6 +287,87 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customersTitle => 'Clienti';
 
   @override
+  String get exerciseLibraryTitle => 'Libreria esercizi';
+
+  @override
+  String get exerciseLibraryBack => 'Indietro';
+
+  @override
+  String get exerciseLibraryImport => 'Importa';
+
+  @override
+  String get exerciseLibraryExport => 'Esporta';
+
+  @override
+  String get exerciseLibraryAddExercise => 'Aggiungi esercizio';
+
+  @override
+  String get exerciseLibraryEditExercise => 'Modifica esercizio';
+
+  @override
+  String get exerciseLibraryEdit => 'Modifica';
+
+  @override
+  String get exerciseLibraryDelete => 'Elimina';
+
+  @override
+  String get exerciseLibraryCancel => 'Annulla';
+
+  @override
+  String get exerciseLibrarySave => 'Salva';
+
+  @override
+  String get exerciseLibraryRetry => 'Riprova';
+
+  @override
+  String get exerciseLibraryEmpty => 'Nessun esercizio custom ancora.';
+
+  @override
+  String get exerciseLibraryEmptyHint =>
+      'Aggiungi esercizi e varianti (es. Squat → Squat low bar) per usarli nei piani.';
+
+  @override
+  String get exerciseLibraryExportEmpty =>
+      'Niente da esportare. Aggiungi prima degli esercizi.';
+
+  @override
+  String get exerciseLibraryImportInvalidFormat =>
+      'File non valido. Usa un array JSON di esercizi.';
+
+  @override
+  String get exerciseLibraryImportSuccess => 'Importazione completata.';
+
+  @override
+  String get exerciseLibraryDeleteTitle => 'Elimina esercizio';
+
+  @override
+  String exerciseLibraryDeleteConfirm(Object name) {
+    return 'Eliminare \"$name\"?';
+  }
+
+  @override
+  String get exerciseLibraryDeleteHasChildren =>
+      'Rimuovi prima le varianti (figli), poi elimina questo.';
+
+  @override
+  String get exerciseLibraryNameHint => 'Nome esercizio';
+
+  @override
+  String get exerciseLibraryDescriptionHint => 'Descrizione (opzionale)';
+
+  @override
+  String get exerciseLibraryParentLabel => 'Esercizio padre (variante di)';
+
+  @override
+  String get exerciseLibraryParentNone => 'Nessuno';
+
+  @override
+  String get exerciseLibraryAddVariant => 'Aggiungi variante';
+
+  @override
+  String get placeholderBackToDashboard => 'Torna alla Dashboard';
+
+  @override
   String get customersEmptyTitle => 'Nessun cliente ancora';
 
   @override

@@ -638,6 +638,156 @@ abstract class AppLocalizations {
   /// **'Customers'**
   String get customersTitle;
 
+  /// No description provided for @exerciseLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise library'**
+  String get exerciseLibraryTitle;
+
+  /// No description provided for @exerciseLibraryBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get exerciseLibraryBack;
+
+  /// No description provided for @exerciseLibraryImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get exerciseLibraryImport;
+
+  /// No description provided for @exerciseLibraryExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get exerciseLibraryExport;
+
+  /// No description provided for @exerciseLibraryAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get exerciseLibraryAddExercise;
+
+  /// No description provided for @exerciseLibraryEditExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit exercise'**
+  String get exerciseLibraryEditExercise;
+
+  /// No description provided for @exerciseLibraryEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get exerciseLibraryEdit;
+
+  /// No description provided for @exerciseLibraryDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get exerciseLibraryDelete;
+
+  /// No description provided for @exerciseLibraryCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get exerciseLibraryCancel;
+
+  /// No description provided for @exerciseLibrarySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get exerciseLibrarySave;
+
+  /// No description provided for @exerciseLibraryRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get exerciseLibraryRetry;
+
+  /// No description provided for @exerciseLibraryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom exercises yet.'**
+  String get exerciseLibraryEmpty;
+
+  /// No description provided for @exerciseLibraryEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercises and variants (e.g. Squat → Squat low bar) to use them in plans.'**
+  String get exerciseLibraryEmptyHint;
+
+  /// No description provided for @exerciseLibraryExportEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to export. Add exercises first.'**
+  String get exerciseLibraryExportEmpty;
+
+  /// No description provided for @exerciseLibraryImportInvalidFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid file. Use a JSON array of exercises.'**
+  String get exerciseLibraryImportInvalidFormat;
+
+  /// No description provided for @exerciseLibraryImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Import completed successfully.'**
+  String get exerciseLibraryImportSuccess;
+
+  /// No description provided for @exerciseLibraryDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete exercise'**
+  String get exerciseLibraryDeleteTitle;
+
+  /// No description provided for @exerciseLibraryDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete \"{name}\"?'**
+  String exerciseLibraryDeleteConfirm(Object name);
+
+  /// No description provided for @exerciseLibraryDeleteHasChildren.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove child exercises (variants) first, then delete this one.'**
+  String get exerciseLibraryDeleteHasChildren;
+
+  /// No description provided for @exerciseLibraryNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise name'**
+  String get exerciseLibraryNameHint;
+
+  /// No description provided for @exerciseLibraryDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get exerciseLibraryDescriptionHint;
+
+  /// No description provided for @exerciseLibraryParentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Parent exercise (variant of)'**
+  String get exerciseLibraryParentLabel;
+
+  /// No description provided for @exerciseLibraryParentNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get exerciseLibraryParentNone;
+
+  /// No description provided for @exerciseLibraryAddVariant.
+  ///
+  /// In en, this message translates to:
+  /// **'Add variant'**
+  String get exerciseLibraryAddVariant;
+
+  /// No description provided for @placeholderBackToDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Dashboard'**
+  String get placeholderBackToDashboard;
+
   /// No description provided for @customersEmptyTitle.
   ///
   /// In en, this message translates to:
