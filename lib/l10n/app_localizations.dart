@@ -1010,6 +1010,126 @@ abstract class AppLocalizations {
   /// **'Measurements'**
   String get customerDetailMeasurements;
 
+  /// No description provided for @customerDetailRecords.
+  ///
+  /// In en, this message translates to:
+  /// **'Records'**
+  String get customerDetailRecords;
+
+  /// No description provided for @recordsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercise records yet.'**
+  String get recordsEmpty;
+
+  /// No description provided for @recordsEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Log a value for a custom exercise (e.g. 1RM, reps) and add updates over time.'**
+  String get recordsEmptyHint;
+
+  /// No description provided for @recordAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add record'**
+  String get recordAdd;
+
+  /// No description provided for @recordAddUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Add update'**
+  String get recordAddUpdate;
+
+  /// No description provided for @recordValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Value'**
+  String get recordValue;
+
+  /// No description provided for @recordUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit'**
+  String get recordUnit;
+
+  /// No description provided for @recordDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get recordDate;
+
+  /// No description provided for @recordNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get recordNote;
+
+  /// No description provided for @recordUnitKg.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get recordUnitKg;
+
+  /// No description provided for @recordUnitReps.
+  ///
+  /// In en, this message translates to:
+  /// **'reps'**
+  String get recordUnitReps;
+
+  /// No description provided for @recordUnitSec.
+  ///
+  /// In en, this message translates to:
+  /// **'sec'**
+  String get recordUnitSec;
+
+  /// No description provided for @recordUnitMin.
+  ///
+  /// In en, this message translates to:
+  /// **'min'**
+  String get recordUnitMin;
+
+  /// No description provided for @recordUnitOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get recordUnitOther;
+
+  /// No description provided for @recordDeleteConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this record?'**
+  String get recordDeleteConfirm;
+
+  /// No description provided for @recordSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Record saved.'**
+  String get recordSaved;
+
+  /// No description provided for @recordSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save record.'**
+  String get recordSaveError;
+
+  /// No description provided for @recordDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Record deleted.'**
+  String get recordDeleted;
+
+  /// No description provided for @recordDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete record.'**
+  String get recordDeleteError;
+
+  /// No description provided for @recordSelectExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Select exercise'**
+  String get recordSelectExercise;
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:

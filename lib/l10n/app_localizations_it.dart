@@ -483,6 +483,67 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerDetailMeasurements => 'Misure';
 
   @override
+  String get customerDetailRecords => 'Record';
+
+  @override
+  String get recordsEmpty => 'Nessun record esercizi ancora.';
+
+  @override
+  String get recordsEmptyHint =>
+      'Registra un valore per un esercizio custom (es. 1RM, ripetizioni) e aggiungi aggiornamenti nel tempo.';
+
+  @override
+  String get recordAdd => 'Aggiungi record';
+
+  @override
+  String get recordAddUpdate => 'Aggiungi aggiornamento';
+
+  @override
+  String get recordValue => 'Valore';
+
+  @override
+  String get recordUnit => 'Unità';
+
+  @override
+  String get recordDate => 'Data';
+
+  @override
+  String get recordNote => 'Nota (opzionale)';
+
+  @override
+  String get recordUnitKg => 'kg';
+
+  @override
+  String get recordUnitReps => 'rip';
+
+  @override
+  String get recordUnitSec => 'sec';
+
+  @override
+  String get recordUnitMin => 'min';
+
+  @override
+  String get recordUnitOther => 'Altro';
+
+  @override
+  String get recordDeleteConfirm => 'Eliminare questo record?';
+
+  @override
+  String get recordSaved => 'Record salvato.';
+
+  @override
+  String get recordSaveError => 'Impossibile salvare il record.';
+
+  @override
+  String get recordDeleted => 'Record eliminato.';
+
+  @override
+  String get recordDeleteError => 'Impossibile eliminare il record.';
+
+  @override
+  String get recordSelectExercise => 'Seleziona esercizio';
+
+  @override
   String get measurementsEmpty => 'Nessuna misura ancora';
 
   @override

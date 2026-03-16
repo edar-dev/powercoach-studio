@@ -7,12 +7,15 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_exercise_record_repository.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
 import '../../data/models/customer_measurement.dart';
+import '../../data/models/customer_exercise_record.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import 'customer_measurement_form_screen.dart';
+import 'customer_exercise_record_form_screen.dart';
 
 /// Customer Detail Page – Stitch screen ID 7a7f3b47bfa1435381554959ca9b72e7.
 class CustomerDetailScreen extends StatefulWidget {
@@ -27,12 +30,15 @@ class CustomerDetailScreen extends StatefulWidget {
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> with SingleTickerProviderStateMixin {
   final GymBlogApiClient _api = GymBlogApiClient();
   final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
+  final CustomerExerciseRecordRepository _recordRepo = CustomerExerciseRecordRepository();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
   Customer? _customer;
   bool _loading = true;
   String? _error;
   List<CustomerMeasurement> _measurements = [];
   bool _measurementsLoading = false;
+  List<CustomerExerciseRecord> _records = [];
+  bool _recordsLoading = false;
   List<WorkoutPlanApiModel> _workoutPlans = [];
   bool _workoutPlansLoading = false;
   late TabController _tabController;
@@ -40,7 +46,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _load();
   }
 
@@ -84,6 +90,22 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     }
   }
 
+  Future<void> _loadRecords() async {
+    if (!GymBlogApiClient.isConfigured) return;
+    setState(() => _recordsLoading = true);
+    try {
+      final list = await _recordRepo.getByCustomerId(widget.customerId);
+      if (mounted) {
+        setState(() {
+          _records = list;
+          _recordsLoading = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _recordsLoading = false);
+    }
+  }
+
   Future<void> _load() async {
     final user = Supabase.instance.client.auth.currentUser;
     if (user == null) return;
@@ -100,6 +122,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           _error = null;
         });
         _loadMeasurements();
+        _loadRecords();
         _loadWorkoutPlans();
       }
     } catch (e) {
@@ -250,6 +273,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 tabs: [
                   Tab(text: l10n.customerDetailOverview),
                   Tab(text: l10n.customerDetailMeasurements),
+                  Tab(text: l10n.customerDetailRecords),
                 ],
               ),
               Container(color: colorScheme.outline, height: 1),
@@ -297,6 +321,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           children: [
             _buildOverviewTab(context, c, theme, colorScheme, goalLabel),
             _buildMeasurementsTab(context, theme, colorScheme),
+            _buildRecordsTab(context, theme, colorScheme),
           ],
         ),
       ),
@@ -589,6 +614,223 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 ),
               );
               if (added == true) _loadMeasurements();
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecordsTab(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+    final l10n = AppLocalizations.of(context);
+    if (!GymBlogApiClient.isConfigured) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.fitness_center, size: 48, color: colorScheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              Text(
+                l10n.recordsEmpty,
+                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.customersApiNotConfigured,
+                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    if (_recordsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_records.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.fitness_center, size: 48, color: colorScheme.onSurfaceVariant),
+              const SizedBox(height: 16),
+              Text(
+                l10n.recordsEmpty,
+                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.recordsEmptyHint,
+                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                onPressed: () async {
+                  final added = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (ctx) => CustomerExerciseRecordFormScreen(customerId: widget.customerId),
+                    ),
+                  );
+                  if (added == true) _loadRecords();
+                },
+                icon: const Icon(Icons.add),
+                label: Text(l10n.recordAdd),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    // Group by exercise (customExerciseId / exerciseName)
+    final grouped = <String, List<CustomerExerciseRecord>>{};
+    for (final r in _records) {
+      final key = r.exerciseName ?? r.customExerciseId;
+      grouped.putIfAbsent(key, () => []).add(r);
+    }
+    for (final list in grouped.values) {
+      list.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
+    }
+    final sortedGroupKeys = grouped.keys.toList()..sort();
+
+    return Stack(
+      children: [
+        ListView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          itemCount: sortedGroupKeys.length,
+          itemBuilder: (context, index) {
+            final exerciseKey = sortedGroupKeys[index];
+            final list = grouped[exerciseKey]!;
+            final first = list.first;
+            final exerciseName = first.displayName;
+            return Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            exerciseName,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                        TextButton.icon(
+                          onPressed: () async {
+                            final added = await Navigator.of(context).push<bool>(
+                              MaterialPageRoute(
+                                builder: (ctx) => CustomerExerciseRecordFormScreen(
+                                  customerId: widget.customerId,
+                                  initialCustomExerciseId: first.customExerciseId,
+                                ),
+                              ),
+                            );
+                            if (added == true) _loadRecords();
+                          },
+                          icon: const Icon(Icons.add, size: 18),
+                          label: Text(l10n.recordAddUpdate),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    ...list.map(
+                      (r) => ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        title: Text(
+                          '${r.value} ${r.unit}',
+                          style: theme.textTheme.bodyLarge,
+                        ),
+                        subtitle: Text(
+                          '${r.recordedAt.year}-${r.recordedAt.month.toString().padLeft(2, '0')}-${r.recordedAt.day.toString().padLeft(2, '0')}${r.note != null && r.note!.isNotEmpty ? ' · ${r.note}' : ''}',
+                          style: theme.textTheme.bodySmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: const Icon(Icons.chevron_right),
+                        onTap: () async {
+                          final updated = await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(
+                              builder: (ctx) => CustomerExerciseRecordFormScreen(
+                                customerId: widget.customerId,
+                                record: r,
+                              ),
+                            ),
+                          );
+                          if (updated == true) _loadRecords();
+                        },
+                        onLongPress: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (ctx) => AlertDialog(
+                              title: Text(l10n.recordDeleteConfirm),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx, false),
+                                  child: Text(l10n.customerCancel),
+                                ),
+                                FilledButton(
+                                  onPressed: () => Navigator.pop(ctx, true),
+                                  style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
+                                  child: Text(l10n.customerDelete),
+                                ),
+                              ],
+                            ),
+                          );
+                          if (confirm != true || !mounted) return;
+                          try {
+                            await _recordRepo.delete(widget.customerId, r.id);
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.recordDeleted),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            _loadRecords();
+                          } catch (_) {
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.recordDeleteError),
+                                behavior: SnackBarBehavior.floating,
+                                backgroundColor: colorScheme.errorContainer,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        Positioned(
+          right: 16,
+          bottom: 16,
+          child: FloatingActionButton(
+            onPressed: () async {
+              final added = await Navigator.of(context).push<bool>(
+                MaterialPageRoute(
+                  builder: (ctx) => CustomerExerciseRecordFormScreen(customerId: widget.customerId),
+                ),
+              );
+              if (added == true) _loadRecords();
             },
             child: const Icon(Icons.add),
           ),

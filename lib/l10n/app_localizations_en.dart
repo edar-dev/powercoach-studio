@@ -484,6 +484,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerDetailMeasurements => 'Measurements';
 
   @override
+  String get customerDetailRecords => 'Records';
+
+  @override
+  String get recordsEmpty => 'No exercise records yet.';
+
+  @override
+  String get recordsEmptyHint =>
+      'Log a value for a custom exercise (e.g. 1RM, reps) and add updates over time.';
+
+  @override
+  String get recordAdd => 'Add record';
+
+  @override
+  String get recordAddUpdate => 'Add update';
+
+  @override
+  String get recordValue => 'Value';
+
+  @override
+  String get recordUnit => 'Unit';
+
+  @override
+  String get recordDate => 'Date';
+
+  @override
+  String get recordNote => 'Note (optional)';
+
+  @override
+  String get recordUnitKg => 'kg';
+
+  @override
+  String get recordUnitReps => 'reps';
+
+  @override
+  String get recordUnitSec => 'sec';
+
+  @override
+  String get recordUnitMin => 'min';
+
+  @override
+  String get recordUnitOther => 'Other';
+
+  @override
+  String get recordDeleteConfirm => 'Delete this record?';
+
+  @override
+  String get recordSaved => 'Record saved.';
+
+  @override
+  String get recordSaveError => 'Could not save record.';
+
+  @override
+  String get recordDeleted => 'Record deleted.';
+
+  @override
+  String get recordDeleteError => 'Could not delete record.';
+
+  @override
+  String get recordSelectExercise => 'Select exercise';
+
+  @override
   String get measurementsEmpty => 'No measurements yet';
 
   @override
