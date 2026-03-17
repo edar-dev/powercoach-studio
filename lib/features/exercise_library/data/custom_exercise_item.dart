@@ -6,6 +6,7 @@ class CustomExerciseItem {
     this.description,
     this.parentId,
     this.sortOrder,
+    this.isMobility = false,
     required this.createdAt,
     required this.updatedAt,
     this.children = const [],
@@ -16,6 +17,7 @@ class CustomExerciseItem {
   final String? description;
   final String? parentId;
   final int? sortOrder;
+  final bool isMobility;
   final DateTime createdAt;
   final DateTime updatedAt;
   final List<CustomExerciseItem> children;
@@ -28,6 +30,7 @@ class CustomExerciseItem {
       description: json['description'] as String?,
       parentId: json['parentId']?.toString(),
       sortOrder: json['sortOrder'] as int?,
+      isMobility: json['isMobility'] as bool? ?? false,
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
       children: childrenJson != null

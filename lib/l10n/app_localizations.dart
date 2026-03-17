@@ -1064,6 +1064,48 @@ abstract class AppLocalizations {
   /// **'Could not delete workout.'**
   String get workoutDeleteError;
 
+  /// No description provided for @mobilityAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add mobility exercise'**
+  String get mobilityAddExercise;
+
+  /// No description provided for @mobilityCreateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new'**
+  String get mobilityCreateNew;
+
+  /// No description provided for @mobilityFromMobilityLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'From mobility library'**
+  String get mobilityFromMobilityLibrary;
+
+  /// No description provided for @mobilityFromExerciseLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'From exercise library'**
+  String get mobilityFromExerciseLibrary;
+
+  /// No description provided for @mobilitySaveToLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to mobility library'**
+  String get mobilitySaveToLibrary;
+
+  /// No description provided for @mobilityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get mobilityTitle;
+
+  /// No description provided for @mobilitySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitle'**
+  String get mobilitySubtitle;
+
   /// No description provided for @customerDetailOverview.
   ///
   /// In en, this message translates to:

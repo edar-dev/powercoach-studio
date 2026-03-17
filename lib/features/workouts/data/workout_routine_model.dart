@@ -115,6 +115,7 @@ class MobilityItem {
     required this.subtitle,
     required this.sectionId,
     this.categoryIndex = 0,
+    this.customExerciseId,
   });
 
   final String id;
@@ -124,6 +125,8 @@ class MobilityItem {
   final String sectionId;
   /// Kept for backward compatibility when reading old JSON.
   final int categoryIndex;
+  /// When set, this item is linked to the user's custom exercise library (GymBlog.API).
+  final String? customExerciseId;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -131,6 +134,7 @@ class MobilityItem {
         'subtitle': subtitle,
         'sectionId': sectionId,
         'categoryIndex': categoryIndex,
+        if (customExerciseId != null && customExerciseId!.isNotEmpty) 'customExerciseId': customExerciseId,
       };
 
   static MobilityItem fromJson(Map<String, dynamic> json, [List<MobilitySection>? sections]) {
@@ -146,6 +150,7 @@ class MobilityItem {
       subtitle: json['subtitle'] as String? ?? '',
       sectionId: resolvedSectionId,
       categoryIndex: categoryIndex,
+      customExerciseId: json['customExerciseId'] as String?,
     );
   }
 
@@ -155,6 +160,7 @@ class MobilityItem {
     String? subtitle,
     String? sectionId,
     int? categoryIndex,
+    String? customExerciseId,
   }) =>
       MobilityItem(
         id: id ?? this.id,
@@ -162,6 +168,7 @@ class MobilityItem {
         subtitle: subtitle ?? this.subtitle,
         sectionId: sectionId ?? this.sectionId,
         categoryIndex: categoryIndex ?? this.categoryIndex,
+        customExerciseId: customExerciseId ?? this.customExerciseId,
       );
 }
 

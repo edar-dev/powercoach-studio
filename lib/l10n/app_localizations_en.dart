@@ -513,6 +513,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDeleteError => 'Could not delete workout.';
 
   @override
+  String get mobilityAddExercise => 'Add mobility exercise';
+
+  @override
+  String get mobilityCreateNew => 'Create new';
+
+  @override
+  String get mobilityFromMobilityLibrary => 'From mobility library';
+
+  @override
+  String get mobilityFromExerciseLibrary => 'From exercise library';
+
+  @override
+  String get mobilitySaveToLibrary => 'Save to mobility library';
+
+  @override
+  String get mobilityTitle => 'Title';
+
+  @override
+  String get mobilitySubtitle => 'Subtitle';
+
+  @override
   String get customerDetailOverview => 'Overview';
 
   @override
