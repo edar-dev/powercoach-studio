@@ -1,10 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/data/workout_routine_model.dart';
 
 /// Lista workout del cliente – route /customers/:id/workouts.
 /// Carica i piani dall'API (WorkoutPlanRepository) e permette di aprirli in modifica.
@@ -157,6 +161,8 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                                   if (mounted) _loadPlans();
                                 });
                               },
+                              onCreateFollowUp: () => _createFollowUpWorkout(plan),
+                              onDelete: () => _deletePlan(plan),
                             ),
                           );
                         },
@@ -186,6 +192,83 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     if (diff.inMinutes > 0) return 'Updated ${diff.inMinutes}m ago';
     return 'Just now';
   }
+
+  Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
+    try {
+      final routine = planDataToRoutine(plan.planData);
+      final numWeeks = routine.weeks.isEmpty ? 1 : routine.weeks.length;
+      final newStartingWeek = plan.initialWeekNumber + numWeeks;
+      final emptyPlanData = jsonEncode(WorkoutRoutine.empty().toJson());
+      await _planRepo.create(
+        customerId: widget.customerId,
+        name: AppLocalizations.of(context).workoutNewPlanName,
+        planDataJson: emptyPlanData,
+        initialWeekNumber: newStartingWeek,
+      );
+      if (!mounted) return;
+      _loadPlans();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).workoutDuplicatedMessage),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  Future<void> _deletePlan(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.workoutDeleteConfirmTitle),
+        content: Text(l10n.workoutDeleteConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.customerCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
+            child: Text(l10n.customerDelete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    try {
+      await _planRepo.delete(plan.id);
+      if (!mounted) return;
+      _loadPlans();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutDeletedMessage),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutDeleteError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
 }
 
 class _WorkoutListCard extends StatelessWidget {
@@ -195,6 +278,8 @@ class _WorkoutListCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.onTap,
+    this.onCreateFollowUp,
+    this.onDelete,
   });
 
   final ThemeData theme;
@@ -202,9 +287,12 @@ class _WorkoutListCard extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback? onTap;
+  final VoidCallback? onCreateFollowUp;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -238,6 +326,32 @@ class _WorkoutListCard extends StatelessWidget {
                   ],
                 ),
               ),
+              if (onCreateFollowUp != null || onDelete != null)
+                PopupMenuButton<String>(
+                  icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant, size: 24),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(minWidth: 0),
+                  onSelected: (value) {
+                    HapticFeedback.mediumImpact();
+                    if (value == 'follow_up') {
+                      onCreateFollowUp?.call();
+                    } else if (value == 'delete') {
+                      onDelete?.call();
+                    }
+                  },
+                  itemBuilder: (context) => [
+                    if (onCreateFollowUp != null)
+                      PopupMenuItem(
+                        value: 'follow_up',
+                        child: Text(l10n.workoutCreateNewFromThis),
+                      ),
+                    if (onDelete != null)
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Text(l10n.workoutDelete),
+                      ),
+                  ],
+                ),
               Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
             ],
           ),

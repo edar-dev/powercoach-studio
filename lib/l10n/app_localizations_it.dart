@@ -477,6 +477,42 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutShare => 'Condividi';
 
   @override
+  String get workoutStartingWeek => 'Settimana iniziale';
+
+  @override
+  String get workoutStartingWeekHint => 'Settimana 1, 2, 3...';
+
+  @override
+  String get workoutCreateNewFromThis => 'Crea nuovo workout da questo';
+
+  @override
+  String workoutDuplicateOf(Object name) {
+    return 'Copia di $name';
+  }
+
+  @override
+  String get workoutDuplicatedMessage => 'Workout creato.';
+
+  @override
+  String get workoutNewPlanName => 'Nuovo workout';
+
+  @override
+  String get workoutDelete => 'Elimina workout';
+
+  @override
+  String get workoutDeleteConfirmTitle => 'Eliminare il workout?';
+
+  @override
+  String get workoutDeleteConfirmMessage =>
+      'Questa azione non può essere annullata.';
+
+  @override
+  String get workoutDeletedMessage => 'Workout eliminato.';
+
+  @override
+  String get workoutDeleteError => 'Impossibile eliminare il workout.';
+
+  @override
   String get customerDetailOverview => 'Panoramica';
 
   @override

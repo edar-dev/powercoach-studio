@@ -478,6 +478,41 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutShare => 'Share';
 
   @override
+  String get workoutStartingWeek => 'Starting week';
+
+  @override
+  String get workoutStartingWeekHint => 'Week 1, 2, 3...';
+
+  @override
+  String get workoutCreateNewFromThis => 'Create new workout from this';
+
+  @override
+  String workoutDuplicateOf(Object name) {
+    return 'Copy of $name';
+  }
+
+  @override
+  String get workoutDuplicatedMessage => 'Workout created.';
+
+  @override
+  String get workoutNewPlanName => 'New workout';
+
+  @override
+  String get workoutDelete => 'Delete workout';
+
+  @override
+  String get workoutDeleteConfirmTitle => 'Delete workout?';
+
+  @override
+  String get workoutDeleteConfirmMessage => 'This action cannot be undone.';
+
+  @override
+  String get workoutDeletedMessage => 'Workout deleted.';
+
+  @override
+  String get workoutDeleteError => 'Could not delete workout.';
+
+  @override
   String get customerDetailOverview => 'Overview';
 
   @override

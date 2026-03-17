@@ -998,6 +998,72 @@ abstract class AppLocalizations {
   /// **'Share'**
   String get workoutShare;
 
+  /// No description provided for @workoutStartingWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting week'**
+  String get workoutStartingWeek;
+
+  /// No description provided for @workoutStartingWeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Week 1, 2, 3...'**
+  String get workoutStartingWeekHint;
+
+  /// No description provided for @workoutCreateNewFromThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new workout from this'**
+  String get workoutCreateNewFromThis;
+
+  /// No description provided for @workoutDuplicateOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy of {name}'**
+  String workoutDuplicateOf(Object name);
+
+  /// No description provided for @workoutDuplicatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout created.'**
+  String get workoutDuplicatedMessage;
+
+  /// No description provided for @workoutNewPlanName.
+  ///
+  /// In en, this message translates to:
+  /// **'New workout'**
+  String get workoutNewPlanName;
+
+  /// No description provided for @workoutDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete workout'**
+  String get workoutDelete;
+
+  /// No description provided for @workoutDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete workout?'**
+  String get workoutDeleteConfirmTitle;
+
+  /// No description provided for @workoutDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone.'**
+  String get workoutDeleteConfirmMessage;
+
+  /// No description provided for @workoutDeletedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout deleted.'**
+  String get workoutDeletedMessage;
+
+  /// No description provided for @workoutDeleteError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not delete workout.'**
+  String get workoutDeleteError;
+
   /// No description provided for @customerDetailOverview.
   ///
   /// In en, this message translates to:

@@ -55,6 +55,7 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
 
 class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen> {
   final _routineNameController = TextEditingController();
+  final _initialWeekController = TextEditingController(text: '1');
   final _api = GymBlogApiClient();
   final _planRepo = WorkoutPlanRepository();
   String? _loadedPlanId;
@@ -62,6 +63,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   WorkoutRoutine _routine = WorkoutRoutine.empty();
   bool _loading = true;
   bool _saving = false;
+  int _initialWeekNumber = 1;
   int _selectedMobilitySectionIndex = 0;
   bool _trainingExpanded = true;
   final Set<String> _expandedWeekIds = {};
@@ -117,6 +119,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             _routine = routine;
             _routineNameController.text = routine.name;
             _loadedPlanId = plan.id;
+            _initialWeekNumber = plan.initialWeekNumber;
+            _initialWeekController.text = plan.initialWeekNumber.toString();
             _expandedWeekIds.clear();
             if (routine.weeks.isNotEmpty) _expandedWeekIds.add(routine.weeks.first.id);
           });
@@ -151,6 +155,10 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     setState(() => _saving = true);
     final name = _routineNameController.text.trim();
     final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    final savedInitialWeek = () {
+      final v = int.tryParse(_initialWeekController.text.trim());
+      return (v != null && v >= 1) ? v : _initialWeekNumber;
+    }();
 
     try {
       if (widget.editorMode && widget.customerId != null && GymBlogApiClient.isConfigured) {
@@ -160,12 +168,14 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               planId: _loadedPlanId!,
               name: toSave.name,
               planDataJson: _encodeRoutine(toSave),
+              initialWeekNumber: savedInitialWeek,
             );
           } else {
             final created = await _planRepo.create(
               customerId: widget.customerId!,
               name: toSave.name,
               planDataJson: _encodeRoutine(toSave),
+              initialWeekNumber: savedInitialWeek,
               pdfHeader: _editorCustomer?.pdfHeader,
               useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
             );
@@ -797,6 +807,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   @override
   void dispose() {
     _routineNameController.dispose();
+    _initialWeekController.dispose();
     super.dispose();
   }
 
@@ -918,6 +929,52 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                       ],
                     ),
                   ),
+                  // Starting week (editor mode only)
+                  if (widget.editorMode)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context).workoutStartingWeek,
+                            style: theme.textTheme.labelSmall?.copyWith(
+                              color: StitchM3Theme.accent,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.6,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: _initialWeekController,
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: cs.onSurface,
+                            ),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 6),
+                              hintText: AppLocalizations.of(context).workoutStartingWeekHint,
+                              hintStyle: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ),
+                            onChanged: (s) {
+                              final v = int.tryParse(s);
+                              if (v != null && v >= 1) {
+                                setState(() => _initialWeekNumber = v);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   // Mobility Routine (expanded content only in mobility variant)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
