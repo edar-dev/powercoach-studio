@@ -716,6 +716,30 @@ abstract class AppLocalizations {
   /// **'Add exercises and variants (e.g. Squat → Squat low bar) to use them in plans.'**
   String get exerciseLibraryEmptyHint;
 
+  /// No description provided for @exerciseLibraryTabExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get exerciseLibraryTabExercises;
+
+  /// No description provided for @exerciseLibraryTabMobilityExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility exercises'**
+  String get exerciseLibraryTabMobilityExercises;
+
+  /// No description provided for @exerciseLibraryEmptyMobility.
+  ///
+  /// In en, this message translates to:
+  /// **'No mobility exercises yet.'**
+  String get exerciseLibraryEmptyMobility;
+
+  /// No description provided for @exerciseLibraryEmptyMobilityHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add mobility exercises to use them in mobility routines.'**
+  String get exerciseLibraryEmptyMobilityHint;
+
   /// No description provided for @exerciseLibraryExportEmpty.
   ///
   /// In en, this message translates to:
@@ -763,6 +787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Description (optional)'**
   String get exerciseLibraryDescriptionHint;
+
+  /// No description provided for @exerciseLibraryMobilityToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility exercise'**
+  String get exerciseLibraryMobilityToggle;
 
   /// No description provided for @exerciseLibraryParentLabel.
   ///

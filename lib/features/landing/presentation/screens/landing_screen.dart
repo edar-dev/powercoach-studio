@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -558,7 +559,7 @@ class _HowItWorksSection extends StatelessWidget {
           const SizedBox(height: 40),
           LayoutBuilder(
             builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 600;
+              final isWide = constraints.maxWidth > AppBreakpoints.tablet;
               return isWide
                   ? Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

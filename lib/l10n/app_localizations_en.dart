@@ -329,6 +329,19 @@ class AppLocalizationsEn extends AppLocalizations {
       'Add exercises and variants (e.g. Squat → Squat low bar) to use them in plans.';
 
   @override
+  String get exerciseLibraryTabExercises => 'Exercises';
+
+  @override
+  String get exerciseLibraryTabMobilityExercises => 'Mobility exercises';
+
+  @override
+  String get exerciseLibraryEmptyMobility => 'No mobility exercises yet.';
+
+  @override
+  String get exerciseLibraryEmptyMobilityHint =>
+      'Add mobility exercises to use them in mobility routines.';
+
+  @override
   String get exerciseLibraryExportEmpty =>
       'Nothing to export. Add exercises first.';
 
@@ -356,6 +369,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exerciseLibraryDescriptionHint => 'Description (optional)';
+
+  @override
+  String get exerciseLibraryMobilityToggle => 'Mobility exercise';
 
   @override
   String get exerciseLibraryParentLabel => 'Parent exercise (variant of)';

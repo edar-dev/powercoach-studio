@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/app_sheet.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/data/workout_routine_model.dart';
@@ -228,25 +229,15 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
 
   Future<void> _deletePlan(WorkoutPlanApiModel plan) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.workoutDeleteConfirmTitle),
-        content: Text(l10n.workoutDeleteConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.customerCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-            child: Text(l10n.customerDelete),
-          ),
-        ],
-      ),
+      title: l10n.workoutDeleteConfirmTitle,
+      message: l10n.workoutDeleteConfirmMessage,
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
     try {
       await _planRepo.delete(plan.id);
       if (!mounted) return;

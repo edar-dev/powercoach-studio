@@ -9,6 +9,8 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/app_snackbar.dart';
+import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../widgets/custom_exercise_edit_dialog.dart';
 
@@ -21,16 +23,28 @@ class ExerciseLibraryScreen extends StatefulWidget {
   State<ExerciseLibraryScreen> createState() => _ExerciseLibraryScreenState();
 }
 
-class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
+class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
+    with SingleTickerProviderStateMixin {
   final GymBlogApiClient _api = GymBlogApiClient();
   List<CustomExerciseItem> _items = [];
   bool _loading = true;
   String? _error;
+  late final TabController _tabController;
 
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
     _load();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _load() async {
@@ -81,9 +95,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       if (data.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.exerciseLibraryExportEmpty)),
-        );
+        showAppSnackBar(context, content: Text(l10n.exerciseLibraryExportEmpty));
         return;
       }
       final json = const JsonEncoder.withIndent('  ').convert(data);
@@ -96,10 +108,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e is GymBlogApiException ? e.message : e.toString()),
-          ),
+        showAppSnackBar(
+          context,
+          content: Text(e is GymBlogApiException ? e.message : e.toString()),
         );
       }
     }
@@ -120,9 +131,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
       final decoded = jsonDecode(content);
       if (decoded is! List) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.exerciseLibraryImportInvalidFormat)),
-          );
+          showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
         }
         return;
       }
@@ -131,9 +140,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           .toList();
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.exerciseLibraryImportInvalidFormat)),
-        );
+        showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
       }
       return;
     }
@@ -141,18 +148,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     try {
       await _api.post('$_basePath/import', items);
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.exerciseLibraryImportSuccess)),
-        );
+        showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportSuccess));
         _load();
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e is GymBlogApiException ? e.message : e.toString()),
-          ),
-        );
+        showAppSnackBar(context, content: Text(e is GymBlogApiException ? e.message : e.toString()));
       }
     }
   }
@@ -171,49 +172,94 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     return out;
   }
 
-  void _showAddDialog() {
-    _showAddDialogWithParent(null);
+  /// Filters the tree so that the tab shows only exercises matching [isMobility].
+  ///
+  /// If a node doesn't match but some descendants do, we "lift" matching descendants
+  /// to the current level. This avoids showing the wrong category while keeping
+  /// the list readable.
+  List<CustomExerciseItem> _filterRootsByMobility(bool isMobility) {
+    final out = <CustomExerciseItem>[];
+    for (final r in _items) {
+      out.addAll(_filterNodeByMobility(r, isMobility));
+    }
+    return out;
+  }
+
+  List<CustomExerciseItem> _filterNodeByMobility(CustomExerciseItem node, bool isMobility) {
+    final filteredChildren = <CustomExerciseItem>[];
+    for (final c in node.children) {
+      filteredChildren.addAll(_filterNodeByMobility(c, isMobility));
+    }
+
+    if (node.isMobility == isMobility) {
+      return [
+        CustomExerciseItem(
+          id: node.id,
+          name: node.name,
+          description: node.description,
+          parentId: node.parentId,
+          sortOrder: node.sortOrder,
+          isMobility: node.isMobility,
+          createdAt: node.createdAt,
+          updatedAt: node.updatedAt,
+          children: filteredChildren,
+        )
+      ];
+    }
+
+    return filteredChildren;
+  }
+
+  void _showAddDialog({required bool isMobility}) {
+    _showAddDialogWithParent(null, isMobility: isMobility);
   }
 
   void _showAddVariantDialog(CustomExerciseItem parent) {
-    _showAddDialogWithParent(parent.id, sortOrder: parent.children.length);
+    _showAddDialogWithParent(
+      parent.id,
+      sortOrder: parent.children.length,
+      isMobility: parent.isMobility,
+    );
   }
 
-  void _showAddDialogWithParent(String? parentId, {int? sortOrder}) {
+  void _showAddDialogWithParent(String? parentId, {int? sortOrder, required bool isMobility}) {
     final l10n = AppLocalizations.of(context);
-    showDialog<void>(
+    showAppBottomSheet<void>(
       context: context,
-      builder: (ctx) => CustomExerciseEditDialog(
+      title: l10n.exerciseLibraryAddExercise,
+      fullScreen: false,
+      bodyBuilder: (sheetContext) => CustomExerciseEditDialog(
         title: l10n.exerciseLibraryAddExercise,
         name: '',
         description: null,
+        isMobility: isMobility,
         parentId: parentId,
         parentCandidates: _flattenTree(_items),
-        onSave: (name, description, selectedParentId) async {
+        onSave: (name, description, selectedParentId, isMobility) async {
           try {
             await _api.post(_basePath, {
               'name': name,
               if (description != null && description.isNotEmpty) 'description': description,
               if (selectedParentId != null && selectedParentId.isNotEmpty) 'parentId': selectedParentId,
               if (sortOrder != null) 'sortOrder': sortOrder,
+              'isMobility': isMobility,
             });
-            if (ctx.mounted) {
-              Navigator.of(ctx).pop();
+            if (sheetContext.mounted) {
+              Navigator.of(sheetContext).pop();
               _load();
             }
           } catch (e) {
-            if (ctx.mounted) {
-              ScaffoldMessenger.of(ctx).showSnackBar(
+            if (sheetContext.mounted) {
+              ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    e is GymBlogApiException ? e.message : e.toString(),
-                  ),
+                  content: Text(e is GymBlogApiException ? e.message : e.toString()),
+                  behavior: SnackBarBehavior.floating,
                 ),
               );
             }
           }
         },
-        onCancel: () => Navigator.of(ctx).pop(),
+        onCancel: () => Navigator.of(sheetContext).pop(),
       ),
     );
   }
@@ -223,38 +269,41 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     final excludeIds = {item.id, ...item.flat.map((e) => e.id)};
     final parentCandidates =
         _flattenTree(_items).where((e) => !excludeIds.contains(e.id)).toList();
-    showDialog<void>(
+    showAppBottomSheet<void>(
       context: context,
-      builder: (ctx) => CustomExerciseEditDialog(
+      title: l10n.exerciseLibraryEditExercise,
+      fullScreen: false,
+      bodyBuilder: (sheetContext) => CustomExerciseEditDialog(
         title: l10n.exerciseLibraryEditExercise,
         name: item.name,
         description: item.description,
+        isMobility: item.isMobility,
         parentId: item.parentId,
         parentCandidates: parentCandidates,
-        onSave: (name, description, parentId) async {
+        onSave: (name, description, parentId, isMobility) async {
           try {
             await _api.put('$_basePath/${item.id}', {
               'name': name,
               'description': description?.isEmpty == true ? null : description,
               'parentId': parentId?.isEmpty == true ? null : parentId,
+              'isMobility': isMobility,
             });
-            if (ctx.mounted) {
-              Navigator.of(ctx).pop();
+            if (sheetContext.mounted) {
+              Navigator.of(sheetContext).pop();
               _load();
             }
           } catch (e) {
-            if (ctx.mounted) {
-              ScaffoldMessenger.of(ctx).showSnackBar(
+            if (sheetContext.mounted) {
+              ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(
-                    e is GymBlogApiException ? e.message : e.toString(),
-                  ),
+                  content: Text(e is GymBlogApiException ? e.message : e.toString()),
+                  behavior: SnackBarBehavior.floating,
                 ),
               );
             }
           }
         },
-        onCancel: () => Navigator.of(ctx).pop(),
+        onCancel: () => Navigator.of(sheetContext).pop(),
       ),
     );
   }
@@ -265,40 +314,40 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
     final message = hasChildren
         ? l10n.exerciseLibraryDeleteHasChildren
         : l10n.exerciseLibraryDeleteConfirm(item.name);
-    showDialog<void>(
+    if (hasChildren) {
+      showAppBottomSheet<void>(
+        context: context,
+        title: l10n.exerciseLibraryDeleteTitle,
+        bodyBuilder: (_) => Text(message),
+        primaryActionLabel: l10n.exerciseLibraryCancel,
+        onPrimaryAction: () => Navigator.of(context).pop(),
+      );
+      return;
+    }
+
+    showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.exerciseLibraryDeleteTitle),
-        content: Text(message),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(l10n.exerciseLibraryCancel),
-          ),
-          if (!hasChildren)
-            FilledButton(
-              onPressed: () async {
-                Navigator.of(ctx).pop();
-                try {
-                  await _api.delete('$_basePath/${item.id}');
-                  if (mounted) _load();
-                } catch (e) {
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          e is GymBlogApiException ? e.message : e.toString(),
-                        ),
-                      ),
-                    );
-                  }
-                }
-              },
-              child: Text(l10n.exerciseLibraryDelete),
+      title: l10n.exerciseLibraryDeleteTitle,
+      message: message,
+      confirmLabel: l10n.exerciseLibraryDelete,
+      cancelLabel: l10n.exerciseLibraryCancel,
+      destructive: true,
+    ).then((confirmed) async {
+      if (!confirmed) return;
+      try {
+        await _api.delete('$_basePath/${item.id}');
+        if (mounted) _load();
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e is GymBlogApiException ? e.message : e.toString()),
+              behavior: SnackBarBehavior.floating,
             ),
-        ],
-      ),
-    );
+          );
+        }
+      }
+    });
   }
 
   @override
@@ -383,81 +432,50 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen> {
           ),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: cs.outline, height: 1),
+          preferredSize: const Size.fromHeight(56),
+          child: Column(
+            children: [
+              TabBar(
+                controller: _tabController,
+                tabs: [
+                  Tab(text: l10n.exerciseLibraryTabExercises),
+                  Tab(text: l10n.exerciseLibraryTabMobilityExercises),
+                ],
+              ),
+              Container(color: cs.outline, height: 1),
+            ],
+          ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: _load,
-        child: _loading && _items.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _error!,
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          FilledButton(
-                            onPressed: _load,
-                            child: Text(l10n.exerciseLibraryRetry),
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-                : _items.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.fitness_center_outlined,
-                              size: 64,
-                              color: cs.outline,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.exerciseLibraryEmpty,
-                              style: theme.textTheme.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              l10n.exerciseLibraryEmptyHint,
-                              style: theme.textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
-                        ),
-                        itemCount: _items.length,
-                        itemBuilder: (context, index) {
-                          final it = _items[index];
-                          return _ExerciseTile(
-                            item: it,
-                            onEdit: _showEditDialog,
-                            onDelete: _confirmDelete,
-                            onAddVariant: _showAddVariantDialog,
-                          );
-                        },
-                      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _ExerciseLibraryTabView(
+            isMobility: false,
+            loading: _loading,
+            error: _error,
+            allItemsEmpty: _items.isEmpty,
+            onRefresh: _load,
+            buildList: () => _filterRootsByMobility(false),
+            onEdit: _showEditDialog,
+            onDelete: _confirmDelete,
+            onAddVariant: _showAddVariantDialog,
+          ),
+          _ExerciseLibraryTabView(
+            isMobility: true,
+            loading: _loading,
+            error: _error,
+            allItemsEmpty: _items.isEmpty,
+            onRefresh: _load,
+            buildList: () => _filterRootsByMobility(true),
+            onEdit: _showEditDialog,
+            onDelete: _confirmDelete,
+            onAddVariant: _showAddVariantDialog,
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: _loading ? null : _showAddDialog,
+        onPressed: _loading ? null : () => _showAddDialog(isMobility: _tabController.index == 1),
         icon: const Icon(Icons.add),
         label: Text(l10n.exerciseLibraryAddExercise),
         backgroundColor: StitchM3Theme.accent,
@@ -535,6 +553,118 @@ class _ExerciseTile extends StatelessWidget {
             )
             .toList(),
       ),
+    );
+  }
+}
+
+class _ExerciseLibraryTabView extends StatelessWidget {
+  const _ExerciseLibraryTabView({
+    required this.isMobility,
+    required this.loading,
+    required this.error,
+    required this.allItemsEmpty,
+    required this.onRefresh,
+    required this.buildList,
+    required this.onEdit,
+    required this.onDelete,
+    required this.onAddVariant,
+  });
+
+  final bool isMobility;
+  final bool loading;
+  final String? error;
+  final bool allItemsEmpty;
+
+  final Future<void> Function() onRefresh;
+  final List<CustomExerciseItem> Function() buildList;
+
+  final void Function(CustomExerciseItem item) onEdit;
+  final void Function(CustomExerciseItem item) onDelete;
+  final void Function(CustomExerciseItem item) onAddVariant;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: error != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      error!,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    FilledButton(
+                      onPressed: onRefresh,
+                      child: Text(l10n.exerciseLibraryRetry),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : loading && allItemsEmpty
+              ? const Center(child: CircularProgressIndicator())
+              : Builder(
+                  builder: (context) {
+                    final list = buildList();
+                    if (list.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.fitness_center_outlined,
+                              size: 64,
+                              color: cs.outline,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              isMobility ? l10n.exerciseLibraryEmptyMobility : l10n.exerciseLibraryEmpty,
+                              style: theme.textTheme.bodyLarge,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              isMobility ? l10n.exerciseLibraryEmptyMobilityHint : l10n.exerciseLibraryEmptyHint,
+                              style: theme.textTheme.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ).copyWith(
+                        bottom: 112,
+                      ),
+                      itemCount: list.length,
+                      itemBuilder: (context, index) {
+                        final it = list[index];
+                        return _ExerciseTile(
+                          item: it,
+                          onEdit: onEdit,
+                          onDelete: onDelete,
+                          onAddVariant: onAddVariant,
+                        );
+                      },
+                    );
+                  },
+                ),
     );
   }
 }

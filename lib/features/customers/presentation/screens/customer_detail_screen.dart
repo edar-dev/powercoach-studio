@@ -9,6 +9,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../widgets/app_snackbar.dart';
+import '../../../../widgets/app_sheet.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
@@ -140,27 +142,15 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   Future<void> _delete() async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.customerDeleteConfirmTitle),
-        content: Text(l10n.customerDeleteConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.customerCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-            child: Text(l10n.customerDelete),
-          ),
-        ],
-      ),
+      title: l10n.customerDeleteConfirmTitle,
+      message: l10n.customerDeleteConfirmMessage,
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
 
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -285,32 +275,32 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
         ),
         actions: [
           IconButton(
+            tooltip: MaterialLocalizations.of(context).moreButtonTooltip,
             onPressed: () {
               // More menu: edit / delete
-              showModalBottomSheet(
+              showAppBottomSheet<void>(
                 context: context,
-                builder: (ctx) => SafeArea(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        leading: const Icon(Icons.edit_outlined),
-                        title: Text(l10n.customerEdit),
-                        onTap: () {
-                          Navigator.pop(ctx);
-                          context.push('/customers/${c.id}/edit');
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.delete_outline, color: colorScheme.error),
-                        title: Text(l10n.customerDelete, style: TextStyle(color: colorScheme.error)),
-                        onTap: () {
-                          Navigator.pop(ctx);
-                          _delete();
-                        },
-                      ),
-                    ],
-                  ),
+                title: 'Actions',
+                bodyBuilder: (sheetContext) => Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.edit_outlined),
+                      title: Text(l10n.customerEdit),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        context.push('/customers/${c.id}/edit');
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.delete_outline, color: colorScheme.error),
+                      title: Text(l10n.customerDelete, style: TextStyle(color: colorScheme.error)),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _delete();
+                      },
+                    ),
+                  ],
                 ),
               );
             },
@@ -564,42 +554,27 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                   if (updated == true) _loadMeasurements();
                 },
                 onLongPress: () async {
-                  final confirm = await showDialog<bool>(
+                  final confirm = await showAppConfirmDialog(
                     context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: Text(l10n.measurementDeleteConfirm),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, false),
-                          child: Text(l10n.customerCancel),
-                        ),
-                        FilledButton(
-                          onPressed: () => Navigator.pop(ctx, true),
-                          style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
-                          child: Text(l10n.customerDelete),
-                        ),
-                      ],
-                    ),
+                    title: l10n.measurementDeleteConfirm,
+                    message: '',
+                    confirmLabel: l10n.customerDelete,
+                    cancelLabel: l10n.customerCancel,
+                    destructive: true,
                   );
-                  if (confirm != true || !mounted) return;
+                  if (!confirm || !mounted) return;
                   try {
                     await _measurementRepo.delete(widget.customerId, m.id);
                     if (!mounted) return;
-                    final messenger = ScaffoldMessenger.maybeOf(context);
-                    if (messenger != null) {
-                      messenger.showSnackBar(
-                        SnackBar(content: Text(l10n.measurementDeleted), behavior: SnackBarBehavior.floating),
-                      );
-                    }
+                    showAppSnackBar(context, content: Text(l10n.measurementDeleted));
                     _loadMeasurements();
                   } catch (_) {
                     if (!mounted) return;
-                    final messengerErr = ScaffoldMessenger.maybeOf(context);
-                    if (messengerErr != null) {
-                      messengerErr.showSnackBar(
-                        SnackBar(content: Text(l10n.measurementDeleteError), behavior: SnackBarBehavior.floating, backgroundColor: colorScheme.errorContainer),
-                      );
-                    }
+                    showAppSnackBar(
+                      context,
+                      content: Text(l10n.measurementDeleteError),
+                      backgroundColor: colorScheme.errorContainer,
+                    );
                   }
                 },
               ),
@@ -776,42 +751,26 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                           if (updated == true) _loadRecords();
                         },
                         onLongPress: () async {
-                          final confirm = await showDialog<bool>(
+                          final confirm = await showAppConfirmDialog(
                             context: context,
-                            builder: (ctx) => AlertDialog(
-                              title: Text(l10n.recordDeleteConfirm),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx, false),
-                                  child: Text(l10n.customerCancel),
-                                ),
-                                FilledButton(
-                                  onPressed: () => Navigator.pop(ctx, true),
-                                  style: FilledButton.styleFrom(backgroundColor: colorScheme.error),
-                                  child: Text(l10n.customerDelete),
-                                ),
-                              ],
-                            ),
+                            title: l10n.recordDeleteConfirm,
+                            message: '',
+                            confirmLabel: l10n.customerDelete,
+                            cancelLabel: l10n.customerCancel,
+                            destructive: true,
                           );
-                          if (confirm != true || !mounted) return;
+                          if (!confirm || !mounted) return;
                           try {
                             await _recordRepo.delete(widget.customerId, r.id);
                             if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.recordDeleted),
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
+                            showAppSnackBar(context, content: Text(l10n.recordDeleted));
                             _loadRecords();
                           } catch (_) {
                             if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(l10n.recordDeleteError),
-                                behavior: SnackBarBehavior.floating,
-                                backgroundColor: colorScheme.errorContainer,
-                              ),
+                            showAppSnackBar(
+                              context,
+                              content: Text(l10n.recordDeleteError),
+                              backgroundColor: colorScheme.errorContainer,
                             );
                           }
                         },
@@ -1146,25 +1105,15 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   Future<void> _deletePlan(BuildContext context, WorkoutPlanApiModel plan) async {
     final l10n = AppLocalizations.of(context);
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.workoutDeleteConfirmTitle),
-        content: Text(l10n.workoutDeleteConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.customerCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
-            child: Text(l10n.customerDelete),
-          ),
-        ],
-      ),
+      title: l10n.workoutDeleteConfirmTitle,
+      message: l10n.workoutDeleteConfirmMessage,
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
+      destructive: true,
     );
-    if (confirmed != true || !mounted) return;
+    if (!confirmed || !mounted) return;
     try {
       await _planRepo.delete(plan.id);
       if (!mounted) return;

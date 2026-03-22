@@ -114,8 +114,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     if (!GymBlogApiClient.isConfigured) {
       return Scaffold(
         backgroundColor: colorScheme.surfaceContainerHighest,
-        appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: true),
-        drawer: _buildDrawer(context, theme, l10n),
+        appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: false),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -133,8 +132,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerHighest,
-      appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: true),
-      drawer: _buildDrawer(context, theme, l10n),
+      appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: false),
       body: RefreshIndicator(
         onRefresh: () => _load(skipCache: true),
         child: _loading
@@ -520,10 +518,12 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       elevation: 0,
       scrolledUnderElevation: 1,
       leading: showMenu
-          ? IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => Scaffold.of(context).openDrawer(),
-              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+          ? Builder(
+              builder: (drawerContext) => IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => Scaffold.of(drawerContext).openDrawer(),
+                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+              ),
             )
           : IconButton(
               icon: const Icon(Icons.arrow_back),

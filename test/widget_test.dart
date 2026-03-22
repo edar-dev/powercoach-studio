@@ -3,7 +3,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:powercoach_studio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/ui/breakpoints.dart';
 import '../theme/stitch_m3_theme.dart';
 import '../widgets/stitch_app_bar.dart';
 import '../widgets/stitch_card.dart';
@@ -13,7 +14,6 @@ import '../widgets/stitch_card.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  static const double _breakpoint = 600;
   static const double _paddingMobile = 24;
   static const double _paddingDesktop = 32;
   static const double _radiusLg = 12;
@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final isNarrow = width < _breakpoint;
+    final isNarrow = width < AppBreakpoints.tablet;
     final padding = isNarrow ? _paddingMobile : _paddingDesktop;
 
     final cs = Theme.of(context).colorScheme;

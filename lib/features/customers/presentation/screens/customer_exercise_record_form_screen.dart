@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/models/customer_exercise_record.dart';
@@ -414,26 +415,15 @@ class _CustomerExerciseRecordFormScreenState
     final r = widget.record;
     if (r == null) return;
     final l10n = AppLocalizations.of(context);
-    final confirm = await showDialog<bool>(
+    final confirm = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.recordDeleteConfirm),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(l10n.customerCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
-            ),
-            child: Text(l10n.customerDelete),
-          ),
-        ],
-      ),
+      title: l10n.recordDeleteConfirm,
+      message: '',
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
+      destructive: true,
     );
-    if (confirm != true || !mounted) return;
+    if (!confirm || !mounted) return;
     setState(() => _saving = true);
     final cs = Theme.of(context).colorScheme;
     try {

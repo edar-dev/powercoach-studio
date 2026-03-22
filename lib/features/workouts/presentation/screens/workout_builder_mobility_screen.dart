@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
+import '../../../../widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 import '../../data/workout_routine_storage.dart';
 import '../../data/workout_plan_repository.dart';
@@ -398,33 +399,24 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _showEditSectionDialog(String initialName, void Function(String) onSave) {
     final controller = TextEditingController(text: initialName);
-    showDialog<void>(
+    showAppBottomSheet<void>(
       context: context,
-      builder: (ctx) {
-        final theme = Theme.of(ctx);
-        final cs = theme.colorScheme;
-        return AlertDialog(
-          title: Text('Edit section', style: theme.textTheme.titleMedium),
-          content: TextField(
-            controller: controller,
-            decoration: const InputDecoration(labelText: 'Section name'),
-            autofocus: true,
-            onSubmitted: (_) {
-              onSave(controller.text.trim());
-              Navigator.of(ctx).pop();
-            },
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
-            FilledButton(
-              onPressed: () {
-                onSave(controller.text.trim());
-                Navigator.of(ctx).pop();
-              },
-              child: const Text('Save'),
-            ),
-          ],
+      title: 'Edit section',
+      bodyBuilder: (sheetContext) {
+        return TextField(
+          controller: controller,
+          decoration: const InputDecoration(labelText: 'Section name'),
+          autofocus: true,
+          onSubmitted: (_) {
+            onSave(controller.text.trim());
+            Navigator.of(sheetContext).pop();
+          },
         );
+      },
+      primaryActionLabel: 'Save',
+      onPrimaryAction: () {
+        onSave(controller.text.trim());
+        Navigator.of(context).pop();
       },
     );
   }
@@ -480,24 +472,15 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   Future<void> _confirmDeleteWeek(BuildContext context, int weekIndex) async {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final confirmed = await showDialog<bool>(
+    final confirmed = await showAppConfirmDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete week'),
-        content: const Text('Remove this week and all its days and exercises? This cannot be undone.'),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: StitchM3Theme.danger),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      title: 'Delete week',
+      message: 'Remove this week and all its days and exercises? This cannot be undone.',
+      confirmLabel: 'Delete',
+      cancelLabel: 'Cancel',
+      destructive: true,
     );
-    if (confirmed == true && mounted) _deleteWeek(weekIndex);
+    if (confirmed && mounted) _deleteWeek(weekIndex);
   }
 
   void _renameDay(int weekIndex, int dayIndex, String newName) {
@@ -512,6 +495,18 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       newDays[dayIndex] = day.copyWith(name: name);
       final newWeeks = List<Week>.from(_routine.weeks);
       newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
+  }
+
+  void _renameWeek(int weekIndex, String newName) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final name = newName.trim();
+    if (name.isEmpty) return;
+    setState(() {
+      final week = _routine.weeks[weekIndex];
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(name: name);
       _routine = _routine.copyWith(weeks: newWeeks);
     });
   }
@@ -645,6 +640,30 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       final newEx = day.exercises.where((e) => e.id != exerciseId).toList();
       final newDays = List<Day>.from(week.days);
       newDays[dayIndex] = day.copyWith(exercises: newEx);
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
+    });
+  }
+
+  void _moveExerciseInDay(int weekIndex, int dayIndex, String exerciseId, {required bool up}) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final week = _routine.weeks[weekIndex];
+    if (dayIndex < 0 || dayIndex >= week.days.length) return;
+    final day = week.days[dayIndex];
+
+    final currentIndex = day.exercises.indexWhere((e) => e.id == exerciseId);
+    if (currentIndex < 0) return;
+    final targetIndex = up ? currentIndex - 1 : currentIndex + 1;
+    if (targetIndex < 0 || targetIndex >= day.exercises.length) return;
+
+    setState(() {
+      final reordered = List<Exercise>.from(day.exercises);
+      final item = reordered.removeAt(currentIndex);
+      reordered.insert(targetIndex, item);
+
+      final newDays = List<Day>.from(week.days);
+      newDays[dayIndex] = day.copyWith(exercises: reordered);
       final newWeeks = List<Week>.from(_routine.weeks);
       newWeeks[weekIndex] = week.copyWith(days: newDays);
       _routine = _routine.copyWith(weeks: newWeeks);
@@ -1105,11 +1124,13 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                     onNewWeek: _addWeek,
                     onCloneWeek: _cloneWeek,
                     onDeleteWeek: (weekIndex) => _confirmDeleteWeek(context, weekIndex),
+                    onRenameWeek: _renameWeek,
                     onAddDay: _addDayToWeek,
                     onRenameDay: _renameDay,
                     onDeleteDay: _deleteDay,
                     onAddExercise: _addExerciseToDay,
                     onRemoveExercise: _removeExercise,
+                    onMoveExercise: _moveExerciseInDay,
                     onUpdateExercise: _updateExercise,
                     onAddSetToExercise: _addSetToExercise,
                     onUpdateExerciseSet: _updateExerciseSet,
@@ -1263,39 +1284,54 @@ class _MobilityItem extends StatelessWidget {
 }
 
 void _showRenameDayDialog(BuildContext context, String initialName, void Function(String) onSave) {
-  final theme = Theme.of(context);
-  final cs = theme.colorScheme;
   final controller = TextEditingController(text: initialName);
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text('Rename day', style: theme.textTheme.titleMedium),
-      content: TextField(
-        controller: controller,
-        decoration: const InputDecoration(labelText: 'Day name'),
-        autofocus: true,
-        onSubmitted: (_) {
-          final name = controller.text.trim();
-          if (name.isNotEmpty) {
-            onSave(name);
-            Navigator.of(ctx).pop();
-          }
-        },
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
-        FilledButton(
-          onPressed: () {
-            final name = controller.text.trim();
-            if (name.isNotEmpty) {
-              onSave(name);
-              Navigator.of(ctx).pop();
-            }
-          },
-          child: const Text('Save'),
-        ),
-      ],
+    title: 'Rename day',
+    bodyBuilder: (sheetContext) => TextField(
+      controller: controller,
+      decoration: const InputDecoration(labelText: 'Day name'),
+      autofocus: true,
+      onSubmitted: (_) {
+        final name = controller.text.trim();
+        if (name.isEmpty) return;
+        onSave(name);
+        Navigator.of(sheetContext).pop();
+      },
     ),
+    primaryActionLabel: 'Save',
+    onPrimaryAction: () {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      onSave(name);
+      Navigator.of(context).pop();
+    },
+  );
+}
+
+void _showRenameWeekDialog(BuildContext context, String initialName, void Function(String) onSave) {
+  final controller = TextEditingController(text: initialName);
+  showAppBottomSheet<void>(
+    context: context,
+    title: 'Rename week',
+    bodyBuilder: (sheetContext) => TextField(
+      controller: controller,
+      decoration: const InputDecoration(labelText: 'Week name'),
+      autofocus: true,
+      onSubmitted: (_) {
+        final name = controller.text.trim();
+        if (name.isEmpty) return;
+        onSave(name);
+        Navigator.of(sheetContext).pop();
+      },
+    ),
+    primaryActionLabel: 'Save',
+    onPrimaryAction: () {
+      final name = controller.text.trim();
+      if (name.isEmpty) return;
+      onSave(name);
+      Navigator.of(context).pop();
+    },
   );
 }
 
@@ -1309,37 +1345,31 @@ void _showEditMobilityDialog(
 ) {
   final titleController = TextEditingController(text: initialTitle);
   final subtitleController = TextEditingController(text: initialSubtitle);
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text('Edit mobility exercise', style: theme.textTheme.titleMedium),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: titleController,
-            decoration: const InputDecoration(labelText: 'Title'),
-            autofocus: true,
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: subtitleController,
-            decoration: const InputDecoration(labelText: 'Subtitle'),
-            maxLines: 2,
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
-        FilledButton(
-          onPressed: () {
-            onSave(titleController.text.trim(), subtitleController.text.trim());
-            Navigator.of(ctx).pop();
-          },
-          child: const Text('Save'),
+    title: 'Edit mobility exercise',
+    fullScreen: false,
+    bodyBuilder: (sheetContext) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: titleController,
+          decoration: const InputDecoration(labelText: 'Title'),
+          autofocus: true,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: subtitleController,
+          decoration: const InputDecoration(labelText: 'Subtitle'),
+          maxLines: 2,
         ),
       ],
     ),
+    primaryActionLabel: 'Save',
+    onPrimaryAction: () {
+      onSave(titleController.text.trim(), subtitleController.text.trim());
+      Navigator.of(context).pop();
+    },
   );
 }
 
@@ -1352,13 +1382,15 @@ void _showAddMobilityExerciseDialog(
   ColorScheme cs,
   void Function(String title, String subtitle, String? customExerciseId) onSave,
 ) {
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => _AddMobilityExerciseDialogContent(
+    title: 'Add mobility exercise',
+    fullScreen: true,
+    bodyBuilder: (sheetContext) => _AddMobilityExerciseDialogContent(
       theme: theme,
       cs: cs,
       onSave: onSave,
-      onCancel: () => Navigator.of(ctx).pop(),
+      onCancel: () => Navigator.of(sheetContext).pop(),
     ),
   );
 }
@@ -1382,7 +1414,7 @@ class _AddMobilityExerciseDialogContent extends StatefulWidget {
 
 class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseDialogContent> {
   final _api = GymBlogApiClient();
-  _MobilitySource _source = _MobilitySource.createNew;
+  _MobilitySource _source = _MobilitySource.fromMobilityLibrary;
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
   bool _saveToLibrary = false;
@@ -1433,18 +1465,26 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);
         _mobilityDepth[node.id] = depth;
-        if (parentName != null) _mobilityParentName[node.id] = parentName;
-        for (final c in node.children) visit(c, depth + 1, node.name);
+        if (parentName != null) {
+          _mobilityParentName[node.id] = parentName;
+        }
+        for (final c in node.children) {
+          visit(c, depth + 1, node.name);
+        }
       }
       for (final node in items) {
         visit(node, 0, null);
       }
-      if (mounted) setState(() {
-        _mobilityOptions = flat;
-        _loadingMobility = false;
-      });
+      if (mounted) {
+        setState(() {
+          _mobilityOptions = flat;
+          _loadingMobility = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _loadingMobility = false);
+      if (mounted) {
+        setState(() => _loadingMobility = false);
+      }
     }
   }
 
@@ -1461,18 +1501,26 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);
         _exerciseDepth[node.id] = depth;
-        if (parentName != null) _exerciseParentName[node.id] = parentName;
-        for (final c in node.children) visit(c, depth + 1, node.name);
+        if (parentName != null) {
+          _exerciseParentName[node.id] = parentName;
+        }
+        for (final c in node.children) {
+          visit(c, depth + 1, node.name);
+        }
       }
       for (final node in items) {
         visit(node, 0, null);
       }
-      if (mounted) setState(() {
-        _exerciseOptions = flat;
-        _loadingExercise = false;
-      });
+      if (mounted) {
+        setState(() {
+          _exerciseOptions = flat;
+          _loadingExercise = false;
+        });
+      }
     } catch (_) {
-      if (mounted) setState(() => _loadingExercise = false);
+      if (mounted) {
+        setState(() => _loadingExercise = false);
+      }
     }
   }
 
@@ -1533,27 +1581,26 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
     final theme = widget.theme;
     final cs = widget.cs;
 
-    List<CustomExerciseItem> get libraryOptions => _source == _MobilitySource.fromMobilityLibrary ? _mobilityOptions : _exerciseOptions;
-    bool get loadingLibrary => _source == _MobilitySource.fromMobilityLibrary ? _loadingMobility : _loadingExercise;
+    final libraryOptions = _source == _MobilitySource.fromMobilityLibrary ? _mobilityOptions : _exerciseOptions;
+    final loadingLibrary = _source == _MobilitySource.fromMobilityLibrary ? _loadingMobility : _loadingExercise;
 
     final isMobilityLibrary = _source == _MobilitySource.fromMobilityLibrary;
     final depthMap = isMobilityLibrary ? _mobilityDepth : _exerciseDepth;
     String displayName(CustomExerciseItem e) => _exerciseDisplayName(e, useMobility: isMobilityLibrary);
 
-    return AlertDialog(
-      title: Text(l10n.mobilityAddExercise, style: theme.textTheme.titleMedium),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 480),
-        child: SingleChildScrollView(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 520),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (_apiConfigured)
                 SegmentedButton<_MobilitySource>(
                   segments: [
-                    ButtonSegment(value: _MobilitySource.createNew, label: Text(l10n.mobilityCreateNew), icon: const Icon(Icons.add, size: 18)),
                     ButtonSegment(value: _MobilitySource.fromMobilityLibrary, label: Text(l10n.mobilityFromMobilityLibrary), icon: const Icon(Icons.self_improvement, size: 18)),
+                    ButtonSegment(value: _MobilitySource.createNew, label: Text(l10n.mobilityCreateNew), icon: const Icon(Icons.add, size: 18)),
                     ButtonSegment(value: _MobilitySource.fromExerciseLibrary, label: Text(l10n.mobilityFromExerciseLibrary), icon: const Icon(Icons.fitness_center, size: 18)),
                   ],
                   selected: {_source},
@@ -1667,23 +1714,34 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
             ],
           ),
         ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: _saving ? null : widget.onCancel,
-          child: Text(l10n.customerCancel, style: TextStyle(color: cs.onSurfaceVariant)),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: _saving ? null : widget.onCancel,
+                child: Text(l10n.customerCancel),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: FilledButton(
+                onPressed: _saving
+                    ? null
+                    : () {
+                        if (_source == _MobilitySource.fromMobilityLibrary || _source == _MobilitySource.fromExerciseLibrary) {
+                          if (_selectedLibraryItem == null) return;
+                        }
+                        _handleSave();
+                      },
+                child: _saving
+                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : Text(l10n.customerSave),
+              ),
+            ),
+          ],
         ),
-        FilledButton(
-          onPressed: _saving
-              ? null
-              : () {
-                  if (_source == _MobilitySource.fromMobilityLibrary || _source == _MobilitySource.fromExerciseLibrary) {
-                    if (_selectedLibraryItem == null) return;
-                  }
-                  _handleSave();
-                },
-          child: _saving ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2)) : Text(l10n.customerSave),
-        ),
+        const SizedBox(height: 4),
       ],
     );
   }
@@ -1698,14 +1756,16 @@ void _showAddExerciseDialog(
   void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets, {
   String? customerId,
 }) {
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => _AddExerciseDialogContent(
+    title: 'Add exercise',
+    fullScreen: true,
+    bodyBuilder: (sheetContext) => _AddExerciseDialogContent(
       theme: theme,
       cs: cs,
       customerId: customerId,
       onSaveWithSets: onSaveWithSets,
-      onCancel: () => Navigator.of(ctx).pop(),
+      onCancel: () => Navigator.of(sheetContext).pop(),
     ),
   );
 }
@@ -1940,28 +2000,25 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     );
 
     if (_loadingExercises && _apiConfigured) {
-      return AlertDialog(
-        title: Text('Add exercise', style: theme.textTheme.titleMedium),
-        content: const SizedBox(
-          width: 200,
-          height: 80,
-          child: Center(child: CircularProgressIndicator()),
-        ),
-        actions: [
-          TextButton(onPressed: widget.onCancel, child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(
+            height: 120,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: widget.onCancel,
+            child: const Text('Cancel'),
+          ),
         ],
       );
     }
 
-    return AlertDialog(
-      title: Text('Add exercise', style: theme.textTheme.titleMedium),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 520),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
               if (_apiConfigured) ...[
                 SegmentedButton<bool>(
                   segments: const [
@@ -2151,24 +2208,27 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                   label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: _saving ? null : widget.onCancel,
-          child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant)),
-        ),
-        _saving
-            ? const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
-              )
-            : FilledButton(
-                onPressed: _doSave,
-                child: const Text('Save'),
+        const SizedBox(height: 16),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: _saving ? null : widget.onCancel,
+                child: const Text('Cancel'),
               ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: FilledButton(
+                onPressed: _saving ? null : _doSave,
+                child: _saving
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    : const Text('Save'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
       ],
     );
   }
@@ -2218,9 +2278,11 @@ void _showEditExerciseDialog(
       : <_SetEditControllers>[];
 
   final modalSaving = ValueNotifier<bool>(false);
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => StatefulBuilder(
+    title: initialName.trim().isEmpty ? 'Add exercise' : 'Edit exercise',
+    fullScreen: useMultiSet,
+    bodyBuilder: (sheetContext) => StatefulBuilder(
       builder: (context, setState) {
         void addSetRow() {
           setState(() {
@@ -2239,140 +2301,137 @@ void _showEditExerciseDialog(
           isDense: true,
           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         );
-        return AlertDialog(
-          title: Text(initialName.trim().isEmpty ? 'Add exercise' : 'Edit exercise', style: theme.textTheme.titleMedium),
-          content: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400, maxHeight: 420),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(labelText: 'Name', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
-                    autofocus: true,
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: noteController,
-                    decoration: InputDecoration(labelText: 'Note (optional)', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
-                    maxLines: 1,
-                  ),
-                  if (useMultiSet) ...[
-                    const SizedBox(height: 12),
-                    Text('Serie (Set × Reps + Carico)', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
-                    const SizedBox(height: 6),
-                    ...setControllers.asMap().entries.map((entry) {
-                      final i = entry.key;
-                      final c = entry.value;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: TextField(
-                                controller: c.sets,
-                                decoration: denseDecoration.copyWith(labelText: 'Set', hintText: '1'),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              flex: 1,
-                              child: TextField(
-                                controller: c.reps,
-                                decoration: denseDecoration.copyWith(labelText: 'Reps', hintText: '3'),
-                                keyboardType: TextInputType.number,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Expanded(
-                              flex: 2,
-                              child: TextField(
-                                controller: c.load,
-                                decoration: denseDecoration.copyWith(labelText: 'Carico', hintText: '75kg'),
-                                keyboardType: TextInputType.text,
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete_outline, size: 22, color: setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
-                              onPressed: setControllers.length > 1 ? () => removeSetRow(i) : null,
-                              style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
-                            ),
-                          ],
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
+              autofocus: true,
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: noteController,
+              decoration: InputDecoration(labelText: 'Note (optional)', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
+              maxLines: 1,
+            ),
+            if (useMultiSet) ...[
+              const SizedBox(height: 12),
+              Text('Serie (Set × Reps + Carico)', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+              const SizedBox(height: 6),
+              ...setControllers.asMap().entries.map((entry) {
+                final i = entry.key;
+                final c = entry.value;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          controller: c.sets,
+                          decoration: denseDecoration.copyWith(labelText: 'Set', hintText: '1'),
+                          keyboardType: TextInputType.number,
                         ),
-                      );
-                    }),
-                    const SizedBox(height: 4),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton.icon(
-                        onPressed: addSetRow,
-                        icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                        label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
                       ),
-                    ),
-                  ] else ...[
-                    const SizedBox(height: 10),
-                    TextField(controller: setsController, decoration: denseDecoration.copyWith(labelText: 'Sets'), keyboardType: TextInputType.number),
-                    const SizedBox(height: 8),
-                    TextField(controller: repsController, decoration: denseDecoration.copyWith(labelText: 'Reps')),
-                    const SizedBox(height: 8),
-                    TextField(controller: rpeController, decoration: denseDecoration.copyWith(labelText: 'RPE / Load')),
-                  ],
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant)),
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: modalSaving,
-              builder: (_, saving, __) => SizedBox(
-                height: 36,
-                child: FilledButton(
-                  onPressed: saving
-                      ? null
-                      : () {
-                          modalSaving.value = true;
-                          final name = nameController.text.trim();
-                          final note = noteController.text.trim();
-                          if (useMultiSet) {
-                            final details = setControllers.map((c) {
-                              final sets = c.sets.text.trim();
-                              final reps = c.reps.text.trim();
-                              final load = c.load.text.trim();
-                              final noteSet = c.note.text.trim();
-                              if (sets.isNotEmpty || reps.isNotEmpty || load.isNotEmpty) {
-                                return ExerciseSet(sets: sets.isEmpty ? '1' : sets, reps: reps, rpe: load, note: noteSet);
-                              }
-                              return ExerciseSet(note: noteSet);
-                            }).toList();
-                            onSaveWithSets(name, note, details);
-                          } else {
-                            onSave(name, setsController.text.trim(), repsController.text.trim(), rpeController.text.trim(), note);
-                          }
-                          if (ctx.mounted) Navigator.of(ctx).pop();
-                        },
-                  child: saving
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
-                          ),
-                        )
-                      : const Text('Save'),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 1,
+                        child: TextField(
+                          controller: c.reps,
+                          decoration: denseDecoration.copyWith(labelText: 'Reps', hintText: '3'),
+                          keyboardType: TextInputType.number,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 2,
+                        child: TextField(
+                          controller: c.load,
+                          decoration: denseDecoration.copyWith(labelText: 'Carico', hintText: '75kg'),
+                          keyboardType: TextInputType.text,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_outline, size: 22, color: setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
+                        onPressed: setControllers.length > 1 ? () => removeSetRow(i) : null,
+                        style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+              const SizedBox(height: 4),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: addSetRow,
+                  icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
+                  label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
                 ),
               ),
+            ] else ...[
+              const SizedBox(height: 10),
+              TextField(controller: setsController, decoration: denseDecoration.copyWith(labelText: 'Sets'), keyboardType: TextInputType.number),
+              const SizedBox(height: 8),
+              TextField(controller: repsController, decoration: denseDecoration.copyWith(labelText: 'Reps')),
+              const SizedBox(height: 8),
+              TextField(controller: rpeController, decoration: denseDecoration.copyWith(labelText: 'RPE / Load')),
+            ],
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: modalSaving,
+                    builder: (_, saving, __) => FilledButton(
+                      onPressed: saving
+                          ? null
+                          : () {
+                              modalSaving.value = true;
+                              final name = nameController.text.trim();
+                              final note = noteController.text.trim();
+                              if (useMultiSet) {
+                                final details = setControllers.map((c) {
+                                  final sets = c.sets.text.trim();
+                                  final reps = c.reps.text.trim();
+                                  final load = c.load.text.trim();
+                                  final noteSet = c.note.text.trim();
+                                  if (sets.isNotEmpty || reps.isNotEmpty || load.isNotEmpty) {
+                                    return ExerciseSet(sets: sets.isEmpty ? '1' : sets, reps: reps, rpe: load, note: noteSet);
+                                  }
+                                  return ExerciseSet(note: noteSet);
+                                }).toList();
+                                onSaveWithSets(name, note, details);
+                              } else {
+                                onSave(name, setsController.text.trim(), repsController.text.trim(), rpeController.text.trim(), note);
+                              }
+                              Navigator.of(sheetContext).pop();
+                            },
+                      child: saving
+                          ? SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
+                              ),
+                            )
+                          : const Text('Save'),
+                    ),
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: 4),
           ],
         );
       },
@@ -2429,11 +2488,13 @@ class _TrainingSection extends StatelessWidget {
     required this.onNewWeek,
     required this.onCloneWeek,
     required this.onDeleteWeek,
+    required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
     required this.onDeleteDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onMoveExercise,
     required this.onUpdateExercise,
     required this.onAddSetToExercise,
     required this.onUpdateExerciseSet,
@@ -2458,11 +2519,13 @@ class _TrainingSection extends StatelessWidget {
   final VoidCallback onNewWeek;
   final void Function(int) onCloneWeek;
   final void Function(int) onDeleteWeek;
+  final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {required bool up}) onMoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
   final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
@@ -2532,11 +2595,13 @@ class _TrainingSection extends StatelessWidget {
                     onToggle: () => onToggleWeek(e.value.id),
                     onClone: () => onCloneWeek(e.key),
                     onDelete: () => onDeleteWeek(e.key),
+                    onRenameWeek: (newName) => onRenameWeek(e.key, newName),
                     onAddDay: () => onAddDay(e.key),
                     onRenameDay: (dayIndex, newName) => onRenameDay(e.key, dayIndex, newName),
                     onDeleteDay: (dayIndex) => onDeleteDay(e.key, dayIndex),
                     onAddExercise: onAddExercise,
                     onRemoveExercise: onRemoveExercise,
+                    onMoveExercise: onMoveExercise,
                     onUpdateExercise: onUpdateExercise,
                     onAddSetToExercise: onAddSetToExercise,
                     onUpdateExerciseSet: onUpdateExerciseSet,
@@ -2559,6 +2624,7 @@ class _TrainingSection extends StatelessWidget {
                 onSelectDay: onSelectDay,
                 onAddExercise: onAddExercise,
                 onRemoveExercise: onRemoveExercise,
+                onMoveExercise: onMoveExercise,
                 onUpdateExercise: onUpdateExercise,
                 onAddSetToExercise: onAddSetToExercise,
                 onUpdateExerciseSet: onUpdateExerciseSet,
@@ -2582,6 +2648,7 @@ class _TrainingSection extends StatelessWidget {
                 onSelectDay: onSelectDay,
                 onAddExercise: onAddExercise,
                 onRemoveExercise: onRemoveExercise,
+                onMoveExercise: onMoveExercise,
                 onUpdateExercise: onUpdateExercise,
                 onAddSetToExercise: onAddSetToExercise,
                 onUpdateExerciseSet: onUpdateExerciseSet,
@@ -2609,11 +2676,13 @@ class _WeekAccordion extends StatelessWidget {
     required this.onToggle,
     required this.onClone,
     required this.onDelete,
+    required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
     required this.onDeleteDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onMoveExercise,
     required this.onUpdateExercise,
     required this.onAddSetToExercise,
     required this.onUpdateExerciseSet,
@@ -2631,11 +2700,13 @@ class _WeekAccordion extends StatelessWidget {
   final VoidCallback onToggle;
   final VoidCallback onClone;
   final VoidCallback onDelete;
+  final void Function(String newName) onRenameWeek;
   final VoidCallback onAddDay;
   final void Function(int dayIndex, String newName) onRenameDay;
   final void Function(int dayIndex) onDeleteDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {required bool up}) onMoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
   final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
@@ -2645,6 +2716,7 @@ class _WeekAccordion extends StatelessWidget {
   final void Function(int, int, String) onAddExerciseToSuperset;
   final ThemeData theme;
   final ColorScheme cs;
+  static final Map<String, int> _selectedDayByWeekId = {};
 
   @override
   Widget build(BuildContext context) {
@@ -2681,10 +2753,12 @@ class _WeekAccordion extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       onSelected: (value) {
                         if (value == 'clone') onClone();
+                        if (value == 'rename') _showRenameWeekDialog(context, week.name, onRenameWeek);
                         if (value == 'delete') onDelete();
                       },
                       itemBuilder: (context) => [
                         PopupMenuItem(value: 'clone', child: Row(children: [Icon(Icons.copy, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Duplicate week')])),
+                        PopupMenuItem(value: 'rename', child: Row(children: [Icon(Icons.edit_outlined, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Rename week')])),
                         PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger), const SizedBox(width: 12), Text('Delete week', style: TextStyle(color: StitchM3Theme.danger))])),
                       ],
                     ),
@@ -2695,16 +2769,44 @@ class _WeekAccordion extends StatelessWidget {
           ),
         ),
         if (expanded) ...[
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ...week.days.asMap().entries.expand((dayEntry) {
-                  final dayIndex = dayEntry.key;
-                  final day = dayEntry.value;
-                  return [
-                    if (dayIndex > 0) const SizedBox(height: 16),
+          StatefulBuilder(
+            builder: (context, setLocalState) {
+              if (week.days.isEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
+                );
+              }
+
+              final savedIndex = _selectedDayByWeekId[week.id] ?? 0;
+              final dayIndex = savedIndex.clamp(0, week.days.length - 1);
+              _selectedDayByWeekId[week.id] = dayIndex;
+              final day = week.days[dayIndex];
+
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(
+                      height: 38,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: week.days.length,
+                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        itemBuilder: (context, i) {
+                          final d = week.days[i];
+                          return ChoiceChip(
+                            label: Text(d.name),
+                            selected: i == dayIndex,
+                            onSelected: (_) {
+                              setLocalState(() => _selectedDayByWeekId[week.id] = i);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 12),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -2716,7 +2818,9 @@ class _WeekAccordion extends StatelessWidget {
                           icon: Icon(Icons.settings, size: 18, color: cs.onSurfaceVariant),
                           padding: EdgeInsets.zero,
                           onSelected: (value) {
-                            if (value == 'rename') _showRenameDayDialog(context, day.name, (newName) => onRenameDay(dayIndex, newName));
+                            if (value == 'rename') {
+                              _showRenameDayDialog(context, day.name, (newName) => onRenameDay(dayIndex, newName));
+                            }
                             if (value == 'delete') onDeleteDay(dayIndex);
                           },
                           itemBuilder: (context) => [
@@ -2730,62 +2834,65 @@ class _WeekAccordion extends StatelessWidget {
                     ...(() {
                       final partition = partitionExercisesBySuperset(day.exercises);
                       return partition.asMap().entries.map((entry) {
-                      final isLast = entry.key == partition.length - 1;
-                      final item = entry.value;
-                      if (item is Exercise) {
-                        final ex = item;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: _ExerciseCard(
-                            theme: theme,
-                            cs: cs,
-                            exercise: ex,
-                            compact: true,
-                            showAddExercise: isLast,
-                            onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
-                            onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-                            onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
-                            onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                            onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
-                            onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-                            supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
-                            onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
-                            onRemoveFromSuperset: ex.supersetGroupId != null ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id) : null,
-                          ),
-                        );
-                      }
-                      final group = item as List<Exercise>;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            _SuperSetBlock(
+                        final isLast = entry.key == partition.length - 1;
+                        final item = entry.value;
+                        if (item is Exercise) {
+                          final ex = item;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ExerciseCard(
                               theme: theme,
                               cs: cs,
-                              weekIndex: weekIndex,
-                              dayIndex: dayIndex,
-                              exercises: group,
-                              supersetGroupId: group.isNotEmpty && group.first.supersetGroupId != null ? group.first.supersetGroupId! : null,
-                              onAddExercise: () => onAddExercise(weekIndex, dayIndex),
-                              onAddExerciseToSuperset: onAddExerciseToSuperset,
-                              onRemoveExercise: onRemoveExercise,
-                              onUpdateExercise: onUpdateExercise,
-                              onAddSetToExercise: onAddSetToExercise,
-                              onUpdateExerciseSet: onUpdateExerciseSet,
-                              onRemoveExerciseSet: onRemoveExerciseSet,
-                              onAssignToSuperset: onAssignToSuperset,
-                              onRemoveFromSuperset: onRemoveFromSuperset,
-                              supersetOptionsForDay: _getSupersetGroupOptions(day),
+                              exercise: ex,
+                              compact: true,
+                              showAddExercise: isLast,
+                              onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
+                              onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                              onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+                              onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
+                              onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
+                              onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
+                              onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
+                              onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
+                              supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
+                              onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
+                              onRemoveFromSuperset: ex.supersetGroupId != null ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id) : null,
                             ),
-                            if (isLast) ...[
-                              const SizedBox(height: 12),
-                              _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: () => onAddExercise(weekIndex, dayIndex)),
+                          );
+                        }
+                        final group = item as List<Exercise>;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              _SuperSetBlock(
+                                theme: theme,
+                                cs: cs,
+                                weekIndex: weekIndex,
+                                dayIndex: dayIndex,
+                                exercises: group,
+                                supersetGroupId: group.isNotEmpty && group.first.supersetGroupId != null ? group.first.supersetGroupId! : null,
+                                onAddExercise: () => onAddExercise(weekIndex, dayIndex),
+                                onAddExerciseToSuperset: onAddExerciseToSuperset,
+                                onRemoveExercise: onRemoveExercise,
+                                onMoveExercise: onMoveExercise,
+                                onUpdateExercise: onUpdateExercise,
+                                onAddSetToExercise: onAddSetToExercise,
+                                onUpdateExerciseSet: onUpdateExerciseSet,
+                                onRemoveExerciseSet: onRemoveExerciseSet,
+                                onAssignToSuperset: onAssignToSuperset,
+                                onRemoveFromSuperset: onRemoveFromSuperset,
+                                supersetOptionsForDay: _getSupersetGroupOptions(day),
+                              ),
+                              if (isLast) ...[
+                                const SizedBox(height: 12),
+                                _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: () => onAddExercise(weekIndex, dayIndex)),
+                              ],
                             ],
-                          ],
-                        ),
-                      );
-                    });
+                          ),
+                        );
+                      });
                     })(),
                     if (day.exercises.isEmpty)
                       _DashedButton(
@@ -2793,12 +2900,12 @@ class _WeekAccordion extends StatelessWidget {
                         label: 'Add Exercise',
                         onPressed: () => onAddExercise(weekIndex, dayIndex),
                       ),
-                  ];
-                }),
-                const SizedBox(height: 16),
-                _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
-              ],
-            ),
+                    const SizedBox(height: 16),
+                    _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ],
@@ -2818,6 +2925,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
     required this.onSelectDay,
     required this.onAddExercise,
     required this.onRemoveExercise,
+    required this.onMoveExercise,
     required this.onUpdateExercise,
     required this.onAddSetToExercise,
     required this.onUpdateExerciseSet,
@@ -2840,6 +2948,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
   final void Function(int) onSelectDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {required bool up}) onMoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
   final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
@@ -2934,6 +3043,8 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                     showAddExercise: isLast,
                     onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
                     onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                    onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+                    onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
                     onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
                     onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
                     onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
@@ -2960,6 +3071,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                       onAddExercise: () => onAddExercise(weekIndex, dayIndex),
                       onAddExerciseToSuperset: onAddExerciseToSuperset,
                       onRemoveExercise: onRemoveExercise,
+                      onMoveExercise: onMoveExercise,
                       onUpdateExercise: onUpdateExercise,
                       onAddSetToExercise: onAddSetToExercise,
                       onUpdateExerciseSet: onUpdateExerciseSet,
@@ -3103,6 +3215,7 @@ class _SuperSetBlock extends StatelessWidget {
     required this.onAddExercise,
     this.onAddExerciseToSuperset,
     required this.onRemoveExercise,
+    required this.onMoveExercise,
     required this.onUpdateExercise,
     required this.onAddSetToExercise,
     required this.onUpdateExerciseSet,
@@ -3121,6 +3234,7 @@ class _SuperSetBlock extends StatelessWidget {
   final VoidCallback onAddExercise;
   final void Function(int, int, String)? onAddExerciseToSuperset;
   final void Function(int, int, String) onRemoveExercise;
+  final void Function(int, int, String, {required bool up}) onMoveExercise;
   final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
   final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
@@ -3164,6 +3278,8 @@ class _SuperSetBlock extends StatelessWidget {
               compact: false,
               linked: true,
               onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+              onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+              onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
               onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
               onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
               onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
@@ -3197,6 +3313,8 @@ class _ExerciseCard extends StatelessWidget {
     this.linked = false,
     this.onAddExercise,
     this.onRemove,
+    this.onMoveUp,
+    this.onMoveDown,
     this.onEdit,
     this.onAddSet,
     this.onUpdateSet,
@@ -3214,6 +3332,8 @@ class _ExerciseCard extends StatelessWidget {
   final bool linked;
   final VoidCallback? onAddExercise;
   final VoidCallback? onRemove;
+  final VoidCallback? onMoveUp;
+  final VoidCallback? onMoveDown;
   final void Function(String name, String sets, String reps, String rpe, String note, {List<ExerciseSet>? setDetails})? onEdit;
   final VoidCallback? onAddSet;
   final void Function(int setIndex, String sets, String reps, String load, String note)? onUpdateSet;
@@ -3293,6 +3413,18 @@ class _ExerciseCard extends StatelessWidget {
                   child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
                 ),
               if (onRemove != null) const SizedBox(width: 8),
+              if (onMoveUp != null)
+                InkWell(
+                  onTap: onMoveUp,
+                  child: Icon(Icons.keyboard_arrow_up, size: 20, color: cs.onSurfaceVariant),
+                ),
+              if (onMoveUp != null) const SizedBox(width: 4),
+              if (onMoveDown != null)
+                InkWell(
+                  onTap: onMoveDown,
+                  child: Icon(Icons.keyboard_arrow_down, size: 20, color: cs.onSurfaceVariant),
+                ),
+              if (onMoveDown != null) const SizedBox(width: 4),
               Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
             ],
           ),
@@ -3382,37 +3514,50 @@ void _showEditSetDialog(
   final repsController = TextEditingController(text: initialReps);
   final loadController = TextEditingController(text: initialLoad);
   final noteController = TextEditingController(text: initialNote);
-  showDialog<void>(
+  showAppBottomSheet<void>(
     context: context,
-    builder: (ctx) => AlertDialog(
-      title: Text('Edit set', style: theme.textTheme.titleMedium),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(child: TextField(controller: setsController, decoration: const InputDecoration(labelText: 'Set', hintText: '1'), keyboardType: TextInputType.number, autofocus: true)),
-              const SizedBox(width: 8),
-              Expanded(child: TextField(controller: repsController, decoration: const InputDecoration(labelText: 'Reps', hintText: '3'), keyboardType: TextInputType.number)),
-              const SizedBox(width: 8),
-              Expanded(flex: 2, child: TextField(controller: loadController, decoration: const InputDecoration(labelText: 'Carico', hintText: '75kg'), keyboardType: TextInputType.text)),
-            ],
-          ),
-          const SizedBox(height: 12),
-          TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
-        ],
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Cancel', style: TextStyle(color: cs.onSurfaceVariant))),
-        FilledButton(
-          onPressed: () {
-            onSave(setsController.text.trim(), repsController.text.trim(), loadController.text.trim(), noteController.text.trim());
-            Navigator.of(ctx).pop();
-          },
-          child: const Text('Save'),
+    title: 'Edit set',
+    bodyBuilder: (sheetContext) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: setsController,
+                decoration: const InputDecoration(labelText: 'Set', hintText: '1'),
+                keyboardType: TextInputType.number,
+                autofocus: true,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: TextField(
+                controller: repsController,
+                decoration: const InputDecoration(labelText: 'Reps', hintText: '3'),
+                keyboardType: TextInputType.number,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              flex: 2,
+              child: TextField(
+                controller: loadController,
+                decoration: const InputDecoration(labelText: 'Carico', hintText: '75kg'),
+                keyboardType: TextInputType.text,
+              ),
+            ),
+          ],
         ),
+        const SizedBox(height: 12),
+        TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
       ],
     ),
+    primaryActionLabel: 'Save',
+    onPrimaryAction: () {
+      onSave(setsController.text.trim(), repsController.text.trim(), loadController.text.trim(), noteController.text.trim());
+      Navigator.of(context).pop();
+    },
   );
 }
 
