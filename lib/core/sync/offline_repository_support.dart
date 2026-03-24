@@ -1,3 +1,6 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
+
 import '../storage/offline_local_store.dart';
 import 'offline_models.dart';
 import 'sync_orchestrator.dart';
@@ -58,9 +61,11 @@ class OfflineRepositorySupport {
     DateTime? baseUpdatedAt,
   }) {
     final now = DateTime.now();
+    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
     return _sync.enqueue(
       PendingOperation(
-        id: '${now.microsecondsSinceEpoch}_${entityType.name}_$entityId',
+        id: const Uuid().v4(),
+        userId: uid.isEmpty ? '__legacy__' : uid,
         entityType: entityType,
         entityId: entityId,
         scopeId: scopeId,

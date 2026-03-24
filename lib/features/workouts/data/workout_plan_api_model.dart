@@ -16,6 +16,7 @@ class WorkoutPlanApiModel {
     this.notes,
     required this.createdAt,
     required this.updatedAt,
+    this.rowVersion = 1,
   });
 
   final String id;
@@ -32,6 +33,7 @@ class WorkoutPlanApiModel {
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int rowVersion;
 
   static WorkoutPlanApiModel fromJson(Map<String, dynamic> json) {
     return WorkoutPlanApiModel(
@@ -49,6 +51,7 @@ class WorkoutPlanApiModel {
       notes: json['notes'] as String?,
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
+      rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
     );
   }
 

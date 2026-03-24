@@ -5,6 +5,7 @@ enum OfflineEntityType {
   workoutPlan,
   measurement,
   exerciseRecord,
+  customExercise,
 }
 
 enum OfflineOperationType {
@@ -19,6 +20,8 @@ enum PendingOperationStatus {
   failed,
   conflict,
   completed,
+  deadLetter,
+  blockedAuth,
 }
 
 class OfflineEntity {
@@ -69,6 +72,7 @@ class OfflineEntity {
 class PendingOperation {
   const PendingOperation({
     required this.id,
+    required this.userId,
     required this.entityType,
     required this.entityId,
     required this.scopeId,
@@ -85,6 +89,8 @@ class PendingOperation {
   });
 
   final String id;
+  /// Coach Supabase user id; scopes outbox and sync.
+  final String userId;
   final OfflineEntityType entityType;
   final String entityId;
   final String scopeId;
@@ -104,10 +110,13 @@ class PendingOperation {
     PendingOperationStatus? status,
     DateTime? updatedAt,
     Map<String, dynamic>? conflictRemotePayload,
+    bool clearConflictRemote = false,
     String? errorMessage,
+    bool clearError = false,
   }) {
     return PendingOperation(
       id: id,
+      userId: userId,
       entityType: entityType,
       entityId: entityId,
       scopeId: scopeId,
@@ -119,13 +128,16 @@ class PendingOperation {
       baseUpdatedAt: baseUpdatedAt,
       retryCount: retryCount ?? this.retryCount,
       status: status ?? this.status,
-      conflictRemotePayload: conflictRemotePayload ?? this.conflictRemotePayload,
-      errorMessage: errorMessage ?? this.errorMessage,
+      conflictRemotePayload: clearConflictRemote
+          ? null
+          : (conflictRemotePayload ?? this.conflictRemotePayload),
+      errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
     );
   }
 
   Map<String, dynamic> toJson() => {
         'id': id,
+        'userId': userId,
         'entityType': entityType.name,
         'entityId': entityId,
         'scopeId': scopeId,
@@ -144,6 +156,7 @@ class PendingOperation {
   static PendingOperation fromJson(Map<String, dynamic> json) {
     return PendingOperation(
       id: json['id']?.toString() ?? '',
+      userId: json['userId']?.toString() ?? '',
       entityType: OfflineEntityType.values.firstWhere(
         (v) => v.name == json['entityType'],
         orElse: () => OfflineEntityType.customer,

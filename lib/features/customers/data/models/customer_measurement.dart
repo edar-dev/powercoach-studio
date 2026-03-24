@@ -26,6 +26,7 @@ class CustomerMeasurement {
     this.notes,
     required this.createdAt,
     required this.updatedAt,
+    this.rowVersion = 1,
   });
 
   final String id;
@@ -52,6 +53,7 @@ class CustomerMeasurement {
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int rowVersion;
 
   static CustomerMeasurement fromJson(Map<String, dynamic> json) {
     return CustomerMeasurement(
@@ -79,6 +81,7 @@ class CustomerMeasurement {
       notes: json['notes'] as String?,
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
+      rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
     );
   }
 
@@ -130,5 +133,8 @@ class CustomerMeasurement {
     };
   }
 
-  Map<String, dynamic> toUpdateBody() => toCreateBody();
+  Map<String, dynamic> toUpdateBody() => {
+        ...toCreateBody(),
+        'expectedRowVersion': rowVersion,
+      };
 }

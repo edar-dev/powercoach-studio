@@ -227,6 +227,14 @@
   "measurementDeleteConfirm": "Eliminare questa misura?",
   "syncConflictTitle": "Conflitto di sincronizzazione rilevato",
   "syncConflictMessage": "Ci sono modifiche locali e remote in conflitto. Scegli se mantenere la versione locale o accettare quella remota.",
+  "syncConflictMessageWithEntity": "Conflitto per {entityType}. Mantieni le modifiche locali o usa la copia sul server.",
+  "@syncConflictMessageWithEntity": {
+    "placeholders": {
+      "entityType": {
+        "type": "String"
+      }
+    }
+  },
   "syncConflictUseRemote": "Usa remota",
   "syncConflictUseLocal": "Usa locale",
   "syncInProgress": "Sincronizzazione in corso...",
@@ -246,5 +254,18 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsSyncSectionTitle": "Sincronizzazione",
+  "settingsSyncSectionSubtitle": "{pending} in coda, {failed} da rivedere",
+  "@settingsSyncSectionSubtitle": {
+    "placeholders": {
+      "pending": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsSyncRetryFailed": "Riprova operazioni fallite"
 }

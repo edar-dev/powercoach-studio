@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../../core/storage/offline_local_store.dart';
+import '../../../../core/sync/sync_orchestrator.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/stitch_secondary_app_bar.dart';
@@ -44,6 +46,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _signOut() async {
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid != null) {
+      await OfflineLocalStore.instance.wipeForUser(uid);
+    }
     GymBlogApiClient.clearCache();
     await Supabase.instance.client.auth.signOut();
     if (mounted) context.go('/');
@@ -84,6 +90,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _notificationsEnabled,
                   onChanged: _setNotificationsEnabled,
                 ),
+                ListenableBuilder(
+                  listenable: SyncOrchestrator.instance.status,
+                  builder: (context, _) {
+                    final st = SyncOrchestrator.instance.status;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          l10n.settingsSyncSectionTitle,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(l10n.syncNow),
+                          subtitle: Text(
+                            l10n.settingsSyncSectionSubtitle(
+                              st.pendingCount,
+                              st.failedCount,
+                            ),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
+                          ),
+                          trailing: const Icon(Icons.sync),
+                          onTap: () => SyncOrchestrator.instance.syncNow(),
+                        ),
+                        if (st.failedCount > 0)
+                          ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(l10n.settingsSyncRetryFailed),
+                            trailing: const Icon(Icons.refresh),
+                            onTap: () =>
+                                SyncOrchestrator.instance.resetFailedAndDeadLetterToPending(),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+                const Divider(height: 32),
                 ListTile(
                   title: Text(l10n.settingsLanguage),
                   subtitle: Text(

@@ -154,6 +154,7 @@ class _CustomerExerciseRecordFormScreenState
           'unit': _unit,
           'recordedAt': CustomerExerciseRecord.toDateString(_recordedAt),
           if (_noteController.text.trim().isNotEmpty) 'note': _noteController.text.trim(),
+          'expectedRowVersion': widget.record!.rowVersion,
         });
       } else {
         await _repo.create(widget.customerId, body);

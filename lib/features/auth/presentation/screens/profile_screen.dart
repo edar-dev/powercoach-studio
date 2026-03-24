@@ -4,6 +4,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/stitch_card.dart';
@@ -156,6 +157,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid != null) {
+      await OfflineLocalStore.instance.wipeForUser(uid);
+    }
     GymBlogApiClient.clearCache();
     await Supabase.instance.client.auth.signOut();
     if (mounted) context.go('/');

@@ -43,6 +43,7 @@ class WorkoutPlanRepository {
             'notes': plan.notes,
             'createdAt': plan.createdAt.toIso8601String(),
             'updatedAt': plan.updatedAt.toIso8601String(),
+            'rowVersion': plan.rowVersion,
           },
         );
       }
@@ -111,6 +112,7 @@ class WorkoutPlanRepository {
       ...body,
       'createdAt': now.toIso8601String(),
       'updatedAt': now.toIso8601String(),
+      'rowVersion': 1,
     };
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
@@ -158,7 +160,14 @@ class WorkoutPlanRepository {
       OfflineEntityType.workoutPlan,
       planId,
     );
-    final merged = <String, dynamic>{...?current, ...body, 'id': planId, 'updatedAt': DateTime.now().toIso8601String()};
+    final rv = current?['rowVersion'];
+    if (rv != null) body['expectedRowVersion'] = rv;
+    final merged = <String, dynamic>{
+      ...?current,
+      ...body,
+      'id': planId,
+      'updatedAt': DateTime.now().toIso8601String(),
+    }..remove('expectedRowVersion');
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
       id: planId,

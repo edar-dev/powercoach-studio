@@ -717,6 +717,11 @@ class AppLocalizationsIt extends AppLocalizations {
       'Ci sono modifiche locali e remote in conflitto. Scegli se mantenere la versione locale o accettare quella remota.';
 
   @override
+  String syncConflictMessageWithEntity(String entityType) {
+    return 'Conflitto per $entityType. Mantieni le modifiche locali o usa la copia sul server.';
+  }
+
+  @override
   String get syncConflictUseRemote => 'Usa remota';
 
   @override
@@ -737,4 +742,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String syncFailed(int count) {
     return 'Sincronizzazione fallita: $count in coda';
   }
+
+  @override
+  String get settingsSyncSectionTitle => 'Sincronizzazione';
+
+  @override
+  String settingsSyncSectionSubtitle(int pending, int failed) {
+    return '$pending in coda, $failed da rivedere';
+  }
+
+  @override
+  String get settingsSyncRetryFailed => 'Riprova operazioni fallite';
 }

@@ -18,6 +18,7 @@ class Customer {
     this.lastPlanUpdateDate,
     required this.createdAt,
     required this.updatedAt,
+    this.rowVersion = 1,
   });
 
   final String id;
@@ -37,6 +38,7 @@ class Customer {
   final String? lastPlanUpdateDate;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int rowVersion;
 
   static Customer fromJson(Map<String, dynamic> json) {
     return Customer(
@@ -57,6 +59,7 @@ class Customer {
       lastPlanUpdateDate: json['lastPlanUpdateDate'] as String?,
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
+      rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
     );
   }
 
@@ -81,5 +84,8 @@ class Customer {
     };
   }
 
-  Map<String, dynamic> toUpdateBody() => toCreateBody();
+  Map<String, dynamic> toUpdateBody() => {
+        ...toCreateBody(),
+        'expectedRowVersion': rowVersion,
+      };
 }

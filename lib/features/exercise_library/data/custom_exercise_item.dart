@@ -9,6 +9,7 @@ class CustomExerciseItem {
     this.isMobility = false,
     required this.createdAt,
     required this.updatedAt,
+    this.rowVersion = 1,
     this.children = const [],
   });
 
@@ -20,6 +21,7 @@ class CustomExerciseItem {
   final bool isMobility;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int rowVersion;
   final List<CustomExerciseItem> children;
 
   factory CustomExerciseItem.fromJson(Map<String, dynamic> json) {
@@ -33,6 +35,7 @@ class CustomExerciseItem {
       isMobility: json['isMobility'] as bool? ?? false,
       createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+      rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
       children: childrenJson != null
           ? childrenJson
               .map((e) => CustomExerciseItem.fromJson(e as Map<String, dynamic>))

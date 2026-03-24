@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -5,6 +7,7 @@ import 'package:powercoach_studio/core/network/gymblog_api_client.dart';
 import 'package:powercoach_studio/core/network/persistent_api_cache.dart';
 import 'package:powercoach_studio/core/sync/sync_orchestrator.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
@@ -47,6 +50,11 @@ Future<void> main() async {
 }
 
 Future<void> _runApp({required bool wrapWithSentry}) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isAndroid) {
+    await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
+  }
+
   final supabaseUrl = dotenv.env['SUPABASE_URL']?.trim() ?? '';
   final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']?.trim() ?? '';
 

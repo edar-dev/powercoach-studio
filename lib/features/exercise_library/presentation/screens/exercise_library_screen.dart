@@ -12,6 +12,7 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
+import '../../data/custom_exercise_repository.dart';
 import '../widgets/custom_exercise_edit_dialog.dart';
 
 const _basePath = '/api/custom-exercises';
@@ -26,6 +27,7 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     with SingleTickerProviderStateMixin {
   final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomExerciseRepository _exerciseRepo = CustomExerciseRepository();
   List<CustomExerciseItem> _items = [];
   bool _loading = true;
   String? _error;
@@ -61,14 +63,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       _error = null;
     });
     try {
-      final list = await _api.getList(
-        _basePath,
-        queryParameters: {'tree': 'true'},
-      );
-      final items = list
-          .whereType<Map<String, dynamic>>()
-          .map((e) => CustomExerciseItem.fromJson(e))
-          .toList();
+      final items = await _exerciseRepo.getTree();
       if (mounted) {
         setState(() {
           _items = items;
@@ -202,6 +197,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           isMobility: node.isMobility,
           createdAt: node.createdAt,
           updatedAt: node.updatedAt,
+          rowVersion: node.rowVersion,
           children: filteredChildren,
         )
       ];
@@ -237,7 +233,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         parentCandidates: _flattenTree(_items),
         onSave: (name, description, selectedParentId, isMobility) async {
           try {
-            await _api.post(_basePath, {
+            await _exerciseRepo.create({
               'name': name,
               if (description != null && description.isNotEmpty) 'description': description,
               if (selectedParentId != null && selectedParentId.isNotEmpty) 'parentId': selectedParentId,
@@ -282,11 +278,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         parentCandidates: parentCandidates,
         onSave: (name, description, parentId, isMobility) async {
           try {
-            await _api.put('$_basePath/${item.id}', {
+            await _exerciseRepo.update(item.id, {
               'name': name,
               'description': description?.isEmpty == true ? null : description,
               'parentId': parentId?.isEmpty == true ? null : parentId,
               'isMobility': isMobility,
+              'expectedRowVersion': item.rowVersion,
             });
             if (sheetContext.mounted) {
               Navigator.of(sheetContext).pop();
@@ -335,7 +332,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     ).then((confirmed) async {
       if (!confirmed) return;
       try {
-        await _api.delete('$_basePath/${item.id}');
+        await _exerciseRepo.delete(item.id);
         if (mounted) _load();
       } catch (e) {
         if (mounted) {

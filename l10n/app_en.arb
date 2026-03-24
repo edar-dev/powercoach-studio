@@ -227,6 +227,14 @@
   "measurementDeleteConfirm": "Delete this measurement?",
   "syncConflictTitle": "Sync conflict detected",
   "syncConflictMessage": "There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.",
+  "syncConflictMessageWithEntity": "Conflicting changes for {entityType}. Keep your edits or use the server copy.",
+  "@syncConflictMessageWithEntity": {
+    "placeholders": {
+      "entityType": {
+        "type": "String"
+      }
+    }
+  },
   "syncConflictUseRemote": "Use remote",
   "syncConflictUseLocal": "Use local",
   "syncInProgress": "Synchronizing changes...",
@@ -246,5 +254,18 @@
         "type": "int"
       }
     }
-  }
+  },
+  "settingsSyncSectionTitle": "Sync",
+  "settingsSyncSectionSubtitle": "{pending} queued, {failed} need attention",
+  "@settingsSyncSectionSubtitle": {
+    "placeholders": {
+      "pending": {
+        "type": "int"
+      },
+      "failed": {
+        "type": "int"
+      }
+    }
+  },
+  "settingsSyncRetryFailed": "Retry failed operations"
 }

@@ -7,6 +7,8 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../customers/data/customer_repository.dart';
+import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
@@ -57,7 +59,7 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
 class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen> {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
-  final _api = GymBlogApiClient();
+  final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
   String? _loadedPlanId;
   Customer? _editorCustomer;
@@ -133,8 +135,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         });
       }
       try {
-        final data = await _api.get('/api/customers/$customerId');
-        customer = Customer.fromJson(data);
+        customer = await _customerRepo.getById(customerId);
       } catch (_) {}
       if (!mounted) return;
       setState(() {
@@ -224,10 +225,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     if (widget.editorMode && _editorCustomer != null) return _editorCustomer;
     final customerId = widget.customerId ?? GoRouterState.of(context).uri.queryParameters['customerId'];
     if (customerId == null || customerId.isEmpty) return null;
-    if (!GymBlogApiClient.isConfigured) return null;
     try {
-      final data = await _api.get('/api/customers/$customerId');
-      return Customer.fromJson(data);
+      return await _customerRepo.getById(customerId);
     } catch (_) {
       return null;
     }
@@ -1462,7 +1461,7 @@ class _AddMobilityExerciseDialogContent extends StatefulWidget {
 }
 
 class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseDialogContent> {
-  final _api = GymBlogApiClient();
+  final _customExerciseRepo = CustomExerciseRepository();
   _MobilitySource _source = _MobilitySource.fromMobilityLibrary;
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
@@ -1488,10 +1487,8 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
   @override
   void initState() {
     super.initState();
-    if (_apiConfigured) {
-      _loadMobilityOptions();
-      _loadExerciseOptions();
-    }
+    _loadMobilityOptions();
+    _loadExerciseOptions();
   }
 
   @override
@@ -1502,14 +1499,9 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
   }
 
   Future<void> _loadMobilityOptions() async {
-    if (!_apiConfigured) return;
     setState(() => _loadingMobility = true);
     try {
-      final list = await _api.getList(
-        '/api/custom-exercises',
-        queryParameters: {'tree': 'true', 'mobility': 'true'},
-      );
-      final items = list.whereType<Map<String, dynamic>>().map((e) => CustomExerciseItem.fromJson(e)).toList();
+      final items = await _customExerciseRepo.getTree(mobility: true);
       final flat = <CustomExerciseItem>[];
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);
@@ -1538,14 +1530,9 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
   }
 
   Future<void> _loadExerciseOptions() async {
-    if (!_apiConfigured) return;
     setState(() => _loadingExercise = true);
     try {
-      final list = await _api.getList(
-        '/api/custom-exercises',
-        queryParameters: {'tree': 'true', 'mobility': 'false'},
-      );
-      final items = list.whereType<Map<String, dynamic>>().map((e) => CustomExerciseItem.fromJson(e)).toList();
+      final items = await _customExerciseRepo.getTree(mobility: false);
       final flat = <CustomExerciseItem>[];
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);
@@ -1593,7 +1580,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
               'description': subtitle.isEmpty ? null : subtitle,
               'isMobility': true,
             };
-            final res = await _api.post('/api/custom-exercises', body);
+            final res = await _customExerciseRepo.create(body);
             final id = res['id']?.toString();
             if (id != null && mounted) {
               customExerciseId = id;
@@ -1839,7 +1826,7 @@ class _AddExerciseDialogContent extends StatefulWidget {
 }
 
 class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
-  final _api = GymBlogApiClient();
+  final _customExerciseRepo = CustomExerciseRepository();
   final _recordRepo = CustomerExerciseRecordRepository();
   List<CustomExerciseItem> _exerciseOptions = [];
   final Map<String, int> _exerciseDepth = {};
@@ -1896,19 +1883,8 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   }
 
   Future<void> _loadExercises() async {
-    if (!_apiConfigured) {
-      setState(() => _loadingExercises = false);
-      return;
-    }
     try {
-      final list = await _api.getList(
-        '/api/custom-exercises',
-        queryParameters: {'tree': 'true'},
-      );
-      final items = list
-          .whereType<Map<String, dynamic>>()
-          .map((e) => CustomExerciseItem.fromJson(e))
-          .toList();
+      final items = await _customExerciseRepo.getTree();
       final flat = <CustomExerciseItem>[];
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);
@@ -1975,7 +1951,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
         'name': name.trim(),
         if (note.trim().isNotEmpty) 'description': note.trim(),
       };
-      final res = await _api.post('/api/custom-exercises', body);
+      final res = await _customExerciseRepo.create(body);
       if (!mounted) return;
       final id = res['id']?.toString();
       final createdName = res['name'] as String? ?? name.trim();

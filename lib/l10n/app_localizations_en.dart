@@ -716,6 +716,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.';
 
   @override
+  String syncConflictMessageWithEntity(String entityType) {
+    return 'Conflicting changes for $entityType. Keep your edits or use the server copy.';
+  }
+
+  @override
   String get syncConflictUseRemote => 'Use remote';
 
   @override
@@ -736,4 +741,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String syncFailed(int count) {
     return 'Sync failed: $count pending';
   }
+
+  @override
+  String get settingsSyncSectionTitle => 'Sync';
+
+  @override
+  String settingsSyncSectionSubtitle(int pending, int failed) {
+    return '$pending queued, $failed need attention';
+  }
+
+  @override
+  String get settingsSyncRetryFailed => 'Retry failed operations';
 }

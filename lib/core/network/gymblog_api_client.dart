@@ -193,7 +193,11 @@ class GymBlogApiClient {
       if (statusCode == 401) {
         message = 'Session expired or unauthorized';
       }
-      return GymBlogApiException(message, statusCode);
+      Map<String, dynamic>? bodyMap;
+      if (data is Map) {
+        bodyMap = Map<String, dynamic>.from(data);
+      }
+      return GymBlogApiException(message, statusCode, responseBody: bodyMap);
     }
     if (e.type == DioExceptionType.connectionError) {
       return GymBlogApiException('No internet connection', 0);
@@ -203,9 +207,11 @@ class GymBlogApiClient {
 }
 
 class GymBlogApiException implements Exception {
-  GymBlogApiException(this.message, this.statusCode);
+  GymBlogApiException(this.message, this.statusCode, {this.responseBody});
   final String message;
   final int statusCode;
+  /// Raw JSON body on 4xx/5xx when available (e.g. 409 conflict `current`).
+  final Map<String, dynamic>? responseBody;
   @override
   String toString() => 'GymBlogApiException: $message ($statusCode)';
 }

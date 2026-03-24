@@ -75,7 +75,10 @@ class _CustomerMeasurementFormScreenState extends State<CustomerMeasurementFormS
         'notes': _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
       };
       if (widget.measurement != null) {
-        await _repo.update(widget.customerId, widget.measurement!.id, body);
+        await _repo.update(widget.customerId, widget.measurement!.id, {
+          ...body,
+          'expectedRowVersion': widget.measurement!.rowVersion,
+        });
       } else {
         await _repo.create(widget.customerId, body);
       }

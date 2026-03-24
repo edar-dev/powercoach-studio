@@ -32,6 +32,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
   bool _loading = true;
   bool _saving = false;
   String? _loadError;
+  int _rowVersion = 1;
 
   @override
   void initState() {
@@ -68,6 +69,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
         _heightController.text = c.heightCm != null ? c.heightCm!.round().toString() : '';
         _weightController.text = c.weightKg != null ? c.weightKg.toString() : '';
         setState(() {
+          _rowVersion = c.rowVersion;
           _loading = false;
           _loadError = null;
         });
@@ -113,6 +115,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
       lastPlanUpdateDate: null,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
+      rowVersion: _rowVersion,
     );
 
     try {

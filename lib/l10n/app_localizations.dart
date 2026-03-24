@@ -1460,6 +1460,12 @@ abstract class AppLocalizations {
   /// **'There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.'**
   String get syncConflictMessage;
 
+  /// No description provided for @syncConflictMessageWithEntity.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflicting changes for {entityType}. Keep your edits or use the server copy.'**
+  String syncConflictMessageWithEntity(String entityType);
+
   /// No description provided for @syncConflictUseRemote.
   ///
   /// In en, this message translates to:
@@ -1495,6 +1501,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync failed: {count} pending'**
   String syncFailed(int count);
+
+  /// No description provided for @settingsSyncSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync'**
+  String get settingsSyncSectionTitle;
+
+  /// No description provided for @settingsSyncSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{pending} queued, {failed} need attention'**
+  String settingsSyncSectionSubtitle(int pending, int failed);
+
+  /// No description provided for @settingsSyncRetryFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry failed operations'**
+  String get settingsSyncRetryFailed;
 }
 
 class _AppLocalizationsDelegate

@@ -12,6 +12,7 @@ class CustomerExerciseRecord {
     this.note,
     required this.createdAt,
     required this.updatedAt,
+    this.rowVersion = 1,
   });
 
   final String id;
@@ -24,6 +25,7 @@ class CustomerExerciseRecord {
   final String? note;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final int rowVersion;
 
   static CustomerExerciseRecord fromJson(Map<String, dynamic> json) {
     return CustomerExerciseRecord(
@@ -37,6 +39,7 @@ class CustomerExerciseRecord {
       note: json['note'] as String?,
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
+      rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
     );
   }
 

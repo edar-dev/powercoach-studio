@@ -50,6 +50,7 @@ class CustomerMeasurementRepository {
             'notes': m.notes,
             'createdAt': m.createdAt.toIso8601String(),
             'updatedAt': m.updatedAt.toIso8601String(),
+            'rowVersion': m.rowVersion,
           },
         );
       }
@@ -83,6 +84,7 @@ class CustomerMeasurementRepository {
       ...body,
       'createdAt': now,
       'updatedAt': now,
+      'rowVersion': 1,
     };
     await _offline.saveLocalEntity(
       type: OfflineEntityType.measurement,
@@ -111,9 +113,13 @@ class CustomerMeasurementRepository {
       OfflineEntityType.measurement,
       measurementId,
     );
+    final apiPayload = Map<String, dynamic>.from(body);
+    final expected = apiPayload['expectedRowVersion'] ?? current?['rowVersion'];
+    if (expected != null) apiPayload['expectedRowVersion'] = expected;
+    final localPatch = Map<String, dynamic>.from(body)..remove('expectedRowVersion');
     final payload = <String, dynamic>{
       ...?current,
-      ...body,
+      ...localPatch,
       'id': measurementId,
       'customerId': customerId,
       'updatedAt': DateTime.now().toIso8601String(),
@@ -131,7 +137,7 @@ class CustomerMeasurementRepository {
       scopeId: customerId,
       opType: OfflineOperationType.update,
       path: '/api/customers/$customerId/measurements/$measurementId',
-      payload: body,
+      payload: apiPayload,
       baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
     );
     return CustomerMeasurement.fromJson(payload);

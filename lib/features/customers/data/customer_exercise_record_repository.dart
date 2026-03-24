@@ -44,6 +44,7 @@ class CustomerExerciseRecordRepository {
             'note': r.note,
             'createdAt': r.createdAt.toIso8601String(),
             'updatedAt': r.updatedAt.toIso8601String(),
+            'rowVersion': r.rowVersion,
           },
         );
       }
@@ -85,6 +86,7 @@ class CustomerExerciseRecordRepository {
       'createdAt': now,
       'updatedAt': now,
       'exerciseName': body['exerciseName'],
+      'rowVersion': 1,
     };
     await _offline.saveLocalEntity(
       type: OfflineEntityType.exerciseRecord,
@@ -113,9 +115,13 @@ class CustomerExerciseRecordRepository {
       OfflineEntityType.exerciseRecord,
       recordId,
     );
+    final apiPayload = Map<String, dynamic>.from(body);
+    final expected = apiPayload['expectedRowVersion'] ?? current?['rowVersion'];
+    if (expected != null) apiPayload['expectedRowVersion'] = expected;
+    final localPatch = Map<String, dynamic>.from(body)..remove('expectedRowVersion');
     final payload = <String, dynamic>{
       ...?current,
-      ...body,
+      ...localPatch,
       'id': recordId,
       'customerId': customerId,
       'updatedAt': DateTime.now().toIso8601String(),
@@ -133,7 +139,7 @@ class CustomerExerciseRecordRepository {
       scopeId: customerId,
       opType: OfflineOperationType.update,
       path: '/api/customers/$customerId/exercise-records/$recordId',
-      payload: body,
+      payload: apiPayload,
       baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
     );
     return CustomerExerciseRecord.fromJson(payload);

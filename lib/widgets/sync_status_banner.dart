@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/sync/offline_models.dart';
 import '../core/sync/sync_orchestrator.dart';
+import '../l10n/app_localizations.dart';
 
 class SyncStatusBanner extends StatefulWidget {
   const SyncStatusBanner({super.key, required this.child});
@@ -37,24 +38,41 @@ class _SyncStatusBannerState extends State<SyncStatusBanner> {
     setState(() {});
   }
 
+  static String _entityTypeLabel(AppLocalizations l10n, OfflineEntityType t) {
+    switch (t) {
+      case OfflineEntityType.customer:
+        return 'Customer';
+      case OfflineEntityType.workoutPlan:
+        return 'Workout plan';
+      case OfflineEntityType.measurement:
+        return 'Measurement';
+      case OfflineEntityType.exerciseRecord:
+        return 'Exercise record';
+      case OfflineEntityType.customExercise:
+        return 'Custom exercise';
+    }
+  }
+
   Future<void> _showConflictDialog(PendingOperation op) async {
     _showingConflict = true;
+    final l10n = AppLocalizations.of(context);
     final choice = await showDialog<ConflictResolutionChoice>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Sync conflict detected'),
-        content: const Text(
-          'There are conflicting local and remote changes. '
-          'Choose whether to keep local changes or accept the remote version.',
+        title: Text(l10n.syncConflictTitle),
+        content: Text(
+          l10n.syncConflictMessageWithEntity(
+            _entityTypeLabel(l10n, op.entityType),
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(ConflictResolutionChoice.keepRemote),
-            child: const Text('Use remote'),
+            child: Text(l10n.syncConflictUseRemote),
           ),
           FilledButton(
             onPressed: () => Navigator.of(ctx).pop(ConflictResolutionChoice.keepLocal),
-            child: const Text('Use local'),
+            child: Text(l10n.syncConflictUseLocal),
           ),
         ],
       ),
@@ -67,15 +85,16 @@ class _SyncStatusBannerState extends State<SyncStatusBanner> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final status = _sync.status;
     final showBanner = status.isSyncing || status.pendingCount > 0 || status.failedCount > 0;
     final cs = Theme.of(context).colorScheme;
     final text = status.failedCount > 0
-        ? 'Sync failed: ${status.failedCount} pending'
+        ? l10n.syncFailed(status.failedCount)
         : status.isSyncing
-            ? 'Synchronizing changes...'
+            ? l10n.syncInProgress
             : status.pendingCount > 0
-                ? 'Pending sync: ${status.pendingCount}'
+                ? l10n.syncPending(status.pendingCount)
                 : '';
     return Stack(
       children: [
@@ -114,7 +133,7 @@ class _SyncStatusBannerState extends State<SyncStatusBanner> {
                     ),
                     TextButton(
                       onPressed: _sync.syncNow,
-                      child: const Text('Sync now'),
+                      child: Text(l10n.syncNow),
                     ),
                   ],
                 ),

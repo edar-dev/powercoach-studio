@@ -70,6 +70,7 @@ class CustomerRepository {
       lastPlanUpdateDate: customer.lastPlanUpdateDate,
       createdAt: now,
       updatedAt: now,
+      rowVersion: 1,
     );
     await _offline.saveLocalEntity(
       type: OfflineEntityType.customer,
@@ -141,5 +142,6 @@ class CustomerRepository {
         'lastPlanUpdateDate': c.lastPlanUpdateDate,
         'createdAt': c.createdAt.toIso8601String(),
         'updatedAt': c.updatedAt.toIso8601String(),
+        'rowVersion': c.rowVersion,
       };
 }
