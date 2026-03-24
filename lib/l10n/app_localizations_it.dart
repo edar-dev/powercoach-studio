@@ -708,4 +708,33 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get measurementDeleteConfirm => 'Eliminare questa misura?';
+
+  @override
+  String get syncConflictTitle => 'Conflitto di sincronizzazione rilevato';
+
+  @override
+  String get syncConflictMessage =>
+      'Ci sono modifiche locali e remote in conflitto. Scegli se mantenere la versione locale o accettare quella remota.';
+
+  @override
+  String get syncConflictUseRemote => 'Usa remota';
+
+  @override
+  String get syncConflictUseLocal => 'Usa locale';
+
+  @override
+  String get syncInProgress => 'Sincronizzazione in corso...';
+
+  @override
+  String get syncNow => 'Sincronizza ora';
+
+  @override
+  String syncPending(int count) {
+    return 'Sincronizzazione in coda: $count';
+  }
+
+  @override
+  String syncFailed(int count) {
+    return 'Sincronizzazione fallita: $count in coda';
+  }
 }

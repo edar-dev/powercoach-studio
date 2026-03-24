@@ -1447,6 +1447,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete this measurement?'**
   String get measurementDeleteConfirm;
+
+  /// No description provided for @syncConflictTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync conflict detected'**
+  String get syncConflictTitle;
+
+  /// No description provided for @syncConflictMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.'**
+  String get syncConflictMessage;
+
+  /// No description provided for @syncConflictUseRemote.
+  ///
+  /// In en, this message translates to:
+  /// **'Use remote'**
+  String get syncConflictUseRemote;
+
+  /// No description provided for @syncConflictUseLocal.
+  ///
+  /// In en, this message translates to:
+  /// **'Use local'**
+  String get syncConflictUseLocal;
+
+  /// No description provided for @syncInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Synchronizing changes...'**
+  String get syncInProgress;
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync now'**
+  String get syncNow;
+
+  /// No description provided for @syncPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending sync: {count}'**
+  String syncPending(int count);
+
+  /// No description provided for @syncFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {count} pending'**
+  String syncFailed(int count);
 }
 
 class _AppLocalizationsDelegate

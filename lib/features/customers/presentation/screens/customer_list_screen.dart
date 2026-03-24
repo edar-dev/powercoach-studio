@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
 
 /// Customer list – empty state (Stitch Empty Customer List) or populated (Stitch Customer List Populated).
@@ -18,7 +19,7 @@ class CustomerListScreen extends StatefulWidget {
 }
 
 class _CustomerListScreenState extends State<CustomerListScreen> {
-  final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomerRepository _repo = CustomerRepository();
   List<Customer> _customers = [];
   bool _loading = true;
   String? _error;
@@ -74,11 +75,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       _error = null;
     });
     try {
-      final list = await _api.getList('/api/customers', skipCache: skipCache);
-      final customers = list
-          .whereType<Map<String, dynamic>>()
-          .map((e) => Customer.fromJson(e))
-          .toList();
+      final customers = await _repo.getAll(skipCache: skipCache);
       if (mounted) {
         setState(() {
           _customers = customers;

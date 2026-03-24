@@ -5,8 +5,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
 
 /// Edit customer – same form as creation, prefilled and PUT on save.
@@ -28,7 +28,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
   final _goalsController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
-  final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomerRepository _repo = CustomerRepository();
   bool _loading = true;
   bool _saving = false;
   String? _loadError;
@@ -57,8 +57,8 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
       _loadError = null;
     });
     try {
-      final data = await _api.get('/api/customers/${widget.customerId}');
-      final c = Customer.fromJson(data);
+      final c = await _repo.getById(widget.customerId);
+      if (c == null) throw Exception('Customer not found');
       if (mounted) {
         _nameController.text = c.name;
         _emailController.text = c.email ?? '';
@@ -76,7 +76,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _loadError = e is GymBlogApiException ? e.message : e.toString();
+          _loadError = e.toString();
         });
       }
     }
@@ -116,7 +116,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     );
 
     try {
-      await _api.put('/api/customers/${widget.customerId}', customer.toUpdateBody());
+      await _repo.update(customer);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -135,7 +135,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e is GymBlogApiException ? e.message : l10n.customerSaveError,
+            l10n.customerSaveError,
             style: TextStyle(color: colorScheme.onErrorContainer),
           ),
           backgroundColor: colorScheme.errorContainer,

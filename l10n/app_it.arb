@@ -224,5 +224,27 @@
   "measurementSaveError": "Impossibile salvare la misura.",
   "measurementDeleted": "Misura eliminata.",
   "measurementDeleteError": "Impossibile eliminare la misura.",
-  "measurementDeleteConfirm": "Eliminare questa misura?"
+  "measurementDeleteConfirm": "Eliminare questa misura?",
+  "syncConflictTitle": "Conflitto di sincronizzazione rilevato",
+  "syncConflictMessage": "Ci sono modifiche locali e remote in conflitto. Scegli se mantenere la versione locale o accettare quella remota.",
+  "syncConflictUseRemote": "Usa remota",
+  "syncConflictUseLocal": "Usa locale",
+  "syncInProgress": "Sincronizzazione in corso...",
+  "syncNow": "Sincronizza ora",
+  "syncPending": "Sincronizzazione in coda: {count}",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncFailed": "Sincronizzazione fallita: {count} in coda",
+  "@syncFailed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

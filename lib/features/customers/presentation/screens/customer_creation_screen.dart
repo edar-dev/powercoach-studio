@@ -5,8 +5,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
 
 /// Customer Creation Page – Stitch screen ID 534f6e3664244ba59196220f2909eb46.
@@ -28,6 +28,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
   final _weightController = TextEditingController();
   bool _saving = false;
   bool _prefillApplied = false;
+  final CustomerRepository _repo = CustomerRepository();
 
   @override
   void didChangeDependencies() {
@@ -89,10 +90,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     );
 
     try {
-      final api = GymBlogApiClient();
-      final body = customer.toCreateBody();
-      final data = await api.post('/api/customers', body);
-      final created = Customer.fromJson(data);
+      final created = await _repo.create(customer);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -111,7 +109,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e is GymBlogApiException ? e.message : l10n.customerSaveError,
+            l10n.customerSaveError,
             style: TextStyle(color: colorScheme.onErrorContainer),
           ),
           backgroundColor: colorScheme.errorContainer,

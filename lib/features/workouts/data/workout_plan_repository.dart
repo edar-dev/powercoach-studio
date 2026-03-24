@@ -1,30 +1,77 @@
 import 'dart:convert';
 
 import '../../../core/network/gymblog_api_client.dart';
+import '../../../core/sync/offline_models.dart';
+import '../../../core/sync/offline_repository_support.dart';
 import 'workout_plan_api_model.dart';
 import 'workout_routine_model.dart';
 
 /// Fetches and persists workout plans via GymBlog.API (REST).
 class WorkoutPlanRepository {
-  WorkoutPlanRepository() : _api = GymBlogApiClient();
+  WorkoutPlanRepository()
+      : _api = GymBlogApiClient(),
+        _offline = OfflineRepositorySupport();
 
   final GymBlogApiClient _api;
+  final OfflineRepositorySupport _offline;
 
   /// GET /api/workout-plans/customer/{customerId}
   Future<List<WorkoutPlanApiModel>> getByCustomerId(String customerId) async {
-    final list = await _api.getList('/api/workout-plans/customer/$customerId');
-    return list
-        .map((e) => WorkoutPlanApiModel.fromJson(e as Map<String, dynamic>))
-        .toList();
+    try {
+      final list = await _api.getList('/api/workout-plans/customer/$customerId');
+      final models = list
+          .whereType<Map<String, dynamic>>()
+          .map(WorkoutPlanApiModel.fromJson)
+          .toList();
+      for (final plan in models) {
+        await _offline.saveLocalEntity(
+          type: OfflineEntityType.workoutPlan,
+          id: plan.id,
+          scopeId: customerId,
+          payload: <String, dynamic>{
+            'id': plan.id,
+            'customerId': plan.customerId,
+            'userId': plan.userId,
+            'name': plan.name,
+            'theme': plan.theme,
+            'initialWeekNumber': plan.initialWeekNumber,
+            'planData': plan.planData,
+            'pdfHeader': plan.pdfHeader,
+            'useCustomPdfHeader': plan.useCustomPdfHeader,
+            'phase': plan.phase,
+            'tags': plan.tags,
+            'notes': plan.notes,
+            'createdAt': plan.createdAt.toIso8601String(),
+            'updatedAt': plan.updatedAt.toIso8601String(),
+          },
+        );
+      }
+      return models;
+    } catch (_) {
+      final local = await _offline.readLocalEntities(
+        OfflineEntityType.workoutPlan,
+        scopeId: customerId,
+      );
+      return local.map(WorkoutPlanApiModel.fromJson).toList();
+    }
   }
 
   /// GET /api/workout-plans/{id}
   Future<WorkoutPlanApiModel?> getById(String planId) async {
     try {
       final data = await _api.get('/api/workout-plans/$planId');
-      return WorkoutPlanApiModel.fromJson(data);
+      final model = WorkoutPlanApiModel.fromJson(data);
+      await _offline.saveLocalEntity(
+        type: OfflineEntityType.workoutPlan,
+        id: model.id,
+        scopeId: model.customerId,
+        payload: data,
+      );
+      return model;
     } on GymBlogApiException catch (e) {
       if (e.statusCode == 404) return null;
+      final local = await _offline.readLocalEntityById(OfflineEntityType.workoutPlan, planId);
+      if (local != null) return WorkoutPlanApiModel.fromJson(local);
       rethrow;
     }
   }
@@ -42,6 +89,8 @@ class WorkoutPlanRepository {
     String? tags,
     String? notes,
   }) async {
+    final tempId = _offline.newTempId('workout');
+    final now = DateTime.now();
     final body = <String, dynamic>{
       'customerId': customerId,
       'name': name,
@@ -55,8 +104,30 @@ class WorkoutPlanRepository {
     if (tags != null) body['tags'] = tags;
     if (notes != null) body['notes'] = notes;
 
-    final data = await _api.post('/api/workout-plans', body);
-    return WorkoutPlanApiModel.fromJson(data);
+    final localPayload = <String, dynamic>{
+      'id': tempId,
+      'customerId': customerId,
+      'userId': '',
+      ...body,
+      'createdAt': now.toIso8601String(),
+      'updatedAt': now.toIso8601String(),
+    };
+    await _offline.saveLocalEntity(
+      type: OfflineEntityType.workoutPlan,
+      id: tempId,
+      scopeId: customerId,
+      payload: localPayload,
+      localOnly: true,
+    );
+    await _offline.enqueue(
+      entityType: OfflineEntityType.workoutPlan,
+      entityId: tempId,
+      scopeId: customerId,
+      opType: OfflineOperationType.create,
+      path: '/api/workout-plans',
+      payload: body,
+    );
+    return WorkoutPlanApiModel.fromJson(localPayload);
   }
 
   /// PUT /api/workout-plans/{id}
@@ -83,12 +154,40 @@ class WorkoutPlanRepository {
     if (tags != null) body['tags'] = tags;
     if (notes != null) body['notes'] = notes;
 
-    final data = await _api.put('/api/workout-plans/$planId', body);
-    return WorkoutPlanApiModel.fromJson(data);
+    final current = await _offline.readLocalEntityById(
+      OfflineEntityType.workoutPlan,
+      planId,
+    );
+    final merged = <String, dynamic>{...?current, ...body, 'id': planId, 'updatedAt': DateTime.now().toIso8601String()};
+    await _offline.saveLocalEntity(
+      type: OfflineEntityType.workoutPlan,
+      id: planId,
+      scopeId: merged['customerId']?.toString() ?? current?['customerId']?.toString() ?? '',
+      payload: merged,
+      localOnly: true,
+    );
+    await _offline.enqueue(
+      entityType: OfflineEntityType.workoutPlan,
+      entityId: planId,
+      scopeId: merged['customerId']?.toString() ?? '',
+      opType: OfflineOperationType.update,
+      path: '/api/workout-plans/$planId',
+      payload: body,
+      baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
+    );
+    return WorkoutPlanApiModel.fromJson(merged);
   }
 
   Future<void> delete(String planId) async {
-    await _api.delete('/api/workout-plans/$planId');
+    await _offline.markDeleted(OfflineEntityType.workoutPlan, planId);
+    await _offline.enqueue(
+      entityType: OfflineEntityType.workoutPlan,
+      entityId: planId,
+      scopeId: '',
+      opType: OfflineOperationType.delete,
+      path: '/api/workout-plans/$planId',
+      payload: <String, dynamic>{},
+    );
   }
 }
 

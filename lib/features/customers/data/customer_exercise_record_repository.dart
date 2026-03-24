@@ -1,27 +1,60 @@
 import '../../../core/network/gymblog_api_client.dart';
+import '../../../core/sync/offline_models.dart';
+import '../../../core/sync/offline_repository_support.dart';
 import 'models/customer_exercise_record.dart';
 
 /// Fetches and persists customer exercise records via GymBlog.API.
 /// GET/POST/PUT/DELETE under /api/customers/{customerId}/exercise-records.
 class CustomerExerciseRecordRepository {
-  CustomerExerciseRecordRepository() : _api = GymBlogApiClient();
+  CustomerExerciseRecordRepository()
+      : _api = GymBlogApiClient(),
+        _offline = OfflineRepositorySupport();
 
   final GymBlogApiClient _api;
+  final OfflineRepositorySupport _offline;
 
   Future<List<CustomerExerciseRecord>> getByCustomerId(
     String customerId, {
     String? customExerciseId,
   }) async {
-    final query = customExerciseId != null && customExerciseId.isNotEmpty
-        ? '?customExerciseId=$customExerciseId'
-        : '';
-    final list = await _api.getList(
-      '/api/customers/$customerId/exercise-records$query',
-    );
-    return list
-        .whereType<Map<String, dynamic>>()
-        .map((e) => CustomerExerciseRecord.fromJson(e))
-        .toList();
+    try {
+      final query = customExerciseId != null && customExerciseId.isNotEmpty
+          ? '?customExerciseId=$customExerciseId'
+          : '';
+      final list = await _api.getList(
+        '/api/customers/$customerId/exercise-records$query',
+      );
+      final models = list
+          .whereType<Map<String, dynamic>>()
+          .map(CustomerExerciseRecord.fromJson)
+          .toList();
+      for (final r in models) {
+        await _offline.saveLocalEntity(
+          type: OfflineEntityType.exerciseRecord,
+          id: r.id,
+          scopeId: customerId,
+          payload: <String, dynamic>{
+            'id': r.id,
+            'customerId': r.customerId,
+            'customExerciseId': r.customExerciseId,
+            'exerciseName': r.exerciseName,
+            'value': r.value,
+            'unit': r.unit,
+            'recordedAt': r.recordedAt.toIso8601String(),
+            'note': r.note,
+            'createdAt': r.createdAt.toIso8601String(),
+            'updatedAt': r.updatedAt.toIso8601String(),
+          },
+        );
+      }
+      return models;
+    } catch (_) {
+      final local = await _offline.readLocalEntities(
+        OfflineEntityType.exerciseRecord,
+        scopeId: customerId,
+      );
+      return local.map(CustomerExerciseRecord.fromJson).toList();
+    }
   }
 
   Future<CustomerExerciseRecord?> getById(
@@ -43,11 +76,32 @@ class CustomerExerciseRecordRepository {
     String customerId,
     Map<String, dynamic> body,
   ) async {
-    final data = await _api.post(
-      '/api/customers/$customerId/exercise-records',
-      body,
+    final id = _offline.newTempId('record');
+    final now = DateTime.now().toIso8601String();
+    final payload = <String, dynamic>{
+      'id': id,
+      'customerId': customerId,
+      ...body,
+      'createdAt': now,
+      'updatedAt': now,
+      'exerciseName': body['exerciseName'],
+    };
+    await _offline.saveLocalEntity(
+      type: OfflineEntityType.exerciseRecord,
+      id: id,
+      scopeId: customerId,
+      payload: payload,
+      localOnly: true,
     );
-    return CustomerExerciseRecord.fromJson(data);
+    await _offline.enqueue(
+      entityType: OfflineEntityType.exerciseRecord,
+      entityId: id,
+      scopeId: customerId,
+      opType: OfflineOperationType.create,
+      path: '/api/customers/$customerId/exercise-records',
+      payload: body,
+    );
+    return CustomerExerciseRecord.fromJson(payload);
   }
 
   Future<CustomerExerciseRecord> update(
@@ -55,16 +109,45 @@ class CustomerExerciseRecordRepository {
     String recordId,
     Map<String, dynamic> body,
   ) async {
-    final data = await _api.put(
-      '/api/customers/$customerId/exercise-records/$recordId',
-      body,
+    final current = await _offline.readLocalEntityById(
+      OfflineEntityType.exerciseRecord,
+      recordId,
     );
-    return CustomerExerciseRecord.fromJson(data);
+    final payload = <String, dynamic>{
+      ...?current,
+      ...body,
+      'id': recordId,
+      'customerId': customerId,
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+    await _offline.saveLocalEntity(
+      type: OfflineEntityType.exerciseRecord,
+      id: recordId,
+      scopeId: customerId,
+      payload: payload,
+      localOnly: true,
+    );
+    await _offline.enqueue(
+      entityType: OfflineEntityType.exerciseRecord,
+      entityId: recordId,
+      scopeId: customerId,
+      opType: OfflineOperationType.update,
+      path: '/api/customers/$customerId/exercise-records/$recordId',
+      payload: body,
+      baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
+    );
+    return CustomerExerciseRecord.fromJson(payload);
   }
 
   Future<void> delete(String customerId, String recordId) async {
-    await _api.delete(
-      '/api/customers/$customerId/exercise-records/$recordId',
+    await _offline.markDeleted(OfflineEntityType.exerciseRecord, recordId);
+    await _offline.enqueue(
+      entityType: OfflineEntityType.exerciseRecord,
+      entityId: recordId,
+      scopeId: customerId,
+      opType: OfflineOperationType.delete,
+      path: '/api/customers/$customerId/exercise-records/$recordId',
+      payload: <String, dynamic>{},
     );
   }
 }

@@ -11,6 +11,7 @@ import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
+import '../../data/customer_repository.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
@@ -33,7 +34,7 @@ class CustomerDetailScreen extends StatefulWidget {
 }
 
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> with SingleTickerProviderStateMixin {
-  final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomerRepository _customerRepo = CustomerRepository();
   final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
   final CustomerExerciseRecordRepository _recordRepo = CustomerExerciseRecordRepository();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
@@ -119,10 +120,10 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       _error = null;
     });
     try {
-      final data = await _api.get('/api/customers/${widget.customerId}');
+      final data = await _customerRepo.getById(widget.customerId);
       if (mounted) {
         setState(() {
-          _customer = Customer.fromJson(data);
+          _customer = data;
           _loading = false;
           _error = null;
         });
@@ -134,7 +135,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = e is GymBlogApiException ? e.message : e.toString();
+          _error = e.toString();
         });
       }
     }
@@ -155,7 +156,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     try {
-      await _api.delete('/api/customers/${widget.customerId}');
+      await _customerRepo.delete(widget.customerId);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -174,7 +175,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e is GymBlogApiException ? e.message : l10n.customerDeleteError,
+            l10n.customerDeleteError,
             style: TextStyle(color: colorScheme.onErrorContainer),
           ),
           backgroundColor: colorScheme.errorContainer,

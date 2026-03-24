@@ -224,5 +224,27 @@
   "measurementSaveError": "Could not save measurement.",
   "measurementDeleted": "Measurement deleted.",
   "measurementDeleteError": "Could not delete measurement.",
-  "measurementDeleteConfirm": "Delete this measurement?"
+  "measurementDeleteConfirm": "Delete this measurement?",
+  "syncConflictTitle": "Sync conflict detected",
+  "syncConflictMessage": "There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.",
+  "syncConflictUseRemote": "Use remote",
+  "syncConflictUseLocal": "Use local",
+  "syncInProgress": "Synchronizing changes...",
+  "syncNow": "Sync now",
+  "syncPending": "Pending sync: {count}",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncFailed": "Sync failed: {count} pending",
+  "@syncFailed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

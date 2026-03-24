@@ -707,4 +707,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get measurementDeleteConfirm => 'Delete this measurement?';
+
+  @override
+  String get syncConflictTitle => 'Sync conflict detected';
+
+  @override
+  String get syncConflictMessage =>
+      'There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.';
+
+  @override
+  String get syncConflictUseRemote => 'Use remote';
+
+  @override
+  String get syncConflictUseLocal => 'Use local';
+
+  @override
+  String get syncInProgress => 'Synchronizing changes...';
+
+  @override
+  String get syncNow => 'Sync now';
+
+  @override
+  String syncPending(int count) {
+    return 'Pending sync: $count';
+  }
+
+  @override
+  String syncFailed(int count) {
+    return 'Sync failed: $count pending';
+  }
 }

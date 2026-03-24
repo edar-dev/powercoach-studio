@@ -24,6 +24,7 @@ import 'features/workouts/presentation/screens/workout_builder_mobility_screen.d
 import 'features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'features/workouts/presentation/screens/workout_placeholder_screen.dart';
 import 'l10n/app_localizations.dart';
+import 'widgets/sync_status_banner.dart';
 
 final _goRouter = GoRouter(
   initialLocation: '/',
@@ -218,6 +219,9 @@ class PowerCoachStudioApp extends StatelessWidget {
           }
         }
         return const Locale('it');
+      },
+      builder: (context, child) {
+        return SyncStatusBanner(child: child ?? const SizedBox.shrink());
       },
       routerConfig: _goRouter,
     );
