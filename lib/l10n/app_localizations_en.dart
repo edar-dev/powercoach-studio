@@ -491,6 +491,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportError => 'Export failed. Try again.';
 
   @override
+  String get workoutExportPdfSheetTitle => 'Export PDF';
+
+  @override
+  String get workoutPdfLayoutCanonical => 'Full (by week)';
+
+  @override
+  String get workoutPdfLayoutCompact => 'Compact (by day)';
+
+  @override
+  String get workoutPdfLayoutCompactDescription =>
+      'Each training day as one table with a column per week (progression).';
+
+  @override
+  String get workoutExportPdfGenerateAndShare => 'Generate and share';
+
+  @override
   String get workoutShare => 'Share';
 
   @override

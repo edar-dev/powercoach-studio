@@ -233,13 +233,61 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     }
   }
 
-  Future<void> _exportPdfAndShare() async {
+  void _showPdfExportSheet() {
+    final l10n = AppLocalizations.of(context);
+    var selected = WorkoutPdfLayout.canonical;
+    showAppBottomSheet<void>(
+      context: context,
+      title: l10n.workoutExportPdfSheetTitle,
+      bodyBuilder: (sheetContext) => StatefulBuilder(
+        builder: (ctx, setModalState) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SegmentedButton<WorkoutPdfLayout>(
+              segments: [
+                ButtonSegment<WorkoutPdfLayout>(
+                  value: WorkoutPdfLayout.canonical,
+                  label: Text(l10n.workoutPdfLayoutCanonical),
+                ),
+                ButtonSegment<WorkoutPdfLayout>(
+                  value: WorkoutPdfLayout.compact,
+                  label: Text(l10n.workoutPdfLayoutCompact),
+                ),
+              ],
+              selected: {selected},
+              onSelectionChanged: (set) {
+                if (set.isNotEmpty) setModalState(() => selected = set.first);
+              },
+            ),
+            if (selected == WorkoutPdfLayout.compact)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text(
+                  l10n.workoutPdfLayoutCompactDescription,
+                  style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                      ),
+                ),
+              ),
+          ],
+        ),
+      ),
+      primaryActionLabel: l10n.workoutExportPdfGenerateAndShare,
+      onPrimaryAction: () {
+        final layout = selected;
+        Navigator.of(context).pop();
+        _exportPdfAndShare(layout);
+      },
+    );
+  }
+
+  Future<void> _exportPdfAndShare(WorkoutPdfLayout layout) async {
     final l10n = AppLocalizations.of(context);
     final name = _routineNameController.text.trim();
     final routine = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
     try {
       final customer = await _loadCustomerIfNeeded();
-      final path = await exportWorkoutRoutineToPdf(routine, customer: customer);
+      final path = await exportWorkoutRoutineToPdf(routine, customer: customer, layout: layout);
       if (!mounted) return;
       await Share.shareXFiles([XFile(path)]);
       if (!mounted) return;
@@ -448,7 +496,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   rpe: e.rpe,
                   note: e.note,
                   setDetails: e.setDetails?.map((s) => ExerciseSet(line: s.line, sets: s.sets, reps: s.reps, rpe: s.rpe, note: s.note)).toList(),
-                  supersetGroupId: null,
+                  supersetGroupId: e.supersetGroupId,
+                  customExerciseId: e.customExerciseId,
                 )).toList(),
               ))
           .toList();
@@ -866,7 +915,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               icon: const Icon(Icons.ios_share),
               tooltip: AppLocalizations.of(context).workoutExport,
               onSelected: (value) {
-                if (value == 'pdf') _exportPdfAndShare();
+                if (value == 'pdf') _showPdfExportSheet();
                 if (value == 'excel') _exportExcelAndShare();
               },
               itemBuilder: (context) => [

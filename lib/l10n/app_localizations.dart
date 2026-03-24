@@ -1022,6 +1022,36 @@ abstract class AppLocalizations {
   /// **'Export failed. Try again.'**
   String get workoutExportError;
 
+  /// No description provided for @workoutExportPdfSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get workoutExportPdfSheetTitle;
+
+  /// No description provided for @workoutPdfLayoutCanonical.
+  ///
+  /// In en, this message translates to:
+  /// **'Full (by week)'**
+  String get workoutPdfLayoutCanonical;
+
+  /// No description provided for @workoutPdfLayoutCompact.
+  ///
+  /// In en, this message translates to:
+  /// **'Compact (by day)'**
+  String get workoutPdfLayoutCompact;
+
+  /// No description provided for @workoutPdfLayoutCompactDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Each training day as one table with a column per week (progression).'**
+  String get workoutPdfLayoutCompactDescription;
+
+  /// No description provided for @workoutExportPdfGenerateAndShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate and share'**
+  String get workoutExportPdfGenerateAndShare;
+
   /// No description provided for @workoutShare.
   ///
   /// In en, this message translates to:
