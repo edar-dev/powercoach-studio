@@ -1896,6 +1896,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   CustomExerciseItem? _selectedExercise;
   final _nameController = TextEditingController();
   final _noteController = TextEditingController();
+  final _loadPercentInputController = TextEditingController();
   final List<_SetEditControllers> _setControllers = [];
   bool _saving = false;
   List<CustomerExerciseRecord> _recordsForExercise = [];
@@ -1917,6 +1918,125 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     );
   }
 
+  static bool _isMassBasedRecordUnit(String unit) {
+    final u = unit.trim().toLowerCase();
+    return u == 'kg' || u == 'lb' || u == 'lbs';
+  }
+
+  static String _formatLoadForDisplay(double v) {
+    final rounded = (v * 10).round() / 10;
+    if ((rounded - rounded.round()).abs() < 1e-9) {
+      return rounded.round().toString();
+    }
+    return rounded.toStringAsFixed(1);
+  }
+
+  String _loadPercentResultLabel(AppLocalizations l10n, CustomerExerciseRecord r) {
+    final raw = _loadPercentInputController.text.trim().replaceAll(',', '.');
+    if (raw.isEmpty) return '—';
+    final p = double.tryParse(raw);
+    if (p == null || p <= 0 || p > 100) {
+      return l10n.workoutBuilderLoadPercentInvalid;
+    }
+    final load = r.value * p / 100.0;
+    final w = _formatLoadForDisplay(load);
+    final percentStr = (p - p.round()).abs() < 1e-9 ? p.round().toString() : _formatLoadForDisplay(p);
+    return l10n.workoutBuilderLoadPercentResult(w, r.unit, percentStr);
+  }
+
+  Widget _buildLoadPercentTools(BuildContext context, ThemeData theme, ColorScheme cs, CustomerExerciseRecord r) {
+    final l10n = AppLocalizations.of(context);
+    final mass = _isMassBasedRecordUnit(r.unit);
+    final denseDecoration = InputDecoration(
+      isDense: true,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      border: const OutlineInputBorder(),
+    );
+    return Card(
+      margin: EdgeInsets.zero,
+      color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Theme(
+              data: theme.copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                tilePadding: EdgeInsets.zero,
+                childrenPadding: const EdgeInsets.only(bottom: 8),
+                title: Text(
+                  l10n.workoutBuilderLoadPercentGuideTitle,
+                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                subtitle: Text(
+                  l10n.workoutBuilderLoadPercentGuideIntro,
+                  style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                ),
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      l10n.workoutBuilderLoadPercentGuideBody,
+                      style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 1),
+            const SizedBox(height: 8),
+            Text(
+              l10n.workoutBuilderLoadPercentCalculator,
+              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            if (mass)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: TextField(
+                      controller: _loadPercentInputController,
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: denseDecoration.copyWith(
+                        labelText: l10n.workoutBuilderLoadPercentFieldLabel,
+                        hintText: l10n.workoutBuilderLoadPercentFieldHint,
+                      ),
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Text(
+                        _loadPercentResultLabel(l10n, r),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: cs.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            else
+              Text(
+                l10n.workoutBuilderLoadPercentMassOnly,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: cs.onSurfaceVariant,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -1933,6 +2053,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   void dispose() {
     _nameController.dispose();
     _noteController.dispose();
+    _loadPercentInputController.dispose();
     for (final c in _setControllers) {
       c.sets.dispose();
       c.reps.dispose();
@@ -1975,11 +2096,15 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
         setState(() {
           _recordsForExercise = [];
           _loadingRecords = false;
+          _loadPercentInputController.clear();
         });
       }
       return;
     }
-    setState(() => _loadingRecords = true);
+    setState(() {
+      _loadingRecords = true;
+      _loadPercentInputController.clear();
+    });
     try {
       final list = await _recordRepo.getByCustomerId(customerId, customExerciseId: customExerciseId);
       if (mounted) {
@@ -2079,6 +2204,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   Widget build(BuildContext context) {
     final theme = widget.theme;
     final cs = widget.cs;
+    final l10n = AppLocalizations.of(context);
     final denseDecoration = InputDecoration(
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -2179,7 +2305,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                 ),
                 if (_hasCustomerContext && _selectedExercise != null) ...[
                   const SizedBox(height: 10),
-                  Text('Record cliente', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+                  Text(l10n.workoutBuilderClientRecord, style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
                   const SizedBox(height: 4),
                   if (_loadingRecords)
                     const Padding(
@@ -2190,14 +2316,21 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       child: Text(
-                        'Nessun record per questo esercizio.',
+                        l10n.workoutBuilderNoExerciseRecord,
                         style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant, fontStyle: FontStyle.italic),
                       ),
                     )
                   else
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: _buildRecordLine(theme, cs, _recordsForExercise.first),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildRecordLine(theme, cs, _recordsForExercise.first),
+                          const SizedBox(height: 10),
+                          _buildLoadPercentTools(context, theme, cs, _recordsForExercise.first),
+                        ],
+                      ),
                     ),
                 ],
                 const SizedBox(height: 12),

@@ -646,6 +646,51 @@ class AppLocalizationsIt extends AppLocalizations {
   String get recordDeleteButton => 'Elimina record';
 
   @override
+  String get workoutBuilderClientRecord => 'Record cliente';
+
+  @override
+  String get workoutBuilderNoExerciseRecord =>
+      'Nessun record per questo esercizio.';
+
+  @override
+  String get workoutBuilderLoadPercentGuideTitle =>
+      'Intensità tipiche powerlifting';
+
+  @override
+  String get workoutBuilderLoadPercentGuideIntro =>
+      'Ripetizioni indicative per serie a ogni % del massimo registrato (orientamento).';
+
+  @override
+  String get workoutBuilderLoadPercentGuideBody =>
+      '100% — massimale / ~1 rip\n95% — ~2 rip\n90% — ~4 rip\n85% — ~6 rip\n80% — ~8 rip\n75% — ~10 rip\n70% — ~12 rip\n65% — ~15 rip\n60% — ~18+ rip\n55% — lavoro accessori\n50% — recupero / tecnica';
+
+  @override
+  String get workoutBuilderLoadPercentCalculator => 'Carico da percentuale';
+
+  @override
+  String get workoutBuilderLoadPercentFieldLabel => 'Percentuale';
+
+  @override
+  String get workoutBuilderLoadPercentFieldHint => 'es. 77,5';
+
+  @override
+  String get workoutBuilderLoadPercentInvalid =>
+      'Inserisci un numero tra 1 e 100.';
+
+  @override
+  String get workoutBuilderLoadPercentMassOnly =>
+      'Registra un peso (kg o lb) per usare il calcolatore percentuali.';
+
+  @override
+  String workoutBuilderLoadPercentResult(
+    String weight,
+    String unit,
+    String percent,
+  ) {
+    return '$weight $unit ($percent% del record)';
+  }
+
+  @override
   String get measurementsEmpty => 'Nessuna misura ancora';
 
   @override

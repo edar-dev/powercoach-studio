@@ -210,6 +210,24 @@
   "recordSelectExercise": "Select exercise",
   "recordSearchExerciseHint": "Search by name...",
   "recordDeleteButton": "Delete record",
+  "workoutBuilderClientRecord": "Client record",
+  "workoutBuilderNoExerciseRecord": "No record for this exercise.",
+  "workoutBuilderLoadPercentGuideTitle": "Typical powerlifting intensities",
+  "workoutBuilderLoadPercentGuideIntro": "Approximate reps per set at each % of your logged max (guideline).",
+  "workoutBuilderLoadPercentGuideBody": "100% — max / ~1 rep\n95% — ~2 reps\n90% — ~4 reps\n85% — ~6 reps\n80% — ~8 reps\n75% — ~10 reps\n70% — ~12 reps\n65% — ~15 reps\n60% — ~18+ reps\n55% — accessory work\n50% — recovery / technique",
+  "workoutBuilderLoadPercentCalculator": "Load from percentage",
+  "workoutBuilderLoadPercentFieldLabel": "Percentage",
+  "workoutBuilderLoadPercentFieldHint": "e.g. 77.5",
+  "workoutBuilderLoadPercentInvalid": "Enter a number between 1 and 100.",
+  "workoutBuilderLoadPercentMassOnly": "Log a weight record (kg or lb) to use the percentage calculator.",
+  "workoutBuilderLoadPercentResult": "{weight} {unit} ({percent}% of record)",
+  "@workoutBuilderLoadPercentResult": {
+    "placeholders": {
+      "weight": { "type": "String" },
+      "unit": { "type": "String" },
+      "percent": { "type": "String" }
+    }
+  },
   "measurementsEmpty": "No measurements yet",
   "measurementsEmptyHint": "Add a measurement to track 1RM, body composition, and circumferences.",
   "measurementAdd": "Add measurement",

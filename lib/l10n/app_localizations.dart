@@ -1322,6 +1322,76 @@ abstract class AppLocalizations {
   /// **'Delete record'**
   String get recordDeleteButton;
 
+  /// No description provided for @workoutBuilderClientRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'Client record'**
+  String get workoutBuilderClientRecord;
+
+  /// No description provided for @workoutBuilderNoExerciseRecord.
+  ///
+  /// In en, this message translates to:
+  /// **'No record for this exercise.'**
+  String get workoutBuilderNoExerciseRecord;
+
+  /// No description provided for @workoutBuilderLoadPercentGuideTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Typical powerlifting intensities'**
+  String get workoutBuilderLoadPercentGuideTitle;
+
+  /// No description provided for @workoutBuilderLoadPercentGuideIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Approximate reps per set at each % of your logged max (guideline).'**
+  String get workoutBuilderLoadPercentGuideIntro;
+
+  /// No description provided for @workoutBuilderLoadPercentGuideBody.
+  ///
+  /// In en, this message translates to:
+  /// **'100% — max / ~1 rep\n95% — ~2 reps\n90% — ~4 reps\n85% — ~6 reps\n80% — ~8 reps\n75% — ~10 reps\n70% — ~12 reps\n65% — ~15 reps\n60% — ~18+ reps\n55% — accessory work\n50% — recovery / technique'**
+  String get workoutBuilderLoadPercentGuideBody;
+
+  /// No description provided for @workoutBuilderLoadPercentCalculator.
+  ///
+  /// In en, this message translates to:
+  /// **'Load from percentage'**
+  String get workoutBuilderLoadPercentCalculator;
+
+  /// No description provided for @workoutBuilderLoadPercentFieldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Percentage'**
+  String get workoutBuilderLoadPercentFieldLabel;
+
+  /// No description provided for @workoutBuilderLoadPercentFieldHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. 77.5'**
+  String get workoutBuilderLoadPercentFieldHint;
+
+  /// No description provided for @workoutBuilderLoadPercentInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a number between 1 and 100.'**
+  String get workoutBuilderLoadPercentInvalid;
+
+  /// No description provided for @workoutBuilderLoadPercentMassOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Log a weight record (kg or lb) to use the percentage calculator.'**
+  String get workoutBuilderLoadPercentMassOnly;
+
+  /// No description provided for @workoutBuilderLoadPercentResult.
+  ///
+  /// In en, this message translates to:
+  /// **'{weight} {unit} ({percent}% of record)'**
+  String workoutBuilderLoadPercentResult(
+    String weight,
+    String unit,
+    String percent,
+  );
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:
