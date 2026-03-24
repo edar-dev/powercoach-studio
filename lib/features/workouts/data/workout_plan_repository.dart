@@ -23,6 +23,7 @@ class WorkoutPlanRepository {
           .whereType<Map<String, dynamic>>()
           .map(WorkoutPlanApiModel.fromJson)
           .toList();
+      _sortPlansByStartDateDesc(models);
       for (final plan in models) {
         await _offline.saveLocalEntity(
           type: OfflineEntityType.workoutPlan,
@@ -53,7 +54,9 @@ class WorkoutPlanRepository {
         OfflineEntityType.workoutPlan,
         scopeId: customerId,
       );
-      return local.map(WorkoutPlanApiModel.fromJson).toList();
+      final offlineModels = local.map(WorkoutPlanApiModel.fromJson).toList();
+      _sortPlansByStartDateDesc(offlineModels);
+      return offlineModels;
     }
   }
 
@@ -198,6 +201,27 @@ class WorkoutPlanRepository {
       payload: <String, dynamic>{},
     );
   }
+}
+
+/// Sort key: routine `startDate` from [WorkoutPlanApiModel.planData], else [WorkoutPlanApiModel.updatedAt].
+DateTime _sortKeyForPlan(WorkoutPlanApiModel p) {
+  try {
+    final decoded = jsonDecode(p.planData);
+    if (decoded is Map<String, dynamic>) {
+      final sd = decoded['startDate'];
+      if (sd != null) {
+        final d = DateTime.tryParse(sd.toString());
+        if (d != null) {
+          return DateTime(d.year, d.month, d.day);
+        }
+      }
+    }
+  } catch (_) {}
+  return p.updatedAt;
+}
+
+void _sortPlansByStartDateDesc(List<WorkoutPlanApiModel> plans) {
+  plans.sort((a, b) => _sortKeyForPlan(b).compareTo(_sortKeyForPlan(a)));
 }
 
 /// Parses [WorkoutPlanApiModel.planData] into [WorkoutRoutine].

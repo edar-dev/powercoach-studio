@@ -25,23 +25,28 @@ class MobilitySection {
 }
 
 class WorkoutRoutine {
-  const WorkoutRoutine({
+  WorkoutRoutine({
     required this.name,
     required this.mobilitySections,
     required this.mobilityItems,
     required this.weeks,
+    this.startDate,
   });
 
   final String name;
   final List<MobilitySection> mobilitySections;
   final List<MobilityItem> mobilityItems;
   final List<Week> weeks;
+  /// Calendar start of the plan; persisted in planData. Null for legacy JSON.
+  final DateTime? startDate;
 
   Map<String, dynamic> toJson() => {
         'name': name,
         'mobilitySections': mobilitySections.map((e) => e.toJson()).toList(),
         'mobilityItems': mobilityItems.map((e) => e.toJson()).toList(),
         'weeks': weeks.map((e) => e.toJson()).toList(),
+        if (startDate != null)
+          'startDate': DateTime(startDate!.year, startDate!.month, startDate!.day).toIso8601String(),
       };
 
   static WorkoutRoutine fromJson(Map<String, dynamic> json) {
@@ -58,6 +63,15 @@ class WorkoutRoutine {
             .toList() ??
         [];
 
+    DateTime? parsedStart;
+    final sd = json['startDate'];
+    if (sd != null) {
+      parsedStart = DateTime.tryParse(sd.toString());
+      if (parsedStart != null) {
+        parsedStart = DateTime(parsedStart.year, parsedStart.month, parsedStart.day);
+      }
+    }
+
     return WorkoutRoutine(
       name: json['name'] as String? ?? 'Hypertrophy Phase 1',
       mobilitySections: sections,
@@ -66,6 +80,7 @@ class WorkoutRoutine {
               ?.map((e) => Week.fromJson(e as Map<String, dynamic>))
               .toList() ??
           defaultWeeks(),
+      startDate: parsedStart,
     );
   }
 
@@ -87,24 +102,30 @@ class WorkoutRoutine {
       ];
 
   /// Empty routine for creating a new workout from scratch (one default mobility section).
-  static WorkoutRoutine empty() => WorkoutRoutine(
-        name: '',
-        mobilitySections: [const MobilitySection(id: 'sec_1', name: 'Section 1')],
-        mobilityItems: [],
-        weeks: [],
-      );
+  static WorkoutRoutine empty() {
+    final n = DateTime.now();
+    return WorkoutRoutine(
+      name: '',
+      mobilitySections: [const MobilitySection(id: 'sec_1', name: 'Section 1')],
+      mobilityItems: [],
+      weeks: [],
+      startDate: DateTime(n.year, n.month, n.day),
+    );
+  }
 
   WorkoutRoutine copyWith({
     String? name,
     List<MobilitySection>? mobilitySections,
     List<MobilityItem>? mobilityItems,
     List<Week>? weeks,
+    DateTime? startDate,
   }) =>
       WorkoutRoutine(
         name: name ?? this.name,
         mobilitySections: mobilitySections ?? this.mobilitySections,
         mobilityItems: mobilityItems ?? this.mobilityItems,
         weeks: weeks ?? this.weeks,
+        startDate: startDate ?? this.startDate,
       );
 }
 

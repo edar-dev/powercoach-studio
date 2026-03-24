@@ -152,6 +152,24 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     }
   }
 
+  Future<void> _pickRoutineStartDate() async {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final initial = _routine.startDate ?? today;
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(now.year + 10, 12, 31),
+    );
+    if (!mounted || picked == null) return;
+    setState(() {
+      _routine = _routine.copyWith(
+        startDate: DateTime(picked.year, picked.month, picked.day),
+      );
+    });
+  }
+
   Future<void> _saveRoutine() async {
     if (_saving) return;
     setState(() => _saving = true);
@@ -994,6 +1012,48 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                             hintStyle: theme.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w500,
                               color: cs.onSurfaceVariant,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Routine start date (plan ordering / display)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context).workoutRoutineStartDate,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: StitchM3Theme.accent,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.6,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        InkWell(
+                          onTap: _pickRoutineStartDate,
+                          borderRadius: BorderRadius.circular(8),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Row(
+                              children: [
+                                Icon(Icons.calendar_today_outlined, size: 20, color: cs.onSurfaceVariant),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _routine.startDate != null
+                                        ? MaterialLocalizations.of(context).formatFullDate(_routine.startDate!)
+                                        : AppLocalizations.of(context).workoutRoutineStartDatePlaceholder,
+                                    style: theme.textTheme.titleMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: _routine.startDate != null ? cs.onSurface : cs.onSurfaceVariant,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

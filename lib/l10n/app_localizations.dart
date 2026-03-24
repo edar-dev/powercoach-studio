@@ -1070,6 +1070,18 @@ abstract class AppLocalizations {
   /// **'Week 1, 2, 3...'**
   String get workoutStartingWeekHint;
 
+  /// Label for the calendar start date of a workout routine in the builder
+  ///
+  /// In en, this message translates to:
+  /// **'Start date'**
+  String get workoutRoutineStartDate;
+
+  /// Shown when no start date is set yet
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose'**
+  String get workoutRoutineStartDatePlaceholder;
+
   /// No description provided for @workoutCreateNewFromThis.
   ///
   /// In en, this message translates to:

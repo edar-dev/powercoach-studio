@@ -162,6 +162,14 @@
   "workoutShare": "Share",
   "workoutStartingWeek": "Starting week",
   "workoutStartingWeekHint": "Week 1, 2, 3...",
+  "workoutRoutineStartDate": "Start date",
+  "@workoutRoutineStartDate": {
+    "description": "Label for the calendar start date of a workout routine in the builder"
+  },
+  "workoutRoutineStartDatePlaceholder": "Tap to choose",
+  "@workoutRoutineStartDatePlaceholder": {
+    "description": "Shown when no start date is set yet"
+  },
   "workoutCreateNewFromThis": "Create new workout from this",
   "workoutDuplicateOf": "Copy of {name}",
   "workoutDuplicatedMessage": "Workout created.",

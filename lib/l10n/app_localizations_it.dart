@@ -516,6 +516,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutStartingWeekHint => 'Settimana 1, 2, 3...';
 
   @override
+  String get workoutRoutineStartDate => 'Data di inizio';
+
+  @override
+  String get workoutRoutineStartDatePlaceholder => 'Tocca per scegliere';
+
+  @override
   String get workoutCreateNewFromThis => 'Crea nuovo workout da questo';
 
   @override
