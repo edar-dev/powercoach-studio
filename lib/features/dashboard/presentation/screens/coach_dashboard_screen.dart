@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../customers/data/customer_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 
@@ -16,7 +17,7 @@ class CoachDashboardScreen extends StatefulWidget {
 }
 
 class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
-  final GymBlogApiClient _api = GymBlogApiClient();
+  final CustomerRepository _customerRepo = CustomerRepository();
   int _clientCount = 0;
   bool _loadingStats = true;
 
@@ -35,8 +36,8 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       return;
     }
     try {
-      final list = await _api.getList('/api/customers');
-      final count = list.whereType<Map<String, dynamic>>().length;
+      final customers = await _customerRepo.getAll();
+      final count = customers.length;
       if (mounted) {
         setState(() {
           _clientCount = count;

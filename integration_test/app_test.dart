@@ -9,6 +9,7 @@ import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:powercoach_studio/app.dart';
+import 'package:powercoach_studio/core/di/service_locator.dart';
 
 Future<void> _initForTest() async {
   try {
@@ -21,6 +22,7 @@ Future<void> _initForTest() async {
   if (url.isNotEmpty && key.isNotEmpty) {
     await Supabase.initialize(url: url, anonKey: key);
   }
+  configureDependencies();
 }
 
 void main() {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/network/gymblog_api_client.dart';
+import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
@@ -30,7 +31,7 @@ class CustomerExerciseRecordFormScreen extends StatefulWidget {
 
 class _CustomerExerciseRecordFormScreenState
     extends State<CustomerExerciseRecordFormScreen> {
-  final _api = GymBlogApiClient();
+  final _customExerciseRepo = CustomExerciseRepository();
   final _repo = CustomerExerciseRecordRepository();
   final _formKey = GlobalKey<FormState>();
   List<CustomExerciseItem> _exerciseOptions = [];
@@ -97,14 +98,7 @@ class _CustomerExerciseRecordFormScreenState
       return;
     }
     try {
-      final list = await _api.getList(
-        '/api/custom-exercises',
-        queryParameters: {'tree': 'true'},
-      );
-      final items = list
-          .whereType<Map<String, dynamic>>()
-          .map((e) => CustomExerciseItem.fromJson(e))
-          .toList();
+      final items = await _customExerciseRepo.getTree();
       final flat = <CustomExerciseItem>[];
       void visit(CustomExerciseItem node, int depth, String? parentName) {
         flat.add(node);

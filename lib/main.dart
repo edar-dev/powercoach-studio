@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/network/gymblog_api_client.dart';
 import 'package:powercoach_studio/core/network/persistent_api_cache.dart';
 import 'package:powercoach_studio/core/sync/sync_orchestrator.dart';
@@ -64,6 +65,8 @@ Future<void> _runApp({required bool wrapWithSentry}) async {
       anonKey: supabaseAnonKey,
     );
   }
+
+  configureDependencies();
 
   await PersistentApiCache.restore(GymBlogApiClient.apiCache);
   await SyncOrchestrator.instance.initialize();

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../../core/di/service_locator.dart';
 import '../../../core/network/gymblog_api_client.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
@@ -7,9 +8,9 @@ import 'custom_exercise_item.dart';
 
 /// Offline-first custom exercise library (tree API + outbox).
 class CustomExerciseRepository {
-  CustomExerciseRepository()
-      : _api = GymBlogApiClient(),
-        _offline = OfflineRepositorySupport();
+  CustomExerciseRepository({GymBlogApiClient? api, OfflineRepositorySupport? offline})
+      : _api = api ?? getIt<GymBlogApiClient>(),
+        _offline = offline ?? OfflineRepositorySupport();
 
   final GymBlogApiClient _api;
   final OfflineRepositorySupport _offline;

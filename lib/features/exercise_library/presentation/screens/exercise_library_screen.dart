@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/di/service_locator.dart';
 import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -26,7 +27,6 @@ class ExerciseLibraryScreen extends StatefulWidget {
 
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     with SingleTickerProviderStateMixin {
-  final GymBlogApiClient _api = GymBlogApiClient();
   final CustomExerciseRepository _exerciseRepo = CustomExerciseRepository();
   List<CustomExerciseItem> _items = [];
   bool _loading = true;
@@ -85,7 +85,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   Future<void> _export() async {
     if (!GymBlogApiClient.isConfigured) return;
     try {
-      final list = await _api.getList('$_basePath/export');
+      final list = await getIt<GymBlogApiClient>().getList('$_basePath/export');
       final data = list.whereType<Map<String, dynamic>>().toList();
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
@@ -141,7 +141,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     }
     if (!GymBlogApiClient.isConfigured) return;
     try {
-      await _api.post('$_basePath/import', items);
+      await getIt<GymBlogApiClient>().post('$_basePath/import', items);
       if (mounted) {
         showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportSuccess));
         _load();

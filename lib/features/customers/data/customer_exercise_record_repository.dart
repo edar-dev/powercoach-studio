@@ -1,3 +1,4 @@
+import '../../../core/di/service_locator.dart';
 import '../../../core/network/gymblog_api_client.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
@@ -6,9 +7,9 @@ import 'models/customer_exercise_record.dart';
 /// Fetches and persists customer exercise records via GymBlog.API.
 /// GET/POST/PUT/DELETE under /api/customers/{customerId}/exercise-records.
 class CustomerExerciseRecordRepository {
-  CustomerExerciseRecordRepository()
-      : _api = GymBlogApiClient(),
-        _offline = OfflineRepositorySupport();
+  CustomerExerciseRecordRepository({GymBlogApiClient? api, OfflineRepositorySupport? offline})
+      : _api = api ?? getIt<GymBlogApiClient>(),
+        _offline = offline ?? OfflineRepositorySupport();
 
   final GymBlogApiClient _api;
   final OfflineRepositorySupport _offline;

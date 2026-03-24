@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../di/service_locator.dart';
 import '../network/gymblog_api_client.dart';
 import '../storage/offline_local_store.dart';
 import 'offline_models.dart';
@@ -22,7 +23,7 @@ class SyncOrchestrator with WidgetsBindingObserver {
   static final SyncOrchestrator instance = SyncOrchestrator._();
 
   final OfflineLocalStore _store = OfflineLocalStore.instance;
-  final GymBlogApiClient _api = GymBlogApiClient();
+  final GymBlogApiClient _api = getIt<GymBlogApiClient>();
   final SyncStatusController status = SyncStatusController();
 
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
