@@ -1340,11 +1340,27 @@ abstract class AppLocalizations {
   /// **'Typical powerlifting intensities'**
   String get workoutBuilderLoadPercentGuideTitle;
 
-  /// No description provided for @workoutBuilderLoadPercentGuideIntro.
+  /// No description provided for @workoutBuilderLoadPercentGuideIntroMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Load for each percentage of the latest record.'**
+  String get workoutBuilderLoadPercentGuideIntroMass;
+
+  /// No description provided for @workoutBuilderLoadPercentGuideIntroReps.
   ///
   /// In en, this message translates to:
   /// **'Approximate reps per set at each % of your logged max (guideline).'**
-  String get workoutBuilderLoadPercentGuideIntro;
+  String get workoutBuilderLoadPercentGuideIntroReps;
+
+  /// No description provided for @workoutBuilderLoadPercentGuideRow.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% — {weight} {unit}'**
+  String workoutBuilderLoadPercentGuideRow(
+    String percent,
+    String weight,
+    String unit,
+  );
 
   /// No description provided for @workoutBuilderLoadPercentGuideBody.
   ///

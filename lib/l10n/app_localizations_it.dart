@@ -657,8 +657,21 @@ class AppLocalizationsIt extends AppLocalizations {
       'Intensità tipiche powerlifting';
 
   @override
-  String get workoutBuilderLoadPercentGuideIntro =>
+  String get workoutBuilderLoadPercentGuideIntroMass =>
+      'Carico per ogni percentuale dell’ultimo record.';
+
+  @override
+  String get workoutBuilderLoadPercentGuideIntroReps =>
       'Ripetizioni indicative per serie a ogni % del massimo registrato (orientamento).';
+
+  @override
+  String workoutBuilderLoadPercentGuideRow(
+    String percent,
+    String weight,
+    String unit,
+  ) {
+    return '$percent% — $weight $unit';
+  }
 
   @override
   String get workoutBuilderLoadPercentGuideBody =>

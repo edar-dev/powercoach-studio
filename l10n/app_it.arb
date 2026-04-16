@@ -213,7 +213,16 @@
   "workoutBuilderClientRecord": "Record cliente",
   "workoutBuilderNoExerciseRecord": "Nessun record per questo esercizio.",
   "workoutBuilderLoadPercentGuideTitle": "Intensità tipiche powerlifting",
-  "workoutBuilderLoadPercentGuideIntro": "Ripetizioni indicative per serie a ogni % del massimo registrato (orientamento).",
+  "workoutBuilderLoadPercentGuideIntroMass": "Carico per ogni percentuale dell’ultimo record.",
+  "workoutBuilderLoadPercentGuideIntroReps": "Ripetizioni indicative per serie a ogni % del massimo registrato (orientamento).",
+  "workoutBuilderLoadPercentGuideRow": "{percent}% — {weight} {unit}",
+  "@workoutBuilderLoadPercentGuideRow": {
+    "placeholders": {
+      "percent": { "type": "String" },
+      "weight": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
   "workoutBuilderLoadPercentGuideBody": "100% — massimale / ~1 rip\n95% — ~2 rip\n90% — ~4 rip\n85% — ~6 rip\n80% — ~8 rip\n75% — ~10 rip\n70% — ~12 rip\n65% — ~15 rip\n60% — ~18+ rip\n55% — lavoro accessori\n50% — recupero / tecnica",
   "workoutBuilderLoadPercentCalculator": "Carico da percentuale",
   "workoutBuilderLoadPercentFieldLabel": "Percentuale",

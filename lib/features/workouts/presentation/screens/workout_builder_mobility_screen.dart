@@ -1931,6 +1931,44 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     return rounded.toStringAsFixed(1);
   }
 
+  /// Standard % ladder for powerlifting-style reference loads.
+  static const List<int> _loadPercentLadder = [100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50];
+
+  Widget _buildLoadPercentGuideContent(
+    ThemeData theme,
+    ColorScheme cs,
+    AppLocalizations l10n,
+    CustomerExerciseRecord r,
+    bool mass,
+  ) {
+    if (mass) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final p in _loadPercentLadder)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                l10n.workoutBuilderLoadPercentGuideRow(
+                  p.toString(),
+                  _formatLoadForDisplay(r.value * p / 100.0),
+                  r.unit,
+                ),
+                style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
+              ),
+            ),
+        ],
+      );
+    }
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        l10n.workoutBuilderLoadPercentGuideBody,
+        style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
+      ),
+    );
+  }
+
   String _loadPercentResultLabel(AppLocalizations l10n, CustomerExerciseRecord r) {
     final raw = _loadPercentInputController.text.trim().replaceAll(',', '.');
     if (raw.isEmpty) return '—';
@@ -1970,17 +2008,11 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                   style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 subtitle: Text(
-                  l10n.workoutBuilderLoadPercentGuideIntro,
+                  mass ? l10n.workoutBuilderLoadPercentGuideIntroMass : l10n.workoutBuilderLoadPercentGuideIntroReps,
                   style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                 ),
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      l10n.workoutBuilderLoadPercentGuideBody,
-                      style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
-                    ),
-                  ),
+                  _buildLoadPercentGuideContent(theme, cs, l10n, r, mass),
                 ],
               ),
             ),

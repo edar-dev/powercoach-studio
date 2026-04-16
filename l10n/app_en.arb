@@ -213,7 +213,16 @@
   "workoutBuilderClientRecord": "Client record",
   "workoutBuilderNoExerciseRecord": "No record for this exercise.",
   "workoutBuilderLoadPercentGuideTitle": "Typical powerlifting intensities",
-  "workoutBuilderLoadPercentGuideIntro": "Approximate reps per set at each % of your logged max (guideline).",
+  "workoutBuilderLoadPercentGuideIntroMass": "Load for each percentage of the latest record.",
+  "workoutBuilderLoadPercentGuideIntroReps": "Approximate reps per set at each % of your logged max (guideline).",
+  "workoutBuilderLoadPercentGuideRow": "{percent}% — {weight} {unit}",
+  "@workoutBuilderLoadPercentGuideRow": {
+    "placeholders": {
+      "percent": { "type": "String" },
+      "weight": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
   "workoutBuilderLoadPercentGuideBody": "100% — max / ~1 rep\n95% — ~2 reps\n90% — ~4 reps\n85% — ~6 reps\n80% — ~8 reps\n75% — ~10 reps\n70% — ~12 reps\n65% — ~15 reps\n60% — ~18+ reps\n55% — accessory work\n50% — recovery / technique",
   "workoutBuilderLoadPercentCalculator": "Load from percentage",
   "workoutBuilderLoadPercentFieldLabel": "Percentage",
