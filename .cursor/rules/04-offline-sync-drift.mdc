@@ -1,0 +1,51 @@
+---
+description: Drift ORM, SQLite schema, and offline sync conventions
+globs: lib/core/storage/**,lib/core/sync/**
+alwaysApply: false
+---
+
+# Offline Sync & Drift ORM
+
+## Database Schema (`lib/core/storage/app_database.dart`)
+
+| Table | Purpose |
+|-------|---------|
+| `LocalEntities` | Cached remote entities (JSON payload, keyed by `userId + type + id`) |
+| `PendingOperations` | Write outbox — mutations waiting to be replayed to the API |
+| `SyncMetaEntries` | Per-user key/value store for sync cursors / last-fetched markers |
+
+`AppDatabase` is a singleton — obtain via `getIt` if registered, or `AppDatabase()` in tests.
+
+## Drift Rules
+
+- **Never write raw SQL** — use Drift's typed query builders.
+- **Always use transactions** for multi-table writes:
+
+```dart
+await db.transaction(() async {
+  await db.into(db.localEntities).insertOnConflictUpdate(row);
+  await db.into(db.pendingOperations).insert(op);
+});
+```
+
+- After modifying any `Table` class, regenerate:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+The generated file is `app_database.g.dart` — do not edit it manually.
+
+## PendingOperations Lifecycle
+
+```
+status: 0 = pending  →  1 = in-flight  →  2 = done
+                                        →  3 = conflict
+                                        →  4 = error
+```
+
+`retryCount` is incremented by `SyncOrchestrator` on transient failures. Do not reset it manually.
+
+## Schema Migrations
+
+Increment `AppDatabase.schemaVersion` and add a `MigrationStrategy` with `onUpgrade` for every breaking table change. Never drop the schema silently.

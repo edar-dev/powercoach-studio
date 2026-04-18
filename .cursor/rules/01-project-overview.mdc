@@ -1,0 +1,41 @@
+---
+description: PowerCoach Studio — project overview, tech stack, and key entry points
+alwaysApply: true
+---
+
+# PowerCoach Studio — Project Overview
+
+Multi-platform **Flutter/Dart** app (Android, iOS, web, Windows, macOS) for gym coaches. Coaches manage clients, assign workout plans, track measurements, and view schedules.
+
+## Stack
+
+| Concern | Technology |
+|---------|-----------|
+| Language | Dart (SDK ^3.9.2), Flutter |
+| Auth & remote DB | Supabase (`supabase_flutter ^2.5.0`) |
+| REST API | GymBlog.API via **Dio** (`GYMBLOG_API_URL` in `.env`) |
+| Local DB (offline) | **Drift** + SQLite (`powercoach_offline.sqlite`) |
+| DI | `get_it` — single `getIt` instance in `lib/core/di/service_locator.dart` |
+| Routing | `go_router ^17` — defined in `lib/app.dart` |
+| Monitoring | `sentry_flutter` (opt-in via `SENTRY_DSN` in `.env`) |
+| i18n | Flutter ARB — primary locale **Italian (`it`)**, secondary English |
+| Theme | Material 3, dark mode default — `StitchM3Theme` in `lib/theme/stitch_m3_theme.dart` |
+
+## Key Entry Points
+
+- `lib/main.dart` — bootstrap: dotenv → Supabase → Sentry → DI → SyncOrchestrator → `runApp`
+- `lib/app.dart` — GoRouter definition and auth redirect guard
+- `lib/core/di/service_locator.dart` — DI registrations (`GymBlogApiClient`)
+- `lib/core/sync/sync_orchestrator.dart` — offline sync lifecycle
+
+## Feature Modules (`lib/features/`)
+
+`auth` · `landing` · `dashboard` · `customers` · `workouts` · `exercise_library` · `settings`
+
+Each feature follows: `presentation/screens/` + optionally `data/` and `domain/`.
+
+## Environment Variables (`.env` asset)
+
+`GYMBLOG_API_URL` — base URL for GymBlog.API  
+`SUPABASE_URL` / `SUPABASE_ANON_KEY` — Supabase credentials  
+`SENTRY_DSN` — optional Sentry DSN

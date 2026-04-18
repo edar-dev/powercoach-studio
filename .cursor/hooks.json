@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/check-drift-codegen.ps1",
+        "matcher": "app_database\\.dart",
+        "timeout": 5
+      }
+    ],
+    "beforeShellExecution": [
+      {
+        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/guard-dangerous-commands.ps1",
+        "matcher": "flutter clean|git reset|git push.*-f|drop table|truncate|rm -rf",
+        "failClosed": false,
+        "timeout": 5
+      }
+    ],
+    "postToolUse": [
+      {
+        "type": "prompt",
+        "matcher": "Write",
+        "prompt": "The agent just wrote or edited a file. Check the tool_input.path field in: $ARGUMENTS. If the path contains 'l10n/' and ends with '.arb', add to additional_context: 'ARB file modified — run: dart run build_runner build --delete-conflicting-outputs to regenerate AppLocalizations.' Otherwise return no additional_context.",
+        "timeout": 15
+      }
+    ]
+  }
+}

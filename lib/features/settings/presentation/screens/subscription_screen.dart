@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Subscription Settings – Stitch screen ID 1224a49f9c5849fcb205e965ebc0b9a4.
-/// Shows current plan (from profiles.subscription_plan, default free), Upgrade / Manage.
+/// Shows current plan from local profile storage.
 class SubscriptionScreen extends StatefulWidget {
   const SubscriptionScreen({super.key});
 
@@ -34,27 +35,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       });
       return;
     }
-    try {
-      final res = await Supabase.instance.client
-          .from('profiles')
-          .select('subscription_plan')
-          .eq('id', user.id)
-          .maybeSingle();
-      if (mounted) {
-        final raw = res?['subscription_plan'] as String?;
-        setState(() {
-          _isLoading = false;
-          _plan = (raw?.trim().toLowerCase() == 'pro') ? 'pro' : 'free';
-        });
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _plan = 'free';
-        });
-      }
-    }
+    final localProfile = await LocalUserProfileStore.instance.read(user.id);
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+      _plan = localProfile.subscriptionPlan == 'pro' ? 'pro' : 'free';
+    });
   }
 
   String _planLabel(AppLocalizations l10n) {

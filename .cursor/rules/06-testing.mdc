@@ -1,0 +1,55 @@
+---
+description: Testing conventions — unit, widget, and integration tests
+globs: test/**,integration_test/**
+alwaysApply: false
+---
+
+# Testing
+
+## Test Types & Locations
+
+| Type | Location | Run with |
+|------|----------|----------|
+| Unit / widget | `test/` | `flutter test test/` |
+| Integration (E2E) | `integration_test/` | See `integration_test/README.md` |
+
+## Widget Test Setup
+
+Wrap widgets under test with a `MaterialApp` using `StitchM3Theme.light`:
+
+```dart
+await tester.pumpWidget(
+  MaterialApp(
+    theme: StitchM3Theme.light,
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: const [Locale('it'), Locale('en')],
+    home: const MyWidget(),
+  ),
+);
+```
+
+## Integration Tests
+
+- Require a valid `.env` file at the project root with real `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `GYMBLOG_API_URL`.
+- On Windows, **Developer Mode** must be enabled (symlink support).
+- See `integration_test/README.md` for full setup instructions.
+
+## DI in Tests
+
+Register test doubles before each test using `getIt`:
+
+```dart
+setUp(() {
+  if (!getIt.isRegistered<GymBlogApiClient>()) {
+    getIt.registerSingleton<GymBlogApiClient>(MockGymBlogApiClient());
+  }
+});
+
+tearDown(() => getIt.reset());
+```
+
+## Assertions
+
+- Prefer `expect(find.text('...'), findsOneWidget)` for widget tests.
+- Use `verify` / `when` from `mockito` (add as dev dep if needed) for service mocks.
+- Keep test names descriptive: `test('shows error banner when API returns 401', ...)`.

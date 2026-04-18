@@ -1,0 +1,56 @@
+---
+description: Material 3 / Stitch theme conventions — colors, typography, spacing, responsive layout
+globs: **/*.dart
+alwaysApply: false
+---
+
+# Theming — Material 3 / Stitch
+
+## Active Theme
+
+`StitchM3Theme` (`lib/theme/stitch_m3_theme.dart`) is the **canonical** theme.  
+`AppTheme` in `lib/core/theme/app_theme.dart` is a secondary design-token layer — prefer `StitchM3Theme` for new work.
+
+The app defaults to **dark mode** (`ThemeMode.dark`).
+
+## Color Usage
+
+Always resolve colors from the active `ColorScheme` — never hardcode hex values.
+
+```dart
+// ✅ GOOD
+final cs = Theme.of(context).colorScheme;
+Container(color: cs.surface);
+Text('Hello', style: TextStyle(color: cs.onSurface));
+
+// ❌ BAD
+Container(color: const Color(0xFF121212));
+```
+
+Brand primary blue is `#0D59F2` — it is exposed as `colorScheme.primary` in `StitchM3Theme`.
+
+## Typography
+
+Use `Theme.of(context).textTheme` tokens (`headlineMedium`, `bodyLarge`, etc.).  
+Do not set `fontSize` or `fontWeight` directly unless a precise one-off is needed and well documented.
+
+## Spacing & Radius
+
+Stitch spacing scale (8 px grid): 4 · 8 · 12 · 16 · 24 · 32 · 48.  
+Use `BorderRadius.circular(12)` for cards/chips; `BorderRadius.circular(8)` for buttons (matches M3 defaults in theme).
+
+## Responsive Layout
+
+Use `lib/core/ui/breakpoints.dart` for adaptive layouts:
+
+```dart
+if (Breakpoints.isDesktop(context)) {
+  // side-by-side layout
+} else {
+  // stacked layout
+}
+```
+
+## Icons
+
+Prefer `Icons.*` (Material) over `CupertinoIcons.*` to stay consistent with M3. Use `CupertinoIcons` only when explicitly targeting iOS affordances.

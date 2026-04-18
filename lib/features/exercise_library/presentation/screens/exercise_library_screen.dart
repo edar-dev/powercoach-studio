@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/di/service_locator.dart';
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_snackbar.dart';
@@ -15,8 +13,6 @@ import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../widgets/custom_exercise_edit_dialog.dart';
-
-const _basePath = '/api/custom-exercises';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen({super.key});
@@ -50,14 +46,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   }
 
   Future<void> _load() async {
-    if (!GymBlogApiClient.isConfigured) {
-      setState(() {
-        _loading = false;
-        _error = null;
-        _items = [];
-      });
-      return;
-    }
     setState(() {
       _loading = true;
       _error = null;
@@ -75,7 +63,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = e is GymBlogApiException ? e.message : e.toString();
+          _error = e.toString();
           _items = [];
         });
       }
@@ -83,10 +71,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   }
 
   Future<void> _export() async {
-    if (!GymBlogApiClient.isConfigured) return;
     try {
-      final list = await getIt<GymBlogApiClient>().getList('$_basePath/export');
-      final data = list.whereType<Map<String, dynamic>>().toList();
+      final data = _flattenTree(_items)
+          .map((e) => <String, dynamic>{
+                'name': e.name,
+                'description': e.description,
+                'parentId': e.parentId,
+                'sortOrder': e.sortOrder,
+                'isMobility': e.isMobility,
+              })
+          .toList();
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       if (data.isEmpty) {
@@ -105,7 +99,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       if (mounted) {
         showAppSnackBar(
           context,
-          content: Text(e is GymBlogApiException ? e.message : e.toString()),
+          content: Text(e.toString()),
         );
       }
     }
@@ -139,16 +133,25 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       }
       return;
     }
-    if (!GymBlogApiClient.isConfigured) return;
     try {
-      await getIt<GymBlogApiClient>().post('$_basePath/import', items);
+      for (final item in items) {
+        final name = item['name']?.toString().trim() ?? '';
+        if (name.isEmpty) continue;
+        await _exerciseRepo.create(<String, dynamic>{
+          'name': name,
+          'description': item['description']?.toString(),
+          'parentId': item['parentId']?.toString(),
+          'sortOrder': item['sortOrder'],
+          'isMobility': item['isMobility'] == true,
+        });
+      }
       if (mounted) {
         showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportSuccess));
         _load();
       }
     } catch (e) {
       if (mounted) {
-        showAppSnackBar(context, content: Text(e is GymBlogApiException ? e.message : e.toString()));
+        showAppSnackBar(context, content: Text(e.toString()));
       }
     }
   }
@@ -248,7 +251,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             if (sheetContext.mounted) {
               ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(e is GymBlogApiException ? e.message : e.toString()),
+                  content: Text(e.toString()),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -293,7 +296,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             if (sheetContext.mounted) {
               ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(e is GymBlogApiException ? e.message : e.toString()),
+                  content: Text(e.toString()),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -338,7 +341,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(e is GymBlogApiException ? e.message : e.toString()),
+              content: Text(e.toString()),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -352,45 +355,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-
-    if (!GymBlogApiClient.isConfigured) {
-      return Scaffold(
-        backgroundColor: cs.surfaceContainerHighest,
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/dashboard');
-              }
-            },
-          ),
-          title: Text(
-            l10n.exerciseLibraryTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: cs.onSurface,
-            ),
-          ),
-        ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              l10n.customersApiNotConfigured,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      );
-    }
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,

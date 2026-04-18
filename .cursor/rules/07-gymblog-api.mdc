@@ -1,0 +1,68 @@
+---
+description: GymBlog.API client — Dio patterns, error handling, cache invalidation, offline writes
+globs: lib/core/network/**,lib/features/**
+alwaysApply: false
+---
+
+# GymBlog.API Client Patterns
+
+## Resolving the Client
+
+Always get `GymBlogApiClient` from the service locator — never instantiate it:
+
+```dart
+final api = getIt<GymBlogApiClient>();
+```
+
+## Guard: Check If Configured
+
+The API is optional (`GYMBLOG_API_URL` may be absent in `.env`).  
+Always check before calling, or let `_ensureConfigured()` throw `GymBlogApiException` with `statusCode == 0`.
+
+```dart
+if (!GymBlogApiClient.isConfigured) return; // no-op when URL is missing
+```
+
+## Calling the API
+
+```dart
+// List
+final rows = await api.getList('/api/customers');
+
+// Single resource
+final data = await api.get('/api/customers/$id');
+
+// Mutations (POST/PUT/DELETE also invalidate the in-memory cache)
+await api.post('/api/customers', body);
+await api.put('/api/customers/$id', body);
+await api.delete('/api/customers/$id');
+```
+
+## Handling Errors
+
+Catch `GymBlogApiException`, not `DioException` — the client wraps all Dio errors.
+
+```dart
+try {
+  final data = await api.get('/api/customers/$id');
+} on GymBlogApiException catch (e) {
+  if (e.statusCode == 401) { /* session expired */ }
+  if (e.statusCode == 409) { /* conflict — check e.responseBody */ }
+  Sentry.captureException(e);
+  rethrow;
+}
+```
+
+## Cache Behaviour
+
+| Operation | Cache effect |
+|-----------|-------------|
+| `GET` | Served from cache if fresh (TTL 5 min; customers list: 2 min) |
+| `GET` with `skipCache: true` | Bypasses cache, refreshes the entry |
+| `POST` / `PUT` / `DELETE` | Auto-invalidates in-memory cache |
+
+Call `GymBlogApiClient.clearCache()` after logout or on manual user refresh.
+
+## Write Path — Prefer Offline Store
+
+For data that must survive connectivity loss (customer mutations, workout edits) always use `OfflineLocalStore` + `PendingOperations` outbox instead of calling the API directly. Reserve direct API calls for **read-only** or **best-effort** operations.

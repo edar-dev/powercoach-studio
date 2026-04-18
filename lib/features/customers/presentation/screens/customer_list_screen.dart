@@ -4,7 +4,6 @@ import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
@@ -62,14 +61,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   }
 
   Future<void> _load({bool skipCache = false}) async {
-    if (!GymBlogApiClient.isConfigured) {
-      setState(() {
-        _loading = false;
-        _error = null;
-        _customers = [];
-      });
-      return;
-    }
     setState(() {
       _loading = true;
       _error = null;
@@ -87,7 +78,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = e is GymBlogApiException ? e.message : e.toString();
+          _error = e.toString();
           _customers = [];
         });
       }
@@ -108,25 +99,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    if (!GymBlogApiClient.isConfigured) {
-      return Scaffold(
-        backgroundColor: colorScheme.surfaceContainerHighest,
-        appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: false),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24),
-            child: Text(
-              l10n.customersApiNotConfigured,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerHighest,
       appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: false),
@@ -140,7 +112,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
             ? _emptyBody(context, l10n, theme, colorScheme)
             : _listBodyWithSearch(context, l10n, theme, colorScheme),
       ),
-      floatingActionButton: GymBlogApiClient.isConfigured && _error == null
+      floatingActionButton: _error == null
           ? FloatingActionButton.extended(
               onPressed: () => context.push('/customers/new'),
               icon: const Icon(Icons.add),

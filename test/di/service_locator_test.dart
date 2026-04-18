@@ -1,7 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
-import 'package:powercoach_studio/core/network/gymblog_api_client.dart';
 
 void main() {
   setUpAll(() async {
@@ -17,10 +16,9 @@ void main() {
     await getIt.reset();
   });
 
-  test('configureDependencies registers a single GymBlogApiClient', () {
+  test('configureDependencies is idempotent in local-only mode', () {
     configureDependencies();
-    final a = getIt<GymBlogApiClient>();
-    final b = getIt<GymBlogApiClient>();
-    expect(identical(a, b), isTrue);
+    configureDependencies();
+    expect(getIt.allReadySync(), isTrue);
   });
 }

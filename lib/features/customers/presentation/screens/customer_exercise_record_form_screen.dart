@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -93,10 +92,6 @@ class _CustomerExerciseRecordFormScreenState
   }
 
   Future<void> _loadExercises() async {
-    if (!GymBlogApiClient.isConfigured) {
-      setState(() => _loadingExercises = false);
-      return;
-    }
     try {
       final items = await _customExerciseRepo.getTree();
       final flat = <CustomExerciseItem>[];

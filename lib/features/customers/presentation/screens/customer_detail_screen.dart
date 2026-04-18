@@ -7,7 +7,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
@@ -79,7 +78,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   }
 
   Future<void> _loadMeasurements() async {
-    if (!GymBlogApiClient.isConfigured) return;
     setState(() => _measurementsLoading = true);
     try {
       final list = await _measurementRepo.getByCustomerId(widget.customerId);
@@ -97,7 +95,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   }
 
   Future<void> _loadRecords() async {
-    if (!GymBlogApiClient.isConfigured) return;
     setState(() => _recordsLoading = true);
     try {
       final list = await _recordRepo.getByCustomerId(widget.customerId);
@@ -457,31 +454,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   Widget _buildMeasurementsTab(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     final l10n = AppLocalizations.of(context);
-    if (!GymBlogApiClient.isConfigured) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.straighten, size: 48, color: colorScheme.onSurfaceVariant),
-              const SizedBox(height: 16),
-              Text(
-                l10n.measurementsEmpty,
-                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.measurementsEmptyHint,
-                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
     if (_measurementsLoading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -603,31 +575,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   Widget _buildRecordsTab(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     final l10n = AppLocalizations.of(context);
-    if (!GymBlogApiClient.isConfigured) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.fitness_center, size: 48, color: colorScheme.onSurfaceVariant),
-              const SizedBox(height: 16),
-              Text(
-                l10n.recordsEmpty,
-                style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.customersApiNotConfigured,
-                style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-      );
-    }
     if (_recordsLoading) {
       return const Center(child: CircularProgressIndicator());
     }

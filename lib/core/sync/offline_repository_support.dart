@@ -1,17 +1,11 @@
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:uuid/uuid.dart';
-
 import '../storage/offline_local_store.dart';
 import 'offline_models.dart';
-import 'sync_orchestrator.dart';
 
 class OfflineRepositorySupport {
-  OfflineRepositorySupport({OfflineLocalStore? store, SyncOrchestrator? sync})
-      : _store = store ?? OfflineLocalStore.instance,
-        _sync = sync ?? SyncOrchestrator.instance;
+  OfflineRepositorySupport({OfflineLocalStore? store})
+      : _store = store ?? OfflineLocalStore.instance;
 
   final OfflineLocalStore _store;
-  final SyncOrchestrator _sync;
 
   Future<void> saveLocalEntity({
     required OfflineEntityType type,
@@ -59,24 +53,8 @@ class OfflineRepositorySupport {
     required String path,
     required Map<String, dynamic> payload,
     DateTime? baseUpdatedAt,
-  }) {
-    final now = DateTime.now();
-    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-    return _sync.enqueue(
-      PendingOperation(
-        id: const Uuid().v4(),
-        userId: uid.isEmpty ? '__legacy__' : uid,
-        entityType: entityType,
-        entityId: entityId,
-        scopeId: scopeId,
-        operationType: opType,
-        path: path,
-        payload: payload,
-        createdAt: now,
-        updatedAt: now,
-        baseUpdatedAt: baseUpdatedAt,
-      ),
-    );
+  }) async {
+    // Local-only mode: keep writes in local entities and skip remote outbox.
   }
 
   String newTempId(String prefix) {

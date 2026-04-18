@@ -1,0 +1,61 @@
+---
+description: Architecture patterns — feature modules, routing, DI, Supabase auth, and offline sync
+alwaysApply: true
+---
+
+# Architecture Patterns
+
+## Feature-First Structure
+
+New features go under `lib/features/<feature_name>/` with this layout:
+
+```
+lib/features/my_feature/
+  presentation/
+    screens/       # full-page widgets (Screens)
+    widgets/       # reusable feature-scoped widgets
+  data/            # repositories, API mappers (optional)
+  domain/          # models, interfaces (optional)
+```
+
+Shared widgets used across features belong in `lib/widgets/`.
+
+## Routing (GoRouter)
+
+All routes are declared in `lib/app.dart`.
+
+- Navigate imperatively: `context.go('/customers')` or `context.push('/customers/new')`.
+- Pass params via path (`':id'`) or query string (`state.uri.queryParameters`).
+- **Protected routes**: `/dashboard`, `/customers`, `/workouts`, `/profile`, `/settings`, `/exercise-library` all require an authenticated Supabase user. The global `redirect` guard in `_goRouter` handles this automatically.
+- When adding a new protected route, add its path prefix to the `isProtectedRoute` check in `lib/app.dart`.
+
+## Dependency Injection (get_it)
+
+```dart
+// Register (in service_locator.dart)
+getIt.registerLazySingleton<MyService>(() => MyService());
+
+// Resolve (anywhere)
+final service = getIt<MyService>();
+```
+
+Never instantiate services directly inside widgets or screens — always resolve from `getIt`.
+
+## Supabase Auth
+
+```dart
+// Current user
+final user = Supabase.instance.client.auth.currentUser;
+
+// Bearer token for GymBlog.API (injected by GymBlogApiClient interceptor)
+final token = Supabase.instance.client.auth.currentSession?.accessToken;
+```
+
+## Offline-First Write Path
+
+1. Write mutations to `PendingOperations` outbox via `OfflineLocalStore`.
+2. Optimistically update `LocalEntities` cache.
+3. `SyncOrchestrator` replays the outbox when online / on auth change / on app resume.
+4. Conflicts land in `PendingOpRow.conflictRemoteJson` for manual resolution.
+
+Never call the remote API directly from a screen for write operations — go through the offline store so changes survive connectivity loss.

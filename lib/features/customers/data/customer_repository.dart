@@ -1,53 +1,25 @@
-import '../../../core/di/service_locator.dart';
-import '../../../core/network/gymblog_api_client.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'models/customer.dart';
 
 class CustomerRepository {
-  CustomerRepository({GymBlogApiClient? api, OfflineRepositorySupport? offline})
-      : _api = api ?? getIt<GymBlogApiClient>(),
-        _offline = offline ?? OfflineRepositorySupport();
+  CustomerRepository({OfflineRepositorySupport? offline})
+      : _offline = offline ?? OfflineRepositorySupport();
 
-  final GymBlogApiClient _api;
   final OfflineRepositorySupport _offline;
 
   Future<List<Customer>> getAll({bool skipCache = false}) async {
-    try {
-      final list = await _api.getList('/api/customers', skipCache: skipCache);
-      final customers = list.whereType<Map<String, dynamic>>().map(Customer.fromJson).toList();
-      for (final customer in customers) {
-        await _offline.saveLocalEntity(
-          type: OfflineEntityType.customer,
-          id: customer.id,
-          scopeId: customer.userId,
-          payload: _toJson(customer),
-        );
-      }
-      return customers;
-    } catch (_) {
-      final local = await _offline.readLocalEntities(OfflineEntityType.customer);
-      return local.map(Customer.fromJson).toList();
-    }
+    final local = await _offline.readLocalEntities(OfflineEntityType.customer);
+    return local.map(Customer.fromJson).toList();
   }
 
   Future<Customer?> getById(String customerId) async {
-    try {
-      final data = await _api.get('/api/customers/$customerId');
-      final customer = Customer.fromJson(data);
-      await _offline.saveLocalEntity(
-        type: OfflineEntityType.customer,
-        id: customer.id,
-        scopeId: customer.userId,
-        payload: _toJson(customer),
-      );
-      return customer;
-    } on GymBlogApiException catch (e) {
-      if (e.statusCode == 404) return null;
-      final local = await _offline.readLocalEntityById(OfflineEntityType.customer, customerId);
-      if (local != null) return Customer.fromJson(local);
-      rethrow;
-    }
+    final local = await _offline.readLocalEntityById(
+      OfflineEntityType.customer,
+      customerId,
+    );
+    if (local == null) return null;
+    return Customer.fromJson(local);
   }
 
   Future<Customer> create(Customer customer) async {
@@ -78,51 +50,25 @@ class CustomerRepository {
       id: tempId,
       scopeId: customer.userId,
       payload: _toJson(local),
-      localOnly: true,
-    );
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customer,
-      entityId: tempId,
-      scopeId: customer.userId,
-      opType: OfflineOperationType.create,
-      path: '/api/customers',
-      payload: customer.toCreateBody(),
+      localOnly: false,
     );
     return local;
   }
 
   Future<Customer> update(Customer customer) async {
-    final current = await _offline.readLocalEntityById(OfflineEntityType.customer, customer.id);
     final payload = _toJson(customer);
     await _offline.saveLocalEntity(
       type: OfflineEntityType.customer,
       id: customer.id,
       scopeId: customer.userId,
       payload: payload,
-      localOnly: true,
-    );
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customer,
-      entityId: customer.id,
-      scopeId: customer.userId,
-      opType: OfflineOperationType.update,
-      path: '/api/customers/${customer.id}',
-      payload: customer.toUpdateBody(),
-      baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
+      localOnly: false,
     );
     return customer;
   }
 
   Future<void> delete(String customerId) async {
     await _offline.markDeleted(OfflineEntityType.customer, customerId);
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customer,
-      entityId: customerId,
-      scopeId: '',
-      opType: OfflineOperationType.delete,
-      path: '/api/customers/$customerId',
-      payload: <String, dynamic>{},
-    );
   }
 
   Map<String, dynamic> _toJson(Customer c) => {

@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
@@ -104,14 +103,6 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   Future<void> _loadForEditorMode() async {
     final customerId = widget.customerId!;
-    if (!GymBlogApiClient.isConfigured) {
-      if (!mounted) return;
-      setState(() {
-        _routineNameController.text = _routine.name;
-        _loading = false;
-      });
-      return;
-    }
     try {
       Customer? customer;
       if (widget.planId != null && widget.planId!.isNotEmpty) {
@@ -181,7 +172,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     }();
 
     try {
-      if (widget.editorMode && widget.customerId != null && GymBlogApiClient.isConfigured) {
+      if (widget.editorMode && widget.customerId != null) {
         try {
           if (_loadedPlanId != null) {
             await _planRepo.update(
@@ -1537,7 +1528,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
   final Map<String, int> _exerciseDepth = {};
   final Map<String, String> _exerciseParentName = {};
 
-  bool get _apiConfigured => GymBlogApiClient.isConfigured;
+  bool get _apiConfigured => true;
 
   String _exerciseDisplayName(CustomExerciseItem e, {bool useMobility = false}) {
     final parentName = useMobility ? _mobilityParentName[e.id] : _exerciseParentName[e.id];
@@ -1902,7 +1893,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   List<CustomerExerciseRecord> _recordsForExercise = [];
   bool _loadingRecords = false;
 
-  bool get _apiConfigured => GymBlogApiClient.isConfigured;
+  bool get _apiConfigured => true;
   bool get _hasCustomerContext => widget.customerId != null && widget.customerId!.isNotEmpty;
 
   String _exerciseDisplayName(CustomExerciseItem e) {

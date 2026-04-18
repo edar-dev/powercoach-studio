@@ -1,0 +1,71 @@
+---
+description: Dart & Flutter coding standards for PowerCoach Studio
+globs: **/*.dart
+alwaysApply: false
+---
+
+# Dart & Flutter Standards
+
+## Widgets
+
+- Prefer `const` constructors everywhere possible.
+- Use `StatelessWidget` unless local mutable state is strictly needed.
+- Extract sub-widgets into separate classes instead of deeply nesting `build()` methods.
+- Always pass `key: super.key` in widget constructors.
+
+```dart
+// ✅ GOOD
+class CustomerCard extends StatelessWidget {
+  const CustomerCard({super.key, required this.customer});
+  final Customer customer;
+  ...
+}
+```
+
+## Async / Error Handling
+
+Never swallow exceptions silently.
+
+```dart
+// ❌ BAD
+try { await api.fetchCustomers(); } catch (_) {}
+
+// ✅ GOOD
+try {
+  await api.fetchCustomers();
+} catch (e, stack) {
+  Sentry.captureException(e, stackTrace: stack);
+  rethrow;
+}
+```
+
+## Strings & Localisation
+
+- All user-visible strings must come from `AppLocalizations.of(context)!`.
+- Never hardcode Italian or English text in widgets.
+
+## Logging
+
+- Never use `print()` — use `debugPrint()` in debug builds or `Sentry.captureMessage` for production-relevant events.
+
+## Imports
+
+- Order: dart: → package: → relative.
+- Use relative imports within `lib/` (`import '../widgets/foo.dart'`), not `package:powercoach_studio/...`.
+
+## Naming
+
+| Concept | Convention |
+|---------|-----------|
+| Files | `snake_case.dart` |
+| Classes / Types | `PascalCase` |
+| Variables / functions | `camelCase` |
+| Constants | `camelCase` (Dart style) or `SCREAMING_SNAKE` for enums |
+
+## Codegen (Drift / l10n)
+
+After modifying Drift tables or ARB files run:
+
+```bash
+dart run build_runner build --delete-conflicting-outputs
+```

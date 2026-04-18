@@ -3,13 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/stitch_card.dart';
 import '../../../../widgets/stitch_secondary_app_bar.dart';
 
 /// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
-/// Edit display name, email (read-only), phone; save to Supabase profiles.
+/// Edit display name, email (read-only), phone; save locally per user.
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
 
@@ -52,19 +53,13 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       return;
     }
     try {
-      final res = await Supabase.instance.client
-          .from('profiles')
-          .select()
-          .eq('id', user.id)
-          .maybeSingle();
+      final localProfile = await LocalUserProfileStore.instance.read(user.id);
       if (mounted) {
         setState(() {
           _isLoading = false;
           _loadError = null;
-          if (res != null) {
-            _displayNameController.text = res['display_name'] as String? ?? '';
-            _phoneController.text = res['contact_phone'] as String? ?? '';
-          }
+          _displayNameController.text = localProfile.displayName;
+          _phoneController.text = localProfile.phone;
         });
       }
     } catch (e) {
@@ -88,18 +83,18 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     setState(() => _isSaving = true);
 
     try {
-      await Supabase.instance.client.from('profiles').upsert(
-            {
-              'id': user.id,
-              'display_name': _displayNameController.text.trim().isEmpty
-                  ? null
-                  : _displayNameController.text.trim(),
-              'contact_phone': _phoneController.text.trim().isEmpty
-                  ? null
-                  : _phoneController.text.trim(),
-            },
-            onConflict: 'id',
-          );
+      final current = await LocalUserProfileStore.instance.read(user.id);
+      await LocalUserProfileStore.instance.write(
+        user.id,
+        LocalUserProfileData(
+          displayName: _displayNameController.text.trim(),
+          phone: _phoneController.text.trim(),
+          bio: current.bio,
+          avatarUrl: current.avatarUrl,
+          website: current.website,
+          subscriptionPlan: current.subscriptionPlan,
+        ),
+      );
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

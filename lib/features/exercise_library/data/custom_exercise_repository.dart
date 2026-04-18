@@ -1,55 +1,83 @@
-import 'dart:convert';
-
-import '../../../core/di/service_locator.dart';
-import '../../../core/network/gymblog_api_client.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'custom_exercise_item.dart';
 
-/// Offline-first custom exercise library (tree API + outbox).
+/// Local-only custom exercise library.
 class CustomExerciseRepository {
-  CustomExerciseRepository({GymBlogApiClient? api, OfflineRepositorySupport? offline})
-      : _api = api ?? getIt<GymBlogApiClient>(),
-        _offline = offline ?? OfflineRepositorySupport();
+  CustomExerciseRepository({OfflineRepositorySupport? offline})
+      : _offline = offline ?? OfflineRepositorySupport();
 
-  final GymBlogApiClient _api;
   final OfflineRepositorySupport _offline;
 
   static const _scope = 'library';
-  static String _cacheId(bool? mobility) => 'cex_tree_${mobility ?? 'all'}';
 
-  /// GET /api/custom-exercises?tree=true[&mobility=]
   Future<List<CustomExerciseItem>> getTree({bool? mobility}) async {
-    final qp = <String, String>{'tree': 'true'};
-    if (mobility != null) qp['mobility'] = mobility.toString();
-    try {
-      final list = await _api.getList(
-        '/api/custom-exercises',
-        queryParameters: qp,
-      );
-      await _offline.saveLocalEntity(
-        type: OfflineEntityType.customExercise,
-        id: _cacheId(mobility),
-        scopeId: _scope,
-        payload: {'json': jsonEncode(list)},
-      );
-      return list
-          .whereType<Map<String, dynamic>>()
-          .map(CustomExerciseItem.fromJson)
-          .toList();
-    } catch (_) {
-      final row = await _offline.readLocalEntityById(
-        OfflineEntityType.customExercise,
-        _cacheId(mobility),
-      );
-      final raw = row?['json']?.toString();
-      if (raw == null || raw.isEmpty) return [];
-      final decoded = jsonDecode(raw) as List<dynamic>;
-      return decoded
-          .whereType<Map<String, dynamic>>()
-          .map(CustomExerciseItem.fromJson)
-          .toList();
+    final entities = await _offline.readLocalEntities(
+      OfflineEntityType.customExercise,
+      scopeId: _scope,
+    );
+    final items = entities
+        .where((e) => e['id'] != null)
+        .map(CustomExerciseItem.fromJson)
+        .where((e) => mobility == null || e.isMobility == mobility)
+        .toList();
+    return _buildTree(items);
+  }
+
+  List<CustomExerciseItem> _buildTree(List<CustomExerciseItem> items) {
+    final byId = <String, CustomExerciseItem>{
+      for (final item in items)
+        item.id: CustomExerciseItem(
+          id: item.id,
+          name: item.name,
+          description: item.description,
+          parentId: item.parentId,
+          sortOrder: item.sortOrder,
+          isMobility: item.isMobility,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt,
+          rowVersion: item.rowVersion,
+          children: const [],
+        ),
+    };
+    final childrenByParent = <String, List<CustomExerciseItem>>{};
+    final roots = <CustomExerciseItem>[];
+
+    for (final item in byId.values) {
+      final parentId = item.parentId;
+      if (parentId == null || parentId.isEmpty || !byId.containsKey(parentId)) {
+        roots.add(item);
+        continue;
+      }
+      childrenByParent.putIfAbsent(parentId, () => <CustomExerciseItem>[]).add(item);
     }
+
+    CustomExerciseItem withChildren(CustomExerciseItem item) {
+      final children = childrenByParent[item.id] ?? const <CustomExerciseItem>[];
+      children.sort(_sortItems);
+      return CustomExerciseItem(
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        parentId: item.parentId,
+        sortOrder: item.sortOrder,
+        isMobility: item.isMobility,
+        createdAt: item.createdAt,
+        updatedAt: item.updatedAt,
+        rowVersion: item.rowVersion,
+        children: children.map(withChildren).toList(),
+      );
+    }
+
+    roots.sort(_sortItems);
+    return roots.map(withChildren).toList();
+  }
+
+  int _sortItems(CustomExerciseItem a, CustomExerciseItem b) {
+    final aSort = a.sortOrder ?? 9999;
+    final bSort = b.sortOrder ?? 9999;
+    if (aSort != bSort) return aSort.compareTo(bSort);
+    return a.name.toLowerCase().compareTo(b.name.toLowerCase());
   }
 
   Future<Map<String, dynamic>> create(Map<String, dynamic> body) async {
@@ -73,15 +101,7 @@ class CustomExerciseRepository {
       id: tempId,
       scopeId: _scope,
       payload: local,
-      localOnly: true,
-    );
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customExercise,
-      entityId: tempId,
-      scopeId: _scope,
-      opType: OfflineOperationType.create,
-      path: '/api/custom-exercises',
-      payload: body,
+      localOnly: false,
     );
     return local;
   }
@@ -91,10 +111,6 @@ class CustomExerciseRepository {
       OfflineEntityType.customExercise,
       id,
     );
-    final apiBody = Map<String, dynamic>.from(body);
-    final expected = apiBody['expectedRowVersion'] ?? current?['rowVersion'];
-    if (expected != null) apiBody['expectedRowVersion'] = expected;
-
     final localPatch = Map<String, dynamic>.from(body)
       ..remove('expectedRowVersion');
     final merged = <String, dynamic>{
@@ -108,28 +124,11 @@ class CustomExerciseRepository {
       id: id,
       scopeId: _scope,
       payload: merged,
-      localOnly: true,
-    );
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customExercise,
-      entityId: id,
-      scopeId: _scope,
-      opType: OfflineOperationType.update,
-      path: '/api/custom-exercises/$id',
-      payload: apiBody,
-      baseUpdatedAt: DateTime.tryParse(current?['updatedAt']?.toString() ?? ''),
+      localOnly: false,
     );
   }
 
   Future<void> delete(String id) async {
     await _offline.markDeleted(OfflineEntityType.customExercise, id);
-    await _offline.enqueue(
-      entityType: OfflineEntityType.customExercise,
-      entityId: id,
-      scopeId: _scope,
-      opType: OfflineOperationType.delete,
-      path: '/api/custom-exercises/$id',
-      payload: <String, dynamic>{},
-    );
   }
 }

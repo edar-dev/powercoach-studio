@@ -1,0 +1,58 @@
+---
+description: AI workflow — when to use subagents, parallel exploration, and MCP tools for this project
+alwaysApply: true
+---
+
+# AI Workflow — Subagents & MCP Tools
+
+## When to Launch Subagents
+
+Use the `Task` tool to delegate work in parallel whenever tasks are independent:
+
+| Situation | Strategy |
+|-----------|----------|
+| Implementing a new feature | Spawn `explore` subagent to map the target feature folder while starting to write code |
+| Debugging a production error | Spawn `explore` for local code context + query Sentry MCP simultaneously |
+| Large refactor across many files | Spawn multiple `explore` agents scoped to different feature folders |
+| Checking DB state + code together | Query Supabase MCP for schema while reading local Dart files in parallel |
+
+## Subagent Types for This Project
+
+- **`explore`** — Read-only codebase search. Use for: understanding a feature module, finding where a widget is used, mapping the sync flow. Always set thoroughness: `"quick"` for file location, `"medium"` for understanding patterns, `"very thorough"` for architectural analysis.
+- **`generalPurpose`** — Multi-step tasks that require both reading and writing (e.g. implementing a full feature end-to-end).
+- **`shell`** — Running Flutter commands: `flutter analyze`, `flutter test`, `dart run build_runner build`.
+
+## MCP Tools Available
+
+| MCP | Use for |
+|-----|---------|
+| **Supabase** | Query `public.profiles`, check RLS policies, inspect DB schema, run ad-hoc SQL for debugging |
+| **GitHub** | Manage PRs, check CI status, create issues for bugs found during development |
+| **Sentry** | Fetch recent errors/exceptions in production, get stack traces without leaving Cursor |
+| **Render / Vercel** | Check deployment status and recent deploy logs |
+| **Stitch** | Pull design assets and component specs when implementing UI from the Stitch design file |
+
+## Efficient Exploration Pattern
+
+When asked to implement anything non-trivial, follow this order:
+
+1. **Explore first** — spawn an `explore` subagent to understand the existing feature structure before writing code.
+2. **Parallelize reads** — batch `Read` tool calls for independent files in one message.
+3. **Implement** — write code only after gathering enough context.
+4. **Verify** — run `flutter analyze` via `shell` subagent after substantive edits.
+
+## Flutter-Specific Shell Commands
+
+```bash
+# Static analysis (run after edits)
+flutter analyze
+
+# Unit tests
+flutter test test/
+
+# Drift + l10n codegen (run after modifying Tables or ARB files)
+dart run build_runner build --delete-conflicting-outputs
+
+# Launch icons regeneration
+dart run flutter_launcher_icons
+```

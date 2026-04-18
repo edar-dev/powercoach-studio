@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/network/gymblog_api_client.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -28,13 +27,6 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   }
 
   Future<void> _loadStats() async {
-    if (!GymBlogApiClient.isConfigured) {
-      setState(() {
-        _clientCount = 0;
-        _loadingStats = false;
-      });
-      return;
-    }
     try {
       final customers = await _customerRepo.getAll();
       final count = customers.length;
