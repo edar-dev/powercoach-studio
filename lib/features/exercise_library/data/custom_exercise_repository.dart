@@ -53,7 +53,9 @@ class CustomExerciseRepository {
     }
 
     CustomExerciseItem withChildren(CustomExerciseItem item) {
-      final children = childrenByParent[item.id] ?? const <CustomExerciseItem>[];
+      final children = List<CustomExerciseItem>.from(
+        childrenByParent[item.id] ?? const <CustomExerciseItem>[],
+      );
       children.sort(_sortItems);
       return CustomExerciseItem(
         id: item.id,

@@ -431,50 +431,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     );
   }
 
-  Widget _buildDrawer(BuildContext context, ThemeData theme, AppLocalizations l10n) {
-    final cs = theme.colorScheme;
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          DrawerHeader(
-            decoration: BoxDecoration(color: cs.primaryContainer),
-            child: Text(
-              l10n.appTitle,
-              style: theme.textTheme.titleLarge?.copyWith(
-                color: cs.onPrimaryContainer,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          ListTile(
-            leading: const Icon(Icons.people_outline),
-            title: Text(l10n.customersTitle),
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.fitness_center_outlined),
-            title: Text(l10n.exerciseLibraryTitle),
-            onTap: () {
-              Navigator.of(context).pop();
-              context.push('/exercise-library');
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.settings_outlined),
-            title: Text(l10n.settingsTitle),
-            onTap: () {
-              Navigator.of(context).pop();
-              context.push('/settings');
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   PreferredSizeWidget _customerListAppBar(
     BuildContext context,
     ThemeData theme,
