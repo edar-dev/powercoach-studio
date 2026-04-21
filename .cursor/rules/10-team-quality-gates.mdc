@@ -1,0 +1,18 @@
+---
+description: Enforce definition-of-done quality gates for implementation handoff
+alwaysApply: true
+---
+
+# Team Quality Gates
+
+Before declaring implementation complete, ensure:
+
+- Happy path and key edge states are covered (loading, empty, error).
+- Risky changes include validation evidence (`flutter analyze`, relevant tests).
+- Architectural boundaries remain consistent with existing feature patterns.
+- User-visible behavior changes are explicitly called out.
+
+## Handoff format
+- Scope of change by file path
+- Verification run and results
+- Residual risks and follow-ups

@@ -1,0 +1,19 @@
+---
+description: Route complex work to project subagents for consistent execution
+alwaysApply: true
+---
+
+# Custom Subagent Routing
+
+Use project subagents in `.cursor/agents` when tasks are non-trivial.
+
+## Routing rules
+- Use `flutter-explorer` before implementation when touching unfamiliar or multi-file areas.
+- Use `flutter-implementer` for feature work, refactors, and bug fixes requiring edits.
+- Use `flutter-test-runner` after substantive edits to run analyze/tests/codegen.
+- Use `flutter-reviewer` before final handoff for regression/risk checks.
+
+## Delegation quality bar
+- Delegate with explicit scope, expected output, and constraints.
+- Prefer parallel delegation when tasks are independent.
+- Keep final responses concise and file-path oriented.

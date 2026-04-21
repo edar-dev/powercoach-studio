@@ -1,0 +1,19 @@
+---
+description: Commit and PR standards for consistent team collaboration
+alwaysApply: true
+---
+
+# Commit and PR Standards
+
+## Commit scope
+- Keep each commit to one logical unit of work.
+- Avoid mixing refactor, feature, and formatting-only changes in one commit.
+
+## Commit message quality
+- Use imperative title (`fix`, `add`, `update`, `refactor`).
+- Explain intent and impact, not only file changes.
+
+## PR readiness checklist
+- Include concise summary of behavior changes.
+- Include test/analyze evidence relevant to touched scope.
+- Call out risks, migration notes, and manual QA steps when needed.

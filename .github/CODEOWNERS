@@ -1,0 +1,20 @@
+# Default owner for all files
+* @edar-dev
+
+# Flutter app and tests
+lib/** @edar-dev
+test/** @edar-dev
+integration_test/** @edar-dev
+
+# Platform-specific code
+android/** @edar-dev
+ios/** @edar-dev
+macos/** @edar-dev
+linux/** @edar-dev
+windows/** @edar-dev
+web/** @edar-dev
+
+# Project automation and docs
+.github/** @edar-dev
+.cursor/** @edar-dev
+docs/** @edar-dev
