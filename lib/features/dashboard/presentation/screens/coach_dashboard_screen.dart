@@ -23,7 +23,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadStats();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _loadStats();
+    });
   }
 
   Future<void> _loadStats() async {

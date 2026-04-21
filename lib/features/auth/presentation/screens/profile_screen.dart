@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _emailController.text =
-        Supabase.instance.client.auth.currentUser?.email ?? '';
+        SupabaseBootstrap.currentUser?.email ?? '';
     _loadProfile();
   }
 
@@ -51,7 +52,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _loadProfile() async {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) {
       setState(() {
         _isLoading = false;
@@ -84,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) return;
 
     final l10n = AppLocalizations.of(context);
@@ -139,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    final uid = Supabase.instance.client.auth.currentUser?.id;
+    final uid = SupabaseBootstrap.currentUser?.id;
     if (uid != null) {
       await OfflineLocalStore.instance.wipeForUser(uid);
     }
@@ -151,7 +152,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
 
     final cs = theme.colorScheme;
 

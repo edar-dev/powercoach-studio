@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -110,7 +111,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   }
 
   Future<void> _load() async {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) return;
     setState(() {
       _loading = true;
@@ -184,7 +185,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   @override
   Widget build(BuildContext context) {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) context.go('/login');

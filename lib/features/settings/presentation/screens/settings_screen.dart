@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -44,7 +45,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _signOut() async {
-    final uid = Supabase.instance.client.auth.currentUser?.id;
+    final uid = SupabaseBootstrap.currentUser?.id;
     if (uid != null) {
       await OfflineLocalStore.instance.wipeForUser(uid);
     }

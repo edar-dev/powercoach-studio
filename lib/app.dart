@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
@@ -28,9 +28,11 @@ import 'l10n/app_localizations.dart';
 final _goRouter = GoRouter(
   initialLocation: '/',
   observers: [SentryNavigatorObserver()],
+  refreshListenable: SupabaseBootstrap.refreshTick,
   redirect: (context, state) {
+    SupabaseBootstrap.ensureInitialized();
     final path = state.uri.path;
-    final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
+    final isLoggedIn = SupabaseBootstrap.currentUser != null;
     final isCustomerRoute = path.startsWith('/customers');
     final isProtectedRoute = isCustomerRoute || path.startsWith('/dashboard') || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings') || path == '/exercise-library';
     if (isProtectedRoute && !isLoggedIn) {

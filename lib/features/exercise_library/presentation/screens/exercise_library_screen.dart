@@ -36,7 +36,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
-    _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _load();
+    });
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -31,7 +32,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   void initState() {
     super.initState();
     _emailController.text =
-        Supabase.instance.client.auth.currentUser?.email ?? '';
+        SupabaseBootstrap.currentUser?.email ?? '';
     _loadProfile();
   }
 
@@ -44,7 +45,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   }
 
   Future<void> _loadProfile() async {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) {
       setState(() {
         _isLoading = false;
@@ -74,7 +75,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) return;
 
     final l10n = AppLocalizations.of(context);
@@ -130,7 +131,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
 
     if (_isLoading) {
       return Scaffold(

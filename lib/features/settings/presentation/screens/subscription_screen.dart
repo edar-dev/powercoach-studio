@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 
 import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -27,7 +27,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   Future<void> _loadPlan() async {
-    final user = Supabase.instance.client.auth.currentUser;
+    final user = SupabaseBootstrap.currentUser;
     if (user == null) {
       setState(() {
         _isLoading = false;

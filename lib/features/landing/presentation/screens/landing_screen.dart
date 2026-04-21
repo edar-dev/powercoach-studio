@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/ui/breakpoints.dart';
@@ -21,14 +22,53 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   final GlobalKey _featuresKey = GlobalKey();
-  StreamSubscription<AuthState>? _authSubscription;
+  StreamSubscription<dynamic>? _authSubscription;
+  int _deferredSectionsStage = 0;
+  bool _isLoggedIn = false;
 
   @override
   void initState() {
     super.initState();
-    _authSubscription = Supabase.instance.client.auth.onAuthStateChange.listen(
-      (_) => setState(() {}),
-    );
+    _isLoggedIn = SupabaseBootstrap.currentUser != null;
+    _bindAuthState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      unawaited(_revealDeferredSections());
+    });
+  }
+
+  Future<void> _revealDeferredSections() async {
+    for (var stage = 1; stage <= 3; stage++) {
+      if (!mounted) return;
+      await Future<void>.delayed(const Duration(milliseconds: 16));
+      if (!mounted) return;
+      setState(() {
+        _deferredSectionsStage = stage;
+      });
+    }
+  }
+
+  Future<void> _bindAuthState() async {
+    await SupabaseBootstrap.ensureInitialized();
+    if (!mounted) return;
+    final initialLoggedIn = SupabaseBootstrap.currentUser != null;
+    if (initialLoggedIn != _isLoggedIn) {
+      setState(() {
+        _isLoggedIn = initialLoggedIn;
+      });
+    }
+    try {
+      final stream = Supabase.instance.client.auth.onAuthStateChange;
+      _authSubscription = stream.listen((_) {
+        if (!mounted) return;
+        final nextLoggedIn = SupabaseBootstrap.currentUser != null;
+        if (nextLoggedIn == _isLoggedIn) return;
+        setState(() {
+          _isLoggedIn = nextLoggedIn;
+        });
+      });
+    } catch (_) {
+      // Ignore when auth is not ready yet.
+    }
   }
 
   @override
@@ -41,7 +81,7 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final isLoggedIn = Supabase.instance.client.auth.currentUser != null;
+    final isLoggedIn = _isLoggedIn;
 
     final cs = theme.colorScheme;
     return Scaffold(
@@ -190,35 +230,44 @@ class _LandingScreenState extends State<LandingScreen> {
               },
             ),
           ),
-          // Features
-          SliverToBoxAdapter(
-            key: _featuresKey,
-            child: _FeaturesSection(l10n: l10n),
-          ),
-          // How it works
-          SliverToBoxAdapter(
-            child: _HowItWorksSection(l10n: l10n),
-          ),
-          // CTA – testo e pulsante diversi se l'utente è loggato
-          SliverToBoxAdapter(
-            child: _CtaSection(
-              title: l10n.landingCtaSectionTitle,
-              subtext: isLoggedIn
-                  ? l10n.landingCtaSectionSubtextLoggedIn
-                  : l10n.landingCtaSectionSubtext,
-              buttonLabel: isLoggedIn
-                  ? l10n.landingCtaSectionButtonLoggedIn
-                  : l10n.landingCtaSectionButton,
-              onCta: () {
-                HapticFeedback.mediumImpact();
-                if (isLoggedIn) {
-                  context.push('/profile');
-                } else {
-                  context.push('/login');
-                }
-              },
+          if (_deferredSectionsStage >= 1) ...[
+            // Features
+            SliverToBoxAdapter(
+              key: _featuresKey,
+              child: _FeaturesSection(l10n: l10n),
             ),
-          ),
+          ],
+          if (_deferredSectionsStage >= 2) ...[
+            // How it works
+            SliverToBoxAdapter(
+              child: _HowItWorksSection(l10n: l10n),
+            ),
+          ],
+          if (_deferredSectionsStage >= 3) ...[
+            // CTA – testo e pulsante diversi se l'utente è loggato
+            SliverToBoxAdapter(
+              child: _CtaSection(
+                title: l10n.landingCtaSectionTitle,
+                subtext: isLoggedIn
+                    ? l10n.landingCtaSectionSubtextLoggedIn
+                    : l10n.landingCtaSectionSubtext,
+                buttonLabel: isLoggedIn
+                    ? l10n.landingCtaSectionButtonLoggedIn
+                    : l10n.landingCtaSectionButton,
+                onCta: () {
+                  HapticFeedback.mediumImpact();
+                  if (isLoggedIn) {
+                    context.push('/profile');
+                  } else {
+                    context.push('/login');
+                  }
+                },
+              ),
+            ),
+          ] else
+            const SliverToBoxAdapter(
+              child: SizedBox(height: 24),
+            ),
           const SliverToBoxAdapter(child: SizedBox(height: 48)),
         ],
       ),
