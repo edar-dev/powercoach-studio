@@ -1,0 +1,20 @@
+---
+description: Stop and request explicit approval for high-risk operations
+alwaysApply: true
+---
+
+# Stop Conditions and Required Approvals
+
+Before executing high-risk operations, stop and ask for explicit user approval.
+
+## High-risk operations
+- Database schema changes, destructive SQL, or policy rewrites
+- Breaking API contract changes across modules or external services
+- New dependency additions or major version upgrades
+- Security/authentication flow changes with user-facing impact
+- Destructive git operations (`reset --hard`, force push, history rewrites)
+
+## Required response behavior
+- Explain why the operation is risky
+- Present the minimal safe options
+- Ask for a clear yes/no decision before continuing
