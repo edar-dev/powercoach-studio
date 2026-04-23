@@ -34,6 +34,26 @@ The profile screen reads and writes `public.profiles` (columns: `display_name`, 
   `flutter test integration_test/`  
   Vedi `integration_test/README.md` per requisiti (`.env` con `SUPABASE_URL` e `SUPABASE_ANON_KEY`) e note su Windows (Developer Mode).
 
+## Codemagic CI/CD
+
+The repo includes `codemagic.yaml` with two workflows:
+
+- `pr_quality_gate`: runs on pull requests to `main` and executes:
+  - `flutter pub get`
+  - `flutter analyze`
+  - `flutter test test/`
+- `android_release`: runs on pushes to `main` and tags `v*`, building:
+  - release APK
+  - release AAB
+
+Configure a Codemagic environment group named `powercoach_studio_secrets` with:
+
+- `SUPABASE_URL` (required)
+- `SUPABASE_ANON_KEY` (required)
+- `SENTRY_DSN` (optional)
+- `SENTRY_ENVIRONMENT` (optional)
+- `GYMBLOG_API_URL` (optional)
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.

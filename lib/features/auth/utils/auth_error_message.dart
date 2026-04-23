@@ -8,6 +8,17 @@ String authErrorMessage(AuthException e, AppLocalizations l10n) {
   final code = e.statusCode;
   final codeNum = code is int ? code : int.tryParse(code?.toString() ?? '');
 
+  // Network and DNS failures can bubble up as raw ClientException/SocketException
+  // wrapped inside AuthException; keep the user-facing message clean.
+  if (msg.contains('socketexception') ||
+      msg.contains('clientexception') ||
+      msg.contains('failed host lookup') ||
+      msg.contains('dns') ||
+      msg.contains('timed out') ||
+      msg.contains('connection refused')) {
+    return l10n.loginErrorGeneric;
+  }
+
   if (codeNum == 429) return l10n.loginErrorTooManyRequests;
   if (msg.contains('confirm') || msg.contains('verified') || codeNum == 422) {
     return l10n.loginErrorEmailNotConfirmed;
