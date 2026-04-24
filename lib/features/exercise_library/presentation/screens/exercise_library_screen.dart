@@ -13,6 +13,7 @@ import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/custom_exercise_repository.dart';
+import '../../data/default_exercise_catalog.dart';
 import '../widgets/custom_exercise_edit_dialog.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -113,6 +114,47 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   }
 
   Future<void> _import() async {
+    final l10n = AppLocalizations.of(context);
+    showAppBottomSheet<void>(
+      context: context,
+      title: l10n.exerciseLibraryImportSourceTitle,
+      bodyBuilder: (sheetContext) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.auto_awesome),
+            title: Text(l10n.exerciseLibraryImportSourceDefault),
+            subtitle: Text(l10n.exerciseLibraryImportSourceDefaultSubtitle),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              _importDefaultCatalog();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.upload_file),
+            title: Text(l10n.exerciseLibraryImportSourceCustom),
+            subtitle: Text(l10n.exerciseLibraryImportSourceCustomSubtitle),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              _importCustomFile();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _importDefaultCatalog() async {
+    final l10n = AppLocalizations.of(context);
+    final defaults = buildDefaultExerciseCatalogJson();
+    await _importItems(
+      defaults,
+      l10n: l10n,
+      fallbackMobilityWhenMissing: false,
+    );
+  }
+
+  Future<void> _importCustomFile() async {
     final isMobility = _tabController.index == 1;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
@@ -120,7 +162,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       withData: true,
     );
     if (result == null || result.files.isEmpty || !mounted) return;
-    final l10n = AppLocalizations.of(context);
     final file = result.files.single;
     List<Map<String, dynamic>> items;
     try {
@@ -135,25 +176,35 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       final decoded = jsonDecode(content);
       if (decoded is! List) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context);
           showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
         }
         return;
       }
       items = decoded
           .map((e) => e is Map<String, dynamic> ? e : <String, dynamic>{})
-          .where((e) {
-            final value = e['isMobility'];
-            if (value is bool) return value == isMobility;
-            // Backward compatibility: if missing, assume current tab type.
-            return true;
-          })
           .toList();
     } catch (_) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
       }
       return;
     }
+    if (!mounted) return;
+    final l10n = AppLocalizations.of(context);
+    await _importItems(
+      items,
+      l10n: l10n,
+      fallbackMobilityWhenMissing: isMobility,
+    );
+  }
+
+  Future<void> _importItems(
+    List<Map<String, dynamic>> items, {
+    required AppLocalizations l10n,
+    required bool fallbackMobilityWhenMissing,
+  }) async {
     final importedByLegacyId = <String, String>{};
     var importedCount = 0;
     try {
@@ -173,12 +224,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           }
 
           final parentId = hasParent ? importedByLegacyId[rawParentId] : null;
+          final rawMobility = item['isMobility'];
+          final itemIsMobility =
+              rawMobility is bool ? rawMobility : fallbackMobilityWhenMissing;
           final created = await _exerciseRepo.create(<String, dynamic>{
             'name': name,
             'description': item['description']?.toString(),
             if (parentId != null) 'parentId': parentId,
             'sortOrder': item['sortOrder'],
-            'isMobility': isMobility,
+            'isMobility': itemIsMobility,
           });
           final legacyId = item['id']?.toString();
           if (legacyId != null && legacyId.isNotEmpty) {
@@ -193,11 +247,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           for (final item in unresolvedForNextPass) {
             final name = item['name']?.toString().trim() ?? '';
             if (name.isEmpty) continue;
+            final rawMobility = item['isMobility'];
+            final itemIsMobility =
+                rawMobility is bool ? rawMobility : fallbackMobilityWhenMissing;
             final created = await _exerciseRepo.create(<String, dynamic>{
               'name': name,
               'description': item['description']?.toString(),
               'sortOrder': item['sortOrder'],
-              'isMobility': isMobility,
+              'isMobility': itemIsMobility,
             });
             final legacyId = item['id']?.toString();
             if (legacyId != null && legacyId.isNotEmpty) {

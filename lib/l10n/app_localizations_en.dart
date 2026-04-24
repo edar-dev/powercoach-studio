@@ -301,6 +301,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseLibraryExport => 'Export';
 
   @override
+  String get exerciseLibraryImportSourceTitle => 'Import exercises';
+
+  @override
+  String get exerciseLibraryImportSourceDefault => 'Import default catalog';
+
+  @override
+  String get exerciseLibraryImportSourceDefaultSubtitle =>
+      'Load 100 common exercises with variants and hierarchy.';
+
+  @override
+  String get exerciseLibraryImportSourceCustom => 'Import custom JSON';
+
+  @override
+  String get exerciseLibraryImportSourceCustomSubtitle =>
+      'Load exercises from your own JSON file.';
+
+  @override
   String get exerciseLibraryAddExercise => 'Add exercise';
 
   @override

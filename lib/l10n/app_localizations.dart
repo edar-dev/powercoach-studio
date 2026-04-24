@@ -662,6 +662,36 @@ abstract class AppLocalizations {
   /// **'Export'**
   String get exerciseLibraryExport;
 
+  /// No description provided for @exerciseLibraryImportSourceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import exercises'**
+  String get exerciseLibraryImportSourceTitle;
+
+  /// No description provided for @exerciseLibraryImportSourceDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Import default catalog'**
+  String get exerciseLibraryImportSourceDefault;
+
+  /// No description provided for @exerciseLibraryImportSourceDefaultSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load 100 common exercises with variants and hierarchy.'**
+  String get exerciseLibraryImportSourceDefaultSubtitle;
+
+  /// No description provided for @exerciseLibraryImportSourceCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Import custom JSON'**
+  String get exerciseLibraryImportSourceCustom;
+
+  /// No description provided for @exerciseLibraryImportSourceCustomSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Load exercises from your own JSON file.'**
+  String get exerciseLibraryImportSourceCustomSubtitle;
+
   /// No description provided for @exerciseLibraryAddExercise.
   ///
   /// In en, this message translates to:
