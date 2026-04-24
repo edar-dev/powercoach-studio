@@ -41,9 +41,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     await SupabaseBootstrap.ensureInitialized();
+    if (!mounted) return;
 
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     setState(() => _isLoading = true);
 
     try {
@@ -53,7 +52,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       );
 
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -68,7 +68,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -82,7 +82,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

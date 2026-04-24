@@ -36,9 +36,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     await SupabaseBootstrap.ensureInitialized();
+    if (!mounted) return;
 
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     setState(() => _isLoading = true);
 
     try {
@@ -47,7 +46,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
 
       if (!mounted) return;
-      final cs = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final cs = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -62,7 +62,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;
-      final cs = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final cs = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -76,7 +77,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      final cs = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final cs = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

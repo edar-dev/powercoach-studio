@@ -40,11 +40,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     await SupabaseBootstrap.ensureInitialized();
+    if (!mounted) return;
 
-    final l10n = AppLocalizations.of(context);
     setState(() => _isLoading = true);
 
-    final theme = Theme.of(context);
     try {
       await Supabase.instance.client.auth.signInWithPassword(
         email: _emailController.text.trim(),
@@ -52,7 +51,8 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -67,7 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -81,7 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      final colorScheme = theme.colorScheme;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
