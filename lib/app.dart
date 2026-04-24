@@ -181,15 +181,15 @@ final _goRouter = GoRouter(
         ),
         GoRoute(
           path: 'library',
-          builder: (_, __) => const WorkoutPlaceholderScreen(title: 'Library'),
+          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutLibraryTitle),
         ),
         GoRoute(
           path: 'diary',
-          builder: (_, __) => const WorkoutPlaceholderScreen(title: 'Diary'),
+          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutDiaryTitle),
         ),
         GoRoute(
           path: 'stats',
-          builder: (_, __) => const WorkoutPlaceholderScreen(title: 'Stats'),
+          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutStatsTitle),
         ),
       ],
     ),

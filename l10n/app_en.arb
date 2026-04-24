@@ -302,5 +302,65 @@
       }
     }
   },
-  "settingsSyncRetryFailed": "Retry failed operations"
+  "settingsSyncRetryFailed": "Retry failed operations",
+  "dashboardTitle": "Dashboard",
+  "dashboardWeeklyProgress": "Weekly Progress",
+  "dashboardPlansUpdatedThisWeek": "Plans Updated This Week",
+  "dashboardTotalClients": "Total Clients",
+  "dashboardActivePrograms": "Active Programs",
+  "dashboardCreateProgram": "Create Program",
+  "dashboardTodaySchedule": "Today's Schedule",
+  "dashboardSeeAll": "See All",
+  "dashboardNoScheduleToday": "No schedule items for today.",
+  "dashboardNoScheduledWorkoutsYet": "No scheduled workouts yet.",
+  "dashboardUnknownClient": "Unknown client",
+  "dashboardUntitledWorkout": "Untitled workout",
+  "dashboardWorkoutBuilder": "Workout Builder",
+  "dashboardSessionTitle": "Session",
+  "dashboardDetailHint": "Details are based on the selected workout plan start date.",
+  "customerEditProfile": "Edit Profile",
+  "customerAssignWorkout": "Assign Workout",
+  "customerGoalLabel": "Goal",
+  "customerCurrentWeight": "Current Weight",
+  "customerMuscleMass": "Muscle Mass",
+  "customerWorkoutPlans": "Workout plans",
+  "customerViewAll": "View all",
+  "customerNoWorkoutPlansYet": "No workout plans yet",
+  "customerUnnamedPlan": "Unnamed plan",
+  "workoutsTitle": "Workouts",
+  "workoutsNoWorkoutsYet": "No workouts yet",
+  "workoutsAssignHint": "Assign a workout to this customer from the customer detail screen.",
+  "workoutLibraryTitle": "Library",
+  "workoutDiaryTitle": "Diary",
+  "workoutStatsTitle": "Stats",
+  "placeholderComingSoon": "Coming soon",
+  "placeholderSectionNotImplemented": "This section is not yet implemented.",
+  "placeholderBackToBuilder": "Back to Builder",
+  "customerDetailTitle": "Customer Detail",
+  "actionsTitle": "Actions",
+  "updatedDaysAgo": "Updated {count}d ago",
+  "@updatedDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedHoursAgo": "Updated {count}h ago",
+  "@updatedHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedMinutesAgo": "Updated {count}m ago",
+  "@updatedMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedJustNow": "Just now"
 }

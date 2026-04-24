@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -249,7 +248,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           },
         ),
         title: Text(
-          'Customer Detail',
+          l10n.customerDetailTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: colorScheme.onSurface,
@@ -279,7 +278,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               // More menu: edit / delete
               showAppBottomSheet<void>(
                 context: context,
-                title: 'Actions',
+                title: l10n.actionsTitle,
                 bodyBuilder: (sheetContext) => Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -327,6 +326,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     ColorScheme colorScheme,
     String goalLabel,
   ) {
+    final l10n = AppLocalizations.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Column(
@@ -384,7 +384,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                         borderRadius: BorderRadius.circular(999),
                       ),
                       child: Text(
-                        'Goal: $goalLabel',
+                        '${l10n.customerGoalLabel}: $goalLabel',
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: StitchM3Theme.accent,
                           fontWeight: FontWeight.w700,
@@ -399,7 +399,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                         child: OutlinedButton.icon(
                           onPressed: () => context.push('/customers/${c.id}/edit'),
                           icon: const Icon(Icons.edit, size: 20),
-                          label: const Text('Edit Profile'),
+                          label: Text(l10n.customerEditProfile),
                           style: OutlinedButton.styleFrom(
                             backgroundColor: colorScheme.surfaceContainerHighest,
                             foregroundColor: colorScheme.onSurface,
@@ -415,7 +415,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                         child: FilledButton.icon(
                           onPressed: () => context.push('/workouts/editor?customerId=${c.id}'),
                           icon: const Icon(Icons.add_task, size: 20),
-                          label: const Text('Assign Workout'),
+                          label: Text(l10n.customerAssignWorkout),
                           style: FilledButton.styleFrom(
                             backgroundColor: StitchM3Theme.accent,
                             foregroundColor: Colors.white,
@@ -437,11 +437,11 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               Row(
                 children: [
                   Expanded(
-                    child: _statCard(context, 'Current Weight', c.weightKg != null ? '${c.weightKg}' : '—', 'kg', '+1.2%'),
+                    child: _statCard(context, l10n.customerCurrentWeight, c.weightKg != null ? '${c.weightKg}' : '—', 'kg', '+1.2%'),
                   ),
                   const SizedBox(width: 16),
                   Expanded(
-                    child: _statCard(context, 'Muscle Mass', '—', 'kg', '+0.5%'),
+                    child: _statCard(context, l10n.customerMuscleMass, '—', 'kg', '+0.5%'),
                   ),
                 ],
               ),
@@ -536,14 +536,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                     cancelLabel: l10n.customerCancel,
                     destructive: true,
                   );
-                  if (!confirm || !mounted) return;
+                  if (!confirm || !context.mounted) return;
                   try {
                     await _measurementRepo.delete(widget.customerId, m.id);
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     showAppSnackBar(context, content: Text(l10n.measurementDeleted));
                     _loadMeasurements();
                   } catch (_) {
-                    if (!mounted) return;
+                    if (!context.mounted) return;
                     showAppSnackBar(
                       context,
                       content: Text(l10n.measurementDeleteError),
@@ -708,14 +708,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                             cancelLabel: l10n.customerCancel,
                             destructive: true,
                           );
-                          if (!confirm || !mounted) return;
+                          if (!confirm || !context.mounted) return;
                           try {
                             await _recordRepo.delete(widget.customerId, r.id);
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             showAppSnackBar(context, content: Text(l10n.recordDeleted));
                             _loadRecords();
                           } catch (_) {
-                            if (!mounted) return;
+                            if (!context.mounted) return;
                             showAppSnackBar(
                               context,
                               content: Text(l10n.recordDeleteError),
@@ -844,6 +844,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     ThemeData theme,
     ColorScheme colorScheme,
   ) {
+    final l10n = AppLocalizations.of(context);
     const int maxRecent = 5;
     final recentPlans = _workoutPlans.take(maxRecent).toList();
 
@@ -877,7 +878,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  'Workout plans',
+                  l10n.customerWorkoutPlans,
                   style: theme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: colorScheme.onSurface,
@@ -892,7 +893,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                       if (mounted) _loadWorkoutPlans();
                     });
                   },
-                  child: Text('View all', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+                  child: Text(l10n.customerViewAll, style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
                 ),
             ],
           ),
@@ -908,7 +909,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               child: Column(
                 children: [
                   Text(
-                    'No workout plans yet',
+                    l10n.customerNoWorkoutPlansYet,
                     style: theme.textTheme.bodyLarge?.copyWith(color: colorScheme.onSurfaceVariant),
                   ),
                   const SizedBox(height: 16),
@@ -920,7 +921,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                       });
                     },
                     icon: const Icon(Icons.add_task, size: 20),
-                    label: const Text('Assign workout'),
+                    label: Text(l10n.customerAssignWorkout),
                     style: FilledButton.styleFrom(
                       backgroundColor: StitchM3Theme.accent,
                       foregroundColor: Colors.white,
@@ -960,7 +961,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  plan.name.isNotEmpty ? plan.name : 'Unnamed plan',
+                                  plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
                                   style: theme.textTheme.titleSmall?.copyWith(
                                     fontWeight: FontWeight.w700,
                                     color: colorScheme.onSurface,
@@ -968,7 +969,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  _formatPlanUpdated(plan.updatedAt),
+                                  _formatPlanUpdated(l10n, plan.updatedAt),
                                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                                 ),
                               ],
@@ -981,9 +982,9 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                             onSelected: (value) {
                               HapticFeedback.mediumImpact();
                               if (value == 'follow_up') {
-                                _createFollowUpWorkout(context, plan);
+                                _createFollowUpWorkout(plan);
                               } else if (value == 'delete') {
-                                _deletePlan(context, plan);
+                                _deletePlan(plan);
                               }
                             },
                             itemBuilder: (context) => [
@@ -1010,16 +1011,17 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     );
   }
 
-  static String _formatPlanUpdated(DateTime updatedAt) {
+  static String _formatPlanUpdated(AppLocalizations l10n, DateTime updatedAt) {
     final now = DateTime.now();
     final diff = now.difference(updatedAt);
-    if (diff.inDays > 0) return 'Updated ${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
-    if (diff.inHours > 0) return 'Updated ${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return 'Updated ${diff.inMinutes}m ago';
-    return 'Just now';
+    if (diff.inDays > 0) return l10n.updatedDaysAgo(diff.inDays);
+    if (diff.inHours > 0) return l10n.updatedHoursAgo(diff.inHours);
+    if (diff.inMinutes > 0) return l10n.updatedMinutesAgo(diff.inMinutes);
+    return l10n.updatedJustNow;
   }
 
-  Future<void> _createFollowUpWorkout(BuildContext context, WorkoutPlanApiModel plan) async {
+  Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
     try {
       final routine = planDataToRoutine(plan.planData);
       final numWeeks = routine.weeks.isEmpty ? 1 : routine.weeks.length;
@@ -1027,7 +1029,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       final emptyPlanData = jsonEncode(WorkoutRoutine.empty().toJson());
       await _planRepo.create(
         customerId: widget.customerId,
-        name: AppLocalizations.of(context).workoutNewPlanName,
+        name: l10n.workoutNewPlanName,
         planDataJson: emptyPlanData,
         initialWeekNumber: newStartingWeek,
       );
@@ -1035,7 +1037,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       _loadWorkoutPlans();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).workoutDuplicatedMessage),
+          content: Text(l10n.workoutDuplicatedMessage),
           behavior: SnackBarBehavior.floating,
           backgroundColor: StitchM3Theme.accent,
         ),
@@ -1052,7 +1054,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     }
   }
 
-  Future<void> _deletePlan(BuildContext context, WorkoutPlanApiModel plan) async {
+  Future<void> _deletePlan(WorkoutPlanApiModel plan) async {
     final l10n = AppLocalizations.of(context);
     final confirmed = await showAppConfirmDialog(
       context: context,

@@ -817,4 +817,133 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsSyncRetryFailed => 'Riprova operazioni fallite';
+
+  @override
+  String get dashboardTitle => 'Dashboard';
+
+  @override
+  String get dashboardWeeklyProgress => 'Progressi settimanali';
+
+  @override
+  String get dashboardPlansUpdatedThisWeek =>
+      'Piani aggiornati questa settimana';
+
+  @override
+  String get dashboardTotalClients => 'Clienti totali';
+
+  @override
+  String get dashboardActivePrograms => 'Programmi attivi';
+
+  @override
+  String get dashboardCreateProgram => 'Crea programma';
+
+  @override
+  String get dashboardTodaySchedule => 'Programma di oggi';
+
+  @override
+  String get dashboardSeeAll => 'Vedi tutto';
+
+  @override
+  String get dashboardNoScheduleToday =>
+      'Nessun elemento in programma per oggi.';
+
+  @override
+  String get dashboardNoScheduledWorkoutsYet =>
+      'Nessun allenamento pianificato.';
+
+  @override
+  String get dashboardUnknownClient => 'Cliente sconosciuto';
+
+  @override
+  String get dashboardUntitledWorkout => 'Workout senza titolo';
+
+  @override
+  String get dashboardWorkoutBuilder => 'Builder workout';
+
+  @override
+  String get dashboardSessionTitle => 'Sessione';
+
+  @override
+  String get dashboardDetailHint =>
+      'I dettagli si basano sulla data di inizio del piano selezionato.';
+
+  @override
+  String get customerEditProfile => 'Modifica profilo';
+
+  @override
+  String get customerAssignWorkout => 'Assegna workout';
+
+  @override
+  String get customerGoalLabel => 'Obiettivo';
+
+  @override
+  String get customerCurrentWeight => 'Peso attuale';
+
+  @override
+  String get customerMuscleMass => 'Massa muscolare';
+
+  @override
+  String get customerWorkoutPlans => 'Piani di allenamento';
+
+  @override
+  String get customerViewAll => 'Vedi tutti';
+
+  @override
+  String get customerNoWorkoutPlansYet => 'Nessun piano di allenamento';
+
+  @override
+  String get customerUnnamedPlan => 'Piano senza nome';
+
+  @override
+  String get workoutsTitle => 'Workout';
+
+  @override
+  String get workoutsNoWorkoutsYet => 'Nessun workout';
+
+  @override
+  String get workoutsAssignHint =>
+      'Assegna un workout a questo cliente dalla schermata dettaglio cliente.';
+
+  @override
+  String get workoutLibraryTitle => 'Libreria';
+
+  @override
+  String get workoutDiaryTitle => 'Diario';
+
+  @override
+  String get workoutStatsTitle => 'Statistiche';
+
+  @override
+  String get placeholderComingSoon => 'In arrivo';
+
+  @override
+  String get placeholderSectionNotImplemented =>
+      'Questa sezione non è ancora implementata.';
+
+  @override
+  String get placeholderBackToBuilder => 'Torna al builder';
+
+  @override
+  String get customerDetailTitle => 'Dettaglio cliente';
+
+  @override
+  String get actionsTitle => 'Azioni';
+
+  @override
+  String updatedDaysAgo(int count) {
+    return 'Aggiornato ${count}g fa';
+  }
+
+  @override
+  String updatedHoursAgo(int count) {
+    return 'Aggiornato ${count}h fa';
+  }
+
+  @override
+  String updatedMinutesAgo(int count) {
+    return 'Aggiornato ${count}m fa';
+  }
+
+  @override
+  String get updatedJustNow => 'Appena adesso';
 }

@@ -63,6 +63,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -81,7 +82,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           },
         ),
         title: Text(
-          'Workouts',
+          l10n.workoutsTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
@@ -107,7 +108,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                         const SizedBox(height: 24),
                         FilledButton(
                           onPressed: _loadPlans,
-                          child: const Text('Retry'),
+                          child: Text(l10n.customersRetry),
                         ),
                       ],
                     ),
@@ -123,7 +124,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                             Icon(Icons.fitness_center, size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
                             const SizedBox(height: 16),
                             Text(
-                              'No workouts yet',
+                              l10n.workoutsNoWorkoutsYet,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w700,
                                 color: cs.onSurface,
@@ -131,7 +132,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              'Assign a workout to this customer from the customer detail screen.',
+                              l10n.workoutsAssignHint,
                               style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                               textAlign: TextAlign.center,
                             ),
@@ -146,14 +147,13 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                         itemCount: _plans.length,
                         itemBuilder: (context, index) {
                           final plan = _plans[index];
-                          final subtitle = _formatPlanSubtitle(plan);
                           return Padding(
                             padding: EdgeInsets.only(bottom: index < _plans.length - 1 ? 12 : 0),
                             child: _WorkoutListCard(
                               theme: theme,
                               cs: cs,
-                              title: plan.name.isNotEmpty ? plan.name : 'Unnamed plan',
-                              subtitle: subtitle,
+                              title: plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
+                              subtitle: _formatPlanSubtitle(l10n, plan),
                               onTap: () {
                                 HapticFeedback.mediumImpact();
                                 context.push(
@@ -177,21 +177,21 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                 if (mounted) _loadPlans();
               },
               icon: const Icon(Icons.add),
-              label: const Text('Assign Workout'),
+              label: Text(l10n.customerAssignWorkout),
               backgroundColor: StitchM3Theme.accent,
             )
           : null,
     );
   }
 
-  String _formatPlanSubtitle(WorkoutPlanApiModel plan) {
+  String _formatPlanSubtitle(AppLocalizations l10n, WorkoutPlanApiModel plan) {
     final updated = plan.updatedAt;
     final now = DateTime.now();
     final diff = now.difference(updated);
-    if (diff.inDays > 0) return 'Updated ${diff.inDays} day${diff.inDays == 1 ? '' : 's'} ago';
-    if (diff.inHours > 0) return 'Updated ${diff.inHours}h ago';
-    if (diff.inMinutes > 0) return 'Updated ${diff.inMinutes}m ago';
-    return 'Just now';
+    if (diff.inDays > 0) return l10n.updatedDaysAgo(diff.inDays);
+    if (diff.inHours > 0) return l10n.updatedHoursAgo(diff.inHours);
+    if (diff.inMinutes > 0) return l10n.updatedMinutesAgo(diff.inMinutes);
+    return l10n.updatedJustNow;
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 import '../../../customers/data/customer_repository.dart';
+import '../../../workouts/data/workout_plan_api_model.dart';
+import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 
@@ -17,7 +20,8 @@ class CoachDashboardScreen extends StatefulWidget {
 
 class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   final CustomerRepository _customerRepo = CustomerRepository();
-  int _clientCount = 0;
+  final WorkoutPlanRepository _workoutPlanRepo = WorkoutPlanRepository();
+  _DashboardStats _stats = const _DashboardStats.empty();
   bool _loadingStats = true;
 
   @override
@@ -32,17 +36,51 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   Future<void> _loadStats() async {
     try {
       final customers = await _customerRepo.getAll();
-      final count = customers.length;
+      final plans = await _workoutPlanRepo.getAll();
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      final customerById = <String, String>{
+        for (final c in customers) c.id: c.name,
+      };
+      final weekRange = _currentWeekRange(DateTime.now());
+      final weeklyUpdates = plans.where((plan) {
+        final updatedDay = DateTime(
+          plan.updatedAt.year,
+          plan.updatedAt.month,
+          plan.updatedAt.day,
+        );
+        return !updatedDay.isBefore(weekRange.start) &&
+            updatedDay.isBefore(weekRange.endExclusive);
+      }).length;
+      final todaySchedule = plans
+          .map((plan) {
+            final startDate = _planStartDate(plan);
+            if (startDate == null) return null;
+            if (!_isSameDay(startDate, DateTime.now())) return null;
+            return _TodayScheduleItem(
+              date: startDate,
+              clientName: customerById[plan.customerId] ?? l10n.dashboardUnknownClient,
+              programName: plan.name.trim().isEmpty ? l10n.dashboardUntitledWorkout : plan.name,
+            );
+          })
+          .whereType<_TodayScheduleItem>()
+          .toList()
+        ..sort((a, b) => a.clientName.compareTo(b.clientName));
       if (mounted) {
         setState(() {
-          _clientCount = count;
+          _stats = _DashboardStats(
+            clientCount: customers.length,
+            activePrograms: plans.length,
+            weeklyUpdates: weeklyUpdates,
+            todaySchedule: todaySchedule,
+          );
           _loadingStats = false;
         });
       }
     } catch (_) {
       if (mounted) {
         setState(() {
-          _clientCount = 0;
+          _stats = const _DashboardStats.empty();
           _loadingStats = false;
         });
       }
@@ -53,6 +91,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
@@ -61,7 +100,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
         scrolledUnderElevation: 1,
         backgroundColor: cs.surface,
         title: Text(
-          'Dashboard',
+          l10n.dashboardTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
@@ -109,7 +148,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                         Icon(Icons.trending_up, size: 20, color: StitchM3Theme.accent),
                         const SizedBox(width: 8),
                         Text(
-                          'Weekly Progress',
+                          l10n.dashboardWeeklyProgress,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: cs.onSurfaceVariant,
@@ -119,14 +158,14 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      '88',
+                      _loadingStats ? '–' : '${_stats.weeklyUpdates}',
                       style: theme.textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                       ),
                     ),
                     Text(
-                      'Workouts This Week',
+                      l10n.dashboardPlansUpdatedThisWeek,
                       style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
                   ],
@@ -140,8 +179,8 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                     child: _StatCard(
                       theme: theme,
                       cs: cs,
-                      value: _loadingStats ? '–' : '$_clientCount',
-                      label: 'Total Clients',
+                      value: _loadingStats ? '–' : '${_stats.clientCount}',
+                      label: l10n.dashboardTotalClients,
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -149,8 +188,8 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                     child: _StatCard(
                       theme: theme,
                       cs: cs,
-                      value: '15',
-                      label: 'Active Programs',
+                      value: _loadingStats ? '–' : '${_stats.activePrograms}',
+                      label: l10n.dashboardActivePrograms,
                     ),
                   ),
                 ],
@@ -166,7 +205,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                         context.push('/customers/new');
                       },
                       icon: const Icon(Icons.person_add, size: 20),
-                      label: const Text('Add Client'),
+                      label: Text(l10n.customersAddCustomer),
                       style: FilledButton.styleFrom(
                         backgroundColor: StitchM3Theme.accent,
                         foregroundColor: Colors.white,
@@ -183,7 +222,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                         context.push('/workouts/builder');
                       },
                       icon: const Icon(Icons.fitness_center, size: 20),
-                      label: const Text('Create Program'),
+                      label: Text(l10n.dashboardCreateProgram),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: StitchM3Theme.accent,
                         side: const BorderSide(color: StitchM3Theme.accent),
@@ -200,7 +239,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Today's Schedule",
+                    l10n.dashboardTodaySchedule,
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: cs.onSurface,
@@ -211,12 +250,12 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       HapticFeedback.mediumImpact();
                       context.push('/dashboard/schedule');
                     },
-                    child: Text('See All', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w600)),
+                    child: Text(l10n.dashboardSeeAll, style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w600)),
                   ),
                 ],
               ),
               const SizedBox(height: 12),
-              ..._todayScheduleItems(context, theme, cs),
+              ..._todayScheduleItems(context, theme, cs, _stats.todaySchedule),
             ],
           ),
         ),
@@ -224,30 +263,54 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     );
   }
 
-  List<Widget> _todayScheduleItems(BuildContext context, ThemeData theme, ColorScheme cs) {
-    const items = [
-      ('08:00', 'AM', 'Marcus Wright', 'Hypertrophy - Legs'),
-      ('10:30', 'AM', 'Sarah Jenkins', 'Mobility & Core'),
-      ('02:00', 'PM', 'David Chen', 'Push Day (A)'),
-      ('05:15', 'PM', 'Emma Thompson', 'HIIT - Full Body'),
-    ];
-    return items.map((e) {
-      final (time, period, client, program) = e;
+  List<Widget> _todayScheduleItems(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme cs,
+    List<_TodayScheduleItem> schedule,
+  ) {
+    final l10n = AppLocalizations.of(context);
+    if (_loadingStats) {
+      return [
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ];
+    }
+    if (schedule.isEmpty) {
+      return [
+        _SectionCard(
+          child: Text(
+            l10n.dashboardNoScheduleToday,
+            style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+          ),
+        ),
+      ];
+    }
+    return schedule.take(4).map((item) {
+      final dateLabel = DateFormat('dd MMM').format(item.date).toUpperCase();
+      final weekdayLabel = DateFormat('EEE').format(item.date).toUpperCase();
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: _ScheduleCard(
           theme: theme,
           cs: cs,
-          time: time,
-          period: period,
-          clientName: client,
-          programName: program,
+          time: dateLabel,
+          period: weekdayLabel,
+          clientName: item.clientName,
+          programName: item.programName,
           onTap: () {
             HapticFeedback.mediumImpact();
             context.push(
               Uri(
                 path: '/dashboard/schedule/detail',
-                queryParameters: {'time': time, 'period': period, 'client': client, 'program': program},
+                queryParameters: {
+                  'time': dateLabel,
+                  'period': weekdayLabel,
+                  'client': item.clientName,
+                  'program': item.programName,
+                },
               ).toString(),
             );
           },
@@ -255,6 +318,59 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       );
     }).toList();
   }
+
+  ({DateTime start, DateTime endExclusive}) _currentWeekRange(DateTime now) {
+    final dayStart = DateTime(now.year, now.month, now.day);
+    final weekStart = dayStart.subtract(Duration(days: now.weekday - DateTime.monday));
+    return (start: weekStart, endExclusive: weekStart.add(const Duration(days: 7)));
+  }
+
+  DateTime? _planStartDate(WorkoutPlanApiModel plan) {
+    try {
+      final routine = planDataToRoutine(plan.planData);
+      final startDate = routine.startDate;
+      if (startDate == null) return null;
+      return DateTime(startDate.year, startDate.month, startDate.day);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+}
+
+class _DashboardStats {
+  const _DashboardStats({
+    required this.clientCount,
+    required this.activePrograms,
+    required this.weeklyUpdates,
+    required this.todaySchedule,
+  });
+
+  const _DashboardStats.empty()
+      : clientCount = 0,
+        activePrograms = 0,
+        weeklyUpdates = 0,
+        todaySchedule = const [];
+
+  final int clientCount;
+  final int activePrograms;
+  final int weeklyUpdates;
+  final List<_TodayScheduleItem> todaySchedule;
+}
+
+class _TodayScheduleItem {
+  const _TodayScheduleItem({
+    required this.date,
+    required this.clientName,
+    required this.programName,
+  });
+
+  final DateTime date;
+  final String clientName;
+  final String programName;
 }
 
 class _SectionCard extends StatelessWidget {
@@ -416,7 +532,7 @@ class _DashboardDrawer extends StatelessWidget {
           children: [
             ListTile(
               leading: const Icon(Icons.dashboard_outlined),
-              title: const Text('Dashboard'),
+              title: Text(AppLocalizations.of(context).dashboardTitle),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.go('/dashboard');
@@ -424,7 +540,7 @@ class _DashboardDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.people_outline),
-              title: const Text('Customers'),
+              title: Text(AppLocalizations.of(context).customersTitle),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.go('/customers');
@@ -432,7 +548,7 @@ class _DashboardDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center),
-              title: const Text('Workout Builder'),
+              title: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.push('/workouts/builder');
@@ -449,7 +565,7 @@ class _DashboardDrawer extends StatelessWidget {
             const Divider(),
             ListTile(
               leading: const Icon(Icons.person_outline),
-              title: const Text('Profile'),
+              title: Text(AppLocalizations.of(context).headerProfile),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.push('/profile');
@@ -457,7 +573,7 @@ class _DashboardDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.settings_outlined),
-              title: const Text('Settings'),
+              title: Text(AppLocalizations.of(context).settingsTitle),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.push('/settings');

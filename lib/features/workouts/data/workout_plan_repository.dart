@@ -12,6 +12,13 @@ class WorkoutPlanRepository {
 
   final OfflineRepositorySupport _offline;
 
+  Future<List<WorkoutPlanApiModel>> getAll() async {
+    final local = await _offline.readLocalEntities(OfflineEntityType.workoutPlan);
+    final models = local.map(WorkoutPlanApiModel.fromJson).toList();
+    _sortPlansByStartDateDesc(models);
+    return models;
+  }
+
   Future<List<WorkoutPlanApiModel>> getByCustomerId(String customerId) async {
     final local = await _offline.readLocalEntities(
       OfflineEntityType.workoutPlan,

@@ -302,5 +302,65 @@
       }
     }
   },
-  "settingsSyncRetryFailed": "Riprova operazioni fallite"
+  "settingsSyncRetryFailed": "Riprova operazioni fallite",
+  "dashboardTitle": "Dashboard",
+  "dashboardWeeklyProgress": "Progressi settimanali",
+  "dashboardPlansUpdatedThisWeek": "Piani aggiornati questa settimana",
+  "dashboardTotalClients": "Clienti totali",
+  "dashboardActivePrograms": "Programmi attivi",
+  "dashboardCreateProgram": "Crea programma",
+  "dashboardTodaySchedule": "Programma di oggi",
+  "dashboardSeeAll": "Vedi tutto",
+  "dashboardNoScheduleToday": "Nessun elemento in programma per oggi.",
+  "dashboardNoScheduledWorkoutsYet": "Nessun allenamento pianificato.",
+  "dashboardUnknownClient": "Cliente sconosciuto",
+  "dashboardUntitledWorkout": "Workout senza titolo",
+  "dashboardWorkoutBuilder": "Builder workout",
+  "dashboardSessionTitle": "Sessione",
+  "dashboardDetailHint": "I dettagli si basano sulla data di inizio del piano selezionato.",
+  "customerEditProfile": "Modifica profilo",
+  "customerAssignWorkout": "Assegna workout",
+  "customerGoalLabel": "Obiettivo",
+  "customerCurrentWeight": "Peso attuale",
+  "customerMuscleMass": "Massa muscolare",
+  "customerWorkoutPlans": "Piani di allenamento",
+  "customerViewAll": "Vedi tutti",
+  "customerNoWorkoutPlansYet": "Nessun piano di allenamento",
+  "customerUnnamedPlan": "Piano senza nome",
+  "workoutsTitle": "Workout",
+  "workoutsNoWorkoutsYet": "Nessun workout",
+  "workoutsAssignHint": "Assegna un workout a questo cliente dalla schermata dettaglio cliente.",
+  "workoutLibraryTitle": "Libreria",
+  "workoutDiaryTitle": "Diario",
+  "workoutStatsTitle": "Statistiche",
+  "placeholderComingSoon": "In arrivo",
+  "placeholderSectionNotImplemented": "Questa sezione non è ancora implementata.",
+  "placeholderBackToBuilder": "Torna al builder",
+  "customerDetailTitle": "Dettaglio cliente",
+  "actionsTitle": "Azioni",
+  "updatedDaysAgo": "Aggiornato {count}g fa",
+  "@updatedDaysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedHoursAgo": "Aggiornato {count}h fa",
+  "@updatedHoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedMinutesAgo": "Aggiornato {count}m fa",
+  "@updatedMinutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "updatedJustNow": "Appena adesso"
 }

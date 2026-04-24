@@ -815,4 +815,130 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsSyncRetryFailed => 'Retry failed operations';
+
+  @override
+  String get dashboardTitle => 'Dashboard';
+
+  @override
+  String get dashboardWeeklyProgress => 'Weekly Progress';
+
+  @override
+  String get dashboardPlansUpdatedThisWeek => 'Plans Updated This Week';
+
+  @override
+  String get dashboardTotalClients => 'Total Clients';
+
+  @override
+  String get dashboardActivePrograms => 'Active Programs';
+
+  @override
+  String get dashboardCreateProgram => 'Create Program';
+
+  @override
+  String get dashboardTodaySchedule => 'Today\'s Schedule';
+
+  @override
+  String get dashboardSeeAll => 'See All';
+
+  @override
+  String get dashboardNoScheduleToday => 'No schedule items for today.';
+
+  @override
+  String get dashboardNoScheduledWorkoutsYet => 'No scheduled workouts yet.';
+
+  @override
+  String get dashboardUnknownClient => 'Unknown client';
+
+  @override
+  String get dashboardUntitledWorkout => 'Untitled workout';
+
+  @override
+  String get dashboardWorkoutBuilder => 'Workout Builder';
+
+  @override
+  String get dashboardSessionTitle => 'Session';
+
+  @override
+  String get dashboardDetailHint =>
+      'Details are based on the selected workout plan start date.';
+
+  @override
+  String get customerEditProfile => 'Edit Profile';
+
+  @override
+  String get customerAssignWorkout => 'Assign Workout';
+
+  @override
+  String get customerGoalLabel => 'Goal';
+
+  @override
+  String get customerCurrentWeight => 'Current Weight';
+
+  @override
+  String get customerMuscleMass => 'Muscle Mass';
+
+  @override
+  String get customerWorkoutPlans => 'Workout plans';
+
+  @override
+  String get customerViewAll => 'View all';
+
+  @override
+  String get customerNoWorkoutPlansYet => 'No workout plans yet';
+
+  @override
+  String get customerUnnamedPlan => 'Unnamed plan';
+
+  @override
+  String get workoutsTitle => 'Workouts';
+
+  @override
+  String get workoutsNoWorkoutsYet => 'No workouts yet';
+
+  @override
+  String get workoutsAssignHint =>
+      'Assign a workout to this customer from the customer detail screen.';
+
+  @override
+  String get workoutLibraryTitle => 'Library';
+
+  @override
+  String get workoutDiaryTitle => 'Diary';
+
+  @override
+  String get workoutStatsTitle => 'Stats';
+
+  @override
+  String get placeholderComingSoon => 'Coming soon';
+
+  @override
+  String get placeholderSectionNotImplemented =>
+      'This section is not yet implemented.';
+
+  @override
+  String get placeholderBackToBuilder => 'Back to Builder';
+
+  @override
+  String get customerDetailTitle => 'Customer Detail';
+
+  @override
+  String get actionsTitle => 'Actions';
+
+  @override
+  String updatedDaysAgo(int count) {
+    return 'Updated ${count}d ago';
+  }
+
+  @override
+  String updatedHoursAgo(int count) {
+    return 'Updated ${count}h ago';
+  }
+
+  @override
+  String updatedMinutesAgo(int count) {
+    return 'Updated ${count}m ago';
+  }
+
+  @override
+  String get updatedJustNow => 'Just now';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 
 /// Placeholder for Workout Builder bottom nav: Library, Diary, Stats,
@@ -25,6 +26,7 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +63,7 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
               Icon(Icons.construction, size: 64, color: cs.onSurfaceVariant),
               const SizedBox(height: 24),
               Text(
-                'Coming soon',
+                l10n.placeholderComingSoon,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.w700,
                   color: cs.onSurface,
@@ -69,7 +71,7 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'This section is not yet implemented.',
+                l10n.placeholderSectionNotImplemented,
                 style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
                 textAlign: TextAlign.center,
               ),
@@ -80,7 +82,7 @@ class WorkoutPlaceholderScreen extends StatelessWidget {
                   context.go(backRoute ?? '/workouts/builder');
                 },
                 icon: const Icon(Icons.arrow_back, size: 20),
-                label: Text(backLabel ?? 'Back to Builder'),
+                label: Text(backLabel ?? l10n.placeholderBackToBuilder),
                 style: FilledButton.styleFrom(
                   backgroundColor: StitchM3Theme.accent,
                   foregroundColor: Colors.white,

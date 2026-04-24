@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 
 /// Dettaglio di una sessione dello schedule – route /dashboard/schedule/detail?time=...&period=...&client=...&program=...
@@ -12,6 +13,7 @@ class ScheduleDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
     final uri = GoRouterState.of(context).uri;
     final time = uri.queryParameters['time'] ?? '–';
     final period = uri.queryParameters['period'] ?? '';
@@ -31,7 +33,7 @@ class ScheduleDetailScreen extends StatelessWidget {
           },
         ),
         title: Text(
-          'Session',
+          l10n.dashboardSessionTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
@@ -63,7 +65,7 @@ class ScheduleDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             Text(
-              'Session details will appear here when the schedule API is connected.',
+              l10n.dashboardDetailHint,
               style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
               textAlign: TextAlign.center,
             ),

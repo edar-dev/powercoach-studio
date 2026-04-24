@@ -1617,6 +1617,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Retry failed operations'**
   String get settingsSyncRetryFailed;
+
+  /// No description provided for @dashboardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboardTitle;
+
+  /// No description provided for @dashboardWeeklyProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Progress'**
+  String get dashboardWeeklyProgress;
+
+  /// No description provided for @dashboardPlansUpdatedThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans Updated This Week'**
+  String get dashboardPlansUpdatedThisWeek;
+
+  /// No description provided for @dashboardTotalClients.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Clients'**
+  String get dashboardTotalClients;
+
+  /// No description provided for @dashboardActivePrograms.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Programs'**
+  String get dashboardActivePrograms;
+
+  /// No description provided for @dashboardCreateProgram.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Program'**
+  String get dashboardCreateProgram;
+
+  /// No description provided for @dashboardTodaySchedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s Schedule'**
+  String get dashboardTodaySchedule;
+
+  /// No description provided for @dashboardSeeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'See All'**
+  String get dashboardSeeAll;
+
+  /// No description provided for @dashboardNoScheduleToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No schedule items for today.'**
+  String get dashboardNoScheduleToday;
+
+  /// No description provided for @dashboardNoScheduledWorkoutsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No scheduled workouts yet.'**
+  String get dashboardNoScheduledWorkoutsYet;
+
+  /// No description provided for @dashboardUnknownClient.
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown client'**
+  String get dashboardUnknownClient;
+
+  /// No description provided for @dashboardUntitledWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled workout'**
+  String get dashboardUntitledWorkout;
+
+  /// No description provided for @dashboardWorkoutBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Builder'**
+  String get dashboardWorkoutBuilder;
+
+  /// No description provided for @dashboardSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session'**
+  String get dashboardSessionTitle;
+
+  /// No description provided for @dashboardDetailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Details are based on the selected workout plan start date.'**
+  String get dashboardDetailHint;
+
+  /// No description provided for @customerEditProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
+  String get customerEditProfile;
+
+  /// No description provided for @customerAssignWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign Workout'**
+  String get customerAssignWorkout;
+
+  /// No description provided for @customerGoalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal'**
+  String get customerGoalLabel;
+
+  /// No description provided for @customerCurrentWeight.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Weight'**
+  String get customerCurrentWeight;
+
+  /// No description provided for @customerMuscleMass.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscle Mass'**
+  String get customerMuscleMass;
+
+  /// No description provided for @customerWorkoutPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout plans'**
+  String get customerWorkoutPlans;
+
+  /// No description provided for @customerViewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View all'**
+  String get customerViewAll;
+
+  /// No description provided for @customerNoWorkoutPlansYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No workout plans yet'**
+  String get customerNoWorkoutPlansYet;
+
+  /// No description provided for @customerUnnamedPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed plan'**
+  String get customerUnnamedPlan;
+
+  /// No description provided for @workoutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workouts'**
+  String get workoutsTitle;
+
+  /// No description provided for @workoutsNoWorkoutsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No workouts yet'**
+  String get workoutsNoWorkoutsYet;
+
+  /// No description provided for @workoutsAssignHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign a workout to this customer from the customer detail screen.'**
+  String get workoutsAssignHint;
+
+  /// No description provided for @workoutLibraryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get workoutLibraryTitle;
+
+  /// No description provided for @workoutDiaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Diary'**
+  String get workoutDiaryTitle;
+
+  /// No description provided for @workoutStatsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get workoutStatsTitle;
+
+  /// No description provided for @placeholderComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming soon'**
+  String get placeholderComingSoon;
+
+  /// No description provided for @placeholderSectionNotImplemented.
+  ///
+  /// In en, this message translates to:
+  /// **'This section is not yet implemented.'**
+  String get placeholderSectionNotImplemented;
+
+  /// No description provided for @placeholderBackToBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Builder'**
+  String get placeholderBackToBuilder;
+
+  /// No description provided for @customerDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Detail'**
+  String get customerDetailTitle;
+
+  /// No description provided for @actionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get actionsTitle;
+
+  /// No description provided for @updatedDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {count}d ago'**
+  String updatedDaysAgo(int count);
+
+  /// No description provided for @updatedHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {count}h ago'**
+  String updatedHoursAgo(int count);
+
+  /// No description provided for @updatedMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated {count}m ago'**
+  String updatedMinutesAgo(int count);
+
+  /// No description provided for @updatedJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get updatedJustNow;
 }
 
 class _AppLocalizationsDelegate
