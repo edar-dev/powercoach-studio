@@ -677,7 +677,7 @@ abstract class AppLocalizations {
   /// No description provided for @exerciseLibraryImportSourceDefaultSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Load 100 common exercises with variants and hierarchy.'**
+  /// **'Load 200 common exercises with variants and hierarchy.'**
   String get exerciseLibraryImportSourceDefaultSubtitle;
 
   /// No description provided for @exerciseLibraryImportSourceCustom.

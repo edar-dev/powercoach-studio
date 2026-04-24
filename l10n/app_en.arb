@@ -96,7 +96,7 @@
   "exerciseLibraryExport": "Export",
   "exerciseLibraryImportSourceTitle": "Import exercises",
   "exerciseLibraryImportSourceDefault": "Import default catalog",
-  "exerciseLibraryImportSourceDefaultSubtitle": "Load 100 common exercises with variants and hierarchy.",
+  "exerciseLibraryImportSourceDefaultSubtitle": "Load 200 common exercises with variants and hierarchy.",
   "exerciseLibraryImportSourceCustom": "Import custom JSON",
   "exerciseLibraryImportSourceCustomSubtitle": "Load exercises from your own JSON file.",
   "exerciseLibraryAddExercise": "Add exercise",

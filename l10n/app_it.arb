@@ -96,7 +96,7 @@
   "exerciseLibraryExport": "Esporta",
   "exerciseLibraryImportSourceTitle": "Importa esercizi",
   "exerciseLibraryImportSourceDefault": "Importa catalogo predefinito",
-  "exerciseLibraryImportSourceDefaultSubtitle": "Carica 100 esercizi comuni con varianti e gerarchia.",
+  "exerciseLibraryImportSourceDefaultSubtitle": "Carica 200 esercizi comuni con varianti e gerarchia.",
   "exerciseLibraryImportSourceCustom": "Importa JSON personalizzato",
   "exerciseLibraryImportSourceCustomSubtitle": "Carica esercizi dal tuo file JSON.",
   "exerciseLibraryAddExercise": "Aggiungi esercizio",

@@ -307,7 +307,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get exerciseLibraryImportSourceDefaultSubtitle =>
-      'Carica 100 esercizi comuni con varianti e gerarchia.';
+      'Carica 200 esercizi comuni con varianti e gerarchia.';
 
   @override
   String get exerciseLibraryImportSourceCustom => 'Importa JSON personalizzato';
