@@ -758,6 +758,12 @@ abstract class AppLocalizations {
   /// **'Import completed successfully.'**
   String get exerciseLibraryImportSuccess;
 
+  /// No description provided for @exerciseLibraryImportSuccessCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Import completed: {count} items.'**
+  String exerciseLibraryImportSuccessCount(int count);
+
   /// No description provided for @exerciseLibraryDeleteTitle.
   ///
   /// In en, this message translates to:

@@ -353,6 +353,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseLibraryImportSuccess => 'Import completed successfully.';
 
   @override
+  String exerciseLibraryImportSuccessCount(int count) {
+    return 'Import completed: $count items.';
+  }
+
+  @override
   String get exerciseLibraryDeleteTitle => 'Delete exercise';
 
   @override

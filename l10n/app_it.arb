@@ -110,6 +110,14 @@
   "exerciseLibraryExportEmpty": "Niente da esportare. Aggiungi prima degli esercizi.",
   "exerciseLibraryImportInvalidFormat": "File non valido. Usa un array JSON di esercizi.",
   "exerciseLibraryImportSuccess": "Importazione completata.",
+  "exerciseLibraryImportSuccessCount": "Importazione completata: {count} elementi.",
+  "@exerciseLibraryImportSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "exerciseLibraryDeleteTitle": "Elimina esercizio",
   "exerciseLibraryDeleteConfirm": "Eliminare \"{name}\"?",
   "exerciseLibraryDeleteHasChildren": "Rimuovi prima le varianti (figli), poi elimina questo.",

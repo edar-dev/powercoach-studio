@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -75,8 +76,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
 
   Future<void> _export() async {
     try {
-      final data = _flattenTree(_items)
+      final isMobility = _tabController.index == 1;
+      final roots = await _exerciseRepo.getTree(mobility: isMobility);
+      final data = _flattenTree(roots)
           .map((e) => <String, dynamic>{
+                'id': e.id,
                 'name': e.name,
                 'description': e.description,
                 'parentId': e.parentId,
@@ -92,7 +96,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       }
       final json = const JsonEncoder.withIndent('  ').convert(data);
       final name =
-          'custom-exercises-${DateTime.now().toIso8601String().split('T').first}.json';
+          'custom-exercises-${isMobility ? 'mobility' : 'standard'}-${DateTime.now().toIso8601String().split('T').first}.json';
       await Share.share(
         json,
         subject: name,
@@ -109,6 +113,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   }
 
   Future<void> _import() async {
+    final isMobility = _tabController.index == 1;
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
       allowedExtensions: ['json'],
@@ -119,7 +124,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     final file = result.files.single;
     List<Map<String, dynamic>> items;
     try {
-      final content = file.bytes != null ? utf8.decode(file.bytes!) : '[]';
+      String content;
+      if (file.bytes != null) {
+        content = utf8.decode(file.bytes!);
+      } else if (file.path != null) {
+        content = await File(file.path!).readAsString();
+      } else {
+        content = '[]';
+      }
       final decoded = jsonDecode(content);
       if (decoded is! List) {
         if (mounted) {
@@ -129,6 +141,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       }
       items = decoded
           .map((e) => e is Map<String, dynamic> ? e : <String, dynamic>{})
+          .where((e) {
+            final value = e['isMobility'];
+            if (value is bool) return value == isMobility;
+            // Backward compatibility: if missing, assume current tab type.
+            return true;
+          })
           .toList();
     } catch (_) {
       if (mounted) {
@@ -136,20 +154,69 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       }
       return;
     }
+    final importedByLegacyId = <String, String>{};
+    var importedCount = 0;
     try {
-      for (final item in items) {
-        final name = item['name']?.toString().trim() ?? '';
-        if (name.isEmpty) continue;
-        await _exerciseRepo.create(<String, dynamic>{
-          'name': name,
-          'description': item['description']?.toString(),
-          'parentId': item['parentId']?.toString(),
-          'sortOrder': item['sortOrder'],
-          'isMobility': item['isMobility'] == true,
-        });
+      final pending = List<Map<String, dynamic>>.from(items);
+      while (pending.isNotEmpty) {
+        var createdInPass = 0;
+        final unresolvedForNextPass = <Map<String, dynamic>>[];
+        for (final item in pending) {
+          final name = item['name']?.toString().trim() ?? '';
+          if (name.isEmpty) continue;
+
+          final rawParentId = item['parentId']?.toString();
+          final hasParent = rawParentId != null && rawParentId.isNotEmpty;
+          if (hasParent && !importedByLegacyId.containsKey(rawParentId)) {
+            unresolvedForNextPass.add(item);
+            continue;
+          }
+
+          final parentId = hasParent ? importedByLegacyId[rawParentId] : null;
+          final created = await _exerciseRepo.create(<String, dynamic>{
+            'name': name,
+            'description': item['description']?.toString(),
+            if (parentId != null) 'parentId': parentId,
+            'sortOrder': item['sortOrder'],
+            'isMobility': isMobility,
+          });
+          final legacyId = item['id']?.toString();
+          if (legacyId != null && legacyId.isNotEmpty) {
+            importedByLegacyId[legacyId] = created['id']?.toString() ?? '';
+          }
+          importedCount++;
+          createdInPass++;
+        }
+
+        if (createdInPass == 0) {
+          // Fallback: break potential cycles/invalid parents by importing remaining as roots.
+          for (final item in unresolvedForNextPass) {
+            final name = item['name']?.toString().trim() ?? '';
+            if (name.isEmpty) continue;
+            final created = await _exerciseRepo.create(<String, dynamic>{
+              'name': name,
+              'description': item['description']?.toString(),
+              'sortOrder': item['sortOrder'],
+              'isMobility': isMobility,
+            });
+            final legacyId = item['id']?.toString();
+            if (legacyId != null && legacyId.isNotEmpty) {
+              importedByLegacyId[legacyId] = created['id']?.toString() ?? '';
+            }
+            importedCount++;
+          }
+          break;
+        }
+
+        pending
+          ..clear()
+          ..addAll(unresolvedForNextPass);
       }
       if (mounted) {
-        showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportSuccess));
+        showAppSnackBar(
+          context,
+          content: Text(l10n.exerciseLibraryImportSuccessCount(importedCount)),
+        );
         _load();
       }
     } catch (e) {

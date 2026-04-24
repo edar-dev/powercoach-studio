@@ -110,6 +110,14 @@
   "exerciseLibraryExportEmpty": "Nothing to export. Add exercises first.",
   "exerciseLibraryImportInvalidFormat": "Invalid file. Use a JSON array of exercises.",
   "exerciseLibraryImportSuccess": "Import completed successfully.",
+  "exerciseLibraryImportSuccessCount": "Import completed: {count} items.",
+  "@exerciseLibraryImportSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "exerciseLibraryDeleteTitle": "Delete exercise",
   "exerciseLibraryDeleteConfirm": "Delete \"{name}\"?",
   "exerciseLibraryDeleteHasChildren": "Remove child exercises (variants) first, then delete this one.",

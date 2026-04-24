@@ -352,6 +352,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exerciseLibraryImportSuccess => 'Importazione completata.';
 
   @override
+  String exerciseLibraryImportSuccessCount(int count) {
+    return 'Importazione completata: $count elementi.';
+  }
+
+  @override
   String get exerciseLibraryDeleteTitle => 'Elimina esercizio';
 
   @override
