@@ -95,7 +95,7 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
               hintText: l10n.exerciseLibraryNameHint,
             ),
             textCapitalization: TextCapitalization.words,
-            autofocus: true,
+            autofocus: false,
             validator: (value) => (value == null || value.trim().isEmpty) ? l10n.exerciseLibraryNameHint : null,
           ),
           const SizedBox(height: 16),

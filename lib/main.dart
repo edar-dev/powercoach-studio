@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
@@ -14,6 +15,7 @@ import 'app.dart';
 Future<void> main() async {
   final startupWatch = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
+  _installDebugFrameTimingProbe();
   try {
     await dotenv.load(fileName: '.env');
     _logStartupStep('dotenv.load completed', startupWatch);
@@ -171,5 +173,47 @@ class _BootstrapAppState extends State<_BootstrapApp> {
 
 void _logStartupStep(String label, Stopwatch watch) {
   if (kReleaseMode) return;
-  debugPrint('powercoach-startup: ${watch.elapsedMilliseconds}ms - $label');
+  final elapsedMs = watch.elapsedMilliseconds;
+  final previousMs = _startupLastElapsedByWatch[watch] ?? 0;
+  _startupLastElapsedByWatch[watch] = elapsedMs;
+  final deltaMs = elapsedMs - previousMs;
+  debugPrint('powercoach-startup: ${elapsedMs}ms (+${deltaMs}ms) - $label');
+}
+
+final Map<Stopwatch, int> _startupLastElapsedByWatch = <Stopwatch, int>{};
+
+void _installDebugFrameTimingProbe() {
+  if (!kDebugMode) return;
+
+  const sampleFrames = 120;
+  const frameBudgetMs = 16;
+  var observedFrames = 0;
+  var slowBuildFrames = 0;
+  var slowRasterFrames = 0;
+
+  late final TimingsCallback callback;
+  callback = (timings) {
+    for (final timing in timings) {
+      observedFrames++;
+      final buildMs = timing.buildDuration.inMilliseconds;
+      final rasterMs = timing.rasterDuration.inMilliseconds;
+      if (buildMs > frameBudgetMs) {
+        slowBuildFrames++;
+      }
+      if (rasterMs > frameBudgetMs) {
+        slowRasterFrames++;
+      }
+
+      if (observedFrames >= sampleFrames) {
+        SchedulerBinding.instance.removeTimingsCallback(callback);
+        debugPrint(
+          'powercoach-startup-frame-probe: sampled=$observedFrames, '
+          'slowBuild=$slowBuildFrames, slowRaster=$slowRasterFrames',
+        );
+        break;
+      }
+    }
+  };
+
+  SchedulerBinding.instance.addTimingsCallback(callback);
 }

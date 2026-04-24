@@ -198,6 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: StitchSecondaryAppBar(title: l10n.profileTitle),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: StitchCard(
             padding: const EdgeInsets.all(24),

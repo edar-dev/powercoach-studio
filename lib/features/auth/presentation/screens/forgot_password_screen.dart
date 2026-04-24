@@ -105,6 +105,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       appBar: StitchSecondaryAppBar(title: l10n.forgotPasswordTitle),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Center(
             child: Container(

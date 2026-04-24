@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
@@ -27,10 +28,9 @@ import 'l10n/app_localizations.dart';
 
 final _goRouter = GoRouter(
   initialLocation: '/',
-  observers: [SentryNavigatorObserver()],
+  observers: kReleaseMode ? [SentryNavigatorObserver()] : const <NavigatorObserver>[],
   refreshListenable: SupabaseBootstrap.refreshTick,
   redirect: (context, state) {
-    SupabaseBootstrap.ensureInitialized();
     final path = state.uri.path;
     final isLoggedIn = SupabaseBootstrap.currentUser != null;
     final isCustomerRoute = path.startsWith('/customers');

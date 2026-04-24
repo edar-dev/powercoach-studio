@@ -110,6 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: StitchSecondaryAppBar(title: l10n.loginTitle),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: Center(
             child: Container(
