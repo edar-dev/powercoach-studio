@@ -462,7 +462,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         return TextField(
           controller: controller,
           decoration: const InputDecoration(labelText: 'Section name'),
-          autofocus: true,
+          autofocus: false,
           onSubmitted: (_) {
             onSave(controller.text.trim());
             Navigator.of(sheetContext).pop();
@@ -1390,7 +1390,7 @@ void _showRenameDayDialog(BuildContext context, String initialName, void Functio
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
       decoration: const InputDecoration(labelText: 'Day name'),
-      autofocus: true,
+      autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();
         if (name.isEmpty) return;
@@ -1416,7 +1416,7 @@ void _showRenameWeekDialog(BuildContext context, String initialName, void Functi
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
       decoration: const InputDecoration(labelText: 'Week name'),
-      autofocus: true,
+      autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();
         if (name.isEmpty) return;
@@ -1454,7 +1454,7 @@ void _showEditMobilityDialog(
         TextField(
           controller: titleController,
           decoration: const InputDecoration(labelText: 'Title'),
-          autofocus: true,
+          autofocus: false,
         ),
         const SizedBox(height: 12),
         TextField(
@@ -1707,7 +1707,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                     contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                     border: const OutlineInputBorder(),
                   ),
-                  autofocus: true,
+                  autofocus: false,
                 ),
                 const SizedBox(height: 10),
                 TextField(
@@ -2548,7 +2548,7 @@ void _showEditExerciseDialog(
             TextField(
               controller: nameController,
               decoration: InputDecoration(labelText: 'Name', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
-              autofocus: true,
+              autofocus: false,
             ),
             const SizedBox(height: 8),
             TextField(
@@ -3768,7 +3768,7 @@ void _showEditSetDialog(
                 controller: setsController,
                 decoration: const InputDecoration(labelText: 'Set', hintText: '1'),
                 keyboardType: TextInputType.number,
-                autofocus: true,
+                autofocus: false,
               ),
             ),
             const SizedBox(width: 8),
