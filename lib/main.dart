@@ -34,7 +34,6 @@ Future<void> main() async {
       (options) {
         options.dsn = dsn;
         options.tracesSampleRate = 1.0;
-        options.profilesSampleRate = 1.0;
         options.enableAutoNativeBreadcrumbs = true;
         options.attachScreenshot = true;
         options.sendDefaultPii = false;
