@@ -1,7 +1,6 @@
 workflows:
   pr_quality_gate:
     name: PR Quality Gate
-    instance_type: linux_x2
     max_build_duration: 30
     environment:
       flutter: stable
@@ -38,7 +37,6 @@ workflows:
 
   android_release:
     name: Android Release Build
-    instance_type: linux_x2
     max_build_duration: 45
     environment:
       flutter: stable
