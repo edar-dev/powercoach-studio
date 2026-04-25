@@ -5,7 +5,7 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - powercoach_studio_secrets
+        - google_credentials
     triggering:
       events:
         - pull_request
@@ -41,7 +41,7 @@ workflows:
     environment:
       flutter: stable
       groups:
-        - powercoach_studio_secrets
+        - google_credentials
     triggering:
       events:
         - push
