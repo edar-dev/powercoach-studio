@@ -16,6 +16,8 @@ import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
 import '../../data/models/customer_measurement.dart';
 import '../../data/models/customer_exercise_record.dart';
+import '../../../exercise_library/data/custom_exercise_item.dart';
+import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/data/workout_routine_model.dart';
@@ -36,6 +38,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   final CustomerRepository _customerRepo = CustomerRepository();
   final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
   final CustomerExerciseRecordRepository _recordRepo = CustomerExerciseRecordRepository();
+  final CustomExerciseRepository _exerciseRepo = CustomExerciseRepository();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
   Customer? _customer;
   bool _loading = true;
@@ -43,6 +46,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   List<CustomerMeasurement> _measurements = [];
   bool _measurementsLoading = false;
   List<CustomerExerciseRecord> _records = [];
+  Map<String, String> _exerciseNameById = <String, String>{};
   bool _recordsLoading = false;
   List<WorkoutPlanApiModel> _workoutPlans = [];
   bool _workoutPlansLoading = false;
@@ -98,15 +102,45 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     setState(() => _recordsLoading = true);
     try {
       final list = await _recordRepo.getByCustomerId(widget.customerId);
+      final exerciseNameById = await _buildExerciseNameMap();
       if (mounted) {
         setState(() {
           _records = list;
+          _exerciseNameById = exerciseNameById;
           _recordsLoading = false;
         });
       }
     } catch (_) {
       if (mounted) setState(() => _recordsLoading = false);
     }
+  }
+
+  Future<Map<String, String>> _buildExerciseNameMap() async {
+    final roots = await _exerciseRepo.getTree();
+    final namesById = <String, String>{};
+    void visit(CustomExerciseItem node, String? parentPath) {
+      final displayName =
+          parentPath == null ? node.name : '$parentPath › ${node.name}';
+      namesById[node.id] = displayName;
+      for (final child in node.children) {
+        visit(child, displayName);
+      }
+    }
+
+    for (final root in roots) {
+      visit(root, null);
+    }
+    return namesById;
+  }
+
+  String _resolveRecordDisplayName(CustomerExerciseRecord record) {
+    final fromRecord = record.displayName.trim();
+    if (fromRecord.isNotEmpty && fromRecord != record.customExerciseId) {
+      return fromRecord;
+    }
+    final fromMap = _exerciseNameById[record.customExerciseId];
+    if (fromMap != null && fromMap.trim().isNotEmpty) return fromMap;
+    return fromRecord.isEmpty ? record.customExerciseId : fromRecord;
   }
 
   Future<void> _load() async {
@@ -617,10 +651,10 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
         ),
       );
     }
-    // Group by exercise (customExerciseId / exerciseName)
+    // Group by resolved exercise display name.
     final grouped = <String, List<CustomerExerciseRecord>>{};
     for (final r in _records) {
-      final key = r.exerciseName ?? r.customExerciseId;
+      final key = _resolveRecordDisplayName(r);
       grouped.putIfAbsent(key, () => []).add(r);
     }
     for (final list in grouped.values) {
@@ -637,7 +671,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
             final exerciseKey = sortedGroupKeys[index];
             final list = grouped[exerciseKey]!;
             final first = list.first;
-            final exerciseName = first.displayName;
+            final exerciseName = _resolveRecordDisplayName(first);
             return Card(
               margin: const EdgeInsets.only(bottom: 12),
               child: Padding(

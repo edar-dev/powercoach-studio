@@ -66,7 +66,11 @@ class CustomerExerciseRecord {
     return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
   }
 
-  String get displayName => exerciseName ?? customExerciseId;
+  String get displayName {
+    final name = exerciseName?.trim();
+    if (name == null || name.isEmpty) return customExerciseId;
+    return name;
+  }
 
   Map<String, dynamic> toCreateBody() => {
         'customExerciseId': customExerciseId,

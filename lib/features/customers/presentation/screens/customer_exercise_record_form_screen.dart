@@ -125,6 +125,10 @@ class _CustomerExerciseRecordFormScreenState
     if (valueText.isEmpty) return;
     final value = double.tryParse(valueText);
     if (value == null) return;
+    final selectedExercise = _selectedExercise;
+    final selectedExerciseDisplayName = selectedExercise != null
+        ? _exerciseDisplayName(selectedExercise)
+        : null;
 
     setState(() => _saving = true);
     final l10n = AppLocalizations.of(context);
@@ -132,6 +136,9 @@ class _CustomerExerciseRecordFormScreenState
     try {
       final body = {
         'customExerciseId': exId,
+        if (selectedExerciseDisplayName != null &&
+            selectedExerciseDisplayName.isNotEmpty)
+          'exerciseName': selectedExerciseDisplayName,
         'value': value,
         'unit': _unit,
         'recordedAt': CustomerExerciseRecord.toDateString(_recordedAt),
@@ -139,6 +146,9 @@ class _CustomerExerciseRecordFormScreenState
       };
       if (widget.record != null) {
         await _repo.update(widget.customerId, widget.record!.id, {
+          if (selectedExerciseDisplayName != null &&
+              selectedExerciseDisplayName.isNotEmpty)
+            'exerciseName': selectedExerciseDisplayName,
           'value': value,
           'unit': _unit,
           'recordedAt': CustomerExerciseRecord.toDateString(_recordedAt),
