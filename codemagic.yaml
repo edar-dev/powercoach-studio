@@ -45,14 +45,10 @@ workflows:
     triggering:
       events:
         - push
-        - tag
       branch_patterns:
         - pattern: main
           include: true
           source: true
-      tag_patterns:
-        - pattern: v*
-          include: true
     scripts:
       - name: Validate required environment variables
         script: |
@@ -77,3 +73,60 @@ workflows:
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
       - build/app/outputs/bundle/release/*.aab
+
+  android_play_store:
+    name: Android Play Store Publish
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      groups:
+        - google_credentials
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: v*
+          include: true
+    scripts:
+      - name: Validate required environment variables
+        script: |
+          set -e
+          test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL" && exit 1)
+          test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY" && exit 1)
+          test -n "$GCLOUD_SERVICE_ACCOUNT_CREDENTIALS" || (echo "Missing GCLOUD_SERVICE_ACCOUNT_CREDENTIALS" && exit 1)
+          test -n "$ANDROID_KEYSTORE_BASE64" || (echo "Missing ANDROID_KEYSTORE_BASE64" && exit 1)
+          test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD" && exit 1)
+          test -n "$ANDROID_KEY_ALIAS" || (echo "Missing ANDROID_KEY_ALIAS" && exit 1)
+          test -n "$ANDROID_KEY_PASSWORD" || (echo "Missing ANDROID_KEY_PASSWORD" && exit 1)
+      - name: Create runtime .env
+        script: |
+          cat > .env <<EOF
+          SUPABASE_URL=$SUPABASE_URL
+          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
+          SENTRY_DSN=${SENTRY_DSN:-}
+          SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
+          GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
+          EOF
+      - name: Create Android keystore and key.properties
+        script: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          EOF
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Unit and widget tests
+        script: flutter test test/
+      - name: Build Android App Bundle
+        script: flutter build appbundle --release
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
+      - build/app/outputs/mapping/release/mapping.txt
+    publishing:
+      google_play:
+        credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+        track: internal
+        submit_as_draft: true

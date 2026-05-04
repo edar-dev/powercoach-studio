@@ -17,7 +17,6 @@ Logs, errors, and performance tracing are sent to [Sentry](https://sentry.io) wh
 
 - **Errors**: unhandled exceptions and `Sentry.captureException()` in auth/profile flows.
 - **Tracing**: `tracesSampleRate: 1.0` and `SentryNavigatorObserver` for navigation spans.
-- **Profiling**: `profilesSampleRate: 1.0` for performance profiles.
 - **Screenshots**: attached to error events when supported.
 
 Get the DSN from Sentry: **Project Settings → Client Keys (DSN)**. Leave `SENTRY_DSN` empty to disable Sentry.
@@ -36,23 +35,50 @@ The profile screen reads and writes `public.profiles` (columns: `display_name`, 
 
 ## Codemagic CI/CD
 
-The repo includes `codemagic.yaml` with two workflows:
+The repo includes `codemagic.yaml` with three workflows:
 
 - `pr_quality_gate`: runs on pull requests to `main` and executes:
   - `flutter pub get`
   - `flutter analyze`
   - `flutter test test/`
-- `android_release`: runs on pushes to `main` and tags `v*`, building:
+- `android_release`: runs on pushes to `main`, building:
   - release APK
   - release AAB
+- `android_play_store`: runs on tags `v*`, building and publishing:
+  - signed release AAB
+  - upload to Google Play `internal` track as draft
 
-Configure a Codemagic environment group named `powercoach_studio_secrets` with:
+Configure a Codemagic environment group named `google_credentials` with:
 
 - `SUPABASE_URL` (required)
 - `SUPABASE_ANON_KEY` (required)
 - `SENTRY_DSN` (optional)
 - `SENTRY_ENVIRONMENT` (optional)
 - `GYMBLOG_API_URL` (optional)
+- `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` (required for Play publishing)
+- `ANDROID_KEYSTORE_BASE64` (required for Play publishing)
+- `ANDROID_KEYSTORE_PASSWORD` (required for Play publishing)
+- `ANDROID_KEY_ALIAS` (required for Play publishing)
+- `ANDROID_KEY_PASSWORD` (required for Play publishing)
+
+See `docs/play-store-release-guide.md` for the full end-to-end setup.
+
+## Privacy Policy via GitHub Pages
+
+The repo includes a static privacy page at:
+
+- `docs/privacy-policy/index.html`
+
+and a GitHub Actions workflow:
+
+- `.github/workflows/privacy-policy-pages.yml`
+
+to deploy `docs/` to GitHub Pages on each push to `main`.
+
+After enabling Pages in GitHub settings (`Build and deployment -> Source: GitHub Actions`),
+the policy URL for Play Console is:
+
+- `https://edar-dev.github.io/powercoach-studio/privacy-policy/`
 
 ## Getting Started
 
