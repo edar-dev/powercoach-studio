@@ -55,6 +55,10 @@ workflows:
           set -e
           test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL" && exit 1)
           test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY" && exit 1)
+          test -n "$ANDROID_KEYSTORE_BASE64" || (echo "Missing ANDROID_KEYSTORE_BASE64" && exit 1)
+          test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD" && exit 1)
+          test -n "$ANDROID_KEY_ALIAS" || (echo "Missing ANDROID_KEY_ALIAS" && exit 1)
+          test -n "$ANDROID_KEY_PASSWORD" || (echo "Missing ANDROID_KEY_PASSWORD" && exit 1)
       - name: Create runtime .env
         script: |
           cat > .env <<EOF
@@ -63,6 +67,15 @@ workflows:
           SENTRY_DSN=${SENTRY_DSN:-}
           SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
           GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
+          EOF
+      - name: Create Android keystore and key.properties
+        script: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storeFile=upload-keystore.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
           EOF
       - name: Install dependencies
         script: flutter pub get
