@@ -1,0 +1,21 @@
+---
+description: Backward compatibility rules for user backup JSON (powercoach_user_backup_v1).
+alwaysApply: false
+globs: lib/core/backup/**/*.dart,**/user_data_backup*.dart,l10n/*.arb
+---
+
+# User data backup JSON — backward compatibility
+
+Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, plus `preferences`, `localUserProfile`, `entities`, `pendingOperations`, `syncMeta`.
+
+## When changing the backup format
+
+- Prefer **additive** changes: new optional top-level keys or optional fields inside objects. Older apps ignore unknown keys.
+- **Do not rename or remove** existing keys without bumping `schemaVersion` and documenting migration (or supporting multiple readers).
+- **Readers** must tolerate missing optional sections (`entities` default `[]`, etc.) and ignore unknown properties where safe.
+- **Writers** (`UserDataBackupService` / codec) must continue emitting valid v1 documents unless intentionally moving to a new `schemaVersion`.
+- A **breaking** change requires: increment `schemaVersion` (or `exportFormat`), implement import for prior versions if users keep old files, and extend tests in `test/core/backup/`.
+
+## Tests
+
+Any change to parsing or envelope shape must update `user_data_backup_codec_test.dart` (or successor) to cover old minimal payloads and new fields.

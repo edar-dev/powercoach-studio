@@ -632,6 +632,90 @@ abstract class AppLocalizations {
   /// **'App language'**
   String get settingsLanguageDescription;
 
+  /// No description provided for @settingsBackupSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline backup'**
+  String get settingsBackupSectionTitle;
+
+  /// No description provided for @settingsBackupSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export or replace all local cached data for this account as JSON. Does not replace server data until you sync.'**
+  String get settingsBackupSectionSubtitle;
+
+  /// No description provided for @settingsBackupExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get settingsBackupExport;
+
+  /// No description provided for @settingsBackupImport.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get settingsBackupImport;
+
+  /// No description provided for @settingsBackupImportConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace local data?'**
+  String get settingsBackupImportConfirmTitle;
+
+  /// No description provided for @settingsBackupImportConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This deletes all offline data for your account on this device and replaces it with the backup file. Server data is unchanged until sync. The file must belong to this signed-in account.'**
+  String get settingsBackupImportConfirmMessage;
+
+  /// No description provided for @settingsBackupImportConfirmReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace local data'**
+  String get settingsBackupImportConfirmReplace;
+
+  /// No description provided for @settingsBackupExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup ready to share.'**
+  String get settingsBackupExportSuccess;
+
+  /// No description provided for @settingsBackupImportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Local data restored from backup.'**
+  String get settingsBackupImportSuccess;
+
+  /// No description provided for @settingsBackupErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Try again.'**
+  String get settingsBackupErrorGeneric;
+
+  /// No description provided for @settingsBackupErrorNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to export or import a backup.'**
+  String get settingsBackupErrorNotSignedIn;
+
+  /// No description provided for @settingsBackupErrorWrongAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup belongs to another account.'**
+  String get settingsBackupErrorWrongAccount;
+
+  /// No description provided for @settingsBackupErrorUnsupportedSchema.
+  ///
+  /// In en, this message translates to:
+  /// **'This backup format is not supported by this app version.'**
+  String get settingsBackupErrorUnsupportedSchema;
+
+  /// No description provided for @settingsBackupErrorInvalidFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid backup file.'**
+  String get settingsBackupErrorInvalidFile;
+
   /// No description provided for @customersTitle.
   ///
   /// In en, this message translates to:

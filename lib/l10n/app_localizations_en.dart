@@ -286,6 +286,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLanguageDescription => 'App language';
 
   @override
+  String get settingsBackupSectionTitle => 'Offline backup';
+
+  @override
+  String get settingsBackupSectionSubtitle =>
+      'Export or replace all local cached data for this account as JSON. Does not replace server data until you sync.';
+
+  @override
+  String get settingsBackupExport => 'Export backup';
+
+  @override
+  String get settingsBackupImport => 'Import backup';
+
+  @override
+  String get settingsBackupImportConfirmTitle => 'Replace local data?';
+
+  @override
+  String get settingsBackupImportConfirmMessage =>
+      'This deletes all offline data for your account on this device and replaces it with the backup file. Server data is unchanged until sync. The file must belong to this signed-in account.';
+
+  @override
+  String get settingsBackupImportConfirmReplace => 'Replace local data';
+
+  @override
+  String get settingsBackupExportSuccess => 'Backup ready to share.';
+
+  @override
+  String get settingsBackupImportSuccess => 'Local data restored from backup.';
+
+  @override
+  String get settingsBackupErrorGeneric => 'Something went wrong. Try again.';
+
+  @override
+  String get settingsBackupErrorNotSignedIn =>
+      'Sign in to export or import a backup.';
+
+  @override
+  String get settingsBackupErrorWrongAccount =>
+      'This backup belongs to another account.';
+
+  @override
+  String get settingsBackupErrorUnsupportedSchema =>
+      'This backup format is not supported by this app version.';
+
+  @override
+  String get settingsBackupErrorInvalidFile => 'Invalid backup file.';
+
+  @override
   String get customersTitle => 'Customers';
 
   @override

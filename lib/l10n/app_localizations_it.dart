@@ -284,6 +284,55 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsLanguageDescription => 'Lingua dell\'app';
 
   @override
+  String get settingsBackupSectionTitle => 'Backup offline';
+
+  @override
+  String get settingsBackupSectionSubtitle =>
+      'Esporta o sostituisci tutti i dati locali in cache per questo account come JSON. Il server non cambia finché non sincronizzi.';
+
+  @override
+  String get settingsBackupExport => 'Esporta backup';
+
+  @override
+  String get settingsBackupImport => 'Importa backup';
+
+  @override
+  String get settingsBackupImportConfirmTitle => 'Sostituire i dati locali?';
+
+  @override
+  String get settingsBackupImportConfirmMessage =>
+      'Elimina tutti i dati offline per il tuo account su questo dispositivo e li sostituisce con il file di backup. I dati sul server restano invariati fino alla sincronizzazione. Il file deve appartenere all’account con cui hai effettuato l’accesso.';
+
+  @override
+  String get settingsBackupImportConfirmReplace => 'Sostituisci dati locali';
+
+  @override
+  String get settingsBackupExportSuccess =>
+      'Backup pronto per la condivisione.';
+
+  @override
+  String get settingsBackupImportSuccess =>
+      'Dati locali ripristinati dal backup.';
+
+  @override
+  String get settingsBackupErrorGeneric => 'Qualcosa è andato storto. Riprova.';
+
+  @override
+  String get settingsBackupErrorNotSignedIn =>
+      'Accedi per esportare o importare un backup.';
+
+  @override
+  String get settingsBackupErrorWrongAccount =>
+      'Questo backup appartiene a un altro account.';
+
+  @override
+  String get settingsBackupErrorUnsupportedSchema =>
+      'Questo formato di backup non è supportato da questa versione dell’app.';
+
+  @override
+  String get settingsBackupErrorInvalidFile => 'File di backup non valido.';
+
+  @override
   String get customersTitle => 'Clienti';
 
   @override

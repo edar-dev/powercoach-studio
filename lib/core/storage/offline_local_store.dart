@@ -398,9 +398,8 @@ class OfflineLocalStore {
     await prefs.remove(_migrationPrefsKey);
   }
 
-  Future<void> wipeForUser(String userId) async {
+  Future<void> _deleteUserOfflineData(AppDatabase db, String userId) async {
     if (userId.isEmpty) return;
-    final db = await _ensureDb();
     await (db.delete(db.localEntities)..where((t) => t.userId.equals(userId)))
         .go();
     await (db.delete(db.pendingOperations)
@@ -409,6 +408,124 @@ class OfflineLocalStore {
     await (db.delete(db.syncMetaEntries)
           ..where((t) => t.userId.equals(userId)))
         .go();
+  }
+
+  Future<void> wipeForUser(String userId) async {
+    final db = await _ensureDb();
+    await _deleteUserOfflineData(db, userId);
+  }
+
+  /// Backup-ready maps: `userId` plus fields aligned with [OfflineEntity.toJson].
+  Future<List<Map<String, dynamic>>> listEntitiesJsonForBackup(
+    String userId,
+  ) async {
+    if (userId.isEmpty) return [];
+    final db = await _ensureDb();
+    final rows = await (db.select(db.localEntities)
+          ..where((t) => t.userId.equals(userId)))
+        .get();
+    return rows
+        .map((r) => <String, dynamic>{..._rowToEntity(r).toJson(), 'userId': r.userId})
+        .toList();
+  }
+
+  Future<List<Map<String, dynamic>>> listPendingJsonForBackup(
+    String userId,
+  ) async {
+    if (userId.isEmpty) return [];
+    final db = await _ensureDb();
+    final rows = await (db.select(db.pendingOperations)
+          ..where((t) => t.userId.equals(userId)))
+        .get();
+    return rows.map((r) => _rowToPending(r).toJson()).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> listSyncMetaJsonForBackup(
+    String userId,
+  ) async {
+    if (userId.isEmpty) return [];
+    final db = await _ensureDb();
+    final rows = await (db.select(db.syncMetaEntries)
+          ..where((t) => t.userId.equals(userId)))
+        .get();
+    return rows
+        .map(
+          (r) => <String, dynamic>{
+            'metaKey': r.metaKey,
+            'metaValue': r.metaValue,
+          },
+        )
+        .toList();
+  }
+
+  /// Replaces all Drift offline rows for [userId] (entities, pending ops, sync meta).
+  Future<void> replaceUserOfflineFromBackup({
+    required String userId,
+    required List<Map<String, dynamic>> entities,
+    required List<Map<String, dynamic>> pendingOperations,
+    required List<Map<String, dynamic>> syncMeta,
+  }) async {
+    if (userId.isEmpty) return;
+    final db = await _ensureDb();
+    await db.transaction(() async {
+      await _deleteUserOfflineData(db, userId);
+      for (final raw in entities) {
+        final body = Map<String, dynamic>.from(raw)..remove('userId');
+        final e = OfflineEntity.fromJson(body);
+        await db.into(db.localEntities).insert(
+              LocalEntitiesCompanion.insert(
+                userId: userId,
+                type: e.type.index,
+                id: e.id,
+                scopeId: e.scopeId,
+                payloadJson: jsonEncode(e.payload),
+                updatedAt: e.updatedAt,
+                deleted: Value(e.deleted),
+                localOnly: Value(e.localOnly),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+      }
+      for (final raw in pendingOperations) {
+        final op = PendingOperation.fromJson(raw);
+        await db.into(db.pendingOperations).insert(
+              PendingOperationsCompanion.insert(
+                opUuid: op.id,
+                userId: userId,
+                entityType: op.entityType.index,
+                entityId: op.entityId,
+                scopeId: op.scopeId,
+                operationType: op.operationType.index,
+                path: op.path,
+                payloadJson: jsonEncode(op.payload),
+                createdAt: op.createdAt,
+                updatedAt: op.updatedAt,
+                baseUpdatedAt: Value(op.baseUpdatedAt),
+                retryCount: Value(op.retryCount),
+                status: _statusToInt(op.status),
+                conflictRemoteJson: Value(
+                  op.conflictRemotePayload == null
+                      ? null
+                      : jsonEncode(op.conflictRemotePayload),
+                ),
+                errorMessage: Value(op.errorMessage),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+      }
+      for (final raw in syncMeta) {
+        final key = raw['metaKey']?.toString() ?? '';
+        if (key.isEmpty) continue;
+        final value = raw['metaValue']?.toString() ?? '';
+        await db.into(db.syncMetaEntries).insertOnConflictUpdate(
+              SyncMetaEntriesCompanion.insert(
+                userId: userId,
+                metaKey: key,
+                metaValue: value,
+              ),
+            );
+      }
+    });
   }
 
   Future<void> setSyncMeta(String key, String value) async {
