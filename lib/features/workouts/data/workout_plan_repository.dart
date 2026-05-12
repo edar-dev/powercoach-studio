@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../../../core/constants/workout_plan_template_scope.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'workout_plan_api_model.dart';
@@ -12,8 +13,23 @@ class WorkoutPlanRepository {
 
   final OfflineRepositorySupport _offline;
 
+  /// All workout plans **except** templates ([kWorkoutPlanTemplateScopeId]).
   Future<List<WorkoutPlanApiModel>> getAll() async {
     final local = await _offline.readLocalEntities(OfflineEntityType.workoutPlan);
+    final models = local
+        .map(WorkoutPlanApiModel.fromJson)
+        .where((p) => p.customerId != kWorkoutPlanTemplateScopeId)
+        .toList();
+    _sortPlansByStartDateDesc(models);
+    return models;
+  }
+
+  /// Reusable templates (sentinel [kWorkoutPlanTemplateScopeId] as `customerId` / scope).
+  Future<List<WorkoutPlanApiModel>> listTemplates() async {
+    final local = await _offline.readLocalEntities(
+      OfflineEntityType.workoutPlan,
+      scopeId: kWorkoutPlanTemplateScopeId,
+    );
     final models = local.map(WorkoutPlanApiModel.fromJson).toList();
     _sortPlansByStartDateDesc(models);
     return models;
@@ -129,6 +145,90 @@ class WorkoutPlanRepository {
 
   Future<void> delete(String planId) async {
     await _offline.markDeleted(OfflineEntityType.workoutPlan, planId);
+  }
+
+  /// Creates a new template (no real customer).
+  Future<WorkoutPlanApiModel> createTemplate({
+    required String name,
+    required String planDataJson,
+    String? pdfHeader,
+    bool useCustomPdfHeader = false,
+    String? theme,
+    int initialWeekNumber = 1,
+    String? phase,
+    String? tags,
+    String? notes,
+  }) {
+    return create(
+      customerId: kWorkoutPlanTemplateScopeId,
+      name: name,
+      planDataJson: planDataJson,
+      pdfHeader: pdfHeader,
+      useCustomPdfHeader: useCustomPdfHeader,
+      theme: theme,
+      initialWeekNumber: initialWeekNumber,
+      phase: phase,
+      tags: tags,
+      notes: notes,
+    );
+  }
+
+  /// Deep-copies an existing plan (any customer or template) into a new template.
+  Future<WorkoutPlanApiModel> createTemplateFromPlan({
+    required String sourcePlanId,
+    required String templateName,
+  }) async {
+    final src = await getById(sourcePlanId);
+    if (src == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final planDataCopy = jsonEncode(jsonDecode(src.planData));
+    return createTemplate(
+      name: templateName.trim().isEmpty ? src.name : templateName.trim(),
+      planDataJson: planDataCopy,
+      pdfHeader: src.pdfHeader,
+      useCustomPdfHeader: src.useCustomPdfHeader,
+      theme: src.theme,
+      initialWeekNumber: src.initialWeekNumber,
+      phase: src.phase,
+      tags: src.tags,
+      notes: src.notes,
+    );
+  }
+
+  /// Copies [sourcePlanId] into a **new** plan for [customerId] (new id, deep-copied `planData`).
+  Future<WorkoutPlanApiModel> duplicateToCustomer({
+    required String sourcePlanId,
+    required String customerId,
+    String? name,
+  }) async {
+    if (customerId == kWorkoutPlanTemplateScopeId) {
+      throw ArgumentError.value(
+        customerId,
+        'customerId',
+        'Use createTemplateFromPlan for template scope',
+      );
+    }
+    final src = await getById(sourcePlanId);
+    if (src == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final planDataCopy = jsonEncode(jsonDecode(src.planData));
+    final resolvedName = (name != null && name.trim().isNotEmpty)
+        ? name.trim()
+        : src.name;
+    return create(
+      customerId: customerId,
+      name: resolvedName,
+      planDataJson: planDataCopy,
+      pdfHeader: src.pdfHeader,
+      useCustomPdfHeader: src.useCustomPdfHeader,
+      theme: src.theme,
+      initialWeekNumber: src.initialWeekNumber,
+      phase: src.phase,
+      tags: src.tags,
+      notes: src.notes,
+    );
   }
 }
 

@@ -2152,6 +2152,114 @@ abstract class AppLocalizations {
   /// **'Library'**
   String get workoutLibraryTitle;
 
+  /// No description provided for @workoutTemplatesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout templates'**
+  String get workoutTemplatesTitle;
+
+  /// No description provided for @workoutTemplatesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No templates yet. Save a client plan as a template or create one here.'**
+  String get workoutTemplatesEmpty;
+
+  /// No description provided for @workoutTemplatesNew.
+  ///
+  /// In en, this message translates to:
+  /// **'New template'**
+  String get workoutTemplatesNew;
+
+  /// No description provided for @workoutTemplatesAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to client'**
+  String get workoutTemplatesAssign;
+
+  /// No description provided for @workoutTemplatesDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate template'**
+  String get workoutTemplatesDuplicate;
+
+  /// No description provided for @workoutTemplatesEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get workoutTemplatesEdit;
+
+  /// No description provided for @workoutTemplatesDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get workoutTemplatesDelete;
+
+  /// No description provided for @workoutTemplatesAssignTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a client'**
+  String get workoutTemplatesAssignTitle;
+
+  /// No description provided for @workoutTemplatesSaveAsTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'Save as template'**
+  String get workoutTemplatesSaveAsTemplate;
+
+  /// No description provided for @workoutTemplatesSaveAsTemplateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Template name'**
+  String get workoutTemplatesSaveAsTemplateTitle;
+
+  /// No description provided for @workoutTemplatesNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get workoutTemplatesNameHint;
+
+  /// No description provided for @workoutTemplatesDuplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate template'**
+  String get workoutTemplatesDuplicateTitle;
+
+  /// No description provided for @workoutTemplatesDuplicateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for the copy'**
+  String get workoutTemplatesDuplicateHint;
+
+  /// No description provided for @workoutTemplatesAssignedSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan added to the client.'**
+  String get workoutTemplatesAssignedSnack;
+
+  /// No description provided for @workoutTemplatesDuplicateSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Template created.'**
+  String get workoutTemplatesDuplicateSnack;
+
+  /// No description provided for @workoutTemplatesDeleteConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete template?'**
+  String get workoutTemplatesDeleteConfirmTitle;
+
+  /// No description provided for @workoutTemplatesDeleteConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This template will be removed from this device.'**
+  String get workoutTemplatesDeleteConfirmMessage;
+
+  /// No description provided for @workoutTemplatesDrawerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout templates'**
+  String get workoutTemplatesDrawerLabel;
+
   /// No description provided for @workoutDiaryTitle.
   ///
   /// In en, this message translates to:

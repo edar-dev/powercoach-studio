@@ -1132,6 +1132,62 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutLibraryTitle => 'Libreria';
 
   @override
+  String get workoutTemplatesTitle => 'Template allenamento';
+
+  @override
+  String get workoutTemplatesEmpty =>
+      'Nessun template. Salva un piano cliente come template o creane uno qui.';
+
+  @override
+  String get workoutTemplatesNew => 'Nuovo template';
+
+  @override
+  String get workoutTemplatesAssign => 'Assegna a cliente';
+
+  @override
+  String get workoutTemplatesDuplicate => 'Duplica template';
+
+  @override
+  String get workoutTemplatesEdit => 'Modifica';
+
+  @override
+  String get workoutTemplatesDelete => 'Elimina';
+
+  @override
+  String get workoutTemplatesAssignTitle => 'Scegli un cliente';
+
+  @override
+  String get workoutTemplatesSaveAsTemplate => 'Salva come template';
+
+  @override
+  String get workoutTemplatesSaveAsTemplateTitle => 'Nome template';
+
+  @override
+  String get workoutTemplatesNameHint => 'Nome';
+
+  @override
+  String get workoutTemplatesDuplicateTitle => 'Duplica template';
+
+  @override
+  String get workoutTemplatesDuplicateHint => 'Nome della copia';
+
+  @override
+  String get workoutTemplatesAssignedSnack => 'Piano aggiunto al cliente.';
+
+  @override
+  String get workoutTemplatesDuplicateSnack => 'Template creato.';
+
+  @override
+  String get workoutTemplatesDeleteConfirmTitle => 'Eliminare il template?';
+
+  @override
+  String get workoutTemplatesDeleteConfirmMessage =>
+      'Il template verrà rimosso da questo dispositivo.';
+
+  @override
+  String get workoutTemplatesDrawerLabel => 'Template allenamento';
+
+  @override
   String get workoutDiaryTitle => 'Diario';
 
   @override

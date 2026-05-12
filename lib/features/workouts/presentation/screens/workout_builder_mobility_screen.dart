@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../core/constants/workout_plan_template_scope.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
@@ -895,6 +896,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final hideExportMenu =
+        widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
 
     return Scaffold(
       appBar: AppBar(
@@ -918,17 +922,26 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           ),
         ),
         actions: [
-          if (!_loading)
+          if (!widget.editorMode)
+            IconButton(
+              icon: const Icon(Icons.bookmark_outline),
+              tooltip: l10n.workoutTemplatesTitle,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                context.push('/workouts/templates');
+              },
+            ),
+          if (!_loading && !hideExportMenu)
             PopupMenuButton<String>(
               icon: const Icon(Icons.ios_share),
-              tooltip: AppLocalizations.of(context).workoutExport,
+              tooltip: l10n.workoutExport,
               onSelected: (value) {
                 if (value == 'pdf') _showPdfExportSheet();
                 if (value == 'excel') _exportExcelAndShare();
               },
               itemBuilder: (context) => [
-                PopupMenuItem(value: 'pdf', child: Text(AppLocalizations.of(context).workoutExportPdf)),
-                PopupMenuItem(value: 'excel', child: Text(AppLocalizations.of(context).workoutExportExcel)),
+                PopupMenuItem(value: 'pdf', child: Text(l10n.workoutExportPdf)),
+                PopupMenuItem(value: 'excel', child: Text(l10n.workoutExportExcel)),
               ],
             ),
           Padding(
