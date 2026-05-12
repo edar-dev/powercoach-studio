@@ -270,6 +270,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     List<_TodayScheduleItem> schedule,
   ) {
     final l10n = AppLocalizations.of(context);
+    final localeName = l10n.localeName;
     if (_loadingStats) {
       return [
         const Padding(
@@ -289,8 +290,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       ];
     }
     return schedule.take(4).map((item) {
-      final dateLabel = DateFormat('dd MMM').format(item.date).toUpperCase();
-      final weekdayLabel = DateFormat('EEE').format(item.date).toUpperCase();
+      final dateLabel =
+          DateFormat('dd MMM', localeName).format(item.date).toUpperCase();
+      final weekdayLabel =
+          DateFormat('EEE', localeName).format(item.date).toUpperCase();
       return Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: _ScheduleCard(

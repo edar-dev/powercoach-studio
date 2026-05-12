@@ -284,6 +284,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsLanguageDescription => 'Lingua dell\'app';
 
   @override
+  String get settingsLanguageItalian => 'Italiano';
+
+  @override
+  String get settingsLanguageEnglish => 'English';
+
+  @override
+  String get settingsLanguageSaved => 'Lingua aggiornata.';
+
+  @override
   String get settingsBackupSectionTitle => 'Backup offline';
 
   @override

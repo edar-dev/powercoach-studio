@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -13,7 +14,6 @@ import '../../../../core/backup/user_data_backup_codec.dart';
 import '../../../../core/backup/user_data_backup_service.dart';
 import '../../../../core/settings/settings_prefs_keys.dart';
 import '../../../../core/storage/offline_local_store.dart';
-import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/stitch_secondary_app_bar.dart';
@@ -50,6 +50,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, value);
     if (mounted) setState(() => _notificationsEnabled = value);
+  }
+
+  Future<void> _showLanguagePicker(AppLocalizations l10n) async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        final currentCode = AppLocaleController.instance.locale.languageCode;
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text(l10n.settingsLanguageItalian),
+                  trailing: currentCode == 'it'
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.of(ctx).pop('it'),
+                ),
+                ListTile(
+                  title: Text(l10n.settingsLanguageEnglish),
+                  trailing: currentCode == 'en'
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.of(ctx).pop('en'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (selected == null || !mounted) return;
+    await AppLocaleController.instance.setLocale(Locale(selected));
+    if (!mounted) return;
+    showAppSnackBar(context, content: Text(l10n.settingsLanguageSaved));
   }
 
   void _signOut() async {
@@ -254,7 +292,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => showNotImplementedAlert(context),
+                  onTap: () => _showLanguagePicker(l10n),
                 ),
                 const Divider(height: 32),
                 ListTile(

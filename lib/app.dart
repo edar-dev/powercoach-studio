@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
@@ -201,27 +202,32 @@ class PowerCoachStudioApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      title: 'PowerCoach Studio',
-      debugShowCheckedModeBanner: false,
-      theme: StitchM3Theme.light,
-      darkTheme: StitchM3Theme.dark,
-      themeMode: ThemeMode.dark,
-      locale: const Locale('it'),
-      supportedLocales: const [
-        Locale('it'),
-        Locale('en'),
-      ],
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      localeResolutionCallback: (locale, supported) {
-        if (locale != null) {
-          for (final s in supported) {
-            if (s.languageCode == locale.languageCode) return s;
-          }
-        }
-        return const Locale('it');
+    return ListenableBuilder(
+      listenable: AppLocaleController.instance,
+      builder: (context, _) {
+        return MaterialApp.router(
+          title: 'PowerCoach Studio',
+          debugShowCheckedModeBanner: false,
+          theme: StitchM3Theme.light,
+          darkTheme: StitchM3Theme.dark,
+          themeMode: ThemeMode.dark,
+          locale: AppLocaleController.instance.locale,
+          supportedLocales: const [
+            Locale('it'),
+            Locale('en'),
+          ],
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          localeResolutionCallback: (locale, supported) {
+            if (locale != null) {
+              for (final s in supported) {
+                if (s.languageCode == locale.languageCode) return s;
+              }
+            }
+            return const Locale('it');
+          },
+          routerConfig: _goRouter,
+        );
       },
-      routerConfig: _goRouter,
     );
   }
 }

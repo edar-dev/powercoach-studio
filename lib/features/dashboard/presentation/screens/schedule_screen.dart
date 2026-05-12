@@ -85,6 +85,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final localeName = l10n.localeName;
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
@@ -133,8 +134,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
               itemCount: _items.length,
               itemBuilder: (context, index) {
                 final item = _items[index];
-                final time = DateFormat('dd MMM').format(item.date).toUpperCase();
-                final period = DateFormat('EEE').format(item.date).toUpperCase();
+                final time = DateFormat('dd MMM', localeName)
+                    .format(item.date)
+                    .toUpperCase();
+                final period = DateFormat('EEE', localeName)
+                    .format(item.date)
+                    .toUpperCase();
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: _ScheduleTile(

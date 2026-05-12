@@ -632,6 +632,24 @@ abstract class AppLocalizations {
   /// **'App language'**
   String get settingsLanguageDescription;
 
+  /// No description provided for @settingsLanguageItalian.
+  ///
+  /// In en, this message translates to:
+  /// **'Italiano'**
+  String get settingsLanguageItalian;
+
+  /// No description provided for @settingsLanguageEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get settingsLanguageEnglish;
+
+  /// No description provided for @settingsLanguageSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Language updated.'**
+  String get settingsLanguageSaved;
+
   /// No description provided for @settingsBackupSectionTitle.
   ///
   /// In en, this message translates to:
