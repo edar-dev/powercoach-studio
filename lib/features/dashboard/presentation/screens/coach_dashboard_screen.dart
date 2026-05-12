@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../customers/data/customer_repository.dart';
+import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -116,6 +117,14 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            tooltip: l10n.dashboardReminderTooltip,
+            icon: const Icon(Icons.notifications_outlined),
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              showDashboardReminderComposer(context);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () {

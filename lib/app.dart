@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
+import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
@@ -28,6 +29,7 @@ import 'features/workouts/presentation/screens/workout_placeholder_screen.dart';
 import 'l10n/app_localizations.dart';
 
 final _goRouter = GoRouter(
+  navigatorKey: appRootNavigatorKey,
   initialLocation: '/',
   observers: kReleaseMode ? [SentryNavigatorObserver()] : const <NavigatorObserver>[],
   refreshListenable: SupabaseBootstrap.refreshTick,

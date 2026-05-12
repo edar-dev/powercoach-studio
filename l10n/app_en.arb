@@ -87,7 +87,25 @@
   "subscriptionPlanPro": "Pro",
   "subscriptionUpgrade": "Upgrade",
   "subscriptionManage": "Manage subscription",
-  "settingsNotificationsDescription": "Receive push notifications",
+  "settingsNotificationsDescription": "Local reminders for sessions and clients",
+  "settingsNotificationPermissionDenied": "Notifications are disabled. Enable them in system settings to turn this on.",
+  "reminderWebNotSupported": "Reminders are not supported in the web version of the app.",
+  "reminderPlatformNotSupported": "Reminders are not supported on this platform.",
+  "reminderEnableNotificationsFirst": "Turn on notifications in Settings first.",
+  "reminderPastTimeError": "Choose a time in the future.",
+  "reminderSaved": "Reminder saved.",
+  "reminderScheduleError": "Could not schedule the reminder. Try again.",
+  "reminderNotificationTitle": "Reminder: {customerName}",
+  "@reminderNotificationTitle": {
+    "placeholders": {
+      "customerName": {
+        "type": "String"
+      }
+    }
+  },
+  "reminderNotificationBody": "Scheduled client reminder",
+  "reminderDashboardSessionTitle": "Session reminder",
+  "customerReminderAction": "Set reminder",
   "settingsLanguageDescription": "App language",
   "settingsLanguageItalian": "Italiano",
   "settingsLanguageEnglish": "English",
@@ -348,6 +366,7 @@
   "dashboardWorkoutBuilder": "Workout Builder",
   "dashboardSessionTitle": "Session",
   "dashboardDetailHint": "Details are based on the selected workout plan start date.",
+  "dashboardReminderTooltip": "Set reminder",
   "customerEditProfile": "Edit Profile",
   "customerAssignWorkout": "Assign Workout",
   "customerGoalLabel": "Goal",

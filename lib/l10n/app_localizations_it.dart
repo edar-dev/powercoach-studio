@@ -278,7 +278,48 @@ class AppLocalizationsIt extends AppLocalizations {
   String get subscriptionManage => 'Gestisci abbonamento';
 
   @override
-  String get settingsNotificationsDescription => 'Ricevi notifiche push';
+  String get settingsNotificationsDescription =>
+      'Promemoria locali per sessioni e clienti';
+
+  @override
+  String get settingsNotificationPermissionDenied =>
+      'Le notifiche sono disattivate. Abilitale nelle impostazioni di sistema per attivare questa opzione.';
+
+  @override
+  String get reminderWebNotSupported =>
+      'I promemoria non sono supportati nella versione web dell\'app.';
+
+  @override
+  String get reminderPlatformNotSupported =>
+      'I promemoria non sono supportati su questa piattaforma.';
+
+  @override
+  String get reminderEnableNotificationsFirst =>
+      'Attiva prima le notifiche in Impostazioni.';
+
+  @override
+  String get reminderPastTimeError => 'Scegli un orario nel futuro.';
+
+  @override
+  String get reminderSaved => 'Promemoria salvato.';
+
+  @override
+  String get reminderScheduleError =>
+      'Impossibile programmare il promemoria. Riprova.';
+
+  @override
+  String reminderNotificationTitle(String customerName) {
+    return 'Promemoria: $customerName';
+  }
+
+  @override
+  String get reminderNotificationBody => 'Promemoria cliente programmato';
+
+  @override
+  String get reminderDashboardSessionTitle => 'Promemoria sessione';
+
+  @override
+  String get customerReminderAction => 'Imposta promemoria';
 
   @override
   String get settingsLanguageDescription => 'Lingua dell\'app';
@@ -947,6 +988,9 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get dashboardDetailHint =>
       'I dettagli si basano sulla data di inizio del piano selezionato.';
+
+  @override
+  String get dashboardReminderTooltip => 'Imposta promemoria';
 
   @override
   String get customerEditProfile => 'Modifica profilo';

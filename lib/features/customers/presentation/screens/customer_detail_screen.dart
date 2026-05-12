@@ -10,6 +10,7 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
+import '../widgets/customer_reminder_sheet.dart';
 import '../../data/customer_repository.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/customer_measurement_repository.dart';
@@ -316,6 +317,18 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 bodyBuilder: (sheetContext) => Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    ListTile(
+                      leading: const Icon(Icons.alarm_add_outlined),
+                      title: Text(l10n.customerReminderAction),
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        showCustomerReminderComposer(
+                          context,
+                          customerId: c.id,
+                          customerName: c.name,
+                        );
+                      },
+                    ),
                     ListTile(
                       leading: const Icon(Icons.edit_outlined),
                       title: Text(l10n.customerEdit),

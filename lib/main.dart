@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
+import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -126,6 +127,10 @@ class _BootstrapAppState extends State<_BootstrapApp> {
 
       await AppLocaleController.instance.load();
       _logStartupStep('locale controller loaded', _bootstrapWatch);
+
+      await NotificationSchedulerService.instance.ensureInitialized();
+      await NotificationSchedulerService.instance.syncWithNotificationPreference();
+      _logStartupStep('local notifications synced', _bootstrapWatch);
 
       if (!mounted) return;
       setState(() {
