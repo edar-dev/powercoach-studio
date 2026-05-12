@@ -993,6 +993,84 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardReminderTooltip => 'Imposta promemoria';
 
   @override
+  String get dashboardSectionToday => 'Oggi';
+
+  @override
+  String get dashboardSectionAttention => 'Richiede attenzione';
+
+  @override
+  String get dashboardSectionStalePlans => 'Programmi da aggiornare';
+
+  @override
+  String get dashboardSectionCustomersNoPlan => 'Clienti senza programma';
+
+  @override
+  String get dashboardNoPending =>
+      'In questo momento nulla in coda richiede un intervento.';
+
+  @override
+  String dashboardQueuedOperationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count operazioni in attesa di sincronizzazione',
+      one: '$count operazione in attesa di sincronizzazione',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardBackupHint =>
+      'I dati restano su questo dispositivo finché non sincronizzi. Esporta un backup da Impostazioni prima di reinstallare.';
+
+  @override
+  String get dashboardOpenSyncSettings => 'Apri Impostazioni';
+
+  @override
+  String get dashboardLoadError =>
+      'Impossibile caricare la dashboard. Scorri verso il basso per riprovare.';
+
+  @override
+  String dashboardNoStalePlans(int days) {
+    return 'Tutti i programmi sono stati aggiornati negli ultimi $days giorni.';
+  }
+
+  @override
+  String get dashboardNoCustomersWithoutPlan =>
+      'Ogni cliente ha almeno un programma.';
+
+  @override
+  String get dashboardPendingDetailTitle => 'Operazione di sincronizzazione';
+
+  @override
+  String dashboardPendingStatusLabel(String status) {
+    return 'Stato: $status';
+  }
+
+  @override
+  String dashboardPendingEntityLabel(String entity) {
+    return 'Entità: $entity';
+  }
+
+  @override
+  String dashboardPendingPathLabel(String path) {
+    return 'Percorso: $path';
+  }
+
+  @override
+  String get dashboardSemanticTodayList => 'Programmi che iniziano oggi';
+
+  @override
+  String get dashboardSemanticAttentionList =>
+      'Coda di sincronizzazione ed errori';
+
+  @override
+  String get dashboardSemanticNoPlanList => 'Clienti senza programma';
+
+  @override
+  String get dashboardSemanticStaleList => 'Programmi da aggiornare';
+
+  @override
   String get customerEditProfile => 'Modifica profilo';
 
   @override
