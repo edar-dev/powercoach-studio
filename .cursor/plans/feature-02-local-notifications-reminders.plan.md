@@ -1,28 +1,28 @@
 ---
-name: feature-02-local-notifications-reminders
-overview: Collegare il toggle notifiche in Impostazioni a permessi e notifiche locali programmate (promemoria sessioni/cliente), con scheduling cross-platform e gestione lifecycle app.
+name: "feature-02-local-notifications-reminders "
+overview: "Collegare il toggle notifiche in Impostazioni a permessi e notifiche locali programmate (promemoria sessioni/cliente), con scheduling cross-platform e gestione lifecycle app. "
 todos:
   - id: add-flutter-local-notifications
-    content: Aggiungere dipendenza flutter_local_notifications (+ timezone se scheduling avanzato); configurare Android/iOS/macOS manifest/Info.plist
-    status: pending
+    content: "Aggiungere dipendenza flutter_local_notifications (+ timezone se scheduling avanzato); configurare Android/iOS/macOS manifest/Info.plist "
+    status: completed
   - id: notification-service
-    content: Creare NotificationSchedulerService (init canal Android, request permission, schedule/cancel)
-    status: pending
+    content: "Creare NotificationSchedulerService (init canal Android, request permission, schedule/cancel) "
+    status: completed
   - id: wire-settings-toggle
-    content: Da settings_screen: se ON richiedere permesso; se negato ripristinare toggle e messaggio; se ON schedulare job di default o aprire configurazione
-    status: pending
+    content: "Da settings_screen: se ON richiedere permesso; se negato ripristinare toggle e messaggio; se ON schedulare job di default o aprire configurazione "
+    status: completed
   - id: reminder-data-model
-    content: Definire modello minimo promemoria (es. id, customerId, title, fireAt, repeatRule) persistito in SharedPreferences o Drift; CRUD base
-    status: pending
+    content: "Definire modello minimo promemoria (es. id, customerId, title, fireAt, repeatRule) persistito in SharedPreferences o Drift; CRUD base "
+    status: completed
   - id: entry-points-ui
-    content: Aggiungere azione Promemoria da customer_detail o dashboard (dialog data/ora) che chiama scheduler
-    status: pending
+    content: "Aggiungere azione Promemoria da customer_detail o dashboard (dialog data/ora) che chiama scheduler "
+    status: completed
   - id: backup-prefs
-    content: Estendere user backup JSON se si aggiungono nuove chiavi prefs o elenco reminder (opzionale v2)
-    status: pending
+    content: "Estendere user backup JSON se si aggiungono nuove chiavi prefs o elenco reminder (opzionale v2) "
+    status: completed
   - id: verify-platforms
-    content: Test manuale Android+iOS; documentare limiti web (notifiche browser spesso non supportate)
-    status: pending
+    content: "Test manuale Android+iOS; documentare limiti web (notifiche browser spesso non supportate) "
+    status: completed
 isProject: false
 ---
 
