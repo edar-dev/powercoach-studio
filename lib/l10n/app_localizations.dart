@@ -1918,6 +1918,162 @@ abstract class AppLocalizations {
   /// **'Set reminder'**
   String get dashboardReminderTooltip;
 
+  /// No description provided for @dashboardSectionToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get dashboardSectionToday;
+
+  /// No description provided for @dashboardSectionAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs attention'**
+  String get dashboardSectionAttention;
+
+  /// No description provided for @dashboardSectionStalePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans to refresh'**
+  String get dashboardSectionStalePlans;
+
+  /// No description provided for @dashboardSectionCustomersNoPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Clients without a program'**
+  String get dashboardSectionCustomersNoPlan;
+
+  /// No description provided for @dashboardNoPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing in the sync queue needs action right now.'**
+  String get dashboardNoPending;
+
+  /// No description provided for @dashboardQueuedOperationsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, one{{count} operation waiting to sync} other{{count} operations waiting to sync}}'**
+  String dashboardQueuedOperationsCount(int count);
+
+  /// No description provided for @dashboardBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Data stays on this device until it syncs. Export a backup from Settings before reinstalling.'**
+  String get dashboardBackupHint;
+
+  /// No description provided for @dashboardOpenSyncSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Settings'**
+  String get dashboardOpenSyncSettings;
+
+  /// No description provided for @dashboardLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the dashboard. Pull down to try again.'**
+  String get dashboardLoadError;
+
+  /// No description provided for @dashboardNoStalePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'All programs were updated within the last {days} days.'**
+  String dashboardNoStalePlans(int days);
+
+  /// No description provided for @dashboardNoCustomersWithoutPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Every client has at least one program.'**
+  String get dashboardNoCustomersWithoutPlan;
+
+  /// No description provided for @dashboardPendingDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync operation'**
+  String get dashboardPendingDetailTitle;
+
+  /// No description provided for @dashboardPendingStatusLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: {status}'**
+  String dashboardPendingStatusLabel(String status);
+
+  /// No description provided for @dashboardPendingEntityLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Entity: {entity}'**
+  String dashboardPendingEntityLabel(String entity);
+
+  /// No description provided for @dashboardPendingPathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path: {path}'**
+  String dashboardPendingPathLabel(String path);
+
+  /// No description provided for @dashboardSyncStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get dashboardSyncStatusPending;
+
+  /// No description provided for @dashboardSyncStatusSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing'**
+  String get dashboardSyncStatusSyncing;
+
+  /// No description provided for @dashboardSyncStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get dashboardSyncStatusFailed;
+
+  /// No description provided for @dashboardSyncStatusConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict'**
+  String get dashboardSyncStatusConflict;
+
+  /// No description provided for @dashboardSyncStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get dashboardSyncStatusCompleted;
+
+  /// No description provided for @dashboardSyncStatusDeadLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sync'**
+  String get dashboardSyncStatusDeadLetter;
+
+  /// No description provided for @dashboardSyncStatusBlockedAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for sign-in'**
+  String get dashboardSyncStatusBlockedAuth;
+
+  /// No description provided for @dashboardSemanticTodayList.
+  ///
+  /// In en, this message translates to:
+  /// **'Programs starting today'**
+  String get dashboardSemanticTodayList;
+
+  /// No description provided for @dashboardSemanticAttentionList.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync queue and errors'**
+  String get dashboardSemanticAttentionList;
+
+  /// No description provided for @dashboardSemanticNoPlanList.
+  ///
+  /// In en, this message translates to:
+  /// **'Clients without a program'**
+  String get dashboardSemanticNoPlanList;
+
+  /// No description provided for @dashboardSemanticStaleList.
+  ///
+  /// In en, this message translates to:
+  /// **'Programs that may need an update'**
+  String get dashboardSemanticStaleList;
+
   /// No description provided for @customerEditProfile.
   ///
   /// In en, this message translates to:

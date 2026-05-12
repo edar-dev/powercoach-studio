@@ -985,6 +985,104 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardReminderTooltip => 'Set reminder';
 
   @override
+  String get dashboardSectionToday => 'Today';
+
+  @override
+  String get dashboardSectionAttention => 'Needs attention';
+
+  @override
+  String get dashboardSectionStalePlans => 'Plans to refresh';
+
+  @override
+  String get dashboardSectionCustomersNoPlan => 'Clients without a program';
+
+  @override
+  String get dashboardNoPending =>
+      'Nothing in the sync queue needs action right now.';
+
+  @override
+  String dashboardQueuedOperationsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count operations waiting to sync',
+      one: '$count operation waiting to sync',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get dashboardBackupHint =>
+      'Data stays on this device until it syncs. Export a backup from Settings before reinstalling.';
+
+  @override
+  String get dashboardOpenSyncSettings => 'Open Settings';
+
+  @override
+  String get dashboardLoadError =>
+      'Could not load the dashboard. Pull down to try again.';
+
+  @override
+  String dashboardNoStalePlans(int days) {
+    return 'All programs were updated within the last $days days.';
+  }
+
+  @override
+  String get dashboardNoCustomersWithoutPlan =>
+      'Every client has at least one program.';
+
+  @override
+  String get dashboardPendingDetailTitle => 'Sync operation';
+
+  @override
+  String dashboardPendingStatusLabel(String status) {
+    return 'Status: $status';
+  }
+
+  @override
+  String dashboardPendingEntityLabel(String entity) {
+    return 'Entity: $entity';
+  }
+
+  @override
+  String dashboardPendingPathLabel(String path) {
+    return 'Path: $path';
+  }
+
+  @override
+  String get dashboardSyncStatusPending => 'Pending';
+
+  @override
+  String get dashboardSyncStatusSyncing => 'Syncing';
+
+  @override
+  String get dashboardSyncStatusFailed => 'Failed';
+
+  @override
+  String get dashboardSyncStatusConflict => 'Conflict';
+
+  @override
+  String get dashboardSyncStatusCompleted => 'Completed';
+
+  @override
+  String get dashboardSyncStatusDeadLetter => 'Could not sync';
+
+  @override
+  String get dashboardSyncStatusBlockedAuth => 'Waiting for sign-in';
+
+  @override
+  String get dashboardSemanticTodayList => 'Programs starting today';
+
+  @override
+  String get dashboardSemanticAttentionList => 'Sync queue and errors';
+
+  @override
+  String get dashboardSemanticNoPlanList => 'Clients without a program';
+
+  @override
+  String get dashboardSemanticStaleList => 'Programs that may need an update';
+
+  @override
   String get customerEditProfile => 'Edit Profile';
 
   @override

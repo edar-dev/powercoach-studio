@@ -1,28 +1,28 @@
 ---
-name: feature-03-dashboard-today-command-center
-overview: Evolvere il dashboard da sole statistiche a “centro comando giornaliero”: priorità (oggi), outbox/errori sync o stato offline, accessi rapidi, dati coerenti con repository esistenti.
+name: "feature-03-dashboard-today-command-center "
+overview: "Evolvere il dashboard da sole statistiche a “centro comando giornaliero”: priorità (oggi), outbox/errori sync o stato offline, accessi rapidi, dati coerenti con repository esistenti. "
 todos:
   - id: product-spec-sections
-    content: Definire elenco sezioni MVP (Oggi, Azioni richieste, Clienti recenti, Programmi da aggiornare) e ordine visivo con design Stitch
-    status: pending
+    content: "Definire elenco sezioni MVP (Oggi, Azioni richieste, Clienti recenti, Programmi da aggiornare) e ordine visivo con design Stitch "
+    status: completed
   - id: extend-dashboard-vm
-    content: Introdurre DashboardViewModel o metodo _loadStats esteso che aggrega CustomerRepository + WorkoutPlanRepository + lettura pending ops se ancora usate
-    status: pending
+    content: "Introdurre DashboardViewModel o metodo _loadStats esteso che aggrega CustomerRepository + WorkoutPlanRepository + lettura pending ops se ancora usate "
+    status: completed
   - id: pending-ops-surface
-    content: Se OfflineLocalStore.readPendingOperations disponibile, sezione “In coda / errori” con link a schermata dettaglio o dialog (se non esiste route, placeholder con lista testuale)
-    status: pending
+    content: "Se OfflineLocalStore.readPendingOperations disponibile, sezione “In coda / errori” con link a schermata dettaglio o dialog (se non esiste route, placeholder con lista testuale) "
+    status: completed
   - id: stale-plans-heuristic
-    content: Definire “piano non aggiornato” (es. updatedAt > 14 giorni o senza sessioni recenti) e lista top N con tap verso customer_workouts
-    status: pending
+    content: "Definire “piano non aggiornato” (es. updatedAt > 14 giorni o senza sessioni recenti) e lista top N con tap verso customer_workouts "
+    status: completed
   - id: ui-components
-    content: Estrarre widget riusabili in lib/features/dashboard/presentation/widgets/ per card sezioni e empty states
-    status: pending
+    content: "Estrarre widget riusabili in lib/features/dashboard/presentation/widgets/ per card sezioni e empty states "
+    status: completed
   - id: l10n-and-a11y
-    content: Nuove stringhe ARB; semantics per liste
-    status: pending
+    content: "Nuove stringhe ARB; semantics per liste "
+    status: completed
   - id: tests-loading-empty-error
-    content: Widget test con repository fake per loading, empty, errore rete/throw
-    status: pending
+    content: "Widget test con repository fake per loading, empty, errore rete/throw "
+    status: completed
 isProject: false
 ---
 

@@ -367,6 +367,67 @@
   "dashboardSessionTitle": "Session",
   "dashboardDetailHint": "Details are based on the selected workout plan start date.",
   "dashboardReminderTooltip": "Set reminder",
+  "dashboardSectionToday": "Today",
+  "dashboardSectionAttention": "Needs attention",
+  "dashboardSectionStalePlans": "Plans to refresh",
+  "dashboardSectionCustomersNoPlan": "Clients without a program",
+  "dashboardNoPending": "Nothing in the sync queue needs action right now.",
+  "dashboardQueuedOperationsCount": "{count, plural, one{{count} operation waiting to sync} other{{count} operations waiting to sync}}",
+  "@dashboardQueuedOperationsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardBackupHint": "Data stays on this device until it syncs. Export a backup from Settings before reinstalling.",
+  "dashboardOpenSyncSettings": "Open Settings",
+  "dashboardLoadError": "Could not load the dashboard. Pull down to try again.",
+  "dashboardNoStalePlans": "All programs were updated within the last {days} days.",
+  "@dashboardNoStalePlans": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardNoCustomersWithoutPlan": "Every client has at least one program.",
+  "dashboardPendingDetailTitle": "Sync operation",
+  "dashboardPendingStatusLabel": "Status: {status}",
+  "@dashboardPendingStatusLabel": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardPendingEntityLabel": "Entity: {entity}",
+  "@dashboardPendingEntityLabel": {
+    "placeholders": {
+      "entity": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardPendingPathLabel": "Path: {path}",
+  "@dashboardPendingPathLabel": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardSyncStatusPending": "Pending",
+  "dashboardSyncStatusSyncing": "Syncing",
+  "dashboardSyncStatusFailed": "Failed",
+  "dashboardSyncStatusConflict": "Conflict",
+  "dashboardSyncStatusCompleted": "Completed",
+  "dashboardSyncStatusDeadLetter": "Could not sync",
+  "dashboardSyncStatusBlockedAuth": "Waiting for sign-in",
+  "dashboardSemanticTodayList": "Programs starting today",
+  "dashboardSemanticAttentionList": "Sync queue and errors",
+  "dashboardSemanticNoPlanList": "Clients without a program",
+  "dashboardSemanticStaleList": "Programs that may need an update",
   "customerEditProfile": "Edit Profile",
   "customerAssignWorkout": "Assign Workout",
   "customerGoalLabel": "Goal",
