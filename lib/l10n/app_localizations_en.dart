@@ -280,7 +280,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionManage => 'Manage subscription';
 
   @override
-  String get settingsNotificationsDescription => 'Receive push notifications';
+  String get settingsNotificationsDescription =>
+      'Local reminders for sessions and clients';
+
+  @override
+  String get settingsNotificationPermissionDenied =>
+      'Notifications are disabled. Enable them in system settings to turn this on.';
+
+  @override
+  String get reminderWebNotSupported =>
+      'Reminders are not supported in the web version of the app.';
+
+  @override
+  String get reminderPlatformNotSupported =>
+      'Reminders are not supported on this platform.';
+
+  @override
+  String get reminderEnableNotificationsFirst =>
+      'Turn on notifications in Settings first.';
+
+  @override
+  String get reminderPastTimeError => 'Choose a time in the future.';
+
+  @override
+  String get reminderSaved => 'Reminder saved.';
+
+  @override
+  String get reminderScheduleError =>
+      'Could not schedule the reminder. Try again.';
+
+  @override
+  String reminderNotificationTitle(String customerName) {
+    return 'Reminder: $customerName';
+  }
+
+  @override
+  String get reminderNotificationBody => 'Scheduled client reminder';
+
+  @override
+  String get reminderDashboardSessionTitle => 'Session reminder';
+
+  @override
+  String get customerReminderAction => 'Set reminder';
 
   @override
   String get settingsLanguageDescription => 'App language';
@@ -939,6 +980,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dashboardDetailHint =>
       'Details are based on the selected workout plan start date.';
+
+  @override
+  String get dashboardReminderTooltip => 'Set reminder';
 
   @override
   String get customerEditProfile => 'Edit Profile';

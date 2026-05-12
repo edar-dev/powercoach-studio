@@ -33,6 +33,7 @@ void main() {
     expect(parsed.pendingOperations, isEmpty);
     expect(parsed.syncMeta, isEmpty);
     expect(parsed.notificationsEnabled, isTrue);
+    expect(parsed.reminders, isEmpty);
   });
 
   test('parse rejects wrong account', () {
@@ -70,6 +71,24 @@ void main() {
     });
     final parsed = parseUserBackupJson(jsonText, uid);
     expect(parsed.notificationsEnabled, isFalse);
+  });
+
+  test('parse keeps optional reminders list', () {
+    final jsonText = jsonEncode({
+      ...minimalEnvelope(),
+      'reminders': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'id': 'r1',
+          'title': 'T',
+          'body': 'B',
+          'scheduledAtUtc': DateTime.utc(2030, 1, 2, 12).toIso8601String(),
+          'customerId': 'c1',
+        },
+      ],
+    });
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.reminders.length, 1);
+    expect(parsed.reminders.single['id'], 'r1');
   });
 
   test('parse keeps sync meta rows with metaKey', () {

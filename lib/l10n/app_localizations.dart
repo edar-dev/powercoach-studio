@@ -623,8 +623,74 @@ abstract class AppLocalizations {
   /// No description provided for @settingsNotificationsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Receive push notifications'**
+  /// **'Local reminders for sessions and clients'**
   String get settingsNotificationsDescription;
+
+  /// No description provided for @settingsNotificationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications are disabled. Enable them in system settings to turn this on.'**
+  String get settingsNotificationPermissionDenied;
+
+  /// No description provided for @reminderWebNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are not supported in the web version of the app.'**
+  String get reminderWebNotSupported;
+
+  /// No description provided for @reminderPlatformNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders are not supported on this platform.'**
+  String get reminderPlatformNotSupported;
+
+  /// No description provided for @reminderEnableNotificationsFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on notifications in Settings first.'**
+  String get reminderEnableNotificationsFirst;
+
+  /// No description provided for @reminderPastTimeError.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a time in the future.'**
+  String get reminderPastTimeError;
+
+  /// No description provided for @reminderSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder saved.'**
+  String get reminderSaved;
+
+  /// No description provided for @reminderScheduleError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not schedule the reminder. Try again.'**
+  String get reminderScheduleError;
+
+  /// No description provided for @reminderNotificationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder: {customerName}'**
+  String reminderNotificationTitle(String customerName);
+
+  /// No description provided for @reminderNotificationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled client reminder'**
+  String get reminderNotificationBody;
+
+  /// No description provided for @reminderDashboardSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reminder'**
+  String get reminderDashboardSessionTitle;
+
+  /// No description provided for @customerReminderAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Set reminder'**
+  String get customerReminderAction;
 
   /// No description provided for @settingsLanguageDescription.
   ///
@@ -1845,6 +1911,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Details are based on the selected workout plan start date.'**
   String get dashboardDetailHint;
+
+  /// No description provided for @dashboardReminderTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Set reminder'**
+  String get dashboardReminderTooltip;
 
   /// No description provided for @customerEditProfile.
   ///

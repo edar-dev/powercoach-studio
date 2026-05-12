@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
@@ -12,6 +13,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/backup/backup_path_reader.dart';
 import '../../../../core/backup/user_data_backup_codec.dart';
 import '../../../../core/backup/user_data_backup_service.dart';
+import '../../../../core/notifications/notification_scheduler_service.dart';
+import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/settings/settings_prefs_keys.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -39,17 +42,58 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
+    var enabled = prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+
+    if (!kIsWeb &&
+        NotificationSchedulerService.instance.supportsLocalNotifications) {
+      await NotificationSchedulerService.instance.ensureInitialized();
+      await NotificationSchedulerService.instance.downgradePreferenceIfOsDenied();
+      final prefs2 = await SharedPreferences.getInstance();
+      enabled =
+          prefs2.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+      await NotificationSchedulerService.instance
+          .syncWithNotificationPreference();
+    }
+
+    if (!mounted) return;
     setState(() {
-      _notificationsEnabled =
-          prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+      _notificationsEnabled = enabled;
       _loadingPrefs = false;
     });
   }
 
-  Future<void> _setNotificationsEnabled(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, value);
-    if (mounted) setState(() => _notificationsEnabled = value);
+  Future<void> _onNotificationsToggle(bool value) async {
+    final l10n = AppLocalizations.of(context);
+    if (kIsWeb) {
+      showAppSnackBar(context, content: Text(l10n.reminderWebNotSupported));
+      return;
+    }
+
+    if (value) {
+      await NotificationSchedulerService.instance.ensureInitialized();
+      final granted =
+          await NotificationSchedulerService.instance.requestOsPermission();
+      if (!granted) {
+        if (!mounted) return;
+        showAppSnackBar(
+          context,
+          content: Text(l10n.settingsNotificationPermissionDenied),
+        );
+        return;
+      }
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, true);
+      if (!mounted) return;
+      setState(() => _notificationsEnabled = true);
+      await NotificationSchedulerService.instance
+          .syncWithNotificationPreference();
+    } else {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, false);
+      if (!mounted) return;
+      setState(() => _notificationsEnabled = false);
+      await NotificationSchedulerService.instance.cancelAllScheduled();
+    }
   }
 
   Future<void> _showLanguagePicker(AppLocalizations l10n) async {
@@ -91,6 +135,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _signOut() async {
+    if (!kIsWeb &&
+        NotificationSchedulerService.instance.supportsLocalNotifications) {
+      await NotificationSchedulerService.instance.cancelAllScheduled();
+      await ReminderStore.instance.clear();
+    }
     final uid = SupabaseBootstrap.currentUser?.id;
     if (uid != null) {
       await OfflineLocalStore.instance.wipeForUser(uid);
@@ -251,7 +300,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   value: _notificationsEnabled,
-                  onChanged: _setNotificationsEnabled,
+                  onChanged: kIsWeb ? null : _onNotificationsToggle,
                 ),
                 const Divider(height: 32),
                 Align(

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../notifications/notification_scheduler_service.dart';
+import '../notifications/reminder_store.dart';
 import '../settings/settings_prefs_keys.dart';
 import '../storage/local_user_profile_store.dart';
 import '../storage/offline_local_store.dart';
@@ -36,6 +38,7 @@ class UserDataBackupService {
       'entities': await store.listEntitiesJsonForBackup(accountUserId),
       'pendingOperations': await store.listPendingJsonForBackup(accountUserId),
       'syncMeta': await store.listSyncMetaJsonForBackup(accountUserId),
+      'reminders': await ReminderStore.instance.exportMaps(),
     };
   }
 
@@ -64,5 +67,8 @@ class UserDataBackupService {
       SettingsPrefsKeys.notificationsEnabled,
       parsed.notificationsEnabled,
     );
+    await ReminderStore.instance.replaceFromMaps(parsed.reminders);
+    await NotificationSchedulerService.instance
+        .syncWithNotificationPreference();
   }
 }

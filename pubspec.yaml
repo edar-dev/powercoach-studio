@@ -70,6 +70,10 @@ dependencies:
   uuid: ^4.5.1
   get_it: ^8.0.3
 
+  # Local notifications & scheduled reminders (Feature 02)
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.9.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -33,6 +33,10 @@ The profile screen reads and writes `public.profiles` (columns: `display_name`, 
   `flutter test integration_test/`  
   Vedi `integration_test/README.md` per requisiti (`.env` con `SUPABASE_URL` e `SUPABASE_ANON_KEY`) e note su Windows (Developer Mode).
 
+## Local notifications & reminders
+
+Scheduled client/session reminders use `flutter_local_notifications`. See **`docs/local-notifications-reminders.md`** for supported platforms, backup format (`reminders` in user JSON), and manual QA.
+
 ## Codemagic CI/CD
 
 The repo includes `codemagic.yaml` with three workflows:

@@ -24,6 +24,7 @@ class ParsedUserBackup {
     required this.syncMeta,
     required this.profileJson,
     required this.notificationsEnabled,
+    required this.reminders,
   });
 
   final List<Map<String, dynamic>> entities;
@@ -31,6 +32,9 @@ class ParsedUserBackup {
   final List<Map<String, dynamic>> syncMeta;
   final Map<String, dynamic>? profileJson;
   final bool notificationsEnabled;
+
+  /// Optional reminder rows (Feature 02). Maps are validated on restore.
+  final List<Map<String, dynamic>> reminders;
 }
 
 /// Validates and parses user backup JSON. Unknown top-level keys are ignored.
@@ -67,6 +71,7 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
   final entities = _parseEntityList(root['entities']);
   final pending = _parsePendingList(root['pendingOperations']);
   final syncMeta = _parseSyncMetaList(root['syncMeta']);
+  final reminders = _parseRemindersList(root['reminders']);
 
   var notificationsEnabled = true;
   final prefsRaw = root['preferences'];
@@ -90,6 +95,7 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
     syncMeta: syncMeta,
     profileJson: profileJson,
     notificationsEnabled: notificationsEnabled,
+    reminders: reminders,
   );
 }
 
@@ -131,6 +137,18 @@ List<Map<String, dynamic>> _parseSyncMetaList(dynamic raw) {
     final key = m['metaKey']?.toString() ?? '';
     if (key.isEmpty) continue;
     out.add(m);
+  }
+  return out;
+}
+
+/// Reminder backup rows: tolerate wrong shapes (ignored on restore).
+List<Map<String, dynamic>> _parseRemindersList(dynamic raw) {
+  if (raw == null) return [];
+  if (raw is! List) return [];
+  final out = <Map<String, dynamic>>[];
+  for (final item in raw) {
+    if (item is! Map) continue;
+    out.add(item.cast<String, dynamic>());
   }
   return out;
 }
