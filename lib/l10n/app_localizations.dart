@@ -2008,6 +2008,48 @@ abstract class AppLocalizations {
   /// **'Path: {path}'**
   String dashboardPendingPathLabel(String path);
 
+  /// No description provided for @dashboardSyncStatusPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get dashboardSyncStatusPending;
+
+  /// No description provided for @dashboardSyncStatusSyncing.
+  ///
+  /// In en, this message translates to:
+  /// **'Syncing'**
+  String get dashboardSyncStatusSyncing;
+
+  /// No description provided for @dashboardSyncStatusFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get dashboardSyncStatusFailed;
+
+  /// No description provided for @dashboardSyncStatusConflict.
+  ///
+  /// In en, this message translates to:
+  /// **'Conflict'**
+  String get dashboardSyncStatusConflict;
+
+  /// No description provided for @dashboardSyncStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get dashboardSyncStatusCompleted;
+
+  /// No description provided for @dashboardSyncStatusDeadLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not sync'**
+  String get dashboardSyncStatusDeadLetter;
+
+  /// No description provided for @dashboardSyncStatusBlockedAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for sign-in'**
+  String get dashboardSyncStatusBlockedAuth;
+
   /// No description provided for @dashboardSemanticTodayList.
   ///
   /// In en, this message translates to:

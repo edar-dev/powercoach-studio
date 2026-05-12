@@ -23,17 +23,17 @@ class DashboardSnapshotLoader {
   }) async {
     final clock = now ?? DateTime.now();
     try {
-      final customers = await _customers.getAll();
-      final plans = await _plans.getAll();
-      final pending = await _offline.readPendingOperations();
+      final customersFuture = _customers.getAll();
+      final plansFuture = _plans.getAll();
+      final pendingFuture = _offline.readPendingOperations();
       return buildDashboardSnapshot(
-        customers: customers,
-        plans: plans,
-        pendingOperations: pending,
+        customers: await customersFuture,
+        plans: await plansFuture,
+        pendingOperations: await pendingFuture,
         now: clock,
         unknownClientLabel: unknownClientLabel,
       );
-    } catch (e, _) {
+    } catch (e) {
       return DashboardSnapshot.error(e.toString());
     }
   }

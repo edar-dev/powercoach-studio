@@ -1058,6 +1058,27 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get dashboardSyncStatusPending => 'In coda';
+
+  @override
+  String get dashboardSyncStatusSyncing => 'Sincronizzazione in corso';
+
+  @override
+  String get dashboardSyncStatusFailed => 'Fallita';
+
+  @override
+  String get dashboardSyncStatusConflict => 'Conflitto';
+
+  @override
+  String get dashboardSyncStatusCompleted => 'Completata';
+
+  @override
+  String get dashboardSyncStatusDeadLetter => 'Non sincronizzabile';
+
+  @override
+  String get dashboardSyncStatusBlockedAuth => 'Accesso richiesto';
+
+  @override
   String get dashboardSemanticTodayList => 'Programmi che iniziano oggi';
 
   @override

@@ -417,6 +417,13 @@
       }
     }
   },
+  "dashboardSyncStatusPending": "In coda",
+  "dashboardSyncStatusSyncing": "Sincronizzazione in corso",
+  "dashboardSyncStatusFailed": "Fallita",
+  "dashboardSyncStatusConflict": "Conflitto",
+  "dashboardSyncStatusCompleted": "Completata",
+  "dashboardSyncStatusDeadLetter": "Non sincronizzabile",
+  "dashboardSyncStatusBlockedAuth": "Accesso richiesto",
   "dashboardSemanticTodayList": "Programmi che iniziano oggi",
   "dashboardSemanticAttentionList": "Coda di sincronizzazione ed errori",
   "dashboardSemanticNoPlanList": "Clienti senza programma",

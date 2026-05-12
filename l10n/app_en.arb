@@ -417,6 +417,13 @@
       }
     }
   },
+  "dashboardSyncStatusPending": "Pending",
+  "dashboardSyncStatusSyncing": "Syncing",
+  "dashboardSyncStatusFailed": "Failed",
+  "dashboardSyncStatusConflict": "Conflict",
+  "dashboardSyncStatusCompleted": "Completed",
+  "dashboardSyncStatusDeadLetter": "Could not sync",
+  "dashboardSyncStatusBlockedAuth": "Waiting for sign-in",
   "dashboardSemanticTodayList": "Programs starting today",
   "dashboardSemanticAttentionList": "Sync queue and errors",
   "dashboardSemanticNoPlanList": "Clients without a program",

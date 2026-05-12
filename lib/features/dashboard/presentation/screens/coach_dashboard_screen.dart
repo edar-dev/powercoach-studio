@@ -62,19 +62,19 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   String _pendingStatusLabel(AppLocalizations l10n, PendingOperationStatus s) {
     switch (s) {
       case PendingOperationStatus.pending:
-        return 'pending';
+        return l10n.dashboardSyncStatusPending;
       case PendingOperationStatus.syncing:
-        return 'syncing';
+        return l10n.dashboardSyncStatusSyncing;
       case PendingOperationStatus.failed:
-        return 'failed';
+        return l10n.dashboardSyncStatusFailed;
       case PendingOperationStatus.conflict:
-        return 'conflict';
+        return l10n.dashboardSyncStatusConflict;
       case PendingOperationStatus.completed:
-        return 'completed';
+        return l10n.dashboardSyncStatusCompleted;
       case PendingOperationStatus.deadLetter:
-        return 'deadLetter';
+        return l10n.dashboardSyncStatusDeadLetter;
       case PendingOperationStatus.blockedAuth:
-        return 'blockedAuth';
+        return l10n.dashboardSyncStatusBlockedAuth;
     }
   }
 

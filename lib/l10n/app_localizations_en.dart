@@ -1050,6 +1050,27 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get dashboardSyncStatusPending => 'Pending';
+
+  @override
+  String get dashboardSyncStatusSyncing => 'Syncing';
+
+  @override
+  String get dashboardSyncStatusFailed => 'Failed';
+
+  @override
+  String get dashboardSyncStatusConflict => 'Conflict';
+
+  @override
+  String get dashboardSyncStatusCompleted => 'Completed';
+
+  @override
+  String get dashboardSyncStatusDeadLetter => 'Could not sync';
+
+  @override
+  String get dashboardSyncStatusBlockedAuth => 'Waiting for sign-in';
+
+  @override
   String get dashboardSemanticTodayList => 'Programs starting today';
 
   @override
