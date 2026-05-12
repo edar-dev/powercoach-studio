@@ -826,6 +826,179 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get workoutBuilderTitle => 'Workout Builder';
+
+  @override
+  String get workoutBuilderPlanSaved => 'Piano salvato';
+
+  @override
+  String get workoutBuilderRoutineSaved => 'Routine salvata';
+
+  @override
+  String get workoutBuilderEditSectionTitle => 'Modifica sezione';
+
+  @override
+  String get workoutBuilderSectionNameLabel => 'Nome sezione';
+
+  @override
+  String get workoutBuilderDeleteWeekTitle => 'Eliminare la settimana?';
+
+  @override
+  String get workoutBuilderDeleteWeekMessage =>
+      'Verranno rimossi questa settimana, tutti i giorni e gli esercizi. Operazione irreversibile.';
+
+  @override
+  String get workoutBuilderRenameDayTitle => 'Rinomina giorno';
+
+  @override
+  String get workoutBuilderDayNameLabel => 'Nome giorno';
+
+  @override
+  String get workoutBuilderRenameWeekTitle => 'Rinomina settimana';
+
+  @override
+  String get workoutBuilderWeekNameLabel => 'Nome settimana';
+
+  @override
+  String get workoutBuilderEditMobilityExerciseTitle =>
+      'Modifica esercizio mobility';
+
+  @override
+  String get workoutBuilderAddMobilityExerciseTitle =>
+      'Aggiungi esercizio mobility';
+
+  @override
+  String workoutBuilderWeekNumbered(int n) {
+    return 'SETTIMANA $n';
+  }
+
+  @override
+  String workoutBuilderDayNumbered(int n) {
+    return 'GIORNO $n';
+  }
+
+  @override
+  String workoutBuilderSectionNumbered(int n) {
+    return 'Sezione $n';
+  }
+
+  @override
+  String get workoutBuilderNewExerciseDefault => 'Nuovo esercizio';
+
+  @override
+  String get workoutBuilderNameCopySuffix => ' (copia)';
+
+  @override
+  String get workoutBuilderRoutineNameLabel => 'NOME ROUTINE';
+
+  @override
+  String get workoutBuilderRoutineNameHint => 'Aggiungi titolo routine';
+
+  @override
+  String get workoutBuilderMobilityRoutineTitle => 'Routine mobility';
+
+  @override
+  String get workoutBuilderAddShort => 'Aggiungi';
+
+  @override
+  String get workoutBuilderSectionHeading => 'Sezione';
+
+  @override
+  String get workoutBuilderAddExercise => 'Aggiungi esercizio';
+
+  @override
+  String get workoutBuilderAddSet => 'Aggiungi serie';
+
+  @override
+  String get workoutBuilderAddExerciseTitle => 'Aggiungi esercizio';
+
+  @override
+  String get workoutBuilderEditExerciseTitle => 'Modifica esercizio';
+
+  @override
+  String get workoutBuilderExerciseLabel => 'Esercizio';
+
+  @override
+  String get workoutBuilderFromLibrary => 'Da libreria';
+
+  @override
+  String get workoutBuilderCreateNew => 'Crea nuovo';
+
+  @override
+  String get workoutBuilderCouldNotCreateExercise =>
+      'Impossibile creare l’esercizio. Riprova o aggiungi senza salvare in libreria.';
+
+  @override
+  String get workoutBuilderEnterNameOrSelect =>
+      'Inserisci un nome o seleziona un esercizio.';
+
+  @override
+  String get workoutBuilderMultiSetBlockHeader => 'Serie (Set × Rip + Carico)';
+
+  @override
+  String get workoutBuilderSetLabel => 'Set';
+
+  @override
+  String get workoutBuilderSetsLabel => 'Serie';
+
+  @override
+  String get workoutBuilderRepsLabel => 'Rip';
+
+  @override
+  String get workoutBuilderLoadLabel => 'Carico';
+
+  @override
+  String get workoutBuilderRpeOrLoadLabel => 'RPE / Carico';
+
+  @override
+  String get workoutBuilderNoteOptionalLabel => 'Note (facoltative)';
+
+  @override
+  String get workoutBuilderNameLabel => 'Nome';
+
+  @override
+  String get workoutBuilderNoteLabel => 'Note';
+
+  @override
+  String get workoutBuilderEditSetTitle => 'Modifica serie';
+
+  @override
+  String get workoutBuilderTrainingProgram => 'Programma di allenamento';
+
+  @override
+  String get workoutBuilderNewWeek => 'Nuova settimana';
+
+  @override
+  String get workoutBuilderDuplicateWeek => 'Duplica settimana';
+
+  @override
+  String get workoutBuilderRenameWeekMenu => 'Rinomina settimana';
+
+  @override
+  String get workoutBuilderDeleteWeekMenu => 'Elimina settimana';
+
+  @override
+  String get workoutBuilderClone => 'Clona';
+
+  @override
+  String workoutBuilderAddDayToWeek(int n) {
+    return 'Aggiungi giorno alla settimana $n';
+  }
+
+  @override
+  String get workoutBuilderNoWeeksYet =>
+      'Ancora nessuna settimana. Aggiungine una sopra.';
+
+  @override
+  String get workoutBuilderSuperSetHeading => 'SUPER SET';
+
+  @override
+  String get workoutBuilderDeleteDayMenu => 'Elimina giorno';
+
+  @override
+  String get workoutBuilderNewSuperset => 'Nuovo superset';
+
+  @override
   String get measurementsEmpty => 'Nessuna misura ancora';
 
   @override
@@ -1186,6 +1359,20 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutTemplatesDrawerLabel => 'Template allenamento';
+
+  @override
+  String get workoutTemplatesCustomersLoadError =>
+      'Impossibile caricare l\'elenco clienti. Riprova.';
+
+  @override
+  String get workoutTemplatesSemanticList => 'Elenco template allenamento';
+
+  @override
+  String get workoutTemplatesAssignSearchHint => 'Cerca per nome…';
+
+  @override
+  String get workoutTemplatesAssignNoMatch =>
+      'Nessun cliente corrisponde alla ricerca.';
 
   @override
   String get workoutDiaryTitle => 'Diario';

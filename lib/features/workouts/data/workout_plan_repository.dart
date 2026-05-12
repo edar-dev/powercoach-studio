@@ -182,7 +182,7 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final planDataCopy = jsonEncode(jsonDecode(src.planData));
+    final planDataCopy = _cloneWorkoutPlanDataJson(src.planData);
     return createTemplate(
       name: templateName.trim().isEmpty ? src.name : templateName.trim(),
       planDataJson: planDataCopy,
@@ -213,7 +213,7 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final planDataCopy = jsonEncode(jsonDecode(src.planData));
+    final planDataCopy = _cloneWorkoutPlanDataJson(src.planData);
     final resolvedName = (name != null && name.trim().isNotEmpty)
         ? name.trim()
         : src.name;
@@ -251,6 +251,15 @@ DateTime _sortKeyForPlan(WorkoutPlanApiModel p) {
 
 void _sortPlansByStartDateDesc(List<WorkoutPlanApiModel> plans) {
   plans.sort((a, b) => _sortKeyForPlan(b).compareTo(_sortKeyForPlan(a)));
+}
+
+/// Deep-clone [planData] JSON string; throws [FormatException] if not valid JSON.
+String _cloneWorkoutPlanDataJson(String planData) {
+  try {
+    return jsonEncode(jsonDecode(planData));
+  } catch (_) {
+    throw FormatException('invalid_workout_plan_data');
+  }
 }
 
 /// Parses [WorkoutPlanApiModel.planData] into [WorkoutRoutine].

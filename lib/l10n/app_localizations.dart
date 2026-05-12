@@ -1612,6 +1612,324 @@ abstract class AppLocalizations {
     String percent,
   );
 
+  /// No description provided for @workoutBuilderTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout Builder'**
+  String get workoutBuilderTitle;
+
+  /// No description provided for @workoutBuilderPlanSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan saved'**
+  String get workoutBuilderPlanSaved;
+
+  /// No description provided for @workoutBuilderRoutineSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Routine saved'**
+  String get workoutBuilderRoutineSaved;
+
+  /// No description provided for @workoutBuilderEditSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit section'**
+  String get workoutBuilderEditSectionTitle;
+
+  /// No description provided for @workoutBuilderSectionNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Section name'**
+  String get workoutBuilderSectionNameLabel;
+
+  /// No description provided for @workoutBuilderDeleteWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete week?'**
+  String get workoutBuilderDeleteWeekTitle;
+
+  /// No description provided for @workoutBuilderDeleteWeekMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this week and all its days and exercises. This cannot be undone.'**
+  String get workoutBuilderDeleteWeekMessage;
+
+  /// No description provided for @workoutBuilderRenameDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename day'**
+  String get workoutBuilderRenameDayTitle;
+
+  /// No description provided for @workoutBuilderDayNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Day name'**
+  String get workoutBuilderDayNameLabel;
+
+  /// No description provided for @workoutBuilderRenameWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename week'**
+  String get workoutBuilderRenameWeekTitle;
+
+  /// No description provided for @workoutBuilderWeekNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Week name'**
+  String get workoutBuilderWeekNameLabel;
+
+  /// No description provided for @workoutBuilderEditMobilityExerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit mobility exercise'**
+  String get workoutBuilderEditMobilityExerciseTitle;
+
+  /// No description provided for @workoutBuilderAddMobilityExerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add mobility exercise'**
+  String get workoutBuilderAddMobilityExerciseTitle;
+
+  /// No description provided for @workoutBuilderWeekNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'WEEK {n}'**
+  String workoutBuilderWeekNumbered(int n);
+
+  /// No description provided for @workoutBuilderDayNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'DAY {n}'**
+  String workoutBuilderDayNumbered(int n);
+
+  /// No description provided for @workoutBuilderSectionNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'Section {n}'**
+  String workoutBuilderSectionNumbered(int n);
+
+  /// No description provided for @workoutBuilderNewExerciseDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'New exercise'**
+  String get workoutBuilderNewExerciseDefault;
+
+  /// No description provided for @workoutBuilderNameCopySuffix.
+  ///
+  /// In en, this message translates to:
+  /// **' (copy)'**
+  String get workoutBuilderNameCopySuffix;
+
+  /// No description provided for @workoutBuilderRoutineNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'ROUTINE NAME'**
+  String get workoutBuilderRoutineNameLabel;
+
+  /// No description provided for @workoutBuilderRoutineNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add routine title'**
+  String get workoutBuilderRoutineNameHint;
+
+  /// No description provided for @workoutBuilderMobilityRoutineTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility routine'**
+  String get workoutBuilderMobilityRoutineTitle;
+
+  /// No description provided for @workoutBuilderAddShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get workoutBuilderAddShort;
+
+  /// No description provided for @workoutBuilderSectionHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'Section'**
+  String get workoutBuilderSectionHeading;
+
+  /// No description provided for @workoutBuilderAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get workoutBuilderAddExercise;
+
+  /// No description provided for @workoutBuilderAddSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add set'**
+  String get workoutBuilderAddSet;
+
+  /// No description provided for @workoutBuilderAddExerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get workoutBuilderAddExerciseTitle;
+
+  /// No description provided for @workoutBuilderEditExerciseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit exercise'**
+  String get workoutBuilderEditExerciseTitle;
+
+  /// No description provided for @workoutBuilderExerciseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get workoutBuilderExerciseLabel;
+
+  /// No description provided for @workoutBuilderFromLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'From library'**
+  String get workoutBuilderFromLibrary;
+
+  /// No description provided for @workoutBuilderCreateNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new'**
+  String get workoutBuilderCreateNew;
+
+  /// No description provided for @workoutBuilderCouldNotCreateExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not create exercise. Try again or add without saving to library.'**
+  String get workoutBuilderCouldNotCreateExercise;
+
+  /// No description provided for @workoutBuilderEnterNameOrSelect.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name or select an exercise.'**
+  String get workoutBuilderEnterNameOrSelect;
+
+  /// No description provided for @workoutBuilderMultiSetBlockHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets (Set × Reps + Load)'**
+  String get workoutBuilderMultiSetBlockHeader;
+
+  /// No description provided for @workoutBuilderSetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get workoutBuilderSetLabel;
+
+  /// No description provided for @workoutBuilderSetsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets'**
+  String get workoutBuilderSetsLabel;
+
+  /// No description provided for @workoutBuilderRepsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get workoutBuilderRepsLabel;
+
+  /// No description provided for @workoutBuilderLoadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get workoutBuilderLoadLabel;
+
+  /// No description provided for @workoutBuilderRpeOrLoadLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'RPE / Load'**
+  String get workoutBuilderRpeOrLoadLabel;
+
+  /// No description provided for @workoutBuilderNoteOptionalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get workoutBuilderNoteOptionalLabel;
+
+  /// No description provided for @workoutBuilderNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get workoutBuilderNameLabel;
+
+  /// No description provided for @workoutBuilderNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note'**
+  String get workoutBuilderNoteLabel;
+
+  /// No description provided for @workoutBuilderEditSetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit set'**
+  String get workoutBuilderEditSetTitle;
+
+  /// No description provided for @workoutBuilderTrainingProgram.
+  ///
+  /// In en, this message translates to:
+  /// **'Training program'**
+  String get workoutBuilderTrainingProgram;
+
+  /// No description provided for @workoutBuilderNewWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'New week'**
+  String get workoutBuilderNewWeek;
+
+  /// No description provided for @workoutBuilderDuplicateWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate week'**
+  String get workoutBuilderDuplicateWeek;
+
+  /// No description provided for @workoutBuilderRenameWeekMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename week'**
+  String get workoutBuilderRenameWeekMenu;
+
+  /// No description provided for @workoutBuilderDeleteWeekMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete week'**
+  String get workoutBuilderDeleteWeekMenu;
+
+  /// No description provided for @workoutBuilderClone.
+  ///
+  /// In en, this message translates to:
+  /// **'Clone'**
+  String get workoutBuilderClone;
+
+  /// No description provided for @workoutBuilderAddDayToWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Add day to week {n}'**
+  String workoutBuilderAddDayToWeek(int n);
+
+  /// No description provided for @workoutBuilderNoWeeksYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No weeks yet. Add a week above.'**
+  String get workoutBuilderNoWeeksYet;
+
+  /// No description provided for @workoutBuilderSuperSetHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'SUPER SET'**
+  String get workoutBuilderSuperSetHeading;
+
+  /// No description provided for @workoutBuilderDeleteDayMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete day'**
+  String get workoutBuilderDeleteDayMenu;
+
+  /// No description provided for @workoutBuilderNewSuperset.
+  ///
+  /// In en, this message translates to:
+  /// **'New superset'**
+  String get workoutBuilderNewSuperset;
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:
@@ -2259,6 +2577,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Workout templates'**
   String get workoutTemplatesDrawerLabel;
+
+  /// No description provided for @workoutTemplatesCustomersLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the client list. Try again.'**
+  String get workoutTemplatesCustomersLoadError;
+
+  /// No description provided for @workoutTemplatesSemanticList.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout templates list'**
+  String get workoutTemplatesSemanticList;
+
+  /// No description provided for @workoutTemplatesAssignSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name…'**
+  String get workoutTemplatesAssignSearchHint;
+
+  /// No description provided for @workoutTemplatesAssignNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers match your search.'**
+  String get workoutTemplatesAssignNoMatch;
 
   /// No description provided for @workoutDiaryTitle.
   ///

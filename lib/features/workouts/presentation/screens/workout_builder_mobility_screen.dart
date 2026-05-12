@@ -30,7 +30,9 @@ List<({String id, String label})> _getSupersetGroupOptions(Day day) {
       byId.putIfAbsent(id, () => []).add(e);
     }
   }
-  return byId.entries.map((e) => (id: e.key, label: e.value.map((x) => x.name).join(' + '))).toList();
+  return byId.entries
+      .map((e) => (id: e.key, label: e.value.map((x) => x.name).join(' + ')))
+      .toList();
 }
 
 /// Workout Builder variant: Enhanced Mobility (694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6), Intuitive Super Set (7ce630e5).
@@ -53,10 +55,12 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
   final bool editorMode;
 
   @override
-  State<WorkoutBuilderMobilityScreen> createState() => _WorkoutBuilderMobilityScreenState();
+  State<WorkoutBuilderMobilityScreen> createState() =>
+      _WorkoutBuilderMobilityScreenState();
 }
 
-class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen> {
+class _WorkoutBuilderMobilityScreenState
+    extends State<WorkoutBuilderMobilityScreen> {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
   final _customerRepo = CustomerRepository();
@@ -117,13 +121,15 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             _initialWeekNumber = plan.initialWeekNumber;
             _initialWeekController.text = plan.initialWeekNumber.toString();
             _expandedWeekIds.clear();
-            if (routine.weeks.isNotEmpty) _expandedWeekIds.add(routine.weeks.first.id);
+            if (routine.weeks.isNotEmpty)
+              _expandedWeekIds.add(routine.weeks.first.id);
           });
         }
       } else {
         setState(() {
           _expandedWeekIds.clear();
-          if (_routine.weeks.isNotEmpty) _expandedWeekIds.add(_routine.weeks.first.id);
+          if (_routine.weeks.isNotEmpty)
+            _expandedWeekIds.add(_routine.weeks.first.id);
         });
       }
       try {
@@ -138,7 +144,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       if (!mounted) return;
       setState(() {
         _expandedWeekIds.clear();
-        if (_routine.weeks.isNotEmpty) _expandedWeekIds.add(_routine.weeks.first.id);
+        if (_routine.weeks.isNotEmpty)
+          _expandedWeekIds.add(_routine.weeks.first.id);
         _loading = false;
       });
     }
@@ -196,7 +203,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: const Text('Plan saved'),
+              content: Text(
+                AppLocalizations.of(context).workoutBuilderPlanSaved,
+              ),
               behavior: SnackBarBehavior.floating,
               backgroundColor: StitchM3Theme.accent,
             ),
@@ -216,7 +225,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Routine saved'),
+            content: Text(
+              AppLocalizations.of(context).workoutBuilderRoutineSaved,
+            ),
             behavior: SnackBarBehavior.floating,
             backgroundColor: StitchM3Theme.accent,
           ),
@@ -233,7 +244,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   Future<Customer?> _loadCustomerIfNeeded() async {
     if (widget.editorMode && _editorCustomer != null) return _editorCustomer;
-    final customerId = widget.customerId ?? GoRouterState.of(context).uri.queryParameters['customerId'];
+    final customerId =
+        widget.customerId ??
+        GoRouterState.of(context).uri.queryParameters['customerId'];
     if (customerId == null || customerId.isEmpty) return null;
     try {
       return await _customerRepo.getById(customerId);
@@ -274,8 +287,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 child: Text(
                   l10n.workoutPdfLayoutCompactDescription,
                   style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-                      ),
+                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
           ],
@@ -293,10 +306,16 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   Future<void> _exportPdfAndShare(WorkoutPdfLayout layout) async {
     final l10n = AppLocalizations.of(context);
     final name = _routineNameController.text.trim();
-    final routine = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    final routine = _routine.copyWith(
+      name: name.isEmpty ? _routine.name : name,
+    );
     try {
       final customer = await _loadCustomerIfNeeded();
-      final path = await exportWorkoutRoutineToPdf(routine, customer: customer, layout: layout);
+      final path = await exportWorkoutRoutineToPdf(
+        routine,
+        customer: customer,
+        layout: layout,
+      );
       if (!mounted) return;
       await Share.shareXFiles([XFile(path)]);
       if (!mounted) return;
@@ -322,7 +341,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   Future<void> _exportExcelAndShare() async {
     final l10n = AppLocalizations.of(context);
     final name = _routineNameController.text.trim();
-    final routine = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+    final routine = _routine.copyWith(
+      name: name.isEmpty ? _routine.name : name,
+    );
     try {
       final path = await exportWorkoutRoutineToExcel(routine);
       if (!mounted) return;
@@ -365,31 +386,31 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     if (sectionId == null) return;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    _showAddMobilityExerciseDialog(
-      context,
-      theme,
-      cs,
-      (title, subtitle, customExerciseId) {
-        final t = title.trim();
-        final s = subtitle.trim();
-        if (t.isEmpty && s.isEmpty) return;
-        setState(() {
-          final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-          _routine = _routine.copyWith(
-            mobilityItems: [
-              ..._routine.mobilityItems,
-              MobilityItem(
-                id: id,
-                title: t.isEmpty ? 'New exercise' : t,
-                subtitle: s,
-                sectionId: sectionId,
-                customExerciseId: customExerciseId,
-              ),
-            ],
-          );
-        });
-      },
-    );
+    final l10n = AppLocalizations.of(context);
+    _showAddMobilityExerciseDialog(context, theme, cs, (
+      title,
+      subtitle,
+      customExerciseId,
+    ) {
+      final t = title.trim();
+      final s = subtitle.trim();
+      if (t.isEmpty && s.isEmpty) return;
+      setState(() {
+        final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
+        _routine = _routine.copyWith(
+          mobilityItems: [
+            ..._routine.mobilityItems,
+            MobilityItem(
+              id: id,
+              title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
+              subtitle: s,
+              sectionId: sectionId,
+              customExerciseId: customExerciseId,
+            ),
+          ],
+        );
+      });
+    });
   }
 
   void _removeMobilityItem(String id) {
@@ -404,23 +425,35 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final sectionId = _selectedSectionId;
     if (sectionId == null) return;
     final sectionItems = _mobilityItemsForSelectedSection;
-    if (oldIndex < 0 || oldIndex >= sectionItems.length || newIndex < 0 || newIndex >= sectionItems.length) return;
+    if (oldIndex < 0 ||
+        oldIndex >= sectionItems.length ||
+        newIndex < 0 ||
+        newIndex >= sectionItems.length)
+      return;
     setState(() {
       final reordered = List<MobilityItem>.from(sectionItems);
       if (newIndex > oldIndex) newIndex--;
       final item = reordered.removeAt(oldIndex);
       reordered.insert(newIndex, item);
-      final others = _routine.mobilityItems.where((e) => e.sectionId != sectionId).toList();
+      final others = _routine.mobilityItems
+          .where((e) => e.sectionId != sectionId)
+          .toList();
       _routine = _routine.copyWith(mobilityItems: [...others, ...reordered]);
     });
   }
 
   void _addMobilitySection() {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       final id = 'sec_${DateTime.now().millisecondsSinceEpoch}';
-      final name = 'Section ${_routine.mobilitySections.length + 1}';
+      final name = l10n.workoutBuilderSectionNumbered(
+        _routine.mobilitySections.length + 1,
+      );
       _routine = _routine.copyWith(
-        mobilitySections: [..._routine.mobilitySections, MobilitySection(id: id, name: name)],
+        mobilitySections: [
+          ..._routine.mobilitySections,
+          MobilitySection(id: id, name: name),
+        ],
       );
       _selectedMobilitySectionIndex = _routine.mobilitySections.length - 1;
     });
@@ -432,7 +465,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     _showEditSectionDialog(section.name, (newName) {
       if (newName.trim().isEmpty) return;
       setState(() {
-        final updated = _routine.mobilitySections.map((s) => s.id == section.id ? s.copyWith(name: newName.trim()) : s).toList();
+        final updated = _routine.mobilitySections
+            .map(
+              (s) => s.id == section.id ? s.copyWith(name: newName.trim()) : s,
+            )
+            .toList();
         _routine = _routine.copyWith(mobilitySections: updated);
       });
     });
@@ -440,29 +477,47 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _deleteMobilitySection(int index) {
     if (index < 0 || index >= _routine.mobilitySections.length) return;
-    if (_routine.mobilitySections.length <= 1) return; // keep at least one section
+    if (_routine.mobilitySections.length <= 1)
+      return; // keep at least one section
     final section = _routine.mobilitySections[index];
-    final firstOtherId = _routine.mobilitySections.firstWhere((s) => s.id != section.id).id;
+    final firstOtherId = _routine.mobilitySections
+        .firstWhere((s) => s.id != section.id)
+        .id;
     setState(() {
       _routine = _routine.copyWith(
-        mobilitySections: _routine.mobilitySections.where((s) => s.id != section.id).toList(),
+        mobilitySections: _routine.mobilitySections
+            .where((s) => s.id != section.id)
+            .toList(),
         mobilityItems: _routine.mobilityItems
-            .map((m) => m.sectionId == section.id ? m.copyWith(sectionId: firstOtherId) : m)
+            .map(
+              (m) => m.sectionId == section.id
+                  ? m.copyWith(sectionId: firstOtherId)
+                  : m,
+            )
             .toList(),
       );
-      _selectedMobilitySectionIndex = (_selectedMobilitySectionIndex.clamp(0, _routine.mobilitySections.length - 1));
+      _selectedMobilitySectionIndex = (_selectedMobilitySectionIndex.clamp(
+        0,
+        _routine.mobilitySections.length - 1,
+      ));
     });
   }
 
-  void _showEditSectionDialog(String initialName, void Function(String) onSave) {
+  void _showEditSectionDialog(
+    String initialName,
+    void Function(String) onSave,
+  ) {
+    final l10n = AppLocalizations.of(context);
     final controller = TextEditingController(text: initialName);
     showAppBottomSheet<void>(
       context: context,
-      title: 'Edit section',
+      title: l10n.workoutBuilderEditSectionTitle,
       bodyBuilder: (sheetContext) {
         return TextField(
           controller: controller,
-          decoration: const InputDecoration(labelText: 'Section name'),
+          decoration: InputDecoration(
+            labelText: l10n.workoutBuilderSectionNameLabel,
+          ),
           autofocus: false,
           onSubmitted: (_) {
             onSave(controller.text.trim());
@@ -470,7 +525,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           },
         );
       },
-      primaryActionLabel: 'Save',
+      primaryActionLabel: l10n.customerSave,
       onPrimaryAction: () {
         onSave(controller.text.trim());
         Navigator.of(context).pop();
@@ -479,10 +534,25 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   }
 
   void _addWeek() {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
+      final next = _routine.weeks.length + 1;
       _routine = _routine.copyWith(
-        weeks: [..._routine.weeks, Week(id: id, name: 'WEEK ${_routine.weeks.length + 1}', days: [Day(id: '${id}_d1', name: 'DAY 1', exercises: [])])],
+        weeks: [
+          ..._routine.weeks,
+          Week(
+            id: id,
+            name: l10n.workoutBuilderWeekNumbered(next),
+            days: [
+              Day(
+                id: '${id}_d1',
+                name: l10n.workoutBuilderDayNumbered(1),
+                exercises: [],
+              ),
+            ],
+          ),
+        ],
       );
       _expandedWeekIds.add(id);
     });
@@ -490,27 +560,48 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _cloneWeek(int weekIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final l10n = AppLocalizations.of(context);
     setState(() {
       final source = _routine.weeks[weekIndex];
       final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
       final newDays = source.days
-          .map((d) => Day(
-                id: '${newId}_d_${d.id}',
-                name: d.name,
-                exercises: d.exercises.map((e) => Exercise(
-                  id: '${e.id}_$newId',
-                  name: e.name,
-                  sets: e.sets,
-                  reps: e.reps,
-                  rpe: e.rpe,
-                  note: e.note,
-                  setDetails: e.setDetails?.map((s) => ExerciseSet(line: s.line, sets: s.sets, reps: s.reps, rpe: s.rpe, note: s.note)).toList(),
-                  supersetGroupId: e.supersetGroupId,
-                  customExerciseId: e.customExerciseId,
-                )).toList(),
-              ))
+          .map(
+            (d) => Day(
+              id: '${newId}_d_${d.id}',
+              name: d.name,
+              exercises: d.exercises
+                  .map(
+                    (e) => Exercise(
+                      id: '${e.id}_$newId',
+                      name: e.name,
+                      sets: e.sets,
+                      reps: e.reps,
+                      rpe: e.rpe,
+                      note: e.note,
+                      setDetails: e.setDetails
+                          ?.map(
+                            (s) => ExerciseSet(
+                              line: s.line,
+                              sets: s.sets,
+                              reps: s.reps,
+                              rpe: s.rpe,
+                              note: s.note,
+                            ),
+                          )
+                          .toList(),
+                      supersetGroupId: e.supersetGroupId,
+                      customExerciseId: e.customExerciseId,
+                    ),
+                  )
+                  .toList(),
+            ),
+          )
           .toList();
-      final newWeek = Week(id: newId, name: '${source.name} (copy)', days: newDays);
+      final newWeek = Week(
+        id: newId,
+        name: '${source.name}${l10n.workoutBuilderNameCopySuffix}',
+        days: newDays,
+      );
       _routine = _routine.copyWith(weeks: [..._routine.weeks, newWeek]);
       _expandedWeekIds.add(newId);
     });
@@ -524,18 +615,22 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         weeks: _routine.weeks.where((w) => w.id != weekId).toList(),
       );
       _expandedWeekIds.remove(weekId);
-      _selectedWeekIndex = _selectedWeekIndex.clamp(0, _routine.weeks.isNotEmpty ? _routine.weeks.length - 1 : 0);
+      _selectedWeekIndex = _selectedWeekIndex.clamp(
+        0,
+        _routine.weeks.isNotEmpty ? _routine.weeks.length - 1 : 0,
+      );
     });
   }
 
   Future<void> _confirmDeleteWeek(BuildContext context, int weekIndex) async {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final l10n = AppLocalizations.of(context);
     final confirmed = await showAppConfirmDialog(
       context: context,
-      title: 'Delete week',
-      message: 'Remove this week and all its days and exercises? This cannot be undone.',
-      confirmLabel: 'Delete',
-      cancelLabel: 'Cancel',
+      title: l10n.workoutBuilderDeleteWeekTitle,
+      message: l10n.workoutBuilderDeleteWeekMessage,
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
       destructive: true,
     );
     if (confirmed && mounted) _deleteWeek(weekIndex);
@@ -575,20 +670,33 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
     if (week.days.length <= 1) return; // keep at least one day
     setState(() {
-      final newDays = week.days.where((d) => d.id != week.days[dayIndex].id).toList();
+      final newDays = week.days
+          .where((d) => d.id != week.days[dayIndex].id)
+          .toList();
       final newWeeks = List<Week>.from(_routine.weeks);
       newWeeks[weekIndex] = week.copyWith(days: newDays);
       _routine = _routine.copyWith(weeks: newWeeks);
-      _selectedDayIndex = _selectedDayIndex.clamp(0, newDays.isNotEmpty ? newDays.length - 1 : 0);
+      _selectedDayIndex = _selectedDayIndex.clamp(
+        0,
+        newDays.isNotEmpty ? newDays.length - 1 : 0,
+      );
     });
   }
 
   void _addDayToWeek(int weekIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final l10n = AppLocalizations.of(context);
     setState(() {
       final week = _routine.weeks[weekIndex];
       final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
-      final newDays = [...week.days, Day(id: dayId, name: 'DAY ${week.days.length + 1}', exercises: [])];
+      final newDays = [
+        ...week.days,
+        Day(
+          id: dayId,
+          name: l10n.workoutBuilderDayNumbered(week.days.length + 1),
+          exercises: [],
+        ),
+      ];
       final newWeeks = List<Week>.from(_routine.weeks);
       newWeeks[weekIndex] = week.copyWith(days: newDays);
       _routine = _routine.copyWith(weeks: newWeeks);
@@ -597,48 +705,55 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _addExerciseToDay(int weekIndex, int dayIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) return;
+    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length)
+      return;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    _showAddExerciseDialog(
-      context,
-      theme,
-      cs,
-      (name, note, details, [customExerciseId]) {
-        final trimmedName = name.trim();
-        if (trimmedName.isEmpty) return;
-        final list = details.isEmpty ? [const ExerciseSet()] : details;
-        setState(() {
-          final week = _routine.weeks[weekIndex];
-          if (dayIndex < 0 || dayIndex >= week.days.length) return;
-          final day = week.days[dayIndex];
-          final newExercise = Exercise(
-            id: exId,
-            name: trimmedName,
-            sets: '${list.length}',
-            reps: list.map((s) => s.displayText).where((r) => r.isNotEmpty).join(' | '),
-            rpe: '',
-            note: note,
-            setDetails: list,
-            customExerciseId: customExerciseId,
-          );
-          final newEx = [...day.exercises, newExercise];
-          final newDays = List<Day>.from(week.days);
-          newDays[dayIndex] = day.copyWith(exercises: newEx);
-          final newWeeks = List<Week>.from(_routine.weeks);
-          newWeeks[weekIndex] = week.copyWith(days: newDays);
-          _routine = _routine.copyWith(weeks: newWeeks);
-        });
-      },
-      customerId: widget.customerId,
-    );
+    _showAddExerciseDialog(context, theme, cs, (
+      name,
+      note,
+      details, [
+      customExerciseId,
+    ]) {
+      final trimmedName = name.trim();
+      if (trimmedName.isEmpty) return;
+      final list = details.isEmpty ? [const ExerciseSet()] : details;
+      setState(() {
+        final week = _routine.weeks[weekIndex];
+        if (dayIndex < 0 || dayIndex >= week.days.length) return;
+        final day = week.days[dayIndex];
+        final newExercise = Exercise(
+          id: exId,
+          name: trimmedName,
+          sets: '${list.length}',
+          reps: list
+              .map((s) => s.displayText)
+              .where((r) => r.isNotEmpty)
+              .join(' | '),
+          rpe: '',
+          note: note,
+          setDetails: list,
+          customExerciseId: customExerciseId,
+        );
+        final newEx = [...day.exercises, newExercise];
+        final newDays = List<Day>.from(week.days);
+        newDays[dayIndex] = day.copyWith(exercises: newEx);
+        final newWeeks = List<Week>.from(_routine.weeks);
+        newWeeks[weekIndex] = week.copyWith(days: newDays);
+        _routine = _routine.copyWith(weeks: newWeeks);
+      });
+    }, customerId: widget.customerId);
   }
 
   /// Adds a new exercise to the day and assigns it to the given superset group.
   /// The new exercise is inserted immediately after the last exercise of that group.
   /// Stesso dialog multi-serie della creazione normale.
-  void _addExerciseToSuperset(int weekIndex, int dayIndex, String supersetGroupId) {
+  void _addExerciseToSuperset(
+    int weekIndex,
+    int dayIndex,
+    String supersetGroupId,
+  ) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -654,39 +769,42 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    _showAddExerciseDialog(
-      context,
-      theme,
-      cs,
-      (name, note, details, [customExerciseId]) {
-        final trimmedName = name.trim();
-        if (trimmedName.isEmpty) return;
-        final list = details.isEmpty ? [const ExerciseSet()] : details;
-        setState(() {
-          final w = _routine.weeks[weekIndex];
-          if (dayIndex < 0 || dayIndex >= w.days.length) return;
-          final d = w.days[dayIndex];
-          final newExercise = Exercise(
-            id: exId,
-            name: trimmedName,
-            sets: '${list.length}',
-            reps: list.map((s) => s.displayText).where((r) => r.isNotEmpty).join(' | '),
-            rpe: '',
-            note: note,
-            customExerciseId: customExerciseId,
-            setDetails: list,
-            supersetGroupId: supersetGroupId,
-          );
-          final newEx = List<Exercise>.from(d.exercises)..insert(insertIndex, newExercise);
-          final newDays = List<Day>.from(w.days);
-          newDays[dayIndex] = d.copyWith(exercises: newEx);
-          final newWeeks = List<Week>.from(_routine.weeks);
-          newWeeks[weekIndex] = w.copyWith(days: newDays);
-          _routine = _routine.copyWith(weeks: newWeeks);
-        });
-      },
-      customerId: widget.customerId,
-    );
+    _showAddExerciseDialog(context, theme, cs, (
+      name,
+      note,
+      details, [
+      customExerciseId,
+    ]) {
+      final trimmedName = name.trim();
+      if (trimmedName.isEmpty) return;
+      final list = details.isEmpty ? [const ExerciseSet()] : details;
+      setState(() {
+        final w = _routine.weeks[weekIndex];
+        if (dayIndex < 0 || dayIndex >= w.days.length) return;
+        final d = w.days[dayIndex];
+        final newExercise = Exercise(
+          id: exId,
+          name: trimmedName,
+          sets: '${list.length}',
+          reps: list
+              .map((s) => s.displayText)
+              .where((r) => r.isNotEmpty)
+              .join(' | '),
+          rpe: '',
+          note: note,
+          customExerciseId: customExerciseId,
+          setDetails: list,
+          supersetGroupId: supersetGroupId,
+        );
+        final newEx = List<Exercise>.from(d.exercises)
+          ..insert(insertIndex, newExercise);
+        final newDays = List<Day>.from(w.days);
+        newDays[dayIndex] = d.copyWith(exercises: newEx);
+        final newWeeks = List<Week>.from(_routine.weeks);
+        newWeeks[weekIndex] = w.copyWith(days: newDays);
+        _routine = _routine.copyWith(weeks: newWeeks);
+      });
+    }, customerId: widget.customerId);
   }
 
   void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
@@ -704,7 +822,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _moveExerciseInDay(int weekIndex, int dayIndex, String exerciseId, {required bool up}) {
+  void _moveExerciseInDay(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId, {
+    required bool up,
+  }) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -731,12 +854,27 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   void _updateMobilityItem(String id, String title, String subtitle) {
     setState(() {
       _routine = _routine.copyWith(
-        mobilityItems: _routine.mobilityItems.map((e) => e.id == id ? e.copyWith(title: title, subtitle: subtitle) : e).toList(),
+        mobilityItems: _routine.mobilityItems
+            .map(
+              (e) =>
+                  e.id == id ? e.copyWith(title: title, subtitle: subtitle) : e,
+            )
+            .toList(),
       );
     });
   }
 
-  void _updateExercise(int weekIndex, int dayIndex, String exerciseId, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) {
+  void _updateExercise(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId, {
+    String? name,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+    List<ExerciseSet>? setDetails,
+  }) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -780,7 +918,17 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _updateExerciseSet(int weekIndex, int dayIndex, String exerciseId, int setIndex, {String? line, String? sets, String? reps, String? rpe, String? note}) {
+  void _updateExerciseSet(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId,
+    int setIndex, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  }) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -795,7 +943,13 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         if (line != null) {
           final trimmed = line.trim();
           if (trimmed.isNotEmpty) {
-            newDetails[setIndex] = ExerciseSet(line: trimmed, sets: '1', reps: '', rpe: '', note: note ?? cur.note);
+            newDetails[setIndex] = ExerciseSet(
+              line: trimmed,
+              sets: '1',
+              reps: '',
+              rpe: '',
+              note: note ?? cur.note,
+            );
           } else {
             newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
           }
@@ -820,7 +974,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _removeExerciseSet(int weekIndex, int dayIndex, String exerciseId, int setIndex) {
+  void _removeExerciseSet(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId,
+    int setIndex,
+  ) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
@@ -842,13 +1001,24 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _assignToSuperset(int weekIndex, int dayIndex, String exerciseId, String supersetGroupId) {
+  void _assignToSuperset(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId,
+    String supersetGroupId,
+  ) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final week = _routine.weeks[weekIndex];
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
     setState(() {
       final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) => e.id == exerciseId ? e.copyWith(supersetGroupId: supersetGroupId) : e).toList();
+      final newEx = day.exercises
+          .map(
+            (e) => e.id == exerciseId
+                ? e.copyWith(supersetGroupId: supersetGroupId)
+                : e,
+          )
+          .toList();
       final newDays = List<Day>.from(week.days);
       newDays[dayIndex] = day.copyWith(exercises: newEx);
       final newWeeks = List<Week>.from(_routine.weeks);
@@ -863,7 +1033,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     if (dayIndex < 0 || dayIndex >= week.days.length) return;
     setState(() {
       final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) => e.id == exerciseId ? e.copyWith(clearSupersetGroupId: true) : e).toList();
+      final newEx = day.exercises
+          .map(
+            (e) =>
+                e.id == exerciseId ? e.copyWith(clearSupersetGroupId: true) : e,
+          )
+          .toList();
       final newDays = List<Day>.from(week.days);
       newDays[dayIndex] = day.copyWith(exercises: newEx);
       final newWeeks = List<Week>.from(_routine.weeks);
@@ -872,7 +1047,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  bool get _showMobilityContent => widget.variant == WorkoutBuilderVariant.mobility && _mobilityExpanded;
+  bool get _showMobilityContent =>
+      widget.variant == WorkoutBuilderVariant.mobility && _mobilityExpanded;
   _TrainingVariant get _trainingVariant {
     switch (widget.variant) {
       case WorkoutBuilderVariant.mobility:
@@ -915,7 +1091,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           },
         ),
         title: Text(
-          'Workout Builder',
+          l10n.workoutBuilderTitle,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
@@ -941,7 +1117,10 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               },
               itemBuilder: (context) => [
                 PopupMenuItem(value: 'pdf', child: Text(l10n.workoutExportPdf)),
-                PopupMenuItem(value: 'excel', child: Text(l10n.workoutExportExcel)),
+                PopupMenuItem(
+                  value: 'excel',
+                  child: Text(l10n.workoutExportExcel),
+                ),
               ],
             ),
           Padding(
@@ -954,8 +1133,13 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 style: FilledButton.styleFrom(
                   backgroundColor: StitchM3Theme.accent,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                  ),
                 ),
                 child: _saving
                     ? SizedBox(
@@ -963,10 +1147,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                       )
-                    : const Text('Save'),
+                    : Text(l10n.customerSave),
               ),
             ),
           ),
@@ -979,207 +1165,103 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 80),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Routine name
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.only(bottom: 80),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Text(
-                          'ROUTINE NAME',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: StitchM3Theme.accent,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        TextField(
-                          controller: _routineNameController,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: cs.onSurface,
-                          ),
-                          maxLines: 2,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            isDense: false,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 6),
-                            hintText: 'Add routine title',
-                            hintStyle: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Routine start date (plan ordering / display)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context).workoutRoutineStartDate,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: StitchM3Theme.accent,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.6,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        InkWell(
-                          onTap: _pickRoutineStartDate,
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              children: [
-                                Icon(Icons.calendar_today_outlined, size: 20, color: cs.onSurfaceVariant),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    _routine.startDate != null
-                                        ? MaterialLocalizations.of(context).formatFullDate(_routine.startDate!)
-                                        : AppLocalizations.of(context).workoutRoutineStartDatePlaceholder,
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: _routine.startDate != null ? cs.onSurface : cs.onSurfaceVariant,
-                                    ),
-                                  ),
+                        // Routine name
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 24, 16, 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                l10n.workoutBuilderRoutineNameLabel,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: StitchM3Theme.accent,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.6,
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Starting week (editor mode only)
-                  if (widget.editorMode)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            AppLocalizations.of(context).workoutStartingWeek,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: StitchM3Theme.accent,
-                              fontWeight: FontWeight.w600,
-                              letterSpacing: 0.6,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          TextField(
-                            controller: _initialWeekController,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                            ],
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurface,
-                            ),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: const EdgeInsets.symmetric(vertical: 6),
-                              hintText: AppLocalizations.of(context).workoutStartingWeekHint,
-                              hintStyle: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                                color: cs.onSurfaceVariant,
                               ),
-                            ),
-                            onChanged: (s) {
-                              final v = int.tryParse(s);
-                              if (v != null && v >= 1) {
-                                setState(() => _initialWeekNumber = v);
-                              }
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  // Mobility Routine (expanded content only in mobility variant)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        InkWell(
-                          onTap: () => setState(() => _mobilityExpanded = !_mobilityExpanded),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    _mobilityExpanded ? Icons.expand_more : Icons.chevron_right,
-                                    color: cs.onSurfaceVariant,
-                                    size: 24,
+                              const SizedBox(height: 6),
+                              TextField(
+                                controller: _routineNameController,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: cs.onSurface,
+                                ),
+                                maxLines: 2,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  isDense: false,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 6,
                                   ),
-                                  Icon(Icons.accessibility_new, color: StitchM3Theme.accent, size: 24),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    'Mobility Routine',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      fontWeight: FontWeight.w700,
-                                      color: cs.onSurface,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              TextButton.icon(
-                                onPressed: _addMobilityItem,
-                                icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                                label: Text('Add', style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w600)),
+                                  hintText: l10n.workoutBuilderRoutineNameHint,
+                                  hintStyle: theme.textTheme.titleLarge
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        if (_showMobilityContent) ...[
-                          const SizedBox(height: 16),
-                          Row(
+                        // Routine start date (plan ordering / display)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
+                              Text(
+                                AppLocalizations.of(
+                                  context,
+                                ).workoutRoutineStartDate,
+                                style: theme.textTheme.labelSmall?.copyWith(
+                                  color: StitchM3Theme.accent,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.6,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              InkWell(
+                                onTap: _pickRoutineStartDate,
+                                borderRadius: BorderRadius.circular(8),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
                                   child: Row(
                                     children: [
-                                      for (var i = 0; i < _routine.mobilitySections.length; i++) ...[
-                                        if (i > 0) const SizedBox(width: 8),
-                                        _MobilitySectionChip(
-                                          label: _routine.mobilitySections[i].name,
-                                          selected: _selectedMobilitySectionIndex.clamp(0, _routine.mobilitySections.length - 1) == i,
-                                          onTap: () => setState(() => _selectedMobilitySectionIndex = i),
-                                          onEdit: () => _editMobilitySection(i),
-                                          onDelete: _routine.mobilitySections.length > 1 ? () => _deleteMobilitySection(i) : null,
-                                        ),
-                                      ],
-                                      const SizedBox(width: 8),
-                                      InkWell(
-                                        onTap: _addMobilitySection,
-                                        borderRadius: BorderRadius.circular(999),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                                              const SizedBox(width: 4),
-                                              Text('Section', style: theme.textTheme.labelSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
-                                            ],
-                                          ),
+                                      Icon(
+                                        Icons.calendar_today_outlined,
+                                        size: 20,
+                                        color: cs.onSurfaceVariant,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          _routine.startDate != null
+                                              ? MaterialLocalizations.of(
+                                                  context,
+                                                ).formatFullDate(
+                                                  _routine.startDate!,
+                                                )
+                                              : AppLocalizations.of(
+                                                  context,
+                                                ).workoutRoutineStartDatePlaceholder,
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    _routine.startDate != null
+                                                    ? cs.onSurface
+                                                    : cs.onSurfaceVariant,
+                                              ),
                                         ),
                                       ),
                                     ],
@@ -1188,79 +1270,309 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                               ),
                             ],
                           ),
-                          const SizedBox(height: 16),
-                          ReorderableListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            buildDefaultDragHandles: false,
-                            onReorder: _reorderMobility,
-                            itemCount: _mobilityItemsForSelectedSection.length,
-                            itemBuilder: (context, index) {
-                              final item = _mobilityItemsForSelectedSection[index];
-                              return Padding(
-                                key: ValueKey(item.id),
-                                padding: EdgeInsets.only(bottom: index < _mobilityItemsForSelectedSection.length - 1 ? 12 : 0),
-                                child: _MobilityItem(
-                                  index: index,
-                                  title: item.title,
-                                  subtitle: item.subtitle,
-                                  onEdit: (t, s) => _updateMobilityItem(item.id, t, s),
-                                  onDelete: () => _removeMobilityItem(item.id),
+                        ),
+                        // Starting week (editor mode only)
+                        if (widget.editorMode)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  ).workoutStartingWeek,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: StitchM3Theme.accent,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.6,
+                                  ),
                                 ),
-                              );
-                            },
+                                const SizedBox(height: 6),
+                                TextField(
+                                  controller: _initialWeekController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ],
+                                  style: theme.textTheme.titleMedium?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: cs.onSurface,
+                                  ),
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    isDense: true,
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    hintText: AppLocalizations.of(
+                                      context,
+                                    ).workoutStartingWeekHint,
+                                    hintStyle: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          color: cs.onSurfaceVariant,
+                                        ),
+                                  ),
+                                  onChanged: (s) {
+                                    final v = int.tryParse(s);
+                                    if (v != null && v >= 1) {
+                                      setState(() => _initialWeekNumber = v);
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 16),
-                          _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: _selectedSectionId != null ? _addMobilityItem : null),
-                        ],
+                        // Mobility Routine (expanded content only in mobility variant)
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 24, 16, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              InkWell(
+                                onTap: () => setState(
+                                  () => _mobilityExpanded = !_mobilityExpanded,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          _mobilityExpanded
+                                              ? Icons.expand_more
+                                              : Icons.chevron_right,
+                                          color: cs.onSurfaceVariant,
+                                          size: 24,
+                                        ),
+                                        Icon(
+                                          Icons.accessibility_new,
+                                          color: StitchM3Theme.accent,
+                                          size: 24,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          l10n.workoutBuilderMobilityRoutineTitle,
+                                          style: theme.textTheme.titleMedium
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w700,
+                                                color: cs.onSurface,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                    TextButton.icon(
+                                      onPressed: _addMobilityItem,
+                                      icon: Icon(
+                                        Icons.add,
+                                        size: 18,
+                                        color: StitchM3Theme.accent,
+                                      ),
+                                      label: Text(
+                                        l10n.workoutBuilderAddShort,
+                                        style: TextStyle(
+                                          color: StitchM3Theme.accent,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (_showMobilityContent) ...[
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.horizontal,
+                                        child: Row(
+                                          children: [
+                                            for (
+                                              var i = 0;
+                                              i <
+                                                  _routine
+                                                      .mobilitySections
+                                                      .length;
+                                              i++
+                                            ) ...[
+                                              if (i > 0)
+                                                const SizedBox(width: 8),
+                                              _MobilitySectionChip(
+                                                label: _routine
+                                                    .mobilitySections[i]
+                                                    .name,
+                                                selected:
+                                                    _selectedMobilitySectionIndex
+                                                        .clamp(
+                                                          0,
+                                                          _routine
+                                                                  .mobilitySections
+                                                                  .length -
+                                                              1,
+                                                        ) ==
+                                                    i,
+                                                onTap: () => setState(
+                                                  () =>
+                                                      _selectedMobilitySectionIndex =
+                                                          i,
+                                                ),
+                                                onEdit: () =>
+                                                    _editMobilitySection(i),
+                                                onDelete:
+                                                    _routine
+                                                            .mobilitySections
+                                                            .length >
+                                                        1
+                                                    ? () =>
+                                                          _deleteMobilitySection(
+                                                            i,
+                                                          )
+                                                    : null,
+                                              ),
+                                            ],
+                                            const SizedBox(width: 8),
+                                            InkWell(
+                                              onTap: _addMobilitySection,
+                                              borderRadius:
+                                                  BorderRadius.circular(999),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8,
+                                                    ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      Icons.add,
+                                                      size: 18,
+                                                      color:
+                                                          StitchM3Theme.accent,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      l10n.workoutBuilderSectionHeading,
+                                                      style: theme
+                                                          .textTheme
+                                                          .labelSmall
+                                                          ?.copyWith(
+                                                            color: StitchM3Theme
+                                                                .accent,
+                                                            fontWeight:
+                                                                FontWeight.w700,
+                                                          ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 16),
+                                ReorderableListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  buildDefaultDragHandles: false,
+                                  onReorder: _reorderMobility,
+                                  itemCount:
+                                      _mobilityItemsForSelectedSection.length,
+                                  itemBuilder: (context, index) {
+                                    final item =
+                                        _mobilityItemsForSelectedSection[index];
+                                    return Padding(
+                                      key: ValueKey(item.id),
+                                      padding: EdgeInsets.only(
+                                        bottom:
+                                            index <
+                                                _mobilityItemsForSelectedSection
+                                                        .length -
+                                                    1
+                                            ? 12
+                                            : 0,
+                                      ),
+                                      child: _MobilityItem(
+                                        index: index,
+                                        title: item.title,
+                                        subtitle: item.subtitle,
+                                        onEdit: (t, s) =>
+                                            _updateMobilityItem(item.id, t, s),
+                                        onDelete: () =>
+                                            _removeMobilityItem(item.id),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 16),
+                                _DashedButton(
+                                  icon: Icons.add,
+                                  label: l10n.workoutBuilderAddExercise,
+                                  onPressed: _selectedSectionId != null
+                                      ? _addMobilityItem
+                                      : null,
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        // Training Program
+                        _TrainingSection(
+                          theme: theme,
+                          cs: cs,
+                          expanded: _trainingExpanded,
+                          expandedWeekIds: _expandedWeekIds,
+                          weeks: _routine.weeks,
+                          selectedWeekIndex: _selectedWeekIndex,
+                          selectedDayIndex: _selectedDayIndex,
+                          onTrainingToggle: () => setState(
+                            () => _trainingExpanded = !_trainingExpanded,
+                          ),
+                          onToggleWeek: (id) => setState(() {
+                            if (_expandedWeekIds.contains(id)) {
+                              _expandedWeekIds.remove(id);
+                            } else {
+                              _expandedWeekIds.add(id);
+                            }
+                          }),
+                          onNewWeek: _addWeek,
+                          onCloneWeek: _cloneWeek,
+                          onDeleteWeek: (weekIndex) =>
+                              _confirmDeleteWeek(context, weekIndex),
+                          onRenameWeek: _renameWeek,
+                          onAddDay: _addDayToWeek,
+                          onRenameDay: _renameDay,
+                          onDeleteDay: _deleteDay,
+                          onAddExercise: _addExerciseToDay,
+                          onRemoveExercise: _removeExercise,
+                          onMoveExercise: _moveExerciseInDay,
+                          onUpdateExercise: _updateExercise,
+                          onAddSetToExercise: _addSetToExercise,
+                          onUpdateExerciseSet: _updateExerciseSet,
+                          onRemoveExerciseSet: _removeExerciseSet,
+                          onAssignToSuperset: _assignToSuperset,
+                          onRemoveFromSuperset: _removeFromSuperset,
+                          onAddExerciseToSuperset: _addExerciseToSuperset,
+                          onSelectWeek: (i) =>
+                              setState(() => _selectedWeekIndex = i),
+                          onSelectDay: (i) =>
+                              setState(() => _selectedDayIndex = i),
+                          variant: _trainingVariant,
+                        ),
                       ],
                     ),
                   ),
-                  // Training Program
-                  _TrainingSection(
-                    theme: theme,
-                    cs: cs,
-                    expanded: _trainingExpanded,
-                    expandedWeekIds: _expandedWeekIds,
-                    weeks: _routine.weeks,
-                    selectedWeekIndex: _selectedWeekIndex,
-                    selectedDayIndex: _selectedDayIndex,
-                    onTrainingToggle: () => setState(() => _trainingExpanded = !_trainingExpanded),
-                    onToggleWeek: (id) => setState(() {
-                      if (_expandedWeekIds.contains(id)) {
-                        _expandedWeekIds.remove(id);
-                      } else {
-                        _expandedWeekIds.add(id);
-                      }
-                    }),
-                    onNewWeek: _addWeek,
-                    onCloneWeek: _cloneWeek,
-                    onDeleteWeek: (weekIndex) => _confirmDeleteWeek(context, weekIndex),
-                    onRenameWeek: _renameWeek,
-                    onAddDay: _addDayToWeek,
-                    onRenameDay: _renameDay,
-                    onDeleteDay: _deleteDay,
-                    onAddExercise: _addExerciseToDay,
-                    onRemoveExercise: _removeExercise,
-                    onMoveExercise: _moveExerciseInDay,
-                    onUpdateExercise: _updateExercise,
-                    onAddSetToExercise: _addSetToExercise,
-                    onUpdateExerciseSet: _updateExerciseSet,
-                    onRemoveExerciseSet: _removeExerciseSet,
-                    onAssignToSuperset: _assignToSuperset,
-                    onRemoveFromSuperset: _removeFromSuperset,
-                    onAddExerciseToSuperset: _addExerciseToSuperset,
-                    onSelectWeek: (i) => setState(() => _selectedWeekIndex = i),
-                    onSelectDay: (i) => setState(() => _selectedDayIndex = i),
-                    variant: _trainingVariant,
-                  ),
-                ],
-              ),
+                ),
+                _WorkoutBuilderBottomNav(navContext: context, selectedIndex: 1),
+              ],
             ),
-          ),
-          _WorkoutBuilderBottomNav(navContext: context, selectedIndex: 1),
-        ],
-      ),
     );
   }
 }
@@ -1307,7 +1619,11 @@ class _MobilitySectionChip extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                   child: Padding(
                     padding: const EdgeInsets.all(4),
-                    child: Icon(Icons.edit, size: 18, color: cs.onSurfaceVariant),
+                    child: Icon(
+                      Icons.edit,
+                      size: 18,
+                      color: cs.onSurfaceVariant,
+                    ),
                   ),
                 ),
                 if (onDelete != null) ...[
@@ -1317,7 +1633,11 @@ class _MobilitySectionChip extends StatelessWidget {
                     borderRadius: BorderRadius.circular(999),
                     child: Padding(
                       padding: const EdgeInsets.all(4),
-                      child: Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger),
+                      child: Icon(
+                        Icons.delete_outline,
+                        size: 18,
+                        color: StitchM3Theme.danger,
+                      ),
                     ),
                   ),
                 ],
@@ -1366,28 +1686,58 @@ class _MobilityItem extends StatelessWidget {
         children: [
           ReorderableDragStartListener(
             index: index,
-            child: Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
+            child: Icon(
+              Icons.drag_indicator,
+              size: 20,
+              color: cs.onSurfaceVariant,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface)),
+                Text(
+                  title,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: cs.onSurface,
+                  ),
+                ),
                 const SizedBox(height: 4),
-                Text(subtitle, style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
               ],
             ),
           ),
           if (onEdit != null)
             InkWell(
-              onTap: () => _showEditMobilityDialog(context, theme, cs, title, subtitle, onEdit!),
-              child: Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+              onTap: () => _showEditMobilityDialog(
+                context,
+                theme,
+                cs,
+                title,
+                subtitle,
+                onEdit!,
+              ),
+              child: Icon(
+                Icons.edit_outlined,
+                size: 20,
+                color: cs.onSurfaceVariant,
+              ),
             ),
           if (onEdit != null) const SizedBox(width: 8),
           InkWell(
             onTap: onDelete,
-            child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
+            child: Icon(
+              Icons.delete_outline,
+              size: 20,
+              color: StitchM3Theme.danger,
+            ),
           ),
         ],
       ),
@@ -1395,14 +1745,19 @@ class _MobilityItem extends StatelessWidget {
   }
 }
 
-void _showRenameDayDialog(BuildContext context, String initialName, void Function(String) onSave) {
+void _showRenameDayDialog(
+  BuildContext context,
+  String initialName,
+  void Function(String) onSave,
+) {
+  final l10n = AppLocalizations.of(context);
   final controller = TextEditingController(text: initialName);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Rename day',
+    title: l10n.workoutBuilderRenameDayTitle,
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
-      decoration: const InputDecoration(labelText: 'Day name'),
+      decoration: InputDecoration(labelText: l10n.workoutBuilderDayNameLabel),
       autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();
@@ -1411,7 +1766,7 @@ void _showRenameDayDialog(BuildContext context, String initialName, void Functio
         Navigator.of(sheetContext).pop();
       },
     ),
-    primaryActionLabel: 'Save',
+    primaryActionLabel: l10n.customerSave,
     onPrimaryAction: () {
       final name = controller.text.trim();
       if (name.isEmpty) return;
@@ -1421,14 +1776,19 @@ void _showRenameDayDialog(BuildContext context, String initialName, void Functio
   );
 }
 
-void _showRenameWeekDialog(BuildContext context, String initialName, void Function(String) onSave) {
+void _showRenameWeekDialog(
+  BuildContext context,
+  String initialName,
+  void Function(String) onSave,
+) {
+  final l10n = AppLocalizations.of(context);
   final controller = TextEditingController(text: initialName);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Rename week',
+    title: l10n.workoutBuilderRenameWeekTitle,
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
-      decoration: const InputDecoration(labelText: 'Week name'),
+      decoration: InputDecoration(labelText: l10n.workoutBuilderWeekNameLabel),
       autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();
@@ -1437,7 +1797,7 @@ void _showRenameWeekDialog(BuildContext context, String initialName, void Functi
         Navigator.of(sheetContext).pop();
       },
     ),
-    primaryActionLabel: 'Save',
+    primaryActionLabel: l10n.customerSave,
     onPrimaryAction: () {
       final name = controller.text.trim();
       if (name.isEmpty) return;
@@ -1455,29 +1815,30 @@ void _showEditMobilityDialog(
   String initialSubtitle,
   void Function(String title, String subtitle) onSave,
 ) {
+  final l10n = AppLocalizations.of(context);
   final titleController = TextEditingController(text: initialTitle);
   final subtitleController = TextEditingController(text: initialSubtitle);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Edit mobility exercise',
+    title: l10n.workoutBuilderEditMobilityExerciseTitle,
     fullScreen: false,
     bodyBuilder: (sheetContext) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TextField(
           controller: titleController,
-          decoration: const InputDecoration(labelText: 'Title'),
+          decoration: InputDecoration(labelText: l10n.mobilityTitle),
           autofocus: false,
         ),
         const SizedBox(height: 12),
         TextField(
           controller: subtitleController,
-          decoration: const InputDecoration(labelText: 'Subtitle'),
+          decoration: InputDecoration(labelText: l10n.mobilitySubtitle),
           maxLines: 2,
         ),
       ],
     ),
-    primaryActionLabel: 'Save',
+    primaryActionLabel: l10n.customerSave,
     onPrimaryAction: () {
       onSave(titleController.text.trim(), subtitleController.text.trim());
       Navigator.of(context).pop();
@@ -1494,9 +1855,10 @@ void _showAddMobilityExerciseDialog(
   ColorScheme cs,
   void Function(String title, String subtitle, String? customExerciseId) onSave,
 ) {
+  final l10n = AppLocalizations.of(context);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Add mobility exercise',
+    title: l10n.workoutBuilderAddMobilityExerciseTitle,
     fullScreen: true,
     bodyBuilder: (sheetContext) => _AddMobilityExerciseDialogContent(
       theme: theme,
@@ -1517,14 +1879,17 @@ class _AddMobilityExerciseDialogContent extends StatefulWidget {
 
   final ThemeData theme;
   final ColorScheme cs;
-  final void Function(String title, String subtitle, String? customExerciseId) onSave;
+  final void Function(String title, String subtitle, String? customExerciseId)
+  onSave;
   final VoidCallback onCancel;
 
   @override
-  State<_AddMobilityExerciseDialogContent> createState() => _AddMobilityExerciseDialogContentState();
+  State<_AddMobilityExerciseDialogContent> createState() =>
+      _AddMobilityExerciseDialogContentState();
 }
 
-class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseDialogContent> {
+class _AddMobilityExerciseDialogContentState
+    extends State<_AddMobilityExerciseDialogContent> {
   final _customExerciseRepo = CustomExerciseRepository();
   _MobilitySource _source = _MobilitySource.fromMobilityLibrary;
   final _titleController = TextEditingController();
@@ -1543,8 +1908,13 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
 
   bool get _apiConfigured => true;
 
-  String _exerciseDisplayName(CustomExerciseItem e, {bool useMobility = false}) {
-    final parentName = useMobility ? _mobilityParentName[e.id] : _exerciseParentName[e.id];
+  String _exerciseDisplayName(
+    CustomExerciseItem e, {
+    bool useMobility = false,
+  }) {
+    final parentName = useMobility
+        ? _mobilityParentName[e.id]
+        : _exerciseParentName[e.id];
     return parentName != null ? '$parentName › ${e.name}' : e.name;
   }
 
@@ -1577,6 +1947,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
           visit(c, depth + 1, node.name);
         }
       }
+
       for (final node in items) {
         visit(node, 0, null);
       }
@@ -1608,6 +1979,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
           visit(c, depth + 1, node.name);
         }
       }
+
       for (final node in items) {
         visit(node, 0, null);
       }
@@ -1635,7 +2007,7 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
         title = _titleController.text.trim();
         subtitle = _subtitleController.text.trim();
         if (title.isEmpty && subtitle.isEmpty) return;
-        if (title.isEmpty) title = 'New exercise';
+        if (title.isEmpty) title = l10n.workoutBuilderNewExerciseDefault;
         if (_saveToLibrary && _apiConfigured) {
           setState(() => _saving = true);
           try {
@@ -1654,7 +2026,10 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
           } catch (_) {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(l10n.workoutExportError), behavior: SnackBarBehavior.floating),
+                SnackBar(
+                  content: Text(l10n.workoutExportError),
+                  behavior: SnackBarBehavior.floating,
+                ),
               );
             }
           }
@@ -1681,12 +2056,17 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
     final theme = widget.theme;
     final cs = widget.cs;
 
-    final libraryOptions = _source == _MobilitySource.fromMobilityLibrary ? _mobilityOptions : _exerciseOptions;
-    final loadingLibrary = _source == _MobilitySource.fromMobilityLibrary ? _loadingMobility : _loadingExercise;
+    final libraryOptions = _source == _MobilitySource.fromMobilityLibrary
+        ? _mobilityOptions
+        : _exerciseOptions;
+    final loadingLibrary = _source == _MobilitySource.fromMobilityLibrary
+        ? _loadingMobility
+        : _loadingExercise;
 
     final isMobilityLibrary = _source == _MobilitySource.fromMobilityLibrary;
     final depthMap = isMobilityLibrary ? _mobilityDepth : _exerciseDepth;
-    String displayName(CustomExerciseItem e) => _exerciseDisplayName(e, useMobility: isMobilityLibrary);
+    String displayName(CustomExerciseItem e) =>
+        _exerciseDisplayName(e, useMobility: isMobilityLibrary);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1699,9 +2079,21 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
               if (_apiConfigured)
                 SegmentedButton<_MobilitySource>(
                   segments: [
-                    ButtonSegment(value: _MobilitySource.fromMobilityLibrary, label: Text(l10n.mobilityFromMobilityLibrary), icon: const Icon(Icons.self_improvement, size: 18)),
-                    ButtonSegment(value: _MobilitySource.createNew, label: Text(l10n.mobilityCreateNew), icon: const Icon(Icons.add, size: 18)),
-                    ButtonSegment(value: _MobilitySource.fromExerciseLibrary, label: Text(l10n.mobilityFromExerciseLibrary), icon: const Icon(Icons.fitness_center, size: 18)),
+                    ButtonSegment(
+                      value: _MobilitySource.fromMobilityLibrary,
+                      label: Text(l10n.mobilityFromMobilityLibrary),
+                      icon: const Icon(Icons.self_improvement, size: 18),
+                    ),
+                    ButtonSegment(
+                      value: _MobilitySource.createNew,
+                      label: Text(l10n.mobilityCreateNew),
+                      icon: const Icon(Icons.add, size: 18),
+                    ),
+                    ButtonSegment(
+                      value: _MobilitySource.fromExerciseLibrary,
+                      label: Text(l10n.mobilityFromExerciseLibrary),
+                      icon: const Icon(Icons.fitness_center, size: 18),
+                    ),
                   ],
                   selected: {_source},
                   onSelectionChanged: (s) => setState(() {
@@ -1717,7 +2109,10 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                   decoration: InputDecoration(
                     labelText: l10n.mobilityTitle,
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     border: const OutlineInputBorder(),
                   ),
                   autofocus: false,
@@ -1728,7 +2123,10 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                   decoration: InputDecoration(
                     labelText: l10n.mobilitySubtitle,
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 10,
+                    ),
                     border: const OutlineInputBorder(),
                   ),
                   maxLines: 2,
@@ -1737,8 +2135,12 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                   const SizedBox(height: 10),
                   CheckboxListTile(
                     value: _saveToLibrary,
-                    onChanged: (v) => setState(() => _saveToLibrary = v ?? false),
-                    title: Text(l10n.mobilitySaveToLibrary, style: theme.textTheme.bodyMedium),
+                    onChanged: (v) =>
+                        setState(() => _saveToLibrary = v ?? false),
+                    title: Text(
+                      l10n.mobilitySaveToLibrary,
+                      style: theme.textTheme.bodyMedium,
+                    ),
                     controlAffinity: ListTileControlAffinity.leading,
                     contentPadding: EdgeInsets.zero,
                     dense: true,
@@ -1747,38 +2149,56 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
               ] else if (loadingLibrary)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 24),
-                  child: Center(child: SizedBox(height: 32, width: 32, child: CircularProgressIndicator(strokeWidth: 2))),
+                  child: Center(
+                    child: SizedBox(
+                      height: 32,
+                      width: 32,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ),
                 )
               else if (libraryOptions.isEmpty)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Text(
                     l10n.recordSearchExerciseHint,
-                    style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant, fontStyle: FontStyle.italic),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 )
               else
                 Autocomplete<CustomExerciseItem>(
                   initialValue: _selectedLibraryItem != null
-                      ? TextEditingValue(text: displayName(_selectedLibraryItem!))
+                      ? TextEditingValue(
+                          text: displayName(_selectedLibraryItem!),
+                        )
                       : const TextEditingValue(),
                   optionsBuilder: (TextEditingValue value) {
                     final query = value.text.trim().toLowerCase();
                     if (query.isEmpty) return libraryOptions;
-                    return libraryOptions.where((e) => displayName(e).toLowerCase().contains(query));
+                    return libraryOptions.where(
+                      (e) => displayName(e).toLowerCase().contains(query),
+                    );
                   },
                   displayStringForOption: displayName,
                   onSelected: (e) => setState(() => _selectedLibraryItem = e),
-                  fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) => TextFormField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    decoration: InputDecoration(
-                      hintText: l10n.recordSearchExerciseHint,
-                      border: const OutlineInputBorder(),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    ),
-                  ),
+                  fieldViewBuilder:
+                      (context, controller, focusNode, onFieldSubmitted) =>
+                          TextFormField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              hintText: l10n.recordSearchExerciseHint,
+                              border: const OutlineInputBorder(),
+                              isDense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 10,
+                              ),
+                            ),
+                          ),
                   optionsViewBuilder: (context, onSelected, options) => Align(
                     alignment: Alignment.topLeft,
                     child: Material(
@@ -1793,13 +2213,17 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                             final e = options.elementAt(index);
                             final depth = depthMap[e.id] ?? 0;
                             return Padding(
-                              padding: EdgeInsets.only(left: 16.0 + (depth * 16.0)),
+                              padding: EdgeInsets.only(
+                                left: 16.0 + (depth * 16.0),
+                              ),
                               child: ListTile(
                                 dense: depth > 0,
                                 title: Text(
                                   depth > 0 ? e.name : displayName(e),
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: depth == 0 ? FontWeight.w600 : FontWeight.normal,
+                                    fontWeight: depth == 0
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
                                   ),
                                 ),
                                 onTap: () => onSelected(e),
@@ -1829,13 +2253,18 @@ class _AddMobilityExerciseDialogContentState extends State<_AddMobilityExerciseD
                 onPressed: _saving
                     ? null
                     : () {
-                        if (_source == _MobilitySource.fromMobilityLibrary || _source == _MobilitySource.fromExerciseLibrary) {
+                        if (_source == _MobilitySource.fromMobilityLibrary ||
+                            _source == _MobilitySource.fromExerciseLibrary) {
                           if (_selectedLibraryItem == null) return;
                         }
                         _handleSave();
                       },
                 child: _saving
-                    ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
                     : Text(l10n.customerSave),
               ),
             ),
@@ -1853,12 +2282,19 @@ void _showAddExerciseDialog(
   BuildContext context,
   ThemeData theme,
   ColorScheme cs,
-  void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets, {
+  void Function(
+    String name,
+    String note,
+    List<ExerciseSet> setDetails, [
+    String? customExerciseId,
+  ])
+  onSaveWithSets, {
   String? customerId,
 }) {
+  final l10n = AppLocalizations.of(context);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Add exercise',
+    title: l10n.workoutBuilderAddExerciseTitle,
     fullScreen: true,
     bodyBuilder: (sheetContext) => _AddExerciseDialogContent(
       theme: theme,
@@ -1882,11 +2318,18 @@ class _AddExerciseDialogContent extends StatefulWidget {
   final ThemeData theme;
   final ColorScheme cs;
   final String? customerId;
-  final void Function(String name, String note, List<ExerciseSet> setDetails, [String? customExerciseId]) onSaveWithSets;
+  final void Function(
+    String name,
+    String note,
+    List<ExerciseSet> setDetails, [
+    String? customExerciseId,
+  ])
+  onSaveWithSets;
   final VoidCallback onCancel;
 
   @override
-  State<_AddExerciseDialogContent> createState() => _AddExerciseDialogContentState();
+  State<_AddExerciseDialogContent> createState() =>
+      _AddExerciseDialogContentState();
 }
 
 class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
@@ -1907,15 +2350,21 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   bool _loadingRecords = false;
 
   bool get _apiConfigured => true;
-  bool get _hasCustomerContext => widget.customerId != null && widget.customerId!.isNotEmpty;
+  bool get _hasCustomerContext =>
+      widget.customerId != null && widget.customerId!.isNotEmpty;
 
   String _exerciseDisplayName(CustomExerciseItem e) {
     final parentName = _exerciseParentName[e.id];
     return parentName != null ? '$parentName › ${e.name}' : e.name;
   }
 
-  Widget _buildRecordLine(ThemeData theme, ColorScheme cs, CustomerExerciseRecord r) {
-    final dateStr = '${r.recordedAt.day.toString().padLeft(2, '0')}/${r.recordedAt.month.toString().padLeft(2, '0')}/${r.recordedAt.year}';
+  Widget _buildRecordLine(
+    ThemeData theme,
+    ColorScheme cs,
+    CustomerExerciseRecord r,
+  ) {
+    final dateStr =
+        '${r.recordedAt.day.toString().padLeft(2, '0')}/${r.recordedAt.month.toString().padLeft(2, '0')}/${r.recordedAt.year}';
     return Text(
       '${r.value} ${r.unit} · $dateStr${r.note != null && r.note!.isNotEmpty ? ' · ${r.note}' : ''}',
       style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurface),
@@ -1936,7 +2385,19 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   }
 
   /// Standard % ladder for powerlifting-style reference loads.
-  static const List<int> _loadPercentLadder = [100, 95, 90, 85, 80, 75, 70, 65, 60, 55, 50];
+  static const List<int> _loadPercentLadder = [
+    100,
+    95,
+    90,
+    85,
+    80,
+    75,
+    70,
+    65,
+    60,
+    55,
+    50,
+  ];
 
   Widget _buildLoadPercentGuideContent(
     ThemeData theme,
@@ -1958,7 +2419,10 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                   _formatLoadForDisplay(r.value * p / 100.0),
                   r.unit,
                 ),
-                style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  height: 1.45,
+                  color: cs.onSurface,
+                ),
               ),
             ),
         ],
@@ -1968,12 +2432,18 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
       alignment: Alignment.centerLeft,
       child: Text(
         l10n.workoutBuilderLoadPercentGuideBody,
-        style: theme.textTheme.bodySmall?.copyWith(height: 1.45, color: cs.onSurface),
+        style: theme.textTheme.bodySmall?.copyWith(
+          height: 1.45,
+          color: cs.onSurface,
+        ),
       ),
     );
   }
 
-  String _loadPercentResultLabel(AppLocalizations l10n, CustomerExerciseRecord r) {
+  String _loadPercentResultLabel(
+    AppLocalizations l10n,
+    CustomerExerciseRecord r,
+  ) {
     final raw = _loadPercentInputController.text.trim().replaceAll(',', '.');
     if (raw.isEmpty) return '—';
     final p = double.tryParse(raw);
@@ -1982,11 +2452,18 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     }
     final load = r.value * p / 100.0;
     final w = _formatLoadForDisplay(load);
-    final percentStr = (p - p.round()).abs() < 1e-9 ? p.round().toString() : _formatLoadForDisplay(p);
+    final percentStr = (p - p.round()).abs() < 1e-9
+        ? p.round().toString()
+        : _formatLoadForDisplay(p);
     return l10n.workoutBuilderLoadPercentResult(w, r.unit, percentStr);
   }
 
-  Widget _buildLoadPercentTools(BuildContext context, ThemeData theme, ColorScheme cs, CustomerExerciseRecord r) {
+  Widget _buildLoadPercentTools(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme cs,
+    CustomerExerciseRecord r,
+  ) {
     final l10n = AppLocalizations.of(context);
     final mass = _isMassBasedRecordUnit(r.unit);
     final denseDecoration = InputDecoration(
@@ -2009,11 +2486,17 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                 childrenPadding: const EdgeInsets.only(bottom: 8),
                 title: Text(
                   l10n.workoutBuilderLoadPercentGuideTitle,
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
                 subtitle: Text(
-                  mass ? l10n.workoutBuilderLoadPercentGuideIntroMass : l10n.workoutBuilderLoadPercentGuideIntroReps,
-                  style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                  mass
+                      ? l10n.workoutBuilderLoadPercentGuideIntroMass
+                      : l10n.workoutBuilderLoadPercentGuideIntroReps,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
                 children: [
                   _buildLoadPercentGuideContent(theme, cs, l10n, r, mass),
@@ -2024,7 +2507,9 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
             const SizedBox(height: 8),
             Text(
               l10n.workoutBuilderLoadPercentCalculator,
-              style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
             ),
             const SizedBox(height: 8),
             if (mass)
@@ -2035,7 +2520,9 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
                     flex: 2,
                     child: TextField(
                       controller: _loadPercentInputController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       decoration: denseDecoration.copyWith(
                         labelText: l10n.workoutBuilderLoadPercentFieldLabel,
                         hintText: l10n.workoutBuilderLoadPercentFieldHint,
@@ -2076,12 +2563,14 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   @override
   void initState() {
     super.initState();
-    _setControllers.add(_SetEditControllers(
-      TextEditingController(),
-      TextEditingController(),
-      TextEditingController(),
-      TextEditingController(),
-    ));
+    _setControllers.add(
+      _SetEditControllers(
+        TextEditingController(),
+        TextEditingController(),
+        TextEditingController(),
+        TextEditingController(),
+      ),
+    );
     _loadExercises();
   }
 
@@ -2111,6 +2600,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
           visit(c, depth + 1, node.name);
         }
       }
+
       for (final root in items) {
         visit(root, 0, null);
       }
@@ -2142,7 +2632,10 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
       _loadPercentInputController.clear();
     });
     try {
-      final list = await _recordRepo.getByCustomerId(customerId, customExerciseId: customExerciseId);
+      final list = await _recordRepo.getByCustomerId(
+        customerId,
+        customExerciseId: customExerciseId,
+      );
       if (mounted) {
         list.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
         setState(() {
@@ -2160,7 +2653,11 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     }
   }
 
-  Future<void> _createCustomExerciseAndSave(String name, String note, List<ExerciseSet> details) async {
+  Future<void> _createCustomExerciseAndSave(
+    String name,
+    String note,
+    List<ExerciseSet> details,
+  ) async {
     if (!_apiConfigured) {
       widget.onSaveWithSets(name, note, details, null);
       widget.onCancel();
@@ -2183,7 +2680,9 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
         setState(() => _saving = false);
         ScaffoldMessenger.maybeOf(context)?.showSnackBar(
           SnackBar(
-            content: const Text('Could not create exercise. Try again or add without saving to library.'),
+            content: Text(
+              AppLocalizations.of(context).workoutBuilderCouldNotCreateExercise,
+            ),
             behavior: SnackBarBehavior.floating,
             backgroundColor: widget.cs.errorContainer,
           ),
@@ -2200,13 +2699,23 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
       final load = c.load.text.trim();
       final noteSet = c.note.text.trim();
       if (sets.isNotEmpty || reps.isNotEmpty || load.isNotEmpty) {
-        return ExerciseSet(sets: sets.isEmpty ? '1' : sets, reps: reps, rpe: load, note: noteSet);
+        return ExerciseSet(
+          sets: sets.isEmpty ? '1' : sets,
+          reps: reps,
+          rpe: load,
+          note: noteSet,
+        );
       }
       return ExerciseSet(note: noteSet);
     }).toList();
 
     if (_fromLibrary && _selectedExercise != null) {
-      widget.onSaveWithSets(_selectedExercise!.name, note, details.isEmpty ? [const ExerciseSet()] : details, _selectedExercise!.id);
+      widget.onSaveWithSets(
+        _selectedExercise!.name,
+        note,
+        details.isEmpty ? [const ExerciseSet()] : details,
+        _selectedExercise!.id,
+      );
       widget.onCancel();
       return;
     }
@@ -2217,7 +2726,9 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     if (name.isEmpty) {
       ScaffoldMessenger.maybeOf(context)?.showSnackBar(
         SnackBar(
-          content: const Text('Enter a name or select an exercise.'),
+          content: Text(
+            AppLocalizations.of(context).workoutBuilderEnterNameOrSelect,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: widget.cs.errorContainer,
         ),
@@ -2226,12 +2737,21 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     }
 
     if (!_fromLibrary && _apiConfigured) {
-      _createCustomExerciseAndSave(name, note, details.isEmpty ? [const ExerciseSet()] : details);
+      _createCustomExerciseAndSave(
+        name,
+        note,
+        details.isEmpty ? [const ExerciseSet()] : details,
+      );
       return;
     }
 
     if (!_fromLibrary) {
-      widget.onSaveWithSets(name, note, details.isEmpty ? [const ExerciseSet()] : details, null);
+      widget.onSaveWithSets(
+        name,
+        note,
+        details.isEmpty ? [const ExerciseSet()] : details,
+        null,
+      );
       widget.onCancel();
     }
   }
@@ -2257,7 +2777,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
           const SizedBox(height: 12),
           OutlinedButton(
             onPressed: widget.onCancel,
-            child: const Text('Cancel'),
+            child: Text(l10n.customerCancel),
           ),
         ],
       );
@@ -2266,209 +2786,285 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-              if (_apiConfigured) ...[
-                SegmentedButton<bool>(
-                  segments: const [
-                    ButtonSegment(value: true, label: Text('From library'), icon: Icon(Icons.fitness_center, size: 18)),
-                    ButtonSegment(value: false, label: Text('Create new'), icon: Icon(Icons.add, size: 18)),
+        if (_apiConfigured) ...[
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment(
+                value: true,
+                label: Text(l10n.workoutBuilderFromLibrary),
+                icon: const Icon(Icons.fitness_center, size: 18),
+              ),
+              ButtonSegment(
+                value: false,
+                label: Text(l10n.workoutBuilderCreateNew),
+                icon: const Icon(Icons.add, size: 18),
+              ),
+            ],
+            selected: {_fromLibrary},
+            onSelectionChanged: (s) => setState(() {
+              _fromLibrary = s.first;
+              if (!_fromLibrary) _selectedExercise = null;
+            }),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (_apiConfigured && _fromLibrary && _exerciseOptions.isNotEmpty) ...[
+          Text(
+            l10n.workoutBuilderExerciseLabel,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Autocomplete<CustomExerciseItem>(
+            initialValue: _selectedExercise != null
+                ? TextEditingValue(
+                    text: _exerciseDisplayName(_selectedExercise!),
+                  )
+                : const TextEditingValue(),
+            optionsBuilder: (TextEditingValue value) {
+              final query = value.text.trim().toLowerCase();
+              if (query.isEmpty) return _exerciseOptions;
+              return _exerciseOptions.where(
+                (e) => _exerciseDisplayName(e).toLowerCase().contains(query),
+              );
+            },
+            displayStringForOption: _exerciseDisplayName,
+            onSelected: (e) {
+              setState(() => _selectedExercise = e);
+              _loadRecordsForExercise(e.id);
+            },
+            fieldViewBuilder:
+                (context, controller, focusNode, onFieldSubmitted) =>
+                    TextFormField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      decoration: InputDecoration(
+                        hintText: l10n.recordSearchExerciseHint,
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
+                    ),
+            optionsViewBuilder: (context, onSelected, options) => Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 200),
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    itemCount: options.length,
+                    itemBuilder: (context, index) {
+                      final e = options.elementAt(index);
+                      final depth = _exerciseDepth[e.id] ?? 0;
+                      return Padding(
+                        padding: EdgeInsets.only(left: 16.0 + (depth * 16.0)),
+                        child: ListTile(
+                          dense: depth > 0,
+                          title: Text(
+                            depth > 0 ? e.name : _exerciseDisplayName(e),
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: depth == 0
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                          onTap: () => onSelected(e),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ),
+          if (_hasCustomerContext && _selectedExercise != null) ...[
+            const SizedBox(height: 10),
+            Text(
+              l10n.workoutBuilderClientRecord,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 4),
+            if (_loadingRecords)
+              const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+              )
+            else if (_recordsForExercise.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  l10n.workoutBuilderNoExerciseRecord,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: cs.onSurfaceVariant,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              )
+            else
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _buildRecordLine(theme, cs, _recordsForExercise.first),
+                    const SizedBox(height: 10),
+                    _buildLoadPercentTools(
+                      context,
+                      theme,
+                      cs,
+                      _recordsForExercise.first,
+                    ),
                   ],
-                  selected: {_fromLibrary},
-                  onSelectionChanged: (s) => setState(() {
-                    _fromLibrary = s.first;
-                    if (!_fromLibrary) _selectedExercise = null;
-                  }),
-                ),
-                const SizedBox(height: 12),
-              ],
-              if (_apiConfigured && _fromLibrary && _exerciseOptions.isNotEmpty) ...[
-                Text('Exercise', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
-                const SizedBox(height: 6),
-                Autocomplete<CustomExerciseItem>(
-                  initialValue: _selectedExercise != null
-                      ? TextEditingValue(text: _exerciseDisplayName(_selectedExercise!))
-                      : const TextEditingValue(),
-                  optionsBuilder: (TextEditingValue value) {
-                    final query = value.text.trim().toLowerCase();
-                    if (query.isEmpty) return _exerciseOptions;
-                    return _exerciseOptions.where((e) => _exerciseDisplayName(e).toLowerCase().contains(query));
-                  },
-                  displayStringForOption: _exerciseDisplayName,
-                  onSelected: (e) {
-                    setState(() => _selectedExercise = e);
-                    _loadRecordsForExercise(e.id);
-                  },
-                  fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) => TextFormField(
-                    controller: controller,
-                    focusNode: focusNode,
-                    decoration: const InputDecoration(
-                      hintText: 'Search by name...',
-                      border: OutlineInputBorder(),
-                      isDense: true,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    ),
-                  ),
-                  optionsViewBuilder: (context, onSelected, options) => Align(
-                    alignment: Alignment.topLeft,
-                    child: Material(
-                      elevation: 4,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 200),
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          itemCount: options.length,
-                          itemBuilder: (context, index) {
-                            final e = options.elementAt(index);
-                            final depth = _exerciseDepth[e.id] ?? 0;
-                            return Padding(
-                              padding: EdgeInsets.only(left: 16.0 + (depth * 16.0)),
-                              child: ListTile(
-                                dense: depth > 0,
-                                title: Text(
-                                  depth > 0 ? e.name : _exerciseDisplayName(e),
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: depth == 0 ? FontWeight.w600 : FontWeight.normal,
-                                  ),
-                                ),
-                                onTap: () => onSelected(e),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (_hasCustomerContext && _selectedExercise != null) ...[
-                  const SizedBox(height: 10),
-                  Text(l10n.workoutBuilderClientRecord, style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
-                  const SizedBox(height: 4),
-                  if (_loadingRecords)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8),
-                      child: SizedBox(height: 24, width: 24, child: CircularProgressIndicator(strokeWidth: 2)),
-                    )
-                  else if (_recordsForExercise.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Text(
-                        l10n.workoutBuilderNoExerciseRecord,
-                        style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant, fontStyle: FontStyle.italic),
-                      ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _buildRecordLine(theme, cs, _recordsForExercise.first),
-                          const SizedBox(height: 10),
-                          _buildLoadPercentTools(context, theme, cs, _recordsForExercise.first),
-                        ],
-                      ),
-                    ),
-                ],
-                const SizedBox(height: 12),
-              ] else ...[
-                // Create new (or no API): show name field
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                    border: const OutlineInputBorder(),
-                  ),
-                  autofocus: !_apiConfigured,
-                ),
-                const SizedBox(height: 12),
-              ],
-              TextField(
-                controller: _noteController,
-                decoration: InputDecoration(
-                  labelText: 'Note (optional)',
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  border: const OutlineInputBorder(),
-                ),
-                maxLines: 1,
-              ),
-              const SizedBox(height: 12),
-              Text('Serie (Set × Reps + Carico)', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
-              const SizedBox(height: 6),
-              ...List.generate(_setControllers.length, (i) {
-                final c = _setControllers[i];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: c.sets,
-                          decoration: denseDecoration.copyWith(labelText: 'Set', hintText: '1'),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: c.reps,
-                          decoration: denseDecoration.copyWith(labelText: 'Reps', hintText: '3'),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        flex: 2,
-                        child: TextField(
-                          controller: c.load,
-                          decoration: denseDecoration.copyWith(labelText: 'Carico', hintText: '75kg'),
-                          keyboardType: TextInputType.text,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_outline, size: 22, color: _setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
-                        onPressed: _setControllers.length > 1
-                            ? () {
-                                final removed = _setControllers.removeAt(i);
-                                removed.sets.dispose();
-                                removed.reps.dispose();
-                                removed.load.dispose();
-                                removed.note.dispose();
-                                setState(() {});
-                              }
-                            : null,
-                        style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              const SizedBox(height: 4),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: () => setState(() => _setControllers.add(_SetEditControllers(
-                    TextEditingController(),
-                    TextEditingController(),
-                    TextEditingController(),
-                    TextEditingController(),
-                  ))),
-                  icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                  label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
                 ),
               ),
+          ],
+          const SizedBox(height: 12),
+        ] else ...[
+          // Create new (or no API): show name field
+          TextField(
+            controller: _nameController,
+            decoration: InputDecoration(
+              labelText: l10n.workoutBuilderNameLabel,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              border: const OutlineInputBorder(),
+            ),
+            autofocus: !_apiConfigured,
+          ),
+          const SizedBox(height: 12),
+        ],
+        TextField(
+          controller: _noteController,
+          decoration: InputDecoration(
+            labelText: l10n.workoutBuilderNoteOptionalLabel,
+            isDense: true,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
+            border: const OutlineInputBorder(),
+          ),
+          maxLines: 1,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          l10n.workoutBuilderMultiSetBlockHeader,
+          style: theme.textTheme.labelMedium?.copyWith(
+            color: cs.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 6),
+        ...List.generate(_setControllers.length, (i) {
+          final c = _setControllers[i];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: TextField(
+                    controller: c.sets,
+                    decoration: denseDecoration.copyWith(
+                      labelText: l10n.workoutBuilderSetLabel,
+                      hintText: '1',
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  flex: 1,
+                  child: TextField(
+                    controller: c.reps,
+                    decoration: denseDecoration.copyWith(
+                      labelText: l10n.workoutBuilderRepsLabel,
+                      hintText: '3',
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  flex: 2,
+                  child: TextField(
+                    controller: c.load,
+                    decoration: denseDecoration.copyWith(
+                      labelText: l10n.workoutBuilderLoadLabel,
+                      hintText: '75kg',
+                    ),
+                    keyboardType: TextInputType.text,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    size: 22,
+                    color: _setControllers.length > 1
+                        ? StitchM3Theme.danger
+                        : cs.onSurfaceVariant,
+                  ),
+                  onPressed: _setControllers.length > 1
+                      ? () {
+                          final removed = _setControllers.removeAt(i);
+                          removed.sets.dispose();
+                          removed.reps.dispose();
+                          removed.load.dispose();
+                          removed.note.dispose();
+                          setState(() {});
+                        }
+                      : null,
+                  style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
+                ),
+              ],
+            ),
+          );
+        }),
+        const SizedBox(height: 4),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => setState(
+              () => _setControllers.add(
+                _SetEditControllers(
+                  TextEditingController(),
+                  TextEditingController(),
+                  TextEditingController(),
+                  TextEditingController(),
+                ),
+              ),
+            ),
+            icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
+            label: Text(
+              l10n.workoutBuilderAddSet,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: StitchM3Theme.accent,
+              ),
+            ),
+          ),
+        ),
         const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
               child: OutlinedButton(
                 onPressed: _saving ? null : widget.onCancel,
-                child: const Text('Cancel'),
+                child: Text(l10n.customerCancel),
               ),
             ),
             const SizedBox(width: 12),
@@ -2476,8 +3072,12 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
               child: FilledButton(
                 onPressed: _saving ? null : _doSave,
                 child: _saving
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                    : const Text('Save'),
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Text(l10n.customerSave),
               ),
             ),
           ],
@@ -2497,16 +3097,21 @@ void _showEditExerciseDialog(
   String initialReps,
   String initialRpe,
   String initialNote,
-  void Function(String name, String sets, String reps, String rpe, String note) onSave, {
+  void Function(String name, String sets, String reps, String rpe, String note)
+  onSave, {
   List<ExerciseSet>? initialSetDetails,
-  void Function(String name, String note, List<ExerciseSet> setDetails)? onSaveWithSets,
+  void Function(String name, String note, List<ExerciseSet> setDetails)?
+  onSaveWithSets,
 }) {
   final nameController = TextEditingController(text: initialName);
   final noteController = TextEditingController(text: initialNote);
   final setsController = TextEditingController(text: initialSets);
   final repsController = TextEditingController(text: initialReps);
   final rpeController = TextEditingController(text: initialRpe);
-  final useMultiSet = onSaveWithSets != null && initialSetDetails != null && initialSetDetails.isNotEmpty;
+  final useMultiSet =
+      onSaveWithSets != null &&
+      initialSetDetails != null &&
+      initialSetDetails.isNotEmpty;
   final setControllers = useMultiSet
       ? initialSetDetails.map((s) {
           String sets = s.sets.trim();
@@ -2532,15 +3137,25 @@ void _showEditExerciseDialog(
       : <_SetEditControllers>[];
 
   final modalSaving = ValueNotifier<bool>(false);
+  final l10n = AppLocalizations.of(context);
   showAppBottomSheet<void>(
     context: context,
-    title: initialName.trim().isEmpty ? 'Add exercise' : 'Edit exercise',
+    title: initialName.trim().isEmpty
+        ? l10n.workoutBuilderAddExerciseTitle
+        : l10n.workoutBuilderEditExerciseTitle,
     fullScreen: useMultiSet,
     bodyBuilder: (sheetContext) => StatefulBuilder(
       builder: (context, setState) {
         void addSetRow() {
           setState(() {
-            setControllers.add(_SetEditControllers(TextEditingController(), TextEditingController(), TextEditingController(), TextEditingController()));
+            setControllers.add(
+              _SetEditControllers(
+                TextEditingController(),
+                TextEditingController(),
+                TextEditingController(),
+                TextEditingController(),
+              ),
+            );
           });
         }
 
@@ -2553,25 +3168,47 @@ void _showEditExerciseDialog(
 
         final denseDecoration = InputDecoration(
           isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 10,
+          ),
         );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: nameController,
-              decoration: InputDecoration(labelText: 'Name', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
+              decoration: InputDecoration(
+                labelText: l10n.workoutBuilderNameLabel,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
               autofocus: false,
             ),
             const SizedBox(height: 8),
             TextField(
               controller: noteController,
-              decoration: InputDecoration(labelText: 'Note (optional)', isDense: true, contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10)),
+              decoration: InputDecoration(
+                labelText: l10n.workoutBuilderNoteOptionalLabel,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
               maxLines: 1,
             ),
             if (useMultiSet) ...[
               const SizedBox(height: 12),
-              Text('Serie (Set × Reps + Carico)', style: theme.textTheme.labelMedium?.copyWith(color: cs.onSurfaceVariant)),
+              Text(
+                l10n.workoutBuilderMultiSetBlockHeader,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
               const SizedBox(height: 6),
               ...setControllers.asMap().entries.map((entry) {
                 final i = entry.key;
@@ -2585,7 +3222,10 @@ void _showEditExerciseDialog(
                         flex: 1,
                         child: TextField(
                           controller: c.sets,
-                          decoration: denseDecoration.copyWith(labelText: 'Set', hintText: '1'),
+                          decoration: denseDecoration.copyWith(
+                            labelText: l10n.workoutBuilderSetLabel,
+                            hintText: '1',
+                          ),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -2594,7 +3234,10 @@ void _showEditExerciseDialog(
                         flex: 1,
                         child: TextField(
                           controller: c.reps,
-                          decoration: denseDecoration.copyWith(labelText: 'Reps', hintText: '3'),
+                          decoration: denseDecoration.copyWith(
+                            labelText: l10n.workoutBuilderRepsLabel,
+                            hintText: '3',
+                          ),
                           keyboardType: TextInputType.number,
                         ),
                       ),
@@ -2603,14 +3246,27 @@ void _showEditExerciseDialog(
                         flex: 2,
                         child: TextField(
                           controller: c.load,
-                          decoration: denseDecoration.copyWith(labelText: 'Carico', hintText: '75kg'),
+                          decoration: denseDecoration.copyWith(
+                            labelText: l10n.workoutBuilderLoadLabel,
+                            hintText: '75kg',
+                          ),
                           keyboardType: TextInputType.text,
                         ),
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete_outline, size: 22, color: setControllers.length > 1 ? StitchM3Theme.danger : cs.onSurfaceVariant),
-                        onPressed: setControllers.length > 1 ? () => removeSetRow(i) : null,
-                        style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          size: 22,
+                          color: setControllers.length > 1
+                              ? StitchM3Theme.danger
+                              : cs.onSurfaceVariant,
+                        ),
+                        onPressed: setControllers.length > 1
+                            ? () => removeSetRow(i)
+                            : null,
+                        style: IconButton.styleFrom(
+                          padding: const EdgeInsets.all(8),
+                        ),
                       ),
                     ],
                   ),
@@ -2622,16 +3278,37 @@ void _showEditExerciseDialog(
                 child: TextButton.icon(
                   onPressed: addSetRow,
                   icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                  label: Text('Add set', style: theme.textTheme.labelMedium?.copyWith(color: StitchM3Theme.accent)),
+                  label: Text(
+                    l10n.workoutBuilderAddSet,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: StitchM3Theme.accent,
+                    ),
+                  ),
                 ),
               ),
             ] else ...[
               const SizedBox(height: 10),
-              TextField(controller: setsController, decoration: denseDecoration.copyWith(labelText: 'Sets'), keyboardType: TextInputType.number),
+              TextField(
+                controller: setsController,
+                decoration: denseDecoration.copyWith(
+                  labelText: l10n.workoutBuilderSetsLabel,
+                ),
+                keyboardType: TextInputType.number,
+              ),
               const SizedBox(height: 8),
-              TextField(controller: repsController, decoration: denseDecoration.copyWith(labelText: 'Reps')),
+              TextField(
+                controller: repsController,
+                decoration: denseDecoration.copyWith(
+                  labelText: l10n.workoutBuilderRepsLabel,
+                ),
+              ),
               const SizedBox(height: 8),
-              TextField(controller: rpeController, decoration: denseDecoration.copyWith(labelText: 'RPE / Load')),
+              TextField(
+                controller: rpeController,
+                decoration: denseDecoration.copyWith(
+                  labelText: l10n.workoutBuilderRpeOrLoadLabel,
+                ),
+              ),
             ],
             const SizedBox(height: 16),
             Row(
@@ -2639,7 +3316,7 @@ void _showEditExerciseDialog(
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.of(sheetContext).pop(),
-                    child: const Text('Cancel'),
+                    child: Text(l10n.customerCancel),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -2659,14 +3336,27 @@ void _showEditExerciseDialog(
                                   final reps = c.reps.text.trim();
                                   final load = c.load.text.trim();
                                   final noteSet = c.note.text.trim();
-                                  if (sets.isNotEmpty || reps.isNotEmpty || load.isNotEmpty) {
-                                    return ExerciseSet(sets: sets.isEmpty ? '1' : sets, reps: reps, rpe: load, note: noteSet);
+                                  if (sets.isNotEmpty ||
+                                      reps.isNotEmpty ||
+                                      load.isNotEmpty) {
+                                    return ExerciseSet(
+                                      sets: sets.isEmpty ? '1' : sets,
+                                      reps: reps,
+                                      rpe: load,
+                                      note: noteSet,
+                                    );
                                   }
                                   return ExerciseSet(note: noteSet);
                                 }).toList();
                                 onSaveWithSets(name, note, details);
                               } else {
-                                onSave(name, setsController.text.trim(), repsController.text.trim(), rpeController.text.trim(), note);
+                                onSave(
+                                  name,
+                                  setsController.text.trim(),
+                                  repsController.text.trim(),
+                                  rpeController.text.trim(),
+                                  note,
+                                );
                               }
                               Navigator.of(sheetContext).pop();
                             },
@@ -2676,10 +3366,12 @@ void _showEditExerciseDialog(
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                valueColor: AlwaysStoppedAnimation<Color>(cs.onPrimary),
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  cs.onPrimary,
+                                ),
                               ),
                             )
-                          : const Text('Save'),
+                          : Text(l10n.customerSave),
                     ),
                   ),
                 ),
@@ -2702,7 +3394,11 @@ class _SetEditControllers {
 }
 
 class _DashedButton extends StatelessWidget {
-  const _DashedButton({required this.icon, required this.label, this.onPressed});
+  const _DashedButton({
+    required this.icon,
+    required this.label,
+    this.onPressed,
+  });
 
   final IconData icon;
   final String label;
@@ -2717,11 +3413,18 @@ class _DashedButton extends StatelessWidget {
       style: OutlinedButton.styleFrom(
         padding: const EdgeInsets.symmetric(vertical: 14),
         side: BorderSide(color: cs.outline),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+        ),
         foregroundColor: cs.onSurfaceVariant,
       ),
       icon: Icon(icon, size: 18),
-      label: Text(label, style: theme.textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w700)),
+      label: Text(
+        label,
+        style: theme.textTheme.labelLarge?.copyWith(
+          fontWeight: FontWeight.w700,
+        ),
+      ),
     );
   }
 }
@@ -2780,9 +3483,31 @@ class _TrainingSection extends StatelessWidget {
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
-  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
+  final void Function(
+    int,
+    int,
+    String, {
+    String? name,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+    List<ExerciseSet>? setDetails,
+  })
+  onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(
+    int,
+    int,
+    String,
+    int, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  })
+  onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -2793,6 +3518,7 @@ class _TrainingSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
       child: Column(
@@ -2805,11 +3531,19 @@ class _TrainingSection extends StatelessWidget {
                 onTap: onTrainingToggle,
                 child: Row(
                   children: [
-                    Icon(expanded ? Icons.expand_more : Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
-                    Icon(Icons.fitness_center, color: StitchM3Theme.accent, size: 24),
+                    Icon(
+                      expanded ? Icons.expand_more : Icons.chevron_right,
+                      color: cs.onSurfaceVariant,
+                      size: 24,
+                    ),
+                    Icon(
+                      Icons.fitness_center,
+                      color: StitchM3Theme.accent,
+                      size: 24,
+                    ),
                     const SizedBox(width: 8),
                     Text(
-                      'Training Program',
+                      l10n.workoutBuilderTrainingProgram,
                       style: theme.textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: cs.onSurface,
@@ -2822,7 +3556,10 @@ class _TrainingSection extends StatelessWidget {
                 onTap: onNewWeek,
                 borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: StitchM3Theme.accent.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
@@ -2832,7 +3569,13 @@ class _TrainingSection extends StatelessWidget {
                     children: [
                       Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
                       const SizedBox(width: 4),
-                      Text('New Week', style: theme.textTheme.labelSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+                      Text(
+                        l10n.workoutBuilderNewWeek,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchM3Theme.accent,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -2841,31 +3584,34 @@ class _TrainingSection extends StatelessWidget {
           ),
           if (expanded) ...[
             if (variant == _TrainingVariant.mobility)
-              ...weeks.asMap().entries.map((e) => _WeekAccordion(
-                    key: ValueKey(e.value.id),
-                    weekIndex: e.key,
-                    week: e.value,
-                    expanded: expandedWeekIds.contains(e.value.id),
-                    onToggle: () => onToggleWeek(e.value.id),
-                    onClone: () => onCloneWeek(e.key),
-                    onDelete: () => onDeleteWeek(e.key),
-                    onRenameWeek: (newName) => onRenameWeek(e.key, newName),
-                    onAddDay: () => onAddDay(e.key),
-                    onRenameDay: (dayIndex, newName) => onRenameDay(e.key, dayIndex, newName),
-                    onDeleteDay: (dayIndex) => onDeleteDay(e.key, dayIndex),
-                    onAddExercise: onAddExercise,
-                    onRemoveExercise: onRemoveExercise,
-                    onMoveExercise: onMoveExercise,
-                    onUpdateExercise: onUpdateExercise,
-                    onAddSetToExercise: onAddSetToExercise,
-                    onUpdateExerciseSet: onUpdateExerciseSet,
-                    onRemoveExerciseSet: onRemoveExerciseSet,
-                    onAssignToSuperset: onAssignToSuperset,
-                    onRemoveFromSuperset: onRemoveFromSuperset,
-                    onAddExerciseToSuperset: onAddExerciseToSuperset,
-                    theme: theme,
-                    cs: cs,
-                  )),
+              ...weeks.asMap().entries.map(
+                (e) => _WeekAccordion(
+                  key: ValueKey(e.value.id),
+                  weekIndex: e.key,
+                  week: e.value,
+                  expanded: expandedWeekIds.contains(e.value.id),
+                  onToggle: () => onToggleWeek(e.value.id),
+                  onClone: () => onCloneWeek(e.key),
+                  onDelete: () => onDeleteWeek(e.key),
+                  onRenameWeek: (newName) => onRenameWeek(e.key, newName),
+                  onAddDay: () => onAddDay(e.key),
+                  onRenameDay: (dayIndex, newName) =>
+                      onRenameDay(e.key, dayIndex, newName),
+                  onDeleteDay: (dayIndex) => onDeleteDay(e.key, dayIndex),
+                  onAddExercise: onAddExercise,
+                  onRemoveExercise: onRemoveExercise,
+                  onMoveExercise: onMoveExercise,
+                  onUpdateExercise: onUpdateExercise,
+                  onAddSetToExercise: onAddSetToExercise,
+                  onUpdateExerciseSet: onUpdateExerciseSet,
+                  onRemoveExerciseSet: onRemoveExerciseSet,
+                  onAssignToSuperset: onAssignToSuperset,
+                  onRemoveFromSuperset: onRemoveFromSuperset,
+                  onAddExerciseToSuperset: onAddExerciseToSuperset,
+                  theme: theme,
+                  cs: cs,
+                ),
+              ),
             if (variant == _TrainingVariant.multiset)
               _WeekDayChipsAndCards(
                 theme: theme,
@@ -2961,9 +3707,31 @@ class _WeekAccordion extends StatelessWidget {
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
-  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
+  final void Function(
+    int,
+    int,
+    String, {
+    String? name,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+    List<ExerciseSet>? setDetails,
+  })
+  onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(
+    int,
+    int,
+    String,
+    int, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  })
+  onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -2974,6 +3742,7 @@ class _WeekAccordion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -2988,10 +3757,17 @@ class _WeekAccordion extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Icon(expanded ? Icons.expand_more : Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
+                    Icon(
+                      expanded ? Icons.expand_more : Icons.chevron_right,
+                      color: cs.onSurfaceVariant,
+                      size: 24,
+                    ),
                     Text(
                       week.name,
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: cs.onSurface),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: cs.onSurface,
+                      ),
                     ),
                   ],
                 ),
@@ -2999,21 +3775,78 @@ class _WeekAccordion extends StatelessWidget {
                   children: [
                     TextButton.icon(
                       onPressed: onClone,
-                      icon: Icon(Icons.copy, size: 14, color: cs.onSurfaceVariant),
-                      label: Text('Clone', style: theme.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant, fontWeight: FontWeight.w700)),
+                      icon: Icon(
+                        Icons.copy,
+                        size: 14,
+                        color: cs.onSurfaceVariant,
+                      ),
+                      label: Text(
+                        l10n.workoutBuilderClone,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: cs.onSurfaceVariant,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                     PopupMenuButton<String>(
-                      icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant, size: 20),
+                      icon: Icon(
+                        Icons.more_vert,
+                        color: cs.onSurfaceVariant,
+                        size: 20,
+                      ),
                       padding: EdgeInsets.zero,
                       onSelected: (value) {
                         if (value == 'clone') onClone();
-                        if (value == 'rename') _showRenameWeekDialog(context, week.name, onRenameWeek);
+                        if (value == 'rename')
+                          _showRenameWeekDialog(
+                            context,
+                            week.name,
+                            onRenameWeek,
+                          );
                         if (value == 'delete') onDelete();
                       },
                       itemBuilder: (context) => [
-                        PopupMenuItem(value: 'clone', child: Row(children: [Icon(Icons.copy, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Duplicate week')])),
-                        PopupMenuItem(value: 'rename', child: Row(children: [Icon(Icons.edit_outlined, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Rename week')])),
-                        PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger), const SizedBox(width: 12), Text('Delete week', style: TextStyle(color: StitchM3Theme.danger))])),
+                        PopupMenuItem(
+                          value: 'clone',
+                          child: Row(
+                            children: [
+                              Icon(Icons.copy, size: 18, color: cs.onSurface),
+                              const SizedBox(width: 12),
+                              Text(l10n.workoutBuilderDuplicateWeek),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'rename',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.edit_outlined,
+                                size: 18,
+                                color: cs.onSurface,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(l10n.workoutBuilderRenameWeekMenu),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.delete_outline,
+                                size: 18,
+                                color: StitchM3Theme.danger,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                l10n.workoutBuilderDeleteWeekMenu,
+                                style: TextStyle(color: StitchM3Theme.danger),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -3028,7 +3861,11 @@ class _WeekAccordion extends StatelessWidget {
               if (week.days.isEmpty) {
                 return Padding(
                   padding: const EdgeInsets.all(16),
-                  child: _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
+                  child: _DashedButton(
+                    icon: Icons.calendar_today,
+                    label: l10n.workoutBuilderAddDayToWeek(weekIndex + 1),
+                    onPressed: onAddDay,
+                  ),
                 );
               }
 
@@ -3054,7 +3891,9 @@ class _WeekAccordion extends StatelessWidget {
                             label: Text(d.name),
                             selected: i == dayIndex,
                             onSelected: (_) {
-                              setLocalState(() => _selectedDayByWeekId[week.id] = i);
+                              setLocalState(
+                                () => _selectedDayByWeekId[week.id] = i,
+                              );
                             },
                           );
                         },
@@ -3066,27 +3905,77 @@ class _WeekAccordion extends StatelessWidget {
                       children: [
                         Text(
                           day.name,
-                          style: theme.textTheme.titleSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            color: StitchM3Theme.accent,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                         PopupMenuButton<String>(
-                          icon: Icon(Icons.settings, size: 18, color: cs.onSurfaceVariant),
+                          icon: Icon(
+                            Icons.settings,
+                            size: 18,
+                            color: cs.onSurfaceVariant,
+                          ),
                           padding: EdgeInsets.zero,
                           onSelected: (value) {
                             if (value == 'rename') {
-                              _showRenameDayDialog(context, day.name, (newName) => onRenameDay(dayIndex, newName));
+                              _showRenameDayDialog(
+                                context,
+                                day.name,
+                                (newName) => onRenameDay(dayIndex, newName),
+                              );
                             }
                             if (value == 'delete') onDeleteDay(dayIndex);
                           },
                           itemBuilder: (context) => [
-                            PopupMenuItem(value: 'rename', child: Row(children: [Icon(Icons.edit, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Rename day')])),
-                            PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger), const SizedBox(width: 12), Text('Delete day', style: TextStyle(color: StitchM3Theme.danger))])),
+                            PopupMenuItem(
+                              value: 'rename',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                    size: 18,
+                                    color: cs.onSurface,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    ).workoutBuilderRenameDayTitle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            PopupMenuItem(
+                              value: 'delete',
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.delete_outline,
+                                    size: 18,
+                                    color: StitchM3Theme.danger,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    AppLocalizations.of(
+                                      context,
+                                    ).workoutBuilderDeleteDayMenu,
+                                    style: TextStyle(
+                                      color: StitchM3Theme.danger,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     ...(() {
-                      final partition = partitionExercisesBySuperset(day.exercises);
+                      final partition = partitionExercisesBySuperset(
+                        day.exercises,
+                      );
                       return partition.asMap().entries.map((entry) {
                         final isLast = entry.key == partition.length - 1;
                         final item = entry.value;
@@ -3100,17 +3989,75 @@ class _WeekAccordion extends StatelessWidget {
                               exercise: ex,
                               compact: true,
                               showAddExercise: isLast,
-                              onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
-                              onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-                              onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
-                              onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-                              onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
-                              onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                              onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
-                              onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-                              supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
-                              onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
-                              onRemoveFromSuperset: ex.supersetGroupId != null ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id) : null,
+                              onAddExercise: isLast
+                                  ? () => onAddExercise(weekIndex, dayIndex)
+                                  : null,
+                              onRemove: () =>
+                                  onRemoveExercise(weekIndex, dayIndex, ex.id),
+                              onMoveUp: () => onMoveExercise(
+                                weekIndex,
+                                dayIndex,
+                                ex.id,
+                                up: true,
+                              ),
+                              onMoveDown: () => onMoveExercise(
+                                weekIndex,
+                                dayIndex,
+                                ex.id,
+                                up: false,
+                              ),
+                              onEdit:
+                                  (name, sets, reps, rpe, note, {setDetails}) =>
+                                      onUpdateExercise(
+                                        weekIndex,
+                                        dayIndex,
+                                        ex.id,
+                                        name: name,
+                                        sets: sets,
+                                        reps: reps,
+                                        rpe: rpe,
+                                        note: note,
+                                        setDetails: setDetails,
+                                      ),
+                              onAddSet: () => onAddSetToExercise(
+                                weekIndex,
+                                dayIndex,
+                                ex.id,
+                              ),
+                              onUpdateSet: (setIndex, sets, reps, load, note) =>
+                                  onUpdateExerciseSet(
+                                    weekIndex,
+                                    dayIndex,
+                                    ex.id,
+                                    setIndex,
+                                    sets: sets,
+                                    reps: reps,
+                                    rpe: load,
+                                    note: note,
+                                  ),
+                              onRemoveSet: (setIndex) => onRemoveExerciseSet(
+                                weekIndex,
+                                dayIndex,
+                                ex.id,
+                                setIndex,
+                              ),
+                              supersetOptions: _getSupersetGroupOptions(day)
+                                  .where((o) => o.id != ex.supersetGroupId)
+                                  .toList(),
+                              onAssignToSuperset: (groupId) =>
+                                  onAssignToSuperset(
+                                    weekIndex,
+                                    dayIndex,
+                                    ex.id,
+                                    groupId,
+                                  ),
+                              onRemoveFromSuperset: ex.supersetGroupId != null
+                                  ? () => onRemoveFromSuperset(
+                                      weekIndex,
+                                      dayIndex,
+                                      ex.id,
+                                    )
+                                  : null,
                             ),
                           );
                         }
@@ -3126,9 +4073,15 @@ class _WeekAccordion extends StatelessWidget {
                                 weekIndex: weekIndex,
                                 dayIndex: dayIndex,
                                 exercises: group,
-                                supersetGroupId: group.isNotEmpty && group.first.supersetGroupId != null ? group.first.supersetGroupId! : null,
-                                onAddExercise: () => onAddExercise(weekIndex, dayIndex),
-                                onAddExerciseToSuperset: onAddExerciseToSuperset,
+                                supersetGroupId:
+                                    group.isNotEmpty &&
+                                        group.first.supersetGroupId != null
+                                    ? group.first.supersetGroupId!
+                                    : null,
+                                onAddExercise: () =>
+                                    onAddExercise(weekIndex, dayIndex),
+                                onAddExerciseToSuperset:
+                                    onAddExerciseToSuperset,
                                 onRemoveExercise: onRemoveExercise,
                                 onMoveExercise: onMoveExercise,
                                 onUpdateExercise: onUpdateExercise,
@@ -3137,11 +4090,18 @@ class _WeekAccordion extends StatelessWidget {
                                 onRemoveExerciseSet: onRemoveExerciseSet,
                                 onAssignToSuperset: onAssignToSuperset,
                                 onRemoveFromSuperset: onRemoveFromSuperset,
-                                supersetOptionsForDay: _getSupersetGroupOptions(day),
+                                supersetOptionsForDay: _getSupersetGroupOptions(
+                                  day,
+                                ),
                               ),
                               if (isLast) ...[
                                 const SizedBox(height: 12),
-                                _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: () => onAddExercise(weekIndex, dayIndex)),
+                                _DashedButton(
+                                  icon: Icons.add,
+                                  label: l10n.workoutBuilderAddExercise,
+                                  onPressed: () =>
+                                      onAddExercise(weekIndex, dayIndex),
+                                ),
                               ],
                             ],
                           ),
@@ -3151,11 +4111,15 @@ class _WeekAccordion extends StatelessWidget {
                     if (day.exercises.isEmpty)
                       _DashedButton(
                         icon: Icons.add,
-                        label: 'Add Exercise',
+                        label: l10n.workoutBuilderAddExercise,
                         onPressed: () => onAddExercise(weekIndex, dayIndex),
                       ),
                     const SizedBox(height: 16),
-                    _DashedButton(icon: Icons.calendar_today, label: 'Add Day to Week ${weekIndex + 1}', onPressed: onAddDay),
+                    _DashedButton(
+                      icon: Icons.calendar_today,
+                      label: l10n.workoutBuilderAddDayToWeek(weekIndex + 1),
+                      onPressed: onAddDay,
+                    ),
                   ],
                 ),
               );
@@ -3203,9 +4167,31 @@ class _WeekDayChipsAndCards extends StatelessWidget {
   final void Function(int, int) onAddExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
-  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
+  final void Function(
+    int,
+    int,
+    String, {
+    String? name,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+    List<ExerciseSet>? setDetails,
+  })
+  onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(
+    int,
+    int,
+    String,
+    int, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  })
+  onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
@@ -3216,10 +4202,16 @@ class _WeekDayChipsAndCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final weekIndex = weeks.isEmpty ? 0 : selectedWeekIndex.clamp(0, weeks.length - 1);
+    final l10n = AppLocalizations.of(context);
+    final weekIndex = weeks.isEmpty
+        ? 0
+        : selectedWeekIndex.clamp(0, weeks.length - 1);
     final week = weeks.isEmpty ? null : weeks[weekIndex];
     final days = week?.days ?? [];
-    final dayIndex = selectedDayIndex.clamp(0, days.isNotEmpty ? days.length - 1 : 0);
+    final dayIndex = selectedDayIndex.clamp(
+      0,
+      days.isNotEmpty ? days.length - 1 : 0,
+    );
     final day = days.isEmpty ? null : days[dayIndex];
 
     return Column(
@@ -3234,7 +4226,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
               for (var i = 0; i < weeks.length; i++) ...[
                 if (i > 0) const SizedBox(width: 8),
                 _Chip(
-                  label: 'Week ${i + 1}',
+                  label: weeks[i].name,
                   selected: i == weekIndex,
                   onTap: () => onSelectWeek(i),
                 ),
@@ -3254,7 +4246,7 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                     for (var i = 0; i < days.length; i++) ...[
                       if (i > 0) const SizedBox(width: 8),
                       _DayChip(
-                        label: days[i].name.startsWith('DAY') ? days[i].name : 'Day ${i + 1}',
+                        label: days[i].name,
                         selected: i == dayIndex,
                         onTap: () => onSelectDay(i),
                       ),
@@ -3265,15 +4257,54 @@ class _WeekDayChipsAndCards extends StatelessWidget {
             ),
             if (day != null)
               PopupMenuButton<String>(
-                icon: Icon(Icons.settings, size: 20, color: cs.onSurfaceVariant),
+                icon: Icon(
+                  Icons.settings,
+                  size: 20,
+                  color: cs.onSurfaceVariant,
+                ),
                 padding: EdgeInsets.zero,
                 onSelected: (value) {
-                  if (value == 'rename') _showRenameDayDialog(context, day.name, (newName) => onRenameDay(weekIndex, dayIndex, newName));
-                  if (value == 'delete') onDeleteDay(weekIndex, dayIndex);
+                  if (value == 'rename') {
+                    _showRenameDayDialog(
+                      context,
+                      day.name,
+                      (newName) => onRenameDay(weekIndex, dayIndex, newName),
+                    );
+                  }
+                  if (value == 'delete') {
+                    onDeleteDay(weekIndex, dayIndex);
+                  }
                 },
                 itemBuilder: (ctx) => [
-                  PopupMenuItem(value: 'rename', child: Row(children: [Icon(Icons.edit, size: 18, color: cs.onSurface), const SizedBox(width: 12), const Text('Rename day')])),
-                  PopupMenuItem(value: 'delete', child: Row(children: [Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger), const SizedBox(width: 12), Text('Delete day', style: TextStyle(color: StitchM3Theme.danger))])),
+                  PopupMenuItem(
+                    value: 'rename',
+                    child: Row(
+                      children: [
+                        Icon(Icons.edit, size: 18, color: cs.onSurface),
+                        const SizedBox(width: 12),
+                        Text(
+                          AppLocalizations.of(ctx).workoutBuilderRenameDayTitle,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.delete_outline,
+                          size: 18,
+                          color: StitchM3Theme.danger,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          AppLocalizations.of(ctx).workoutBuilderDeleteDayMenu,
+                          style: TextStyle(color: StitchM3Theme.danger),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
           ],
@@ -3295,17 +4326,54 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                     exercise: ex,
                     compact: false,
                     showAddExercise: isLast,
-                    onAddExercise: isLast ? () => onAddExercise(weekIndex, dayIndex) : null,
-                    onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-                    onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
-                    onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-                    onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
-                    onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                    onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
-                    onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-                    supersetOptions: _getSupersetGroupOptions(day).where((o) => o.id != ex.supersetGroupId).toList(),
-                    onAssignToSuperset: (groupId) => onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
-                    onRemoveFromSuperset: ex.supersetGroupId != null ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id) : null,
+                    onAddExercise: isLast
+                        ? () => onAddExercise(weekIndex, dayIndex)
+                        : null,
+                    onRemove: () =>
+                        onRemoveExercise(weekIndex, dayIndex, ex.id),
+                    onMoveUp: () =>
+                        onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+                    onMoveDown: () =>
+                        onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
+                    onEdit: (name, sets, reps, rpe, note, {setDetails}) =>
+                        onUpdateExercise(
+                          weekIndex,
+                          dayIndex,
+                          ex.id,
+                          name: name,
+                          sets: sets,
+                          reps: reps,
+                          rpe: rpe,
+                          note: note,
+                          setDetails: setDetails,
+                        ),
+                    onAddSet: () =>
+                        onAddSetToExercise(weekIndex, dayIndex, ex.id),
+                    onUpdateSet: (setIndex, sets, reps, load, note) =>
+                        onUpdateExerciseSet(
+                          weekIndex,
+                          dayIndex,
+                          ex.id,
+                          setIndex,
+                          sets: sets,
+                          reps: reps,
+                          rpe: load,
+                          note: note,
+                        ),
+                    onRemoveSet: (setIndex) => onRemoveExerciseSet(
+                      weekIndex,
+                      dayIndex,
+                      ex.id,
+                      setIndex,
+                    ),
+                    supersetOptions: _getSupersetGroupOptions(
+                      day,
+                    ).where((o) => o.id != ex.supersetGroupId).toList(),
+                    onAssignToSuperset: (groupId) =>
+                        onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
+                    onRemoveFromSuperset: ex.supersetGroupId != null
+                        ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
+                        : null,
                   ),
                 );
               }
@@ -3321,7 +4389,11 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                       weekIndex: weekIndex,
                       dayIndex: dayIndex,
                       exercises: group,
-                      supersetGroupId: group.isNotEmpty && group.first.supersetGroupId != null ? group.first.supersetGroupId! : null,
+                      supersetGroupId:
+                          group.isNotEmpty &&
+                              group.first.supersetGroupId != null
+                          ? group.first.supersetGroupId!
+                          : null,
                       onAddExercise: () => onAddExercise(weekIndex, dayIndex),
                       onAddExerciseToSuperset: onAddExerciseToSuperset,
                       onRemoveExercise: onRemoveExercise,
@@ -3336,7 +4408,11 @@ class _WeekDayChipsAndCards extends StatelessWidget {
                     ),
                     if (isLast) ...[
                       const SizedBox(height: 12),
-                      _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: () => onAddExercise(weekIndex, dayIndex)),
+                      _DashedButton(
+                        icon: Icons.add,
+                        label: l10n.workoutBuilderAddExercise,
+                        onPressed: () => onAddExercise(weekIndex, dayIndex),
+                      ),
                     ],
                   ],
                 ),
@@ -3346,26 +4422,31 @@ class _WeekDayChipsAndCards extends StatelessWidget {
           if (day.exercises.isEmpty)
             _DashedButton(
               icon: Icons.add,
-              label: 'Add Exercise',
+              label: l10n.workoutBuilderAddExercise,
               onPressed: () => onAddExercise(weekIndex, dayIndex),
             ),
           const SizedBox(height: 16),
           _DashedButton(
             icon: Icons.calendar_today,
-            label: 'Add Day to Week ${weekIndex + 1}',
+            label: l10n.workoutBuilderAddDayToWeek(weekIndex + 1),
             onPressed: () => onAddDay(weekIndex),
           ),
         ] else if (week != null && days.isEmpty)
           _DashedButton(
             icon: Icons.calendar_today,
-            label: 'Add Day to Week ${weekIndex + 1}',
+            label: l10n.workoutBuilderAddDayToWeek(weekIndex + 1),
             onPressed: () => onAddDay(weekIndex),
           )
         else if (weeks.isEmpty)
           Center(
             child: Padding(
               padding: const EdgeInsets.all(24),
-              child: Text('No weeks yet. Add a week above.', style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant)),
+              child: Text(
+                l10n.workoutBuilderNoWeeksYet,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
             ),
           ),
       ],
@@ -3432,8 +4513,14 @@ class _DayChip extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: selected ? StitchM3Theme.accent.withValues(alpha: 0.2) : cs.surfaceContainerHighest,
-          border: Border.all(color: selected ? StitchM3Theme.accent.withValues(alpha: 0.4) : Colors.transparent),
+          color: selected
+              ? StitchM3Theme.accent.withValues(alpha: 0.2)
+              : cs.surfaceContainerHighest,
+          border: Border.all(
+            color: selected
+                ? StitchM3Theme.accent.withValues(alpha: 0.4)
+                : Colors.transparent,
+          ),
           borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
         ),
         child: Row(
@@ -3489,9 +4576,31 @@ class _SuperSetBlock extends StatelessWidget {
   final void Function(int, int, String)? onAddExerciseToSuperset;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
-  final void Function(int, int, String, {String? name, String? sets, String? reps, String? rpe, String? note, List<ExerciseSet>? setDetails}) onUpdateExercise;
+  final void Function(
+    int,
+    int,
+    String, {
+    String? name,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+    List<ExerciseSet>? setDetails,
+  })
+  onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
-  final void Function(int, int, String, int, {String? line, String? sets, String? reps, String? rpe, String? note}) onUpdateExerciseSet;
+  final void Function(
+    int,
+    int,
+    String,
+    int, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  })
+  onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
   final void Function(int, int, String, String)? onAssignToSuperset;
   final void Function(int, int, String)? onRemoveFromSuperset;
@@ -3499,6 +4608,7 @@ class _SuperSetBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -3514,7 +4624,7 @@ class _SuperSetBlock extends StatelessWidget {
               Icon(Icons.link, size: 18, color: StitchM3Theme.accent),
               const SizedBox(width: 8),
               Text(
-                'SUPER SET',
+                l10n.workoutBuilderSuperSetHeading,
                 style: theme.textTheme.labelSmall?.copyWith(
                   color: StitchM3Theme.accent,
                   fontWeight: FontWeight.w700,
@@ -3523,32 +4633,74 @@ class _SuperSetBlock extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          ...exercises.map((ex) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _ExerciseCard(
-              theme: theme,
-              cs: cs,
-              exercise: ex,
-              compact: false,
-              linked: true,
-              onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-              onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
-              onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-              onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(weekIndex, dayIndex, ex.id, name: name, sets: sets, reps: reps, rpe: rpe, note: note, setDetails: setDetails),
-              onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-              onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(weekIndex, dayIndex, ex.id, setIndex, sets: sets, reps: reps, rpe: load, note: note),
-              onRemoveSet: (setIndex) => onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-              supersetOptions: supersetOptionsForDay.where((o) => o.id != ex.supersetGroupId).toList(),
-              onAssignToSuperset: onAssignToSuperset != null ? (groupId) => onAssignToSuperset!(weekIndex, dayIndex, ex.id, groupId) : null,
-              onRemoveFromSuperset: onRemoveFromSuperset != null ? () => onRemoveFromSuperset!(weekIndex, dayIndex, ex.id) : null,
+          ...exercises.map(
+            (ex) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _ExerciseCard(
+                theme: theme,
+                cs: cs,
+                exercise: ex,
+                compact: false,
+                linked: true,
+                onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+                onMoveUp: () =>
+                    onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+                onMoveDown: () =>
+                    onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
+                onEdit: (name, sets, reps, rpe, note, {setDetails}) =>
+                    onUpdateExercise(
+                      weekIndex,
+                      dayIndex,
+                      ex.id,
+                      name: name,
+                      sets: sets,
+                      reps: reps,
+                      rpe: rpe,
+                      note: note,
+                      setDetails: setDetails,
+                    ),
+                onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
+                onUpdateSet: (setIndex, sets, reps, load, note) =>
+                    onUpdateExerciseSet(
+                      weekIndex,
+                      dayIndex,
+                      ex.id,
+                      setIndex,
+                      sets: sets,
+                      reps: reps,
+                      rpe: load,
+                      note: note,
+                    ),
+                onRemoveSet: (setIndex) =>
+                    onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
+                supersetOptions: supersetOptionsForDay
+                    .where((o) => o.id != ex.supersetGroupId)
+                    .toList(),
+                onAssignToSuperset: onAssignToSuperset != null
+                    ? (groupId) => onAssignToSuperset!(
+                        weekIndex,
+                        dayIndex,
+                        ex.id,
+                        groupId,
+                      )
+                    : null,
+                onRemoveFromSuperset: onRemoveFromSuperset != null
+                    ? () => onRemoveFromSuperset!(weekIndex, dayIndex, ex.id)
+                    : null,
+              ),
             ),
-          )),
+          ),
           const SizedBox(height: 8),
           _DashedButton(
             icon: Icons.add,
-            label: 'Add Exercise',
-            onPressed: supersetGroupId != null && onAddExerciseToSuperset != null
-                ? () => onAddExerciseToSuperset!(weekIndex, dayIndex, supersetGroupId!)
+            label: l10n.workoutBuilderAddExercise,
+            onPressed:
+                supersetGroupId != null && onAddExerciseToSuperset != null
+                ? () => onAddExerciseToSuperset!(
+                    weekIndex,
+                    dayIndex,
+                    supersetGroupId!,
+                  )
                 : onAddExercise,
           ),
         ],
@@ -3588,9 +4740,24 @@ class _ExerciseCard extends StatelessWidget {
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
   final VoidCallback? onMoveDown;
-  final void Function(String name, String sets, String reps, String rpe, String note, {List<ExerciseSet>? setDetails})? onEdit;
+  final void Function(
+    String name,
+    String sets,
+    String reps,
+    String rpe,
+    String note, {
+    List<ExerciseSet>? setDetails,
+  })?
+  onEdit;
   final VoidCallback? onAddSet;
-  final void Function(int setIndex, String sets, String reps, String load, String note)? onUpdateSet;
+  final void Function(
+    int setIndex,
+    String sets,
+    String reps,
+    String load,
+    String note,
+  )?
+  onUpdateSet;
   final void Function(int setIndex)? onRemoveSet;
   final List<({String id, String label})> supersetOptions;
   final void Function(String groupId)? onAssignToSuperset;
@@ -3600,6 +4767,7 @@ class _ExerciseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final details = exercise.effectiveSetDetails;
     final hasMultipleSets = details.length > 1;
+    final l10n = AppLocalizations.of(context);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -3616,10 +4784,14 @@ class _ExerciseCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   exercise.name,
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700, color: cs.onSurface),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
                 ),
               ),
-              if (linked) Icon(Icons.link_off, size: 20, color: StitchM3Theme.accent),
+              if (linked)
+                Icon(Icons.link_off, size: 20, color: StitchM3Theme.accent),
               if (linked) const SizedBox(width: 8),
               if (onAssignToSuperset != null || onRemoveFromSuperset != null)
                 PopupMenuButton<String>(
@@ -3627,7 +4799,9 @@ class _ExerciseCard extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   onSelected: (value) {
                     if (value == 'new') {
-                      onAssignToSuperset!('ss_${DateTime.now().millisecondsSinceEpoch}');
+                      onAssignToSuperset!(
+                        'ss_${DateTime.now().millisecondsSinceEpoch}',
+                      );
                     } else if (value.startsWith('group:')) {
                       onAssignToSuperset!(value.substring(6));
                     } else if (value == 'remove') {
@@ -3636,11 +4810,56 @@ class _ExerciseCard extends StatelessWidget {
                   },
                   itemBuilder: (ctx) => [
                     if (onAssignToSuperset != null) ...[
-                      const PopupMenuItem(value: 'new', child: Row(children: [Icon(Icons.add, size: 18), SizedBox(width: 12), Text('New superset')])),
-                      ...supersetOptions.map((o) => PopupMenuItem(value: 'group:${o.id}', child: Row(children: [Icon(Icons.link, size: 18), SizedBox(width: 12), Expanded(child: Text(o.label, overflow: TextOverflow.ellipsis))]))),
+                      PopupMenuItem(
+                        value: 'new',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.add, size: 18),
+                            const SizedBox(width: 12),
+                            Text(
+                              AppLocalizations.of(
+                                ctx,
+                              ).workoutBuilderNewSuperset,
+                            ),
+                          ],
+                        ),
+                      ),
+                      ...supersetOptions.map(
+                        (o) => PopupMenuItem(
+                          value: 'group:${o.id}',
+                          child: Row(
+                            children: [
+                              Icon(Icons.link, size: 18),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  o.label,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                     if (onRemoveFromSuperset != null)
-                      const PopupMenuItem(value: 'remove', child: Row(children: [Icon(Icons.link_off, size: 18, color: StitchM3Theme.danger), SizedBox(width: 12), Text('Remove from superset', style: TextStyle(color: StitchM3Theme.danger))])),
+                      const PopupMenuItem(
+                        value: 'remove',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.link_off,
+                              size: 18,
+                              color: StitchM3Theme.danger,
+                            ),
+                            SizedBox(width: 12),
+                            Text(
+                              'Remove from superset',
+                              style: TextStyle(color: StitchM3Theme.danger),
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               if (onEdit != null)
@@ -3654,29 +4873,53 @@ class _ExerciseCard extends StatelessWidget {
                     exercise.reps,
                     exercise.rpe,
                     exercise.note,
-                    (name, sets, reps, rpe, note) => onEdit!(name, sets, reps, rpe, note),
+                    (name, sets, reps, rpe, note) =>
+                        onEdit!(name, sets, reps, rpe, note),
                     initialSetDetails: exercise.effectiveSetDetails,
-                    onSaveWithSets: (name, note, setDetails) => onEdit!(name, exercise.sets, exercise.reps, exercise.rpe, note, setDetails: setDetails),
+                    onSaveWithSets: (name, note, setDetails) => onEdit!(
+                      name,
+                      exercise.sets,
+                      exercise.reps,
+                      exercise.rpe,
+                      note,
+                      setDetails: setDetails,
+                    ),
                   ),
-                  child: Icon(Icons.edit_outlined, size: 20, color: cs.onSurfaceVariant),
+                  child: Icon(
+                    Icons.edit_outlined,
+                    size: 20,
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
               if (onEdit != null) const SizedBox(width: 8),
               if (onRemove != null)
                 InkWell(
                   onTap: onRemove,
-                  child: Icon(Icons.delete_outline, size: 20, color: StitchM3Theme.danger),
+                  child: Icon(
+                    Icons.delete_outline,
+                    size: 20,
+                    color: StitchM3Theme.danger,
+                  ),
                 ),
               if (onRemove != null) const SizedBox(width: 8),
               if (onMoveUp != null)
                 InkWell(
                   onTap: onMoveUp,
-                  child: Icon(Icons.keyboard_arrow_up, size: 20, color: cs.onSurfaceVariant),
+                  child: Icon(
+                    Icons.keyboard_arrow_up,
+                    size: 20,
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
               if (onMoveUp != null) const SizedBox(width: 4),
               if (onMoveDown != null)
                 InkWell(
                   onTap: onMoveDown,
-                  child: Icon(Icons.keyboard_arrow_down, size: 20, color: cs.onSurfaceVariant),
+                  child: Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 20,
+                    color: cs.onSurfaceVariant,
+                  ),
                 ),
               if (onMoveDown != null) const SizedBox(width: 4),
               Icon(Icons.drag_indicator, size: 20, color: cs.onSurfaceVariant),
@@ -3688,19 +4931,47 @@ class _ExerciseCard extends StatelessWidget {
               final i = entry.key;
               final s = entry.value;
               return Padding(
-                padding: EdgeInsets.only(bottom: i < details.length - 1 ? 8 : 0),
+                padding: EdgeInsets.only(
+                  bottom: i < details.length - 1 ? 8 : 0,
+                ),
                 child: Row(
                   children: [
-                    Expanded(child: _SetRepCell(theme: theme, cs: cs, label: 'Serie', value: s.displayText, compact: compact)),
+                    Expanded(
+                      child: _SetRepCell(
+                        theme: theme,
+                        cs: cs,
+                        label: 'Serie',
+                        value: s.displayText,
+                        compact: compact,
+                      ),
+                    ),
                     if (onUpdateSet != null)
                       InkWell(
-                        onTap: () => _showEditSetDialog(context, theme, cs, s.sets, s.reps, s.rpe, s.note, (sets, reps, load, note) => onUpdateSet!(i, sets, reps, load, note)),
-                        child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
+                        onTap: () => _showEditSetDialog(
+                          context,
+                          theme,
+                          cs,
+                          s.sets,
+                          s.reps,
+                          s.rpe,
+                          s.note,
+                          (sets, reps, load, note) =>
+                              onUpdateSet!(i, sets, reps, load, note),
+                        ),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          size: 18,
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                     if (onRemoveSet != null && details.length > 1)
                       InkWell(
                         onTap: () => onRemoveSet!(i),
-                        child: Icon(Icons.delete_outline, size: 18, color: StitchM3Theme.danger),
+                        child: Icon(
+                          Icons.delete_outline,
+                          size: 18,
+                          color: StitchM3Theme.danger,
+                        ),
                       ),
                   ],
                 ),
@@ -3713,7 +4984,7 @@ class _ExerciseCard extends StatelessWidget {
                   child: _SetRepCell(
                     theme: theme,
                     cs: cs,
-                    label: 'Serie',
+                    label: l10n.workoutBuilderSetsLabel,
                     value: details.first.displayText,
                     compact: compact,
                   ),
@@ -3722,9 +4993,23 @@ class _ExerciseCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       final s = details.first;
-                      _showEditSetDialog(context, theme, cs, s.sets, s.reps, s.rpe, s.note, (sets, reps, load, note) => onUpdateSet!(0, sets, reps, load, note));
+                      _showEditSetDialog(
+                        context,
+                        theme,
+                        cs,
+                        s.sets,
+                        s.reps,
+                        s.rpe,
+                        s.note,
+                        (sets, reps, load, note) =>
+                            onUpdateSet!(0, sets, reps, load, note),
+                      );
                     },
-                    child: Icon(Icons.edit_outlined, size: 18, color: cs.onSurfaceVariant),
+                    child: Icon(
+                      Icons.edit_outlined,
+                      size: 18,
+                      color: cs.onSurfaceVariant,
+                    ),
                   ),
               ],
             ),
@@ -3733,20 +5018,32 @@ class _ExerciseCard extends StatelessWidget {
             TextButton.icon(
               onPressed: onAddSet,
               icon: Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
-              label: Text('Add Set', style: theme.textTheme.labelSmall?.copyWith(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
+              label: Text(
+                l10n.workoutBuilderAddSet,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: StitchM3Theme.accent,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
           ],
           const SizedBox(height: 8),
           Text(
             exercise.note.isNotEmpty ? exercise.note : 'Add note...',
             style: theme.textTheme.bodySmall?.copyWith(
-              color: exercise.note.isNotEmpty ? cs.onSurface : cs.onSurfaceVariant,
+              color: exercise.note.isNotEmpty
+                  ? cs.onSurface
+                  : cs.onSurfaceVariant,
               fontStyle: exercise.note.isEmpty ? FontStyle.italic : null,
             ),
           ),
           if (showAddExercise) ...[
             const SizedBox(height: 12),
-            _DashedButton(icon: Icons.add, label: 'Add Exercise', onPressed: onAddExercise),
+            _DashedButton(
+              icon: Icons.add,
+              label: l10n.workoutBuilderAddExercise,
+              onPressed: onAddExercise,
+            ),
           ],
         ],
       ),
@@ -3768,9 +5065,10 @@ void _showEditSetDialog(
   final repsController = TextEditingController(text: initialReps);
   final loadController = TextEditingController(text: initialLoad);
   final noteController = TextEditingController(text: initialNote);
+  final l10n = AppLocalizations.of(context);
   showAppBottomSheet<void>(
     context: context,
-    title: 'Edit set',
+    title: l10n.workoutBuilderEditSetTitle,
     bodyBuilder: (sheetContext) => Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -3779,7 +5077,10 @@ void _showEditSetDialog(
             Expanded(
               child: TextField(
                 controller: setsController,
-                decoration: const InputDecoration(labelText: 'Set', hintText: '1'),
+                decoration: InputDecoration(
+                  labelText: l10n.workoutBuilderSetLabel,
+                  hintText: '1',
+                ),
                 keyboardType: TextInputType.number,
                 autofocus: false,
               ),
@@ -3788,7 +5089,10 @@ void _showEditSetDialog(
             Expanded(
               child: TextField(
                 controller: repsController,
-                decoration: const InputDecoration(labelText: 'Reps', hintText: '3'),
+                decoration: InputDecoration(
+                  labelText: l10n.workoutBuilderRepsLabel,
+                  hintText: '3',
+                ),
                 keyboardType: TextInputType.number,
               ),
             ),
@@ -3797,26 +5101,44 @@ void _showEditSetDialog(
               flex: 2,
               child: TextField(
                 controller: loadController,
-                decoration: const InputDecoration(labelText: 'Carico', hintText: '75kg'),
+                decoration: InputDecoration(
+                  labelText: l10n.workoutBuilderLoadLabel,
+                  hintText: '75kg',
+                ),
                 keyboardType: TextInputType.text,
               ),
             ),
           ],
         ),
         const SizedBox(height: 12),
-        TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Note'), maxLines: 2),
+        TextField(
+          controller: noteController,
+          decoration: InputDecoration(labelText: l10n.workoutBuilderNoteLabel),
+          maxLines: 2,
+        ),
       ],
     ),
-    primaryActionLabel: 'Save',
+    primaryActionLabel: l10n.customerSave,
     onPrimaryAction: () {
-      onSave(setsController.text.trim(), repsController.text.trim(), loadController.text.trim(), noteController.text.trim());
+      onSave(
+        setsController.text.trim(),
+        repsController.text.trim(),
+        loadController.text.trim(),
+        noteController.text.trim(),
+      );
       Navigator.of(context).pop();
     },
   );
 }
 
 class _SetRepCell extends StatelessWidget {
-  const _SetRepCell({required this.theme, required this.cs, required this.label, required this.value, required this.compact});
+  const _SetRepCell({
+    required this.theme,
+    required this.cs,
+    required this.label,
+    required this.value,
+    required this.compact,
+  });
 
   final ThemeData theme;
   final ColorScheme cs;
@@ -3847,7 +5169,10 @@ class _SetRepCell extends StatelessWidget {
           child: Center(
             child: Text(
               value,
-              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: cs.onSurface,
+              ),
             ),
           ),
         ),
@@ -3857,7 +5182,10 @@ class _SetRepCell extends StatelessWidget {
 }
 
 class _WorkoutBuilderBottomNav extends StatelessWidget {
-  const _WorkoutBuilderBottomNav({required this.navContext, required this.selectedIndex});
+  const _WorkoutBuilderBottomNav({
+    required this.navContext,
+    required this.selectedIndex,
+  });
 
   final BuildContext navContext;
   final int selectedIndex;
@@ -3896,12 +5224,20 @@ class _WorkoutBuilderBottomNav extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(icon, size: 24, color: selected ? StitchM3Theme.accent : cs.onSurfaceVariant),
+                  Icon(
+                    icon,
+                    size: 24,
+                    color: selected
+                        ? StitchM3Theme.accent
+                        : cs.onSurfaceVariant,
+                  ),
                   const SizedBox(height: 4),
                   Text(
                     label,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: selected ? StitchM3Theme.accent : cs.onSurfaceVariant,
+                      color: selected
+                          ? StitchM3Theme.accent
+                          : cs.onSurfaceVariant,
                       fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
