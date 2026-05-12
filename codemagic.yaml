@@ -6,6 +6,11 @@ workflows:
       flutter: stable
       groups:
         - google_credentials
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $CM_BUILD_DIR/build
+        - $HOME/.gradle/caches
     triggering:
       events:
         - pull_request
@@ -42,6 +47,11 @@ workflows:
       flutter: stable
       groups:
         - google_credentials
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $CM_BUILD_DIR/build
+        - $HOME/.gradle/caches
     triggering:
       events:
         - push
@@ -79,6 +89,8 @@ workflows:
           EOF
       - name: Install dependencies
         script: flutter pub get
+      - name: Unit and widget tests
+        script: flutter test test/
       - name: Build Android APK
         script: flutter build apk --release
       - name: Build Android App Bundle
@@ -86,6 +98,7 @@ workflows:
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
       - build/app/outputs/bundle/release/*.aab
+      - build/app/outputs/mapping/release/mapping.txt
 
   android_play_store:
     name: Android Play Store Publish
@@ -94,6 +107,11 @@ workflows:
       flutter: stable
       groups:
         - google_credentials
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $CM_BUILD_DIR/build
+        - $HOME/.gradle/caches
     triggering:
       events:
         - tag

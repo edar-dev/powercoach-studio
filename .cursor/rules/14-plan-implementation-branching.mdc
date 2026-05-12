@@ -1,0 +1,29 @@
+---
+description: Require branch creation from main before implementing approved plans
+alwaysApply: true
+---
+
+# Plan Implementation Branching Policy
+
+When the user asks to implement an approved plan, start implementation work on a new branch created from `main`.
+
+## Required workflow before coding
+
+1. Sync local `main` with remote (`git checkout main` + `git pull`).
+2. Create a new branch from `main`.
+3. Only after branch creation, start file edits for the plan implementation.
+
+## Branch naming convention (Conventional Commits style)
+
+- Branch name format: `<type>/<scope>-<short-kebab-description>`
+- Allowed `type` values: `feat`, `fix`, `refactor`, `chore`, `docs`, `test`, `perf`, `build`, `ci`
+- Examples:
+  - `feat/settings-language-selector`
+  - `fix/dashboard-today-sorting`
+  - `refactor/workout-template-repository`
+
+## Additional constraints
+
+- Never implement approved plan tasks directly on `main`.
+- If the current branch is not `main` and the user asks to implement a plan, create a fresh feature branch from `main` anyway unless the user explicitly requests otherwise.
+- If branching from `main` is blocked (local conflicts, missing remote, protected branch issues), stop and ask the user how to proceed before editing files.

@@ -55,11 +55,11 @@ Configure a Codemagic environment group named `google_credentials` with:
 - `SENTRY_DSN` (optional)
 - `SENTRY_ENVIRONMENT` (optional)
 - `GYMBLOG_API_URL` (optional)
-- `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` (required for Play publishing)
-- `ANDROID_KEYSTORE_BASE64` (required for Play publishing)
-- `ANDROID_KEYSTORE_PASSWORD` (required for Play publishing)
-- `ANDROID_KEY_ALIAS` (required for Play publishing)
-- `ANDROID_KEY_PASSWORD` (required for Play publishing)
+- `ANDROID_KEYSTORE_BASE64` (required for `android_release` and Play publishing)
+- `ANDROID_KEYSTORE_PASSWORD` (required for `android_release` and Play publishing)
+- `ANDROID_KEY_ALIAS` (required for `android_release` and Play publishing)
+- `ANDROID_KEY_PASSWORD` (required for `android_release` and Play publishing)
+- `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` (required only for Play publishing)
 
 See `docs/play-store-release-guide.md` for the full end-to-end setup.
 

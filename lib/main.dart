@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
+import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -122,6 +123,9 @@ class _BootstrapAppState extends State<_BootstrapApp> {
 
       configureDependencies();
       _logStartupStep('configureDependencies completed', _bootstrapWatch);
+
+      await AppLocaleController.instance.load();
+      _logStartupStep('locale controller loaded', _bootstrapWatch);
 
       if (!mounted) return;
       setState(() {
