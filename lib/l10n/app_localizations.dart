@@ -2320,6 +2320,48 @@ abstract class AppLocalizations {
   /// **'Untitled workout'**
   String get dashboardUntitledWorkout;
 
+  /// No description provided for @calendarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar'**
+  String get calendarTitle;
+
+  /// No description provided for @calendarEmptyMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions on this day.'**
+  String get calendarEmptyMonth;
+
+  /// No description provided for @calendarLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the calendar.'**
+  String get calendarLoadError;
+
+  /// No description provided for @calendarUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update session status.'**
+  String get calendarUpdateError;
+
+  /// No description provided for @calendarUpcomingSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming sessions'**
+  String get calendarUpcomingSessions;
+
+  /// No description provided for @sessionCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get sessionCompleted;
+
+  /// No description provided for @sessionSkipped.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped'**
+  String get sessionSkipped;
+
   /// No description provided for @dashboardWorkoutBuilder.
   ///
   /// In en, this message translates to:

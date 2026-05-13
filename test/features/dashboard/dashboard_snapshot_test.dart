@@ -46,7 +46,10 @@ WorkoutPlanApiModel _plan({
 }
 
 String _routineJsonWithStart(DateTime startDate) {
-  final r = WorkoutRoutine.empty().copyWith(startDate: startDate);
+  final r = WorkoutRoutine.empty().copyWith(
+    startDate: startDate,
+    weeks: WorkoutRoutine.defaultWeeks(),
+  );
   return jsonEncode(r.toJson());
 }
 
@@ -81,6 +84,7 @@ void main() {
         pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
       );
       expect(s.hasError, isFalse);
       expect(s.clientCount, 0);
@@ -107,6 +111,7 @@ void main() {
         pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
       );
       expect(s.todayItems, hasLength(1));
       expect(s.todayItems.single.planId, 'p1');
@@ -128,6 +133,7 @@ void main() {
         pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
         stalePlanDays: 14,
       );
       expect(s.stalePlans, hasLength(1));
@@ -152,6 +158,7 @@ void main() {
         pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
       );
       expect(s.customersWithoutPlan, hasLength(1));
       expect(s.customersWithoutPlan.single.customerId, 'c1');
@@ -168,6 +175,7 @@ void main() {
         ],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
       );
       expect(s.attentionPending, hasLength(1));
       expect(s.attentionPending.single.operationId, 'a');
@@ -192,6 +200,7 @@ void main() {
         pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
       );
       await tester.pumpWidget(
         MaterialApp(

@@ -1,0 +1,75 @@
+/// Session state for calendarized workout slots.
+enum PlanSessionStatus {
+  planned,
+  completed,
+  skipped,
+}
+
+/// Calendar row derived from a workout plan assignment.
+class PlanCalendarEvent {
+  const PlanCalendarEvent({
+    required this.day,
+    required this.customerId,
+    required this.planId,
+    required this.customerName,
+    required this.programName,
+    required this.weekIndex,
+    required this.dayIndex,
+    required this.sessionLabel,
+    required this.status,
+  });
+
+  final DateTime day;
+  final String customerId;
+  final String planId;
+  final String customerName;
+  final String programName;
+  final int weekIndex;
+  final int dayIndex;
+  final String sessionLabel;
+  final PlanSessionStatus status;
+
+  String get sessionKey => '$weekIndex-$dayIndex';
+}
+
+/// Maps a week/day slot to a calendar day from [startDate].
+///
+/// v1 rule: each week occupies a 7-day block; day index is the offset inside that block.
+DateTime planSessionDate({
+  required DateTime startDate,
+  required int weekIndex,
+  required int dayIndex,
+}) {
+  final normalized = DateTime(startDate.year, startDate.month, startDate.day);
+  return normalized.add(Duration(days: weekIndex * 7 + dayIndex));
+}
+
+DateTime calendarDayOnly(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+PlanSessionStatus planSessionStatus({
+  required Map<String, bool> completionByKey,
+  required Map<String, bool> skippedByKey,
+  required int weekIndex,
+  required int dayIndex,
+}) {
+  final key = '$weekIndex-$dayIndex';
+  if (completionByKey[key] == true) {
+    return PlanSessionStatus.completed;
+  }
+  if (skippedByKey[key] == true) {
+    return PlanSessionStatus.skipped;
+  }
+  return PlanSessionStatus.planned;
+}
+
+bool isPlanSessionWithinRange({
+  required DateTime sessionDay,
+  required DateTime? endDate,
+}) {
+  if (endDate == null) {
+    return true;
+  }
+  final end = calendarDayOnly(endDate);
+  return !calendarDayOnly(sessionDay).isAfter(end);
+}

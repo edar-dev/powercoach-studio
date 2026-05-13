@@ -230,6 +230,85 @@ class WorkoutPlanRepository {
       notes: src.notes,
     );
   }
+
+  /// Updates assignment markers stored inside [planData] JSON.
+  Future<WorkoutPlanApiModel> updateScheduleMarkers({
+    required String planId,
+    DateTime? startDate,
+    DateTime? endDate,
+    int? currentWeek,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    DateTime? effectiveStart = startDate;
+    final existingStart = map['startDate'];
+    if (effectiveStart == null && existingStart != null) {
+      effectiveStart = DateTime.tryParse(existingStart.toString());
+    }
+    if (startDate != null) {
+      map['startDate'] = _dateOnlyIso(startDate);
+    }
+    if (endDate != null) {
+      if (effectiveStart != null &&
+          _dateOnly(endDate).isBefore(_dateOnly(effectiveStart))) {
+        throw ArgumentError.value(endDate, 'endDate', 'must be on or after startDate');
+      }
+      map['endDate'] = _dateOnlyIso(endDate);
+    }
+    if (currentWeek != null) {
+      if (currentWeek < 1) {
+        throw ArgumentError.value(currentWeek, 'currentWeek', 'must be >= 1');
+      }
+      map['currentWeek'] = currentWeek;
+    }
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  /// Persists completion/skip flags for a week/day slot inside [planData].
+  Future<WorkoutPlanApiModel> setSessionCompleted({
+    required String planId,
+    required int weekIndex,
+    required int dayIndex,
+    required bool completed,
+    bool skipped = false,
+  }) async {
+    if (weekIndex < 0 || dayIndex < 0) {
+      throw ArgumentError('weekIndex and dayIndex must be non-negative');
+    }
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final routine = planDataToRoutine(plan.planData);
+    final key = WorkoutRoutine.sessionKey(weekIndex, dayIndex);
+    final completion = Map<String, bool>.from(routine.sessionCompletionByKey);
+    final skippedByKey = Map<String, bool>.from(routine.sessionSkippedByKey);
+    if (skipped && !completed) {
+      skippedByKey[key] = true;
+      completion.remove(key);
+    } else if (completed) {
+      completion[key] = true;
+      skippedByKey.remove(key);
+    } else {
+      completion.remove(key);
+      skippedByKey.remove(key);
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    if (completion.isEmpty) {
+      map.remove('sessionCompletionByKey');
+    } else {
+      map['sessionCompletionByKey'] = completion;
+    }
+    if (skippedByKey.isEmpty) {
+      map.remove('sessionSkippedByKey');
+    } else {
+      map['sessionSkippedByKey'] = skippedByKey;
+    }
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
 }
 
 /// Sort key: routine `startDate` from [WorkoutPlanApiModel.planData], else [WorkoutPlanApiModel.updatedAt].
@@ -266,4 +345,12 @@ String _cloneWorkoutPlanDataJson(String planData) {
 WorkoutRoutine planDataToRoutine(String planDataJson) {
   final map = jsonDecode(planDataJson) as Map<String, dynamic>;
   return WorkoutRoutine.fromJson(map);
+}
+
+DateTime _dateOnly(DateTime value) =>
+    DateTime(value.year, value.month, value.day);
+
+String _dateOnlyIso(DateTime value) {
+  final day = _dateOnly(value);
+  return day.toIso8601String();
 }
