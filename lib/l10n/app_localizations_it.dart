@@ -1218,6 +1218,28 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardUntitledWorkout => 'Workout senza titolo';
 
   @override
+  String get calendarTitle => 'Calendario';
+
+  @override
+  String get calendarEmptyMonth => 'Nessuna sessione in questo giorno.';
+
+  @override
+  String get calendarLoadError => 'Impossibile caricare il calendario.';
+
+  @override
+  String get calendarUpdateError =>
+      'Impossibile aggiornare lo stato della sessione.';
+
+  @override
+  String get calendarUpcomingSessions => 'Prossime sessioni';
+
+  @override
+  String get sessionCompleted => 'Completata';
+
+  @override
+  String get sessionSkipped => 'Saltata';
+
+  @override
   String get dashboardWorkoutBuilder => 'Builder workout';
 
   @override

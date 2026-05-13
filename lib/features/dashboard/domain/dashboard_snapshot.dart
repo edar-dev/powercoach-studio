@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../customers/data/models/customer.dart';
 import '../../workouts/data/workout_plan_api_model.dart';
-import '../../workouts/data/workout_plan_repository.dart';
+import 'calendar_event_loader.dart';
 
 /// Max rows shown per dashboard section before "See all".
 const int kDashboardSectionRowLimit = 5;
@@ -123,20 +123,6 @@ class DashboardSnapshot {
   return (start: weekStart, endExclusive: weekStart.add(const Duration(days: 7)));
 }
 
-DateTime? _planStartDay(WorkoutPlanApiModel plan) {
-  try {
-    final routine = planDataToRoutine(plan.planData);
-    final startDate = routine.startDate;
-    if (startDate == null) return null;
-    return DateTime(startDate.year, startDate.month, startDate.day);
-  } catch (_) {
-    return null;
-  }
-}
-
-bool _sameDay(DateTime a, DateTime b) =>
-    a.year == b.year && a.month == b.month && a.day == b.day;
-
 /// Pure aggregation for tests and [DashboardSnapshotLoader].
 DashboardSnapshot buildDashboardSnapshot({
   required List<Customer> customers,
@@ -144,6 +130,7 @@ DashboardSnapshot buildDashboardSnapshot({
   required List<PendingOperation> pendingOperations,
   required DateTime now,
   required String unknownClientLabel,
+  required String untitledWorkoutLabel,
   int stalePlanDays = kStalePlanDays,
   int maxSectionRows = kDashboardSectionRowLimit,
 }) {
@@ -167,23 +154,27 @@ DashboardSnapshot buildDashboardSnapshot({
         updatedDay.isBefore(weekRange.endExclusive);
   }).length;
 
-  final todayItems = <DashboardTodayItem>[];
-  for (final plan in plans) {
-    final startDate = _planStartDay(plan);
-    if (startDate == null) continue;
-    if (!_sameDay(startDate, now)) continue;
-    final name = customerById[plan.customerId] ?? unknownClientLabel;
-    todayItems.add(
-      DashboardTodayItem(
-        customerId: plan.customerId,
-        planId: plan.id,
-        clientName: name,
-        programName: plan.name.trim().isEmpty ? '' : plan.name,
-        date: startDate,
-      ),
-    );
-  }
-  todayItems.sort((a, b) => a.clientName.compareTo(b.clientName));
+  final todayStart = DateTime(now.year, now.month, now.day);
+  final todayEnd = todayStart.add(const Duration(days: 1));
+  final todayEvents = CalendarEventLoader.eventsForPlans(
+    plans: plans,
+    customerNamesById: customerById,
+    rangeStart: todayStart,
+    rangeEndExclusive: todayEnd,
+    unknownClientLabel: unknownClientLabel,
+    untitledProgramLabel: untitledWorkoutLabel,
+  );
+  final todayItems = todayEvents
+      .map(
+        (event) => DashboardTodayItem(
+          customerId: event.customerId,
+          planId: event.planId,
+          clientName: event.customerName,
+          programName: event.programName,
+          date: event.day,
+        ),
+      )
+      .toList();
 
   final thresholdDay =
       DateTime(now.year, now.month, now.day).subtract(Duration(days: stalePlanDays));

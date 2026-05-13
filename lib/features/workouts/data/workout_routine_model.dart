@@ -31,6 +31,10 @@ class WorkoutRoutine {
     required this.mobilityItems,
     required this.weeks,
     this.startDate,
+    this.endDate,
+    this.currentWeek,
+    this.sessionCompletionByKey = const {},
+    this.sessionSkippedByKey = const {},
   });
 
   final String name;
@@ -39,6 +43,16 @@ class WorkoutRoutine {
   final List<Week> weeks;
   /// Calendar start of the plan; persisted in planData. Null for legacy JSON.
   final DateTime? startDate;
+  /// Optional explicit end date for the assignment window.
+  final DateTime? endDate;
+  /// Coach-facing progress marker (1-based week index when set).
+  final int? currentWeek;
+  /// Keys `weekIndex-dayIndex` → completed session.
+  final Map<String, bool> sessionCompletionByKey;
+  /// Keys `weekIndex-dayIndex` → skipped session.
+  final Map<String, bool> sessionSkippedByKey;
+
+  static String sessionKey(int weekIndex, int dayIndex) => '$weekIndex-$dayIndex';
 
   Map<String, dynamic> toJson() => {
         'name': name,
@@ -47,6 +61,12 @@ class WorkoutRoutine {
         'weeks': weeks.map((e) => e.toJson()).toList(),
         if (startDate != null)
           'startDate': DateTime(startDate!.year, startDate!.month, startDate!.day).toIso8601String(),
+        if (endDate != null)
+          'endDate': DateTime(endDate!.year, endDate!.month, endDate!.day).toIso8601String(),
+        if (currentWeek != null) 'currentWeek': currentWeek,
+        if (sessionCompletionByKey.isNotEmpty)
+          'sessionCompletionByKey': sessionCompletionByKey,
+        if (sessionSkippedByKey.isNotEmpty) 'sessionSkippedByKey': sessionSkippedByKey,
       };
 
   static WorkoutRoutine fromJson(Map<String, dynamic> json) {
@@ -72,6 +92,19 @@ class WorkoutRoutine {
       }
     }
 
+    DateTime? parsedEnd;
+    final ed = json['endDate'];
+    if (ed != null) {
+      parsedEnd = DateTime.tryParse(ed.toString());
+      if (parsedEnd != null) {
+        parsedEnd = DateTime(parsedEnd.year, parsedEnd.month, parsedEnd.day);
+      }
+    }
+
+  final currentWeek = (json['currentWeek'] as num?)?.toInt();
+  final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
+  final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
+
     return WorkoutRoutine(
       name: json['name'] as String? ?? 'Hypertrophy Phase 1',
       mobilitySections: sections,
@@ -81,7 +114,25 @@ class WorkoutRoutine {
               .toList() ??
           defaultWeeks(),
       startDate: parsedStart,
+      endDate: parsedEnd,
+      currentWeek: currentWeek,
+      sessionCompletionByKey: completionByKey,
+      sessionSkippedByKey: skippedByKey,
     );
+  }
+
+  static Map<String, bool> _parseBoolMap(dynamic raw) {
+    if (raw is! Map) {
+      return const {};
+    }
+    final parsed = <String, bool>{};
+    for (final entry in raw.entries) {
+      final value = entry.value;
+      if (value == true) {
+        parsed[entry.key.toString()] = true;
+      }
+    }
+    return parsed;
   }
 
   static List<Week> defaultWeeks() => [
@@ -119,6 +170,10 @@ class WorkoutRoutine {
     List<MobilityItem>? mobilityItems,
     List<Week>? weeks,
     DateTime? startDate,
+    DateTime? endDate,
+    int? currentWeek,
+    Map<String, bool>? sessionCompletionByKey,
+    Map<String, bool>? sessionSkippedByKey,
   }) =>
       WorkoutRoutine(
         name: name ?? this.name,
@@ -126,6 +181,10 @@ class WorkoutRoutine {
         mobilityItems: mobilityItems ?? this.mobilityItems,
         weeks: weeks ?? this.weeks,
         startDate: startDate ?? this.startDate,
+        endDate: endDate ?? this.endDate,
+        currentWeek: currentWeek ?? this.currentWeek,
+        sessionCompletionByKey: sessionCompletionByKey ?? this.sessionCompletionByKey,
+        sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
       );
 }
 

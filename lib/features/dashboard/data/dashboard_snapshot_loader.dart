@@ -19,6 +19,7 @@ class DashboardSnapshotLoader {
 
   Future<DashboardSnapshot> load({
     required String unknownClientLabel,
+    required String untitledWorkoutLabel,
     DateTime? now,
   }) async {
     final clock = now ?? DateTime.now();
@@ -32,6 +33,7 @@ class DashboardSnapshotLoader {
         pendingOperations: await pendingFuture,
         now: clock,
         unknownClientLabel: unknownClientLabel,
+        untitledWorkoutLabel: untitledWorkoutLabel,
       );
     } catch (e) {
       return DashboardSnapshot.error(e.toString());

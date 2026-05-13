@@ -50,7 +50,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     if (widget.loadSnapshot != null) {
       snap = await widget.loadSnapshot!(unknown);
     } else {
-      snap = await _loader.load(unknownClientLabel: unknown);
+      snap = await _loader.load(
+        unknownClientLabel: unknown,
+        untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
+      );
     }
     if (!mounted) return;
     setState(() {
@@ -850,6 +853,14 @@ class _DashboardDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.go('/dashboard');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.calendar_month_outlined),
+              title: Text(AppLocalizations.of(context).calendarTitle),
+              onTap: () {
+                Navigator.of(context).pop();
+                if (context.mounted) context.push('/dashboard/calendar');
               },
             ),
             ListTile(

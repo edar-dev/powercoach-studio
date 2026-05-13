@@ -10,6 +10,7 @@ import '../../../../widgets/app_sheet.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/data/workout_routine_model.dart';
+import '../widgets/plan_schedule_strip.dart';
 
 /// Lista workout del cliente – route /customers/:id/workouts.
 /// Carica i piani dall'API (WorkoutPlanRepository) e permette di aprirli in modifica.
@@ -154,6 +155,8 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                               cs: cs,
                               title: plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
                               subtitle: _formatPlanSubtitle(l10n, plan),
+                              plan: plan,
+                              localeName: l10n.localeName,
                               onTap: () {
                                 HapticFeedback.mediumImpact();
                                 context.push(
@@ -325,6 +328,8 @@ class _WorkoutListCard extends StatelessWidget {
     required this.cs,
     required this.title,
     required this.subtitle,
+    this.plan,
+    this.localeName,
     this.onTap,
     this.onCreateFollowUp,
     this.onSaveAsTemplate,
@@ -335,6 +340,8 @@ class _WorkoutListCard extends StatelessWidget {
   final ColorScheme cs;
   final String title;
   final String subtitle;
+  final WorkoutPlanApiModel? plan;
+  final String? localeName;
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
   final VoidCallback? onSaveAsTemplate;
@@ -373,6 +380,10 @@ class _WorkoutListCard extends StatelessWidget {
                       subtitle,
                       style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
                     ),
+                    if (plan != null && localeName != null) ...[
+                      const SizedBox(height: 12),
+                      PlanScheduleStrip(plan: plan!, localeName: localeName!),
+                    ],
                   ],
                 ),
               ),

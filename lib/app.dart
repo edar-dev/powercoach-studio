@@ -8,6 +8,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
 import 'features/auth/presentation/screens/login_screen.dart';
+import 'features/dashboard/presentation/screens/coach_calendar_screen.dart';
 import 'features/dashboard/presentation/screens/coach_dashboard_screen.dart';
 import 'features/dashboard/presentation/screens/schedule_detail_screen.dart';
 import 'features/dashboard/presentation/screens/schedule_screen.dart';
@@ -69,6 +70,10 @@ final _goRouter = GoRouter(
       path: '/dashboard',
       builder: (context, state) => const CoachDashboardScreen(),
       routes: [
+        GoRoute(
+          path: 'calendar',
+          builder: (context, state) => const CoachCalendarScreen(),
+        ),
         GoRoute(
           path: 'schedule',
           builder: (context, state) => const ScheduleScreen(),
