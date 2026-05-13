@@ -4,28 +4,28 @@ overview: Visualizzare storico misurazioni cliente con grafici temporali, confro
 todos:
   - id: audit-measurement-model
     content: Leggere CustomerMeasurement e payload campi (peso, circonferenze, date) per definire serie plottabili
-    status: pending
+    status: completed
   - id: chart-package
     content: Scegliere fl_chart o charts_flutter; aggiungere dipendenza; tema coerente con StitchM3Theme
-    status: pending
+    status: completed
   - id: presentation-screen-or-tab
     content: Aggiungere tab/sezione Storico in customer_detail_screen o route /customers/:id/measurements/history
-    status: pending
+    status: completed
   - id: viewmodel-aggregation
     content: MeasurementSeriesBuilder ordina per data, gestisce buchi, selezione metrica attiva (dropdown)
-    status: pending
+    status: completed
   - id: compare-periods
     content: UI secondaria confronto ultimi 30 vs 30 precedenti (delta % e label) oppure posticipo a v2
-    status: pending
+    status: completed
   - id: export-csv
     content: Generare CSV in memoria + share_plus (pattern exercise library)
-    status: pending
+    status: completed
   - id: export-pdf-optional
     content: Opzionale tabella in pdf package se già usato nel progetto workout
-    status: pending
+    status: completed
   - id: l10n-empty-error
     content: Stati vuoto, errore caricamento, etichette assi
-    status: pending
+    status: completed
 isProject: false
 ---
 
