@@ -381,6 +381,48 @@
   "measurementDeleted": "Misura eliminata.",
   "measurementDeleteError": "Impossibile eliminare la misura.",
   "measurementDeleteConfirm": "Eliminare questa misura?",
+  "measurementHistoryTitle": "Storico misurazioni",
+  "measurementHistoryMetricLabel": "Metrica",
+  "measurementHistoryNoMetricData": "Nessun valore registrato per questa metrica.",
+  "measurementHistoryLoadError": "Impossibile caricare lo storico misurazioni.",
+  "measurementHistoryCompareTitle": "Confronto periodi",
+  "measurementHistoryCompareSubtitle": "Ultimi 30 giorni vs 30 giorni precedenti",
+  "measurementHistoryCompareRecent": "Ultimi 30 giorni",
+  "measurementHistoryComparePrevious": "30 giorni precedenti",
+  "measurementHistoryCompareInsufficient": "Aggiungi altre misure per confrontare i periodi.",
+  "measurementHistoryCompareNoData": "Nessun dato",
+  "measurementHistoryCompareDelta": "Variazione {metric}: {delta}",
+  "@measurementHistoryCompareDelta": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "measurementHistoryCompareSampleCount": "{count} rilevazioni",
+  "@measurementHistoryCompareSampleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "measurementHistoryOpen": "Apri storico",
+  "measurementExportCsv": "Esporta CSV",
+  "measurementExportPdf": "Esporta PDF",
+  "measurementExportSuccess": "Esportazione pronta per la condivisione.",
+  "measurementExportError": "Impossibile esportare le misure.",
+  "measurementHistoryExportPdfTitle": "Misure — {customerName}",
+  "@measurementHistoryExportPdfTitle": {
+    "placeholders": {
+      "customerName": {
+        "type": "String"
+      }
+    }
+  },
   "syncConflictTitle": "Conflitto di sincronizzazione rilevato",
   "syncConflictMessage": "Ci sono modifiche locali e remote in conflitto. Scegli se mantenere la versione locale o accettare quella remota.",
   "syncConflictMessageWithEntity": "Conflitto per {entityType}. Mantieni le modifiche locali o usa la copia sul server.",

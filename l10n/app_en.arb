@@ -381,6 +381,48 @@
   "measurementDeleted": "Measurement deleted.",
   "measurementDeleteError": "Could not delete measurement.",
   "measurementDeleteConfirm": "Delete this measurement?",
+  "measurementHistoryTitle": "Measurement history",
+  "measurementHistoryMetricLabel": "Metric",
+  "measurementHistoryNoMetricData": "No values recorded for this metric yet.",
+  "measurementHistoryLoadError": "Could not load measurement history.",
+  "measurementHistoryCompareTitle": "Period comparison",
+  "measurementHistoryCompareSubtitle": "Last 30 days vs previous 30 days",
+  "measurementHistoryCompareRecent": "Last 30 days",
+  "measurementHistoryComparePrevious": "Previous 30 days",
+  "measurementHistoryCompareInsufficient": "Add more measurements to compare periods.",
+  "measurementHistoryCompareNoData": "No data",
+  "measurementHistoryCompareDelta": "{metric} change: {delta}",
+  "@measurementHistoryCompareDelta": {
+    "placeholders": {
+      "metric": {
+        "type": "String"
+      },
+      "delta": {
+        "type": "String"
+      }
+    }
+  },
+  "measurementHistoryCompareSampleCount": "{count} samples",
+  "@measurementHistoryCompareSampleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "measurementHistoryOpen": "View history",
+  "measurementExportCsv": "Export CSV",
+  "measurementExportPdf": "Export PDF",
+  "measurementExportSuccess": "Export ready to share.",
+  "measurementExportError": "Could not export measurements.",
+  "measurementHistoryExportPdfTitle": "Measurements — {customerName}",
+  "@measurementHistoryExportPdfTitle": {
+    "placeholders": {
+      "customerName": {
+        "type": "String"
+      }
+    }
+  },
   "syncConflictTitle": "Sync conflict detected",
   "syncConflictMessage": "There are conflicting local and remote changes. Choose whether to keep local changes or accept the remote version.",
   "syncConflictMessageWithEntity": "Conflicting changes for {entityType}. Keep your edits or use the server copy.",
