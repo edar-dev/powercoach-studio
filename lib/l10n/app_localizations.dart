@@ -2068,6 +2068,114 @@ abstract class AppLocalizations {
   /// **'Delete this measurement?'**
   String get measurementDeleteConfirm;
 
+  /// No description provided for @measurementHistoryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement history'**
+  String get measurementHistoryTitle;
+
+  /// No description provided for @measurementHistoryMetricLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Metric'**
+  String get measurementHistoryMetricLabel;
+
+  /// No description provided for @measurementHistoryNoMetricData.
+  ///
+  /// In en, this message translates to:
+  /// **'No values recorded for this metric yet.'**
+  String get measurementHistoryNoMetricData;
+
+  /// No description provided for @measurementHistoryLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load measurement history.'**
+  String get measurementHistoryLoadError;
+
+  /// No description provided for @measurementHistoryCompareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Period comparison'**
+  String get measurementHistoryCompareTitle;
+
+  /// No description provided for @measurementHistoryCompareSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days vs previous 30 days'**
+  String get measurementHistoryCompareSubtitle;
+
+  /// No description provided for @measurementHistoryCompareRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get measurementHistoryCompareRecent;
+
+  /// No description provided for @measurementHistoryComparePrevious.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous 30 days'**
+  String get measurementHistoryComparePrevious;
+
+  /// No description provided for @measurementHistoryCompareInsufficient.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more measurements to compare periods.'**
+  String get measurementHistoryCompareInsufficient;
+
+  /// No description provided for @measurementHistoryCompareNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get measurementHistoryCompareNoData;
+
+  /// No description provided for @measurementHistoryCompareDelta.
+  ///
+  /// In en, this message translates to:
+  /// **'{metric} change: {delta}'**
+  String measurementHistoryCompareDelta(String metric, String delta);
+
+  /// No description provided for @measurementHistoryCompareSampleCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} samples'**
+  String measurementHistoryCompareSampleCount(int count);
+
+  /// No description provided for @measurementHistoryOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'View history'**
+  String get measurementHistoryOpen;
+
+  /// No description provided for @measurementExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get measurementExportCsv;
+
+  /// No description provided for @measurementExportPdf.
+  ///
+  /// In en, this message translates to:
+  /// **'Export PDF'**
+  String get measurementExportPdf;
+
+  /// No description provided for @measurementExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Export ready to share.'**
+  String get measurementExportSuccess;
+
+  /// No description provided for @measurementExportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export measurements.'**
+  String get measurementExportError;
+
+  /// No description provided for @measurementHistoryExportPdfTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurements — {customerName}'**
+  String measurementHistoryExportPdfTitle(String customerName);
+
   /// No description provided for @syncConflictTitle.
   ///
   /// In en, this message translates to:

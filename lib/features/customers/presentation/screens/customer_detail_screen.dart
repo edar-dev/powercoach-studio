@@ -87,6 +87,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     try {
       final list = await _measurementRepo.getByCustomerId(widget.customerId);
       if (mounted) {
+        list.sort((a, b) => b.measurementDate.compareTo(a.measurementDate));
         setState(() {
           _measurements = list;
           _measurementsLoading = false;
@@ -546,7 +547,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     return Stack(
       children: [
         ListView.builder(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+          padding: const EdgeInsets.fromLTRB(16, 72, 16, 80),
           itemCount: _measurements.length,
           itemBuilder: (context, index) {
             final m = _measurements[index];
@@ -601,6 +602,25 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               ),
             );
           },
+        ),
+        Positioned(
+          top: 8,
+          left: 16,
+          right: 16,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                final name = _customer?.name;
+                final uri = name == null || name.trim().isEmpty
+                    ? '/customers/${widget.customerId}/measurements/history'
+                    : '/customers/${widget.customerId}/measurements/history?customerName=${Uri.encodeComponent(name)}';
+                context.push(uri);
+              },
+              icon: const Icon(Icons.show_chart),
+              label: Text(l10n.measurementHistoryOpen),
+            ),
+          ),
         ),
         Positioned(
           right: 16,

@@ -1069,6 +1069,71 @@ class AppLocalizationsIt extends AppLocalizations {
   String get measurementDeleteConfirm => 'Eliminare questa misura?';
 
   @override
+  String get measurementHistoryTitle => 'Storico misurazioni';
+
+  @override
+  String get measurementHistoryMetricLabel => 'Metrica';
+
+  @override
+  String get measurementHistoryNoMetricData =>
+      'Nessun valore registrato per questa metrica.';
+
+  @override
+  String get measurementHistoryLoadError =>
+      'Impossibile caricare lo storico misurazioni.';
+
+  @override
+  String get measurementHistoryCompareTitle => 'Confronto periodi';
+
+  @override
+  String get measurementHistoryCompareSubtitle =>
+      'Ultimi 30 giorni vs 30 giorni precedenti';
+
+  @override
+  String get measurementHistoryCompareRecent => 'Ultimi 30 giorni';
+
+  @override
+  String get measurementHistoryComparePrevious => '30 giorni precedenti';
+
+  @override
+  String get measurementHistoryCompareInsufficient =>
+      'Aggiungi altre misure per confrontare i periodi.';
+
+  @override
+  String get measurementHistoryCompareNoData => 'Nessun dato';
+
+  @override
+  String measurementHistoryCompareDelta(String metric, String delta) {
+    return 'Variazione $metric: $delta';
+  }
+
+  @override
+  String measurementHistoryCompareSampleCount(int count) {
+    return '$count rilevazioni';
+  }
+
+  @override
+  String get measurementHistoryOpen => 'Apri storico';
+
+  @override
+  String get measurementExportCsv => 'Esporta CSV';
+
+  @override
+  String get measurementExportPdf => 'Esporta PDF';
+
+  @override
+  String get measurementExportSuccess =>
+      'Esportazione pronta per la condivisione.';
+
+  @override
+  String get measurementExportError => 'Impossibile esportare le misure.';
+
+  @override
+  String measurementHistoryExportPdfTitle(String customerName) {
+    return 'Misure — $customerName';
+  }
+
+  @override
   String get syncConflictTitle => 'Conflitto di sincronizzazione rilevato';
 
   @override

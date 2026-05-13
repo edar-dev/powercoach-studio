@@ -1062,6 +1062,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get measurementDeleteConfirm => 'Delete this measurement?';
 
   @override
+  String get measurementHistoryTitle => 'Measurement history';
+
+  @override
+  String get measurementHistoryMetricLabel => 'Metric';
+
+  @override
+  String get measurementHistoryNoMetricData =>
+      'No values recorded for this metric yet.';
+
+  @override
+  String get measurementHistoryLoadError =>
+      'Could not load measurement history.';
+
+  @override
+  String get measurementHistoryCompareTitle => 'Period comparison';
+
+  @override
+  String get measurementHistoryCompareSubtitle =>
+      'Last 30 days vs previous 30 days';
+
+  @override
+  String get measurementHistoryCompareRecent => 'Last 30 days';
+
+  @override
+  String get measurementHistoryComparePrevious => 'Previous 30 days';
+
+  @override
+  String get measurementHistoryCompareInsufficient =>
+      'Add more measurements to compare periods.';
+
+  @override
+  String get measurementHistoryCompareNoData => 'No data';
+
+  @override
+  String measurementHistoryCompareDelta(String metric, String delta) {
+    return '$metric change: $delta';
+  }
+
+  @override
+  String measurementHistoryCompareSampleCount(int count) {
+    return '$count samples';
+  }
+
+  @override
+  String get measurementHistoryOpen => 'View history';
+
+  @override
+  String get measurementExportCsv => 'Export CSV';
+
+  @override
+  String get measurementExportPdf => 'Export PDF';
+
+  @override
+  String get measurementExportSuccess => 'Export ready to share.';
+
+  @override
+  String get measurementExportError => 'Could not export measurements.';
+
+  @override
+  String measurementHistoryExportPdfTitle(String customerName) {
+    return 'Measurements — $customerName';
+  }
+
+  @override
   String get syncConflictTitle => 'Sync conflict detected';
 
   @override
