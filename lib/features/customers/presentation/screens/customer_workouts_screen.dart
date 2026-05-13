@@ -163,6 +163,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                                 });
                               },
                               onCreateFollowUp: () => _createFollowUpWorkout(plan),
+                              onSaveAsTemplate: () => _savePlanAsTemplate(plan),
                               onDelete: () => _deletePlan(plan),
                             ),
                           );
@@ -192,6 +193,62 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     if (diff.inHours > 0) return l10n.updatedHoursAgo(diff.inHours);
     if (diff.inMinutes > 0) return l10n.updatedMinutesAgo(diff.inMinutes);
     return l10n.updatedJustNow;
+  }
+
+  Future<void> _savePlanAsTemplate(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController(text: plan.name);
+    String? name;
+    try {
+      name = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.workoutTemplatesSaveAsTemplateTitle),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: l10n.workoutTemplatesNameHint),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.customerCancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                final s = controller.text.trim();
+                if (s.isEmpty) return;
+                Navigator.of(ctx).pop(s);
+              },
+              child: Text(l10n.workoutTemplatesSaveAsTemplate),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      controller.dispose();
+    }
+    if (name == null || name.isEmpty || !mounted) return;
+    try {
+      await _planRepo.createTemplateFromPlan(sourcePlanId: plan.id, templateName: name);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutTemplatesDuplicateSnack),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
@@ -270,6 +327,7 @@ class _WorkoutListCard extends StatelessWidget {
     required this.subtitle,
     this.onTap,
     this.onCreateFollowUp,
+    this.onSaveAsTemplate,
     this.onDelete,
   });
 
@@ -279,6 +337,7 @@ class _WorkoutListCard extends StatelessWidget {
   final String subtitle;
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
+  final VoidCallback? onSaveAsTemplate;
   final VoidCallback? onDelete;
 
   @override
@@ -317,7 +376,7 @@ class _WorkoutListCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (onCreateFollowUp != null || onDelete != null)
+              if (onCreateFollowUp != null || onSaveAsTemplate != null || onDelete != null)
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant, size: 24),
                   padding: EdgeInsets.zero,
@@ -326,6 +385,8 @@ class _WorkoutListCard extends StatelessWidget {
                     HapticFeedback.mediumImpact();
                     if (value == 'follow_up') {
                       onCreateFollowUp?.call();
+                    } else if (value == 'template') {
+                      onSaveAsTemplate?.call();
                     } else if (value == 'delete') {
                       onDelete?.call();
                     }
@@ -335,6 +396,11 @@ class _WorkoutListCard extends StatelessWidget {
                       PopupMenuItem(
                         value: 'follow_up',
                         child: Text(l10n.workoutCreateNewFromThis),
+                      ),
+                    if (onSaveAsTemplate != null)
+                      PopupMenuItem(
+                        value: 'template',
+                        child: Text(l10n.workoutTemplatesSaveAsTemplate),
                       ),
                     if (onDelete != null)
                       PopupMenuItem(

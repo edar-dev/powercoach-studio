@@ -4,25 +4,25 @@ overview: Introdurre piani modello riusabili (senza cliente o con flag template)
 todos:
   - id: domain-template-model
     content: Estendere WorkoutPlanApiModel o payload JSON con isTemplate templateSourceId; oppure OfflineEntityType dedicato templateWorkoutPlan
-    status: pending
+    status: completed
   - id: repository-api
     content: WorkoutPlanRepository metodi listTemplates createTemplate duplicateFromPlan assignToCustomer con scopeId coerente
-    status: pending
+    status: completed
   - id: ui-library-screen
     content: Nuova schermata o tab Libreria template sotto /workouts o /customers; lista, anteprima nome, azioni Duplica / Assegna
-    status: pending
+    status: completed
   - id: assign-flow
     content: Dialog scelta cliente + creazione piano copia (nuovo id, customerId target, planData copiato, nome suggerito)
-    status: pending
+    status: completed
   - id: router-and-guard
     content: Aggiungere route in app.dart se protetta; allineare isProtectedRoute se nuovo path
-    status: pending
+    status: completed
   - id: l10n
     content: Stringhe IT/EN per template, duplica, assegna, vuoto
-    status: pending
+    status: completed
   - id: backup-compat
     content: Se nuovo tipo entità o campi payload, aggiornare regola backup JSON e test codec se necessario
-    status: pending
+    status: completed
 isProject: false
 ---
 

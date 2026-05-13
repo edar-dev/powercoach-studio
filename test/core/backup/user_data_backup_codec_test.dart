@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
+import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
 
 void main() {
   const uid = 'user-111';
@@ -60,6 +61,24 @@ void main() {
       () => parseUserBackupJson(jsonText, uid),
       throwsA(isA<UserBackupImportException>()),
     );
+  });
+
+  test('parse keeps workout plan payload with template sentinel customerId', () {
+    final jsonText = jsonEncode(
+      minimalEnvelope(
+        entities: <Map<String, dynamic>>[
+          <String, dynamic>{
+            'id': 'plan-template-1',
+            'customerId': kWorkoutPlanTemplateScopeId,
+            'name': 'Upper/Lower',
+            'planData': '{}',
+          },
+        ],
+      ),
+    );
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.entities, hasLength(1));
+    expect(parsed.entities.single['customerId'], kWorkoutPlanTemplateScopeId);
   });
 
   test('parse applies notifications preference when present', () {

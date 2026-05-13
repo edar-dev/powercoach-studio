@@ -821,6 +821,177 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get workoutBuilderTitle => 'Workout Builder';
+
+  @override
+  String get workoutBuilderPlanSaved => 'Plan saved';
+
+  @override
+  String get workoutBuilderRoutineSaved => 'Routine saved';
+
+  @override
+  String get workoutBuilderEditSectionTitle => 'Edit section';
+
+  @override
+  String get workoutBuilderSectionNameLabel => 'Section name';
+
+  @override
+  String get workoutBuilderDeleteWeekTitle => 'Delete week?';
+
+  @override
+  String get workoutBuilderDeleteWeekMessage =>
+      'Remove this week and all its days and exercises. This cannot be undone.';
+
+  @override
+  String get workoutBuilderRenameDayTitle => 'Rename day';
+
+  @override
+  String get workoutBuilderDayNameLabel => 'Day name';
+
+  @override
+  String get workoutBuilderRenameWeekTitle => 'Rename week';
+
+  @override
+  String get workoutBuilderWeekNameLabel => 'Week name';
+
+  @override
+  String get workoutBuilderEditMobilityExerciseTitle =>
+      'Edit mobility exercise';
+
+  @override
+  String get workoutBuilderAddMobilityExerciseTitle => 'Add mobility exercise';
+
+  @override
+  String workoutBuilderWeekNumbered(int n) {
+    return 'WEEK $n';
+  }
+
+  @override
+  String workoutBuilderDayNumbered(int n) {
+    return 'DAY $n';
+  }
+
+  @override
+  String workoutBuilderSectionNumbered(int n) {
+    return 'Section $n';
+  }
+
+  @override
+  String get workoutBuilderNewExerciseDefault => 'New exercise';
+
+  @override
+  String get workoutBuilderNameCopySuffix => ' (copy)';
+
+  @override
+  String get workoutBuilderRoutineNameLabel => 'ROUTINE NAME';
+
+  @override
+  String get workoutBuilderRoutineNameHint => 'Add routine title';
+
+  @override
+  String get workoutBuilderMobilityRoutineTitle => 'Mobility routine';
+
+  @override
+  String get workoutBuilderAddShort => 'Add';
+
+  @override
+  String get workoutBuilderSectionHeading => 'Section';
+
+  @override
+  String get workoutBuilderAddExercise => 'Add exercise';
+
+  @override
+  String get workoutBuilderAddSet => 'Add set';
+
+  @override
+  String get workoutBuilderAddExerciseTitle => 'Add exercise';
+
+  @override
+  String get workoutBuilderEditExerciseTitle => 'Edit exercise';
+
+  @override
+  String get workoutBuilderExerciseLabel => 'Exercise';
+
+  @override
+  String get workoutBuilderFromLibrary => 'From library';
+
+  @override
+  String get workoutBuilderCreateNew => 'Create new';
+
+  @override
+  String get workoutBuilderCouldNotCreateExercise =>
+      'Could not create exercise. Try again or add without saving to library.';
+
+  @override
+  String get workoutBuilderEnterNameOrSelect =>
+      'Enter a name or select an exercise.';
+
+  @override
+  String get workoutBuilderMultiSetBlockHeader => 'Sets (Set × Reps + Load)';
+
+  @override
+  String get workoutBuilderSetLabel => 'Set';
+
+  @override
+  String get workoutBuilderSetsLabel => 'Sets';
+
+  @override
+  String get workoutBuilderRepsLabel => 'Reps';
+
+  @override
+  String get workoutBuilderLoadLabel => 'Load';
+
+  @override
+  String get workoutBuilderRpeOrLoadLabel => 'RPE / Load';
+
+  @override
+  String get workoutBuilderNoteOptionalLabel => 'Note (optional)';
+
+  @override
+  String get workoutBuilderNameLabel => 'Name';
+
+  @override
+  String get workoutBuilderNoteLabel => 'Note';
+
+  @override
+  String get workoutBuilderEditSetTitle => 'Edit set';
+
+  @override
+  String get workoutBuilderTrainingProgram => 'Training program';
+
+  @override
+  String get workoutBuilderNewWeek => 'New week';
+
+  @override
+  String get workoutBuilderDuplicateWeek => 'Duplicate week';
+
+  @override
+  String get workoutBuilderRenameWeekMenu => 'Rename week';
+
+  @override
+  String get workoutBuilderDeleteWeekMenu => 'Delete week';
+
+  @override
+  String get workoutBuilderClone => 'Clone';
+
+  @override
+  String workoutBuilderAddDayToWeek(int n) {
+    return 'Add day to week $n';
+  }
+
+  @override
+  String get workoutBuilderNoWeeksYet => 'No weeks yet. Add a week above.';
+
+  @override
+  String get workoutBuilderSuperSetHeading => 'SUPER SET';
+
+  @override
+  String get workoutBuilderDeleteDayMenu => 'Delete day';
+
+  @override
+  String get workoutBuilderNewSuperset => 'New superset';
+
+  @override
   String get measurementsEmpty => 'No measurements yet';
 
   @override
@@ -1121,6 +1292,75 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutLibraryTitle => 'Library';
+
+  @override
+  String get workoutTemplatesTitle => 'Workout templates';
+
+  @override
+  String get workoutTemplatesEmpty =>
+      'No templates yet. Save a client plan as a template or create one here.';
+
+  @override
+  String get workoutTemplatesNew => 'New template';
+
+  @override
+  String get workoutTemplatesAssign => 'Assign to client';
+
+  @override
+  String get workoutTemplatesDuplicate => 'Duplicate template';
+
+  @override
+  String get workoutTemplatesEdit => 'Edit';
+
+  @override
+  String get workoutTemplatesDelete => 'Delete';
+
+  @override
+  String get workoutTemplatesAssignTitle => 'Choose a client';
+
+  @override
+  String get workoutTemplatesSaveAsTemplate => 'Save as template';
+
+  @override
+  String get workoutTemplatesSaveAsTemplateTitle => 'Template name';
+
+  @override
+  String get workoutTemplatesNameHint => 'Name';
+
+  @override
+  String get workoutTemplatesDuplicateTitle => 'Duplicate template';
+
+  @override
+  String get workoutTemplatesDuplicateHint => 'Name for the copy';
+
+  @override
+  String get workoutTemplatesAssignedSnack => 'Plan added to the client.';
+
+  @override
+  String get workoutTemplatesDuplicateSnack => 'Template created.';
+
+  @override
+  String get workoutTemplatesDeleteConfirmTitle => 'Delete template?';
+
+  @override
+  String get workoutTemplatesDeleteConfirmMessage =>
+      'This template will be removed from this device.';
+
+  @override
+  String get workoutTemplatesDrawerLabel => 'Workout templates';
+
+  @override
+  String get workoutTemplatesCustomersLoadError =>
+      'Could not load the client list. Try again.';
+
+  @override
+  String get workoutTemplatesSemanticList => 'Workout templates list';
+
+  @override
+  String get workoutTemplatesAssignSearchHint => 'Search by name…';
+
+  @override
+  String get workoutTemplatesAssignNoMatch => 'No customers match your search.';
 
   @override
   String get workoutDiaryTitle => 'Diary';
