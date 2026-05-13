@@ -121,15 +121,17 @@ class _WorkoutBuilderMobilityScreenState
             _initialWeekNumber = plan.initialWeekNumber;
             _initialWeekController.text = plan.initialWeekNumber.toString();
             _expandedWeekIds.clear();
-            if (routine.weeks.isNotEmpty)
+            if (routine.weeks.isNotEmpty) {
               _expandedWeekIds.add(routine.weeks.first.id);
+            }
           });
         }
       } else {
         setState(() {
           _expandedWeekIds.clear();
-          if (_routine.weeks.isNotEmpty)
+          if (_routine.weeks.isNotEmpty) {
             _expandedWeekIds.add(_routine.weeks.first.id);
+          }
         });
       }
       try {
@@ -144,8 +146,9 @@ class _WorkoutBuilderMobilityScreenState
       if (!mounted) return;
       setState(() {
         _expandedWeekIds.clear();
-        if (_routine.weeks.isNotEmpty)
+        if (_routine.weeks.isNotEmpty) {
           _expandedWeekIds.add(_routine.weeks.first.id);
+        }
         _loading = false;
       });
     }
@@ -428,8 +431,9 @@ class _WorkoutBuilderMobilityScreenState
     if (oldIndex < 0 ||
         oldIndex >= sectionItems.length ||
         newIndex < 0 ||
-        newIndex >= sectionItems.length)
+        newIndex >= sectionItems.length) {
       return;
+    }
     setState(() {
       final reordered = List<MobilityItem>.from(sectionItems);
       if (newIndex > oldIndex) newIndex--;
@@ -477,8 +481,9 @@ class _WorkoutBuilderMobilityScreenState
 
   void _deleteMobilitySection(int index) {
     if (index < 0 || index >= _routine.mobilitySections.length) return;
-    if (_routine.mobilitySections.length <= 1)
+    if (_routine.mobilitySections.length <= 1) {
       return; // keep at least one section
+    }
     final section = _routine.mobilitySections[index];
     final firstOtherId = _routine.mobilitySections
         .firstWhere((s) => s.id != section.id)
@@ -705,8 +710,9 @@ class _WorkoutBuilderMobilityScreenState
 
   void _addExerciseToDay(int weekIndex, int dayIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length)
+    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
       return;
+    }
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
@@ -3797,12 +3803,13 @@ class _WeekAccordion extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       onSelected: (value) {
                         if (value == 'clone') onClone();
-                        if (value == 'rename')
+                        if (value == 'rename') {
                           _showRenameWeekDialog(
                             context,
                             week.name,
                             onRenameWeek,
                           );
+                        }
                         if (value == 'delete') onDelete();
                       },
                       itemBuilder: (context) => [
