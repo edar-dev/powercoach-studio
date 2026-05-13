@@ -122,4 +122,32 @@ void main() {
     expect(parsed.syncMeta.length, 1);
     expect(parsed.syncMeta.single['metaKey'], 'k1');
   });
+
+  test('parse keeps customerNote entities in envelope', () {
+    final jsonText = jsonEncode(
+      minimalEnvelope(
+        entities: <Map<String, dynamic>>[
+          <String, dynamic>{
+            'id': 'note-1',
+            'type': 'customerNote',
+            'scopeId': 'c1',
+            'payload': <String, dynamic>{
+              'id': 'note-1',
+              'customerId': 'c1',
+              'authorUserId': uid,
+              'body': 'Follow-up next week',
+              'createdAt': DateTime.utc(2026, 5, 1, 10).toIso8601String(),
+            },
+            'updatedAt': DateTime.utc(2026, 5, 1, 10).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
+        ],
+      ),
+    );
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.entities, hasLength(1));
+    expect(parsed.entities.single['type'], 'customerNote');
+    expect(parsed.entities.single['scopeId'], 'c1');
+  });
 }

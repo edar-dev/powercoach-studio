@@ -31,8 +31,13 @@ class OfflineRepositorySupport {
   Future<List<Map<String, dynamic>>> readLocalEntities(
     OfflineEntityType type, {
     String? scopeId,
+    int? limit,
   }) async {
-    final entities = await _store.readEntities(type, scopeId: scopeId);
+    final entities = await _store.readEntities(
+      type,
+      scopeId: scopeId,
+      limit: limit,
+    );
     return entities.where((e) => !e.deleted).map((e) => e.payload).toList();
   }
 

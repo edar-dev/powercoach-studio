@@ -6,6 +6,7 @@ enum OfflineEntityType {
   measurement,
   exerciseRecord,
   customExercise,
+  customerNote,
 }
 
 enum OfflineOperationType {

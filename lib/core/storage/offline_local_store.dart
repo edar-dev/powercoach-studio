@@ -132,6 +132,7 @@ class OfflineLocalStore {
   Future<List<OfflineEntity>> readEntities(
     OfflineEntityType type, {
     String? scopeId,
+    int? limit,
   }) async {
     final db = await _ensureDb();
     final uid = _currentUserId();
@@ -149,6 +150,9 @@ class OfflineLocalStore {
         return w;
       })
       ..orderBy([(t) => OrderingTerm.desc(t.updatedAt)]);
+    if (limit != null && limit > 0) {
+      q.limit(limit);
+    }
     final rows = await q.get();
     return rows.map(_rowToEntity).toList();
   }

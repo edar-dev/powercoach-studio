@@ -1116,6 +1116,43 @@ class AppLocalizationsIt extends AppLocalizations {
   String get measurementHistoryOpen => 'Apri storico';
 
   @override
+  String get customerNotesTitle => 'Note cliente';
+
+  @override
+  String customerNotesTitleFor(String customerName) {
+    return 'Note — $customerName';
+  }
+
+  @override
+  String get customerNotesHint => 'Scrivi una nota per questo cliente…';
+
+  @override
+  String get customerNotesEmpty =>
+      'Nessuna nota ancora. Aggiungi follow-up, infortuni o preferenze.';
+
+  @override
+  String get customerNotesSend => 'Invia';
+
+  @override
+  String get customerNotesOpen => 'Apri note';
+
+  @override
+  String get customerNotesEmptyBody => 'Il messaggio non può essere vuoto.';
+
+  @override
+  String get customerNotesSendError => 'Impossibile salvare la nota.';
+
+  @override
+  String get customerNotesLoadError => 'Impossibile caricare le note.';
+
+  @override
+  String get customerNotesAttachPhoto => 'Allega foto';
+
+  @override
+  String get customerNotesAttachSoon =>
+      'Gli allegati foto arriveranno in un aggiornamento successivo.';
+
+  @override
   String get measurementExportCsv => 'Esporta CSV';
 
   @override

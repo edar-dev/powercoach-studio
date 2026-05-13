@@ -13,6 +13,7 @@ import '../../../../widgets/app_sheet.dart';
 import '../widgets/customer_reminder_sheet.dart';
 import '../../data/customer_repository.dart';
 import '../../data/customer_exercise_record_repository.dart';
+import '../../data/customer_notes_repository.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
 import '../../data/models/customer_measurement.dart';
@@ -38,6 +39,7 @@ class CustomerDetailScreen extends StatefulWidget {
 class _CustomerDetailScreenState extends State<CustomerDetailScreen> with SingleTickerProviderStateMixin {
   final CustomerRepository _customerRepo = CustomerRepository();
   final CustomerMeasurementRepository _measurementRepo = CustomerMeasurementRepository();
+  final CustomerNotesRepository _notesRepo = CustomerNotesRepository();
   final CustomerExerciseRecordRepository _recordRepo = CustomerExerciseRecordRepository();
   final CustomExerciseRepository _exerciseRepo = CustomExerciseRepository();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
@@ -51,6 +53,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   bool _recordsLoading = false;
   List<WorkoutPlanApiModel> _workoutPlans = [];
   bool _workoutPlansLoading = false;
+  int _unreadNotesCount = 0;
   late TabController _tabController;
 
   @override
@@ -79,6 +82,26 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       }
     } catch (_) {
       if (mounted) setState(() => _workoutPlansLoading = false);
+    }
+  }
+
+  Future<void> _loadUnreadNotes() async {
+    try {
+      final count = await _notesRepo.unreadCount(widget.customerId);
+      if (mounted) {
+        setState(() => _unreadNotesCount = count);
+      }
+    } catch (_) {}
+  }
+
+  Future<void> _openNotes(Customer customer) async {
+    final name = customer.name.trim();
+    final uri = name.isEmpty
+        ? '/customers/${widget.customerId}/notes'
+        : '/customers/${widget.customerId}/notes?customerName=${Uri.encodeComponent(name)}';
+    await context.push(uri);
+    if (mounted) {
+      await _loadUnreadNotes();
     }
   }
 
@@ -163,6 +186,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
         _loadMeasurements();
         _loadRecords();
         _loadWorkoutPlans();
+        _loadUnreadNotes();
       }
     } catch (e) {
       if (mounted) {
@@ -318,6 +342,17 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 bodyBuilder: (sheetContext) => Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    ListTile(
+                      leading: const Icon(Icons.chat_bubble_outline),
+                      title: Text(l10n.customerNotesOpen),
+                      trailing: _unreadNotesCount > 0
+                          ? Badge(label: Text('$_unreadNotesCount'))
+                          : null,
+                      onTap: () {
+                        Navigator.pop(sheetContext);
+                        _openNotes(c);
+                      },
+                    ),
                     ListTile(
                       leading: const Icon(Icons.alarm_add_outlined),
                       title: Text(l10n.customerReminderAction),

@@ -1109,6 +1109,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get measurementHistoryOpen => 'View history';
 
   @override
+  String get customerNotesTitle => 'Client notes';
+
+  @override
+  String customerNotesTitleFor(String customerName) {
+    return 'Notes — $customerName';
+  }
+
+  @override
+  String get customerNotesHint => 'Write a note for this client…';
+
+  @override
+  String get customerNotesEmpty =>
+      'No notes yet. Add a follow-up, injury note, or preference.';
+
+  @override
+  String get customerNotesSend => 'Send';
+
+  @override
+  String get customerNotesOpen => 'Open notes';
+
+  @override
+  String get customerNotesEmptyBody => 'Message cannot be empty.';
+
+  @override
+  String get customerNotesSendError => 'Could not save the note.';
+
+  @override
+  String get customerNotesLoadError => 'Could not load notes.';
+
+  @override
+  String get customerNotesAttachPhoto => 'Attach photo';
+
+  @override
+  String get customerNotesAttachSoon =>
+      'Photo attachments will arrive in a later update.';
+
+  @override
   String get measurementExportCsv => 'Export CSV';
 
   @override
