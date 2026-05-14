@@ -16,6 +16,7 @@ import 'features/landing/presentation/screens/landing_screen.dart';
 import 'theme/stitch_m3_theme.dart';
 import 'features/auth/presentation/screens/profile_screen.dart';
 import 'features/auth/presentation/screens/registration_screen.dart';
+import 'features/customers/presentation/screens/customer_notes_screen.dart';
 import 'features/customers/presentation/screens/customer_measurement_history_screen.dart';
 import 'features/customers/presentation/screens/customer_creation_screen.dart';
 import 'features/customers/presentation/screens/customer_detail_screen.dart';
@@ -135,6 +136,17 @@ final _goRouter = GoRouter(
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 return CustomerWorkoutsScreen(customerId: id);
+              },
+            ),
+            GoRoute(
+              path: 'notes',
+              builder: (context, state) {
+                final id = state.pathParameters['id'] ?? '';
+                final customerName = state.uri.queryParameters['customerName'];
+                return CustomerNotesScreen(
+                  customerId: id,
+                  customerName: customerName,
+                );
               },
             ),
             GoRoute(

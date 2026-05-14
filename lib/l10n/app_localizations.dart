@@ -2146,6 +2146,72 @@ abstract class AppLocalizations {
   /// **'View history'**
   String get measurementHistoryOpen;
 
+  /// No description provided for @customerNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Client notes'**
+  String get customerNotesTitle;
+
+  /// No description provided for @customerNotesTitleFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes — {customerName}'**
+  String customerNotesTitleFor(String customerName);
+
+  /// No description provided for @customerNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write a note for this client…'**
+  String get customerNotesHint;
+
+  /// No description provided for @customerNotesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No notes yet. Add a follow-up, injury note, or preference.'**
+  String get customerNotesEmpty;
+
+  /// No description provided for @customerNotesSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get customerNotesSend;
+
+  /// No description provided for @customerNotesOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open notes'**
+  String get customerNotesOpen;
+
+  /// No description provided for @customerNotesEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Message cannot be empty.'**
+  String get customerNotesEmptyBody;
+
+  /// No description provided for @customerNotesSendError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save the note.'**
+  String get customerNotesSendError;
+
+  /// No description provided for @customerNotesLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load notes.'**
+  String get customerNotesLoadError;
+
+  /// No description provided for @customerNotesAttachPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach photo'**
+  String get customerNotesAttachPhoto;
+
+  /// No description provided for @customerNotesAttachSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo attachments will arrive in a later update.'**
+  String get customerNotesAttachSoon;
+
   /// No description provided for @measurementExportCsv.
   ///
   /// In en, this message translates to:

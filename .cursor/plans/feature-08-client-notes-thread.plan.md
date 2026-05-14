@@ -4,28 +4,28 @@ overview: Introdurre filo messaggi/note per cliente (coach-centric), persistenza
 todos:
   - id: choose-storage-layer
     content: Decidere OfflineEntityType.customerNoteThread vs tabella Drift dedicata CustomerNotes; MVP consigliato nuovo enum entity con payload message list o una row per messaggio
-    status: pending
+    status: completed
   - id: domain-models
     content: ClientNoteMessage id authorUserId body createdAt attachmentRef nullable; ClientNoteThread customerId messages
-    status: pending
+    status: completed
   - id: repository
     content: CustomerNotesRepository con watchThread appendMessage markRead optional
-    status: pending
+    status: completed
   - id: ui-thread-screen
     content: Route /customers/:id/notes schermata chat-like ListView reverse AppBar actions attach photo phase2
-    status: pending
+    status: completed
   - id: entry-from-customer-detail
     content: FAB o ListTile Apri note nel customer detail con badge count non letti
-    status: pending
+    status: completed
   - id: backup-export-import
     content: Estendere UserDataBackupService envelope con customerNotes se entity-based; aggiornare codec test e regola 13-user-data-backup
-    status: pending
+    status: completed
   - id: future-sync-hook
     content: Documentare interfaccia sync verso Supabase Realtime tabella notes oppure outbox pattern senza implementare subito
-    status: pending
+    status: completed
   - id: l10n-a11y
     content: Stringhe invio vuoto errore; Semantics per lista
-    status: pending
+    status: completed
 isProject: false
 ---
 

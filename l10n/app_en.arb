@@ -411,6 +411,24 @@
     }
   },
   "measurementHistoryOpen": "View history",
+  "customerNotesTitle": "Client notes",
+  "customerNotesTitleFor": "Notes — {customerName}",
+  "@customerNotesTitleFor": {
+    "placeholders": {
+      "customerName": {
+        "type": "String"
+      }
+    }
+  },
+  "customerNotesHint": "Write a note for this client…",
+  "customerNotesEmpty": "No notes yet. Add a follow-up, injury note, or preference.",
+  "customerNotesSend": "Send",
+  "customerNotesOpen": "Open notes",
+  "customerNotesEmptyBody": "Message cannot be empty.",
+  "customerNotesSendError": "Could not save the note.",
+  "customerNotesLoadError": "Could not load notes.",
+  "customerNotesAttachPhoto": "Attach photo",
+  "customerNotesAttachSoon": "Photo attachments will arrive in a later update.",
   "measurementExportCsv": "Export CSV",
   "measurementExportPdf": "Export PDF",
   "measurementExportSuccess": "Export ready to share.",

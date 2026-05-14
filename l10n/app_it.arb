@@ -411,6 +411,24 @@
     }
   },
   "measurementHistoryOpen": "Apri storico",
+  "customerNotesTitle": "Note cliente",
+  "customerNotesTitleFor": "Note — {customerName}",
+  "@customerNotesTitleFor": {
+    "placeholders": {
+      "customerName": {
+        "type": "String"
+      }
+    }
+  },
+  "customerNotesHint": "Scrivi una nota per questo cliente…",
+  "customerNotesEmpty": "Nessuna nota ancora. Aggiungi follow-up, infortuni o preferenze.",
+  "customerNotesSend": "Invia",
+  "customerNotesOpen": "Apri note",
+  "customerNotesEmptyBody": "Il messaggio non può essere vuoto.",
+  "customerNotesSendError": "Impossibile salvare la nota.",
+  "customerNotesLoadError": "Impossibile caricare le note.",
+  "customerNotesAttachPhoto": "Allega foto",
+  "customerNotesAttachSoon": "Gli allegati foto arriveranno in un aggiornamento successivo.",
   "measurementExportCsv": "Esporta CSV",
   "measurementExportPdf": "Esporta PDF",
   "measurementExportSuccess": "Esportazione pronta per la condivisione.",
