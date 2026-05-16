@@ -1537,4 +1537,99 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get updatedJustNow => 'Appena adesso';
+
+  @override
+  String get exerciseLibraryTabHevy => 'Hevy';
+
+  @override
+  String get exerciseLibraryImportSourceHevy =>
+      'Sincronizza catalogo Hevy completo';
+
+  @override
+  String get exerciseLibraryImportSourceHevySubtitle =>
+      'Importa tutti gli esercizi dal tuo account Hevy Pro con ID già mappati.';
+
+  @override
+  String get hevySettingsSectionTitle => 'Integrazione Hevy';
+
+  @override
+  String get hevySettingsSectionSubtitle =>
+      'Richiede Hevy Pro. API key da hevy.com/settings (Developer).';
+
+  @override
+  String get hevySettingsApiKeyLabel => 'API key Hevy';
+
+  @override
+  String get hevySettingsApiKeyHint => 'Incolla la tua API key';
+
+  @override
+  String get hevySettingsSaveKey => 'Salva key';
+
+  @override
+  String get hevySettingsTestConnection => 'Test connessione';
+
+  @override
+  String get hevySettingsSyncCatalog => 'Sincronizza tutti gli esercizi';
+
+  @override
+  String get hevySettingsKeySaved => 'API key Hevy salvata.';
+
+  @override
+  String get hevySettingsTestSuccess => 'Connesso a Hevy.';
+
+  @override
+  String hevySettingsTestFailed(String message) {
+    return 'Connessione Hevy fallita: $message';
+  }
+
+  @override
+  String get hevyImportInProgress => 'Sincronizzazione catalogo Hevy…';
+
+  @override
+  String hevyImportSuccessCount(int count) {
+    return 'Sincronizzazione Hevy completata: $count nuovi elementi.';
+  }
+
+  @override
+  String hevyImportFailed(String message) {
+    return 'Sincronizzazione Hevy fallita: $message';
+  }
+
+  @override
+  String get workoutExportHevy => 'Esporta giornata su Hevy';
+
+  @override
+  String get hevyExportSheetTitle => 'Esporta su Hevy';
+
+  @override
+  String get hevyExportConfirm => 'Crea routine su Hevy';
+
+  @override
+  String get hevyExportAllMapped =>
+      'Tutti gli esercizi sono mappati. Pronto per l\'export.';
+
+  @override
+  String hevyExportUnmappedIntro(int count) {
+    return '$count esercizi richiedono una mappatura Hevy prima dell\'export.';
+  }
+
+  @override
+  String get hevyExportMapExercise => 'Mappa';
+
+  @override
+  String get hevyExportUnmappedBlock =>
+      'Mappa tutti gli esercizi prima di esportare.';
+
+  @override
+  String get hevyExportSuccess => 'Routine creata su Hevy.';
+
+  @override
+  String get hevyExportError => 'Export Hevy fallito. Riprova.';
+
+  @override
+  String get hevyExportNoCatalogHint =>
+      'Sincronizza prima il catalogo Hevy da Impostazioni o Libreria esercizi.';
+
+  @override
+  String get calendarExportHevy => 'Esporta su Hevy';
 }

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../../../customers/data/customer_repository.dart';
+import '../../../integrations/hevy/data/hevy_settings_store.dart';
+import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../domain/calendar_event_loader.dart';
 import '../../domain/plan_calendar_event.dart';
@@ -79,6 +81,36 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
   List<PlanCalendarEvent> _eventsOnDay(DateTime day) {
     final normalized = calendarDayOnly(day);
     return _events.where((event) => calendarDayOnly(event.day) == normalized).toList();
+  }
+
+  Future<void> _exportEventToHevy(PlanCalendarEvent event) async {
+    final l10n = AppLocalizations.of(context);
+    final hasKey = await HevySettingsStore.instance.hasApiKey();
+    if (!hasKey) {
+      if (!mounted) return;
+      showAppSnackBar(context, content: Text(l10n.hevyExportNoCatalogHint));
+      return;
+    }
+    try {
+      final plan = await _planRepo.getById(event.planId);
+      if (plan == null || !mounted) return;
+      final routine = planDataToRoutine(plan.planData);
+      if (event.weekIndex >= routine.weeks.length) return;
+      final week = routine.weeks[event.weekIndex];
+      if (event.dayIndex >= week.days.length) return;
+      final day = week.days[event.dayIndex];
+      await showHevyExportReviewSheet(
+        context: context,
+        day: day,
+        programName: event.programName,
+        weekIndex: event.weekIndex,
+        dayIndex: event.dayIndex,
+        customerName: event.customerName,
+      );
+    } catch (_) {
+      if (!mounted) return;
+      showAppSnackBar(context, content: Text(l10n.hevyExportError));
+    }
   }
 
   Future<void> _toggleCompleted(PlanCalendarEvent event, bool completed) async {
@@ -233,9 +265,29 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                           ),
                           title: Text(event.customerName),
                           subtitle: Text('${event.programName} · ${event.sessionLabel}'),
-                          trailing: Checkbox(
-                            value: event.status == PlanSessionStatus.completed,
-                            onChanged: (value) => _toggleCompleted(event, value ?? false),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PopupMenuButton<String>(
+                                icon: const Icon(Icons.more_vert),
+                                onSelected: (value) {
+                                  if (value == 'hevy') {
+                                    _exportEventToHevy(event);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  PopupMenuItem(
+                                    value: 'hevy',
+                                    child: Text(l10n.calendarExportHevy),
+                                  ),
+                                ],
+                              ),
+                              Checkbox(
+                                value: event.status == PlanSessionStatus.completed,
+                                onChanged: (value) =>
+                                    _toggleCompleted(event, value ?? false),
+                              ),
+                            ],
                           ),
                           onTap: () {
                             context.push('/customers/${event.customerId}/workouts');

@@ -5,4 +5,10 @@ abstract final class SettingsPrefsKeys {
 
   /// JSON array of reminder maps (Feature 02).
   static const remindersListJson = 'powercoach_reminders_json_v1';
+
+  /// Hevy Pro API key (coach account).
+  static const hevyApiKey = 'hevy_api_key_v1';
+
+  /// JSON map powercoachKey → hevyTemplateId for manual export overrides.
+  static const hevyExerciseMappingsJson = 'hevy_exercise_mappings_json_v1';
 }

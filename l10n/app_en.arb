@@ -634,5 +634,52 @@
       }
     }
   },
-  "updatedJustNow": "Just now"
+  "updatedJustNow": "Just now",
+  "exerciseLibraryTabHevy": "Hevy",
+  "exerciseLibraryImportSourceHevy": "Sync full Hevy catalog",
+  "exerciseLibraryImportSourceHevySubtitle": "Import all exercises from your Hevy Pro account with pre-mapped IDs.",
+  "hevySettingsSectionTitle": "Hevy integration",
+  "hevySettingsSectionSubtitle": "Requires Hevy Pro. API key from hevy.com/settings (Developer).",
+  "hevySettingsApiKeyLabel": "Hevy API key",
+  "hevySettingsApiKeyHint": "Paste your API key",
+  "hevySettingsSaveKey": "Save key",
+  "hevySettingsTestConnection": "Test connection",
+  "hevySettingsSyncCatalog": "Sync all exercises",
+  "hevySettingsKeySaved": "Hevy API key saved.",
+  "hevySettingsTestSuccess": "Connected to Hevy.",
+  "hevySettingsTestFailed": "Hevy connection failed: {message}",
+  "@hevySettingsTestFailed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "hevyImportInProgress": "Syncing Hevy catalog…",
+  "hevyImportSuccessCount": "Hevy sync complete: {count} new items.",
+  "@hevyImportSuccessCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "hevyImportFailed": "Hevy sync failed: {message}",
+  "@hevyImportFailed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "workoutExportHevy": "Export day to Hevy",
+  "hevyExportSheetTitle": "Export to Hevy",
+  "hevyExportConfirm": "Create routine on Hevy",
+  "hevyExportAllMapped": "All exercises are mapped. Ready to export.",
+  "hevyExportUnmappedIntro": "{count} exercises need a Hevy mapping before export.",
+  "@hevyExportUnmappedIntro": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "hevyExportMapExercise": "Map",
+  "hevyExportUnmappedBlock": "Map all exercises before exporting.",
+  "hevyExportSuccess": "Routine created on Hevy.",
+  "hevyExportError": "Hevy export failed. Try again.",
+  "hevyExportNoCatalogHint": "Sync the Hevy catalog from Settings or Exercise Library first.",
+  "calendarExportHevy": "Export to Hevy"
 }

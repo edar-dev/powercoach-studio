@@ -16,6 +16,8 @@ import '../../data/workout_routine_storage.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../../integrations/hevy/data/hevy_settings_store.dart';
+import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
 import '../../../customers/data/customer_exercise_record_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
 import '../../../customers/data/models/customer_exercise_record.dart';
@@ -369,6 +371,37 @@ class _WorkoutBuilderMobilityScreenState
         ),
       );
     }
+  }
+
+  Future<void> _exportCurrentDayToHevy() async {
+    final l10n = AppLocalizations.of(context);
+    final hasKey = await HevySettingsStore.instance.hasApiKey();
+    if (!hasKey) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.hevyExportNoCatalogHint)),
+      );
+      return;
+    }
+    if (_routine.weeks.isEmpty) return;
+    final weekIndex = _selectedWeekIndex.clamp(0, _routine.weeks.length - 1);
+    final week = _routine.weeks[weekIndex];
+    if (week.days.isEmpty) return;
+    final dayIndex = _selectedDayIndex.clamp(0, week.days.length - 1);
+    final day = week.days[dayIndex];
+    final programName = _routineNameController.text.trim().isEmpty
+        ? _routine.name
+        : _routineNameController.text.trim();
+
+    if (!mounted) return;
+    await showHevyExportReviewSheet(
+      context: context,
+      day: day,
+      programName: programName,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      customerName: _editorCustomer?.name,
+    );
   }
 
   String? get _selectedSectionId {
@@ -1120,12 +1153,17 @@ class _WorkoutBuilderMobilityScreenState
               onSelected: (value) {
                 if (value == 'pdf') _showPdfExportSheet();
                 if (value == 'excel') _exportExcelAndShare();
+                if (value == 'hevy') _exportCurrentDayToHevy();
               },
               itemBuilder: (context) => [
                 PopupMenuItem(value: 'pdf', child: Text(l10n.workoutExportPdf)),
                 PopupMenuItem(
                   value: 'excel',
                   child: Text(l10n.workoutExportExcel),
+                ),
+                PopupMenuItem(
+                  value: 'hevy',
+                  child: Text(l10n.workoutExportHevy),
                 ),
               ],
             ),

@@ -14,6 +14,10 @@ import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../../data/default_exercise_catalog.dart';
+import '../../../integrations/hevy/data/hevy_api_models.dart';
+import '../../../integrations/hevy/data/hevy_catalog_import_service.dart';
+import '../../../integrations/hevy/data/hevy_settings_store.dart';
+import '../../../integrations/hevy/domain/exercise_catalog_source.dart';
 import '../widgets/custom_exercise_edit_dialog.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -34,7 +38,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
@@ -131,6 +135,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             },
           ),
           ListTile(
+            leading: const Icon(Icons.fitness_center),
+            title: Text(l10n.exerciseLibraryImportSourceHevy),
+            subtitle: Text(l10n.exerciseLibraryImportSourceHevySubtitle),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              _importHevyCatalog();
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.upload_file),
             title: Text(l10n.exerciseLibraryImportSourceCustom),
             subtitle: Text(l10n.exerciseLibraryImportSourceCustomSubtitle),
@@ -144,6 +157,64 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     );
   }
 
+  Future<void> _importHevyCatalog() async {
+    final l10n = AppLocalizations.of(context);
+    final hasKey = await HevySettingsStore.instance.hasApiKey();
+    if (!hasKey) {
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        content: Text(l10n.hevyExportNoCatalogHint),
+      );
+      return;
+    }
+    if (!mounted) return;
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) {
+        var label = l10n.hevyImportInProgress;
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(l10n.exerciseLibraryImportSourceHevy),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(label),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+    try {
+      final count = await HevyCatalogImportService().importAllFromApi(
+        onProgress: (current, total, progressLabel) {
+          // Dialog progress label updates are best-effort
+        },
+      );
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      showAppSnackBar(
+        context,
+        content: Text(l10n.hevyImportSuccessCount(count)),
+      );
+      await _load();
+    } on HevyApiException catch (e) {
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      showAppSnackBar(context, content: Text(l10n.hevyImportFailed(e.message)));
+    } catch (e) {
+      if (!mounted) return;
+      Navigator.of(context, rootNavigator: true).pop();
+      showAppSnackBar(context, content: Text(l10n.hevyImportFailed(e.toString())));
+    }
+  }
+
   Future<void> _importDefaultCatalog() async {
     final l10n = AppLocalizations.of(context);
     final defaults = buildDefaultExerciseCatalogJson();
@@ -151,6 +222,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       defaults,
       l10n: l10n,
       fallbackMobilityWhenMissing: false,
+      catalogSource: ExerciseCatalogSource.powercoach,
     );
   }
 
@@ -204,6 +276,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     List<Map<String, dynamic>> items, {
     required AppLocalizations l10n,
     required bool fallbackMobilityWhenMissing,
+    String catalogSource = ExerciseCatalogSource.manual,
   }) async {
     final importedByLegacyId = <String, String>{};
     var importedCount = 0;
@@ -233,6 +306,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             if (parentId != null) 'parentId': parentId,
             'sortOrder': item['sortOrder'],
             'isMobility': itemIsMobility,
+            'catalogSource': catalogSource,
           });
           final legacyId = item['id']?.toString();
           if (legacyId != null && legacyId.isNotEmpty) {
@@ -255,6 +329,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
               'description': item['description']?.toString(),
               'sortOrder': item['sortOrder'],
               'isMobility': itemIsMobility,
+              'catalogSource': catalogSource,
             });
             final legacyId = item['id']?.toString();
             if (legacyId != null && legacyId.isNotEmpty) {
@@ -310,7 +385,16 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     return out;
   }
 
+  List<CustomExerciseItem> _filterHevyRoots() {
+    return _items
+        .where((root) => root.catalogSource == ExerciseCatalogSource.hevy)
+        .toList();
+  }
+
   List<CustomExerciseItem> _filterNodeByMobility(CustomExerciseItem node, bool isMobility) {
+    if (node.catalogSource == ExerciseCatalogSource.hevy) {
+      return const [];
+    }
     final filteredChildren = <CustomExerciseItem>[];
     for (final c in node.children) {
       filteredChildren.addAll(_filterNodeByMobility(c, isMobility));
@@ -325,6 +409,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           parentId: node.parentId,
           sortOrder: node.sortOrder,
           isMobility: node.isMobility,
+          catalogSource: node.catalogSource,
+          hevyTemplateId: node.hevyTemplateId,
+          hevyStableKey: node.hevyStableKey,
+          isHevyFolder: node.isHevyFolder,
           createdAt: node.createdAt,
           updatedAt: node.updatedAt,
           rowVersion: node.rowVersion,
@@ -528,6 +616,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
                 tabs: [
                   Tab(text: l10n.exerciseLibraryTabExercises),
                   Tab(text: l10n.exerciseLibraryTabMobilityExercises),
+                  Tab(text: l10n.exerciseLibraryTabHevy),
                 ],
               ),
               Container(color: cs.outline, height: 1),
@@ -560,9 +649,23 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
           ),
+          _ExerciseLibraryTabView(
+            isMobility: false,
+            loading: _loading,
+            error: _error,
+            allItemsEmpty: _filterHevyRoots().isEmpty,
+            onRefresh: _load,
+            buildList: _filterHevyRoots,
+            onEdit: _showEditDialog,
+            onDelete: _confirmDelete,
+            onAddVariant: _showAddVariantDialog,
+            readOnlyFolders: true,
+          ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: _tabController.index == 2
+          ? null
+          : FloatingActionButton.extended(
         onPressed: _loading ? null : () => _showAddDialog(isMobility: _tabController.index == 1),
         icon: const Icon(Icons.add),
         label: Text(l10n.exerciseLibraryAddExercise),
@@ -573,18 +676,21 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   }
 }
 
+
 class _ExerciseTile extends StatelessWidget {
   const _ExerciseTile({
     required this.item,
     required this.onEdit,
     required this.onDelete,
     required this.onAddVariant,
+    this.readOnlyFolders = false,
   });
 
   final CustomExerciseItem item;
   final void Function(CustomExerciseItem item) onEdit;
   final void Function(CustomExerciseItem item) onDelete;
   final void Function(CustomExerciseItem item) onAddVariant;
+  final bool readOnlyFolders;
 
   @override
   Widget build(BuildContext context) {
@@ -606,27 +712,29 @@ class _ExerciseTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               )
             : null,
-        trailing: PopupMenuButton<String>(
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 'addVariant',
-              child: Text(l10n.exerciseLibraryAddVariant),
-            ),
-            PopupMenuItem(
-              value: 'edit',
-              child: Text(l10n.exerciseLibraryEdit),
-            ),
-            PopupMenuItem(
-              value: 'delete',
-              child: Text(l10n.exerciseLibraryDelete),
-            ),
-          ],
-          onSelected: (value) {
-            if (value == 'addVariant') onAddVariant(item);
-            if (value == 'edit') onEdit(item);
-            if (value == 'delete') onDelete(item);
-          },
-        ),
+        trailing: readOnlyFolders && (item.isHevyFolder || item.children.isNotEmpty)
+            ? null
+            : PopupMenuButton<String>(
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'addVariant',
+                    child: Text(l10n.exerciseLibraryAddVariant),
+                  ),
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text(l10n.exerciseLibraryEdit),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Text(l10n.exerciseLibraryDelete),
+                  ),
+                ],
+                onSelected: (value) {
+                  if (value == 'addVariant') onAddVariant(item);
+                  if (value == 'edit') onEdit(item);
+                  if (value == 'delete') onDelete(item);
+                },
+              ),
         children: item.children
             .map(
               (child) => Padding(
@@ -636,6 +744,7 @@ class _ExerciseTile extends StatelessWidget {
                   onEdit: onEdit,
                   onDelete: onDelete,
                   onAddVariant: onAddVariant,
+                  readOnlyFolders: readOnlyFolders,
                 ),
               ),
             )
@@ -656,12 +765,14 @@ class _ExerciseLibraryTabView extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onAddVariant,
+    this.readOnlyFolders = false,
   });
 
   final bool isMobility;
   final bool loading;
   final String? error;
   final bool allItemsEmpty;
+  final bool readOnlyFolders;
 
   final Future<void> Function() onRefresh;
   final List<CustomExerciseItem> Function() buildList;
@@ -748,6 +859,7 @@ class _ExerciseLibraryTabView extends StatelessWidget {
                           onEdit: onEdit,
                           onDelete: onDelete,
                           onAddVariant: onAddVariant,
+                          readOnlyFolders: readOnlyFolders,
                         );
                       },
                     );

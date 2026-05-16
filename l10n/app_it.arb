@@ -634,5 +634,52 @@
       }
     }
   },
-  "updatedJustNow": "Appena adesso"
+  "updatedJustNow": "Appena adesso",
+  "exerciseLibraryTabHevy": "Hevy",
+  "exerciseLibraryImportSourceHevy": "Sincronizza catalogo Hevy completo",
+  "exerciseLibraryImportSourceHevySubtitle": "Importa tutti gli esercizi dal tuo account Hevy Pro con ID già mappati.",
+  "hevySettingsSectionTitle": "Integrazione Hevy",
+  "hevySettingsSectionSubtitle": "Richiede Hevy Pro. API key da hevy.com/settings (Developer).",
+  "hevySettingsApiKeyLabel": "API key Hevy",
+  "hevySettingsApiKeyHint": "Incolla la tua API key",
+  "hevySettingsSaveKey": "Salva key",
+  "hevySettingsTestConnection": "Test connessione",
+  "hevySettingsSyncCatalog": "Sincronizza tutti gli esercizi",
+  "hevySettingsKeySaved": "API key Hevy salvata.",
+  "hevySettingsTestSuccess": "Connesso a Hevy.",
+  "hevySettingsTestFailed": "Connessione Hevy fallita: {message}",
+  "@hevySettingsTestFailed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "hevyImportInProgress": "Sincronizzazione catalogo Hevy…",
+  "hevyImportSuccessCount": "Sincronizzazione Hevy completata: {count} nuovi elementi.",
+  "@hevyImportSuccessCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "hevyImportFailed": "Sincronizzazione Hevy fallita: {message}",
+  "@hevyImportFailed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "workoutExportHevy": "Esporta giornata su Hevy",
+  "hevyExportSheetTitle": "Esporta su Hevy",
+  "hevyExportConfirm": "Crea routine su Hevy",
+  "hevyExportAllMapped": "Tutti gli esercizi sono mappati. Pronto per l'export.",
+  "hevyExportUnmappedIntro": "{count} esercizi richiedono una mappatura Hevy prima dell'export.",
+  "@hevyExportUnmappedIntro": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "hevyExportMapExercise": "Mappa",
+  "hevyExportUnmappedBlock": "Mappa tutti gli esercizi prima di esportare.",
+  "hevyExportSuccess": "Routine creata su Hevy.",
+  "hevyExportError": "Export Hevy fallito. Riprova.",
+  "hevyExportNoCatalogHint": "Sincronizza prima il catalogo Hevy da Impostazioni o Libreria esercizi.",
+  "calendarExportHevy": "Esporta su Hevy"
 }
