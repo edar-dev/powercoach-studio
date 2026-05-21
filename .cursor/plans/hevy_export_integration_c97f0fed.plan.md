@@ -4,31 +4,31 @@ overview: Export giornata piano → Hevy (account coach). Import completo di tut
 todos:
   - id: spike-hevy-api
     content: "Spike API Hevy: paginazione exercise_templates, stabilità ID, POST /v1/routines"
-    status: pending
+    status: completed
   - id: hevy-hierarchy-builder
     content: "HevyCatalogHierarchyBuilder: flat API → albero parentId (muscolo, famiglia titolo, foglie)"
-    status: pending
+    status: completed
   - id: hevy-full-import
-    content: "Import/sync TUTTI gli esercizi Hevy in libreria (batch, progress, upsert per hevyTemplateId)"
-    status: pending
+    content: Import/sync TUTTI gli esercizi Hevy in libreria (batch, progress, upsert per hevyTemplateId)
+    status: completed
   - id: hevy-catalog-asset
-    content: "Asset JSON opzionale offline + script generazione; import primario da API con key coach"
-    status: pending
+    content: Asset JSON opzionale offline + script generazione; import primario da API con key coach
+    status: completed
   - id: exercise-model-hevy-id
     content: "CustomExerciseItem: hevyTemplateId, catalogSource, isHevyFolder; tab Hevy in libreria"
-    status: pending
+    status: completed
   - id: hevy-client-settings
     content: HevyApiClient + secure storage API key + Settings (test, refresh catalogo da API)
-    status: pending
+    status: completed
   - id: export-usecase
     content: "HevyExportDayUseCase: resolve hevyTemplateId da customExerciseId, parser prescrizioni, POST routine"
-    status: pending
+    status: completed
   - id: export-ui
     content: Sheet review solo per unmapped + export da builder e calendario
-    status: pending
+    status: completed
   - id: tests-docs
     content: Test resolver/parser + doc catalogo Hevy e limiti API
-    status: pending
+    status: completed
 isProject: false
 ---
 

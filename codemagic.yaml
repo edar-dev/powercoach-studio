@@ -125,6 +125,28 @@ workflows:
           test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL" && exit 1)
           test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY" && exit 1)
           test -n "$GCLOUD_SERVICE_ACCOUNT_CREDENTIALS" || (echo "Missing GCLOUD_SERVICE_ACCOUNT_CREDENTIALS" && exit 1)
+          python3 <<'PY'
+          import json, os, sys
+          raw = os.environ.get("GCLOUD_SERVICE_ACCOUNT_CREDENTIALS", "").strip()
+          if not raw:
+              print("GCLOUD_SERVICE_ACCOUNT_CREDENTIALS is empty")
+              sys.exit(1)
+          try:
+              data = json.loads(raw)
+          except json.JSONDecodeError as exc:
+              print("GCLOUD_SERVICE_ACCOUNT_CREDENTIALS is not valid JSON:", exc)
+              print("In Codemagic group google_credentials, paste the FULL service account .json file content (Secret).")
+              print("Do not use base64, a file path, or Play Console OAuth client JSON.")
+              sys.exit(1)
+          for key in ("type", "project_id", "private_key", "client_email"):
+              if key not in data:
+                  print(f"Service account JSON missing required field: {key}")
+                  sys.exit(1)
+          if data.get("type") != "service_account":
+              print('Service account JSON "type" must be "service_account"')
+              sys.exit(1)
+          print("Google Play service account credentials validated")
+          PY
           test -n "$ANDROID_KEYSTORE_BASE64" || (echo "Missing ANDROID_KEYSTORE_BASE64" && exit 1)
           test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD" && exit 1)
           test -n "$ANDROID_KEY_ALIAS" || (echo "Missing ANDROID_KEY_ALIAS" && exit 1)

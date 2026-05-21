@@ -134,7 +134,13 @@ After internal validation:
 
 - **Unknown variable group**: ensure `google_credentials` exists in Codemagic project.
 - **Missing signing vars**: check `ANDROID_KEYSTORE_*` / `ANDROID_KEY_*` values.
-- **Invalid service account**: verify `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` JSON and Play API access linkage.
+- **`Expecting value: line 1 column 1 (char 0)`** on Play publish: `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` is present but **not valid JSON**. Typical causes:
+  - Variable is empty, a placeholder, or only whitespace
+  - You pasted a **file path** or **base64** instead of the raw `.json` file contents
+  - JSON was truncated when pasting (must include the full key, including `private_key` with `\n` newlines)
+  - Wrong credential type (OAuth client secret instead of **service account** key)
+  - **Fix**: Codemagic → App → Environment variables → group `google_credentials` → edit `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` → paste entire service account JSON → mark as **Secret** → Save. Re-run the workflow.
+- **Invalid service account**: verify `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` JSON and Play API access linkage in Play Console (Users and permissions → invite service account email → App permissions + Releases).
 - **Version conflict**: increase Android `versionCode` (`pubspec.yaml` build number).
 - **Signing mismatch**: never rotate keystore randomly after first upload.
 
