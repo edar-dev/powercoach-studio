@@ -86,7 +86,7 @@ Still in `google_credentials`, set:
 
 - `pr_quality_gate` (PR to `main`): analyze + tests.
 - `android_release` (push to `main`): builds APK + AAB artifacts only.
-- `android_play_store` (tag `v*`): validates secrets, reconstructs signing keystore, creates signed `key.properties`, builds AAB, publishes to Play `internal` track as draft.
+- `android_play_store` (tag `v*`): validates secrets, reconstructs signing keystore, creates signed `key.properties`, builds AAB, publishes to Play `internal` track (released to internal testers, not draft).
 
 ## 6) First Release Checklist
 

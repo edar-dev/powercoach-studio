@@ -50,7 +50,7 @@ The repo includes `codemagic.yaml` with three workflows:
   - release AAB
 - `android_play_store`: runs on tags `v*`, building and publishing:
   - signed release AAB
-  - upload to Google Play `internal` track as draft
+  - upload to Google Play `internal` track (available to internal testers)
 
 Configure a Codemagic environment group named `google_credentials` with:
 
