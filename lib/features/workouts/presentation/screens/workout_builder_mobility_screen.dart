@@ -463,7 +463,6 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     }
     setState(() {
       final reordered = List<MobilityItem>.from(sectionItems);
-      if (newIndex > oldIndex) newIndex--;
       final item = reordered.removeAt(oldIndex);
       reordered.insert(newIndex, item);
       final others = _routine.mobilityItems
@@ -1276,7 +1275,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           child: ReorderableListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             buildDefaultDragHandles: false,
-            onReorder: _reorderMobility,
+            onReorderItem: _reorderMobility,
             itemCount: _mobilityItemsForSelectedSection.length,
             itemBuilder: (context, index) {
               final item = _mobilityItemsForSelectedSection[index];
