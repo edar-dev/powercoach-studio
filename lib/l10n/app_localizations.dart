@@ -1930,6 +1930,138 @@ abstract class AppLocalizations {
   /// **'New superset'**
   String get workoutBuilderNewSuperset;
 
+  /// No description provided for @workoutBuilderRemoveFromSuperset.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove from superset'**
+  String get workoutBuilderRemoveFromSuperset;
+
+  /// No description provided for @workoutBuilderTabTraining.
+  ///
+  /// In en, this message translates to:
+  /// **'Training'**
+  String get workoutBuilderTabTraining;
+
+  /// No description provided for @workoutBuilderTabMobility.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility'**
+  String get workoutBuilderTabMobility;
+
+  /// No description provided for @workoutBuilderTabDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get workoutBuilderTabDetails;
+
+  /// No description provided for @workoutBuilderNotePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add note…'**
+  String get workoutBuilderNotePlaceholder;
+
+  /// No description provided for @workoutBuilderMoreActions.
+  ///
+  /// In en, this message translates to:
+  /// **'More actions'**
+  String get workoutBuilderMoreActions;
+
+  /// No description provided for @workoutBuilderMoveUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Move up'**
+  String get workoutBuilderMoveUp;
+
+  /// No description provided for @workoutBuilderMoveDown.
+  ///
+  /// In en, this message translates to:
+  /// **'Move down'**
+  String get workoutBuilderMoveDown;
+
+  /// No description provided for @workoutBuilderEditExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit exercise'**
+  String get workoutBuilderEditExercise;
+
+  /// No description provided for @workoutBuilderDeleteExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete exercise'**
+  String get workoutBuilderDeleteExercise;
+
+  /// No description provided for @workoutBuilderNavLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Library'**
+  String get workoutBuilderNavLibrary;
+
+  /// No description provided for @workoutBuilderNavBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Builder'**
+  String get workoutBuilderNavBuilder;
+
+  /// No description provided for @workoutBuilderNavDiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Diary'**
+  String get workoutBuilderNavDiary;
+
+  /// No description provided for @workoutBuilderNavStats.
+  ///
+  /// In en, this message translates to:
+  /// **'Stats'**
+  String get workoutBuilderNavStats;
+
+  /// No description provided for @workoutBuilderWeeksLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Weeks'**
+  String get workoutBuilderWeeksLabel;
+
+  /// No description provided for @workoutBuilderDaysLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Days'**
+  String get workoutBuilderDaysLabel;
+
+  /// No description provided for @workoutBuilderAddDayChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Day'**
+  String get workoutBuilderAddDayChip;
+
+  /// No description provided for @workoutBuilderNoDaysInWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'No days in this week yet.'**
+  String get workoutBuilderNoDaysInWeek;
+
+  /// No description provided for @workoutBuilderDeleteDayTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete day?'**
+  String get workoutBuilderDeleteDayTitle;
+
+  /// No description provided for @workoutBuilderDeleteDayMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'All exercises on this day will be removed.'**
+  String get workoutBuilderDeleteDayMessage;
+
+  /// No description provided for @workoutBuilderSwipeDayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe a day up to delete it'**
+  String get workoutBuilderSwipeDayHint;
+
+  /// No description provided for @workoutBuilderExerciseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No exercises} =1{1 exercise} other{{count} exercises}}'**
+  String workoutBuilderExerciseCount(int count);
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:

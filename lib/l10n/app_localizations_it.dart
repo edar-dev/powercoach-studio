@@ -999,6 +999,83 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderNewSuperset => 'Nuovo superset';
 
   @override
+  String get workoutBuilderRemoveFromSuperset => 'Rimuovi dal superset';
+
+  @override
+  String get workoutBuilderTabTraining => 'Allenamento';
+
+  @override
+  String get workoutBuilderTabMobility => 'Mobility';
+
+  @override
+  String get workoutBuilderTabDetails => 'Dettagli';
+
+  @override
+  String get workoutBuilderNotePlaceholder => 'Aggiungi nota…';
+
+  @override
+  String get workoutBuilderMoreActions => 'Altre azioni';
+
+  @override
+  String get workoutBuilderMoveUp => 'Sposta su';
+
+  @override
+  String get workoutBuilderMoveDown => 'Sposta giù';
+
+  @override
+  String get workoutBuilderEditExercise => 'Modifica esercizio';
+
+  @override
+  String get workoutBuilderDeleteExercise => 'Elimina esercizio';
+
+  @override
+  String get workoutBuilderNavLibrary => 'Libreria';
+
+  @override
+  String get workoutBuilderNavBuilder => 'Builder';
+
+  @override
+  String get workoutBuilderNavDiary => 'Diario';
+
+  @override
+  String get workoutBuilderNavStats => 'Statistiche';
+
+  @override
+  String get workoutBuilderWeeksLabel => 'Settimane';
+
+  @override
+  String get workoutBuilderDaysLabel => 'Giorni';
+
+  @override
+  String get workoutBuilderAddDayChip => 'Giorno';
+
+  @override
+  String get workoutBuilderNoDaysInWeek => 'Nessun giorno in questa settimana.';
+
+  @override
+  String get workoutBuilderDeleteDayTitle => 'Eliminare il giorno?';
+
+  @override
+  String get workoutBuilderDeleteDayMessage =>
+      'Verranno rimossi tutti gli esercizi di questo giorno.';
+
+  @override
+  String get workoutBuilderSwipeDayHint =>
+      'Scorri un giorno verso l\'alto per eliminarlo';
+
+  @override
+  String workoutBuilderExerciseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count esercizi',
+      one: '1 esercizio',
+      zero: 'Nessun esercizio',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get measurementsEmpty => 'Nessuna misura ancora';
 
   @override

@@ -992,6 +992,82 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderNewSuperset => 'New superset';
 
   @override
+  String get workoutBuilderRemoveFromSuperset => 'Remove from superset';
+
+  @override
+  String get workoutBuilderTabTraining => 'Training';
+
+  @override
+  String get workoutBuilderTabMobility => 'Mobility';
+
+  @override
+  String get workoutBuilderTabDetails => 'Details';
+
+  @override
+  String get workoutBuilderNotePlaceholder => 'Add note…';
+
+  @override
+  String get workoutBuilderMoreActions => 'More actions';
+
+  @override
+  String get workoutBuilderMoveUp => 'Move up';
+
+  @override
+  String get workoutBuilderMoveDown => 'Move down';
+
+  @override
+  String get workoutBuilderEditExercise => 'Edit exercise';
+
+  @override
+  String get workoutBuilderDeleteExercise => 'Delete exercise';
+
+  @override
+  String get workoutBuilderNavLibrary => 'Library';
+
+  @override
+  String get workoutBuilderNavBuilder => 'Builder';
+
+  @override
+  String get workoutBuilderNavDiary => 'Diary';
+
+  @override
+  String get workoutBuilderNavStats => 'Stats';
+
+  @override
+  String get workoutBuilderWeeksLabel => 'Weeks';
+
+  @override
+  String get workoutBuilderDaysLabel => 'Days';
+
+  @override
+  String get workoutBuilderAddDayChip => 'Day';
+
+  @override
+  String get workoutBuilderNoDaysInWeek => 'No days in this week yet.';
+
+  @override
+  String get workoutBuilderDeleteDayTitle => 'Delete day?';
+
+  @override
+  String get workoutBuilderDeleteDayMessage =>
+      'All exercises on this day will be removed.';
+
+  @override
+  String get workoutBuilderSwipeDayHint => 'Swipe a day up to delete it';
+
+  @override
+  String workoutBuilderExerciseCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count exercises',
+      one: '1 exercise',
+      zero: 'No exercises',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String get measurementsEmpty => 'No measurements yet';
 
   @override
