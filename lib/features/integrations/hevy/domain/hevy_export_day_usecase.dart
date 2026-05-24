@@ -79,8 +79,7 @@ class HevyExportDayUseCase {
       );
 
       final response = await _api.createRoutine(body);
-      final routine = response['routine'] as Map<String, dynamic>?;
-      final id = routine?['id']?.toString() ?? response['id']?.toString();
+      final id = parseHevyCreatedRoutineId(response);
 
       return HevyExportDayResult(success: true, routineId: id);
     } on HevyApiException catch (e) {

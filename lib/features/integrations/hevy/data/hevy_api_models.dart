@@ -56,3 +56,30 @@ class HevyApiException implements Exception {
   @override
   String toString() => 'HevyApiException($statusCode): $message';
 }
+
+/// Reads the created routine id from `POST /v1/routines` JSON (shape varies).
+String? parseHevyCreatedRoutineId(Map<String, dynamic> response) {
+  final routine = response['routine'];
+  if (routine is Map) {
+    final map = routine is Map<String, dynamic>
+        ? routine
+        : Map<String, dynamic>.from(routine);
+    final id = map['id'];
+    if (id != null) return id.toString();
+  }
+  if (routine is List && routine.isNotEmpty) {
+    final first = routine.first;
+    if (first is Map) {
+      final map = first is Map<String, dynamic>
+          ? first
+          : Map<String, dynamic>.from(first);
+      final id = map['id'];
+      if (id != null) return id.toString();
+    }
+  }
+  if (response['id'] != null &&
+      (response.containsKey('title') || response.containsKey('exercises'))) {
+    return response['id']?.toString();
+  }
+  return null;
+}
