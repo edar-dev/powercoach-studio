@@ -3130,6 +3130,36 @@ abstract class AppLocalizations {
   /// **'Create routine on Hevy'**
   String get hevyExportConfirm;
 
+  /// No description provided for @hevyExportConfirmRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'Create routine on Hevy'**
+  String get hevyExportConfirmRoutine;
+
+  /// No description provided for @hevyExportConfirmWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Create workout on Hevy'**
+  String get hevyExportConfirmWorkout;
+
+  /// No description provided for @hevyExportWorkoutHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.'**
+  String get hevyExportWorkoutHint;
+
+  /// No description provided for @hevyExportSuccessRoutine.
+  ///
+  /// In en, this message translates to:
+  /// **'Routine created on Hevy.'**
+  String get hevyExportSuccessRoutine;
+
+  /// No description provided for @hevyExportSuccessWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout created on Hevy.'**
+  String get hevyExportSuccessWorkout;
+
   /// No description provided for @hevyExportAllMapped.
   ///
   /// In en, this message translates to:

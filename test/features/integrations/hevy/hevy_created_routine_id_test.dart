@@ -39,4 +39,42 @@ void main() {
       expect(parseHevyCreatedRoutineId({}), isNull);
     });
   });
+
+  group('parseHevyCreatedWorkoutId', () {
+    test('reads id from wrapped workout object', () {
+      expect(
+        parseHevyCreatedWorkoutId({
+          'workout': {'id': 99, 'title': 'Leg day'},
+        }),
+        '99',
+      );
+    });
+
+    test('reads id when workout is a single-element list', () {
+      expect(
+        parseHevyCreatedWorkoutId({
+          'workout': [
+            {'id': 'workout-7', 'title': 'Push'},
+          ],
+        }),
+        'workout-7',
+      );
+    });
+
+    test('reads id from unwrapped workout body', () {
+      expect(
+        parseHevyCreatedWorkoutId({
+          'id': 'direct-workout',
+          'start_time': '2025-01-01T00:00:00Z',
+          'exercises': [],
+        }),
+        'direct-workout',
+      );
+    });
+
+    test('returns null when id cannot be resolved', () {
+      expect(parseHevyCreatedWorkoutId({'workout': []}), isNull);
+      expect(parseHevyCreatedWorkoutId({}), isNull);
+    });
+  });
 }

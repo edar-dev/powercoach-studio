@@ -1666,6 +1666,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hevyExportConfirm => 'Create routine on Hevy';
 
   @override
+  String get hevyExportConfirmRoutine => 'Create routine on Hevy';
+
+  @override
+  String get hevyExportConfirmWorkout => 'Create workout on Hevy';
+
+  @override
+  String get hevyExportWorkoutHint =>
+      'The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.';
+
+  @override
+  String get hevyExportSuccessRoutine => 'Routine created on Hevy.';
+
+  @override
+  String get hevyExportSuccessWorkout => 'Workout created on Hevy.';
+
+  @override
   String get hevyExportAllMapped =>
       'All exercises are mapped. Ready to export.';
 

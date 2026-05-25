@@ -74,6 +74,17 @@ class HevyApiClient {
     return response.data ?? {};
   }
 
+  /// Creates a logged workout in the coach's Hevy account.
+  Future<Map<String, dynamic>> createWorkout(Map<String, dynamic> body) async {
+    final headers = await _headers();
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/v1/workouts',
+      data: body,
+      options: Options(headers: headers),
+    );
+    return response.data ?? {};
+  }
+
   /// Lightweight connectivity check.
   Future<void> testConnection() async {
     await fetchAllExerciseTemplates(onPage: (_, __) {});

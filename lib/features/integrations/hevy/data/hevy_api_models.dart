@@ -83,3 +83,32 @@ String? parseHevyCreatedRoutineId(Map<String, dynamic> response) {
   }
   return null;
 }
+
+/// Reads the created workout id from `POST /v1/workouts` JSON (shape varies).
+String? parseHevyCreatedWorkoutId(Map<String, dynamic> response) {
+  final workout = response['workout'];
+  if (workout is Map) {
+    final map = workout is Map<String, dynamic>
+        ? workout
+        : Map<String, dynamic>.from(workout);
+    final id = map['id'];
+    if (id != null) return id.toString();
+  }
+  if (workout is List && workout.isNotEmpty) {
+    final first = workout.first;
+    if (first is Map) {
+      final map = first is Map<String, dynamic>
+          ? first
+          : Map<String, dynamic>.from(first);
+      final id = map['id'];
+      if (id != null) return id.toString();
+    }
+  }
+  if (response['id'] != null &&
+      (response.containsKey('title') ||
+          response.containsKey('start_time') ||
+          response.containsKey('exercises'))) {
+    return response['id']?.toString();
+  }
+  return null;
+}
