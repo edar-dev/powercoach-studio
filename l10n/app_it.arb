@@ -696,6 +696,11 @@
   "workoutExportHevy": "Esporta giornata su Hevy",
   "hevyExportSheetTitle": "Esporta su Hevy",
   "hevyExportConfirm": "Crea routine su Hevy",
+  "hevyExportConfirmRoutine": "Crea routine su Hevy",
+  "hevyExportConfirmWorkout": "Crea allenamento su Hevy",
+  "hevyExportWorkoutHint": "L'allenamento viene registrato nel diario Hevy con inizio adesso e fine stimata tra 90 minuti.",
+  "hevyExportSuccessRoutine": "Routine creata su Hevy.",
+  "hevyExportSuccessWorkout": "Allenamento creato su Hevy.",
   "hevyExportAllMapped": "Tutti gli esercizi sono mappati. Pronto per l'export.",
   "hevyExportUnmappedIntro": "{count} esercizi richiedono una mappatura Hevy prima dell'export.",
   "@hevyExportUnmappedIntro": {

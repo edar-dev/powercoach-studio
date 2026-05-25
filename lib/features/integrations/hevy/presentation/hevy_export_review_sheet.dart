@@ -151,7 +151,7 @@ class _HevyExportReviewBodyState extends State<_HevyExportReviewBody> {
     await _load();
   }
 
-  Future<void> _runExport() async {
+  Future<void> _runExport(HevyExportTarget target) async {
     final l10n = AppLocalizations.of(context);
     if (_unmapped.isNotEmpty) {
       setState(() => _error = l10n.hevyExportUnmappedBlock);
@@ -164,6 +164,7 @@ class _HevyExportReviewBodyState extends State<_HevyExportReviewBody> {
     final result = await _export.execute(
       day: widget.day,
       programName: widget.programName,
+      target: target,
       weekIndex: widget.weekIndex,
       dayIndex: widget.dayIndex,
       customerName: widget.customerName,
@@ -171,8 +172,11 @@ class _HevyExportReviewBodyState extends State<_HevyExportReviewBody> {
     if (!mounted) return;
     if (result.success) {
       Navigator.of(context).pop(true);
+      final message = target == HevyExportTarget.workout
+          ? l10n.hevyExportSuccessWorkout
+          : l10n.hevyExportSuccessRoutine;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.hevyExportSuccess)),
+        SnackBar(content: Text(message)),
       );
     } else {
       setState(() {
@@ -225,16 +229,34 @@ class _HevyExportReviewBodyState extends State<_HevyExportReviewBody> {
             style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error),
           ),
         ],
+        if (unmapped.isEmpty) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.hevyExportWorkoutHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         FilledButton(
-          onPressed: _exporting ? null : _runExport,
+          onPressed: _exporting
+              ? null
+              : () => _runExport(HevyExportTarget.workout),
           child: _exporting
               ? const SizedBox(
                   height: 20,
                   width: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(l10n.hevyExportConfirm),
+              : Text(l10n.hevyExportConfirmWorkout),
+        ),
+        const SizedBox(height: 8),
+        OutlinedButton(
+          onPressed: _exporting
+              ? null
+              : () => _runExport(HevyExportTarget.routine),
+          child: Text(l10n.hevyExportConfirmRoutine),
         ),
       ],
     );
