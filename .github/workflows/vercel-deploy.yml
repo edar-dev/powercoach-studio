@@ -39,8 +39,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .dart_tool
-          key: dart-tool-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}
+          key: dart-tool-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'pubspec.yaml', 'lib/**', 'web/index.html', 'web/manifest.json') }}
           restore-keys: |
+            dart-tool-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}-
             dart-tool-${{ runner.os }}-
 
       - name: Resolve Flutter dependencies
