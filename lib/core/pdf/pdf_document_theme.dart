@@ -28,7 +28,10 @@ class PdfDocumentTheme {
   static final PdfColor textMuted = PdfColor.fromHex('#6B7280');
   static final PdfColor tableHeaderBg = PdfColor.fromHex('#F3F4F6');
   static final PdfColor tableRowAltBg = PdfColor.fromHex('#FAFBFC');
+  static final PdfColor exerciseGroupBg = PdfColor.fromHex('#F5F8FF');
+  static final PdfColor exerciseGroupAccentMuted = PdfColor.fromHex('#A8C4FA');
   static final PdfColor border = PdfColor.fromHex('#E5E7EB');
+  static final PdfColor borderStrong = PdfColor.fromHex('#D1D5DB');
   static final PdfColor supersetBg = PdfColor.fromHex('#E8EEFE');
   static final PdfColor footerMuted = PdfColor.fromHex('#9CA3AF');
 
@@ -166,6 +169,7 @@ class PdfDocumentTheme {
     bool isHeader = false,
     bool isSuperset = false,
     bool center = false,
+    bool bold = false,
     bool blankIfEmpty = false,
     String emptyPlaceholder = '-',
     double fontSize = tableFontSize,
@@ -186,13 +190,71 @@ class PdfDocumentTheme {
             fontSize: isHeader
                 ? tableHeaderFontSize
                 : (isSuperset ? supersetFontSize : fontSize),
-            fontWeight: (isHeader || isSuperset) ? pw.FontWeight.bold : null,
+            fontWeight: (isHeader || isSuperset || bold)
+                ? pw.FontWeight.bold
+                : null,
             color: isHeader ? textMuted : textPrimary,
             letterSpacing: isHeader ? 0.3 : 0,
           ),
           textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
           maxLines: isHeader ? 2 : null,
         ),
+      ),
+    );
+  }
+
+  /// Exercise column for multi-set blocks: accent bar + optional name on first row.
+  static pw.Widget groupedExerciseCell({
+    required String text,
+    required bool isContinuation,
+    required bool isLastInGroup,
+    String emptyPlaceholder = '-',
+  }) {
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: exerciseGroupBg,
+        border: pw.Border(
+          left: pw.BorderSide(
+            color: isContinuation ? exerciseGroupAccentMuted : accent,
+            width: 3,
+          ),
+          bottom: isLastInGroup
+              ? pw.BorderSide(color: borderStrong, width: 0.8)
+              : pw.BorderSide.none,
+        ),
+      ),
+      child: tableCell(
+        text,
+        bold: !isContinuation && text.trim().isNotEmpty,
+        blankIfEmpty: isContinuation,
+        emptyPlaceholder: emptyPlaceholder,
+        paddingH: isContinuation ? cellPaddingH + 6 : cellPaddingH,
+      ),
+    );
+  }
+
+  /// Data column inside a multi-set exercise group.
+  static pw.Widget groupedDataCell(
+    String text, {
+    required bool isLastInGroup,
+    bool center = false,
+    bool blankIfEmpty = false,
+    String emptyPlaceholder = '-',
+  }) {
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: exerciseGroupBg,
+        border: pw.Border(
+          bottom: isLastInGroup
+              ? pw.BorderSide(color: borderStrong, width: 0.8)
+              : pw.BorderSide.none,
+        ),
+      ),
+      child: tableCell(
+        text,
+        center: center,
+        blankIfEmpty: blankIfEmpty,
+        emptyPlaceholder: emptyPlaceholder,
       ),
     );
   }

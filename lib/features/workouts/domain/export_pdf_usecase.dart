@@ -199,17 +199,57 @@ Iterable<pw.TableRow> _tableRowsForBlock(Object item, PdfExportLabels labels) {
 
 Iterable<pw.TableRow> _exerciseRows(Exercise e, PdfExportLabels labels) {
   final rows = buildProgrammingSetRows(e);
-  return rows.asMap().entries.map((entry) {
-    final index = entry.key;
-    final row = entry.value;
+  return rows.map((row) {
+    if (row.isGrouped) {
+      return pw.TableRow(
+        children: [
+          PdfDocumentTheme.groupedExerciseCell(
+            text: row.exercise,
+            isContinuation: row.isContinuation,
+            isLastInGroup: row.isLastInGroup,
+            emptyPlaceholder: labels.emptyValue,
+          ),
+          PdfDocumentTheme.groupedDataCell(
+            row.sets,
+            isLastInGroup: row.isLastInGroup,
+            center: true,
+            blankIfEmpty: row.sets.isEmpty,
+            emptyPlaceholder: labels.emptyValue,
+          ),
+          PdfDocumentTheme.groupedDataCell(
+            row.reps,
+            isLastInGroup: row.isLastInGroup,
+            center: true,
+            blankIfEmpty: row.reps.isEmpty,
+            emptyPlaceholder: labels.emptyValue,
+          ),
+          PdfDocumentTheme.groupedDataCell(
+            row.load,
+            isLastInGroup: row.isLastInGroup,
+            center: true,
+            blankIfEmpty: row.load.isEmpty,
+            emptyPlaceholder: labels.emptyValue,
+          ),
+          PdfDocumentTheme.groupedDataCell(
+            row.notes,
+            isLastInGroup: row.isLastInGroup,
+            blankIfEmpty: row.notes.isEmpty,
+            emptyPlaceholder: labels.emptyValue,
+          ),
+        ],
+      );
+    }
+
     return pw.TableRow(
       decoration: pw.BoxDecoration(
-        color: index.isOdd ? PdfDocumentTheme.tableRowAltBg : null,
+        border: pw.Border(
+          bottom: pw.BorderSide(color: PdfDocumentTheme.border, width: 0.5),
+        ),
       ),
       children: [
         PdfDocumentTheme.tableCell(
           row.exercise,
-          blankIfEmpty: row.isContinuation,
+          bold: true,
           emptyPlaceholder: labels.emptyValue,
         ),
         PdfDocumentTheme.tableCell(

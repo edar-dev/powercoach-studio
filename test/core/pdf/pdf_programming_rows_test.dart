@@ -25,6 +25,9 @@ void main() {
 
     final rows = buildProgrammingSetRows(exercise);
     expect(rows.length, 7);
+    expect(rows.every((r) => r.isGrouped), isTrue);
+    expect(rows.first.isFirstInGroup, isTrue);
+    expect(rows.last.isLastInGroup, isTrue);
     expect(rows.first.exercise, 'Bench Press (Barbell)');
     expect(rows.first.reps, '5');
     expect(rows.first.load, '77.5');

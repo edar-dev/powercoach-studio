@@ -10,6 +10,8 @@ class PdfProgrammingSetRow {
     required this.load,
     required this.notes,
     this.isContinuation = false,
+    this.groupSize = 1,
+    this.groupIndex = 0,
   });
 
   final String exercise;
@@ -18,6 +20,12 @@ class PdfProgrammingSetRow {
   final String load;
   final String notes;
   final bool isContinuation;
+  final int groupSize;
+  final int groupIndex;
+
+  bool get isGrouped => groupSize > 1;
+  bool get isFirstInGroup => groupIndex == 0;
+  bool get isLastInGroup => groupIndex == groupSize - 1;
 }
 
 List<PdfProgrammingSetRow> buildProgrammingSetRows(Exercise exercise) {
@@ -33,6 +41,8 @@ List<PdfProgrammingSetRow> buildProgrammingSetRows(Exercise exercise) {
         load: _loadForSet(set),
         notes: _notesForSet(set, exercise, index == 0),
         isContinuation: index > 0,
+        groupSize: details.length,
+        groupIndex: index,
       );
     }).toList();
   }
