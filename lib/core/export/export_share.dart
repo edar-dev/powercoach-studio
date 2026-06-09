@@ -1,15 +1,8 @@
-import 'package:share_plus/share_plus.dart';
-
 import 'export_artifact.dart';
+import 'export_share_stub.dart'
+    if (dart.library.html) 'export_share_web.dart'
+    if (dart.library.io) 'export_share_io.dart';
 
-Future<void> shareExportArtifact(ExportArtifact artifact) {
-  return Share.shareXFiles(
-    [
-      XFile.fromData(
-        artifact.bytes,
-        name: artifact.filename,
-        mimeType: artifact.mimeType,
-      ),
-    ],
-  );
+Future<void> downloadExportArtifact(ExportArtifact artifact) {
+  return downloadExportArtifactImpl(artifact);
 }

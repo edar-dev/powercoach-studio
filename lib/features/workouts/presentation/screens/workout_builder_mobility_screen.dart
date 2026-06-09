@@ -315,7 +315,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           ],
         ),
       ),
-      primaryActionLabel: l10n.workoutExportPdfGenerateAndShare,
+      primaryActionLabel: l10n.workoutExportPdfGenerateAndDownload,
       onPrimaryAction: () {
         final layout = selected;
         final mobility = includeMobility;
@@ -349,7 +349,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final routine = _routine.copyWith(
       name: name.isEmpty ? _routine.name : name,
     );
-    await showPdfExportProgressDialog(
+    showPdfExportProgressDialog(
       context,
       message: labels.exportGenerating,
     );
@@ -363,8 +363,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         includeMobility: includeMobility,
       );
       if (!mounted) return;
-      hidePdfExportProgressDialog(context);
-      await shareExportArtifact(artifact);
+      await downloadExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -375,7 +374,6 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       );
     } catch (_) {
       if (!mounted) return;
-      hidePdfExportProgressDialog(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.workoutExportError),
@@ -383,6 +381,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
+    } finally {
+      if (mounted) hidePdfExportProgressDialog(context);
     }
   }
 
@@ -395,7 +395,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     try {
       final artifact = await exportWorkoutRoutineToExcel(routine);
       if (!mounted) return;
-      await shareExportArtifact(artifact);
+      await downloadExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

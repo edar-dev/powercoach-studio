@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 /// Non-dismissible progress dialog while a PDF is being generated.
-Future<void> showPdfExportProgressDialog(
+///
+/// Do not await this call: [showDialog] completes only when the route is popped,
+/// which would deadlock with [hidePdfExportProgressDialog] after generation.
+void showPdfExportProgressDialog(
   BuildContext context, {
   required String message,
 }) {
-  return showDialog<void>(
+  showDialog<void>(
     context: context,
     barrierDismissible: false,
     builder: (ctx) => AlertDialog(

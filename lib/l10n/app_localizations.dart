@@ -1217,7 +1217,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutExportSuccess.
   ///
   /// In en, this message translates to:
-  /// **'File ready to share.'**
+  /// **'Download started.'**
   String get workoutExportSuccess;
 
   /// No description provided for @workoutExportError.
@@ -1250,11 +1250,11 @@ abstract class AppLocalizations {
   /// **'Each training day as one table with a column per week (progression).'**
   String get workoutPdfLayoutCompactDescription;
 
-  /// No description provided for @workoutExportPdfGenerateAndShare.
+  /// No description provided for @workoutExportPdfGenerateAndDownload.
   ///
   /// In en, this message translates to:
-  /// **'Generate and share'**
-  String get workoutExportPdfGenerateAndShare;
+  /// **'Generate and download'**
+  String get workoutExportPdfGenerateAndDownload;
 
   /// No description provided for @workoutPdfIncludeMobility.
   ///
@@ -2467,7 +2467,7 @@ abstract class AppLocalizations {
   /// No description provided for @measurementExportSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Export ready to share.'**
+  /// **'Download started.'**
   String get measurementExportSuccess;
 
   /// No description provided for @measurementExportError.
