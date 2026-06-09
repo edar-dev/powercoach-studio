@@ -81,10 +81,8 @@ Manual CLI deploy still works with `npx vercel deploy --prod`.
 
 ## Local web test
 
-```bash
-# Download drift web assets once
-curl -fsSL -o web/sqlite3.wasm https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-2.9.4/sqlite3.wasm
-curl -fsSL -o web/drift_worker.js https://github.com/simolus3/drift/releases/download/drift-2.31.0/drift_worker.js
+Drift web assets (`web/sqlite3.wasm`, `web/drift_worker.js`) are version-pinned in the repo. Build scripts only download them if missing (e.g. after a manual delete).
 
+```bash
 flutter run -d chrome
 ```

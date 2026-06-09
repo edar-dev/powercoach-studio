@@ -31,10 +31,6 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
-# Drift web assets (downloaded in scripts/vercel-build.sh)
-web/sqlite3.wasm
-web/drift_worker.js
-
 # Flutter/Dart/Pub related
 .flutter_sdk/
 **/doc/api/

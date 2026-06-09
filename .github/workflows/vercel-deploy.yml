@@ -16,6 +16,8 @@ env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
   FLUTTER_VERSION: "3.35.6"
+  VERCEL_CLI_VERSION: "54.10.3"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy-production:
@@ -38,8 +40,21 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Cache Vercel CLI
+        uses: actions/cache@v4
+        with:
+          path: ~/.vercel-cli
+          key: vercel-cli-${{ runner.os }}-${{ env.VERCEL_CLI_VERSION }}
+
       - name: Install Vercel CLI
-        run: npm install --global vercel@54.10.3
+        run: |
+          export NPM_CONFIG_PREFIX="$HOME/.vercel-cli"
+          export PATH="$NPM_CONFIG_PREFIX/bin:$PATH"
+          if ! command -v vercel >/dev/null 2>&1; then
+            npm install --global vercel@${{ env.VERCEL_CLI_VERSION }}
+          fi
+          echo "$NPM_CONFIG_PREFIX/bin" >> "$GITHUB_PATH"
+          vercel --version
 
       - name: Build Flutter web
         run: bash scripts/ci-build-web.sh
