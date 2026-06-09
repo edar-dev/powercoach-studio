@@ -657,7 +657,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColExercise => 'Esercizio';
 
   @override
-  String get pdfColSets => 'Serie';
+  String get pdfColSets => 'Ser.';
 
   @override
   String get pdfColReps => 'Rip.';

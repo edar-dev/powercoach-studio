@@ -44,7 +44,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
           if (coachHeader != null && coachHeader.hasContent)
             PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
           PdfDocumentTheme.buildDocumentTitle(routine.name),
-          pw.SizedBox(height: 14),
+          pw.SizedBox(height: 10),
         ],
       ),
       footer: (context) =>
@@ -156,11 +156,11 @@ List<pw.Widget> _canonicalProgrammingWidgets(
           pw.Table(
             border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),
             columnWidths: {
-              0: const pw.FlexColumnWidth(2.35),
-              1: const pw.FlexColumnWidth(0.42),
-              2: const pw.FlexColumnWidth(0.62),
-              3: const pw.FlexColumnWidth(0.95),
-              4: const pw.FlexColumnWidth(1.66),
+              0: const pw.FlexColumnWidth(2.2),
+              1: const pw.FlexColumnWidth(0.38),
+              2: const pw.FlexColumnWidth(0.55),
+              3: const pw.FlexColumnWidth(0.82),
+              4: const pw.FlexColumnWidth(1.55),
             },
             children: [
               PdfDocumentTheme.programmingHeaderRow(labels),
@@ -169,7 +169,7 @@ List<pw.Widget> _canonicalProgrammingWidgets(
               }),
             ],
           ),
-          pw.SizedBox(height: 14),
+          pw.SizedBox(height: 10),
         ];
       }),
       pw.SizedBox(height: 6),
@@ -200,56 +200,17 @@ Iterable<pw.TableRow> _tableRowsForBlock(Object item, PdfExportLabels labels) {
 Iterable<pw.TableRow> _exerciseRows(Exercise e, PdfExportLabels labels) {
   final rows = buildProgrammingSetRows(e);
   return rows.map((row) {
-    if (row.isGrouped) {
-      return pw.TableRow(
-        children: [
-          PdfDocumentTheme.groupedExerciseCell(
-            text: row.exercise,
-            isContinuation: row.isContinuation,
-            isLastInGroup: row.isLastInGroup,
-            emptyPlaceholder: labels.emptyValue,
-          ),
-          PdfDocumentTheme.groupedDataCell(
-            row.sets,
-            isLastInGroup: row.isLastInGroup,
-            center: true,
-            blankIfEmpty: row.sets.isEmpty,
-            emptyPlaceholder: labels.emptyValue,
-          ),
-          PdfDocumentTheme.groupedDataCell(
-            row.reps,
-            isLastInGroup: row.isLastInGroup,
-            center: true,
-            blankIfEmpty: row.reps.isEmpty,
-            emptyPlaceholder: labels.emptyValue,
-          ),
-          PdfDocumentTheme.groupedDataCell(
-            row.load,
-            isLastInGroup: row.isLastInGroup,
-            center: true,
-            blankIfEmpty: row.load.isEmpty,
-            emptyPlaceholder: labels.emptyValue,
-          ),
-          PdfDocumentTheme.groupedDataCell(
-            row.notes,
-            isLastInGroup: row.isLastInGroup,
-            blankIfEmpty: row.notes.isEmpty,
-            emptyPlaceholder: labels.emptyValue,
-          ),
-        ],
-      );
-    }
-
     return pw.TableRow(
       decoration: pw.BoxDecoration(
+        color: row.isGrouped ? PdfDocumentTheme.exerciseGroupBg : null,
         border: pw.Border(
-          bottom: pw.BorderSide(color: PdfDocumentTheme.border, width: 0.5),
+          bottom: pw.BorderSide(color: PdfDocumentTheme.border, width: 0.4),
         ),
       ),
       children: [
-        PdfDocumentTheme.tableCell(
+        PdfDocumentTheme.programmingExerciseCell(
           row.exercise,
-          bold: true,
+          highlight: row.isGrouped,
           emptyPlaceholder: labels.emptyValue,
         ),
         PdfDocumentTheme.tableCell(

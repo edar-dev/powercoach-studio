@@ -4,7 +4,7 @@ import 'package:powercoach_studio/features/workouts/data/workout_routine_model.d
 import 'package:powercoach_studio/features/workouts/domain/workout_routine_json_codec.dart';
 
 void main() {
-  test('bench press pyramid renders one row per set with load column', () {
+  test('bench press pyramid collapses to one compact multiline row', () {
     final exercise = Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
@@ -24,19 +24,14 @@ void main() {
     );
 
     final rows = buildProgrammingSetRows(exercise);
-    expect(rows.length, 7);
-    expect(rows.every((r) => r.isGrouped), isTrue);
-    expect(rows.first.isFirstInGroup, isTrue);
-    expect(rows.last.isLastInGroup, isTrue);
+    expect(rows.length, 1);
+    expect(rows.first.isGrouped, isTrue);
+    expect(rows.first.isMultiline, isTrue);
     expect(rows.first.exercise, 'Bench Press (Barbell)');
-    expect(rows.first.reps, '5');
-    expect(rows.first.load, '77.5');
+    expect(rows.first.sets, '1\n2\n3\n4\n5\n6\n7');
+    expect(rows.first.reps, '5\n4\n3\n2\n3\n4\n5');
+    expect(rows.first.load, '77.5\n82.5\n85\n87.5\n85\n82.5\n77.5');
     expect(rows.first.notes, 'Fermo 1-2"');
-    expect(rows[1].exercise, isEmpty);
-    expect(rows[1].sets, '2');
-    expect(rows[1].reps, '4');
-    expect(rows[1].load, '82.5');
-    expect(rows[1].notes, isEmpty);
   });
 
   test('single structured set uses sets x reps x load columns', () {
@@ -52,6 +47,7 @@ void main() {
 
     final rows = buildProgrammingSetRows(exercise);
     expect(rows.length, 1);
+    expect(rows.first.isGrouped, isFalse);
     expect(rows.first.sets, '4');
     expect(rows.first.reps, '3');
     expect(rows.first.load, '102.5');
@@ -94,8 +90,8 @@ void main() {
     final bench = routine.weeks.first.days.first.exercises.first;
     final rows = buildProgrammingSetRows(bench);
 
-    expect(rows.length, 2);
-    expect(rows.every((r) => r.load.isNotEmpty), isTrue);
-    expect(rows.every((r) => r.reps.isNotEmpty), isTrue);
+    expect(rows.length, 1);
+    expect(rows.first.load, '77.5\n82.5');
+    expect(rows.first.reps, '5\n4');
   });
 }

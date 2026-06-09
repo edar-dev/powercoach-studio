@@ -9,9 +9,7 @@ class PdfProgrammingSetRow {
     required this.reps,
     required this.load,
     required this.notes,
-    this.isContinuation = false,
-    this.groupSize = 1,
-    this.groupIndex = 0,
+    this.isGrouped = false,
   });
 
   final String exercise;
@@ -19,32 +17,27 @@ class PdfProgrammingSetRow {
   final String reps;
   final String load;
   final String notes;
-  final bool isContinuation;
-  final int groupSize;
-  final int groupIndex;
+  final bool isGrouped;
 
-  bool get isGrouped => groupSize > 1;
-  bool get isFirstInGroup => groupIndex == 0;
-  bool get isLastInGroup => groupIndex == groupSize - 1;
+  bool get isMultiline =>
+      sets.contains('\n') || reps.contains('\n') || load.contains('\n');
 }
 
 List<PdfProgrammingSetRow> buildProgrammingSetRows(Exercise exercise) {
   final details = exercise.effectiveSetDetails;
   if (details.length > 1) {
-    return details.asMap().entries.map((entry) {
-      final index = entry.key;
-      final set = entry.value;
-      return PdfProgrammingSetRow(
-        exercise: index == 0 ? exercise.name : '',
-        sets: '${index + 1}',
-        reps: _repsForSet(set),
-        load: _loadForSet(set),
-        notes: _notesForSet(set, exercise, index == 0),
-        isContinuation: index > 0,
-        groupSize: details.length,
-        groupIndex: index,
-      );
-    }).toList();
+    return [
+      PdfProgrammingSetRow(
+        exercise: exercise.name,
+        sets: _joinLines(
+          List.generate(details.length, (index) => '${index + 1}'),
+        ),
+        reps: _joinLines(details.map(_repsForSet)),
+        load: _joinLines(details.map(_loadForSet)),
+        notes: sanitizePdfText(exercise.note.trim()),
+        isGrouped: true,
+      ),
+    ];
   }
 
   final set = details.first;
@@ -69,6 +62,13 @@ List<PdfProgrammingSetRow> buildProgrammingSetRows(Exercise exercise) {
       notes: exercise.note,
     ),
   ];
+}
+
+String _joinLines(Iterable<String> lines) {
+  return lines
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty)
+      .join('\n');
 }
 
 bool _hasStructuredSet(ExerciseSet set) {
