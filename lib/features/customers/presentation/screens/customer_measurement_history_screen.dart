@@ -87,25 +87,19 @@ class _CustomerMeasurementHistoryScreenState
     final l10n = AppLocalizations.of(context);
     final labels = l10n.toPdfExportLabels();
     if (showProgress) {
-      await showPdfExportProgressDialog(
+      showPdfExportProgressDialog(
         context,
         message: labels.exportGenerating,
       );
     }
     try {
       final artifact = await export();
-      if (showProgress && mounted) {
-        hidePdfExportProgressDialog(context);
-      }
-      await shareExportArtifact(artifact);
+      await downloadExportArtifact(artifact);
       if (!mounted) {
         return;
       }
       showAppSnackBar(context, content: Text(l10n.measurementExportSuccess));
     } catch (error, stackTrace) {
-      if (showProgress && mounted) {
-        hidePdfExportProgressDialog(context);
-      }
       await Sentry.captureException(error, stackTrace: stackTrace);
       if (!mounted) {
         return;
@@ -115,6 +109,8 @@ class _CustomerMeasurementHistoryScreenState
         content: Text(l10n.measurementExportError),
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
       );
+    } finally {
+      if (showProgress && mounted) hidePdfExportProgressDialog(context);
     }
   }
 

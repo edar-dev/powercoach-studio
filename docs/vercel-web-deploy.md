@@ -27,11 +27,51 @@ Add your Vercel URL(s) under **Authentication → URL configuration**:
 
 Vercel uses `vercel.json`:
 
-- **Build command:** `bash scripts/vercel-build.sh`
+- **Install command:** `bash scripts/vercel-install.sh` — Flutter SDK (`.flutter_sdk/`), `pub get`
+- **Build command:** `bash scripts/vercel-build.sh` — Drift web assets, `.env`, `flutter build web`
 - **Output:** `build/web`
 - SPA rewrites route all paths to `index.html`
 
-The build script installs Flutter, downloads Drift `sqlite3.wasm` / `drift_worker.js`, writes `.env` from Vercel env vars, and runs `flutter build web --release`.
+### Build speed
+
+| Phase | First deploy | Warm deploy (cache hit) |
+|-------|--------------|-------------------------|
+| Flutter SDK | ~60–90 s (clone + precache) | ~0 s (restored from cache) |
+| `pub get` | ~15–30 s | ~5–10 s if `pubspec.lock` unchanged |
+| `flutter build web` | ~60–90 s | ~60–90 s (always recompiles) |
+
+Warm deploys are faster because:
+
+1. Flutter SDK lives in `.flutter_sdk/` (not `/tmp`) and is restored via `build.json` cache.
+2. Pub packages live in `.pub-cache/` and are restored between builds.
+3. Drift `sqlite3.wasm` / `drift_worker.js` are downloaded only on the first build.
+
+The compile step (`flutter build web`) still runs every time — that is expected for Flutter web.
+
+### GitHub Actions (recommended)
+
+Production deploys run via `.github/workflows/vercel-deploy.yml`:
+
+1. `subosito/flutter-action` builds Flutter web (cached SDK, pub, and `.dart_tool`)
+2. `scripts/package-vercel-prebuilt.sh` creates `.vercel/output`
+3. `vercel deploy --prebuilt --prod` uploads static files only (~30–60 s on Vercel)
+
+Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.json`) to avoid double builds.
+
+**Required GitHub secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|--------|-------|
+| `VERCEL_TOKEN` | **Classic** personal access token from [Vercel account tokens](https://vercel.com/account/tokens) (OAuth/CLI session tokens do not work in CI) |
+| `SUPABASE_URL` | Same value as Vercel Production env |
+| `SUPABASE_ANON_KEY` | Same value as Vercel Production env |
+| `GYMBLOG_API_URL` | Same value as Vercel Production env |
+| `SENTRY_DSN` | Optional |
+| `SENTRY_ENVIRONMENT` | e.g. `production` |
+| `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
+| `VERCEL_PROJECT_ID` | Project ID from `.vercel/project.json` |
+
+Manual CLI deploy still works with `npx vercel deploy --prod`.
 
 ## Web limitations
 
@@ -41,10 +81,8 @@ The build script installs Flutter, downloads Drift `sqlite3.wasm` / `drift_worke
 
 ## Local web test
 
-```bash
-# Download drift web assets once
-curl -fsSL -o web/sqlite3.wasm https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-2.9.4/sqlite3.wasm
-curl -fsSL -o web/drift_worker.js https://github.com/simolus3/drift/releases/download/drift-2.31.0/drift_worker.js
+Drift web assets (`web/sqlite3.wasm`, `web/drift_worker.js`) are version-pinned in the repo. Build scripts only download them if missing (e.g. after a manual delete).
 
+```bash
 flutter run -d chrome
 ```

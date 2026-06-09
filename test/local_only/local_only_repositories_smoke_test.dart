@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
@@ -14,12 +13,15 @@ import 'package:powercoach_studio/features/workouts/data/workout_plan_repository
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../support/fake_path_provider_platform.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
     SharedPreferences.setMockInitialValues(<String, Object>{});
-    PathProviderPlatform.instance = _FakePathProviderPlatform();
+    PathProviderPlatform.instance =
+        FakePathProviderPlatform(prefix: 'powercoach_test_docs_');
   });
 
   setUp(() async {
@@ -160,12 +162,4 @@ void main() {
     expect(recordsAfterDelete.any((r) => r.id == record.id), isFalse);
     expect(measurementsAfterDelete.any((m) => m.id == measurement.id), isFalse);
   });
-}
-
-class _FakePathProviderPlatform extends PathProviderPlatform {
-  @override
-  Future<String?> getApplicationDocumentsPath() async {
-    final dir = Directory.systemTemp.createTempSync('powercoach_test_docs_');
-    return dir.path;
-  }
 }

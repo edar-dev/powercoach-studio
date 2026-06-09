@@ -4,12 +4,14 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-FLUTTER_HOME="${ROOT}/.flutter_sdk"
-export FLUTTER_HOME
-export PATH="${FLUTTER_HOME}/bin:${PATH}"
-export PUB_CACHE="${ROOT}/.pub-cache"
+if [[ -z "${SUPABASE_URL:-}" && -f .vercel/.env.production.local ]]; then
+  echo "Loading production env from vercel pull..."
+  set -a
+  # shellcheck disable=SC1091
+  source .vercel/.env.production.local
+  set +a
+fi
 
-# Drift web assets (version-pinned; skip download when already cached)
 if [[ ! -f web/sqlite3.wasm ]]; then
   curl -fsSL -o web/sqlite3.wasm \
     "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-2.9.4/sqlite3.wasm"
@@ -29,4 +31,5 @@ EOF
 
 APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
 
-flutter build web --release --no-wasm-dry-run --dart-define="APP_VERSION=${APP_VERSION}"
+# pub get runs once in the workflow before this script.
+flutter build web --release --no-pub --no-wasm-dry-run --dart-define="APP_VERSION=${APP_VERSION}"

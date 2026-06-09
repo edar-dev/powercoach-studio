@@ -607,7 +607,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutExportExcel => 'Esporta in Excel';
 
   @override
-  String get workoutExportSuccess => 'File pronto per la condivisione.';
+  String get workoutExportJson => 'Esporta JSON';
+
+  @override
+  String get workoutImportJson => 'Importa JSON';
+
+  @override
+  String get workoutImportJsonSuccess => 'Piano importato dal file JSON.';
+
+  @override
+  String get workoutImportJsonError => 'File JSON non valido o non supportato.';
+
+  @override
+  String get workoutExportSuccess => 'Download avviato.';
 
   @override
   String get workoutExportError => 'Esportazione fallita. Riprova.';
@@ -626,7 +638,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Ogni giorno di allenamento in una tabella con una colonna per settimana (progressione).';
 
   @override
-  String get workoutExportPdfGenerateAndShare => 'Genera e condividi';
+  String get workoutExportPdfGenerateAndDownload => 'Genera e scarica';
 
   @override
   String get workoutPdfIncludeMobility => 'Includi mobilità / riscaldamento';
@@ -645,13 +657,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColExercise => 'Esercizio';
 
   @override
-  String get pdfColSets => 'Serie';
+  String get pdfColSets => 'Ser.';
 
   @override
-  String get pdfColReps => 'Ripetizioni';
+  String get pdfColReps => 'Rip.';
 
   @override
-  String get pdfColLoadRpe => 'Carico/RPE';
+  String get pdfColLoadRpe => 'Carico';
 
   @override
   String get pdfColNotes => 'Note';
@@ -668,7 +680,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get pdfEmptyValue => '—';
+  String get pdfEmptyValue => '-';
 
   @override
   String get pdfFooterDisclaimer =>
@@ -1300,8 +1312,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get measurementExportPdf => 'Esporta PDF';
 
   @override
-  String get measurementExportSuccess =>
-      'Esportazione pronta per la condivisione.';
+  String get measurementExportSuccess => 'Download avviato.';
 
   @override
   String get measurementExportError => 'Impossibile esportare le misure.';

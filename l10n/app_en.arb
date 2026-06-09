@@ -200,13 +200,17 @@
   "workoutExport": "Export",
   "workoutExportPdf": "Export to PDF",
   "workoutExportExcel": "Export to Excel",
-  "workoutExportSuccess": "File ready to share.",
+  "workoutExportJson": "Export JSON",
+  "workoutImportJson": "Import JSON",
+  "workoutImportJsonSuccess": "Workout imported from JSON file.",
+  "workoutImportJsonError": "Invalid or unsupported JSON file.",
+  "workoutExportSuccess": "Download started.",
   "workoutExportError": "Export failed. Try again.",
   "workoutExportPdfSheetTitle": "Export PDF",
   "workoutPdfLayoutCanonical": "Full (by week)",
   "workoutPdfLayoutCompact": "Compact (by day)",
   "workoutPdfLayoutCompactDescription": "Each training day as one table with a column per week (progression).",
-  "workoutExportPdfGenerateAndShare": "Generate and share",
+  "workoutExportPdfGenerateAndDownload": "Generate and download",
   "workoutPdfIncludeMobility": "Include mobility / warm-up",
   "workoutPdfSheetSubtitle": "Choose the document layout. The PDF uses your coach header and print-friendly tables.",
   "pdfBrandName": "PowerCoach Studio",
@@ -224,7 +228,7 @@
       "day": { "type": "int" }
     }
   },
-  "pdfEmptyValue": "—",
+  "pdfEmptyValue": "-",
   "pdfFooterDisclaimer": "This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.",
   "pdfPageOf": "Page {current} of {total}",
   "@pdfPageOf": {
@@ -497,7 +501,7 @@
   "customerNotesAttachSoon": "Photo attachments will arrive in a later update.",
   "measurementExportCsv": "Export CSV",
   "measurementExportPdf": "Export PDF",
-  "measurementExportSuccess": "Export ready to share.",
+  "measurementExportSuccess": "Download started.",
   "measurementExportError": "Could not export measurements.",
   "measurementHistoryExportPdfTitle": "Measurements — {customerName}",
   "@measurementHistoryExportPdfTitle": {

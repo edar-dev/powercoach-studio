@@ -1214,10 +1214,34 @@ abstract class AppLocalizations {
   /// **'Export to Excel'**
   String get workoutExportExcel;
 
+  /// No description provided for @workoutExportJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Export JSON'**
+  String get workoutExportJson;
+
+  /// No description provided for @workoutImportJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Import JSON'**
+  String get workoutImportJson;
+
+  /// No description provided for @workoutImportJsonSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout imported from JSON file.'**
+  String get workoutImportJsonSuccess;
+
+  /// No description provided for @workoutImportJsonError.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or unsupported JSON file.'**
+  String get workoutImportJsonError;
+
   /// No description provided for @workoutExportSuccess.
   ///
   /// In en, this message translates to:
-  /// **'File ready to share.'**
+  /// **'Download started.'**
   String get workoutExportSuccess;
 
   /// No description provided for @workoutExportError.
@@ -1250,11 +1274,11 @@ abstract class AppLocalizations {
   /// **'Each training day as one table with a column per week (progression).'**
   String get workoutPdfLayoutCompactDescription;
 
-  /// No description provided for @workoutExportPdfGenerateAndShare.
+  /// No description provided for @workoutExportPdfGenerateAndDownload.
   ///
   /// In en, this message translates to:
-  /// **'Generate and share'**
-  String get workoutExportPdfGenerateAndShare;
+  /// **'Generate and download'**
+  String get workoutExportPdfGenerateAndDownload;
 
   /// No description provided for @workoutPdfIncludeMobility.
   ///
@@ -1331,7 +1355,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEmptyValue.
   ///
   /// In en, this message translates to:
-  /// **'—'**
+  /// **'-'**
   String get pdfEmptyValue;
 
   /// No description provided for @pdfFooterDisclaimer.
@@ -2467,7 +2491,7 @@ abstract class AppLocalizations {
   /// No description provided for @measurementExportSuccess.
   ///
   /// In en, this message translates to:
-  /// **'Export ready to share.'**
+  /// **'Download started.'**
   String get measurementExportSuccess;
 
   /// No description provided for @measurementExportError.

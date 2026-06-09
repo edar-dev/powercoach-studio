@@ -604,7 +604,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportExcel => 'Export to Excel';
 
   @override
-  String get workoutExportSuccess => 'File ready to share.';
+  String get workoutExportJson => 'Export JSON';
+
+  @override
+  String get workoutImportJson => 'Import JSON';
+
+  @override
+  String get workoutImportJsonSuccess => 'Workout imported from JSON file.';
+
+  @override
+  String get workoutImportJsonError => 'Invalid or unsupported JSON file.';
+
+  @override
+  String get workoutExportSuccess => 'Download started.';
 
   @override
   String get workoutExportError => 'Export failed. Try again.';
@@ -623,7 +635,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Each training day as one table with a column per week (progression).';
 
   @override
-  String get workoutExportPdfGenerateAndShare => 'Generate and share';
+  String get workoutExportPdfGenerateAndDownload => 'Generate and download';
 
   @override
   String get workoutPdfIncludeMobility => 'Include mobility / warm-up';
@@ -665,7 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pdfEmptyValue => '—';
+  String get pdfEmptyValue => '-';
 
   @override
   String get pdfFooterDisclaimer =>
@@ -1292,7 +1304,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get measurementExportPdf => 'Export PDF';
 
   @override
-  String get measurementExportSuccess => 'Export ready to share.';
+  String get measurementExportSuccess => 'Download started.';
 
   @override
   String get measurementExportError => 'Could not export measurements.';

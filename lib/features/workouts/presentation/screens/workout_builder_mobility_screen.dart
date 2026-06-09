@@ -19,8 +19,13 @@ import '../../../../widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 import '../../data/workout_routine_storage.dart';
 import '../../data/workout_plan_repository.dart';
+import 'package:file_picker/file_picker.dart';
+
+import '../../../exercise_library/data/import_file_reader.dart';
 import '../../domain/export_excel_usecase.dart';
+import '../../domain/export_json_usecase.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../domain/workout_routine_json_codec.dart';
 import '../widgets/training_week_day_panel.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
 import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
@@ -315,7 +320,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           ],
         ),
       ),
-      primaryActionLabel: l10n.workoutExportPdfGenerateAndShare,
+      primaryActionLabel: l10n.workoutExportPdfGenerateAndDownload,
       onPrimaryAction: () {
         final layout = selected;
         final mobility = includeMobility;
@@ -349,7 +354,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final routine = _routine.copyWith(
       name: name.isEmpty ? _routine.name : name,
     );
-    await showPdfExportProgressDialog(
+    showPdfExportProgressDialog(
       context,
       message: labels.exportGenerating,
     );
@@ -363,8 +368,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         includeMobility: includeMobility,
       );
       if (!mounted) return;
-      hidePdfExportProgressDialog(context);
-      await shareExportArtifact(artifact);
+      await downloadExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -375,10 +379,85 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       );
     } catch (_) {
       if (!mounted) return;
-      hidePdfExportProgressDialog(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    } finally {
+      if (mounted) hidePdfExportProgressDialog(context);
+    }
+  }
+
+  Future<void> _exportJsonAndDownload() async {
+    final l10n = AppLocalizations.of(context);
+    final name = _routineNameController.text.trim();
+    final routine = _routine.copyWith(
+      name: name.isEmpty ? _routine.name : name,
+    );
+    try {
+      final artifact = await exportWorkoutRoutineToJson(routine);
+      if (!mounted) return;
+      await downloadExportArtifact(artifact);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  Future<void> _importJsonFromFile() async {
+    final l10n = AppLocalizations.of(context);
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: const ['json'],
+      withData: true,
+    );
+    if (result == null || result.files.isEmpty || !mounted) return;
+
+    final file = result.files.single;
+    try {
+      final String content;
+      if (file.bytes != null) {
+        content = utf8.decode(file.bytes!);
+      } else if (file.path != null) {
+        content = await readImportFileFromPath(file.path!);
+      } else {
+        throw const FormatException('empty file');
+      }
+      final imported = decodeWorkoutRoutineJson(content);
+      if (!mounted) return;
+      setState(() {
+        _routine = imported;
+        _routineNameController.text = imported.name;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutImportJsonSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutImportJsonError),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
@@ -395,7 +474,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     try {
       final artifact = await exportWorkoutRoutineToExcel(routine);
       if (!mounted) return;
-      await shareExportArtifact(artifact);
+      await downloadExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -1434,6 +1513,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 context.push('/workouts/templates');
               },
             ),
+          if (!_loading)
+            IconButton(
+              icon: const Icon(Icons.upload_file),
+              tooltip: l10n.workoutImportJson,
+              onPressed: _importJsonFromFile,
+            ),
           if (!_loading && !hideExportMenu)
             PopupMenuButton<String>(
               icon: const Icon(Icons.ios_share),
@@ -1441,6 +1526,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               onSelected: (value) {
                 if (value == 'pdf') _showPdfExportSheet();
                 if (value == 'excel') _exportExcelAndShare();
+                if (value == 'json') _exportJsonAndDownload();
                 if (value == 'hevy') _exportCurrentDayToHevy();
               },
               itemBuilder: (context) => [
@@ -1448,6 +1534,10 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 PopupMenuItem(
                   value: 'excel',
                   child: Text(l10n.workoutExportExcel),
+                ),
+                PopupMenuItem(
+                  value: 'json',
+                  child: Text(l10n.workoutExportJson),
                 ),
                 PopupMenuItem(
                   value: 'hevy',

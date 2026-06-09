@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'pdf_coach_header.dart';
 import 'pdf_export_labels.dart';
+import 'pdf_text_sanitize.dart';
 
 /// Shared visual system for PowerCoach Studio PDF exports (Stitch-aligned).
 class PdfDocumentTheme {
@@ -13,19 +14,23 @@ class PdfDocumentTheme {
   static const double titleFontSize = 20;
   static const double sectionFontSize = 13;
   static const double dayFontSize = 11;
-  static const double tableFontSize = 10;
-  static const double compactTableFontSize = 8;
-  static const double supersetFontSize = 9;
+  static const double tableFontSize = 8.5;
+  static const double tableHeaderFontSize = 7.5;
+  static const double compactTableFontSize = 7.5;
+  static const double supersetFontSize = 8;
   static const double footerFontSize = 7.5;
-  static const double cellPaddingH = 8;
-  static const double cellPaddingV = 7;
-  static const double compactCellPadding = 5;
+  static const double cellPaddingH = 6;
+  static const double cellPaddingV = 4;
+  static const double compactCellPadding = 4;
 
   static final PdfColor accent = PdfColor.fromHex('#0D59F2');
   static final PdfColor textPrimary = PdfColor.fromHex('#1F2937');
   static final PdfColor textMuted = PdfColor.fromHex('#6B7280');
   static final PdfColor tableHeaderBg = PdfColor.fromHex('#F3F4F6');
+  static final PdfColor tableRowAltBg = PdfColor.fromHex('#FAFBFC');
+  static final PdfColor exerciseGroupBg = PdfColor.fromHex('#F8FAFC');
   static final PdfColor border = PdfColor.fromHex('#E5E7EB');
+  static final PdfColor borderStrong = PdfColor.fromHex('#D1D5DB');
   static final PdfColor supersetBg = PdfColor.fromHex('#E8EEFE');
   static final PdfColor footerMuted = PdfColor.fromHex('#9CA3AF');
 
@@ -101,14 +106,14 @@ class PdfDocumentTheme {
         ),
         pw.SizedBox(height: 4),
         pw.Container(height: 1.5, color: textPrimary),
-        pw.SizedBox(height: 10),
+        pw.SizedBox(height: 6),
       ],
     );
   }
 
   static pw.Widget dayTitle(String text) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 6),
+      padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
         text.toUpperCase(),
         style: pw.TextStyle(
@@ -163,25 +168,71 @@ class PdfDocumentTheme {
     bool isHeader = false,
     bool isSuperset = false,
     bool center = false,
+    bool bold = false,
+    bool blankIfEmpty = false,
+    String emptyPlaceholder = '-',
     double fontSize = tableFontSize,
     double paddingH = cellPaddingH,
     double paddingV = cellPaddingV,
+    double? lineSpacing,
   }) {
-    final display = text.trim().isEmpty ? '—' : text;
+    final sanitized = sanitizePdfText(text.trim());
+    final display = sanitized.isEmpty
+        ? (blankIfEmpty ? '' : emptyPlaceholder)
+        : sanitized;
+    final multiline = display.contains('\n');
     return pw.Padding(
-      padding: pw.EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+      padding: pw.EdgeInsets.symmetric(
+        horizontal: paddingH,
+        vertical: multiline ? paddingV + 1 : paddingV,
+      ),
       child: pw.Align(
         alignment: center ? pw.Alignment.center : pw.Alignment.centerLeft,
         child: pw.Text(
-          isHeader ? display.toUpperCase() : display,
+          isHeader ? display : display,
           style: pw.TextStyle(
-            fontSize: isSuperset ? supersetFontSize : fontSize,
-            fontWeight: (isHeader || isSuperset) ? pw.FontWeight.bold : null,
+            fontSize: isHeader
+                ? tableHeaderFontSize
+                : (isSuperset ? supersetFontSize : fontSize),
+            fontWeight: (isHeader || isSuperset || bold)
+                ? pw.FontWeight.bold
+                : null,
             color: isHeader ? textMuted : textPrimary,
-            letterSpacing: isHeader ? 0.4 : 0,
+            letterSpacing: isHeader ? 0.2 : 0,
+            lineSpacing: lineSpacing ?? (multiline ? 1.5 : 0),
           ),
           textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
         ),
+      ),
+    );
+  }
+
+  static pw.Widget programmingExerciseCell(
+    String text, {
+    required bool highlight,
+    String emptyPlaceholder = '-',
+  }) {
+    if (!highlight) {
+      return tableCell(
+        text,
+        bold: true,
+        blankIfEmpty: text.trim().isEmpty,
+        emptyPlaceholder: emptyPlaceholder,
+      );
+    }
+
+    return pw.Container(
+      decoration: pw.BoxDecoration(
+        color: exerciseGroupBg,
+        border: pw.Border(
+          left: pw.BorderSide(color: accent, width: 2.5),
+        ),
+      ),
+      child: tableCell(
+        text,
+        bold: true,
+        blankIfEmpty: text.trim().isEmpty,
+        emptyPlaceholder: emptyPlaceholder,
       ),
     );
   }
@@ -191,7 +242,7 @@ class PdfDocumentTheme {
     bool isHeader = false,
     PdfExportLabels? labels,
   }) {
-    final empty = labels?.emptyValue ?? '—';
+    final empty = labels?.emptyValue ?? '-';
     final display = text.trim().isEmpty ? empty : text;
     return tableCell(
       display,
@@ -206,11 +257,11 @@ class PdfDocumentTheme {
     return pw.TableRow(
       decoration: pw.BoxDecoration(color: tableHeaderBg),
       children: [
-        tableCell(labels.colExercise, isHeader: true),
-        tableCell(labels.colSets, isHeader: true, center: true),
-        tableCell(labels.colReps, isHeader: true, center: true),
-        tableCell(labels.colLoadRpe, isHeader: true, center: true),
-        tableCell(labels.colNotes, isHeader: true),
+        tableCell(labels.colExercise, isHeader: true, paddingV: 5),
+        tableCell(labels.colSets, isHeader: true, center: true, paddingV: 5),
+        tableCell(labels.colReps, isHeader: true, center: true, paddingV: 5),
+        tableCell(labels.colLoadRpe, isHeader: true, center: true, paddingV: 5),
+        tableCell(labels.colNotes, isHeader: true, paddingV: 5),
       ],
     );
   }

@@ -5,6 +5,8 @@ import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
+import '../../../core/pdf/pdf_programming_rows.dart';
+import '../../../core/pdf/pdf_text_sanitize.dart';
 import '../data/workout_routine_model.dart';
 
 /// PDF programming layout: per-week sections vs per-day progression columns.
@@ -42,7 +44,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
           if (coachHeader != null && coachHeader.hasContent)
             PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
           PdfDocumentTheme.buildDocumentTitle(routine.name),
-          pw.SizedBox(height: 14),
+          pw.SizedBox(height: 10),
         ],
       ),
       footer: (context) =>
@@ -94,7 +96,7 @@ List<pw.Widget> _mobilityWidgets(WorkoutRoutine routine, PdfExportLabels labels)
             (m) => pw.Padding(
               padding: const pw.EdgeInsets.only(bottom: 3),
               child: pw.Text(
-                '${m.title}: ${m.subtitle}',
+                '${sanitizePdfText(m.title)}: ${sanitizePdfText(m.subtitle)}',
                 style: pw.TextStyle(
                   fontSize: PdfDocumentTheme.tableFontSize,
                   color: PdfDocumentTheme.textPrimary,
@@ -154,11 +156,11 @@ List<pw.Widget> _canonicalProgrammingWidgets(
           pw.Table(
             border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),
             columnWidths: {
-              0: const pw.FlexColumnWidth(2.5),
-              1: const pw.FlexColumnWidth(0.55),
-              2: const pw.FlexColumnWidth(0.75),
-              3: const pw.FlexColumnWidth(0.85),
-              4: const pw.FlexColumnWidth(1.6),
+              0: const pw.FlexColumnWidth(2.2),
+              1: const pw.FlexColumnWidth(0.38),
+              2: const pw.FlexColumnWidth(0.55),
+              3: const pw.FlexColumnWidth(0.82),
+              4: const pw.FlexColumnWidth(1.55),
             },
             children: [
               PdfDocumentTheme.programmingHeaderRow(labels),
@@ -167,7 +169,7 @@ List<pw.Widget> _canonicalProgrammingWidgets(
               }),
             ],
           ),
-          pw.SizedBox(height: 14),
+          pw.SizedBox(height: 10),
         ];
       }),
       pw.SizedBox(height: 6),
@@ -196,41 +198,47 @@ Iterable<pw.TableRow> _tableRowsForBlock(Object item, PdfExportLabels labels) {
 }
 
 Iterable<pw.TableRow> _exerciseRows(Exercise e, PdfExportLabels labels) {
-  final details = e.effectiveSetDetails;
-  if (details.length > 1) {
-    return details.asMap().entries.map((entry) {
-      final i = entry.key;
-      final s = entry.value;
-      return pw.TableRow(
-        children: [
-          PdfDocumentTheme.tableCell(i == 0 ? e.name : ''),
-          PdfDocumentTheme.tableCell(i == 0 ? '${details.length}' : '', center: true),
-          PdfDocumentTheme.tableCell(
-            s.displayText.isNotEmpty ? s.displayText : s.reps,
-            center: true,
-          ),
-          PdfDocumentTheme.tableCell(
-            s.displayText.isNotEmpty ? '' : s.rpe,
-            center: true,
-          ),
-          PdfDocumentTheme.tableCell(
-            s.note.isNotEmpty ? s.note : (i == 0 ? e.note : ''),
-          ),
-        ],
-      );
-    });
-  }
-  return [
-    pw.TableRow(
+  final rows = buildProgrammingSetRows(e);
+  return rows.map((row) {
+    return pw.TableRow(
+      decoration: pw.BoxDecoration(
+        color: row.isGrouped ? PdfDocumentTheme.exerciseGroupBg : null,
+        border: pw.Border(
+          bottom: pw.BorderSide(color: PdfDocumentTheme.border, width: 0.4),
+        ),
+      ),
       children: [
-        PdfDocumentTheme.tableCell(e.name),
-        PdfDocumentTheme.tableCell(e.sets, center: true),
-        PdfDocumentTheme.tableCell(e.reps, center: true),
-        PdfDocumentTheme.tableCell(e.rpe, center: true),
-        PdfDocumentTheme.tableCell(e.note),
+        PdfDocumentTheme.programmingExerciseCell(
+          row.exercise,
+          highlight: row.isGrouped,
+          emptyPlaceholder: labels.emptyValue,
+        ),
+        PdfDocumentTheme.tableCell(
+          row.sets,
+          center: true,
+          blankIfEmpty: row.sets.isEmpty,
+          emptyPlaceholder: labels.emptyValue,
+        ),
+        PdfDocumentTheme.tableCell(
+          row.reps,
+          center: true,
+          blankIfEmpty: row.reps.isEmpty,
+          emptyPlaceholder: labels.emptyValue,
+        ),
+        PdfDocumentTheme.tableCell(
+          row.load,
+          center: true,
+          blankIfEmpty: row.load.isEmpty,
+          emptyPlaceholder: labels.emptyValue,
+        ),
+        PdfDocumentTheme.tableCell(
+          row.notes,
+          blankIfEmpty: row.notes.isEmpty,
+          emptyPlaceholder: labels.emptyValue,
+        ),
       ],
-    ),
-  ];
+    );
+  });
 }
 
 int _maxDaySlotCount(List<Week> weeks) {
