@@ -62,7 +62,12 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 
 | Secret | Value |
 |--------|-------|
-| `VERCEL_TOKEN` | [Vercel account token](https://vercel.com/account/tokens) |
+| `VERCEL_TOKEN` | **Classic** personal access token from [Vercel account tokens](https://vercel.com/account/tokens) (OAuth/CLI session tokens do not work in CI) |
+| `SUPABASE_URL` | Same value as Vercel Production env |
+| `SUPABASE_ANON_KEY` | Same value as Vercel Production env |
+| `GYMBLOG_API_URL` | Same value as Vercel Production env |
+| `SENTRY_DSN` | Optional |
+| `SENTRY_ENVIRONMENT` | e.g. `production` |
 | `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
 | `VERCEL_PROJECT_ID` | Project ID from `.vercel/project.json` |
 

@@ -41,11 +41,14 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@54.10.3
 
-      - name: Pull Vercel production env
-        run: vercel pull --yes --environment=production
-
       - name: Build Flutter web
         run: bash scripts/ci-build-web.sh
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          GYMBLOG_API_URL: ${{ secrets.GYMBLOG_API_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT || 'production' }}
 
       - name: Package prebuilt output
         run: bash scripts/package-vercel-prebuilt.sh

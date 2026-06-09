@@ -4,7 +4,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-if [[ -f .vercel/.env.production.local ]]; then
+if [[ -z "${SUPABASE_URL:-}" && -f .vercel/.env.production.local ]]; then
   echo "Loading production env from vercel pull..."
   set -a
   # shellcheck disable=SC1091
