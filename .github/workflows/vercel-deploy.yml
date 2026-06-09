@@ -1,0 +1,54 @@
+name: Vercel Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - feat/vercel-web-deploy
+  workflow_dispatch:
+
+concurrency:
+  group: vercel-production-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+  FLUTTER_VERSION: "3.35.6"
+
+jobs:
+  deploy-production:
+    name: Build and deploy (prebuilt)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@54.10.3
+
+      - name: Pull Vercel production env
+        run: vercel pull --yes --environment=production
+
+      - name: Build Flutter web
+        run: bash scripts/ci-build-web.sh
+
+      - name: Package prebuilt output
+        run: bash scripts/package-vercel-prebuilt.sh
+
+      - name: Deploy prebuilt to Vercel
+        run: vercel deploy --prebuilt --prod --yes

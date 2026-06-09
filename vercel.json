@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "installCommand": "bash -lc \"sed -i 's/\\r$//' scripts/vercel-install.sh scripts/vercel-build.sh && bash scripts/vercel-install.sh\"",
   "buildCommand": "bash scripts/vercel-build.sh",
   "outputDirectory": "build/web",

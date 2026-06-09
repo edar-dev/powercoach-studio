@@ -48,7 +48,25 @@ Warm deploys are faster because:
 
 The compile step (`flutter build web`) still runs every time — that is expected for Flutter web.
 
-**Optional (fastest):** build in GitHub Actions with `subosito/flutter-action` (cached) and deploy with `vercel deploy --prebuilt` so Vercel only uploads static files (~30 s).
+### GitHub Actions (recommended)
+
+Production deploys run via `.github/workflows/vercel-deploy.yml`:
+
+1. `subosito/flutter-action` builds Flutter web (cached SDK + pub)
+2. `scripts/package-vercel-prebuilt.sh` creates `.vercel/output`
+3. `vercel deploy --prebuilt --prod` uploads static files only (~30–60 s on Vercel)
+
+Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.json`) to avoid double builds.
+
+**Required GitHub secrets** (Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+|--------|-------|
+| `VERCEL_TOKEN` | [Vercel account token](https://vercel.com/account/tokens) |
+| `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
+| `VERCEL_PROJECT_ID` | Project ID from `.vercel/project.json` |
+
+Manual CLI deploy still works with `npx vercel deploy --prod`.
 
 ## Web limitations
 
