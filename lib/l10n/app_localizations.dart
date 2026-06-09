@@ -1256,6 +1256,114 @@ abstract class AppLocalizations {
   /// **'Generate and share'**
   String get workoutExportPdfGenerateAndShare;
 
+  /// No description provided for @workoutPdfIncludeMobility.
+  ///
+  /// In en, this message translates to:
+  /// **'Include mobility / warm-up'**
+  String get workoutPdfIncludeMobility;
+
+  /// No description provided for @workoutPdfSheetSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the document layout. The PDF uses your coach header and print-friendly tables.'**
+  String get workoutPdfSheetSubtitle;
+
+  /// No description provided for @pdfBrandName.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio'**
+  String get pdfBrandName;
+
+  /// No description provided for @pdfCoachPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach:'**
+  String get pdfCoachPrefix;
+
+  /// No description provided for @pdfColExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get pdfColExercise;
+
+  /// No description provided for @pdfColSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets'**
+  String get pdfColSets;
+
+  /// No description provided for @pdfColReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get pdfColReps;
+
+  /// No description provided for @pdfColLoadRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'Load/RPE'**
+  String get pdfColLoadRpe;
+
+  /// No description provided for @pdfColNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get pdfColNotes;
+
+  /// No description provided for @pdfMobilitySection.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility'**
+  String get pdfMobilitySection;
+
+  /// No description provided for @pdfSuperset.
+  ///
+  /// In en, this message translates to:
+  /// **'Superset'**
+  String get pdfSuperset;
+
+  /// No description provided for @pdfDayNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Day {day}'**
+  String pdfDayNumber(int day);
+
+  /// No description provided for @pdfEmptyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get pdfEmptyValue;
+
+  /// No description provided for @pdfFooterDisclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.'**
+  String get pdfFooterDisclaimer;
+
+  /// No description provided for @pdfPageOf.
+  ///
+  /// In en, this message translates to:
+  /// **'Page {current} of {total}'**
+  String pdfPageOf(int current, int total);
+
+  /// No description provided for @pdfGeneratedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated on {date}'**
+  String pdfGeneratedOn(String date);
+
+  /// No description provided for @pdfExportGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Generating PDF…'**
+  String get pdfExportGenerating;
+
+  /// No description provided for @pdfMeasurementRecordCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} records'**
+  String pdfMeasurementRecordCount(int count);
+
   /// No description provided for @workoutShare.
   ///
   /// In en, this message translates to:

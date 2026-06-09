@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
+import '../../../../core/pdf/pdf_coach_header.dart';
+import '../../../../core/pdf/pdf_export_labels_l10n.dart';
+import '../../../../core/storage/local_user_profile_store.dart';
+import '../../../../widgets/pdf_export_progress_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
@@ -257,6 +262,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   void _showPdfExportSheet() {
     final l10n = AppLocalizations.of(context);
     var selected = WorkoutPdfLayout.canonical;
+    var includeMobility = _routine.mobilityItems.isNotEmpty;
     showAppBottomSheet<void>(
       context: context,
       title: l10n.workoutExportPdfSheetTitle,
@@ -264,6 +270,13 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         builder: (ctx, setModalState) => Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text(
+              l10n.workoutPdfSheetSubtitle,
+              style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
+                color: Theme.of(ctx).colorScheme.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 16),
             SegmentedButton<WorkoutPdfLayout>(
               segments: [
                 ButtonSegment<WorkoutPdfLayout>(
@@ -290,32 +303,67 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   ),
                 ),
               ),
+            if (_routine.mobilityItems.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(l10n.workoutPdfIncludeMobility),
+                value: includeMobility,
+                onChanged: (v) => setModalState(() => includeMobility = v),
+              ),
+            ],
           ],
         ),
       ),
       primaryActionLabel: l10n.workoutExportPdfGenerateAndShare,
       onPrimaryAction: () {
         final layout = selected;
+        final mobility = includeMobility;
         Navigator.of(context).pop();
-        _exportPdfAndShare(layout);
+        _exportPdfAndShare(layout, includeMobility: mobility);
       },
     );
   }
 
-  Future<void> _exportPdfAndShare(WorkoutPdfLayout layout) async {
+  Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
+    final labels = AppLocalizations.of(context).toPdfExportLabels();
+    final customer = await _loadCustomerIfNeeded();
+    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
+    final profile = await LocalUserProfileStore.instance.read(uid);
+    final email = Supabase.instance.client.auth.currentUser?.email;
+    return buildPdfCoachHeader(
+      labels: labels,
+      customer: customer,
+      profile: profile,
+      authEmail: email,
+    );
+  }
+
+  Future<void> _exportPdfAndShare(
+    WorkoutPdfLayout layout, {
+    required bool includeMobility,
+  }) async {
     final l10n = AppLocalizations.of(context);
+    final labels = l10n.toPdfExportLabels();
     final name = _routineNameController.text.trim();
     final routine = _routine.copyWith(
       name: name.isEmpty ? _routine.name : name,
     );
+    await showPdfExportProgressDialog(
+      context,
+      message: labels.exportGenerating,
+    );
     try {
-      final customer = await _loadCustomerIfNeeded();
+      final coachHeader = await _resolvePdfCoachHeader();
       final path = await exportWorkoutRoutineToPdf(
         routine,
-        customer: customer,
+        labels: labels,
+        coachHeader: coachHeader,
         layout: layout,
+        includeMobility: includeMobility,
       );
       if (!mounted) return;
+      hidePdfExportProgressDialog(context);
       await Share.shareXFiles([XFile(path)]);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -327,6 +375,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       );
     } catch (_) {
       if (!mounted) return;
+      hidePdfExportProgressDialog(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.workoutExportError),
@@ -1275,7 +1324,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           child: ReorderableListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             buildDefaultDragHandles: false,
-            onReorderItem: _reorderMobility,
+            onReorder: (oldIndex, newIndex) {
+              var target = newIndex;
+              if (target > oldIndex) target--;
+              _reorderMobility(oldIndex, target);
+            },
             itemCount: _mobilityItemsForSelectedSection.length,
             itemBuilder: (context, index) {
               final item = _mobilityItemsForSelectedSection[index];

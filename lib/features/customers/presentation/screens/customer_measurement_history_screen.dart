@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/pdf/pdf_coach_header.dart';
+import '../../../../core/pdf/pdf_export_labels_l10n.dart';
+import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
+import '../../../../widgets/pdf_export_progress_dialog.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer_measurement.dart';
 import '../../domain/export_measurement_csv_usecase.dart';
@@ -74,16 +79,32 @@ class _CustomerMeasurementHistoryScreenState
     }
   }
 
-  Future<void> _shareExport(Future<String> Function() export) async {
+  Future<void> _shareExport(
+    Future<String> Function() export, {
+    bool showProgress = false,
+  }) async {
     final l10n = AppLocalizations.of(context);
+    final labels = l10n.toPdfExportLabels();
+    if (showProgress) {
+      await showPdfExportProgressDialog(
+        context,
+        message: labels.exportGenerating,
+      );
+    }
     try {
       final path = await export();
+      if (showProgress && mounted) {
+        hidePdfExportProgressDialog(context);
+      }
       await Share.shareXFiles([XFile(path)]);
       if (!mounted) {
         return;
       }
       showAppSnackBar(context, content: Text(l10n.measurementExportSuccess));
     } catch (error, stackTrace) {
+      if (showProgress && mounted) {
+        hidePdfExportProgressDialog(context);
+      }
       await Sentry.captureException(error, stackTrace: stackTrace);
       if (!mounted) {
         return;
@@ -94,6 +115,18 @@ class _CustomerMeasurementHistoryScreenState
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
       );
     }
+  }
+
+  Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
+    final labels = AppLocalizations.of(context).toPdfExportLabels();
+    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
+    final profile = await LocalUserProfileStore.instance.read(uid);
+    final email = Supabase.instance.client.auth.currentUser?.email;
+    return buildPdfCoachHeader(
+      labels: labels,
+      profile: profile,
+      authEmail: email,
+    );
   }
 
   @override
@@ -121,11 +154,18 @@ class _CustomerMeasurementHistoryScreenState
                     () => exportMeasurementsToCsv(_measurements, baseName),
                   );
                 } else if (value == 'pdf') {
+                  final labels = l10n.toPdfExportLabels();
                   _shareExport(
-                    () => exportMeasurementsToPdf(
-                      _measurements,
-                      l10n.measurementHistoryExportPdfTitle(baseName),
-                    ),
+                    showProgress: true,
+                    () async {
+                      final header = await _resolvePdfCoachHeader();
+                      return exportMeasurementsToPdf(
+                        _measurements,
+                        l10n.measurementHistoryExportPdfTitle(baseName),
+                        labels: labels,
+                        coachHeader: header,
+                      );
+                    },
                   );
                 }
               },

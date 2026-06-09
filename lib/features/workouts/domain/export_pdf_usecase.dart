@@ -4,8 +4,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/pdf/pdf_coach_header.dart';
+import '../../../core/pdf/pdf_document_theme.dart';
+import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/workout_routine_model.dart';
-import '../../customers/data/models/customer.dart';
 
 /// PDF programming layout: per-week sections vs per-day progression columns.
 enum WorkoutPdfLayout {
@@ -16,74 +18,39 @@ enum WorkoutPdfLayout {
   compact,
 }
 
-// PDF layout aligned to Stitch prototype "Generated Screen" (project 15732533611981325178, screen 80e27a86da484d75b1dc9481a2d61b1c).
-// design/stitch-assets/generated-pdf-screen.html | .png
-const double _pdfHeaderFontSize = 10;
-const double _pdfTitleFontSize = 18;
-const double _pdfSectionFontSize = 14;
-const double _pdfDayFontSize = 12;
-const double _pdfTableFontSize = 10;
-const double _pdfSupersetFontSize = 9;
-const double _pdfFooterFontSize = 8;
-const double _pdfCellPadding = 8;
-const double _pdfCompactTableFontSize = 8;
-const double _pdfCompactCellPadding = 5;
-final PdfColor _pdfTableHeaderBg = PdfColor.fromHex('#f3f4f6');
-final PdfColor _pdfBorder = PdfColor.fromHex('#e5e7eb');
-final PdfColor _pdfSupersetBg = PdfColor.fromHex('#f9fafb');
-final PdfColor _pdfFooterMuted = PdfColor.fromHex('#9ca3af');
-
-/// Generates a PDF from [WorkoutRoutine]. Optionally uses [Customer] pdfHeader when [Customer.useCustomPdfHeader] is true.
-/// [layout] selects canonical (per week) or compact (per day slot, weeks as columns).
+/// Generates a PDF from [WorkoutRoutine].
 /// Returns the path to the saved file in the temp directory for sharing.
 Future<String> exportWorkoutRoutineToPdf(
   WorkoutRoutine routine, {
-  Customer? customer,
+  required PdfExportLabels labels,
+  PdfCoachHeaderInfo? coachHeader,
   WorkoutPdfLayout layout = WorkoutPdfLayout.canonical,
+  bool includeMobility = true,
 }) async {
+  final generatedAt = DateTime.now();
   final doc = pw.Document();
-  final hasCustomHeader = customer != null &&
-      customer.useCustomPdfHeader &&
-      (customer.pdfHeader?.trim().isNotEmpty ?? false);
-  final headerText = hasCustomHeader ? customer.pdfHeader!.trim() : null;
 
   final programming = layout == WorkoutPdfLayout.canonical
-      ? _canonicalProgrammingWidgets(routine)
-      : _compactProgrammingWidgets(routine);
+      ? _canonicalProgrammingWidgets(routine, labels)
+      : _compactProgrammingWidgets(routine, labels);
 
   doc.addPage(
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(24),
+      margin: const pw.EdgeInsets.all(PdfDocumentTheme.pageMargin),
       header: (context) => pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
         children: [
-          if (headerText != null)
-            pw.Text(
-              headerText,
-              style: pw.TextStyle(fontSize: _pdfHeaderFontSize, color: _pdfFooterMuted),
-            ),
-          if (headerText != null) pw.SizedBox(height: 4),
-          pw.Text(
-            routine.name,
-            style: pw.TextStyle(
-              fontSize: _pdfTitleFontSize,
-              fontWeight: pw.FontWeight.bold,
-            ),
-          ),
-          pw.SizedBox(height: 12),
+          if (coachHeader != null && coachHeader.hasContent)
+            PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
+          PdfDocumentTheme.buildDocumentTitle(routine.name),
+          pw.SizedBox(height: 14),
         ],
       ),
-      footer: (context) => pw.Padding(
-        padding: const pw.EdgeInsets.only(top: 24),
-        child: pw.Text(
-          'This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.',
-          style: pw.TextStyle(fontSize: _pdfFooterFontSize, color: _pdfFooterMuted),
-          textAlign: pw.TextAlign.center,
-        ),
-      ),
+      footer: (context) =>
+          PdfDocumentTheme.buildPageFooter(context, labels, generatedAt),
       build: (context) => [
-        ..._mobilityWidgets(routine),
+        if (includeMobility) ..._mobilityWidgets(routine, labels),
         ...programming,
       ],
     ),
@@ -93,167 +60,180 @@ Future<String> exportWorkoutRoutineToPdf(
   final dir = await getTemporaryDirectory();
   final sanitizedName = routine.name.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
   final sanitized = sanitizedName.isEmpty ? 'workout_plan' : sanitizedName;
-  final file = File('${dir.path}/${sanitized}_${DateTime.now().millisecondsSinceEpoch}.pdf');
+  final file = File(
+    '${dir.path}/${sanitized}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+  );
   await file.writeAsBytes(bytes);
   return file.path;
 }
 
-List<pw.Widget> _mobilityWidgets(WorkoutRoutine routine) {
+List<pw.Widget> _mobilityWidgets(WorkoutRoutine routine, PdfExportLabels labels) {
   if (routine.mobilityItems.isEmpty) return [];
-  return [
-    ...routine.mobilitySections.expand((section) {
-      final items = routine.mobilityItems.where((m) => m.sectionId == section.id).toList();
-      if (items.isEmpty) return <pw.Widget>[];
-      return [
-        pw.Text(
-          section.name.isNotEmpty ? section.name : 'Mobility',
-          style: pw.TextStyle(
-            fontSize: _pdfSectionFontSize,
-            fontWeight: pw.FontWeight.bold,
-          ),
-        ),
-        pw.SizedBox(height: 8),
-        ...items.map(
-          (m) => pw.Padding(
-            padding: const pw.EdgeInsets.only(bottom: 2),
-            child: pw.Text(
-              '${m.title}: ${m.subtitle}',
-              style: pw.TextStyle(fontSize: _pdfTableFontSize),
+
+  final sections = <pw.Widget>[];
+  for (final section in routine.mobilitySections) {
+    final items =
+        routine.mobilityItems.where((m) => m.sectionId == section.id).toList();
+    if (items.isEmpty) continue;
+
+    final sectionName = section.name.trim().isNotEmpty
+        ? section.name.trim()
+        : labels.mobilityFallback;
+
+    sections.add(
+      pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Text(
+            sectionName,
+            style: pw.TextStyle(
+              fontSize: PdfDocumentTheme.dayFontSize,
+              fontWeight: pw.FontWeight.bold,
+              color: PdfDocumentTheme.textPrimary,
             ),
           ),
-        ),
-        pw.SizedBox(height: 12),
-      ];
-    }),
-    pw.SizedBox(height: 16),
+          pw.SizedBox(height: 6),
+          ...items.map(
+            (m) => pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 3),
+              child: pw.Text(
+                '${m.title}: ${m.subtitle}',
+                style: pw.TextStyle(
+                  fontSize: PdfDocumentTheme.tableFontSize,
+                  color: PdfDocumentTheme.textPrimary,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  if (sections.isEmpty) return [];
+
+  final rows = <pw.Widget>[];
+  for (var i = 0; i < sections.length; i += 2) {
+    rows.add(
+      pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          pw.Expanded(child: sections[i]),
+          if (i + 1 < sections.length) ...[
+            pw.SizedBox(width: 16),
+            pw.Expanded(child: sections[i + 1]),
+          ] else
+            pw.Spacer(),
+        ],
+      ),
+    );
+    rows.add(pw.SizedBox(height: 12));
+  }
+
+  return [
+    PdfDocumentTheme.sectionTitle(labels.mobilityFallback),
+    ...rows,
+    pw.SizedBox(height: 8),
   ];
 }
 
-List<pw.Widget> _canonicalProgrammingWidgets(WorkoutRoutine routine) {
+List<pw.Widget> _canonicalProgrammingWidgets(
+  WorkoutRoutine routine,
+  PdfExportLabels labels,
+) {
   return routine.weeks.expand((week) {
+    final weekTitle = week.name.trim().isNotEmpty
+        ? week.name.trim()
+        : 'Week';
     return [
-      pw.Text(
-        week.name,
-        style: pw.TextStyle(
-          fontSize: _pdfSectionFontSize,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-      pw.SizedBox(height: 8),
-      ...week.days.expand((day) {
+      PdfDocumentTheme.sectionTitle(weekTitle),
+      ...week.days.asMap().entries.expand((entry) {
+        final day = entry.value;
+        final dayTitle = day.name.trim().isNotEmpty
+            ? day.name.trim()
+            : labels.dayNumber(entry.key + 1);
         return [
-          pw.Text(
-            day.name,
-            style: pw.TextStyle(
-              fontSize: _pdfDayFontSize,
-              fontWeight: pw.FontWeight.bold,
-            ),
-          ),
-          pw.SizedBox(height: 4),
+          PdfDocumentTheme.dayTitle(dayTitle),
           pw.Table(
-            border: pw.TableBorder.all(color: _pdfBorder),
+            border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),
             columnWidths: {
               0: const pw.FlexColumnWidth(2.5),
-              1: const pw.FlexColumnWidth(0.6),
-              2: const pw.FlexColumnWidth(0.8),
-              3: const pw.FlexColumnWidth(0.8),
-              4: const pw.FlexColumnWidth(1.5),
+              1: const pw.FlexColumnWidth(0.55),
+              2: const pw.FlexColumnWidth(0.75),
+              3: const pw.FlexColumnWidth(0.85),
+              4: const pw.FlexColumnWidth(1.6),
             },
             children: [
-              pw.TableRow(
-                decoration: pw.BoxDecoration(
-                  color: _pdfTableHeaderBg,
-                ),
-                children: [
-                  _cell('Exercise', isHeader: true),
-                  _cell('Sets', isHeader: true),
-                  _cell('Reps', isHeader: true),
-                  _cell('Load/RPE', isHeader: true),
-                  _cell('Notes', isHeader: true),
-                ],
-              ),
+              PdfDocumentTheme.programmingHeaderRow(labels),
               ...partitionExercisesBySuperset(day.exercises).expand((item) {
-                if (item is Exercise) {
-                  final e = item;
-                  final details = e.effectiveSetDetails;
-                  if (details.length > 1) {
-                    return details.asMap().entries.map((entry) {
-                      final i = entry.key;
-                      final s = entry.value;
-                      return pw.TableRow(
-                        children: [
-                          _cell(i == 0 ? e.name : ''),
-                          _cell(i == 0 ? '${details.length}' : ''),
-                          _cell(s.displayText.isNotEmpty ? s.displayText : s.reps),
-                          _cell(s.displayText.isNotEmpty ? '' : s.rpe),
-                          _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
-                        ],
-                      );
-                    });
-                  }
-                  return [
-                    pw.TableRow(
-                      children: [
-                        _cell(e.name),
-                        _cell(e.sets),
-                        _cell(e.reps),
-                        _cell(e.rpe),
-                        _cell(e.note),
-                      ],
-                    ),
-                  ];
-                }
-                final group = item as List<Exercise>;
-                return [
-                  pw.TableRow(
-                    decoration: pw.BoxDecoration(color: _pdfSupersetBg),
-                    children: [
-                      _cell('Superset', isSupersetHeader: true),
-                      _cell(''),
-                      _cell(''),
-                      _cell(''),
-                      _cell(''),
-                    ],
-                  ),
-                  ...group.expand((e) {
-                    final details = e.effectiveSetDetails;
-                    if (details.length > 1) {
-                      return details.asMap().entries.map((entry) {
-                        final i = entry.key;
-                        final s = entry.value;
-                        return pw.TableRow(
-                          children: [
-                            _cell(i == 0 ? e.name : ''),
-                            _cell(i == 0 ? '${details.length}' : ''),
-                            _cell(s.displayText.isNotEmpty ? s.displayText : s.reps),
-                            _cell(s.displayText.isNotEmpty ? '' : s.rpe),
-                            _cell(s.note.isNotEmpty ? s.note : (i == 0 ? e.note : '')),
-                          ],
-                        );
-                      });
-                    }
-                    return [
-                      pw.TableRow(
-                        children: [
-                          _cell(e.name),
-                          _cell(e.sets),
-                          _cell(e.reps),
-                          _cell(e.rpe),
-                          _cell(e.note),
-                        ],
-                      ),
-                    ];
-                  }),
-                ];
+                return _tableRowsForBlock(item, labels);
               }),
             ],
           ),
-          pw.SizedBox(height: 12),
+          pw.SizedBox(height: 14),
         ];
       }),
-      pw.SizedBox(height: 12),
+      pw.SizedBox(height: 6),
     ];
   }).toList();
+}
+
+Iterable<pw.TableRow> _tableRowsForBlock(Object item, PdfExportLabels labels) {
+  if (item is Exercise) {
+    return _exerciseRows(item, labels);
+  }
+  final group = item as List<Exercise>;
+  return [
+    pw.TableRow(
+      decoration: pw.BoxDecoration(color: PdfDocumentTheme.supersetBg),
+      children: [
+        PdfDocumentTheme.tableCell(labels.superset, isSuperset: true),
+        PdfDocumentTheme.tableCell('', isSuperset: true),
+        PdfDocumentTheme.tableCell('', isSuperset: true),
+        PdfDocumentTheme.tableCell('', isSuperset: true),
+        PdfDocumentTheme.tableCell('', isSuperset: true),
+      ],
+    ),
+    ...group.expand((e) => _exerciseRows(e, labels)),
+  ];
+}
+
+Iterable<pw.TableRow> _exerciseRows(Exercise e, PdfExportLabels labels) {
+  final details = e.effectiveSetDetails;
+  if (details.length > 1) {
+    return details.asMap().entries.map((entry) {
+      final i = entry.key;
+      final s = entry.value;
+      return pw.TableRow(
+        children: [
+          PdfDocumentTheme.tableCell(i == 0 ? e.name : ''),
+          PdfDocumentTheme.tableCell(i == 0 ? '${details.length}' : '', center: true),
+          PdfDocumentTheme.tableCell(
+            s.displayText.isNotEmpty ? s.displayText : s.reps,
+            center: true,
+          ),
+          PdfDocumentTheme.tableCell(
+            s.displayText.isNotEmpty ? '' : s.rpe,
+            center: true,
+          ),
+          PdfDocumentTheme.tableCell(
+            s.note.isNotEmpty ? s.note : (i == 0 ? e.note : ''),
+          ),
+        ],
+      );
+    });
+  }
+  return [
+    pw.TableRow(
+      children: [
+        PdfDocumentTheme.tableCell(e.name),
+        PdfDocumentTheme.tableCell(e.sets, center: true),
+        PdfDocumentTheme.tableCell(e.reps, center: true),
+        PdfDocumentTheme.tableCell(e.rpe, center: true),
+        PdfDocumentTheme.tableCell(e.note),
+      ],
+    ),
+  ];
 }
 
 int _maxDaySlotCount(List<Week> weeks) {
@@ -269,7 +249,7 @@ List<Object> _blocksForDay(Day day) => partitionExercisesBySuperset(day.exercise
 String _blockRowLabel(Object item) {
   if (item is Exercise) return item.name;
   final g = item as List<Exercise>;
-  if (g.isEmpty) return 'Superset';
+  if (g.isEmpty) return '';
   if (g.length == 1) return g.first.name;
   return g.map((e) => e.name).join(' / ');
 }
@@ -327,7 +307,10 @@ String _weekColumnHeader(Week week, int index) {
   return 'W${index + 1}';
 }
 
-List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
+List<pw.Widget> _compactProgrammingWidgets(
+  WorkoutRoutine routine,
+  PdfExportLabels labels,
+) {
   final weeks = routine.weeks;
   if (weeks.isEmpty) return [];
 
@@ -344,19 +327,10 @@ List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
           if (name.isNotEmpty) return name;
         }
       }
-      return 'Day ${d + 1}';
+      return labels.dayNumber(d + 1);
     }();
 
-    out.add(
-      pw.Text(
-        dayTitle,
-        style: pw.TextStyle(
-          fontSize: _pdfSectionFontSize,
-          fontWeight: pw.FontWeight.bold,
-        ),
-      ),
-    );
-    out.add(pw.SizedBox(height: 8));
+    out.add(PdfDocumentTheme.sectionTitle(dayTitle));
 
     var maxRows = 0;
     for (final w in weeks) {
@@ -378,15 +352,19 @@ List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
     }
 
     final headerCells = <pw.Widget>[
-      _compactCell('Exercise', isHeader: true),
+      PdfDocumentTheme.compactCell(labels.colExercise, isHeader: true, labels: labels),
       ...weeks.asMap().entries.map(
-            (e) => _compactCell(_weekColumnHeader(e.value, e.key), isHeader: true),
+            (e) => PdfDocumentTheme.compactCell(
+              _weekColumnHeader(e.value, e.key),
+              isHeader: true,
+              labels: labels,
+            ),
           ),
     ];
 
     final tableRows = <pw.TableRow>[
       pw.TableRow(
-        decoration: pw.BoxDecoration(color: _pdfTableHeaderBg),
+        decoration: pw.BoxDecoration(color: PdfDocumentTheme.tableHeaderBg),
         children: headerCells,
       ),
     ];
@@ -401,19 +379,22 @@ List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
           break;
         }
       }
-      if (label.isEmpty) label = '—';
+      if (label.isEmpty) label = labels.emptyValue;
 
       final cells = <pw.Widget>[
-        _compactCell(label),
+        PdfDocumentTheme.compactCell(label, labels: labels),
         ...weeks.map((w) {
           if (d >= w.days.length) {
-            return _compactCell('—');
+            return PdfDocumentTheme.compactCell(labels.emptyValue, labels: labels);
           }
           final blocks = _blocksForDay(w.days[d]);
           if (r >= blocks.length) {
-            return _compactCell('');
+            return PdfDocumentTheme.compactCell('', labels: labels);
           }
-          return _compactCell(_blockPrescriptionCompact(blocks[r]));
+          return PdfDocumentTheme.compactCell(
+            _blockPrescriptionCompact(blocks[r]),
+            labels: labels,
+          );
         }),
       ];
       tableRows.add(pw.TableRow(children: cells));
@@ -421,7 +402,7 @@ List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
 
     out.add(
       pw.Table(
-        border: pw.TableBorder.all(color: _pdfBorder),
+        border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),
         columnWidths: columnWidths,
         children: tableRows,
       ),
@@ -430,31 +411,4 @@ List<pw.Widget> _compactProgrammingWidgets(WorkoutRoutine routine) {
   }
 
   return out;
-}
-
-pw.Widget _cell(String text, {bool isHeader = false, bool isSupersetHeader = false}) {
-  final fontSize = isSupersetHeader ? _pdfSupersetFontSize : _pdfTableFontSize;
-  return pw.Padding(
-    padding: pw.EdgeInsets.symmetric(horizontal: _pdfCellPadding, vertical: _pdfCellPadding),
-    child: pw.Text(
-      text,
-      style: pw.TextStyle(
-        fontSize: fontSize,
-        fontWeight: (isHeader || isSupersetHeader) ? pw.FontWeight.bold : null,
-      ),
-    ),
-  );
-}
-
-pw.Widget _compactCell(String text, {bool isHeader = false}) {
-  return pw.Padding(
-    padding: pw.EdgeInsets.symmetric(horizontal: _pdfCompactCellPadding, vertical: _pdfCompactCellPadding),
-    child: pw.Text(
-      text,
-      style: pw.TextStyle(
-        fontSize: _pdfCompactTableFontSize,
-        fontWeight: isHeader ? pw.FontWeight.bold : null,
-      ),
-    ),
-  );
 }

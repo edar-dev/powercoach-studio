@@ -207,6 +207,45 @@
   "workoutPdfLayoutCompact": "Compatto (per giorno)",
   "workoutPdfLayoutCompactDescription": "Ogni giorno di allenamento in una tabella con una colonna per settimana (progressione).",
   "workoutExportPdfGenerateAndShare": "Genera e condividi",
+  "workoutPdfIncludeMobility": "Includi mobilità / riscaldamento",
+  "workoutPdfSheetSubtitle": "Scegli il layout del documento. Il PDF usa intestazione coach e tabelle ottimizzate per la stampa.",
+  "pdfBrandName": "PowerCoach Studio",
+  "pdfCoachPrefix": "Coach:",
+  "pdfColExercise": "Esercizio",
+  "pdfColSets": "Serie",
+  "pdfColReps": "Ripetizioni",
+  "pdfColLoadRpe": "Carico/RPE",
+  "pdfColNotes": "Note",
+  "pdfMobilitySection": "Mobilità",
+  "pdfSuperset": "Superset",
+  "pdfDayNumber": "Giorno {day}",
+  "@pdfDayNumber": {
+    "placeholders": {
+      "day": { "type": "int" }
+    }
+  },
+  "pdfEmptyValue": "—",
+  "pdfFooterDisclaimer": "Documento riservato al cliente indicato. Consultare un medico prima di iniziare un nuovo programma di esercizio.",
+  "pdfPageOf": "Pagina {current} di {total}",
+  "@pdfPageOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "pdfGeneratedOn": "Generato il {date}",
+  "@pdfGeneratedOn": {
+    "placeholders": {
+      "date": { "type": "String" }
+    }
+  },
+  "pdfExportGenerating": "Generazione PDF in corso…",
+  "pdfMeasurementRecordCount": "{count} rilevazioni",
+  "@pdfMeasurementRecordCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "workoutShare": "Condividi",
   "workoutStartingWeek": "Settimana iniziale",
   "workoutStartingWeekHint": "Settimana 1, 2, 3...",

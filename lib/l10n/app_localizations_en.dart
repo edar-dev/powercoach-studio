@@ -626,6 +626,70 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportPdfGenerateAndShare => 'Generate and share';
 
   @override
+  String get workoutPdfIncludeMobility => 'Include mobility / warm-up';
+
+  @override
+  String get workoutPdfSheetSubtitle =>
+      'Choose the document layout. The PDF uses your coach header and print-friendly tables.';
+
+  @override
+  String get pdfBrandName => 'PowerCoach Studio';
+
+  @override
+  String get pdfCoachPrefix => 'Coach:';
+
+  @override
+  String get pdfColExercise => 'Exercise';
+
+  @override
+  String get pdfColSets => 'Sets';
+
+  @override
+  String get pdfColReps => 'Reps';
+
+  @override
+  String get pdfColLoadRpe => 'Load/RPE';
+
+  @override
+  String get pdfColNotes => 'Notes';
+
+  @override
+  String get pdfMobilitySection => 'Mobility';
+
+  @override
+  String get pdfSuperset => 'Superset';
+
+  @override
+  String pdfDayNumber(int day) {
+    return 'Day $day';
+  }
+
+  @override
+  String get pdfEmptyValue => '—';
+
+  @override
+  String get pdfFooterDisclaimer =>
+      'This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.';
+
+  @override
+  String pdfPageOf(int current, int total) {
+    return 'Page $current of $total';
+  }
+
+  @override
+  String pdfGeneratedOn(String date) {
+    return 'Generated on $date';
+  }
+
+  @override
+  String get pdfExportGenerating => 'Generating PDF…';
+
+  @override
+  String pdfMeasurementRecordCount(int count) {
+    return '$count records';
+  }
+
+  @override
   String get workoutShare => 'Share';
 
   @override
