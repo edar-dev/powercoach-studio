@@ -16,7 +16,7 @@ PdfExportLabels _labels() {
     mobilityFallback: 'Mobility',
     superset: 'Superset',
     dayNumber: (d) => 'Day $d',
-    emptyValue: '—',
+    emptyValue: '-',
     footerDisclaimer: 'Disclaimer',
     pageOf: (c, t) => '$c/$t',
     generatedOn: (d) => d,
@@ -26,7 +26,7 @@ PdfExportLabels _labels() {
     measurementWaist: 'Waist',
     measurementSquat: 'Squat',
     measurementBench: 'Bench',
-    exportGenerating: '…',
+    exportGenerating: '...',
     measurementRecordCount: (c) => '$c records',
   );
 }

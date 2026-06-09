@@ -660,10 +660,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColSets => 'Serie';
 
   @override
-  String get pdfColReps => 'Ripetizioni';
+  String get pdfColReps => 'Rip.';
 
   @override
-  String get pdfColLoadRpe => 'Carico/RPE';
+  String get pdfColLoadRpe => 'Carico';
 
   @override
   String get pdfColNotes => 'Note';
@@ -680,7 +680,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get pdfEmptyValue => '—';
+  String get pdfEmptyValue => '-';
 
   @override
   String get pdfFooterDisclaimer =>

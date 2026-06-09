@@ -228,7 +228,7 @@
       "day": { "type": "int" }
     }
   },
-  "pdfEmptyValue": "—",
+  "pdfEmptyValue": "-",
   "pdfFooterDisclaimer": "This document is intended for the designated client only. Please consult a physician before beginning any new exercise program.",
   "pdfPageOf": "Page {current} of {total}",
   "@pdfPageOf": {

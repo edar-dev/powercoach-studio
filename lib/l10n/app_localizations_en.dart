@@ -677,7 +677,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pdfEmptyValue => '—';
+  String get pdfEmptyValue => '-';
 
   @override
   String get pdfFooterDisclaimer =>

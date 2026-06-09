@@ -217,8 +217,8 @@
   "pdfCoachPrefix": "Coach:",
   "pdfColExercise": "Esercizio",
   "pdfColSets": "Serie",
-  "pdfColReps": "Ripetizioni",
-  "pdfColLoadRpe": "Carico/RPE",
+  "pdfColReps": "Rip.",
+  "pdfColLoadRpe": "Carico",
   "pdfColNotes": "Note",
   "pdfMobilitySection": "Mobilità",
   "pdfSuperset": "Superset",
@@ -228,7 +228,7 @@
       "day": { "type": "int" }
     }
   },
-  "pdfEmptyValue": "—",
+  "pdfEmptyValue": "-",
   "pdfFooterDisclaimer": "Documento riservato al cliente indicato. Consultare un medico prima di iniziare un nuovo programma di esercizio.",
   "pdfPageOf": "Pagina {current} di {total}",
   "@pdfPageOf": {

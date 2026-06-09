@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'pdf_coach_header.dart';
 import 'pdf_export_labels.dart';
+import 'pdf_text_sanitize.dart';
 
 /// Shared visual system for PowerCoach Studio PDF exports (Stitch-aligned).
 class PdfDocumentTheme {
@@ -13,7 +14,8 @@ class PdfDocumentTheme {
   static const double titleFontSize = 20;
   static const double sectionFontSize = 13;
   static const double dayFontSize = 11;
-  static const double tableFontSize = 10;
+  static const double tableFontSize = 9.5;
+  static const double tableHeaderFontSize = 8.5;
   static const double compactTableFontSize = 8;
   static const double supersetFontSize = 9;
   static const double footerFontSize = 7.5;
@@ -25,6 +27,7 @@ class PdfDocumentTheme {
   static final PdfColor textPrimary = PdfColor.fromHex('#1F2937');
   static final PdfColor textMuted = PdfColor.fromHex('#6B7280');
   static final PdfColor tableHeaderBg = PdfColor.fromHex('#F3F4F6');
+  static final PdfColor tableRowAltBg = PdfColor.fromHex('#FAFBFC');
   static final PdfColor border = PdfColor.fromHex('#E5E7EB');
   static final PdfColor supersetBg = PdfColor.fromHex('#E8EEFE');
   static final PdfColor footerMuted = PdfColor.fromHex('#9CA3AF');
@@ -163,11 +166,16 @@ class PdfDocumentTheme {
     bool isHeader = false,
     bool isSuperset = false,
     bool center = false,
+    bool blankIfEmpty = false,
+    String emptyPlaceholder = '-',
     double fontSize = tableFontSize,
     double paddingH = cellPaddingH,
     double paddingV = cellPaddingV,
   }) {
-    final display = text.trim().isEmpty ? '—' : text;
+    final sanitized = sanitizePdfText(text.trim());
+    final display = sanitized.isEmpty
+        ? (blankIfEmpty ? '' : emptyPlaceholder)
+        : sanitized;
     return pw.Padding(
       padding: pw.EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
       child: pw.Align(
@@ -175,12 +183,15 @@ class PdfDocumentTheme {
         child: pw.Text(
           isHeader ? display.toUpperCase() : display,
           style: pw.TextStyle(
-            fontSize: isSuperset ? supersetFontSize : fontSize,
+            fontSize: isHeader
+                ? tableHeaderFontSize
+                : (isSuperset ? supersetFontSize : fontSize),
             fontWeight: (isHeader || isSuperset) ? pw.FontWeight.bold : null,
             color: isHeader ? textMuted : textPrimary,
-            letterSpacing: isHeader ? 0.4 : 0,
+            letterSpacing: isHeader ? 0.3 : 0,
           ),
           textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
+          maxLines: isHeader ? 2 : null,
         ),
       ),
     );
@@ -191,7 +202,7 @@ class PdfDocumentTheme {
     bool isHeader = false,
     PdfExportLabels? labels,
   }) {
-    final empty = labels?.emptyValue ?? '—';
+    final empty = labels?.emptyValue ?? '-';
     final display = text.trim().isEmpty ? empty : text;
     return tableCell(
       display,

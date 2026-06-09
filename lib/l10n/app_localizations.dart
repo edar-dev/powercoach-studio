@@ -1355,7 +1355,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfEmptyValue.
   ///
   /// In en, this message translates to:
-  /// **'—'**
+  /// **'-'**
   String get pdfEmptyValue;
 
   /// No description provided for @pdfFooterDisclaimer.
