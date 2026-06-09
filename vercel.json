@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bash scripts/vercel-build.sh",
+  "buildCommand": "bash -lc \"sed -i 's/\\r$//' scripts/vercel-build.sh && bash scripts/vercel-build.sh\"",
   "outputDirectory": "build/web",
   "framework": null,
   "rewrites": [
