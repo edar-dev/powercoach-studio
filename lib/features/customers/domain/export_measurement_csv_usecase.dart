@@ -1,10 +1,10 @@
-import 'dart:io';
+import 'dart:convert';
+import 'dart:typed_data';
 
-import 'package:path_provider/path_provider.dart';
-
+import '../../../core/export/export_artifact.dart';
 import '../data/models/customer_measurement.dart';
 
-Future<String> exportMeasurementsToCsv(
+Future<ExportArtifact> exportMeasurementsToCsv(
   List<CustomerMeasurement> measurements,
   String fileBaseName,
 ) async {
@@ -60,14 +60,13 @@ Future<String> exportMeasurementsToCsv(
     );
   }
 
-  final dir = await getTemporaryDirectory();
   final sanitized = fileBaseName.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
   final base = sanitized.isEmpty ? 'measurements' : sanitized;
-  final file = File(
-    '${dir.path}/${base}_${DateTime.now().millisecondsSinceEpoch}.csv',
+  return ExportArtifact(
+    bytes: Uint8List.fromList(utf8.encode(rows.join('\n'))),
+    filename: '${base}_${DateTime.now().millisecondsSinceEpoch}.csv',
+    mimeType: 'text/csv',
   );
-  await file.writeAsString(rows.join('\n'));
-  return file.path;
 }
 
 String _formatNumber(double? value) {

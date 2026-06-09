@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +12,7 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
+import '../../data/import_file_reader.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../../data/default_exercise_catalog.dart';
 import '../../../integrations/hevy/data/hevy_api_models.dart';
@@ -240,8 +241,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       String content;
       if (file.bytes != null) {
         content = utf8.decode(file.bytes!);
-      } else if (file.path != null) {
-        content = await File(file.path!).readAsString();
+      } else if (!kIsWeb && file.path != null) {
+        content = await readImportFileFromPath(file.path!);
       } else {
         content = '[]';
       }

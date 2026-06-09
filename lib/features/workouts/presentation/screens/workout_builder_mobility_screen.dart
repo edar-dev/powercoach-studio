@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
+import '../../../../core/export/export_share.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
 import '../../../../core/storage/local_user_profile_store.dart';
@@ -355,7 +355,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     );
     try {
       final coachHeader = await _resolvePdfCoachHeader();
-      final path = await exportWorkoutRoutineToPdf(
+      final artifact = await exportWorkoutRoutineToPdf(
         routine,
         labels: labels,
         coachHeader: coachHeader,
@@ -364,7 +364,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       );
       if (!mounted) return;
       hidePdfExportProgressDialog(context);
-      await Share.shareXFiles([XFile(path)]);
+      await shareExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -393,9 +393,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       name: name.isEmpty ? _routine.name : name,
     );
     try {
-      final path = await exportWorkoutRoutineToExcel(routine);
+      final artifact = await exportWorkoutRoutineToExcel(routine);
       if (!mounted) return;
-      await Share.shareXFiles([XFile(path)]);
+      await shareExportArtifact(artifact);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
