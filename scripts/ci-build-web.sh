@@ -31,5 +31,5 @@ EOF
 
 APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
 
-# pub get runs in Setup Flutter (subosito/flutter-action cache step).
+# pub get runs once in the workflow before this script.
 flutter build web --release --no-pub --no-wasm-dry-run --dart-define="APP_VERSION=${APP_VERSION}"

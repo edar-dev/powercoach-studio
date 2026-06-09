@@ -34,6 +34,10 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+          pub-get: false
+
+      - name: Resolve Flutter dependencies
+        run: flutter pub get
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
