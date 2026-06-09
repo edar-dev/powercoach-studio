@@ -604,6 +604,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportExcel => 'Export to Excel';
 
   @override
+  String get workoutExportJson => 'Export JSON';
+
+  @override
+  String get workoutImportJson => 'Import JSON';
+
+  @override
+  String get workoutImportJsonSuccess => 'Workout imported from JSON file.';
+
+  @override
+  String get workoutImportJsonError => 'Invalid or unsupported JSON file.';
+
+  @override
   String get workoutExportSuccess => 'Download started.';
 
   @override

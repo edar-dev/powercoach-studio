@@ -607,6 +607,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutExportExcel => 'Esporta in Excel';
 
   @override
+  String get workoutExportJson => 'Esporta JSON';
+
+  @override
+  String get workoutImportJson => 'Importa JSON';
+
+  @override
+  String get workoutImportJsonSuccess => 'Piano importato dal file JSON.';
+
+  @override
+  String get workoutImportJsonError => 'File JSON non valido o non supportato.';
+
+  @override
   String get workoutExportSuccess => 'Download avviato.';
 
   @override

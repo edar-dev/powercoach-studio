@@ -1214,6 +1214,30 @@ abstract class AppLocalizations {
   /// **'Export to Excel'**
   String get workoutExportExcel;
 
+  /// No description provided for @workoutExportJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Export JSON'**
+  String get workoutExportJson;
+
+  /// No description provided for @workoutImportJson.
+  ///
+  /// In en, this message translates to:
+  /// **'Import JSON'**
+  String get workoutImportJson;
+
+  /// No description provided for @workoutImportJsonSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout imported from JSON file.'**
+  String get workoutImportJsonSuccess;
+
+  /// No description provided for @workoutImportJsonError.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or unsupported JSON file.'**
+  String get workoutImportJsonError;
+
   /// No description provided for @workoutExportSuccess.
   ///
   /// In en, this message translates to:
