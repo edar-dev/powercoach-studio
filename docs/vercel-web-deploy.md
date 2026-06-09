@@ -52,7 +52,7 @@ The compile step (`flutter build web`) still runs every time — that is expecte
 
 Production deploys run via `.github/workflows/vercel-deploy.yml`:
 
-1. `subosito/flutter-action` builds Flutter web (cached SDK + pub)
+1. `subosito/flutter-action` builds Flutter web (cached SDK, pub, and `.dart_tool`)
 2. `scripts/package-vercel-prebuilt.sh` creates `.vercel/output`
 3. `vercel deploy --prebuilt --prod` uploads static files only (~30–60 s on Vercel)
 
