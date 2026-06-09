@@ -4,60 +4,89 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/pdf/pdf_coach_header.dart';
+import '../../../core/pdf/pdf_document_theme.dart';
+import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/models/customer_measurement.dart';
-
-final PdfColor _pdfTableHeaderBg = PdfColor.fromHex('#f3f4f6');
-final PdfColor _pdfBorder = PdfColor.fromHex('#e5e7eb');
 
 Future<String> exportMeasurementsToPdf(
   List<CustomerMeasurement> measurements,
-  String title,
-) async {
+  String title, {
+  required PdfExportLabels labels,
+  PdfCoachHeaderInfo? coachHeader,
+}) async {
   final sorted = List<CustomerMeasurement>.from(measurements)
     ..sort((a, b) => a.measurementDate.compareTo(b.measurementDate));
 
+  final generatedAt = DateTime.now();
   final doc = pw.Document();
   doc.addPage(
     pw.MultiPage(
       pageFormat: PdfPageFormat.a4,
-      margin: const pw.EdgeInsets.all(24),
+      margin: const pw.EdgeInsets.all(PdfDocumentTheme.pageMargin),
+      header: (context) => pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+        children: [
+          if (coachHeader != null && coachHeader.hasContent)
+            PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
+          PdfDocumentTheme.buildDocumentTitle(title),
+          PdfDocumentTheme.buildSubtitle(
+            labels.measurementRecordCount(sorted.length),
+          ),
+          pw.SizedBox(height: 16),
+        ],
+      ),
+      footer: (context) =>
+          PdfDocumentTheme.buildPageFooter(context, labels, generatedAt),
       build: (context) => [
-        pw.Text(
-          title,
-          style: pw.TextStyle(fontSize: 18, fontWeight: pw.FontWeight.bold),
-        ),
-        pw.SizedBox(height: 16),
         pw.Table(
-          border: pw.TableBorder.all(color: _pdfBorder, width: 0.5),
+          border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),
           columnWidths: const {
-            0: pw.FlexColumnWidth(1.2),
-            1: pw.FlexColumnWidth(1),
-            2: pw.FlexColumnWidth(1),
-            3: pw.FlexColumnWidth(1),
-            4: pw.FlexColumnWidth(1),
-            5: pw.FlexColumnWidth(1),
+            0: pw.FlexColumnWidth(1.15),
+            1: pw.FlexColumnWidth(0.9),
+            2: pw.FlexColumnWidth(1.05),
+            3: pw.FlexColumnWidth(0.9),
+            4: pw.FlexColumnWidth(0.85),
+            5: pw.FlexColumnWidth(0.95),
           },
           children: [
             pw.TableRow(
-              decoration: pw.BoxDecoration(color: _pdfTableHeaderBg),
+              decoration: pw.BoxDecoration(color: PdfDocumentTheme.tableHeaderBg),
               children: [
-                _headerCell('Date'),
-                _headerCell('Body fat %'),
-                _headerCell('Muscle (kg)'),
-                _headerCell('Waist (cm)'),
-                _headerCell('Squat 1RM'),
-                _headerCell('Bench 1RM'),
+                _headerCell(labels.measurementDate),
+                _headerCell(labels.measurementBodyFat, center: true),
+                _headerCell(labels.measurementMuscleMass, center: true),
+                _headerCell(labels.measurementWaist, center: true),
+                _headerCell(labels.measurementSquat, center: true),
+                _headerCell(labels.measurementBench, center: true),
               ],
             ),
             ...sorted.map(
               (measurement) => pw.TableRow(
                 children: [
-                  _bodyCell(CustomerMeasurement.toDateString(measurement.measurementDate)),
-                  _bodyCell(_formatNumber(measurement.bodyFatPercent)),
-                  _bodyCell(_formatNumber(measurement.muscleMassKg)),
-                  _bodyCell(_formatNumber(measurement.waistCm)),
-                  _bodyCell(_formatNumber(measurement.squat1RM)),
-                  _bodyCell(_formatNumber(measurement.benchPress1RM)),
+                  _bodyCell(
+                    CustomerMeasurement.toDateString(measurement.measurementDate),
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.bodyFatPercent, labels),
+                    center: true,
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.muscleMassKg, labels),
+                    center: true,
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.waistCm, labels),
+                    center: true,
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.squat1RM, labels),
+                    center: true,
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.benchPress1RM, labels),
+                    center: true,
+                  ),
                 ],
               ),
             ),
@@ -78,26 +107,28 @@ Future<String> exportMeasurementsToPdf(
   return file.path;
 }
 
-pw.Widget _headerCell(String text) {
-  return pw.Padding(
-    padding: const pw.EdgeInsets.all(6),
-    child: pw.Text(
-      text,
-      style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold),
-    ),
+pw.Widget _headerCell(String text, {bool center = false}) {
+  return PdfDocumentTheme.tableCell(
+    text,
+    isHeader: true,
+    center: center,
+    fontSize: 9,
+    paddingH: 6,
+    paddingV: 6,
   );
 }
 
-pw.Widget _bodyCell(String text) {
-  return pw.Padding(
-    padding: const pw.EdgeInsets.all(6),
-    child: pw.Text(text, style: const pw.TextStyle(fontSize: 9)),
+pw.Widget _bodyCell(String text, {bool center = false}) {
+  return PdfDocumentTheme.tableCell(
+    text,
+    center: center,
+    fontSize: 9,
+    paddingH: 6,
+    paddingV: 6,
   );
 }
 
-String _formatNumber(double? value) {
-  if (value == null) {
-    return '—';
-  }
+String _formatNumber(double? value, PdfExportLabels labels) {
+  if (value == null) return labels.emptyValue;
   return value.toString();
 }
