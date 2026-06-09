@@ -27,11 +27,28 @@ Add your Vercel URL(s) under **Authentication → URL configuration**:
 
 Vercel uses `vercel.json`:
 
-- **Build command:** `bash scripts/vercel-build.sh`
+- **Install command:** `bash scripts/vercel-install.sh` — Flutter SDK (`.flutter_sdk/`), `pub get`
+- **Build command:** `bash scripts/vercel-build.sh` — Drift web assets, `.env`, `flutter build web`
 - **Output:** `build/web`
 - SPA rewrites route all paths to `index.html`
 
-The build script installs Flutter, downloads Drift `sqlite3.wasm` / `drift_worker.js`, writes `.env` from Vercel env vars, and runs `flutter build web --release`.
+### Build speed
+
+| Phase | First deploy | Warm deploy (cache hit) |
+|-------|--------------|-------------------------|
+| Flutter SDK | ~60–90 s (clone + precache) | ~0 s (restored from cache) |
+| `pub get` | ~15–30 s | ~5–10 s if `pubspec.lock` unchanged |
+| `flutter build web` | ~60–90 s | ~60–90 s (always recompiles) |
+
+Warm deploys are faster because:
+
+1. Flutter SDK lives in `.flutter_sdk/` (not `/tmp`) and is restored via `build.json` cache.
+2. Pub packages live in `.pub-cache/` and are restored between builds.
+3. Drift `sqlite3.wasm` / `drift_worker.js` are downloaded only on the first build.
+
+The compile step (`flutter build web`) still runs every time — that is expected for Flutter web.
+
+**Optional (fastest):** build in GitHub Actions with `subosito/flutter-action` (cached) and deploy with `vercel deploy --prebuilt` so Vercel only uploads static files (~30 s).
 
 ## Web limitations
 

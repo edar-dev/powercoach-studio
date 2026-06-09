@@ -36,6 +36,7 @@ web/sqlite3.wasm
 web/drift_worker.js
 
 # Flutter/Dart/Pub related
+.flutter_sdk/
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
