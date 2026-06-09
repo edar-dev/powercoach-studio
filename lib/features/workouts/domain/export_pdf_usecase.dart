@@ -1,9 +1,7 @@
-import 'dart:io';
-
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
@@ -19,8 +17,8 @@ enum WorkoutPdfLayout {
 }
 
 /// Generates a PDF from [WorkoutRoutine].
-/// Returns the path to the saved file in the temp directory for sharing.
-Future<String> exportWorkoutRoutineToPdf(
+/// Returns an in-memory artifact for sharing (works on web and native).
+Future<ExportArtifact> exportWorkoutRoutineToPdf(
   WorkoutRoutine routine, {
   required PdfExportLabels labels,
   PdfCoachHeaderInfo? coachHeader,
@@ -57,14 +55,13 @@ Future<String> exportWorkoutRoutineToPdf(
   );
 
   final bytes = await doc.save();
-  final dir = await getTemporaryDirectory();
   final sanitizedName = routine.name.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
   final sanitized = sanitizedName.isEmpty ? 'workout_plan' : sanitizedName;
-  final file = File(
-    '${dir.path}/${sanitized}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+  return ExportArtifact(
+    bytes: bytes,
+    filename: '${sanitized}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+    mimeType: 'application/pdf',
   );
-  await file.writeAsBytes(bytes);
-  return file.path;
 }
 
 List<pw.Widget> _mobilityWidgets(WorkoutRoutine routine, PdfExportLabels labels) {

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -252,17 +253,22 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 32),
-                OutlinedButton(
-                  onPressed: _importFromContacts,
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
+                if (!kIsWeb) ...[
+                  const SizedBox(height: 32),
+                  OutlinedButton(
+                    onPressed: _importFromContacts,
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
+                    child: Text(l10n.customersImportContacts),
                   ),
-                  child: Text(l10n.customersImportContacts),
-                ),
+                ],
               ],
             ),
           ),

@@ -1,15 +1,13 @@
-import 'dart:io';
-
-import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/models/customer_measurement.dart';
 
-Future<String> exportMeasurementsToPdf(
+Future<ExportArtifact> exportMeasurementsToPdf(
   List<CustomerMeasurement> measurements,
   String title, {
   required PdfExportLabels labels,
@@ -97,14 +95,13 @@ Future<String> exportMeasurementsToPdf(
   );
 
   final bytes = await doc.save();
-  final dir = await getTemporaryDirectory();
   final sanitized = title.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
   final base = sanitized.isEmpty ? 'measurements' : sanitized;
-  final file = File(
-    '${dir.path}/${base}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+  return ExportArtifact(
+    bytes: bytes,
+    filename: '${base}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+    mimeType: 'application/pdf',
   );
-  await file.writeAsBytes(bytes);
-  return file.path;
 }
 
 pw.Widget _headerCell(String text, {bool center = false}) {

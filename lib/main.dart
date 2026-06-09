@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,8 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
+import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 import 'app.dart';
 
@@ -96,13 +95,8 @@ class _BootstrapAppState extends State<_BootstrapApp> {
   Future<void> _initializeApp() async {
     try {
       _logStartupStep('bootstrap init start', _bootstrapWatch);
-      if (Platform.isAndroid) {
-        await applyWorkaroundToOpenSqlite3OnOldAndroidVersions();
-        _logStartupStep(
-          'sqlite workaround completed',
-          _bootstrapWatch,
-        );
-      }
+      await applySqliteAndroidWorkaroundIfNeeded();
+      _logStartupStep('sqlite workaround step completed', _bootstrapWatch);
 
       final supabaseUrl = dotenv.env['SUPABASE_URL']?.trim() ?? '';
       final supabaseAnonKey = dotenv.env['SUPABASE_ANON_KEY']?.trim() ?? '';

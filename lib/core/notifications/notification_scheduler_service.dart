@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
+import '../platform/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
@@ -31,7 +30,7 @@ class NotificationSchedulerService {
   bool _initialized = false;
 
   bool get supportsLocalNotifications =>
-      !kIsWeb && (Platform.isAndroid || Platform.isIOS || Platform.isMacOS);
+      !kIsWeb && (isAndroid || isIOS || isMacOS);
 
   Future<void> ensureInitialized() async {
     if (_initialized) return;
@@ -59,7 +58,7 @@ class NotificationSchedulerService {
       onDidReceiveNotificationResponse: _onNotificationResponse,
     );
 
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       final android = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       await android?.createNotificationChannel(
@@ -92,7 +91,7 @@ class NotificationSchedulerService {
     if (!supportsLocalNotifications) return false;
     await ensureInitialized();
 
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       final android = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       final granted = await android?.requestNotificationsPermission();
@@ -100,7 +99,7 @@ class NotificationSchedulerService {
       return true;
     }
 
-    if (Platform.isIOS) {
+    if (isIOS) {
       final ios = _plugin.resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>();
       final r = await ios?.requestPermissions(
@@ -111,7 +110,7 @@ class NotificationSchedulerService {
       return r ?? false;
     }
 
-    if (Platform.isMacOS) {
+    if (isMacOS) {
       final mac = _plugin.resolvePlatformSpecificImplementation<
           MacOSFlutterLocalNotificationsPlugin>();
       final r = await mac?.requestPermissions(
@@ -214,7 +213,7 @@ class NotificationSchedulerService {
     if (!want) return;
 
     var allowed = true;
-    if (Platform.isAndroid) {
+    if (isAndroid) {
       final android = _plugin.resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>();
       allowed = await android?.areNotificationsEnabled() ?? true;

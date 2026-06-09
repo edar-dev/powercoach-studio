@@ -1,14 +1,13 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
-import 'package:path_provider/path_provider.dart';
 
+import '../../../core/export/export_artifact.dart';
 import '../data/workout_routine_model.dart';
 
 /// Exports [WorkoutRoutine] to an .xlsx file. Layout: plan name, then for each week/day
 /// a table with columns Exercise, Sets, Reps, Load/RPE, Notes.
-/// Returns the path to the saved file in the temp directory for sharing.
-Future<String> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
+Future<ExportArtifact> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
   final excel = Excel.createExcel();
   final sheet = excel['Workout Plan'];
 
@@ -90,14 +89,13 @@ Future<String> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
     row += 1;
   }
 
-  final dir = await getTemporaryDirectory();
   final sanitizedName = routine.name.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
   final sanitized = sanitizedName.isEmpty ? 'workout_plan' : sanitizedName;
-  final path = '${dir.path}/${sanitized}_${DateTime.now().millisecondsSinceEpoch}.xlsx';
-  final file = File(path);
-  final bytes = excel.encode();
-  if (bytes != null) {
-    await file.writeAsBytes(bytes);
-  }
-  return file.path;
+  final encoded = excel.encode() ?? <int>[];
+  return ExportArtifact(
+    bytes: Uint8List.fromList(encoded),
+    filename: '${sanitized}_${DateTime.now().millisecondsSinceEpoch}.xlsx',
+    mimeType:
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  );
 }

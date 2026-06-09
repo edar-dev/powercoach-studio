@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/export/export_artifact.dart';
+import '../../../../core/export/export_share.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
 import '../../../../core/storage/local_user_profile_store.dart';
@@ -80,7 +81,7 @@ class _CustomerMeasurementHistoryScreenState
   }
 
   Future<void> _shareExport(
-    Future<String> Function() export, {
+    Future<ExportArtifact> Function() export, {
     bool showProgress = false,
   }) async {
     final l10n = AppLocalizations.of(context);
@@ -92,11 +93,11 @@ class _CustomerMeasurementHistoryScreenState
       );
     }
     try {
-      final path = await export();
+      final artifact = await export();
       if (showProgress && mounted) {
         hidePdfExportProgressDialog(context);
       }
-      await Share.shareXFiles([XFile(path)]);
+      await shareExportArtifact(artifact);
       if (!mounted) {
         return;
       }
