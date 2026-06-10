@@ -719,9 +719,18 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _cloneWeek(int weekIndex) {
+  Future<void> _cloneWeek(int weekIndex) async {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final source = _routine.weeks[weekIndex];
     final l10n = AppLocalizations.of(context);
+    final defaultName = '${source.name}${l10n.workoutBuilderNameCopySuffix}';
+    final name = await _showDuplicateWeekDialog(context, defaultName);
+    if (!mounted || name == null || name.isEmpty) return;
+    _cloneWeekWithName(weekIndex, name);
+  }
+
+  void _cloneWeekWithName(int weekIndex, String name) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     setState(() {
       final source = _routine.weeks[weekIndex];
       final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
@@ -758,11 +767,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             ),
           )
           .toList();
-      final newWeek = Week(
-        id: newId,
-        name: '${source.name}${l10n.workoutBuilderNameCopySuffix}',
-        days: newDays,
-      );
+      final newWeek = Week(id: newId, name: name, days: newDays);
       _routine = _routine.copyWith(weeks: [..._routine.weeks, newWeek]);
       _selectedWeekIndex = _routine.weeks.length - 1;
       _selectedDayIndex = 0;
@@ -1839,6 +1844,45 @@ void _showRenameDayDialog(
       Navigator.of(context).pop();
     },
   );
+}
+
+Future<String?> _showDuplicateWeekDialog(
+  BuildContext context,
+  String defaultName,
+) async {
+  final l10n = AppLocalizations.of(context);
+  final controller = TextEditingController(text: defaultName);
+  try {
+    return showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.workoutBuilderDuplicateWeekTitle),
+        content: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.workoutBuilderDuplicateWeekHint,
+          ),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(MaterialLocalizations.of(ctx).cancelButtonLabel),
+          ),
+          FilledButton(
+            onPressed: () {
+              final trimmed = controller.text.trim();
+              if (trimmed.isEmpty) return;
+              Navigator.of(ctx).pop(trimmed);
+            },
+            child: Text(l10n.workoutBuilderDuplicateWeek),
+          ),
+        ],
+      ),
+    );
+  } finally {
+    controller.dispose();
+  }
 }
 
 void _showRenameWeekDialog(

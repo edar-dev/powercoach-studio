@@ -1810,6 +1810,18 @@ abstract class AppLocalizations {
   /// **'Week name'**
   String get workoutBuilderWeekNameLabel;
 
+  /// No description provided for @workoutBuilderDuplicateWeekTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate week'**
+  String get workoutBuilderDuplicateWeekTitle;
+
+  /// No description provided for @workoutBuilderDuplicateWeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for the new week'**
+  String get workoutBuilderDuplicateWeekHint;
+
   /// No description provided for @workoutBuilderEditMobilityExerciseTitle.
   ///
   /// In en, this message translates to:

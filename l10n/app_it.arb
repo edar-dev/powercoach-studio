@@ -339,6 +339,8 @@
   "workoutBuilderDayNameLabel": "Nome giorno",
   "workoutBuilderRenameWeekTitle": "Rinomina settimana",
   "workoutBuilderWeekNameLabel": "Nome settimana",
+  "workoutBuilderDuplicateWeekTitle": "Duplica settimana",
+  "workoutBuilderDuplicateWeekHint": "Nome della nuova settimana",
   "workoutBuilderEditMobilityExerciseTitle": "Modifica esercizio mobility",
   "workoutBuilderAddMobilityExerciseTitle": "Aggiungi esercizio mobility",
   "workoutBuilderWeekNumbered": "SETTIMANA {n}",
