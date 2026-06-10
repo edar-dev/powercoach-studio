@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/sync/offline_models.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -359,7 +360,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       child: FilledButton.icon(
                         onPressed: () {
                           HapticFeedback.mediumImpact();
-                          context.push('/customers/new');
+                          navigateTo(context, '/customers/new');
                         },
                         icon: const Icon(Icons.person_add, size: 20),
                         label: Text(l10n.customersAddCustomer),
@@ -446,7 +447,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           programName: programLabel,
           onTap: () {
             HapticFeedback.mediumImpact();
-            context.push('/customers/${item.customerId}/workouts');
+            navigateTo(context, '/customers/${item.customerId}/workouts');
           },
         ),
       );
@@ -593,7 +594,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             onTap: () {
               HapticFeedback.mediumImpact();
-              context.push('/customers/${c.customerId}');
+              navigateTo(context, '/customers/${c.customerId}');
             },
             child: Container(
               width: double.infinity,
@@ -655,7 +656,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             onTap: () {
               HapticFeedback.mediumImpact();
-              context.push('/customers/${item.customerId}/workouts');
+              navigateTo(context, '/customers/${item.customerId}/workouts');
             },
             child: Container(
               width: double.infinity,

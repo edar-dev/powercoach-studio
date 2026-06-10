@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -290,7 +291,10 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                             ],
                           ),
                           onTap: () {
-                            context.push('/customers/${event.customerId}/workouts');
+                            navigateTo(
+                              context,
+                              '/customers/${event.customerId}/workouts',
+                            );
                           },
                           onLongPress: () async {
                             await _planRepo.setSessionCompleted(

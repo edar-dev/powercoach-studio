@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
@@ -61,7 +62,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         if (phone.isNotEmpty) 'phone': phone,
       },
     );
-    context.push(uri.toString());
+    navigateTo(context, uri.toString());
   }
 
   Future<void> _load({bool skipCache = false}) async {
@@ -113,7 +114,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       ),
       floatingActionButton: _error == null
           ? FloatingActionButton.extended(
-              onPressed: () => context.push('/customers/new'),
+              onPressed: () => navigateTo(context, '/customers/new'),
               icon: const Icon(Icons.add),
               label: Text(_customers.isEmpty ? l10n.customersAddFirstClient : l10n.customersAddCustomer),
               backgroundColor: _customers.isEmpty ? StitchM3Theme.accent : StitchM3Theme.accentLight,
@@ -367,7 +368,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                   padding: EdgeInsets.only(bottom: itemIndex < filtered.length - 1 ? 12 : 0),
                   child: InkWell(
                     borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    onTap: () => context.push('/customers/${c.id}'),
+                    onTap: () => navigateTo(context, '/customers/${c.id}'),
                     child: Container(
                       decoration: BoxDecoration(
                         color: colorScheme.surfaceContainerHighest,

@@ -104,65 +104,57 @@ final _goRouter = GoRouter(
       builder: (context, state) => const ExerciseLibraryScreen(),
     ),
     GoRoute(
-      path: '/customers',
-      builder: (context, state) => const CustomerListScreen(),
+      path: '/customers/new',
+      builder: (context, state) => const CustomerCreationScreen(),
+    ),
+    GoRoute(
+      path: '/customers/:id',
+      builder: (context, state) {
+        final id = state.pathParameters['id'] ?? '';
+        return CustomerDetailScreen(customerId: id);
+      },
       routes: [
         GoRoute(
-          path: 'new',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const CustomerCreationScreen(),
-        ),
-        GoRoute(
-          path: ':id',
-          parentNavigatorKey: appRootNavigatorKey,
+          path: 'edit',
           builder: (context, state) {
             final id = state.pathParameters['id'] ?? '';
-            return CustomerDetailScreen(customerId: id);
+            return CustomerEditScreen(customerId: id);
           },
-          routes: [
-            GoRoute(
-              path: 'edit',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                return CustomerEditScreen(customerId: id);
-              },
-            ),
-            GoRoute(
-              path: 'workouts',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                return CustomerWorkoutsScreen(customerId: id);
-              },
-            ),
-            GoRoute(
-              path: 'notes',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                final customerName = state.uri.queryParameters['customerName'];
-                return CustomerNotesScreen(
-                  customerId: id,
-                  customerName: customerName,
-                );
-              },
-            ),
-            GoRoute(
-              path: 'measurements/history',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) {
-                final id = state.pathParameters['id'] ?? '';
-                final customerName = state.uri.queryParameters['customerName'];
-                return CustomerMeasurementHistoryScreen(
-                  customerId: id,
-                  customerName: customerName,
-                );
-              },
-            ),
-          ],
+        ),
+        GoRoute(
+          path: 'workouts',
+          builder: (context, state) {
+            final id = state.pathParameters['id'] ?? '';
+            return CustomerWorkoutsScreen(customerId: id);
+          },
+        ),
+        GoRoute(
+          path: 'notes',
+          builder: (context, state) {
+            final id = state.pathParameters['id'] ?? '';
+            final customerName = state.uri.queryParameters['customerName'];
+            return CustomerNotesScreen(
+              customerId: id,
+              customerName: customerName,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'measurements/history',
+          builder: (context, state) {
+            final id = state.pathParameters['id'] ?? '';
+            final customerName = state.uri.queryParameters['customerName'];
+            return CustomerMeasurementHistoryScreen(
+              customerId: id,
+              customerName: customerName,
+            );
+          },
         ),
       ],
+    ),
+    GoRoute(
+      path: '/customers',
+      builder: (context, state) => const CustomerListScreen(),
     ),
     GoRoute(
       path: '/workouts',

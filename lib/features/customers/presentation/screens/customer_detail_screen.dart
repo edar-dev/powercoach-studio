@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -311,7 +312,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             HapticFeedback.mediumImpact();
-            context.pop();
+            navigateBack(context, fallback: '/customers');
           },
         ),
         title: Text(
@@ -377,7 +378,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                       title: Text(l10n.customerEdit),
                       onTap: () {
                         Navigator.pop(sheetContext);
-                        context.push('/customers/${c.id}/edit');
+                        navigateTo(context, '/customers/${c.id}/edit');
                       },
                     ),
                     ListTile(
@@ -487,7 +488,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                     children: [
                       Expanded(
                         child: OutlinedButton.icon(
-                          onPressed: () => context.push('/customers/${c.id}/edit'),
+                          onPressed: () =>
+                              navigateTo(context, '/customers/${c.id}/edit'),
                           icon: const Icon(Icons.edit, size: 20),
                           label: Text(l10n.customerEditProfile),
                           style: OutlinedButton.styleFrom(
@@ -657,7 +659,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 final uri = name == null || name.trim().isEmpty
                     ? '/customers/${widget.customerId}/measurements/history'
                     : '/customers/${widget.customerId}/measurements/history?customerName=${Uri.encodeComponent(name)}';
-                context.push(uri);
+                navigateTo(context, uri);
               },
               icon: const Icon(Icons.show_chart),
               label: Text(l10n.measurementHistoryOpen),
@@ -868,7 +870,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
         icon: const Icon(Icons.arrow_back),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          context.pop();
+          navigateBack(context, fallback: '/customers');
         },
       ),
       title: Text(
