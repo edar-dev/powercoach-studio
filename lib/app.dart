@@ -33,7 +33,10 @@ import 'features/exercise_library/presentation/screens/exercise_library_screen.d
 import 'features/workouts/presentation/screens/workout_placeholder_screen.dart';
 import 'l10n/app_localizations.dart';
 
-final _goRouter = GoRouter(
+late final GoRouter appGoRouter;
+
+void configureAppRouter() {
+  appGoRouter = GoRouter(
   navigatorKey: appRootNavigatorKey,
   initialLocation: '/',
   observers: kReleaseMode ? [SentryNavigatorObserver()] : const <NavigatorObserver>[],
@@ -233,7 +236,8 @@ final _goRouter = GoRouter(
       ],
     ),
   ],
-);
+  );
+}
 
 class PowerCoachStudioApp extends StatelessWidget {
   const PowerCoachStudioApp({super.key});
@@ -263,7 +267,7 @@ class PowerCoachStudioApp extends StatelessWidget {
             }
             return const Locale('it');
           },
-          routerConfig: _goRouter,
+          routerConfig: appGoRouter,
         );
       },
     );

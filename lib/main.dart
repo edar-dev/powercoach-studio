@@ -13,7 +13,6 @@ import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
 import 'package:powercoach_studio/core/routing/go_router_config.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-// go_router_config must initialize before GoRouter is constructed in app.dart.
 import 'app.dart';
 
 Future<void> main() async {
@@ -22,6 +21,7 @@ Future<void> main() async {
   assert(goRouterOptionsConfigured);
   final startupWatch = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
+  configureAppRouter();
   _installDebugFrameTimingProbe();
   try {
     await dotenv.load(fileName: '.env');
@@ -111,10 +111,8 @@ class _BootstrapAppState extends State<_BootstrapApp> {
         anonKey: supabaseAnonKey,
       );
       if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
-        _logStartupStep(
-          'Supabase init deferred to background',
-          _bootstrapWatch,
-        );
+        await SupabaseBootstrap.ensureInitialized();
+        _logStartupStep('Supabase init completed', _bootstrapWatch);
       } else {
         SupabaseBootstrap.markAuthReadyWithoutSupabase();
         _logStartupStep(
@@ -138,16 +136,6 @@ class _BootstrapAppState extends State<_BootstrapApp> {
         _ready = true;
       });
       _logStartupStep('bootstrap ready=true', _bootstrapWatch);
-      if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
-        unawaited(
-          SupabaseBootstrap.ensureInitialized().then((_) {
-            _logStartupStep(
-              'Supabase background init completed',
-              _bootstrapWatch,
-            );
-          }),
-        );
-      }
     } catch (e) {
       if (!mounted) return;
       setState(() {
