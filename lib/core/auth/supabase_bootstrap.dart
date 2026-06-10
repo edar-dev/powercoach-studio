@@ -50,17 +50,32 @@ class SupabaseBootstrap {
       await Supabase.initialize(url: _url, anonKey: _anonKey);
       _initialized = true;
       _bindAuthStateListener();
+      await _awaitInitialAuthState();
     } catch (e) {
       final msg = e.toString().toLowerCase();
       if (msg.contains('already initialized')) {
         _initialized = true;
         _bindAuthStateListener();
+        await _awaitInitialAuthState();
       } else {
         rethrow;
       }
     } finally {
       _authReady = true;
       refreshTick.value++;
+    }
+  }
+
+  /// Waits until persisted session recovery finishes so routing does not treat
+  /// a signed-in user as logged out on cold start / refresh.
+  static Future<void> _awaitInitialAuthState() async {
+    try {
+      final auth = Supabase.instance.client.auth;
+      if (auth.currentSession != null) return;
+
+      await auth.onAuthStateChange.first.timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // No recovered session within the timeout; proceed as signed out.
     }
   }
 

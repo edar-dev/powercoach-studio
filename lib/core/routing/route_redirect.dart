@@ -31,7 +31,7 @@ String? resolveAppRouteRedirect(GoRouterState state) {
   final isProtectedRoute = isProtectedAppPath(path);
 
   if (isProtectedRoute && !isLoggedIn) {
-    final from = state.uri.toString();
+    final from = _protectedRouteRedirectTarget(state);
     if (from.isNotEmpty && from != '/login') {
       return '/login?redirect=${Uri.encodeComponent(from)}';
     }
@@ -51,6 +51,17 @@ String? resolveAppRouteRedirect(GoRouterState state) {
 }
 
 bool shouldShowAuthRouteLoading() {
-  return !SupabaseBootstrap.authReady ||
-      SupabaseBootstrap.currentUser == null;
+  return !SupabaseBootstrap.authReady;
+}
+
+String _protectedRouteRedirectTarget(GoRouterState state) {
+  final uri = state.uri.toString();
+  if (uri.isNotEmpty && uri != '/') {
+    return uri;
+  }
+  final matched = state.matchedLocation;
+  if (matched.isNotEmpty && matched != '/') {
+    return matched;
+  }
+  return uri;
 }
