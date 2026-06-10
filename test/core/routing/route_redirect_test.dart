@@ -30,5 +30,8 @@ void main() {
     expect(isProtectedAppPath('/dashboard/calendar'), isTrue);
     expect(isProtectedAppPath('/dashboard/schedule/detail'), isTrue);
     expect(isProtectedAppPath('/exercise-library'), isTrue);
+    expect(isProtectedAppPath('/customers/cust-1/workouts'), isTrue);
+    expect(isProtectedAppPath('/customers/cust-1/workouts/plan-9'), isTrue);
+    expect(isProtectedAppPath('/customers/cust-1/workouts/new'), isTrue);
   });
 }

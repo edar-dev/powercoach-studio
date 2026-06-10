@@ -130,6 +130,34 @@ void configureAppRouter() {
             final id = state.pathParameters['id'] ?? '';
             return CustomerWorkoutsScreen(customerId: id);
           },
+          routes: [
+            GoRoute(
+              path: 'new',
+              parentNavigatorKey: appRootNavigatorKey,
+              builder: (context, state) {
+                final customerId = state.pathParameters['id'] ?? '';
+                return WorkoutBuilderMobilityScreen(
+                  variant: WorkoutBuilderVariant.mobility,
+                  customerId: customerId,
+                  editorMode: true,
+                );
+              },
+            ),
+            GoRoute(
+              path: ':planId',
+              parentNavigatorKey: appRootNavigatorKey,
+              builder: (context, state) {
+                final customerId = state.pathParameters['id'] ?? '';
+                final planId = state.pathParameters['planId'] ?? '';
+                return WorkoutBuilderMobilityScreen(
+                  variant: WorkoutBuilderVariant.mobility,
+                  customerId: customerId,
+                  planId: planId,
+                  editorMode: true,
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           path: 'notes',

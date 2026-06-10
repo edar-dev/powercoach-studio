@@ -13,3 +13,16 @@ void navigateBack(BuildContext context, {required String fallback}) {
   }
   context.go(fallback);
 }
+
+String customerPath(String customerId) => '/customers/$customerId';
+
+String customerWorkoutsPath(String customerId) =>
+    '/customers/$customerId/workouts';
+
+/// New plan editor for [customerId], or edit when [planId] is set.
+String customerWorkoutEditorPath(String customerId, {String? planId}) {
+  if (planId != null && planId.isNotEmpty) {
+    return '/customers/$customerId/workouts/$planId';
+  }
+  return '/customers/$customerId/workouts/new';
+}

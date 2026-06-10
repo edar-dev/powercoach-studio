@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/export/export_share.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
@@ -1489,11 +1490,23 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             HapticFeedback.mediumImpact();
-            if (GoRouter.of(context).canPop()) {
-              context.pop();
-            } else {
-              context.go('/customers');
+            final customerId = widget.customerId;
+            if (widget.editorMode &&
+                customerId != null &&
+                customerId.isNotEmpty &&
+                customerId != kWorkoutPlanTemplateScopeId) {
+              navigateBack(
+                context,
+                fallback: customerWorkoutsPath(customerId),
+              );
+              return;
             }
+            if (widget.editorMode &&
+                customerId == kWorkoutPlanTemplateScopeId) {
+              navigateBack(context, fallback: '/workouts/templates');
+              return;
+            }
+            navigateBack(context, fallback: '/workouts/builder');
           },
         ),
         title: Text(

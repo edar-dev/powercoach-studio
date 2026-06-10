@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -75,11 +75,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             HapticFeedback.mediumImpact();
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/customers');
-            }
+            navigateBack(context, fallback: customerPath(widget.customerId));
           },
         ),
         title: Text(
@@ -159,11 +155,13 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                               localeName: l10n.localeName,
                               onTap: () {
                                 HapticFeedback.mediumImpact();
-                                context.push(
-                                  '/workouts/editor/${plan.id}?customerId=${widget.customerId}',
-                                ).then((_) {
-                                  if (mounted) _loadPlans();
-                                });
+                                navigateTo(
+                                  context,
+                                  customerWorkoutEditorPath(
+                                    widget.customerId,
+                                    planId: plan.id,
+                                  ),
+                                );
                               },
                               onCreateFollowUp: () => _createFollowUpWorkout(plan),
                               onSaveAsTemplate: () => _savePlanAsTemplate(plan),
@@ -177,8 +175,10 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           ? FloatingActionButton.extended(
               onPressed: () async {
                 HapticFeedback.mediumImpact();
-                await context.push('/workouts/editor?customerId=${widget.customerId}');
-                if (mounted) _loadPlans();
+                navigateTo(
+                  context,
+                  customerWorkoutEditorPath(widget.customerId),
+                );
               },
               icon: const Icon(Icons.add),
               label: Text(l10n.customerAssignWorkout),
