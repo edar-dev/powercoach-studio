@@ -104,10 +104,12 @@ final _goRouter = GoRouter(
       routes: [
         GoRoute(
           path: 'new',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const CustomerCreationScreen(),
         ),
         GoRoute(
           path: ':id',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) {
             final id = state.pathParameters['id'] ?? '';
             return CustomerDetailScreen(customerId: id);
@@ -115,6 +117,7 @@ final _goRouter = GoRouter(
           routes: [
             GoRoute(
               path: 'edit',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 return CustomerEditScreen(customerId: id);
@@ -122,6 +125,7 @@ final _goRouter = GoRouter(
             ),
             GoRoute(
               path: 'workouts',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 return CustomerWorkoutsScreen(customerId: id);
@@ -129,6 +133,7 @@ final _goRouter = GoRouter(
             ),
             GoRoute(
               path: 'notes',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 final customerName = state.uri.queryParameters['customerName'];
@@ -140,6 +145,7 @@ final _goRouter = GoRouter(
             ),
             GoRoute(
               path: 'measurements/history',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) {
                 final id = state.pathParameters['id'] ?? '';
                 final customerName = state.uri.queryParameters['customerName'];

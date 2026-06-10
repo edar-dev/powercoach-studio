@@ -9,11 +9,17 @@ import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
+import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
+import 'package:powercoach_studio/core/routing/go_router_config.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+// go_router_config must initialize before GoRouter is constructed in app.dart.
 import 'app.dart';
 
 Future<void> main() async {
+  configureWebUrlStrategy();
+  // Imported for side effect: sets GoRouter.optionURLReflectsImperativeAPIs.
+  assert(goRouterOptionsConfigured);
   final startupWatch = Stopwatch()..start();
   WidgetsFlutterBinding.ensureInitialized();
   _installDebugFrameTimingProbe();
