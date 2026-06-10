@@ -107,7 +107,13 @@ class TrainingWeekDayPanel extends StatelessWidget {
                     const SizedBox(width: 8),
                     _PlannerAddChip(
                       label: l10n.workoutBuilderNewWeek,
-                      onTap: onNewWeek,
+                      onTap: () => _showAddWeekMenuSheet(
+                        context,
+                        l10n,
+                        weekIndex,
+                        onNewWeek: onNewWeek,
+                        onCloneWeek: onCloneWeek,
+                      ),
                     ),
                   ],
                 ),
@@ -119,12 +125,6 @@ class TrainingWeekDayPanel extends StatelessWidget {
               onPressed: () => _showPlannerMenuSheet(
                 context,
                 actions: [
-                  (
-                    icon: Icons.copy,
-                    label: l10n.workoutBuilderDuplicateWeek,
-                    onTap: () => onCloneWeek(weekIndex),
-                    destructive: false,
-                  ),
                   (
                     icon: Icons.edit_outlined,
                     label: l10n.workoutBuilderRenameWeekMenu,
@@ -319,6 +319,32 @@ void showTrainingPlannerMenuSheet(
   required List<({IconData icon, String label, VoidCallback onTap, bool destructive})>
   actions,
 }) => _showPlannerMenuSheet(context, actions: actions);
+
+void _showAddWeekMenuSheet(
+  BuildContext context,
+  AppLocalizations l10n,
+  int weekIndex, {
+  required VoidCallback onNewWeek,
+  required void Function(int) onCloneWeek,
+}) {
+  _showPlannerMenuSheet(
+    context,
+    actions: [
+      (
+        icon: Icons.add,
+        label: l10n.workoutBuilderNewWeek,
+        onTap: onNewWeek,
+        destructive: false,
+      ),
+      (
+        icon: Icons.copy,
+        label: l10n.workoutBuilderDuplicateWeek,
+        onTap: () => onCloneWeek(weekIndex),
+        destructive: false,
+      ),
+    ],
+  );
+}
 
 void _showPlannerMenuSheet(
   BuildContext context, {
