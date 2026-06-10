@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
@@ -60,13 +61,23 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    SupabaseBootstrap.refreshTick.addListener(_onAuthRefresh);
     _load();
   }
 
   @override
   void dispose() {
+    SupabaseBootstrap.refreshTick.removeListener(_onAuthRefresh);
     _tabController.dispose();
     super.dispose();
+  }
+
+  void _onAuthRefresh() {
+    if (!SupabaseBootstrap.authReady || SupabaseBootstrap.currentUser == null) {
+      return;
+    }
+    if (_customer != null || _error != null) return;
+    _load();
   }
 
   Future<void> _loadWorkoutPlans() async {
@@ -169,6 +180,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   }
 
   Future<void> _load() async {
+    if (!SupabaseBootstrap.authReady) return;
     final user = SupabaseBootstrap.currentUser;
     if (user == null) return;
     setState(() {
@@ -244,13 +256,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
 
   @override
   Widget build(BuildContext context) {
-    final user = SupabaseBootstrap.currentUser;
-    if (user == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.go('/login');
-      });
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    final authLoading = authRouteLoadingOrNull();
+    if (authLoading != null) return authLoading;
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
