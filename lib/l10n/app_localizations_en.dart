@@ -931,6 +931,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderWeekNameLabel => 'Week name';
 
   @override
+  String get workoutBuilderDuplicateWeekTitle => 'Duplicate week';
+
+  @override
+  String get workoutBuilderDuplicateWeekHint => 'Name for the new week';
+
+  @override
   String get workoutBuilderEditMobilityExerciseTitle =>
       'Edit mobility exercise';
 
