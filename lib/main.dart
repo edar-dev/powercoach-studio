@@ -110,6 +110,7 @@ class _BootstrapAppState extends State<_BootstrapApp> {
           _bootstrapWatch,
         );
       } else {
+        SupabaseBootstrap.markAuthReadyWithoutSupabase();
         _logStartupStep(
           'Supabase init unavailable (missing env)',
           _bootstrapWatch,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -63,7 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
           behavior: SnackBarBehavior.floating,
         ),
       );
-      context.go('/customers');
+      final redirect = safePostLoginRedirect(
+        GoRouterState.of(context).uri.queryParameters['redirect'],
+      );
+      context.go(redirect ?? '/dashboard');
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;

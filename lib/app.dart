@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
+import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'features/auth/presentation/screens/forgot_password_screen.dart';
@@ -37,19 +38,7 @@ final _goRouter = GoRouter(
   initialLocation: '/',
   observers: kReleaseMode ? [SentryNavigatorObserver()] : const <NavigatorObserver>[],
   refreshListenable: SupabaseBootstrap.refreshTick,
-  redirect: (context, state) {
-    final path = state.uri.path;
-    final isLoggedIn = SupabaseBootstrap.currentUser != null;
-    final isCustomerRoute = path.startsWith('/customers');
-    final isProtectedRoute = isCustomerRoute || path.startsWith('/dashboard') || path.startsWith('/workouts') || path == '/profile' || path.startsWith('/settings') || path == '/exercise-library';
-    if (isProtectedRoute && !isLoggedIn) {
-      return '/login';
-    }
-    if (isLoggedIn && (path == '/' || path == '/login')) {
-      return '/dashboard';
-    }
-    return null;
-  },
+  redirect: (context, state) => resolveAppRouteRedirect(state),
   routes: [
     GoRoute(
       path: '/',

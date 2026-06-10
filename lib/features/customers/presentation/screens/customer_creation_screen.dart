@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../theme/stitch_m3_theme.dart';
@@ -150,13 +151,8 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final user = SupabaseBootstrap.currentUser;
-    if (user == null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) context.go('/login');
-      });
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
+    final authLoading = authRouteLoadingOrNull();
+    if (authLoading != null) return authLoading;
 
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
