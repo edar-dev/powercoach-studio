@@ -20,4 +20,15 @@ void main() {
     expect(safePostLoginRedirect('/login'), isNull);
     expect(safePostLoginRedirect('/'), isNull);
   });
+
+  test('isProtectedAppPath covers workout and settings deep links', () {
+    expect(isProtectedAppPath('/workouts/editor'), isTrue);
+    expect(isProtectedAppPath('/workouts/editor/plan-1'), isTrue);
+    expect(isProtectedAppPath('/workouts/templates'), isTrue);
+    expect(isProtectedAppPath('/workouts/builder/multiset'), isTrue);
+    expect(isProtectedAppPath('/settings/personal-info'), isTrue);
+    expect(isProtectedAppPath('/dashboard/calendar'), isTrue);
+    expect(isProtectedAppPath('/dashboard/schedule/detail'), isTrue);
+    expect(isProtectedAppPath('/exercise-library'), isTrue);
+  });
 }

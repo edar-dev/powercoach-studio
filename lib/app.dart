@@ -62,14 +62,17 @@ final _goRouter = GoRouter(
       routes: [
         GoRoute(
           path: 'calendar',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const CoachCalendarScreen(),
         ),
         GoRoute(
           path: 'schedule',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const ScheduleScreen(),
           routes: [
             GoRoute(
               path: 'detail',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) => const ScheduleDetailScreen(),
             ),
           ],
@@ -86,10 +89,12 @@ final _goRouter = GoRouter(
       routes: [
         GoRoute(
           path: 'personal-info',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const PersonalInfoScreen(),
         ),
         GoRoute(
           path: 'subscription',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const SubscriptionScreen(),
         ),
       ],
@@ -165,6 +170,7 @@ final _goRouter = GoRouter(
       routes: [
         GoRoute(
           path: 'editor',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) {
             final customerId = state.uri.queryParameters['customerId'];
             return WorkoutBuilderMobilityScreen(
@@ -176,6 +182,7 @@ final _goRouter = GoRouter(
           routes: [
             GoRoute(
               path: ':planId',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (context, state) {
                 final planId = state.pathParameters['planId'];
                 final customerId = state.uri.queryParameters['customerId'];
@@ -191,36 +198,44 @@ final _goRouter = GoRouter(
         ),
         GoRoute(
           path: 'templates',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const WorkoutPlanTemplatesScreen(),
         ),
         GoRoute(
           path: 'builder',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.mobility),
           routes: [
             GoRoute(
               path: 'multiset',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.multiset),
             ),
             GoRoute(
               path: 'superset',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.superset),
             ),
             GoRoute(
               path: 'intuitive-superset',
+              parentNavigatorKey: appRootNavigatorKey,
               builder: (_, __) => const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.intuitiveSuperset),
             ),
           ],
         ),
         GoRoute(
           path: 'library',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutLibraryTitle),
         ),
         GoRoute(
           path: 'diary',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutDiaryTitle),
         ),
         GoRoute(
           path: 'stats',
+          parentNavigatorKey: appRootNavigatorKey,
           builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutStatsTitle),
         ),
       ],
