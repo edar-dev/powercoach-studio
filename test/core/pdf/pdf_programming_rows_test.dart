@@ -50,7 +50,7 @@ void main() {
     expect(content.note, 'Low Bar');
   });
 
-  test('dense bench press pyramid uses one set per line in prescription', () {
+  test('dense bench press pyramid uses arrow notation', () {
     final exercise = Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
@@ -66,17 +66,31 @@ void main() {
     );
 
     final content = formatDenseBlockContent(exercise);
-    expect(content.prescription, '1x5 77.5\n1x4 82.5\n1x3 85');
+    expect(content.prescription, '5@77.5 -> 4@82.5 -> 3@85');
     expect(content.note, 'Fermo 1-2"');
   });
 
-  test('denseWeekCellsAreIdentical detects matching week prescriptions', () {
-    const a = PdfDenseCellContent(prescription: '3x5 @6', note: '');
-    const b = PdfDenseCellContent(prescription: '3x5 @6', note: '');
-    const c = PdfDenseCellContent(prescription: '4x5 75', note: '');
+  test('denseWeekPrescriptionsIdentical ignores note differences', () {
+    const a = PdfDenseCellContent(prescription: '4x3 102.5', note: '');
+    const b = PdfDenseCellContent(prescription: '4x3 102.5', note: 'Low Bar');
+    const c = PdfDenseCellContent(prescription: '5x3 102.5', note: 'Low Bar');
 
-    expect(denseWeekCellsAreIdentical([a, b, a, b]), isTrue);
-    expect(denseWeekCellsAreIdentical([a, c, a, c]), isFalse);
+    expect(denseWeekPrescriptionsIdentical([a, b, a, b]), isTrue);
+    expect(denseWeekPrescriptionsIdentical([b, c, b, c]), isFalse);
+  });
+
+  test('resolveSharedDenseNote returns note when all weeks agree', () {
+    const a = PdfDenseCellContent(prescription: '4x3 102.5', note: 'Low Bar');
+    const b = PdfDenseCellContent(prescription: '5x3 102.5', note: 'Low Bar');
+
+    expect(resolveSharedDenseNote([a, b, a, b]), 'Low Bar');
+    expect(
+      resolveSharedDenseNote([
+        a,
+        const PdfDenseCellContent(prescription: '5x3 102.5', note: 'High Bar'),
+      ]),
+      isNull,
+    );
   });
 
   test('single structured set uses sets x reps x load columns', () {

@@ -254,14 +254,46 @@ class PdfDenseCellContent {
   String get signature => '${prescription.trim()}|${note.trim()}';
 }
 
-/// Builds dense cell content with one set per line (no mid-string wraps).
+/// Compact arrow notation for dense PDF week cells (pyramids on one line).
+String formatDenseTablePrescription(Exercise exercise) {
+  final details = exercise.effectiveSetDetails;
+  if (details.length > 1) {
+    return details
+        .map(_compactDenseSetToken)
+        .where((token) => token.isNotEmpty)
+        .join(' -> ');
+  }
+  return formatExercisePrescriptionCompact(
+    exercise,
+    includeExerciseNote: false,
+    singleLine: true,
+  );
+}
+
+String _compactDenseSetToken(ExerciseSet set) {
+  if (set.displayText.trim().isNotEmpty) {
+    final display = sanitizePdfText(set.displayText.trim());
+    final match = RegExp(r'^1x(\d+)\s+(.+)$').firstMatch(display);
+    if (match != null) {
+      return '${match.group(1)}@${match.group(2)}';
+    }
+    return display.replaceAll(' ', '');
+  }
+  final sets = set.sets.trim();
+  final reps = set.reps.trim();
+  final load = set.rpe.trim();
+  if (reps.isNotEmpty && load.isNotEmpty) {
+    if (sets.isEmpty || sets == '1') return '$reps@$load';
+    return '${sets}x$reps@$load';
+  }
+  return [sets, reps, load].where((part) => part.isNotEmpty).join('');
+}
+
+/// Builds dense cell content for week columns (prescription only in cells).
 PdfDenseCellContent formatDenseBlockContent(Object item) {
   if (item is Exercise) {
     return PdfDenseCellContent(
-      prescription: formatExercisePrescriptionCompact(
-        item,
-        includeExerciseNote: false,
-      ),
+      prescription: formatDenseTablePrescription(item),
       note: extractExerciseNoteForDense(item),
     );
   }
@@ -300,10 +332,25 @@ String extractExerciseNoteForDense(Exercise exercise) {
   return notes.join(' · ');
 }
 
-/// Whether every populated week cell in [contents] carries the same data.
-bool denseWeekCellsAreIdentical(List<PdfDenseCellContent?> contents) {
-  final populated = contents.whereType<PdfDenseCellContent>().where((c) => !c.isEmpty).toList();
+/// Whether every populated week cell shares the same prescription text.
+bool denseWeekPrescriptionsIdentical(List<PdfDenseCellContent?> contents) {
+  final populated = contents
+      .whereType<PdfDenseCellContent>()
+      .where((cell) => cell.prescription.trim().isNotEmpty)
+      .toList();
   if (populated.length < 2) return false;
-  final signature = populated.first.signature;
-  return populated.every((cell) => cell.signature == signature);
+  final signature = populated.first.prescription.trim();
+  return populated.every((cell) => cell.prescription.trim() == signature);
+}
+
+/// Returns a coaching note when every populated week cell agrees.
+String? resolveSharedDenseNote(List<PdfDenseCellContent?> contents) {
+  final notes = contents
+      .whereType<PdfDenseCellContent>()
+      .map((cell) => cell.note.trim())
+      .where((note) => note.isNotEmpty)
+      .toList();
+  if (notes.isEmpty) return null;
+  final shared = notes.first;
+  return notes.every((note) => note == shared) ? shared : null;
 }

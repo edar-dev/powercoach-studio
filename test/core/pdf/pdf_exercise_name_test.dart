@@ -9,7 +9,11 @@ void main() {
     );
     expect(
       abbreviateExerciseNameForPdf('Seated Cable Row - V Grip (Cable)'),
-      'Seated Cable Row - V Grip',
+      'Cable Row (V)',
+    );
+    expect(
+      abbreviateExerciseNameForPdf('Seated Overhead Press (Dumbbell)'),
+      'OHP DB',
     );
     expect(
       abbreviateExerciseNameForPdf('Chest Press (Machine)'),

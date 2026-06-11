@@ -43,11 +43,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
       margin: pw.EdgeInsets.all(PdfDocumentTheme.pageMarginFor(dense: dense)),
       header: (context) {
         if (dense && context.pageNumber > 1) {
-          return PdfDocumentTheme.buildRunningHeader(
-            routine.name,
-            context,
-            labels,
-          );
+          return PdfDocumentTheme.buildRunningHeader(routine.name);
         }
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -479,24 +475,22 @@ List<pw.Widget> _denseProgrammingWidgets(
         return formatDenseBlockContent(blocks[r]);
       }).toList();
 
-      final allSame = denseWeekCellsAreIdentical(weekContents);
+      final allSame = denseWeekPrescriptionsIdentical(weekContents);
+      final sharedNote = resolveSharedDenseNote(weekContents);
       final firstPopulatedIndex = weekContents.indexWhere(
-        (content) => content != null && !content.isEmpty,
+        (content) => content != null && content.prescription.trim().isNotEmpty,
       );
 
       final cells = <pw.Widget>[
-        PdfDocumentTheme.compactCell(
-          label,
-          labels: labels,
-          dense: dense,
-          blankIfEmpty: true,
-          bold: label.isNotEmpty,
+        PdfDocumentTheme.denseExerciseLabelCell(
+          label: label,
+          sharedNote: sharedNote,
         ),
       ];
 
       for (var wi = 0; wi < weeks.length; wi++) {
         final content = weekContents[wi];
-        if (content == null || content.isEmpty) {
+        if (content == null || content.prescription.trim().isEmpty) {
           cells.add(
             PdfDocumentTheme.compactCell(
               '',
@@ -507,15 +501,35 @@ List<pw.Widget> _denseProgrammingWidgets(
           );
           continue;
         }
-        if (allSame && wi != firstPopulatedIndex) {
-          cells.add(PdfDocumentTheme.denseDittoCell(labels));
+        if (allSame) {
+          if (wi == firstPopulatedIndex) {
+            cells.add(
+              PdfDocumentTheme.denseMergedWeeksCell(
+                PdfDenseCellContent(
+                  prescription: content.prescription,
+                  note: '',
+                ),
+              ),
+            );
+          } else {
+            cells.add(
+              PdfDocumentTheme.compactCell(
+                '',
+                labels: labels,
+                dense: dense,
+                blankIfEmpty: true,
+              ),
+            );
+          }
           continue;
         }
         cells.add(
           PdfDocumentTheme.densePrescriptionCell(
-            content,
-            labels: labels,
-            showAllWeeksLabel: allSame && wi == firstPopulatedIndex,
+            PdfDenseCellContent(
+              prescription: content.prescription,
+              note: sharedNote == null ? content.note : '',
+            ),
+            includeNote: sharedNote == null,
           ),
         );
       }
@@ -531,19 +545,21 @@ List<pw.Widget> _denseProgrammingWidgets(
     }
 
     out.add(
-      pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-        children: [
-          PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
-          pw.Table(
-            border: pw.TableBorder.all(
-              color: PdfDocumentTheme.border,
-              width: 0.35,
+      pw.Inseparable(
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+          children: [
+            PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: PdfDocumentTheme.border,
+                width: 0.35,
+              ),
+              columnWidths: columnWidths,
+              children: tableRows,
             ),
-            columnWidths: columnWidths,
-            children: tableRows,
-          ),
-        ],
+          ],
+        ),
       ),
     );
     out.add(pw.SizedBox(height: 12));

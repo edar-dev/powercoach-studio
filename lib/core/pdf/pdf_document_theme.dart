@@ -99,36 +99,20 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget buildRunningHeader(
-    String title,
-    pw.Context context,
-    PdfExportLabels labels,
-  ) {
+  static pw.Widget buildRunningHeader(String title) {
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 5),
       decoration: pw.BoxDecoration(
         border: pw.Border(bottom: pw.BorderSide(color: border, width: 0.5)),
       ),
-      child: pw.Row(
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          pw.Expanded(
-            child: pw.Text(
-              title,
-              style: pw.TextStyle(
-                fontSize: denseFooterFontSize + 1,
-                fontWeight: pw.FontWeight.bold,
-                color: textMuted,
-              ),
-              maxLines: 1,
-            ),
-          ),
-          pw.SizedBox(width: 8),
-          pw.Text(
-            labels.pageOf(context.pageNumber, context.pagesCount),
-            style: pw.TextStyle(fontSize: denseFooterFontSize, color: footerMuted),
-          ),
-        ],
+      child: pw.Text(
+        title,
+        style: pw.TextStyle(
+          fontSize: denseFooterFontSize + 1,
+          fontWeight: pw.FontWeight.bold,
+          color: textMuted,
+        ),
+        maxLines: 1,
       ),
     );
   }
@@ -324,13 +308,10 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget densePrescriptionCell(
-    PdfDenseCellContent content, {
-    required PdfExportLabels labels,
-    bool showAllWeeksLabel = false,
+  static pw.Widget denseExerciseLabelCell({
+    required String label,
+    String? sharedNote,
   }) {
-    final prescription = sanitizePdfText(content.prescription.trim());
-    final note = sanitizePdfText(content.note.trim());
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(
         horizontal: denseCellPaddingH,
@@ -339,26 +320,59 @@ class PdfDocumentTheme {
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
-          if (showAllWeeksLabel)
-            pw.Padding(
-              padding: const pw.EdgeInsets.only(bottom: 1),
-              child: pw.Text(
-                labels.denseAllWeeks,
-                style: pw.TextStyle(
-                  fontSize: denseCompactTableFontSize - 0.5,
-                  fontWeight: pw.FontWeight.bold,
-                  color: accent,
-                ),
+          if (label.isNotEmpty)
+            pw.Text(
+              label,
+              style: pw.TextStyle(
+                fontSize: denseTableFontSize,
+                fontWeight: pw.FontWeight.bold,
+                color: textPrimary,
               ),
             ),
+          if (sharedNote != null && sharedNote.trim().isNotEmpty) ...[
+            if (label.isNotEmpty) pw.SizedBox(height: 1.5),
+            pw.Text(
+              sanitizePdfText(sharedNote),
+              style: pw.TextStyle(
+                fontSize: denseCompactTableFontSize,
+                fontStyle: pw.FontStyle.italic,
+                color: textMuted,
+                lineSpacing: 1.1,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget densePrescriptionCell(
+    PdfDenseCellContent content, {
+    bool includeNote = true,
+    bool center = false,
+  }) {
+    final prescription = sanitizePdfText(content.prescription.trim());
+    final note = includeNote ? sanitizePdfText(content.note.trim()) : '';
+    final compact = prescription.length > 36;
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(
+        horizontal: denseCellPaddingH,
+        vertical: denseCellPaddingV,
+      ),
+      child: pw.Column(
+        crossAxisAlignment: center
+            ? pw.CrossAxisAlignment.center
+            : pw.CrossAxisAlignment.start,
+        children: [
           if (prescription.isNotEmpty)
             pw.Text(
               prescription,
               style: pw.TextStyle(
-                fontSize: denseTableFontSize,
+                fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
                 color: textPrimary,
-                lineSpacing: prescription.contains('\n') ? 1.25 : 0,
+                lineSpacing: prescription.contains('\n') ? 1.15 : 0,
               ),
+              textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
             ),
           if (note.isNotEmpty) ...[
             if (prescription.isNotEmpty) pw.SizedBox(height: 1.5),
@@ -368,8 +382,9 @@ class PdfDocumentTheme {
                 fontSize: denseCompactTableFontSize,
                 fontStyle: pw.FontStyle.italic,
                 color: textMuted,
-                lineSpacing: 1.15,
+                lineSpacing: 1.1,
               ),
+              textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
             ),
           ],
         ],
@@ -377,12 +392,10 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget denseDittoCell(PdfExportLabels labels) {
-    return tableCell(
-      labels.denseDitto,
-      center: true,
-      dense: true,
-      blankIfEmpty: true,
+  static pw.Widget denseMergedWeeksCell(PdfDenseCellContent content) {
+    return pw.Container(
+      color: tableRowAltBg,
+      child: densePrescriptionCell(content, includeNote: false, center: true),
     );
   }
 
