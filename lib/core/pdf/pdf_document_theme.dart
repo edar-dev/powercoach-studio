@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'pdf_coach_header.dart';
 import 'pdf_export_labels.dart';
+import 'pdf_programming_rows.dart';
 import 'pdf_text_sanitize.dart';
 
 /// Shared visual system for PowerCoach Studio PDF exports (Stitch-aligned).
@@ -304,12 +305,95 @@ class PdfDocumentTheme {
     );
   }
 
+  static pw.Widget buildDenseWeekLegend(
+    PdfExportLabels labels,
+    List<String> weekNames,
+  ) {
+    if (weekNames.length < 2) return pw.SizedBox();
+    final legend = weekNames
+        .asMap()
+        .entries
+        .map((e) => labels.denseWeekLegendEntry(e.key + 1, e.value))
+        .join(' · ');
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 6),
+      child: pw.Text(
+        legend,
+        style: pw.TextStyle(fontSize: denseFooterFontSize, color: textMuted),
+      ),
+    );
+  }
+
+  static pw.Widget densePrescriptionCell(
+    PdfDenseCellContent content, {
+    required PdfExportLabels labels,
+    bool showAllWeeksLabel = false,
+  }) {
+    final prescription = sanitizePdfText(content.prescription.trim());
+    final note = sanitizePdfText(content.note.trim());
+    return pw.Padding(
+      padding: const pw.EdgeInsets.symmetric(
+        horizontal: denseCellPaddingH,
+        vertical: denseCellPaddingV,
+      ),
+      child: pw.Column(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        children: [
+          if (showAllWeeksLabel)
+            pw.Padding(
+              padding: const pw.EdgeInsets.only(bottom: 1),
+              child: pw.Text(
+                labels.denseAllWeeks,
+                style: pw.TextStyle(
+                  fontSize: denseCompactTableFontSize - 0.5,
+                  fontWeight: pw.FontWeight.bold,
+                  color: accent,
+                ),
+              ),
+            ),
+          if (prescription.isNotEmpty)
+            pw.Text(
+              prescription,
+              style: pw.TextStyle(
+                fontSize: denseTableFontSize,
+                color: textPrimary,
+                lineSpacing: prescription.contains('\n') ? 1.25 : 0,
+              ),
+            ),
+          if (note.isNotEmpty) ...[
+            if (prescription.isNotEmpty) pw.SizedBox(height: 1.5),
+            pw.Text(
+              note,
+              style: pw.TextStyle(
+                fontSize: denseCompactTableFontSize,
+                fontStyle: pw.FontStyle.italic,
+                color: textMuted,
+                lineSpacing: 1.15,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget denseDittoCell(PdfExportLabels labels) {
+    return tableCell(
+      labels.denseDitto,
+      center: true,
+      dense: true,
+      blankIfEmpty: true,
+    );
+  }
+
   static pw.Widget compactCell(
     String text, {
     bool isHeader = false,
     PdfExportLabels? labels,
     bool dense = false,
     bool blankIfEmpty = false,
+    bool bold = false,
+    bool center = false,
   }) {
     final empty = labels?.emptyValue ?? '-';
     final trimmed = text.trim();
@@ -317,6 +401,8 @@ class PdfDocumentTheme {
     return tableCell(
       display,
       isHeader: isHeader,
+      bold: bold,
+      center: center,
       fontSize: dense ? denseCompactTableFontSize : compactTableFontSize,
       paddingH: dense ? denseCompactCellPadding : compactCellPadding,
       paddingV: dense ? denseCompactCellPadding : compactCellPadding,

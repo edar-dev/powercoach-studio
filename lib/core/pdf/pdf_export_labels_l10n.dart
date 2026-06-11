@@ -26,6 +26,10 @@ extension PdfExportLabelsL10n on AppLocalizations {
       measurementBench: measurementBench,
       exportGenerating: pdfExportGenerating,
       measurementRecordCount: pdfMeasurementRecordCount,
+      denseWeekShort: pdfDenseWeekShort,
+      denseAllWeeks: pdfDenseAllWeeks,
+      denseDitto: pdfDenseDitto,
+      denseWeekLegendEntry: pdfDenseWeekLegendEntry,
     );
   }
 }

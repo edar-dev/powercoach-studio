@@ -1,4 +1,5 @@
 import '../../features/workouts/data/workout_routine_model.dart';
+import 'pdf_exercise_name.dart';
 import 'pdf_text_sanitize.dart';
 
 /// One rendered row in the workout programming PDF table.
@@ -236,4 +237,73 @@ String formatBlockPrescriptionCompact(Object item, {bool singleLine = false}) {
             '${sanitizePdfText(e.name)}: ${formatExercisePrescriptionCompact(e, singleLine: singleLine)}',
       )
       .join(separator);
+}
+
+/// Prescription and coaching note split for dense PDF week cells.
+class PdfDenseCellContent {
+  const PdfDenseCellContent({
+    required this.prescription,
+    required this.note,
+  });
+
+  final String prescription;
+  final String note;
+
+  bool get isEmpty => prescription.trim().isEmpty && note.trim().isEmpty;
+
+  String get signature => '${prescription.trim()}|${note.trim()}';
+}
+
+/// Builds dense cell content with one set per line (no mid-string wraps).
+PdfDenseCellContent formatDenseBlockContent(Object item) {
+  if (item is Exercise) {
+    return PdfDenseCellContent(
+      prescription: formatExercisePrescriptionCompact(
+        item,
+        includeExerciseNote: false,
+      ),
+      note: extractExerciseNoteForDense(item),
+    );
+  }
+  final group = item as List<Exercise>;
+  final prescriptions = <String>[];
+  final notes = <String>[];
+  for (final exercise in group) {
+    final content = formatDenseBlockContent(exercise);
+    if (content.prescription.isNotEmpty) {
+      prescriptions.add(
+        '${abbreviateExerciseNameForPdf(exercise.name)}: ${content.prescription}',
+      );
+    }
+    if (content.note.isNotEmpty) {
+      notes.add(content.note);
+    }
+  }
+  return PdfDenseCellContent(
+    prescription: prescriptions.join('\n'),
+    note: notes.toSet().join(' · '),
+  );
+}
+
+String extractExerciseNoteForDense(Exercise exercise) {
+  final notes = <String>{};
+  final main = exercise.note.trim();
+  if (main.isNotEmpty) {
+    notes.add(sanitizePdfText(main));
+  }
+  for (final set in exercise.effectiveSetDetails) {
+    final setNote = set.note.trim();
+    if (setNote.isNotEmpty) {
+      notes.add(sanitizePdfText(setNote));
+    }
+  }
+  return notes.join(' · ');
+}
+
+/// Whether every populated week cell in [contents] carries the same data.
+bool denseWeekCellsAreIdentical(List<PdfDenseCellContent?> contents) {
+  final populated = contents.whereType<PdfDenseCellContent>().where((c) => !c.isEmpty).toList();
+  if (populated.length < 2) return false;
+  final signature = populated.first.signature;
+  return populated.every((cell) => cell.signature == signature);
 }

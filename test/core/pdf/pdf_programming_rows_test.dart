@@ -34,7 +34,23 @@ void main() {
     expect(rows.first.notes, 'Fermo 1-2"');
   });
 
-  test('dense bench press pyramid uses single-line prescription', () {
+  test('dense table content splits prescription and note on separate lines', () {
+    final exercise = Exercise(
+      id: 'e1',
+      name: 'Squat (Barbell)',
+      sets: '1',
+      reps: '4x3 102.5',
+      rpe: '',
+      note: 'Low Bar',
+      setDetails: const [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
+    );
+
+    final content = formatDenseBlockContent(exercise);
+    expect(content.prescription, '4x3 102.5');
+    expect(content.note, 'Low Bar');
+  });
+
+  test('dense bench press pyramid uses one set per line in prescription', () {
     final exercise = Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
@@ -49,12 +65,18 @@ void main() {
       ],
     );
 
-    final rows = buildProgrammingSetRows(exercise, dense: true);
-    expect(rows.length, 1);
-    expect(rows.first.prescriptionOnly, isTrue);
-    expect(rows.first.reps, '1x5 77.5 · 1x4 82.5 · 1x3 85');
-    expect(rows.first.notes, 'Fermo 1-2"');
-    expect(rows.first.isMultiline, isFalse);
+    final content = formatDenseBlockContent(exercise);
+    expect(content.prescription, '1x5 77.5\n1x4 82.5\n1x3 85');
+    expect(content.note, 'Fermo 1-2"');
+  });
+
+  test('denseWeekCellsAreIdentical detects matching week prescriptions', () {
+    const a = PdfDenseCellContent(prescription: '3x5 @6', note: '');
+    const b = PdfDenseCellContent(prescription: '3x5 @6', note: '');
+    const c = PdfDenseCellContent(prescription: '4x5 75', note: '');
+
+    expect(denseWeekCellsAreIdentical([a, b, a, b]), isTrue);
+    expect(denseWeekCellsAreIdentical([a, c, a, c]), isFalse);
   });
 
   test('single structured set uses sets x reps x load columns', () {

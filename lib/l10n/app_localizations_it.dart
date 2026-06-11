@@ -705,6 +705,22 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String pdfDenseWeekShort(int n) {
+    return 'S$n';
+  }
+
+  @override
+  String get pdfDenseAllWeeks => 'tutte';
+
+  @override
+  String get pdfDenseDitto => '〃';
+
+  @override
+  String pdfDenseWeekLegendEntry(int n, String name) {
+    return 'S$n = $name';
+  }
+
+  @override
   String get workoutShare => 'Condividi';
 
   @override

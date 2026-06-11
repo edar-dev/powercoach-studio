@@ -1388,6 +1388,30 @@ abstract class AppLocalizations {
   /// **'{count} records'**
   String pdfMeasurementRecordCount(int count);
 
+  /// No description provided for @pdfDenseWeekShort.
+  ///
+  /// In en, this message translates to:
+  /// **'W{n}'**
+  String pdfDenseWeekShort(int n);
+
+  /// No description provided for @pdfDenseAllWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'all'**
+  String get pdfDenseAllWeeks;
+
+  /// No description provided for @pdfDenseDitto.
+  ///
+  /// In en, this message translates to:
+  /// **'〃'**
+  String get pdfDenseDitto;
+
+  /// No description provided for @pdfDenseWeekLegendEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'W{n} = {name}'**
+  String pdfDenseWeekLegendEntry(int n, String name);
+
   /// No description provided for @workoutShare.
   ///
   /// In en, this message translates to:
