@@ -28,6 +28,10 @@ PdfExportLabels _labels() {
     measurementBench: 'Bench',
     exportGenerating: '...',
     measurementRecordCount: (c) => '$c records',
+    denseWeekShort: (n) => 'S$n',
+    denseAllWeeks: 'all',
+    denseDitto: '〃',
+    denseWeekLegendEntry: (n, name) => 'S$n = $name',
   );
 }
 

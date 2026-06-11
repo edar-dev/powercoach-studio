@@ -250,6 +250,21 @@
       "count": { "type": "int" }
     }
   },
+  "pdfDenseWeekShort": "S{n}",
+  "@pdfDenseWeekShort": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "pdfDenseAllWeeks": "tutte",
+  "pdfDenseDitto": "〃",
+  "pdfDenseWeekLegendEntry": "S{n} = {name}",
+  "@pdfDenseWeekLegendEntry": {
+    "placeholders": {
+      "n": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
   "workoutShare": "Condividi",
   "workoutStartingWeek": "Settimana iniziale",
   "workoutStartingWeekHint": "Settimana 1, 2, 3...",

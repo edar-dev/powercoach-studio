@@ -4,6 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
+import '../../../core/pdf/pdf_exercise_name.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../../../core/pdf/pdf_text_sanitize.dart';
@@ -54,6 +55,16 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
             if (coachHeader != null && coachHeader.hasContent)
               PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
             PdfDocumentTheme.buildDocumentTitle(routine.name, dense: dense),
+            if (dense && routine.weeks.length > 1)
+              PdfDocumentTheme.buildDenseWeekLegend(
+                labels,
+                routine.weeks.asMap().entries.map((entry) {
+                  final name = entry.value.name.trim();
+                  return name.isNotEmpty
+                      ? name
+                      : labels.denseWeekShort(entry.key + 1);
+                }).toList(),
+              ),
             pw.SizedBox(height: dense ? 6 : 10),
           ],
         );
@@ -355,21 +366,27 @@ int _maxDaySlotCount(List<Week> weeks) {
 
 List<Object> _blocksForDay(Day day) => partitionExercisesBySuperset(day.exercises);
 
-String _blockRowLabel(Object item, {bool dense = false}) {
-  if (item is Exercise) return item.name;
+String _blockRowLabel(
+  Object item, {
+  required int rowNumber,
+  bool dense = false,
+}) {
+  final prefix = '$rowNumber. ';
+  if (item is Exercise) {
+    final name = dense ? abbreviateExerciseNameForPdf(item.name) : item.name;
+    return '$prefix$name';
+  }
   final g = item as List<Exercise>;
   if (g.isEmpty) return '';
-  if (g.length == 1) return g.first.name;
-  if (dense) {
-    return g.map((e) => e.name).join(' + ');
+  if (g.length == 1) {
+    final name = dense ? abbreviateExerciseNameForPdf(g.first.name) : g.first.name;
+    return '$prefix$name';
   }
-  return g.map((e) => e.name).join(' / ');
-}
-
-String _weekColumnHeader(Week week, int index) {
-  final n = week.name.trim();
-  if (n.length <= 14) return n.isEmpty ? 'W${index + 1}' : n;
-  return 'W${index + 1}';
+  final joiner = dense ? ' + ' : ' / ';
+  final names = g
+      .map((e) => dense ? abbreviateExerciseNameForPdf(e.name) : e.name)
+      .join(joiner);
+  return '$prefix$names';
 }
 
 List<pw.Widget> _denseProgrammingWidgets(
@@ -409,10 +426,10 @@ List<pw.Widget> _denseProgrammingWidgets(
     }
 
     final columnWidths = <int, pw.TableColumnWidth>{
-      0: const pw.FlexColumnWidth(1.35),
+      0: const pw.FlexColumnWidth(1.1),
     };
     for (var i = 0; i < weeks.length; i++) {
-      columnWidths[i + 1] = const pw.FlexColumnWidth(1);
+      columnWidths[i + 1] = const pw.FlexColumnWidth(1.05);
     }
 
     final headerCells = <pw.Widget>[
@@ -424,10 +441,11 @@ List<pw.Widget> _denseProgrammingWidgets(
       ),
       ...weeks.asMap().entries.map(
             (e) => PdfDocumentTheme.compactCell(
-              _weekColumnHeader(e.value, e.key),
+              labels.denseWeekShort(e.key + 1),
               isHeader: true,
               labels: labels,
               dense: dense,
+              center: true,
             ),
           ),
     ];
@@ -440,15 +458,31 @@ List<pw.Widget> _denseProgrammingWidgets(
     ];
 
     for (var r = 0; r < maxRows; r++) {
-      String label = '';
+      Object? block;
       for (final w in weeks) {
         if (d >= w.days.length) continue;
         final blocks = _blocksForDay(w.days[d]);
         if (r < blocks.length) {
-          label = _blockRowLabel(blocks[r], dense: dense);
+          block = blocks[r];
           break;
         }
       }
+
+      final label = block == null
+          ? ''
+          : _blockRowLabel(block, rowNumber: r + 1, dense: dense);
+
+      final weekContents = weeks.map((w) {
+        if (d >= w.days.length) return null;
+        final blocks = _blocksForDay(w.days[d]);
+        if (r >= blocks.length) return null;
+        return formatDenseBlockContent(blocks[r]);
+      }).toList();
+
+      final allSame = denseWeekCellsAreIdentical(weekContents);
+      final firstPopulatedIndex = weekContents.indexWhere(
+        (content) => content != null && !content.isEmpty,
+      );
 
       final cells = <pw.Widget>[
         PdfDocumentTheme.compactCell(
@@ -456,34 +490,44 @@ List<pw.Widget> _denseProgrammingWidgets(
           labels: labels,
           dense: dense,
           blankIfEmpty: true,
+          bold: label.isNotEmpty,
         ),
-        ...weeks.map((w) {
-          if (d >= w.days.length) {
-            return PdfDocumentTheme.compactCell(
-              '',
-              labels: labels,
-              dense: dense,
-              blankIfEmpty: true,
-            );
-          }
-          final blocks = _blocksForDay(w.days[d]);
-          if (r >= blocks.length) {
-            return PdfDocumentTheme.compactCell(
-              '',
-              labels: labels,
-              dense: dense,
-              blankIfEmpty: true,
-            );
-          }
-          return PdfDocumentTheme.compactCell(
-            formatBlockPrescriptionCompact(blocks[r], singleLine: true),
-            labels: labels,
-            dense: dense,
-            blankIfEmpty: true,
-          );
-        }),
       ];
-      tableRows.add(pw.TableRow(children: cells));
+
+      for (var wi = 0; wi < weeks.length; wi++) {
+        final content = weekContents[wi];
+        if (content == null || content.isEmpty) {
+          cells.add(
+            PdfDocumentTheme.compactCell(
+              '',
+              labels: labels,
+              dense: dense,
+              blankIfEmpty: true,
+            ),
+          );
+          continue;
+        }
+        if (allSame && wi != firstPopulatedIndex) {
+          cells.add(PdfDocumentTheme.denseDittoCell(labels));
+          continue;
+        }
+        cells.add(
+          PdfDocumentTheme.densePrescriptionCell(
+            content,
+            labels: labels,
+            showAllWeeksLabel: allSame && wi == firstPopulatedIndex,
+          ),
+        );
+      }
+
+      tableRows.add(
+        pw.TableRow(
+          decoration: pw.BoxDecoration(
+            color: r.isOdd ? PdfDocumentTheme.tableRowAltBg : null,
+          ),
+          children: cells,
+        ),
+      );
     }
 
     out.add(
@@ -502,7 +546,7 @@ List<pw.Widget> _denseProgrammingWidgets(
         ],
       ),
     );
-    out.add(pw.SizedBox(height: 8));
+    out.add(pw.SizedBox(height: 12));
   }
 
   return out;

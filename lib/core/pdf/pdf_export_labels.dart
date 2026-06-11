@@ -23,6 +23,10 @@ class PdfExportLabels {
     required this.measurementBench,
     required this.exportGenerating,
     required this.measurementRecordCount,
+    required this.denseWeekShort,
+    required this.denseAllWeeks,
+    required this.denseDitto,
+    required this.denseWeekLegendEntry,
   });
 
   final String brandName;
@@ -47,4 +51,8 @@ class PdfExportLabels {
   final String measurementBench;
   final String exportGenerating;
   final String Function(int count) measurementRecordCount;
+  final String Function(int weekIndex) denseWeekShort;
+  final String denseAllWeeks;
+  final String denseDitto;
+  final String Function(int weekIndex, String weekName) denseWeekLegendEntry;
 }
