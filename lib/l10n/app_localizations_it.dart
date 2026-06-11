@@ -631,11 +631,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutPdfLayoutCanonical => 'Completo (per settimana)';
 
   @override
-  String get workoutPdfLayoutCompact => 'Compatto (per giorno)';
+  String get workoutPdfLayoutDense => 'Denso (consigliato)';
 
   @override
-  String get workoutPdfLayoutCompactDescription =>
-      'Ogni giorno di allenamento in una tabella con una colonna per settimana (progressione).';
+  String get workoutPdfLayoutDenseDescription =>
+      'Layout compatto per giorno con colonne per settimana, meno pagine e prescrizioni su una riga.';
 
   @override
   String get workoutExportPdfGenerateAndDownload => 'Genera e scarica';

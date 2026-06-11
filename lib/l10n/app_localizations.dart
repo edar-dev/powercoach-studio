@@ -1262,17 +1262,17 @@ abstract class AppLocalizations {
   /// **'Full (by week)'**
   String get workoutPdfLayoutCanonical;
 
-  /// No description provided for @workoutPdfLayoutCompact.
+  /// No description provided for @workoutPdfLayoutDense.
   ///
   /// In en, this message translates to:
-  /// **'Compact (by day)'**
-  String get workoutPdfLayoutCompact;
+  /// **'Dense (recommended)'**
+  String get workoutPdfLayoutDense;
 
-  /// No description provided for @workoutPdfLayoutCompactDescription.
+  /// No description provided for @workoutPdfLayoutDenseDescription.
   ///
   /// In en, this message translates to:
-  /// **'Each training day as one table with a column per week (progression).'**
-  String get workoutPdfLayoutCompactDescription;
+  /// **'Compact day layout with week columns, fewer pages, and single-line prescriptions.'**
+  String get workoutPdfLayoutDenseDescription;
 
   /// No description provided for @workoutExportPdfGenerateAndDownload.
   ///

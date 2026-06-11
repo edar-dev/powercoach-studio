@@ -10,18 +10,32 @@ class PdfDocumentTheme {
   PdfDocumentTheme._();
 
   static const double pageMargin = 24;
+  static const double densePageMargin = 18;
   static const double headerMetaFontSize = 9;
   static const double titleFontSize = 20;
+  static const double denseTitleFontSize = 16;
   static const double sectionFontSize = 13;
+  static const double denseSectionFontSize = 11;
   static const double dayFontSize = 11;
+  static const double denseDayFontSize = 9.5;
   static const double tableFontSize = 8.5;
+  static const double denseTableFontSize = 7.5;
   static const double tableHeaderFontSize = 7.5;
   static const double compactTableFontSize = 7.5;
+  static const double denseCompactTableFontSize = 7;
   static const double supersetFontSize = 8;
+  static const double denseSupersetFontSize = 7;
   static const double footerFontSize = 7.5;
+  static const double denseFooterFontSize = 7;
   static const double cellPaddingH = 6;
   static const double cellPaddingV = 4;
+  static const double denseCellPaddingH = 4;
+  static const double denseCellPaddingV = 2.5;
   static const double compactCellPadding = 4;
+  static const double denseCompactCellPadding = 3;
+
+  static double pageMarginFor({required bool dense}) =>
+      dense ? densePageMargin : pageMargin;
 
   static final PdfColor accent = PdfColor.fromHex('#0D59F2');
   static final PdfColor textPrimary = PdfColor.fromHex('#1F2937');
@@ -60,23 +74,61 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget buildDocumentTitle(String title) {
+  static pw.Widget buildDocumentTitle(String title, {bool dense = false}) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.center,
       children: [
-        pw.Container(width: 4, height: 28, color: accent),
-        pw.SizedBox(width: 10),
+        pw.Container(
+          width: dense ? 3 : 4,
+          height: dense ? 22 : 28,
+          color: accent,
+        ),
+        pw.SizedBox(width: dense ? 8 : 10),
         pw.Expanded(
           child: pw.Text(
             title,
             style: pw.TextStyle(
-              fontSize: titleFontSize,
+              fontSize: dense ? denseTitleFontSize : titleFontSize,
               fontWeight: pw.FontWeight.bold,
               color: textPrimary,
             ),
           ),
         ),
       ],
+    );
+  }
+
+  static pw.Widget buildRunningHeader(
+    String title,
+    pw.Context context,
+    PdfExportLabels labels,
+  ) {
+    return pw.Container(
+      padding: const pw.EdgeInsets.only(bottom: 5),
+      decoration: pw.BoxDecoration(
+        border: pw.Border(bottom: pw.BorderSide(color: border, width: 0.5)),
+      ),
+      child: pw.Row(
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+        children: [
+          pw.Expanded(
+            child: pw.Text(
+              title,
+              style: pw.TextStyle(
+                fontSize: denseFooterFontSize + 1,
+                fontWeight: pw.FontWeight.bold,
+                color: textMuted,
+              ),
+              maxLines: 1,
+            ),
+          ),
+          pw.SizedBox(width: 8),
+          pw.Text(
+            labels.pageOf(context.pageNumber, context.pagesCount),
+            style: pw.TextStyle(fontSize: denseFooterFontSize, color: footerMuted),
+          ),
+        ],
+      ),
     );
   }
 
@@ -90,37 +142,37 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget sectionTitle(String text) {
+  static pw.Widget sectionTitle(String text, {bool dense = false}) {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
-        pw.SizedBox(height: 4),
+        pw.SizedBox(height: dense ? 2 : 4),
         pw.Text(
-          text.toUpperCase(),
+          dense ? text : text.toUpperCase(),
           style: pw.TextStyle(
-            fontSize: sectionFontSize,
+            fontSize: dense ? denseSectionFontSize : sectionFontSize,
             fontWeight: pw.FontWeight.bold,
             color: textPrimary,
-            letterSpacing: 0.6,
+            letterSpacing: dense ? 0.2 : 0.6,
           ),
         ),
-        pw.SizedBox(height: 4),
-        pw.Container(height: 1.5, color: textPrimary),
-        pw.SizedBox(height: 6),
+        pw.SizedBox(height: dense ? 2 : 4),
+        pw.Container(height: dense ? 1 : 1.5, color: textPrimary),
+        pw.SizedBox(height: dense ? 4 : 6),
       ],
     );
   }
 
-  static pw.Widget dayTitle(String text) {
+  static pw.Widget dayTitle(String text, {bool dense = false}) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(bottom: 4),
+      padding: pw.EdgeInsets.only(bottom: dense ? 2 : 4),
       child: pw.Text(
-        text.toUpperCase(),
+        dense ? text : text.toUpperCase(),
         style: pw.TextStyle(
-          fontSize: dayFontSize,
+          fontSize: dense ? denseDayFontSize : dayFontSize,
           fontWeight: pw.FontWeight.bold,
-          color: textPrimary,
-          letterSpacing: 0.4,
+          color: textMuted,
+          letterSpacing: dense ? 0.1 : 0.4,
         ),
       ),
     );
@@ -129,11 +181,15 @@ class PdfDocumentTheme {
   static pw.Widget buildPageFooter(
     pw.Context context,
     PdfExportLabels labels,
-    DateTime generatedAt,
-  ) {
+    DateTime generatedAt, {
+    bool dense = false,
+    bool showDisclaimer = true,
+  }) {
     final dateStr = _formatDate(generatedAt);
+    final footerSize = dense ? denseFooterFontSize : footerFontSize;
+    final topPadding = dense ? 6.0 : 12.0;
     return pw.Container(
-      padding: const pw.EdgeInsets.only(top: 12),
+      padding: pw.EdgeInsets.only(top: topPadding),
       decoration: pw.BoxDecoration(
         border: pw.Border(top: pw.BorderSide(color: border, width: 0.5)),
       ),
@@ -144,20 +200,22 @@ class PdfDocumentTheme {
             children: [
               pw.Text(
                 labels.pageOf(context.pageNumber, context.pagesCount),
-                style: pw.TextStyle(fontSize: footerFontSize, color: footerMuted),
+                style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               ),
               pw.Text(
                 labels.generatedOn(dateStr),
-                style: pw.TextStyle(fontSize: footerFontSize, color: footerMuted),
+                style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               ),
             ],
           ),
-          pw.SizedBox(height: 6),
-          pw.Text(
-            labels.footerDisclaimer,
-            style: pw.TextStyle(fontSize: footerFontSize, color: footerMuted),
-            textAlign: pw.TextAlign.center,
-          ),
+          if (showDisclaimer) ...[
+            pw.SizedBox(height: dense ? 4 : 6),
+            pw.Text(
+              labels.footerDisclaimer,
+              style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
+              textAlign: pw.TextAlign.center,
+            ),
+          ],
         ],
       ),
     );
@@ -175,7 +233,13 @@ class PdfDocumentTheme {
     double paddingH = cellPaddingH,
     double paddingV = cellPaddingV,
     double? lineSpacing,
+    bool dense = false,
   }) {
+    if (dense) {
+      fontSize = isHeader ? denseCompactTableFontSize : denseTableFontSize;
+      paddingH = isHeader ? denseCompactCellPadding : denseCellPaddingH;
+      paddingV = isHeader ? denseCompactCellPadding : denseCellPaddingV;
+    }
     final sanitized = sanitizePdfText(text.trim());
     final display = sanitized.isEmpty
         ? (blankIfEmpty ? '' : emptyPlaceholder)
@@ -211,6 +275,7 @@ class PdfDocumentTheme {
     String text, {
     required bool highlight,
     String emptyPlaceholder = '-',
+    bool dense = false,
   }) {
     if (!highlight) {
       return tableCell(
@@ -218,6 +283,7 @@ class PdfDocumentTheme {
         bold: true,
         blankIfEmpty: text.trim().isEmpty,
         emptyPlaceholder: emptyPlaceholder,
+        dense: dense,
       );
     }
 
@@ -225,7 +291,7 @@ class PdfDocumentTheme {
       decoration: pw.BoxDecoration(
         color: exerciseGroupBg,
         border: pw.Border(
-          left: pw.BorderSide(color: accent, width: 2.5),
+          left: pw.BorderSide(color: accent, width: dense ? 2 : 2.5),
         ),
       ),
       child: tableCell(
@@ -233,6 +299,7 @@ class PdfDocumentTheme {
         bold: true,
         blankIfEmpty: text.trim().isEmpty,
         emptyPlaceholder: emptyPlaceholder,
+        dense: dense,
       ),
     );
   }
@@ -241,28 +308,76 @@ class PdfDocumentTheme {
     String text, {
     bool isHeader = false,
     PdfExportLabels? labels,
+    bool dense = false,
+    bool blankIfEmpty = false,
   }) {
     final empty = labels?.emptyValue ?? '-';
-    final display = text.trim().isEmpty ? empty : text;
+    final trimmed = text.trim();
+    final display = trimmed.isEmpty ? (blankIfEmpty ? '' : empty) : text;
     return tableCell(
       display,
       isHeader: isHeader,
-      fontSize: compactTableFontSize,
-      paddingH: compactCellPadding,
-      paddingV: compactCellPadding,
+      fontSize: dense ? denseCompactTableFontSize : compactTableFontSize,
+      paddingH: dense ? denseCompactCellPadding : compactCellPadding,
+      paddingV: dense ? denseCompactCellPadding : compactCellPadding,
+      blankIfEmpty: blankIfEmpty,
+      emptyPlaceholder: empty,
+      dense: dense,
     );
   }
 
-  static pw.TableRow programmingHeaderRow(PdfExportLabels labels) {
+  static pw.TableRow programmingHeaderRow(
+    PdfExportLabels labels, {
+    bool dense = false,
+    bool prescriptionColumns = false,
+  }) {
+    if (prescriptionColumns) {
+      return pw.TableRow(
+        decoration: pw.BoxDecoration(color: tableHeaderBg),
+        children: [
+          tableCell(labels.colExercise, isHeader: true, dense: dense),
+          tableCell(
+            '${labels.colSets} / ${labels.colReps} / ${labels.colLoadRpe}',
+            isHeader: true,
+            dense: dense,
+          ),
+          tableCell(labels.colNotes, isHeader: true, dense: dense),
+        ],
+      );
+    }
     return pw.TableRow(
       decoration: pw.BoxDecoration(color: tableHeaderBg),
       children: [
-        tableCell(labels.colExercise, isHeader: true, paddingV: 5),
-        tableCell(labels.colSets, isHeader: true, center: true, paddingV: 5),
-        tableCell(labels.colReps, isHeader: true, center: true, paddingV: 5),
-        tableCell(labels.colLoadRpe, isHeader: true, center: true, paddingV: 5),
-        tableCell(labels.colNotes, isHeader: true, paddingV: 5),
+        tableCell(labels.colExercise, isHeader: true, paddingV: dense ? 3 : 5, dense: dense),
+        tableCell(labels.colSets, isHeader: true, center: true, paddingV: dense ? 3 : 5, dense: dense),
+        tableCell(labels.colReps, isHeader: true, center: true, paddingV: dense ? 3 : 5, dense: dense),
+        tableCell(labels.colLoadRpe, isHeader: true, center: true, paddingV: dense ? 3 : 5, dense: dense),
+        tableCell(labels.colNotes, isHeader: true, paddingV: dense ? 3 : 5, dense: dense),
       ],
+    );
+  }
+
+  static pw.Widget inlineSupersetBadge(String label, {bool dense = false}) {
+    return pw.Padding(
+      padding: pw.EdgeInsets.symmetric(
+        horizontal: dense ? denseCellPaddingH : cellPaddingH,
+        vertical: dense ? denseCellPaddingV : cellPaddingV,
+      ),
+      child: pw.Container(
+        padding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: pw.BoxDecoration(
+          color: supersetBg,
+          borderRadius: pw.BorderRadius.circular(3),
+        ),
+        child: pw.Text(
+          label,
+          style: pw.TextStyle(
+            fontSize: dense ? denseSupersetFontSize : supersetFontSize,
+            fontWeight: pw.FontWeight.bold,
+            color: accent,
+          ),
+        ),
+      ),
     );
   }
 
