@@ -265,6 +265,13 @@
       "name": { "type": "String" }
     }
   },
+  "pdfDenseWeeksSpan": "S{first}-S{last}",
+  "@pdfDenseWeeksSpan": {
+    "placeholders": {
+      "first": { "type": "int" },
+      "last": { "type": "int" }
+    }
+  },
   "workoutShare": "Condividi",
   "workoutStartingWeek": "Settimana iniziale",
   "workoutStartingWeekHint": "Settimana 1, 2, 3...",

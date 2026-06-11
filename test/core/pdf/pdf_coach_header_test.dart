@@ -32,6 +32,7 @@ PdfExportLabels _labels() {
     denseAllWeeks: 'all',
     denseDitto: '"',
     denseWeekLegendEntry: (n, name) => 'S$n = $name',
+    denseWeeksSpan: (first, last) => 'S$first-S$last',
   );
 }
 

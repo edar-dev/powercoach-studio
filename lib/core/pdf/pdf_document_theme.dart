@@ -334,10 +334,12 @@ class PdfDocumentTheme {
             pw.Text(
               sanitizePdfText(sharedNote),
               style: pw.TextStyle(
-                fontSize: denseCompactTableFontSize,
+                fontSize: sharedNote.length > 28
+                    ? denseCompactTableFontSize - 0.5
+                    : denseCompactTableFontSize,
                 fontStyle: pw.FontStyle.italic,
                 color: textMuted,
-                lineSpacing: 1.1,
+                lineSpacing: 1.05,
               ),
             ),
           ],
@@ -392,10 +394,66 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget denseMergedWeeksCell(PdfDenseCellContent content) {
+  static pw.Widget denseMergedWeeksSpacerCell() {
     return pw.Container(
       color: tableRowAltBg,
-      child: densePrescriptionCell(content, includeNote: false, center: true),
+      child: pw.SizedBox(height: 2),
+    );
+  }
+
+  static pw.Widget denseMergedWeeksCell(
+    PdfDenseCellContent content, {
+    required String weeksSpanLabel,
+    String? note,
+  }) {
+    final prescription = sanitizePdfText(content.prescription.trim());
+    final coachingNote =
+        note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
+    final compact = prescription.length > 36;
+    return pw.Container(
+      color: tableRowAltBg,
+      child: pw.Padding(
+        padding: const pw.EdgeInsets.symmetric(
+          horizontal: denseCellPaddingH,
+          vertical: denseCellPaddingV,
+        ),
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.center,
+          children: [
+            pw.Text(
+              weeksSpanLabel,
+              style: pw.TextStyle(
+                fontSize: denseCompactTableFontSize - 0.5,
+                fontWeight: pw.FontWeight.bold,
+                color: accent,
+              ),
+            ),
+            if (prescription.isNotEmpty) ...[
+              pw.SizedBox(height: 1),
+              pw.Text(
+                prescription,
+                style: pw.TextStyle(
+                  fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
+                  color: textPrimary,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ],
+            if (coachingNote.isNotEmpty) ...[
+              pw.SizedBox(height: 1.5),
+              pw.Text(
+                coachingNote,
+                style: pw.TextStyle(
+                  fontSize: denseCompactTableFontSize - 0.5,
+                  fontStyle: pw.FontStyle.italic,
+                  color: textMuted,
+                ),
+                textAlign: pw.TextAlign.center,
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 

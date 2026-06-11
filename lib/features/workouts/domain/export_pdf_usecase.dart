@@ -484,9 +484,11 @@ List<pw.Widget> _denseProgrammingWidgets(
       final cells = <pw.Widget>[
         PdfDocumentTheme.denseExerciseLabelCell(
           label: label,
-          sharedNote: sharedNote,
+          sharedNote: allSame ? null : sharedNote,
         ),
       ];
+
+      final weeksSpanLabel = labels.denseWeeksSpan(1, weeks.length);
 
       for (var wi = 0; wi < weeks.length; wi++) {
         final content = weekContents[wi];
@@ -507,19 +509,14 @@ List<pw.Widget> _denseProgrammingWidgets(
               PdfDocumentTheme.denseMergedWeeksCell(
                 PdfDenseCellContent(
                   prescription: content.prescription,
-                  note: '',
+                  note: sharedNote ?? '',
                 ),
+                weeksSpanLabel: weeksSpanLabel,
+                note: sharedNote,
               ),
             );
           } else {
-            cells.add(
-              PdfDocumentTheme.compactCell(
-                '',
-                labels: labels,
-                dense: dense,
-                blankIfEmpty: true,
-              ),
-            );
+            cells.add(PdfDocumentTheme.denseMergedWeeksSpacerCell());
           }
           continue;
         }

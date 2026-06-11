@@ -30,6 +30,7 @@ extension PdfExportLabelsL10n on AppLocalizations {
       denseAllWeeks: pdfDenseAllWeeks,
       denseDitto: pdfDenseDitto,
       denseWeekLegendEntry: pdfDenseWeekLegendEntry,
+      denseWeeksSpan: pdfDenseWeeksSpan,
     );
   }
 }

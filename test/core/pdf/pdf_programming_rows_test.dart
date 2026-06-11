@@ -50,6 +50,34 @@ void main() {
     expect(content.note, 'Low Bar');
   });
 
+  test('dense token avoids double at for RPE sets', () {
+    final exercise = Exercise(
+      id: 'e1',
+      name: 'Bench Press (Barbell)',
+      sets: '1',
+      reps: '1',
+      rpe: '@7',
+      note: '',
+      setDetails: const [ExerciseSet(reps: '1', rpe: '@7')],
+    );
+
+    expect(formatDenseTablePrescription(exercise), '@7');
+  });
+
+  test('dense token keeps space between scheme and load', () {
+    final exercise = Exercise(
+      id: 'e2',
+      name: 'Squat (Barbell)',
+      sets: '1',
+      reps: '3x3 100',
+      rpe: '',
+      note: '',
+      setDetails: const [ExerciseSet(sets: '3', reps: '3', rpe: '100')],
+    );
+
+    expect(formatDenseTablePrescription(exercise), '3x3 100');
+  });
+
   test('dense bench press pyramid uses arrow notation', () {
     final exercise = Exercise(
       id: 'e1',

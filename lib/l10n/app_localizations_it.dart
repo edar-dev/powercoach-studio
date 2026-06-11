@@ -721,6 +721,11 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String pdfDenseWeeksSpan(int first, int last) {
+    return 'S$first-S$last';
+  }
+
+  @override
   String get workoutShare => 'Condividi';
 
   @override

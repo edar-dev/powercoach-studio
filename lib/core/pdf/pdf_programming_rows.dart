@@ -1,4 +1,5 @@
 import '../../features/workouts/data/workout_routine_model.dart';
+import 'pdf_coaching_note.dart';
 import 'pdf_exercise_name.dart';
 import 'pdf_text_sanitize.dart';
 
@@ -256,37 +257,53 @@ class PdfDenseCellContent {
 
 /// Compact arrow notation for dense PDF week cells (pyramids on one line).
 String formatDenseTablePrescription(Exercise exercise) {
-  final details = exercise.effectiveSetDetails;
-  if (details.length > 1) {
-    return details
-        .map(_compactDenseSetToken)
-        .where((token) => token.isNotEmpty)
-        .join(' -> ');
-  }
-  return formatExercisePrescriptionCompact(
-    exercise,
-    includeExerciseNote: false,
-    singleLine: true,
-  );
+  return exercise.effectiveSetDetails
+      .map(_compactDenseSetToken)
+      .where((token) => token.isNotEmpty)
+      .join(' -> ');
 }
 
 String _compactDenseSetToken(ExerciseSet set) {
-  if (set.displayText.trim().isNotEmpty) {
-    final display = sanitizePdfText(set.displayText.trim());
-    final match = RegExp(r'^1x(\d+)\s+(.+)$').firstMatch(display);
-    if (match != null) {
-      return '${match.group(1)}@${match.group(2)}';
-    }
-    return display.replaceAll(' ', '');
+  final display = set.displayText.trim();
+  if (display.isNotEmpty) {
+    return _compactFromDisplayText(sanitizePdfText(display));
   }
   final sets = set.sets.trim();
   final reps = set.reps.trim();
-  final load = set.rpe.trim();
-  if (reps.isNotEmpty && load.isNotEmpty) {
-    if (sets.isEmpty || sets == '1') return '$reps@$load';
-    return '${sets}x$reps@$load';
+  final load = sanitizePdfText(set.rpe.trim());
+  if (load.startsWith('@')) return load;
+  if (sets.isNotEmpty && reps.isNotEmpty && load.isNotEmpty) {
+    if (sets == '1') return '$reps@$load';
+    return '${sets}x$reps $load';
   }
-  return [sets, reps, load].where((part) => part.isNotEmpty).join('');
+  if (reps.isNotEmpty && load.isNotEmpty) {
+    return '$reps@$load';
+  }
+  return [sets, reps, load].where((part) => part.isNotEmpty).join(' ');
+}
+
+String _compactFromDisplayText(String display) {
+  if (display.startsWith('@')) return display;
+
+  final rpeSingle = RegExp(r'^1x1\s+(@\S+)$').firstMatch(display);
+  if (rpeSingle != null) return rpeSingle.group(1)!;
+
+  final oneSet = RegExp(r'^1x(\S+)\s+(.+)$').firstMatch(display);
+  if (oneSet != null) {
+    final load = oneSet.group(2)!;
+    if (load.startsWith('@')) return load;
+    return '${oneSet.group(1)}@$load';
+  }
+
+  final multi = RegExp(r'^(\d+)x(\S+)(?:\s+(.*))?$').firstMatch(display);
+  if (multi != null) {
+    final rest = multi.group(3)?.trim() ?? '';
+    final core = '${multi.group(1)}x${multi.group(2)}';
+    if (rest.isEmpty) return core;
+    return '$core $rest';
+  }
+
+  return display;
 }
 
 /// Builds dense cell content for week columns (prescription only in cells).
@@ -321,12 +338,12 @@ String extractExerciseNoteForDense(Exercise exercise) {
   final notes = <String>{};
   final main = exercise.note.trim();
   if (main.isNotEmpty) {
-    notes.add(sanitizePdfText(main));
+    notes.add(abbreviatePdfCoachingNote(main));
   }
   for (final set in exercise.effectiveSetDetails) {
     final setNote = set.note.trim();
     if (setNote.isNotEmpty) {
-      notes.add(sanitizePdfText(setNote));
+      notes.add(abbreviatePdfCoachingNote(setNote));
     }
   }
   return notes.join(' · ');

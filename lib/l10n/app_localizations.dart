@@ -1412,6 +1412,12 @@ abstract class AppLocalizations {
   /// **'W{n} = {name}'**
   String pdfDenseWeekLegendEntry(int n, String name);
 
+  /// No description provided for @pdfDenseWeeksSpan.
+  ///
+  /// In en, this message translates to:
+  /// **'W{first}-W{last}'**
+  String pdfDenseWeeksSpan(int first, int last);
+
   /// No description provided for @workoutShare.
   ///
   /// In en, this message translates to:
