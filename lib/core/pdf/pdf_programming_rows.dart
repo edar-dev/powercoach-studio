@@ -255,12 +255,31 @@ class PdfDenseCellContent {
   String get signature => '${prescription.trim()}|${note.trim()}';
 }
 
-/// Compact arrow notation for dense PDF week cells (pyramids on one line).
+/// Arrow between pyramid tokens in dense PDF cells (`5@80>4@82.5`).
+const densePyramidTokenSeparator = '>';
+
+/// Max tokens per line before wrapping pyramid chains in dense PDF.
+const densePyramidTokensPerLine = 3;
+
+/// Compact arrow notation for dense PDF week cells (pyramids with controlled wraps).
 String formatDenseTablePrescription(Exercise exercise) {
-  return exercise.effectiveSetDetails
+  final tokens = exercise.effectiveSetDetails
       .map(_compactDenseSetToken)
       .where((token) => token.isNotEmpty)
-      .join(' -> ');
+      .toList();
+  if (tokens.isEmpty) return '';
+  if (tokens.length == 1) return tokens.first;
+  return _joinDensePyramidTokens(tokens);
+}
+
+String _joinDensePyramidTokens(List<String> tokens) {
+  final lines = <String>[];
+  for (var i = 0; i < tokens.length; i += densePyramidTokensPerLine) {
+    final end = i + densePyramidTokensPerLine;
+    final slice = tokens.sublist(i, end > tokens.length ? tokens.length : end);
+    lines.add(slice.join(densePyramidTokenSeparator));
+  }
+  return lines.join('\n');
 }
 
 String _compactDenseSetToken(ExerciseSet set) {

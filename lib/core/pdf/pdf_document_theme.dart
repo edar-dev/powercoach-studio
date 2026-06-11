@@ -355,7 +355,9 @@ class PdfDocumentTheme {
   }) {
     final prescription = sanitizePdfText(content.prescription.trim());
     final note = includeNote ? sanitizePdfText(content.note.trim()) : '';
-    final compact = prescription.length > 36;
+    final isPyramid =
+        prescription.contains('\n') || prescription.contains('>');
+    final compact = prescription.length > 36 || isPyramid;
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(
         horizontal: denseCellPaddingH,
@@ -372,7 +374,7 @@ class PdfDocumentTheme {
               style: pw.TextStyle(
                 fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
                 color: textPrimary,
-                lineSpacing: prescription.contains('\n') ? 1.15 : 0,
+                lineSpacing: isPyramid ? 1.1 : 0,
               ),
               textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
             ),
@@ -409,7 +411,9 @@ class PdfDocumentTheme {
     final prescription = sanitizePdfText(content.prescription.trim());
     final coachingNote =
         note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
-    final compact = prescription.length > 36;
+    final isPyramid =
+        prescription.contains('\n') || prescription.contains('>');
+    final compact = prescription.length > 36 || isPyramid;
     return pw.Container(
       color: tableRowAltBg,
       child: pw.Padding(
@@ -435,6 +439,7 @@ class PdfDocumentTheme {
                 style: pw.TextStyle(
                   fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
                   color: textPrimary,
+                  lineSpacing: isPyramid ? 1.1 : 0,
                 ),
                 textAlign: pw.TextAlign.center,
               ),

@@ -94,8 +94,33 @@ void main() {
     );
 
     final content = formatDenseBlockContent(exercise);
-    expect(content.prescription, '5@77.5 -> 4@82.5 -> 3@85');
+    expect(content.prescription, '5@77.5>4@82.5>3@85');
     expect(content.note, 'Fermo 1-2"');
+  });
+
+  test('dense pyramid wraps every three tokens on new line', () {
+    final exercise = Exercise(
+      id: 'e1',
+      name: 'Bench Press (Barbell)',
+      sets: '7',
+      reps: '',
+      rpe: '',
+      note: '',
+      setDetails: const [
+        ExerciseSet(reps: '5', rpe: '77.5'),
+        ExerciseSet(reps: '4', rpe: '82.5'),
+        ExerciseSet(reps: '3', rpe: '85'),
+        ExerciseSet(reps: '2', rpe: '87.5'),
+        ExerciseSet(reps: '3', rpe: '85'),
+        ExerciseSet(reps: '4', rpe: '82.5'),
+        ExerciseSet(reps: '5', rpe: '77.5'),
+      ],
+    );
+
+    expect(
+      formatDenseTablePrescription(exercise),
+      '5@77.5>4@82.5>3@85\n2@87.5>3@85>4@82.5\n5@77.5',
+    );
   });
 
   test('denseWeekPrescriptionsIdentical ignores note differences', () {
