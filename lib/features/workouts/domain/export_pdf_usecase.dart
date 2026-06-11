@@ -6,8 +6,8 @@ import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_exercise_name.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
+import '../../../core/pdf/pdf_mobility_format.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
-import '../../../core/pdf/pdf_text_sanitize.dart';
 import '../data/workout_routine_model.dart';
 
 /// PDF programming layout: per-week sections vs dense progression columns.
@@ -43,7 +43,15 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
       margin: pw.EdgeInsets.all(PdfDocumentTheme.pageMarginFor(dense: dense)),
       header: (context) {
         if (dense && context.pageNumber > 1) {
-          return PdfDocumentTheme.buildRunningHeader(routine.name);
+          final weekHints = routine.weeks
+              .asMap()
+              .keys
+              .map((i) => labels.denseWeekShort(i + 1))
+              .join('  ');
+          return PdfDocumentTheme.buildRunningHeader(
+            routine.name,
+            subtitle: weekHints,
+          );
         }
         return pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -73,7 +81,10 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
         showDisclaimer: !dense || context.pageNumber == context.pagesCount,
       ),
       build: (context) => [
-        if (includeMobility) ..._mobilityWidgets(routine, labels, dense: dense),
+        if (includeMobility) ...[
+          ..._mobilityWidgets(routine, labels, dense: dense),
+          pw.NewPage(),
+        ],
         ...programming,
       ],
     ),
@@ -125,7 +136,7 @@ List<pw.Widget> _mobilityWidgets(
             (m) => pw.Padding(
               padding: pw.EdgeInsets.only(bottom: dense ? 1.5 : 3),
               child: pw.Text(
-                '${sanitizePdfText(m.title)}: ${sanitizePdfText(m.subtitle)}',
+                formatMobilityPdfLine(m.title, m.subtitle),
                 style: pw.TextStyle(
                   fontSize: dense
                       ? PdfDocumentTheme.denseTableFontSize
@@ -422,10 +433,10 @@ List<pw.Widget> _denseProgrammingWidgets(
     }
 
     final columnWidths = <int, pw.TableColumnWidth>{
-      0: const pw.FlexColumnWidth(1.1),
+      0: const pw.FlexColumnWidth(1.15),
     };
     for (var i = 0; i < weeks.length; i++) {
-      columnWidths[i + 1] = const pw.FlexColumnWidth(1.05);
+      columnWidths[i + 1] = const pw.FlexColumnWidth(1);
     }
 
     final headerCells = <pw.Widget>[
@@ -512,11 +523,16 @@ List<pw.Widget> _denseProgrammingWidgets(
                   note: sharedNote ?? '',
                 ),
                 weeksSpanLabel: weeksSpanLabel,
+                allWeeksLabel: labels.denseAllWeeks,
                 note: sharedNote,
               ),
             );
           } else {
-            cells.add(PdfDocumentTheme.denseMergedWeeksSpacerCell());
+            cells.add(
+              PdfDocumentTheme.denseMergedWeeksSpacerCell(
+                dittoMark: labels.denseDitto,
+              ),
+            );
           }
           continue;
         }
@@ -527,6 +543,7 @@ List<pw.Widget> _denseProgrammingWidgets(
               note: sharedNote == null ? content.note : '',
             ),
             includeNote: sharedNote == null,
+            center: true,
           ),
         );
       }
@@ -559,7 +576,7 @@ List<pw.Widget> _denseProgrammingWidgets(
         ),
       ),
     );
-    out.add(pw.SizedBox(height: 12));
+    out.add(pw.SizedBox(height: 8));
   }
 
   return out;

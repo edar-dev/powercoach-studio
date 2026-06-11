@@ -8,4 +8,11 @@ void main() {
       'Fermo incastro 2" + ginocchio',
     );
   });
+
+  test('abbreviatePdfCoachingNote fixes common fermo typo', () {
+    expect(
+      abbreviatePdfCoachingNote('Femo incastro 2" + Fermo ginocchio'),
+      'Fermo incastro 2" + ginocchio',
+    );
+  });
 }

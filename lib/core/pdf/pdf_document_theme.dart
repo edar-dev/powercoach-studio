@@ -99,20 +99,39 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget buildRunningHeader(String title) {
+  static pw.Widget buildRunningHeader(
+    String title, {
+    String? subtitle,
+  }) {
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 5),
       decoration: pw.BoxDecoration(
         border: pw.Border(bottom: pw.BorderSide(color: border, width: 0.5)),
       ),
-      child: pw.Text(
-        title,
-        style: pw.TextStyle(
-          fontSize: denseFooterFontSize + 1,
-          fontWeight: pw.FontWeight.bold,
-          color: textMuted,
-        ),
-        maxLines: 1,
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.center,
+        children: [
+          pw.Expanded(
+            child: pw.Text(
+              title,
+              style: pw.TextStyle(
+                fontSize: denseFooterFontSize + 1,
+                fontWeight: pw.FontWeight.bold,
+                color: textMuted,
+              ),
+              maxLines: 1,
+            ),
+          ),
+          if (subtitle != null && subtitle.trim().isNotEmpty)
+            pw.Text(
+              subtitle,
+              style: pw.TextStyle(
+                fontSize: denseCompactTableFontSize,
+                color: footerMuted,
+                letterSpacing: 0.3,
+              ),
+            ),
+        ],
       ),
     );
   }
@@ -356,8 +375,8 @@ class PdfDocumentTheme {
     final prescription = sanitizePdfText(content.prescription.trim());
     final note = includeNote ? sanitizePdfText(content.note.trim()) : '';
     final isPyramid =
-        prescription.contains('\n') || prescription.contains('>');
-    final compact = prescription.length > 36 || isPyramid;
+        prescription.contains('\n') || prescription.contains(' > ');
+    final compact = !isPyramid && prescription.length > 36;
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(
         horizontal: denseCellPaddingH,
@@ -374,7 +393,7 @@ class PdfDocumentTheme {
               style: pw.TextStyle(
                 fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
                 color: textPrimary,
-                lineSpacing: isPyramid ? 1.1 : 0,
+                lineSpacing: isPyramid ? 1.15 : 0,
               ),
               textAlign: center ? pw.TextAlign.center : pw.TextAlign.left,
             ),
@@ -396,24 +415,38 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget denseMergedWeeksSpacerCell() {
+  static pw.Widget denseMergedWeeksSpacerCell({required String dittoMark}) {
     return pw.Container(
       color: tableRowAltBg,
-      child: pw.SizedBox(height: 2),
+      alignment: pw.Alignment.center,
+      padding: const pw.EdgeInsets.symmetric(
+        horizontal: denseCellPaddingH,
+        vertical: denseCellPaddingV,
+      ),
+      child: pw.Text(
+        dittoMark,
+        style: pw.TextStyle(
+          fontSize: denseTableFontSize,
+          fontStyle: pw.FontStyle.italic,
+          color: textMuted,
+        ),
+        textAlign: pw.TextAlign.center,
+      ),
     );
   }
 
   static pw.Widget denseMergedWeeksCell(
     PdfDenseCellContent content, {
     required String weeksSpanLabel,
+    required String allWeeksLabel,
     String? note,
   }) {
     final prescription = sanitizePdfText(content.prescription.trim());
     final coachingNote =
         note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
     final isPyramid =
-        prescription.contains('\n') || prescription.contains('>');
-    final compact = prescription.length > 36 || isPyramid;
+        prescription.contains('\n') || prescription.contains(' > ');
+    final compact = !isPyramid && prescription.length > 36;
     return pw.Container(
       color: tableRowAltBg,
       child: pw.Padding(
@@ -432,6 +465,15 @@ class PdfDocumentTheme {
                 color: accent,
               ),
             ),
+            pw.SizedBox(height: 0.5),
+            pw.Text(
+              allWeeksLabel,
+              style: pw.TextStyle(
+                fontSize: denseCompactTableFontSize - 1,
+                fontStyle: pw.FontStyle.italic,
+                color: textMuted,
+              ),
+            ),
             if (prescription.isNotEmpty) ...[
               pw.SizedBox(height: 1),
               pw.Text(
@@ -439,7 +481,7 @@ class PdfDocumentTheme {
                 style: pw.TextStyle(
                   fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
                   color: textPrimary,
-                  lineSpacing: isPyramid ? 1.1 : 0,
+                  lineSpacing: isPyramid ? 1.15 : 0,
                 ),
                 textAlign: pw.TextAlign.center,
               ),

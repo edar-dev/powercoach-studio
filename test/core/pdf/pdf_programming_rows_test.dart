@@ -94,11 +94,11 @@ void main() {
     );
 
     final content = formatDenseBlockContent(exercise);
-    expect(content.prescription, '5@77.5>4@82.5>3@85');
+    expect(content.prescription, '5@77.5 > 4@82.5 > 3@85');
     expect(content.note, 'Fermo 1-2"');
   });
 
-  test('dense pyramid wraps every three tokens on new line', () {
+  test('dense pyramid wraps long chains in pairs on new lines', () {
     final exercise = Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
@@ -119,7 +119,32 @@ void main() {
 
     expect(
       formatDenseTablePrescription(exercise),
-      '5@77.5>4@82.5>3@85\n2@87.5>3@85>4@82.5\n5@77.5',
+      '5@77.5 > 4@82.5\n'
+      '3@85 > 2@87.5\n'
+      '3@85 > 4@82.5\n'
+      '5@77.5',
+    );
+  });
+
+  test('dense pyramid keeps up to four tokens on one line', () {
+    final exercise = Exercise(
+      id: 'e3',
+      name: 'Incline DB Press',
+      sets: '4',
+      reps: '',
+      rpe: '',
+      note: '',
+      setDetails: const [
+        ExerciseSet(reps: '12', rpe: ''),
+        ExerciseSet(reps: '10', rpe: ''),
+        ExerciseSet(reps: '8', rpe: ''),
+        ExerciseSet(reps: '6', rpe: ''),
+      ],
+    );
+
+    expect(
+      formatDenseTablePrescription(exercise),
+      '1x12 > 1x10 > 1x8 > 1x6',
     );
   });
 
