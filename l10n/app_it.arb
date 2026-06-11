@@ -257,7 +257,7 @@
     }
   },
   "pdfDenseAllWeeks": "tutte",
-  "pdfDenseDitto": "〃",
+  "pdfDenseDitto": "\"",
   "pdfDenseWeekLegendEntry": "S{n} = {name}",
   "@pdfDenseWeekLegendEntry": {
     "placeholders": {

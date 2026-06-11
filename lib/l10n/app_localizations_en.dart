@@ -710,7 +710,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pdfDenseAllWeeks => 'all';
 
   @override
-  String get pdfDenseDitto => '〃';
+  String get pdfDenseDitto => '\"';
 
   @override
   String pdfDenseWeekLegendEntry(int n, String name) {

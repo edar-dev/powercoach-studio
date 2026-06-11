@@ -30,7 +30,7 @@ PdfExportLabels _labels() {
     measurementRecordCount: (c) => '$c records',
     denseWeekShort: (n) => 'S$n',
     denseAllWeeks: 'all',
-    denseDitto: '〃',
+    denseDitto: '"',
     denseWeekLegendEntry: (n, name) => 'S$n = $name',
   );
 }

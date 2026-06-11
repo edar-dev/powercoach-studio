@@ -1403,7 +1403,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfDenseDitto.
   ///
   /// In en, this message translates to:
-  /// **'〃'**
+  /// **'\"'**
   String get pdfDenseDitto;
 
   /// No description provided for @pdfDenseWeekLegendEntry.

@@ -11,5 +11,6 @@ String sanitizePdfText(String text) {
       .replaceAll('\u2026', '...')
       .replaceAll('\u00A0', ' ')
       .replaceAll('\u00D7', 'x')
-      .replaceAll('×', 'x');
+      .replaceAll('×', 'x')
+      .replaceAll('\u3003', '"');
 }
