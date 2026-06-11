@@ -267,7 +267,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _showPdfExportSheet() {
     final l10n = AppLocalizations.of(context);
-    var selected = WorkoutPdfLayout.canonical;
+    var selected = WorkoutPdfLayout.dense;
     var includeMobility = _routine.mobilityItems.isNotEmpty;
     showAppBottomSheet<void>(
       context: context,
@@ -290,8 +290,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   label: Text(l10n.workoutPdfLayoutCanonical),
                 ),
                 ButtonSegment<WorkoutPdfLayout>(
-                  value: WorkoutPdfLayout.compact,
-                  label: Text(l10n.workoutPdfLayoutCompact),
+                  value: WorkoutPdfLayout.dense,
+                  label: Text(l10n.workoutPdfLayoutDense),
                 ),
               ],
               selected: {selected},
@@ -299,11 +299,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 if (set.isNotEmpty) setModalState(() => selected = set.first);
               },
             ),
-            if (selected == WorkoutPdfLayout.compact)
+            if (selected == WorkoutPdfLayout.dense)
               Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
-                  l10n.workoutPdfLayoutCompactDescription,
+                  l10n.workoutPdfLayoutDenseDescription,
                   style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
                     color: Theme.of(ctx).colorScheme.onSurfaceVariant,
                   ),

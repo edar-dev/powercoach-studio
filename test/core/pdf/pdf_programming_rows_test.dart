@@ -34,6 +34,29 @@ void main() {
     expect(rows.first.notes, 'Fermo 1-2"');
   });
 
+  test('dense bench press pyramid uses single-line prescription', () {
+    final exercise = Exercise(
+      id: 'e1',
+      name: 'Bench Press (Barbell)',
+      sets: '7',
+      reps: '1x5 77.5 | 1x4 82.5',
+      rpe: '',
+      note: 'Fermo 1-2"',
+      setDetails: const [
+        ExerciseSet(reps: '5', rpe: '77.5'),
+        ExerciseSet(reps: '4', rpe: '82.5'),
+        ExerciseSet(reps: '3', rpe: '85'),
+      ],
+    );
+
+    final rows = buildProgrammingSetRows(exercise, dense: true);
+    expect(rows.length, 1);
+    expect(rows.first.prescriptionOnly, isTrue);
+    expect(rows.first.reps, '1x5 77.5 · 1x4 82.5 · 1x3 85');
+    expect(rows.first.notes, 'Fermo 1-2"');
+    expect(rows.first.isMultiline, isFalse);
+  });
+
   test('single structured set uses sets x reps x load columns', () {
     final exercise = Exercise(
       id: 'e2',
@@ -51,6 +74,24 @@ void main() {
     expect(rows.first.sets, '4');
     expect(rows.first.reps, '3');
     expect(rows.first.load, '102.5');
+    expect(rows.first.notes, 'Low Bar');
+  });
+
+  test('dense single structured set collapses prescription column', () {
+    final exercise = Exercise(
+      id: 'e2',
+      name: 'Squat (Barbell)',
+      sets: '1',
+      reps: '4x3 102.5',
+      rpe: '',
+      note: 'Low Bar',
+      setDetails: const [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
+    );
+
+    final rows = buildProgrammingSetRows(exercise, dense: true);
+    expect(rows.length, 1);
+    expect(rows.first.prescriptionOnly, isTrue);
+    expect(rows.first.reps, '4x3 102.5');
     expect(rows.first.notes, 'Low Bar');
   });
 

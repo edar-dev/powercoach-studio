@@ -628,11 +628,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutPdfLayoutCanonical => 'Full (by week)';
 
   @override
-  String get workoutPdfLayoutCompact => 'Compact (by day)';
+  String get workoutPdfLayoutDense => 'Dense (recommended)';
 
   @override
-  String get workoutPdfLayoutCompactDescription =>
-      'Each training day as one table with a column per week (progression).';
+  String get workoutPdfLayoutDenseDescription =>
+      'Compact day layout with week columns, fewer pages, and single-line prescriptions.';
 
   @override
   String get workoutExportPdfGenerateAndDownload => 'Generate and download';
