@@ -344,7 +344,7 @@ PdfDenseCellContent formatDenseBlockContent(Object item) {
     final content = formatDenseBlockContent(exercise);
     if (content.prescription.isNotEmpty) {
       prescriptions.add(
-        '${abbreviateExerciseNameForPdf(exercise.name)}: ${content.prescription}',
+        '${resolveExerciseDisplayNameForPdf(exercise)}: ${content.prescription}',
       );
     }
     if (content.note.isNotEmpty) {

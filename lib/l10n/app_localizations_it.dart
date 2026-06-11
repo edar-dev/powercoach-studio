@@ -726,6 +726,39 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get pdfDenseLegend =>
+      'S1-S4 = tutte le settimane · \" = stessa prescrizione';
+
+  @override
+  String pdfClientPlanFor(String name) {
+    return 'Piano per: $name';
+  }
+
+  @override
+  String pdfPlanPeriod(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String pdfPlanPeriodOpen(String start) {
+    return 'Dal $start';
+  }
+
+  @override
+  String get workoutExerciseShortNameLabel => 'Nome PDF (facoltativo)';
+
+  @override
+  String get workoutExerciseScopeAllWeeks =>
+      'Stessa prescrizione tutte le settimane';
+
+  @override
+  String get mobilityShortTitleLabel => 'Titolo breve PDF (facoltativo)';
+
+  @override
+  String get mobilitySectionScheduleHintLabel =>
+      'Frequenza / orario (facoltativo)';
+
+  @override
   String get workoutShare => 'Condividi';
 
   @override

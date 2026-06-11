@@ -33,6 +33,12 @@ PdfExportLabels _labels() {
     denseDitto: '"',
     denseWeekLegendEntry: (n, name) => 'S$n = $name',
     denseWeeksSpan: (first, last) => 'S$first-S$last',
+    denseLegend: 'legend',
+    pdfClientPlanFor: (name) => 'Plan for: $name',
+    pdfPlanPeriod: (start, end) => '$start – $end',
+    pdfPlanPeriodOpen: (start) => 'From $start',
+    formatPlanDate: (date) =>
+        '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}',
   );
 }
 

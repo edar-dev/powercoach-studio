@@ -28,6 +28,11 @@ class PdfExportLabels {
     required this.denseDitto,
     required this.denseWeekLegendEntry,
     required this.denseWeeksSpan,
+    required this.denseLegend,
+    required this.pdfClientPlanFor,
+    required this.pdfPlanPeriod,
+    required this.pdfPlanPeriodOpen,
+    required this.formatPlanDate,
   });
 
   final String brandName;
@@ -57,4 +62,9 @@ class PdfExportLabels {
   final String denseDitto;
   final String Function(int weekIndex, String weekName) denseWeekLegendEntry;
   final String Function(int firstWeek, int lastWeek) denseWeeksSpan;
+  final String denseLegend;
+  final String Function(String name) pdfClientPlanFor;
+  final String Function(String start, String end) pdfPlanPeriod;
+  final String Function(String start) pdfPlanPeriodOpen;
+  final String Function(DateTime date) formatPlanDate;
 }

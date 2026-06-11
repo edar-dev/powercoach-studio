@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 import '../../l10n/app_localizations.dart';
 import 'pdf_export_labels.dart';
 
@@ -31,6 +33,11 @@ extension PdfExportLabelsL10n on AppLocalizations {
       denseDitto: pdfDenseDitto,
       denseWeekLegendEntry: pdfDenseWeekLegendEntry,
       denseWeeksSpan: pdfDenseWeeksSpan,
+      denseLegend: pdfDenseLegend,
+      pdfClientPlanFor: pdfClientPlanFor,
+      pdfPlanPeriod: pdfPlanPeriod,
+      pdfPlanPeriodOpen: pdfPlanPeriodOpen,
+      formatPlanDate: (date) => DateFormat.yMd(localeName).format(date),
     );
   }
 }

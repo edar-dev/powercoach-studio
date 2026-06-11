@@ -1,5 +1,8 @@
 // In-memory model for Workout Builder. Serializable to JSON for persistence.
 
+import '../domain/exercise_prescription_scope.dart';
+import '../domain/exercise_summary_sync.dart';
+
 List<MobilitySection> _defaultMobilitySections() => [
       const MobilitySection(id: 'sec_upper', name: 'Upper Body'),
       const MobilitySection(id: 'sec_lower', name: 'Lower Body'),
@@ -8,20 +11,35 @@ List<MobilitySection> _defaultMobilitySections() => [
 
 /// A named section in the mobility routine (e.g. Upper Body, Lower Body). User can add, edit, delete.
 class MobilitySection {
-  const MobilitySection({required this.id, required this.name});
+  const MobilitySection({
+    required this.id,
+    required this.name,
+    this.scheduleHint = '',
+  });
 
   final String id;
   final String name;
+  /// Optional cadence hint for PDF (e.g. "Giorni pari 2, 4, 6").
+  final String scheduleHint;
 
-  Map<String, dynamic> toJson() => {'id': id, 'name': name};
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'name': name,
+        if (scheduleHint.trim().isNotEmpty) 'scheduleHint': scheduleHint.trim(),
+      };
 
   static MobilitySection fromJson(Map<String, dynamic> json) => MobilitySection(
         id: json['id'] as String? ?? '',
         name: json['name'] as String? ?? '',
+        scheduleHint: json['scheduleHint'] as String? ?? '',
       );
 
-  MobilitySection copyWith({String? id, String? name}) =>
-      MobilitySection(id: id ?? this.id, name: name ?? this.name);
+  MobilitySection copyWith({String? id, String? name, String? scheduleHint}) =>
+      MobilitySection(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        scheduleHint: scheduleHint ?? this.scheduleHint,
+      );
 }
 
 class WorkoutRoutine {
@@ -194,6 +212,7 @@ class MobilityItem {
     required this.title,
     required this.subtitle,
     required this.sectionId,
+    this.shortTitle = '',
     this.categoryIndex = 0,
     this.customExerciseId,
   });
@@ -201,6 +220,8 @@ class MobilityItem {
   final String id;
   final String title;
   final String subtitle;
+  /// Compact title for dense PDF rows when [title] is long.
+  final String shortTitle;
   /// Id of the [MobilitySection] this item belongs to.
   final String sectionId;
   /// Kept for backward compatibility when reading old JSON.
@@ -214,6 +235,7 @@ class MobilityItem {
         'subtitle': subtitle,
         'sectionId': sectionId,
         'categoryIndex': categoryIndex,
+        if (shortTitle.trim().isNotEmpty) 'shortTitle': shortTitle.trim(),
         if (customExerciseId != null && customExerciseId!.isNotEmpty) 'customExerciseId': customExerciseId,
       };
 
@@ -228,6 +250,7 @@ class MobilityItem {
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
       subtitle: json['subtitle'] as String? ?? '',
+      shortTitle: json['shortTitle'] as String? ?? '',
       sectionId: resolvedSectionId,
       categoryIndex: categoryIndex,
       customExerciseId: json['customExerciseId'] as String?,
@@ -238,6 +261,7 @@ class MobilityItem {
     String? id,
     String? title,
     String? subtitle,
+    String? shortTitle,
     String? sectionId,
     int? categoryIndex,
     String? customExerciseId,
@@ -246,10 +270,16 @@ class MobilityItem {
         id: id ?? this.id,
         title: title ?? this.title,
         subtitle: subtitle ?? this.subtitle,
+        shortTitle: shortTitle ?? this.shortTitle,
         sectionId: sectionId ?? this.sectionId,
         categoryIndex: categoryIndex ?? this.categoryIndex,
         customExerciseId: customExerciseId ?? this.customExerciseId,
       );
+
+  String get pdfTitle {
+    final compact = shortTitle.trim();
+    return compact.isNotEmpty ? compact : title.trim();
+  }
 }
 
 class Week {
@@ -393,6 +423,8 @@ class Exercise {
     required this.reps,
     required this.rpe,
     this.note = '',
+    this.shortName = '',
+    this.prescriptionScope = ExercisePrescriptionScope.perWeek,
     this.setDetails,
     this.supersetGroupId,
     this.customExerciseId,
@@ -404,6 +436,9 @@ class Exercise {
   final String reps;
   final String rpe;
   final String note;
+  /// Optional compact label for PDF tables.
+  final String shortName;
+  final ExercisePrescriptionScope prescriptionScope;
   /// Multiple set prescriptions (e.g. top set/backoff). When null or empty, use [sets]/[reps]/[rpe] as single prescription.
   final List<ExerciseSet>? setDetails;
   /// When non-null, exercises in the same day with the same id form a superset.
@@ -411,18 +446,26 @@ class Exercise {
   /// When set, this exercise is linked to the user's custom exercise library (GymBlog.API).
   final String? customExerciseId;
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'sets': sets,
-        'reps': reps,
-        'rpe': rpe,
-        'note': note,
-        if (setDetails != null && setDetails!.isNotEmpty)
-          'setDetails': setDetails!.map((s) => s.toJson()).toList(),
-        if (supersetGroupId != null && supersetGroupId!.isNotEmpty) 'supersetGroupId': supersetGroupId,
-        if (customExerciseId != null && customExerciseId!.isNotEmpty) 'customExerciseId': customExerciseId,
-      };
+  Map<String, dynamic> toJson() {
+    final synced = ExerciseSummarySync.apply(this);
+    return {
+      'id': synced.id,
+      'name': synced.name,
+      'sets': synced.sets,
+      'reps': synced.reps,
+      'rpe': synced.rpe,
+      'note': synced.note,
+      if (synced.shortName.trim().isNotEmpty) 'shortName': synced.shortName.trim(),
+      if (synced.prescriptionScope != ExercisePrescriptionScope.perWeek)
+        'prescriptionScope': synced.prescriptionScope.toJson(),
+      if (synced.setDetails != null && synced.setDetails!.isNotEmpty)
+        'setDetails': synced.setDetails!.map((s) => s.toJson()).toList(),
+      if (synced.supersetGroupId != null && synced.supersetGroupId!.isNotEmpty)
+        'supersetGroupId': synced.supersetGroupId,
+      if (synced.customExerciseId != null && synced.customExerciseId!.isNotEmpty)
+        'customExerciseId': synced.customExerciseId,
+    };
+  }
 
   static Exercise fromJson(Map<String, dynamic> json) {
     final setDetailsJson = json['setDetails'] as List<dynamic>?;
@@ -443,6 +486,10 @@ class Exercise {
       reps: json['reps'] as String? ?? '',
       rpe: json['rpe'] as String? ?? '',
       note: json['note'] as String? ?? '',
+      shortName: json['shortName'] as String? ?? '',
+      prescriptionScope: ExercisePrescriptionScope.fromJson(
+        json['prescriptionScope'] as String?,
+      ),
       setDetails: setDetails,
       supersetGroupId: json['supersetGroupId'] as String?,
       customExerciseId: json['customExerciseId'] as String?,
@@ -460,6 +507,8 @@ class Exercise {
     String? reps,
     String? rpe,
     String? note,
+    String? shortName,
+    ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
     String? supersetGroupId,
     String? customExerciseId,
@@ -472,6 +521,8 @@ class Exercise {
         reps: reps ?? this.reps,
         rpe: rpe ?? this.rpe,
         note: note ?? this.note,
+        shortName: shortName ?? this.shortName,
+        prescriptionScope: prescriptionScope ?? this.prescriptionScope,
         setDetails: setDetails ?? this.setDetails,
         supersetGroupId: clearSupersetGroupId ? null : (supersetGroupId ?? this.supersetGroupId),
         customExerciseId: customExerciseId ?? this.customExerciseId,
