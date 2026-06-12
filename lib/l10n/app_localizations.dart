@@ -1418,6 +1418,54 @@ abstract class AppLocalizations {
   /// **'W{first}-W{last}'**
   String pdfDenseWeeksSpan(int first, int last);
 
+  /// No description provided for @pdfDenseLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'W1-W4 = all weeks · \" = same prescription'**
+  String get pdfDenseLegend;
+
+  /// No description provided for @pdfClientPlanFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan for: {name}'**
+  String pdfClientPlanFor(String name);
+
+  /// No description provided for @pdfPlanPeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'{start} – {end}'**
+  String pdfPlanPeriod(String start, String end);
+
+  /// No description provided for @pdfPlanPeriodOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'From {start}'**
+  String pdfPlanPeriodOpen(String start);
+
+  /// No description provided for @workoutExerciseShortNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF name (optional)'**
+  String get workoutExerciseShortNameLabel;
+
+  /// No description provided for @workoutExerciseScopeAllWeeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Same prescription every week'**
+  String get workoutExerciseScopeAllWeeks;
+
+  /// No description provided for @mobilityShortTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Short PDF title (optional)'**
+  String get mobilityShortTitleLabel;
+
+  /// No description provided for @mobilitySectionScheduleHintLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Schedule / timing (optional)'**
+  String get mobilitySectionScheduleHintLabel;
+
   /// No description provided for @workoutShare.
   ///
   /// In en, this message translates to:

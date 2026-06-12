@@ -272,6 +272,30 @@
       "last": { "type": "int" }
     }
   },
+  "pdfDenseLegend": "W1-W4 = all weeks · \" = same prescription",
+  "pdfClientPlanFor": "Plan for: {name}",
+  "@pdfClientPlanFor": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "pdfPlanPeriod": "{start} – {end}",
+  "@pdfPlanPeriod": {
+    "placeholders": {
+      "start": { "type": "String" },
+      "end": { "type": "String" }
+    }
+  },
+  "pdfPlanPeriodOpen": "From {start}",
+  "@pdfPlanPeriodOpen": {
+    "placeholders": {
+      "start": { "type": "String" }
+    }
+  },
+  "workoutExerciseShortNameLabel": "PDF name (optional)",
+  "workoutExerciseScopeAllWeeks": "Same prescription every week",
+  "mobilityShortTitleLabel": "Short PDF title (optional)",
+  "mobilitySectionScheduleHintLabel": "Schedule / timing (optional)",
   "workoutShare": "Share",
   "workoutStartingWeek": "Starting week",
   "workoutStartingWeekHint": "Week 1, 2, 3...",

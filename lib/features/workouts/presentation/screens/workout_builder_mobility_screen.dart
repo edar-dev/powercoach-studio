@@ -25,7 +25,10 @@ import 'package:file_picker/file_picker.dart';
 import '../../../exercise_library/data/import_file_reader.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_json_usecase.dart';
+import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/exercise_summary_sync.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_routine_json_codec.dart';
 import '../widgets/training_week_day_panel.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
@@ -360,11 +363,18 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       message: labels.exportGenerating,
     );
     try {
+      final customer = await _loadCustomerIfNeeded();
       final coachHeader = await _resolvePdfCoachHeader();
+      final planMetadata = buildPdfPlanMetadata(
+        routine: routine,
+        labels: labels,
+        clientName: customer?.name,
+      );
       final artifact = await exportWorkoutRoutineToPdf(
         routine,
         labels: labels,
         coachHeader: coachHeader,
+        planMetadata: planMetadata,
         layout: layout,
         includeMobility: includeMobility,
       );
@@ -621,12 +631,17 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   void _editMobilitySection(int index) {
     if (index < 0 || index >= _routine.mobilitySections.length) return;
     final section = _routine.mobilitySections[index];
-    _showEditSectionDialog(section.name, (newName) {
+    _showEditSectionDialog(section.name, section.scheduleHint, (newName, scheduleHint) {
       if (newName.trim().isEmpty) return;
       setState(() {
         final updated = _routine.mobilitySections
             .map(
-              (s) => s.id == section.id ? s.copyWith(name: newName.trim()) : s,
+              (s) => s.id == section.id
+                  ? s.copyWith(
+                      name: newName.trim(),
+                      scheduleHint: scheduleHint.trim(),
+                    )
+                  : s,
             )
             .toList();
         _routine = _routine.copyWith(mobilitySections: updated);
@@ -665,29 +680,40 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   void _showEditSectionDialog(
     String initialName,
-    void Function(String) onSave,
+    String initialScheduleHint,
+    void Function(String name, String scheduleHint) onSave,
   ) {
     final l10n = AppLocalizations.of(context);
-    final controller = TextEditingController(text: initialName);
+    final nameController = TextEditingController(text: initialName);
+    final scheduleController = TextEditingController(text: initialScheduleHint);
     showAppBottomSheet<void>(
       context: context,
       title: l10n.workoutBuilderEditSectionTitle,
       bodyBuilder: (sheetContext) {
-        return TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: l10n.workoutBuilderSectionNameLabel,
-          ),
-          autofocus: false,
-          onSubmitted: (_) {
-            onSave(controller.text.trim());
-            Navigator.of(sheetContext).pop();
-          },
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: l10n.workoutBuilderSectionNameLabel,
+              ),
+              autofocus: false,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: scheduleController,
+              decoration: InputDecoration(
+                labelText: l10n.mobilitySectionScheduleHintLabel,
+              ),
+              maxLines: 2,
+            ),
+          ],
         );
       },
       primaryActionLabel: l10n.customerSave,
       onPrimaryAction: () {
-        onSave(controller.text.trim());
+        onSave(nameController.text.trim(), scheduleController.text.trim());
         Navigator.of(context).pop();
       },
     );
@@ -1020,13 +1046,23 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  void _updateMobilityItem(String id, String title, String subtitle) {
+  void _updateMobilityItem(
+    String id,
+    String title,
+    String subtitle, {
+    String shortTitle = '',
+  }) {
     setState(() {
       _routine = _routine.copyWith(
         mobilityItems: _routine.mobilityItems
             .map(
-              (e) =>
-                  e.id == id ? e.copyWith(title: title, subtitle: subtitle) : e,
+              (e) => e.id == id
+                  ? e.copyWith(
+                      title: title,
+                      subtitle: subtitle,
+                      shortTitle: shortTitle,
+                    )
+                  : e,
             )
             .toList(),
       );
@@ -1042,6 +1078,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     String? reps,
     String? rpe,
     String? note,
+    String? shortName,
+    ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   }) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
@@ -1051,13 +1089,17 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       final day = week.days[dayIndex];
       final newEx = day.exercises.map((e) {
         if (e.id != exerciseId) return e;
-        return e.copyWith(
-          name: name ?? e.name,
-          sets: sets ?? e.sets,
-          reps: reps ?? e.reps,
-          rpe: rpe ?? e.rpe,
-          note: note ?? e.note,
-          setDetails: setDetails ?? e.setDetails,
+        return ExerciseSummarySync.apply(
+          e.copyWith(
+            name: name ?? e.name,
+            sets: sets ?? e.sets,
+            reps: reps ?? e.reps,
+            rpe: rpe ?? e.rpe,
+            note: note ?? e.note,
+            shortName: shortName ?? e.shortName,
+            prescriptionScope: prescriptionScope ?? e.prescriptionScope,
+            setDetails: setDetails ?? e.setDetails,
+          ),
         );
       }).toList();
       final newDays = List<Day>.from(week.days);
@@ -1428,7 +1470,13 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   index: index,
                   title: item.title,
                   subtitle: item.subtitle,
-                  onEdit: (t, s) => _updateMobilityItem(item.id, t, s),
+                  shortTitle: item.shortTitle,
+                  onEdit: (t, s, short) => _updateMobilityItem(
+                        item.id,
+                        t,
+                        s,
+                        shortTitle: short,
+                      ),
                   onDelete: () => _removeMobilityItem(item.id),
                 ),
               );
@@ -1721,6 +1769,7 @@ class _MobilityItem extends StatelessWidget {
     required this.index,
     required this.title,
     required this.subtitle,
+    this.shortTitle = '',
     this.onEdit,
     this.onDelete,
   });
@@ -1728,7 +1777,8 @@ class _MobilityItem extends StatelessWidget {
   final int index;
   final String title;
   final String subtitle;
-  final void Function(String title, String subtitle)? onEdit;
+  final String shortTitle;
+  final void Function(String title, String subtitle, String shortTitle)? onEdit;
   final VoidCallback? onDelete;
 
   @override
@@ -1785,6 +1835,7 @@ class _MobilityItem extends StatelessWidget {
                   cs,
                   title,
                   subtitle,
+                  shortTitle,
                   onEdit!,
                 );
               } else if (value == 'delete') {
@@ -1922,11 +1973,13 @@ void _showEditMobilityDialog(
   ColorScheme cs,
   String initialTitle,
   String initialSubtitle,
-  void Function(String title, String subtitle) onSave,
+  String initialShortTitle,
+  void Function(String title, String subtitle, String shortTitle) onSave,
 ) {
   final l10n = AppLocalizations.of(context);
   final titleController = TextEditingController(text: initialTitle);
   final subtitleController = TextEditingController(text: initialSubtitle);
+  final shortTitleController = TextEditingController(text: initialShortTitle);
   showAppBottomSheet<void>(
     context: context,
     title: l10n.workoutBuilderEditMobilityExerciseTitle,
@@ -1941,6 +1994,11 @@ void _showEditMobilityDialog(
         ),
         const SizedBox(height: 12),
         TextField(
+          controller: shortTitleController,
+          decoration: InputDecoration(labelText: l10n.mobilityShortTitleLabel),
+        ),
+        const SizedBox(height: 12),
+        TextField(
           controller: subtitleController,
           decoration: InputDecoration(labelText: l10n.mobilitySubtitle),
           maxLines: 2,
@@ -1949,7 +2007,11 @@ void _showEditMobilityDialog(
     ),
     primaryActionLabel: l10n.customerSave,
     onPrimaryAction: () {
-      onSave(titleController.text.trim(), subtitleController.text.trim());
+      onSave(
+        titleController.text.trim(),
+        subtitleController.text.trim(),
+        shortTitleController.text.trim(),
+      );
       Navigator.of(context).pop();
     },
   );
@@ -3208,12 +3270,21 @@ void _showEditExerciseDialog(
   String initialNote,
   void Function(String name, String sets, String reps, String rpe, String note)
   onSave, {
+  String initialShortName = '',
+  ExercisePrescriptionScope initialScope = ExercisePrescriptionScope.perWeek,
   List<ExerciseSet>? initialSetDetails,
-  void Function(String name, String note, List<ExerciseSet> setDetails)?
-  onSaveWithSets,
+  void Function(
+    String name,
+    String note,
+    List<ExerciseSet> setDetails, {
+    String shortName,
+    ExercisePrescriptionScope prescriptionScope,
+  })? onSaveWithSets,
 }) {
   final nameController = TextEditingController(text: initialName);
   final noteController = TextEditingController(text: initialNote);
+  final shortNameController = TextEditingController(text: initialShortName);
+  var allWeeksScope = initialScope == ExercisePrescriptionScope.allWeeks;
   final setsController = TextEditingController(text: initialSets);
   final repsController = TextEditingController(text: initialReps);
   final rpeController = TextEditingController(text: initialRpe);
@@ -3309,6 +3380,27 @@ void _showEditExerciseDialog(
                 ),
               ),
               maxLines: 1,
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: shortNameController,
+              decoration: InputDecoration(
+                labelText: l10n.workoutExerciseShortNameLabel,
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
+            ),
+            SwitchListTile(
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                l10n.workoutExerciseScopeAllWeeks,
+                style: theme.textTheme.bodyMedium,
+              ),
+              value: allWeeksScope,
+              onChanged: (value) => setState(() => allWeeksScope = value),
             ),
             if (useMultiSet) ...[
               const SizedBox(height: 12),
@@ -3457,7 +3549,15 @@ void _showEditExerciseDialog(
                                   }
                                   return ExerciseSet(note: noteSet);
                                 }).toList();
-                                onSaveWithSets(name, note, details);
+                                onSaveWithSets(
+                                  name,
+                                  note,
+                                  details,
+                                  shortName: shortNameController.text.trim(),
+                                  prescriptionScope: allWeeksScope
+                                      ? ExercisePrescriptionScope.allWeeks
+                                      : ExercisePrescriptionScope.perWeek,
+                                );
                               } else {
                                 onSave(
                                   name,
@@ -3592,6 +3692,8 @@ class _TrainingSection extends StatelessWidget {
     String? reps,
     String? rpe,
     String? note,
+    String? shortName,
+    ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   })
   onUpdateExercise;
@@ -3730,7 +3832,17 @@ class _TrainingSection extends StatelessWidget {
       onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
       onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
       onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-      onEdit: (name, sets, reps, rpe, note, {setDetails}) => onUpdateExercise(
+      onEdit: (
+        name,
+        sets,
+        reps,
+        rpe,
+        note, {
+        setDetails,
+        shortName,
+        prescriptionScope,
+      }) =>
+          onUpdateExercise(
         weekIndex,
         dayIndex,
         ex.id,
@@ -3740,6 +3852,8 @@ class _TrainingSection extends StatelessWidget {
         rpe: rpe,
         note: note,
         setDetails: setDetails,
+        shortName: shortName,
+        prescriptionScope: prescriptionScope,
       ),
       onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
       onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(
@@ -3806,6 +3920,8 @@ class _SuperSetBlock extends StatelessWidget {
     String? reps,
     String? rpe,
     String? note,
+    String? shortName,
+    ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   })
   onUpdateExercise;
@@ -3868,7 +3984,16 @@ class _SuperSetBlock extends StatelessWidget {
                     onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
                 onMoveDown: () =>
                     onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-                onEdit: (name, sets, reps, rpe, note, {setDetails}) =>
+                onEdit: (
+                  name,
+                  sets,
+                  reps,
+                  rpe,
+                  note, {
+                  setDetails,
+                  shortName,
+                  prescriptionScope,
+                }) =>
                     onUpdateExercise(
                       weekIndex,
                       dayIndex,
@@ -3879,6 +4004,8 @@ class _SuperSetBlock extends StatelessWidget {
                       rpe: rpe,
                       note: note,
                       setDetails: setDetails,
+                      shortName: shortName,
+                      prescriptionScope: prescriptionScope,
                     ),
                 onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
                 onUpdateSet: (setIndex, sets, reps, load, note) =>
@@ -3964,8 +4091,9 @@ class _ExerciseCard extends StatelessWidget {
     String rpe,
     String note, {
     List<ExerciseSet>? setDetails,
-  })?
-  onEdit;
+    String? shortName,
+    ExercisePrescriptionScope? prescriptionScope,
+  })? onEdit;
   final VoidCallback? onAddSet;
   final void Function(
     int setIndex,
@@ -3992,14 +4120,19 @@ class _ExerciseCard extends StatelessWidget {
       exercise.rpe,
       exercise.note,
       (name, sets, reps, rpe, note) => onEdit!(name, sets, reps, rpe, note),
+      initialShortName: exercise.shortName,
+      initialScope: exercise.prescriptionScope,
       initialSetDetails: exercise.effectiveSetDetails,
-      onSaveWithSets: (name, note, setDetails) => onEdit!(
+      onSaveWithSets: (name, note, setDetails, {shortName = '', prescriptionScope = ExercisePrescriptionScope.perWeek}) =>
+          onEdit!(
         name,
         exercise.sets,
         exercise.reps,
         exercise.rpe,
         note,
         setDetails: setDetails,
+        shortName: shortName,
+        prescriptionScope: prescriptionScope,
       ),
     );
   }

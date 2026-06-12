@@ -3,10 +3,12 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
+import '../../../core/pdf/pdf_dense_day_rows.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_exercise_name.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../../../core/pdf/pdf_mobility_format.dart';
+import '../../../core/pdf/pdf_plan_metadata.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
 
@@ -26,6 +28,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
   WorkoutRoutine routine, {
   required PdfExportLabels labels,
   PdfCoachHeaderInfo? coachHeader,
+  PdfPlanMetadata? planMetadata,
   WorkoutPdfLayout layout = WorkoutPdfLayout.dense,
   bool includeMobility = true,
 }) async {
@@ -59,7 +62,19 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
             if (coachHeader != null && coachHeader.hasContent)
               PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
             PdfDocumentTheme.buildDocumentTitle(routine.name, dense: dense),
-            if (dense && routine.weeks.length > 1)
+            if (planMetadata != null) ...[
+              if (planMetadata.hasClient)
+                PdfDocumentTheme.buildPlanSubtitle(
+                  labels.pdfClientPlanFor(planMetadata.clientName!),
+                  dense: dense,
+                ),
+              if (planMetadata.hasPlanPeriod)
+                PdfDocumentTheme.buildPlanSubtitle(
+                  planMetadata.planPeriodLabel!,
+                  dense: dense,
+                ),
+            ],
+            if (dense && routine.weeks.length > 1) ...[
               PdfDocumentTheme.buildDenseWeekLegend(
                 labels,
                 routine.weeks.asMap().entries.map((entry) {
@@ -69,6 +84,8 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
                       : labels.denseWeekShort(entry.key + 1);
                 }).toList(),
               ),
+              PdfDocumentTheme.buildDenseLegendHint(labels.denseLegend),
+            ],
             pw.SizedBox(height: dense ? 6 : 10),
           ],
         );
@@ -131,12 +148,25 @@ List<pw.Widget> _mobilityWidgets(
               color: PdfDocumentTheme.textPrimary,
             ),
           ),
+          if (section.scheduleHint.trim().isNotEmpty) ...[
+            pw.SizedBox(height: dense ? 1 : 2),
+            pw.Text(
+              section.scheduleHint.trim(),
+              style: pw.TextStyle(
+                fontSize: dense
+                    ? PdfDocumentTheme.denseCompactTableFontSize
+                    : PdfDocumentTheme.tableFontSize,
+                fontStyle: pw.FontStyle.italic,
+                color: PdfDocumentTheme.textMuted,
+              ),
+            ),
+          ],
           pw.SizedBox(height: dense ? 3 : 6),
           ...items.map(
             (m) => pw.Padding(
               padding: pw.EdgeInsets.only(bottom: dense ? 1.5 : 3),
               child: pw.Text(
-                formatMobilityPdfLine(m.title, m.subtitle),
+                formatMobilityPdfLine(m.pdfTitle, m.subtitle),
                 style: pw.TextStyle(
                   fontSize: dense
                       ? PdfDocumentTheme.denseTableFontSize
@@ -371,29 +401,30 @@ int _maxDaySlotCount(List<Week> weeks) {
   return m;
 }
 
-List<Object> _blocksForDay(Day day) => partitionExercisesBySuperset(day.exercises);
-
 String _blockRowLabel(
   Object item, {
   required int rowNumber,
+  required PdfExportLabels labels,
   bool dense = false,
 }) {
   final prefix = '$rowNumber. ';
   if (item is Exercise) {
-    final name = dense ? abbreviateExerciseNameForPdf(item.name) : item.name;
+    final name = dense ? resolveExerciseDisplayNameForPdf(item) : item.name;
     return '$prefix$name';
   }
   final g = item as List<Exercise>;
   if (g.isEmpty) return '';
   if (g.length == 1) {
-    final name = dense ? abbreviateExerciseNameForPdf(g.first.name) : g.first.name;
+    final name =
+        dense ? resolveExerciseDisplayNameForPdf(g.first) : g.first.name;
     return '$prefix$name';
   }
   final joiner = dense ? ' + ' : ' / ';
   final names = g
-      .map((e) => dense ? abbreviateExerciseNameForPdf(e.name) : e.name)
+      .map((e) => dense ? resolveExerciseDisplayNameForPdf(e) : e.name)
       .join(joiner);
-  return '$prefix$names';
+  final supersetTag = dense ? '${labels.superset}: ' : '';
+  return '$prefix$supersetTag$names';
 }
 
 List<pw.Widget> _denseProgrammingWidgets(
@@ -420,14 +451,8 @@ List<pw.Widget> _denseProgrammingWidgets(
       return labels.dayNumber(d + 1);
     }();
 
-    var maxRows = 0;
-    for (final w in weeks) {
-      if (d >= w.days.length) continue;
-      final n = _blocksForDay(w.days[d]).length;
-      if (n > maxRows) maxRows = n;
-    }
-
-    if (maxRows == 0) {
+    final dayRows = buildDenseDayRows(weeks: weeks, dayIndex: d);
+    if (dayRows.isEmpty) {
       out.add(pw.SizedBox(height: 4));
       continue;
     }
@@ -464,29 +489,31 @@ List<pw.Widget> _denseProgrammingWidgets(
       ),
     ];
 
-    for (var r = 0; r < maxRows; r++) {
-      Object? block;
-      for (final w in weeks) {
-        if (d >= w.days.length) continue;
-        final blocks = _blocksForDay(w.days[d]);
-        if (r < blocks.length) {
-          block = blocks[r];
-          break;
-        }
-      }
+    for (var r = 0; r < dayRows.length; r++) {
+      final dayRow = dayRows[r];
+      final block = dayRow.labelBlock;
 
       final label = block == null
           ? ''
-          : _blockRowLabel(block, rowNumber: r + 1, dense: dense);
+          : _blockRowLabel(
+              block,
+              rowNumber: r + 1,
+              labels: labels,
+              dense: dense,
+            );
 
-      final weekContents = weeks.map((w) {
-        if (d >= w.days.length) return null;
-        final blocks = _blocksForDay(w.days[d]);
-        if (r >= blocks.length) return null;
-        return formatDenseBlockContent(blocks[r]);
-      }).toList();
+      final weekContents = dayRow.weekBlocks
+          .map(
+            (weekBlock) => weekBlock == null
+                ? null
+                : formatDenseBlockContent(weekBlock),
+          )
+          .toList();
 
-      final allSame = denseWeekPrescriptionsIdentical(weekContents);
+      final allSame = denseShouldMergeWeekCells(
+        labelBlock: block,
+        weekContents: weekContents,
+      );
       final sharedNote = resolveSharedDenseNote(weekContents);
       final firstPopulatedIndex = weekContents.indexWhere(
         (content) => content != null && content.prescription.trim().isNotEmpty,

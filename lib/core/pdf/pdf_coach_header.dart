@@ -42,13 +42,13 @@ PdfCoachHeaderInfo buildPdfCoachHeader({
   }
 
   String? right;
-  final email = authEmail?.trim() ?? '';
-  if (email.isNotEmpty) {
-    right = email;
-  } else if (prof.website.trim().isNotEmpty) {
+  if (prof.website.trim().isNotEmpty) {
     right = prof.website.trim();
   } else if (prof.phone.trim().isNotEmpty) {
     right = prof.phone.trim();
+  } else {
+    final email = authEmail?.trim() ?? '';
+    if (email.isNotEmpty) right = email;
   }
 
   return PdfCoachHeaderInfo(

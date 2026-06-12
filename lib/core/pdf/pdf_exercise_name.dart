@@ -1,3 +1,4 @@
+import '../../features/workouts/data/workout_routine_model.dart';
 import 'pdf_text_sanitize.dart';
 
 final RegExp _equipmentSuffix = RegExp(
@@ -20,6 +21,13 @@ const Map<String, String> _knownAbbreviations = {
   'Leg Extension': 'Leg Extension',
   'Leg Press': 'Leg Press',
 };
+
+/// Resolves the exercise label for PDF export (persisted short name wins).
+String resolveExerciseDisplayNameForPdf(Exercise exercise) {
+  final short = exercise.shortName.trim();
+  if (short.isNotEmpty) return sanitizePdfText(short);
+  return abbreviateExerciseNameForPdf(exercise.name);
+}
 
 /// Shortens exercise names for dense PDF tables by removing equipment suffixes.
 String abbreviateExerciseNameForPdf(String name) {

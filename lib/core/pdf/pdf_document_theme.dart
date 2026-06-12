@@ -75,6 +75,35 @@ class PdfDocumentTheme {
     );
   }
 
+  static pw.Widget buildPlanSubtitle(String text, {bool dense = false}) {
+    if (text.trim().isEmpty) return pw.SizedBox();
+    return pw.Padding(
+      padding: pw.EdgeInsets.only(top: dense ? 3 : 4),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: dense ? denseDayFontSize : headerMetaFontSize,
+          color: textMuted,
+        ),
+      ),
+    );
+  }
+
+  static pw.Widget buildDenseLegendHint(String text) {
+    if (text.trim().isEmpty) return pw.SizedBox();
+    return pw.Padding(
+      padding: const pw.EdgeInsets.only(bottom: 4),
+      child: pw.Text(
+        text,
+        style: pw.TextStyle(
+          fontSize: denseCompactTableFontSize - 0.5,
+          fontStyle: pw.FontStyle.italic,
+          color: footerMuted,
+        ),
+      ),
+    );
+  }
+
   static pw.Widget buildDocumentTitle(String title, {bool dense = false}) {
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.center,
