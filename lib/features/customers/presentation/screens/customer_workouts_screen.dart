@@ -10,6 +10,7 @@ import '../../../../widgets/app_sheet.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/data/workout_routine_model.dart';
+import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../widgets/plan_schedule_strip.dart';
 
 /// Lista workout del cliente – route /customers/:id/workouts.
@@ -28,6 +29,25 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   List<WorkoutPlanApiModel> _plans = [];
   bool _loading = true;
   String? _error;
+  String _searchQuery = '';
+  WorkoutPlanFilter _filter = WorkoutPlanFilter.all;
+  WorkoutPlanSort _sort = WorkoutPlanSort.startDateDesc;
+
+  static const List<WorkoutPlanFilter> _filters = [
+    WorkoutPlanFilter.all,
+    WorkoutPlanFilter.active,
+    WorkoutPlanFilter.scheduled,
+    WorkoutPlanFilter.unscheduled,
+    WorkoutPlanFilter.ended,
+    WorkoutPlanFilter.stale,
+  ];
+
+  List<WorkoutPlanApiModel> get _visiblePlans => applyWorkoutPlanListQuery(
+        plans: _plans,
+        filter: _filter,
+        sort: _sort,
+        searchQuery: _searchQuery,
+      );
 
   @override
   void initState() {
@@ -93,6 +113,31 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
             color: cs.onSurface,
           ),
         ),
+        actions: [
+          if (!_loading && _error == null && _plans.isNotEmpty)
+            PopupMenuButton<WorkoutPlanSort>(
+              tooltip: l10n.customerWorkoutsSortTitle,
+              icon: Icon(Icons.sort, color: cs.onSurfaceVariant),
+              onSelected: (value) => setState(() => _sort = value),
+              itemBuilder: (context) => WorkoutPlanSort.values
+                  .map(
+                    (sort) => PopupMenuItem(
+                      value: sort,
+                      child: Row(
+                        children: [
+                          if (sort == _sort)
+                            Icon(Icons.check, size: 18, color: StitchM3Theme.accent)
+                          else
+                            const SizedBox(width: 18),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(_sortLabel(l10n, sort))),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -120,58 +165,13 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                   ),
                 )
               : _plans.isEmpty
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.fitness_center, size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
-                            const SizedBox(height: 16),
-                            Text(
-                              l10n.workoutsNoWorkoutsYet,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.w700,
-                                color: cs.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              l10n.workoutsAssignHint,
-                              style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                  ? _buildEmptyState(context, theme, cs, l10n)
+                  : _visiblePlans.isEmpty
+                      ? _buildNoMatchState(context, theme, cs, l10n)
+                      : RefreshIndicator(
+                          onRefresh: _loadPlans,
+                          child: _buildPlansList(context, theme, cs, l10n),
                         ),
-                      ),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: _loadPlans,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _plans.length,
-                        itemBuilder: (context, index) {
-                          final plan = _plans[index];
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: index < _plans.length - 1 ? 12 : 0),
-                            child: _WorkoutListCard(
-                              theme: theme,
-                              cs: cs,
-                              title: plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
-                              subtitle: _formatPlanSubtitle(l10n, plan),
-                              plan: plan,
-                              localeName: l10n.localeName,
-                              onTap: () {
-                                _openWorkoutEditor(planId: plan.id);
-                              },
-                              onCreateFollowUp: () => _createFollowUpWorkout(plan),
-                              onSaveAsTemplate: () => _savePlanAsTemplate(plan),
-                              onDelete: () => _deletePlan(plan),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
       floatingActionButton: !_loading && _error == null
           ? FloatingActionButton.extended(
               onPressed: () {
@@ -184,6 +184,207 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
             )
           : null,
     );
+  }
+
+  Widget _buildEmptyState(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme cs,
+    AppLocalizations l10n,
+  ) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.fitness_center, size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
+            const SizedBox(height: 16),
+            Text(
+              l10n.workoutsNoWorkoutsYet,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: cs.onSurface,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.workoutsAssignHint,
+              style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoMatchState(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme cs,
+    AppLocalizations l10n,
+  ) {
+    return CustomScrollView(
+      slivers: [
+        ..._buildSearchAndFilterSlivers(theme, cs, l10n),
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(
+                l10n.customerWorkoutsNoMatch,
+                style: theme.textTheme.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPlansList(
+    BuildContext context,
+    ThemeData theme,
+    ColorScheme cs,
+    AppLocalizations l10n,
+  ) {
+    final visible = _visiblePlans;
+    return CustomScrollView(
+      slivers: [
+        ..._buildSearchAndFilterSlivers(theme, cs, l10n),
+        SliverPadding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index.isOdd) return const SizedBox(height: 12);
+                final planIndex = index ~/ 2;
+                final plan = visible[planIndex];
+                return _WorkoutListCard(
+                  theme: theme,
+                  cs: cs,
+                  title: plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
+                  subtitle: _formatPlanSubtitle(l10n, plan),
+                  plan: plan,
+                  localeName: l10n.localeName,
+                  onTap: () => _openWorkoutEditor(planId: plan.id),
+                  onCreateFollowUp: () => _createFollowUpWorkout(plan),
+                  onSaveAsTemplate: () => _savePlanAsTemplate(plan),
+                  onDelete: () => _deletePlan(plan),
+                );
+              },
+              childCount: visible.isEmpty ? 0 : visible.length * 2 - 1,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildSearchAndFilterSlivers(
+    ThemeData theme,
+    ColorScheme cs,
+    AppLocalizations l10n,
+  ) {
+    return [
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+          child: TextField(
+            onChanged: (value) => setState(() => _searchQuery = value),
+            decoration: InputDecoration(
+              hintText: l10n.customerWorkoutsSearchHint,
+              hintStyle: TextStyle(color: cs.onSurfaceVariant),
+              prefixIcon: Icon(Icons.search, color: cs.onSurfaceVariant, size: 22),
+              filled: true,
+              fillColor: cs.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                borderSide: BorderSide.none,
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            ),
+          ),
+        ),
+      ),
+      SliverToBoxAdapter(
+        child: SizedBox(
+          height: 40,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: _filters.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, index) {
+              final filter = _filters[index];
+              final selected = filter == _filter;
+              return Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    HapticFeedback.selectionClick();
+                    setState(() => _filter = filter);
+                  },
+                  borderRadius: BorderRadius.circular(999),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: selected ? StitchM3Theme.accent : cs.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      _filterLabel(l10n, filter),
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        color: selected ? Colors.white : cs.onSurface,
+                        fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    ];
+  }
+
+  String _filterLabel(AppLocalizations l10n, WorkoutPlanFilter filter) {
+    switch (filter) {
+      case WorkoutPlanFilter.all:
+        return l10n.customerWorkoutsFilterAll;
+      case WorkoutPlanFilter.active:
+        return l10n.customerWorkoutsFilterActive;
+      case WorkoutPlanFilter.scheduled:
+        return l10n.customerWorkoutsFilterScheduled;
+      case WorkoutPlanFilter.unscheduled:
+        return l10n.customerWorkoutsFilterUnscheduled;
+      case WorkoutPlanFilter.ended:
+        return l10n.customerWorkoutsFilterEnded;
+      case WorkoutPlanFilter.stale:
+        return l10n.customerWorkoutsFilterStale;
+    }
+  }
+
+  String _sortLabel(AppLocalizations l10n, WorkoutPlanSort sort) {
+    switch (sort) {
+      case WorkoutPlanSort.startDateDesc:
+        return l10n.customerWorkoutsSortStartDateDesc;
+      case WorkoutPlanSort.startDateAsc:
+        return l10n.customerWorkoutsSortStartDateAsc;
+      case WorkoutPlanSort.updatedDesc:
+        return l10n.customerWorkoutsSortUpdatedDesc;
+      case WorkoutPlanSort.updatedAsc:
+        return l10n.customerWorkoutsSortUpdatedAsc;
+      case WorkoutPlanSort.nameAsc:
+        return l10n.customerWorkoutsSortNameAsc;
+      case WorkoutPlanSort.nameDesc:
+        return l10n.customerWorkoutsSortNameDesc;
+    }
   }
 
   String _formatPlanSubtitle(AppLocalizations l10n, WorkoutPlanApiModel plan) {
