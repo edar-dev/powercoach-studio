@@ -732,7 +732,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String pdfPlanPeriod(String start, String end) {
-    return '$start – $end';
+    return '$start - $end';
   }
 
   @override
@@ -1620,6 +1620,51 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workoutsAssignHint =>
       'Assign a workout to this customer from the customer detail screen.';
+
+  @override
+  String get customerWorkoutsSearchHint => 'Search by name, phase, or tag';
+
+  @override
+  String get customerWorkoutsFilterAll => 'All';
+
+  @override
+  String get customerWorkoutsFilterActive => 'Active';
+
+  @override
+  String get customerWorkoutsFilterScheduled => 'Scheduled';
+
+  @override
+  String get customerWorkoutsFilterUnscheduled => 'Unscheduled';
+
+  @override
+  String get customerWorkoutsFilterEnded => 'Ended';
+
+  @override
+  String get customerWorkoutsFilterStale => 'Needs update';
+
+  @override
+  String get customerWorkoutsSortTitle => 'Sort by';
+
+  @override
+  String get customerWorkoutsSortStartDateDesc => 'Start date (newest)';
+
+  @override
+  String get customerWorkoutsSortStartDateAsc => 'Start date (oldest)';
+
+  @override
+  String get customerWorkoutsSortUpdatedDesc => 'Last updated (newest)';
+
+  @override
+  String get customerWorkoutsSortUpdatedAsc => 'Last updated (oldest)';
+
+  @override
+  String get customerWorkoutsSortNameAsc => 'Name (A-Z)';
+
+  @override
+  String get customerWorkoutsSortNameDesc => 'Name (Z-A)';
+
+  @override
+  String get customerWorkoutsNoMatch => 'No plans match the selected filters.';
 
   @override
   String get workoutLibraryTitle => 'Library';

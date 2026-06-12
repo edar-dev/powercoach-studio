@@ -1638,6 +1638,52 @@ class AppLocalizationsIt extends AppLocalizations {
       'Assegna un workout a questo cliente dalla schermata dettaglio cliente.';
 
   @override
+  String get customerWorkoutsSearchHint => 'Cerca per nome, fase o tag';
+
+  @override
+  String get customerWorkoutsFilterAll => 'Tutti';
+
+  @override
+  String get customerWorkoutsFilterActive => 'In corso';
+
+  @override
+  String get customerWorkoutsFilterScheduled => 'Con date';
+
+  @override
+  String get customerWorkoutsFilterUnscheduled => 'Senza data';
+
+  @override
+  String get customerWorkoutsFilterEnded => 'Terminati';
+
+  @override
+  String get customerWorkoutsFilterStale => 'Da aggiornare';
+
+  @override
+  String get customerWorkoutsSortTitle => 'Ordina per';
+
+  @override
+  String get customerWorkoutsSortStartDateDesc => 'Data inizio (recente)';
+
+  @override
+  String get customerWorkoutsSortStartDateAsc => 'Data inizio (meno recente)';
+
+  @override
+  String get customerWorkoutsSortUpdatedDesc => 'Ultima modifica (recente)';
+
+  @override
+  String get customerWorkoutsSortUpdatedAsc => 'Ultima modifica (meno recente)';
+
+  @override
+  String get customerWorkoutsSortNameAsc => 'Nome (A-Z)';
+
+  @override
+  String get customerWorkoutsSortNameDesc => 'Nome (Z-A)';
+
+  @override
+  String get customerWorkoutsNoMatch =>
+      'Nessun piano corrisponde ai filtri selezionati.';
+
+  @override
   String get workoutLibraryTitle => 'Libreria';
 
   @override

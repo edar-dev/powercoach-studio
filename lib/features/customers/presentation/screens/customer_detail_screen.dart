@@ -24,6 +24,7 @@ import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../../../workouts/data/workout_routine_model.dart';
 import 'customer_measurement_form_screen.dart';
 import 'customer_exercise_record_form_screen.dart';
@@ -94,9 +95,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     try {
       final list = await _planRepo.getByCustomerId(widget.customerId);
       if (mounted) {
-        list.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
         setState(() {
-          _workoutPlans = list;
+          _workoutPlans = sortWorkoutPlans(list, WorkoutPlanSort.startDateDesc);
           _workoutPlansLoading = false;
         });
       }

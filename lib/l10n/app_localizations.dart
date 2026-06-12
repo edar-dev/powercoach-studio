@@ -1433,7 +1433,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfPlanPeriod.
   ///
   /// In en, this message translates to:
-  /// **'{start} – {end}'**
+  /// **'{start} - {end}'**
   String pdfPlanPeriod(String start, String end);
 
   /// No description provided for @pdfPlanPeriodOpen.
@@ -3033,6 +3033,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Assign a workout to this customer from the customer detail screen.'**
   String get workoutsAssignHint;
+
+  /// No description provided for @customerWorkoutsSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, phase, or tag'**
+  String get customerWorkoutsSearchHint;
+
+  /// No description provided for @customerWorkoutsFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get customerWorkoutsFilterAll;
+
+  /// No description provided for @customerWorkoutsFilterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get customerWorkoutsFilterActive;
+
+  /// No description provided for @customerWorkoutsFilterScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get customerWorkoutsFilterScheduled;
+
+  /// No description provided for @customerWorkoutsFilterUnscheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Unscheduled'**
+  String get customerWorkoutsFilterUnscheduled;
+
+  /// No description provided for @customerWorkoutsFilterEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Ended'**
+  String get customerWorkoutsFilterEnded;
+
+  /// No description provided for @customerWorkoutsFilterStale.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs update'**
+  String get customerWorkoutsFilterStale;
+
+  /// No description provided for @customerWorkoutsSortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by'**
+  String get customerWorkoutsSortTitle;
+
+  /// No description provided for @customerWorkoutsSortStartDateDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date (newest)'**
+  String get customerWorkoutsSortStartDateDesc;
+
+  /// No description provided for @customerWorkoutsSortStartDateAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Start date (oldest)'**
+  String get customerWorkoutsSortStartDateAsc;
+
+  /// No description provided for @customerWorkoutsSortUpdatedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated (newest)'**
+  String get customerWorkoutsSortUpdatedDesc;
+
+  /// No description provided for @customerWorkoutsSortUpdatedAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated (oldest)'**
+  String get customerWorkoutsSortUpdatedAsc;
+
+  /// No description provided for @customerWorkoutsSortNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A-Z)'**
+  String get customerWorkoutsSortNameAsc;
+
+  /// No description provided for @customerWorkoutsSortNameDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (Z-A)'**
+  String get customerWorkoutsSortNameDesc;
+
+  /// No description provided for @customerWorkoutsNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans match the selected filters.'**
+  String get customerWorkoutsNoMatch;
 
   /// No description provided for @workoutLibraryTitle.
   ///
