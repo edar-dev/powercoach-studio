@@ -272,14 +272,14 @@
       "last": { "type": "int" }
     }
   },
-  "pdfDenseLegend": "S1-S4 = tutte le settimane · \" = stessa prescrizione",
+  "pdfDenseLegend": "S1-S4 = tutte le settimane | \" = stessa prescrizione",
   "pdfClientPlanFor": "Piano per: {name}",
   "@pdfClientPlanFor": {
     "placeholders": {
       "name": { "type": "String" }
     }
   },
-  "pdfPlanPeriod": "{start} – {end}",
+  "pdfPlanPeriod": "{start} - {end}",
   "@pdfPlanPeriod": {
     "placeholders": {
       "start": { "type": "String" },

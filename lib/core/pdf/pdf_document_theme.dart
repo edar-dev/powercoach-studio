@@ -76,11 +76,12 @@ class PdfDocumentTheme {
   }
 
   static pw.Widget buildPlanSubtitle(String text, {bool dense = false}) {
-    if (text.trim().isEmpty) return pw.SizedBox();
+    final safe = sanitizePdfText(text);
+    if (safe.isEmpty) return pw.SizedBox();
     return pw.Padding(
       padding: pw.EdgeInsets.only(top: dense ? 3 : 4),
       child: pw.Text(
-        text,
+        safe,
         style: pw.TextStyle(
           fontSize: dense ? denseDayFontSize : headerMetaFontSize,
           color: textMuted,
@@ -90,11 +91,12 @@ class PdfDocumentTheme {
   }
 
   static pw.Widget buildDenseLegendHint(String text) {
-    if (text.trim().isEmpty) return pw.SizedBox();
+    final safe = sanitizePdfText(text);
+    if (safe.isEmpty) return pw.SizedBox();
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(
-        text,
+        safe,
         style: pw.TextStyle(
           fontSize: denseCompactTableFontSize - 0.5,
           fontStyle: pw.FontStyle.italic,
@@ -105,6 +107,7 @@ class PdfDocumentTheme {
   }
 
   static pw.Widget buildDocumentTitle(String title, {bool dense = false}) {
+    final safe = sanitizePdfText(title);
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.center,
       children: [
@@ -116,7 +119,7 @@ class PdfDocumentTheme {
         pw.SizedBox(width: dense ? 8 : 10),
         pw.Expanded(
           child: pw.Text(
-            title,
+            safe,
             style: pw.TextStyle(
               fontSize: dense ? denseTitleFontSize : titleFontSize,
               fontWeight: pw.FontWeight.bold,
@@ -132,6 +135,9 @@ class PdfDocumentTheme {
     String title, {
     String? subtitle,
   }) {
+    final safeTitle = sanitizePdfText(title);
+    final safeSubtitle =
+        subtitle == null ? null : sanitizePdfText(subtitle);
     return pw.Container(
       padding: const pw.EdgeInsets.only(bottom: 5),
       decoration: pw.BoxDecoration(
@@ -142,7 +148,7 @@ class PdfDocumentTheme {
         children: [
           pw.Expanded(
             child: pw.Text(
-              title,
+              safeTitle,
               style: pw.TextStyle(
                 fontSize: denseFooterFontSize + 1,
                 fontWeight: pw.FontWeight.bold,
@@ -151,9 +157,9 @@ class PdfDocumentTheme {
               maxLines: 1,
             ),
           ),
-          if (subtitle != null && subtitle.trim().isNotEmpty)
+          if (safeSubtitle != null && safeSubtitle.isNotEmpty)
             pw.Text(
-              subtitle,
+              safeSubtitle,
               style: pw.TextStyle(
                 fontSize: denseCompactTableFontSize,
                 color: footerMuted,
@@ -169,19 +175,20 @@ class PdfDocumentTheme {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(top: 4),
       child: pw.Text(
-        text,
+        sanitizePdfText(text),
         style: pw.TextStyle(fontSize: headerMetaFontSize, color: textMuted),
       ),
     );
   }
 
   static pw.Widget sectionTitle(String text, {bool dense = false}) {
+    final safe = sanitizePdfText(text);
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
         pw.SizedBox(height: dense ? 2 : 4),
         pw.Text(
-          dense ? text : text.toUpperCase(),
+          dense ? safe : safe.toUpperCase(),
           style: pw.TextStyle(
             fontSize: dense ? denseSectionFontSize : sectionFontSize,
             fontWeight: pw.FontWeight.bold,
@@ -197,10 +204,11 @@ class PdfDocumentTheme {
   }
 
   static pw.Widget dayTitle(String text, {bool dense = false}) {
+    final safe = sanitizePdfText(text);
     return pw.Padding(
       padding: pw.EdgeInsets.only(bottom: dense ? 2 : 4),
       child: pw.Text(
-        dense ? text : text.toUpperCase(),
+        dense ? safe : safe.toUpperCase(),
         style: pw.TextStyle(
           fontSize: dense ? denseDayFontSize : dayFontSize,
           fontWeight: pw.FontWeight.bold,
@@ -232,11 +240,13 @@ class PdfDocumentTheme {
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
-                labels.pageOf(context.pageNumber, context.pagesCount),
+                sanitizePdfText(
+                  labels.pageOf(context.pageNumber, context.pagesCount),
+                ),
                 style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               ),
               pw.Text(
-                labels.generatedOn(dateStr),
+                sanitizePdfText(labels.generatedOn(dateStr)),
                 style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               ),
             ],
@@ -244,7 +254,7 @@ class PdfDocumentTheme {
           if (showDisclaimer) ...[
             pw.SizedBox(height: dense ? 4 : 6),
             pw.Text(
-              labels.footerDisclaimer,
+              sanitizePdfText(labels.footerDisclaimer),
               style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               textAlign: pw.TextAlign.center,
             ),
@@ -346,11 +356,11 @@ class PdfDocumentTheme {
         .asMap()
         .entries
         .map((e) => labels.denseWeekLegendEntry(e.key + 1, e.value))
-        .join(' · ');
+        .join(' - ');
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Text(
-        legend,
+        sanitizePdfText(legend),
         style: pw.TextStyle(fontSize: denseFooterFontSize, color: textMuted),
       ),
     );
@@ -370,7 +380,7 @@ class PdfDocumentTheme {
         children: [
           if (label.isNotEmpty)
             pw.Text(
-              label,
+              sanitizePdfText(label),
               style: pw.TextStyle(
                 fontSize: denseTableFontSize,
                 fontWeight: pw.FontWeight.bold,
@@ -453,7 +463,7 @@ class PdfDocumentTheme {
         vertical: denseCellPaddingV,
       ),
       child: pw.Text(
-        dittoMark,
+        sanitizePdfText(dittoMark),
         style: pw.TextStyle(
           fontSize: denseTableFontSize,
           fontStyle: pw.FontStyle.italic,
@@ -487,7 +497,7 @@ class PdfDocumentTheme {
           crossAxisAlignment: pw.CrossAxisAlignment.center,
           children: [
             pw.Text(
-              weeksSpanLabel,
+              sanitizePdfText(weeksSpanLabel),
               style: pw.TextStyle(
                 fontSize: denseCompactTableFontSize - 0.5,
                 fontWeight: pw.FontWeight.bold,
@@ -496,7 +506,7 @@ class PdfDocumentTheme {
             ),
             pw.SizedBox(height: 0.5),
             pw.Text(
-              allWeeksLabel,
+              sanitizePdfText(allWeeksLabel),
               style: pw.TextStyle(
                 fontSize: denseCompactTableFontSize - 1,
                 fontStyle: pw.FontStyle.italic,
@@ -603,7 +613,7 @@ class PdfDocumentTheme {
           borderRadius: pw.BorderRadius.circular(3),
         ),
         child: pw.Text(
-          label,
+          sanitizePdfText(label),
           style: pw.TextStyle(
             fontSize: dense ? denseSupersetFontSize : supersetFontSize,
             fontWeight: pw.FontWeight.bold,
@@ -616,7 +626,7 @@ class PdfDocumentTheme {
 
   static pw.Widget _metaCell(String text, {required pw.TextAlign align}) {
     return pw.Text(
-      text.toUpperCase(),
+      sanitizePdfText(text).toUpperCase(),
       style: pw.TextStyle(
         fontSize: headerMetaFontSize,
         color: textMuted,

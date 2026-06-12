@@ -131,7 +131,7 @@ String formatExercisePrescriptionCompact(
   bool includeExerciseNote = true,
 }) {
   final details = e.effectiveSetDetails;
-  final separator = singleLine ? ' · ' : '\n';
+  final separator = singleLine ? ' - ' : '\n';
 
   if (details.length > 1) {
     return details
@@ -143,7 +143,7 @@ String formatExercisePrescriptionCompact(
   if (details.isNotEmpty && details.first.displayText.isNotEmpty) {
     final n = includeExerciseNote ? e.note.trim() : '';
     final d0 = sanitizePdfText(details.first.displayText);
-    return n.isEmpty ? d0 : '$d0 — ${sanitizePdfText(n)}';
+    return n.isEmpty ? d0 : '$d0 - ${sanitizePdfText(n)}';
   }
 
   final sets = e.sets.trim();
@@ -157,7 +157,7 @@ String formatExercisePrescriptionCompact(
     line = [reps, sets, rpe].where((x) => x.isNotEmpty).join(' ');
   }
   if (note.isNotEmpty) {
-    line = line.isEmpty ? sanitizePdfText(note) : '$line — ${sanitizePdfText(note)}';
+    line = line.isEmpty ? sanitizePdfText(note) : '$line - ${sanitizePdfText(note)}';
   }
   return sanitizePdfText(line);
 }
@@ -356,7 +356,7 @@ PdfDenseCellContent formatDenseBlockContent(Object item) {
   }
   return PdfDenseCellContent(
     prescription: prescriptions.join('\n'),
-    note: notes.toSet().join(' · '),
+    note: notes.toSet().join(' - '),
   );
 }
 
@@ -372,7 +372,7 @@ String extractExerciseNoteForDense(Exercise exercise) {
       notes.add(abbreviatePdfCoachingNote(setNote));
     }
   }
-  return notes.join(' · ');
+  return notes.join(' - ');
 }
 
 /// Whether every populated week cell shares the same prescription text.

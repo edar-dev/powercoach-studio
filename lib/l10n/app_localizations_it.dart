@@ -727,7 +727,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pdfDenseLegend =>
-      'S1-S4 = tutte le settimane · \" = stessa prescrizione';
+      'S1-S4 = tutte le settimane | \" = stessa prescrizione';
 
   @override
   String pdfClientPlanFor(String name) {
@@ -736,7 +736,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String pdfPlanPeriod(String start, String end) {
-    return '$start – $end';
+    return '$start - $end';
   }
 
   @override
