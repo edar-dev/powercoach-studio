@@ -81,6 +81,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     _load();
   }
 
+  Future<void> _openWorkoutEditor({String? planId}) async {
+    await navigatePush(
+      context,
+      customerWorkoutEditorPath(widget.customerId, planId: planId),
+    );
+    if (mounted) _loadWorkoutPlans();
+  }
+
   Future<void> _loadWorkoutPlans() async {
     setState(() => _workoutPlansLoading = true);
     try {
@@ -505,10 +513,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                       const SizedBox(width: 12),
                       Expanded(
                         child: FilledButton.icon(
-                          onPressed: () => navigateTo(
-                                context,
-                                customerWorkoutEditorPath(c.id),
-                              ),
+                          onPressed: () => _openWorkoutEditor(),
                           icon: const Icon(Icons.add_task, size: 20),
                           label: Text(l10n.customerAssignWorkout),
                           style: FilledButton.styleFrom(
@@ -1001,12 +1006,13 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               ),
               if (_workoutPlans.isNotEmpty)
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     HapticFeedback.mediumImpact();
-                    navigateTo(
+                    await navigatePush(
                       context,
                       customerWorkoutsPath(widget.customerId),
                     );
+                    if (mounted) _loadWorkoutPlans();
                   },
                   child: Text(l10n.customerViewAll, style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
                 ),
@@ -1031,10 +1037,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                   FilledButton.icon(
                     onPressed: () {
                       HapticFeedback.mediumImpact();
-                      navigateTo(
-                        context,
-                        customerWorkoutEditorPath(c.id),
-                      );
+                      _openWorkoutEditor();
                     },
                     icon: const Icon(Icons.add_task, size: 20),
                     label: Text(l10n.customerAssignWorkout),
@@ -1058,13 +1061,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                   child: InkWell(
                     onTap: () {
                       HapticFeedback.mediumImpact();
-                      navigateTo(
-                        context,
-                        customerWorkoutEditorPath(
-                          widget.customerId,
-                          planId: plan.id,
-                        ),
-                      );
+                      _openWorkoutEditor(planId: plan.id);
                     },
                     borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                     child: Container(

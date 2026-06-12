@@ -35,6 +35,14 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     _loadPlans();
   }
 
+  Future<void> _openWorkoutEditor({String? planId}) async {
+    await navigatePush(
+      context,
+      customerWorkoutEditorPath(widget.customerId, planId: planId),
+    );
+    if (mounted) _loadPlans();
+  }
+
   Future<void> _loadPlans() async {
     if (!mounted) return;
     setState(() {
@@ -154,14 +162,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                               plan: plan,
                               localeName: l10n.localeName,
                               onTap: () {
-                                HapticFeedback.mediumImpact();
-                                navigateTo(
-                                  context,
-                                  customerWorkoutEditorPath(
-                                    widget.customerId,
-                                    planId: plan.id,
-                                  ),
-                                );
+                                _openWorkoutEditor(planId: plan.id);
                               },
                               onCreateFollowUp: () => _createFollowUpWorkout(plan),
                               onSaveAsTemplate: () => _savePlanAsTemplate(plan),
@@ -173,12 +174,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                     ),
       floatingActionButton: !_loading && _error == null
           ? FloatingActionButton.extended(
-              onPressed: () async {
+              onPressed: () {
                 HapticFeedback.mediumImpact();
-                navigateTo(
-                  context,
-                  customerWorkoutEditorPath(widget.customerId),
-                );
+                _openWorkoutEditor();
               },
               icon: const Icon(Icons.add),
               label: Text(l10n.customerAssignWorkout),

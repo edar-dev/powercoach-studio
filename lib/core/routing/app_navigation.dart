@@ -6,6 +6,11 @@ void navigateTo(BuildContext context, String location) {
   context.go(location);
 }
 
+/// Pushes [location] so the current route stays on the stack and can refresh on return.
+Future<T?> navigatePush<T>(BuildContext context, String location) {
+  return context.push<T>(location);
+}
+
 void navigateBack(BuildContext context, {required String fallback}) {
   if (context.canPop()) {
     context.pop();
