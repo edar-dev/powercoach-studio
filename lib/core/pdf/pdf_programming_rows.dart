@@ -308,6 +308,9 @@ String _compactDenseSetToken(ExerciseSet set) {
 String _compactFromDisplayText(String display) {
   if (display.startsWith('@')) return display;
 
+  final doubledScheme = RegExp(r'^1x(1x\d+@.+)$').firstMatch(display);
+  if (doubledScheme != null) return doubledScheme.group(1)!;
+
   final rpeSingle = RegExp(r'^1x1\s+(@\S+)$').firstMatch(display);
   if (rpeSingle != null) return rpeSingle.group(1)!;
 

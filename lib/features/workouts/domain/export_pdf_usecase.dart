@@ -441,6 +441,10 @@ List<pw.Widget> _denseProgrammingWidgets(
   for (var d = 0; d < daySlots; d++) {
     if (!weeks.any((w) => d < w.days.length)) continue;
 
+    if (d > 0) {
+      out.add(pw.NewPage());
+    }
+
     final dayTitle = () {
       for (final w in weeks) {
         if (d < w.days.length) {
@@ -561,6 +565,18 @@ List<pw.Widget> _denseProgrammingWidgets(
               ),
             );
           }
+          continue;
+        }
+        final previous = wi > 0 ? weekContents[wi - 1] : null;
+        if (previous != null &&
+            previous.prescription.trim() == content.prescription.trim() &&
+            content.prescription.trim().isNotEmpty &&
+            previous.note.trim() == content.note.trim()) {
+          cells.add(
+            PdfDocumentTheme.denseMergedWeeksSpacerCell(
+              dittoMark: labels.denseDitto,
+            ),
+          );
           continue;
         }
         cells.add(

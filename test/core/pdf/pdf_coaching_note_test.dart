@@ -15,4 +15,9 @@ void main() {
       'Fermo incastro 2" + ginocchio',
     );
   });
+
+  test('abbreviatePdfCoachingNote fixes standalone Femo typo', () {
+    expect(abbreviatePdfCoachingNote('Femo 1-2"'), 'Fermo 1-2"');
+    expect(abbreviatePdfCoachingNote('Femo 2" in basso'), 'Fermo 2" in basso');
+  });
 }

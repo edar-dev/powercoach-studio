@@ -50,6 +50,21 @@ void main() {
     expect(content.note, 'Low Bar');
   });
 
+  test('legacy reps with embedded scheme avoids double sets prefix', () {
+    const set = ExerciseSet(reps: '1x5@7');
+    expect(set.displayText, '1x5@7');
+
+    final exercise = Exercise(
+      id: 'legacy_dl',
+      name: 'Conventional Deadlift (Barbell)',
+      sets: '1',
+      reps: '1x5@7',
+      rpe: '',
+      note: 'Doppio @ nel reps',
+    );
+    expect(formatDenseTablePrescription(exercise), '1x5@7');
+  });
+
   test('dense token avoids double at for RPE sets', () {
     final exercise = Exercise(
       id: 'e1',

@@ -383,6 +383,10 @@ class ExerciseSet {
     if (n.isEmpty && r.isEmpty) return p;
     if (n.isEmpty) return r.isEmpty ? p : '$r ${p.isEmpty ? '' : p}'.trim();
     if (r.isEmpty) return n + (p.isEmpty ? '' : ' $p').trim();
+    // Legacy JSON often stores full schemes in [reps] (e.g. "1x5@7"); do not prepend [sets].
+    if (RegExp(r'^\d+x').hasMatch(r) || r.contains('@')) {
+      return p.isEmpty ? r : '$r $p'.trim();
+    }
     final combo = '${n}x$r';
     return p.isEmpty ? combo : '$combo $p';
   }
