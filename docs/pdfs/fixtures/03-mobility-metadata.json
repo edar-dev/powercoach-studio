@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-12T10:10:00.000Z",
+  "routine": {
+    "name": "PDF Stress — Mobilità e metadati",
+    "startDate": "2026-01-06",
+    "endDate": "2026-03-28",
+    "currentWeek": 3,
+    "mobilitySections": [
+      {
+        "id": "sec_dyn",
+        "name": "Dinamica (30\" per esercizio)",
+        "scheduleHint": "Ogni sessione, 5 min totali"
+      },
+      {
+        "id": "sec_static",
+        "name": "Statica (45\" hold)",
+        "scheduleHint": "Post-workout"
+      },
+      {
+        "id": "sec_rehab",
+        "name": "REHAB Ginocchio con elastico rigido (OBBLIGATORIO)",
+        "scheduleHint": "Giorni con squat o leg press"
+      },
+      {
+        "id": "sec_neck",
+        "name": "Collo e trapezi GIORNI PARI 2 4 6",
+        "scheduleHint": "Solo giorni pari del calendario"
+      },
+      {
+        "id": "sec_evening",
+        "name": "E da fare la Sera prima di coricarsi GIORNI DISPARI 1 3 5 7",
+        "scheduleHint": "10 min a casa"
+      }
+    ],
+    "mobilityItems": [
+      {
+        "id": "m1",
+        "title": "Gatto-Mucca",
+        "shortTitle": "Cat-Cow",
+        "subtitle": "",
+        "sectionId": "sec_dyn",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m2",
+        "title": "Cobra-Bambino",
+        "subtitle": "5 respiri lenti",
+        "sectionId": "sec_dyn",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m3",
+        "title": "Hip switch 90/90 con rotazione toracica combinata",
+        "shortTitle": "90/90 + T-spine",
+        "subtitle": "8/side",
+        "sectionId": "sec_dyn",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m4",
+        "title": "Ponte tibie contro muro",
+        "subtitle": "",
+        "sectionId": "sec_static",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m5",
+        "title": "Terminal knee extension con elastico verde",
+        "shortTitle": "TKE",
+        "subtitle": "3×15",
+        "sectionId": "sec_rehab",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m6",
+        "title": "Chin tuck isometrico",
+        "subtitle": "3×10s",
+        "sectionId": "sec_neck",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m7",
+        "title": "Respirazione diaframmatica 4-7-8",
+        "subtitle": "5 cicli",
+        "sectionId": "sec_evening",
+        "categoryIndex": 0
+      }
+    ],
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "S1",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Full Body",
+            "exercises": [
+              {
+                "id": "e1",
+                "name": "Goblet Squat (Dumbbell)",
+                "shortName": "Goblet Sq",
+                "sets": "3",
+                "reps": "3x10",
+                "rpe": "@7",
+                "setDetails": [{ "sets": "3", "reps": "10", "rpe": "@7" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "S2",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Full Body",
+            "exercises": [
+              {
+                "id": "e2",
+                "name": "Goblet Squat (Dumbbell)",
+                "sets": "3",
+                "reps": "3x12",
+                "rpe": "@7.5",
+                "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@7.5" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "S3",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Full Body",
+            "exercises": [
+              {
+                "id": "e3",
+                "name": "Goblet Squat (Dumbbell)",
+                "sets": "4",
+                "reps": "4x8",
+                "rpe": "@8",
+                "setDetails": [{ "sets": "4", "reps": "8", "rpe": "@8" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "S4",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Full Body",
+            "exercises": [
+              {
+                "id": "e4",
+                "name": "Goblet Squat (Dumbbell)",
+                "sets": "2",
+                "reps": "2x15",
+                "rpe": "leggero",
+                "setDetails": [{ "sets": "2", "reps": "15", "rpe": "leggero" }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

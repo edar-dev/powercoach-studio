@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-12T12:15:00.000Z",
+  "routine": {
+    "name": "PDF Stress - Giorni asimmetrici tra settimane",
+    "mobilitySections": [
+      { "id": "sec1", "name": "Quick prep", "scheduleHint": "Solo giorni con sollevamento" }
+    ],
+    "mobilityItems": [
+      { "id": "m1", "title": "Jumping jacks", "subtitle": "30s", "sectionId": "sec1", "categoryIndex": 0 }
+    ],
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "SETTIMANA 1 (4 giorni)",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Lun - Upper",
+            "exercises": [
+              { "id": "u1", "name": "Bench Press (Barbell)", "customExerciseId": "upper_main", "sets": "4", "reps": "4x6", "rpe": "80", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "80" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Mar - Lower",
+            "exercises": [
+              { "id": "l1", "name": "Back Squat (Barbell)", "customExerciseId": "lower_main", "sets": "4", "reps": "4x6", "rpe": "100", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "100" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Gio - Upper",
+            "exercises": [
+              { "id": "u2", "name": "Overhead Press (Barbell)", "customExerciseId": "upper_ohp", "sets": "4", "reps": "4x6", "rpe": "50", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "50" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Ven - Lower",
+            "exercises": [
+              { "id": "l2", "name": "Romanian Deadlift (Barbell)", "customExerciseId": "lower_rdl", "sets": "4", "reps": "4x8", "rpe": "90", "setDetails": [{ "sets": "4", "reps": "8", "rpe": "90" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "SETTIMANA 2 (4 giorni)",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Lun - Upper",
+            "exercises": [
+              { "id": "u1w2", "name": "Bench Press (Barbell)", "customExerciseId": "upper_main", "sets": "4", "reps": "4x6", "rpe": "82.5", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "82.5" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Mar - Lower",
+            "exercises": [
+              { "id": "l1w2", "name": "Back Squat (Barbell)", "customExerciseId": "lower_main", "sets": "4", "reps": "4x6", "rpe": "102.5", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "102.5" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Gio - Upper",
+            "exercises": [
+              { "id": "u2w2", "name": "Overhead Press (Barbell)", "customExerciseId": "upper_ohp", "sets": "4", "reps": "4x6", "rpe": "52.5", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "52.5" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Ven - Lower",
+            "exercises": [
+              { "id": "l2w2", "name": "Romanian Deadlift (Barbell)", "customExerciseId": "lower_rdl", "sets": "4", "reps": "4x8", "rpe": "92.5", "setDetails": [{ "sets": "4", "reps": "8", "rpe": "92.5" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "SETTIMANA 3 (2 giorni - settimana corta)",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Lun - Full Body A",
+            "exercises": [
+              { "id": "fb1", "name": "Deadlift (Barbell)", "customExerciseId": "fb_dl", "sets": "3", "reps": "3x3", "rpe": "140", "setDetails": [{ "sets": "3", "reps": "3", "rpe": "140" }] },
+              { "id": "fb2", "name": "Bench Press (Barbell)", "customExerciseId": "fb_bench", "sets": "3", "reps": "3x5", "rpe": "80", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "80" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Gio - Full Body B",
+            "exercises": [
+              { "id": "fb3", "name": "Back Squat (Barbell)", "customExerciseId": "fb_squat", "sets": "3", "reps": "3x5", "rpe": "100", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "100" }] },
+              { "id": "fb4", "name": "Barbell Row (Barbell)", "customExerciseId": "fb_row", "sets": "3", "reps": "3x8", "rpe": "70", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "70" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "SETTIMANA 4 (4 giorni)",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Lun - Upper",
+            "exercises": [
+              { "id": "u1w4", "name": "Bench Press (Barbell)", "customExerciseId": "upper_main", "sets": "3", "reps": "3x3", "rpe": "85", "setDetails": [{ "sets": "3", "reps": "3", "rpe": "85" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Mar - Lower",
+            "exercises": [
+              { "id": "l1w4", "name": "Back Squat (Barbell)", "customExerciseId": "lower_main", "sets": "3", "reps": "3x3", "rpe": "105", "setDetails": [{ "sets": "3", "reps": "3", "rpe": "105" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Gio - Upper",
+            "exercises": [
+              { "id": "u2w4", "name": "Overhead Press (Barbell)", "customExerciseId": "upper_ohp", "sets": "3", "reps": "3x5", "rpe": "55", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "55" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Ven - Lower",
+            "exercises": [
+              { "id": "l2w4", "name": "Romanian Deadlift (Barbell)", "customExerciseId": "lower_rdl", "sets": "3", "reps": "3x8", "rpe": "85", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "85" }] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

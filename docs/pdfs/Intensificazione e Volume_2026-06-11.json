@@ -1,0 +1,2158 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-11T20:23:44.197Z",
+  "routine": {
+    "name": "Intensificazione e Volume",
+    "mobilitySections": [
+      {
+        "id": "sec_1",
+        "name": "Dinamica (30\" per esercizio)"
+      },
+      {
+        "id": "sec_1781208824819",
+        "name": "Statica (30\" per esercizio)"
+      },
+      {
+        "id": "sec_1781208894634",
+        "name": "CORE + BACINO"
+      },
+      {
+        "id": "sec_1781209188840",
+        "name": "REHAB Ginocchio con elastico rigido (OBBLIGATORIO)"
+      },
+      {
+        "id": "sec_1781209239848",
+        "name": "Collo e trapezi GIORNI PARI 2 4 6"
+      },
+      {
+        "id": "sec_1781209319923",
+        "name": "E da fare la Sera prima di coricarsi GIORNI DISPARI 1 3 5 7"
+      }
+    ],
+    "mobilityItems": [
+      {
+        "id": "m_1781208692009",
+        "title": "Gatto-Mucca",
+        "subtitle": "",
+        "sectionId": "sec_1",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208691989"
+      },
+      {
+        "id": "m_1781208743678",
+        "title": "Cobra-Bambino",
+        "subtitle": "",
+        "sectionId": "sec_1",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208743653"
+      },
+      {
+        "id": "m_1781208779964",
+        "title": "Hip switch 90/90",
+        "subtitle": "",
+        "sectionId": "sec_1",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208779944"
+      },
+      {
+        "id": "m_1781208790950",
+        "title": "Dislocazioni bastone",
+        "subtitle": "",
+        "sectionId": "sec_1",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208790928"
+      },
+      {
+        "id": "m_1781208861709",
+        "title": "Ponte tibie",
+        "subtitle": "",
+        "sectionId": "sec_1781208824819",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208861676"
+      },
+      {
+        "id": "m_1781208874673",
+        "title": "Torsioni",
+        "subtitle": "",
+        "sectionId": "sec_1781208824819",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208874655"
+      },
+      {
+        "id": "m_1781208884658",
+        "title": "Polpacci",
+        "subtitle": "",
+        "sectionId": "sec_1781208824819",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208884627"
+      },
+      {
+        "id": "m_1781208921524",
+        "title": "Dead bug",
+        "subtitle": "3×6/6",
+        "sectionId": "sec_1781208894634",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208921504"
+      },
+      {
+        "id": "m_1781208962670",
+        "title": "Hip airplane",
+        "subtitle": "2×5/5",
+        "sectionId": "sec_1781208894634",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208962636"
+      },
+      {
+        "id": "m_1781208987138",
+        "title": "Monster + lateral walk",
+        "subtitle": "2×12+12",
+        "sectionId": "sec_1781208894634",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781208987119"
+      },
+      {
+        "id": "m_1781209118102",
+        "title": "Single leg bridge",
+        "subtitle": "2×10",
+        "sectionId": "sec_1781208894634",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209118064"
+      },
+      {
+        "id": "m_1781209214576",
+        "title": "Spanish squat",
+        "subtitle": "3×20” (Solo nello squat)",
+        "sectionId": "sec_1781209188840",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209214548"
+      },
+      {
+        "id": "m_1781209228227",
+        "title": "TKE",
+        "subtitle": "3×15 (solo nello stacco)",
+        "sectionId": "sec_1781209188840",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209228185"
+      },
+      {
+        "id": "m_1781209281266",
+        "title": "Shrug",
+        "subtitle": "2×12",
+        "sectionId": "sec_1781209239848",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209281202"
+      },
+      {
+        "id": "m_1781209294821",
+        "title": "Y-T raise",
+        "subtitle": "3×12",
+        "sectionId": "sec_1781209239848",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209294794"
+      },
+      {
+        "id": "m_1781209306328",
+        "title": "Chin tuck",
+        "subtitle": "2×10",
+        "sectionId": "sec_1781209239848",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209306301"
+      },
+      {
+        "id": "m_1781209343963",
+        "title": "Rotazioni seduto su una sedia dx e sx",
+        "subtitle": "10 x lato",
+        "sectionId": "sec_1781209319923",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209343931"
+      },
+      {
+        "id": "m_1781209356291",
+        "title": "Scap push up",
+        "subtitle": "2x10",
+        "sectionId": "sec_1781209319923",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209356260"
+      },
+      {
+        "id": "m_1781209380540",
+        "title": "Doppio mento in piedi con tutto il corpo appoggiato alla parete comprsi talloni",
+        "subtitle": "30”",
+        "sectionId": "sec_1781209319923",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209380508"
+      },
+      {
+        "id": "m_1781209393814",
+        "title": "Mento al petto con mani alla nuca che creno una leggera pressione",
+        "subtitle": "30”",
+        "sectionId": "sec_1781209319923",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209393782"
+      },
+      {
+        "id": "m_1781209415192",
+        "title": "Tirate laterali sempre appicicato al muro",
+        "subtitle": "15/20” per lato 1 o 2 volte",
+        "sectionId": "sec_1781209319923",
+        "categoryIndex": 0,
+        "customExerciseId": "local_cex_1781209415164"
+      }
+    ],
+    "weeks": [
+      {
+        "id": "w_1781025465586",
+        "name": "SETTIMANA 1",
+        "days": [
+          {
+            "id": "w_1781025465586_d1",
+            "name": "GIORNO 1",
+            "exercises": [
+              {
+                "id": "e_1781025471144",
+                "name": "Good Morning (Barbell)",
+                "sets": "1",
+                "reps": "3x5 @6",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "5",
+                    "rpe": "@6"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502650"
+              },
+              {
+                "id": "e_1781025494306",
+                "name": "Squat (Barbell)",
+                "sets": "1",
+                "reps": "4x3 102.5",
+                "rpe": "",
+                "note": "Low Bar",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "3",
+                    "rpe": "102.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025529760",
+                "name": "Bench Press (Barbell)",
+                "sets": "7",
+                "reps": "1x5 77.5 | 1x4 82.5 | 1x3 85 | 1x2 87.5 | 1x3 85 | 1x4 82.5 | 1x5 77.5",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "reps": "5",
+                    "rpe": "77.5"
+                  },
+                  {
+                    "reps": "4",
+                    "rpe": "82.5"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "85"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "87.5"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "85"
+                  },
+                  {
+                    "reps": "4",
+                    "rpe": "82.5"
+                  },
+                  {
+                    "reps": "5",
+                    "rpe": "77.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025610060",
+                "name": "Leg Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506705"
+              },
+              {
+                "id": "e_1781025633086",
+                "name": "Leg Extension (Machine)",
+                "sets": "1",
+                "reps": "3x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506690"
+              },
+              {
+                "id": "e_1781025653234",
+                "name": "Seated Cable Row - V Grip (Cable)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507557"
+              },
+              {
+                "id": "e_1781025705030",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781025465586_d_1781025750523",
+            "name": "GIORNO 2",
+            "exercises": [
+              {
+                "id": "e_1781025757496",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x5 75",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "5",
+                    "rpe": "75"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025770592",
+                "name": "Sumo Deadlift",
+                "sets": "1",
+                "reps": "4x3 @7",
+                "rpe": "",
+                "note": "Femo incastro 2\" + Fermo ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "3",
+                    "rpe": "@7"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781025800313",
+                "name": "Lat Pulldown (Machine)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "Presa Supina",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010505982"
+              },
+              {
+                "id": "e_1781025839879",
+                "name": "Single Arm Cable Row",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507590"
+              },
+              {
+                "id": "e_1781025872410",
+                "name": "Face Pull",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "in ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500859"
+              },
+              {
+                "id": "e_1781025893693",
+                "name": "Rope Cable Curl",
+                "sets": "1",
+                "reps": "4x10 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502023"
+              }
+            ]
+          },
+          {
+            "id": "w_1781025465586_d_1781025929098",
+            "name": "GIORNO 3",
+            "exercises": [
+              {
+                "id": "e_1781025933805",
+                "name": "Side Plank",
+                "sets": "1",
+                "reps": "3x30",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "30",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010504582"
+              },
+              {
+                "id": "e_1781025952163",
+                "name": "Squat (Barbell)",
+                "sets": "3",
+                "reps": "1x3 105 | 1x2 107.5 | 3x3 100",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "3",
+                    "rpe": "105"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "107.5"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "100"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025993208",
+                "name": "Chest Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500205"
+              },
+              {
+                "id": "e_1781026012252",
+                "name": "Incline Bench Press (Dumbbell)",
+                "sets": "4",
+                "reps": "1x12 | 1x10 | 1x8 | 1x6",
+                "rpe": "",
+                "note": "Panca 4",
+                "setDetails": [
+                  {
+                    "reps": "12",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "10",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "8",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "6",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500492"
+              },
+              {
+                "id": "e_1781026054900",
+                "name": "Seated Overhead Press (Dumbbell)",
+                "sets": "1",
+                "reps": "3x10 RIR 0-1",
+                "rpe": "",
+                "note": "Panca 7",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501353"
+              },
+              {
+                "id": "e_1781026083572",
+                "name": "Lateral Raise (Dumbbell)",
+                "sets": "1",
+                "reps": "3x12 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501050"
+              },
+              {
+                "id": "e_1781026099979",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781025465586_d_1781026129050",
+            "name": "GIORNO 4",
+            "exercises": [
+              {
+                "id": "e_1781026133513",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x2 85",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "2",
+                    "rpe": "85"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781026155393",
+                "name": "Sumo Deadlift",
+                "sets": "3",
+                "reps": "1x3 120 | 1x2 130 | 3x3 110",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "3",
+                    "rpe": "120"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "130"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "110"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781026195686",
+                "name": "Single Leg Hip Thrust",
+                "sets": "1",
+                "reps": "3x10 RIR 1-2",
+                "rpe": "",
+                "note": "Full rom con step",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503260"
+              },
+              {
+                "id": "e_1781026233015",
+                "name": "Bulgarian Split Squat",
+                "sets": "1",
+                "reps": "3x8 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506461"
+              },
+              {
+                "id": "e_1781026251306",
+                "name": "Cable Pull Through",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502851"
+              },
+              {
+                "id": "e_1781027947779",
+                "name": "Skullcrusher (Barbell)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502314"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w_1781124603566",
+        "name": "SETTIMANA 2",
+        "days": [
+          {
+            "id": "w_1781124603566_d_w_1781025465586_d1",
+            "name": "GIORNO 1",
+            "exercises": [
+              {
+                "id": "e_1781025471144_w_1781124603566",
+                "name": "Good Morning (Barbell)",
+                "sets": "1",
+                "reps": "3x5 @6",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "5",
+                    "rpe": "@6"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502650"
+              },
+              {
+                "id": "e_1781025494306_w_1781124603566",
+                "name": "Squat (Barbell)",
+                "sets": "1",
+                "reps": "4x3 102.5",
+                "rpe": "",
+                "note": "Low Bar",
+                "setDetails": [
+                  {
+                    "sets": "5",
+                    "reps": "3",
+                    "rpe": "102.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025529760_w_1781124603566",
+                "name": "Bench Press (Barbell)",
+                "sets": "7",
+                "reps": "1x5 77.5 | 1x4 82.5 | 1x3 85 | 1x2 87.5 | 1x3 85 | 1x4 82.5 | 1x5 77.5",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "reps": "5",
+                    "rpe": "80"
+                  },
+                  {
+                    "reps": "4",
+                    "rpe": "82.5"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "85"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "87.5"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "85"
+                  },
+                  {
+                    "reps": "4",
+                    "rpe": "82.5"
+                  },
+                  {
+                    "reps": "5",
+                    "rpe": "80"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025610060_w_1781124603566",
+                "name": "Leg Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506705"
+              },
+              {
+                "id": "e_1781025633086_w_1781124603566",
+                "name": "Leg Extension (Machine)",
+                "sets": "1",
+                "reps": "3x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506690"
+              },
+              {
+                "id": "e_1781025653234_w_1781124603566",
+                "name": "Seated Cable Row - V Grip (Cable)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507557"
+              },
+              {
+                "id": "e_1781025705030_w_1781124603566",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124603566_d_w_1781025465586_d_1781025750523",
+            "name": "GIORNO 2",
+            "exercises": [
+              {
+                "id": "e_1781025757496_w_1781124603566",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x5 75",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "5",
+                    "reps": "5",
+                    "rpe": "75"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025770592_w_1781124603566",
+                "name": "Sumo Deadlift",
+                "sets": "1",
+                "reps": "4x3 @7",
+                "rpe": "",
+                "note": "Femo incastro 2\" + Fermo ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "4",
+                    "rpe": "@7"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781025800313_w_1781124603566",
+                "name": "Lat Pulldown (Machine)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "Presa Supina",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010505982"
+              },
+              {
+                "id": "e_1781025839879_w_1781124603566",
+                "name": "Single Arm Cable Row",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507590"
+              },
+              {
+                "id": "e_1781025872410_w_1781124603566",
+                "name": "Face Pull",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "in ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500859"
+              },
+              {
+                "id": "e_1781025893693_w_1781124603566",
+                "name": "Rope Cable Curl",
+                "sets": "1",
+                "reps": "4x10 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502023"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124603566_d_w_1781025465586_d_1781025929098",
+            "name": "GIORNO 3",
+            "exercises": [
+              {
+                "id": "e_1781025933805_w_1781124603566",
+                "name": "Side Plank",
+                "sets": "1",
+                "reps": "3x30",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "30",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010504582"
+              },
+              {
+                "id": "e_1781025952163_w_1781124603566",
+                "name": "Squat (Barbell)",
+                "sets": "3",
+                "reps": "1x3 105 | 1x2 107.5 | 3x3 100",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "3",
+                    "rpe": "107.5"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "110"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "102.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025993208_w_1781124603566",
+                "name": "Chest Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500205"
+              },
+              {
+                "id": "e_1781026012252_w_1781124603566",
+                "name": "Incline Bench Press (Dumbbell)",
+                "sets": "4",
+                "reps": "1x12 | 1x10 | 1x8 | 1x6",
+                "rpe": "",
+                "note": "Panca 4",
+                "setDetails": [
+                  {
+                    "reps": "12",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "10",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "8",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "6",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500492"
+              },
+              {
+                "id": "e_1781026054900_w_1781124603566",
+                "name": "Seated Overhead Press (Dumbbell)",
+                "sets": "1",
+                "reps": "3x10 RIR 0-1",
+                "rpe": "",
+                "note": "Panca 7",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501353"
+              },
+              {
+                "id": "e_1781026083572_w_1781124603566",
+                "name": "Lateral Raise (Dumbbell)",
+                "sets": "1",
+                "reps": "3x12 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501050"
+              },
+              {
+                "id": "e_1781026099979_w_1781124603566",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124603566_d_w_1781025465586_d_1781026129050",
+            "name": "GIORNO 4",
+            "exercises": [
+              {
+                "id": "e_1781026133513_w_1781124603566",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x2 85",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "sets": "5",
+                    "reps": "2",
+                    "rpe": "85"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781026155393_w_1781124603566",
+                "name": "Sumo Deadlift",
+                "sets": "3",
+                "reps": "1x3 120 | 1x2 130 | 3x3 110",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "3",
+                    "rpe": "130"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "135"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "115"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781026195686_w_1781124603566",
+                "name": "Single Leg Hip Thrust",
+                "sets": "1",
+                "reps": "3x10 RIR 1-2",
+                "rpe": "",
+                "note": "Full rom con step",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503260"
+              },
+              {
+                "id": "e_1781026233015_w_1781124603566",
+                "name": "Bulgarian Split Squat",
+                "sets": "1",
+                "reps": "3x8 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506461"
+              },
+              {
+                "id": "e_1781026251306_w_1781124603566",
+                "name": "Cable Pull Through",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502851"
+              },
+              {
+                "id": "e_1781027947779_w_1781124603566",
+                "name": "Skullcrusher (Barbell)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502314"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w_1781124614825",
+        "name": "SETTIMANA 3",
+        "days": [
+          {
+            "id": "w_1781124614825_d_w_1781124603566_d_w_1781025465586_d1",
+            "name": "GIORNO 1",
+            "exercises": [
+              {
+                "id": "e_1781025471144_w_1781124603566_w_1781124614825",
+                "name": "Good Morning (Barbell)",
+                "sets": "1",
+                "reps": "3x5 @6",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "5",
+                    "rpe": "@6"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502650"
+              },
+              {
+                "id": "e_1781025494306_w_1781124603566_w_1781124614825",
+                "name": "Squat (Barbell)",
+                "sets": "1",
+                "reps": "4x3 102.5",
+                "rpe": "",
+                "note": "Low Bar",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "2",
+                    "rpe": "107.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025529760_w_1781124603566_w_1781124614825",
+                "name": "Bench Press (Barbell)",
+                "sets": "7",
+                "reps": "1x5 77.5 | 1x4 82.5 | 1x3 85 | 1x2 87.5 | 1x3 85 | 1x4 82.5 | 1x5 77.5",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "reps": "4",
+                    "rpe": "82.5"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "87.5"
+                  },
+                  {
+                    "reps": "2",
+                    "rpe": "90"
+                  },
+                  {
+                    "reps": "3",
+                    "rpe": "85"
+                  },
+                  {
+                    "reps": "4",
+                    "rpe": "80"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025610060_w_1781124603566_w_1781124614825",
+                "name": "Leg Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506705"
+              },
+              {
+                "id": "e_1781025633086_w_1781124603566_w_1781124614825",
+                "name": "Leg Extension (Machine)",
+                "sets": "1",
+                "reps": "3x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506690"
+              },
+              {
+                "id": "e_1781025653234_w_1781124603566_w_1781124614825",
+                "name": "Seated Cable Row - V Grip (Cable)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507557"
+              },
+              {
+                "id": "e_1781025705030_w_1781124603566_w_1781124614825",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781025750523",
+            "name": "GIORNO 2",
+            "exercises": [
+              {
+                "id": "e_1781025757496_w_1781124603566_w_1781124614825",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x5 75",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "6",
+                    "reps": "5",
+                    "rpe": "75"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025770592_w_1781124603566_w_1781124614825",
+                "name": "Sumo Deadlift",
+                "sets": "1",
+                "reps": "4x3 @7",
+                "rpe": "",
+                "note": "Femo incastro 2\" + Fermo ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "3",
+                    "rpe": "@7"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781025800313_w_1781124603566_w_1781124614825",
+                "name": "Lat Pulldown (Machine)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "Presa Supina",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010505982"
+              },
+              {
+                "id": "e_1781025839879_w_1781124603566_w_1781124614825",
+                "name": "Single Arm Cable Row",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507590"
+              },
+              {
+                "id": "e_1781025872410_w_1781124603566_w_1781124614825",
+                "name": "Face Pull",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "in ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500859"
+              },
+              {
+                "id": "e_1781025893693_w_1781124603566_w_1781124614825",
+                "name": "Rope Cable Curl",
+                "sets": "1",
+                "reps": "4x10 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502023"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781025929098",
+            "name": "GIORNO 3",
+            "exercises": [
+              {
+                "id": "e_1781025933805_w_1781124603566_w_1781124614825",
+                "name": "Side Plank",
+                "sets": "1",
+                "reps": "3x30",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "30",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010504582"
+              },
+              {
+                "id": "e_1781025952163_w_1781124603566_w_1781124614825",
+                "name": "Squat (Barbell)",
+                "sets": "3",
+                "reps": "1x3 105 | 1x2 107.5 | 3x3 100",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "2",
+                    "rpe": "110"
+                  },
+                  {
+                    "sets": "2",
+                    "reps": "1",
+                    "rpe": "112.5"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "2",
+                    "rpe": "105"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025993208_w_1781124603566_w_1781124614825",
+                "name": "Chest Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500205"
+              },
+              {
+                "id": "e_1781026012252_w_1781124603566_w_1781124614825",
+                "name": "Incline Bench Press (Dumbbell)",
+                "sets": "4",
+                "reps": "1x12 | 1x10 | 1x8 | 1x6",
+                "rpe": "",
+                "note": "Panca 4",
+                "setDetails": [
+                  {
+                    "reps": "12",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "10",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "8",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "6",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500492"
+              },
+              {
+                "id": "e_1781026054900_w_1781124603566_w_1781124614825",
+                "name": "Seated Overhead Press (Dumbbell)",
+                "sets": "1",
+                "reps": "3x10 RIR 0-1",
+                "rpe": "",
+                "note": "Panca 7",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501353"
+              },
+              {
+                "id": "e_1781026083572_w_1781124603566_w_1781124614825",
+                "name": "Lateral Raise (Dumbbell)",
+                "sets": "1",
+                "reps": "3x12 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501050"
+              },
+              {
+                "id": "e_1781026099979_w_1781124603566_w_1781124614825",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781026129050",
+            "name": "GIORNO 4",
+            "exercises": [
+              {
+                "id": "e_1781026133513_w_1781124603566_w_1781124614825",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x2 85",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "2",
+                    "rpe": "87.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781026155393_w_1781124603566_w_1781124614825",
+                "name": "Sumo Deadlift",
+                "sets": "3",
+                "reps": "1x3 120 | 1x2 130 | 3x3 110",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "4",
+                    "rpe": "120"
+                  },
+                  {
+                    "sets": "2",
+                    "reps": "1",
+                    "rpe": "125"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "120"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781026195686_w_1781124603566_w_1781124614825",
+                "name": "Single Leg Hip Thrust",
+                "sets": "1",
+                "reps": "3x10 RIR 1-2",
+                "rpe": "",
+                "note": "Full rom con step",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503260"
+              },
+              {
+                "id": "e_1781026233015_w_1781124603566_w_1781124614825",
+                "name": "Bulgarian Split Squat",
+                "sets": "1",
+                "reps": "3x8 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506461"
+              },
+              {
+                "id": "e_1781026251306_w_1781124603566_w_1781124614825",
+                "name": "Cable Pull Through",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502851"
+              },
+              {
+                "id": "e_1781027947779_w_1781124603566_w_1781124614825",
+                "name": "Skullcrusher (Barbell)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502314"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w_1781124622087",
+        "name": "SETTIMANA 4",
+        "days": [
+          {
+            "id": "w_1781124622087_d_w_1781124614825_d_w_1781124603566_d_w_1781025465586_d1",
+            "name": "GIORNO 1",
+            "exercises": [
+              {
+                "id": "e_1781025471144_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Good Morning (Barbell)",
+                "sets": "1",
+                "reps": "3x5 @6",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "5",
+                    "rpe": "@6"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502650"
+              },
+              {
+                "id": "e_1781025494306_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Squat (Barbell)",
+                "sets": "1",
+                "reps": "4x3 102.5",
+                "rpe": "",
+                "note": "Low Bar",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "3",
+                    "rpe": "107.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025529760_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Bench Press (Barbell)",
+                "sets": "7",
+                "reps": "1x5 77.5 | 1x4 82.5 | 1x3 85 | 1x2 87.5 | 1x3 85 | 1x4 82.5 | 1x5 77.5",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "reps": "1",
+                    "rpe": "@7"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "-10%"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025610060_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Leg Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506705"
+              },
+              {
+                "id": "e_1781025633086_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Leg Extension (Machine)",
+                "sets": "1",
+                "reps": "3x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506690"
+              },
+              {
+                "id": "e_1781025653234_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Seated Cable Row - V Grip (Cable)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507557"
+              },
+              {
+                "id": "e_1781025705030_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x10",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124622087_d_w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781025750523",
+            "name": "GIORNO 2",
+            "exercises": [
+              {
+                "id": "e_1781025757496_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x5 75",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "7",
+                    "reps": "5",
+                    "rpe": "75"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781025770592_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Sumo Deadlift",
+                "sets": "1",
+                "reps": "4x3 @7",
+                "rpe": "",
+                "note": "Femo incastro 2\" + Fermo ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "4",
+                    "rpe": "@7"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781025800313_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Lat Pulldown (Machine)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "Presa Supina",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010505982"
+              },
+              {
+                "id": "e_1781025839879_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Single Arm Cable Row",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010507590"
+              },
+              {
+                "id": "e_1781025872410_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Face Pull",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "in ginocchio",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500859"
+              },
+              {
+                "id": "e_1781025893693_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Rope Cable Curl",
+                "sets": "1",
+                "reps": "4x10 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502023"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124622087_d_w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781025929098",
+            "name": "GIORNO 3",
+            "exercises": [
+              {
+                "id": "e_1781025933805_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Side Plank",
+                "sets": "1",
+                "reps": "3x30",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "30",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010504582"
+              },
+              {
+                "id": "e_1781025952163_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Squat (Barbell)",
+                "sets": "3",
+                "reps": "1x3 105 | 1x2 107.5 | 3x3 100",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "1",
+                    "rpe": "@8"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "-10%"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506960"
+              },
+              {
+                "id": "e_1781025993208_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Chest Press (Machine)",
+                "sets": "1",
+                "reps": "3x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500205"
+              },
+              {
+                "id": "e_1781026012252_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Incline Bench Press (Dumbbell)",
+                "sets": "4",
+                "reps": "1x12 | 1x10 | 1x8 | 1x6",
+                "rpe": "",
+                "note": "Panca 4",
+                "setDetails": [
+                  {
+                    "reps": "12",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "10",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "8",
+                    "rpe": ""
+                  },
+                  {
+                    "reps": "6",
+                    "rpe": ""
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010500492"
+              },
+              {
+                "id": "e_1781026054900_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Seated Overhead Press (Dumbbell)",
+                "sets": "1",
+                "reps": "3x10 RIR 0-1",
+                "rpe": "",
+                "note": "Panca 7",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501353"
+              },
+              {
+                "id": "e_1781026083572_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Lateral Raise (Dumbbell)",
+                "sets": "1",
+                "reps": "3x12 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010501050"
+              },
+              {
+                "id": "e_1781026099979_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Triceps Rope Pushdown",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502537"
+              }
+            ]
+          },
+          {
+            "id": "w_1781124622087_d_w_1781124614825_d_w_1781124603566_d_w_1781025465586_d_1781026129050",
+            "name": "GIORNO 4",
+            "exercises": [
+              {
+                "id": "e_1781026133513_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Bench Press (Barbell)",
+                "sets": "1",
+                "reps": "4x2 85",
+                "rpe": "",
+                "note": "Fermo 1-2\"",
+                "setDetails": [
+                  {
+                    "sets": "5",
+                    "reps": "2",
+                    "rpe": "87.5"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010499870"
+              },
+              {
+                "id": "e_1781026155393_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Sumo Deadlift",
+                "sets": "3",
+                "reps": "1x3 120 | 1x2 130 | 3x3 110",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "reps": "1",
+                    "rpe": "@7"
+                  },
+                  {
+                    "sets": "3",
+                    "reps": "3",
+                    "rpe": "-15%"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503302"
+              },
+              {
+                "id": "e_1781026195686_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Single Leg Hip Thrust",
+                "sets": "1",
+                "reps": "3x10 RIR 1-2",
+                "rpe": "",
+                "note": "Full rom con step",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "10",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010503260"
+              },
+              {
+                "id": "e_1781026233015_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Bulgarian Split Squat",
+                "sets": "1",
+                "reps": "3x8 RIR 1-2",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "8",
+                    "rpe": "RIR 1-2"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010506461"
+              },
+              {
+                "id": "e_1781026251306_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Cable Pull Through",
+                "sets": "1",
+                "reps": "3x12 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "3",
+                    "reps": "12",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502851"
+              },
+              {
+                "id": "e_1781027947779_w_1781124603566_w_1781124614825_w_1781124622087",
+                "name": "Skullcrusher (Barbell)",
+                "sets": "1",
+                "reps": "4x8 RIR 0-1",
+                "rpe": "",
+                "note": "",
+                "setDetails": [
+                  {
+                    "sets": "4",
+                    "reps": "8",
+                    "rpe": "RIR 0-1"
+                  }
+                ],
+                "customExerciseId": "local_cex_1781010502314"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "startDate": "2026-06-09T00:00:00.000"
+  }
+}

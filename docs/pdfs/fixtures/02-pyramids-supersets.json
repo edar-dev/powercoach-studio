@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-12T10:05:00.000Z",
+  "routine": {
+    "name": "PDF Stress — Piramidi e superserie",
+    "mobilitySections": [],
+    "mobilityItems": [],
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "S1",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Upper A",
+            "exercises": [
+              {
+                "id": "e_bench_pyramid",
+                "name": "Bench Press (Barbell)",
+                "shortName": "Bench piramide",
+                "sets": "7",
+                "reps": "1x5 77.5 | 1x4 82.5 | 1x3 87.5 | 1x2 92.5 | 1x1 97.5 | 1x1 100 | 1x1 102.5",
+                "rpe": "",
+                "note": "Fermo 1-2\" — tocca petto ogni rep",
+                "setDetails": [
+                  { "reps": "5", "rpe": "77.5" },
+                  { "reps": "4", "rpe": "82.5" },
+                  { "reps": "3", "rpe": "87.5" },
+                  { "reps": "2", "rpe": "92.5" },
+                  { "reps": "1", "rpe": "97.5" },
+                  { "reps": "1", "rpe": "100" },
+                  { "reps": "1", "rpe": "102.5" }
+                ]
+              },
+              {
+                "id": "e_sumo",
+                "name": "Sumo Deadlift (Barbell)",
+                "shortName": "Sumo DL",
+                "sets": "4",
+                "reps": "4x3 180",
+                "rpe": "",
+                "note": "Setup: piedi larghi, ginocchia fuori, petto alto, tirare il pavimento verso di te mantenendo la schiena neutra per tutta la fase concetrica",
+                "setDetails": [{ "sets": "4", "reps": "3", "rpe": "180" }]
+              },
+              {
+                "id": "e_ss_a",
+                "name": "Face Pull (Cable)",
+                "supersetGroupId": "ss_upper_finisher",
+                "sets": "3",
+                "reps": "3x15",
+                "rpe": "@9",
+                "setDetails": [{ "sets": "3", "reps": "15", "rpe": "@9" }]
+              },
+              {
+                "id": "e_ss_b",
+                "name": "Triceps Pushdown (Cable)",
+                "supersetGroupId": "ss_upper_finisher",
+                "sets": "3",
+                "reps": "3x12",
+                "rpe": "@8",
+                "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@8" }]
+              },
+              {
+                "id": "e_ss_c",
+                "name": "Lateral Raise (Dumbbell)",
+                "supersetGroupId": "ss_upper_finisher",
+                "sets": "3",
+                "reps": "3x20",
+                "rpe": "burn",
+                "setDetails": [{ "sets": "3", "reps": "20", "rpe": "burn" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "S2",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Upper A",
+            "exercises": [
+              {
+                "id": "e_bench_pyramid_w2",
+                "name": "Bench Press (Barbell)",
+                "sets": "5",
+                "reps": "1x6 75 | 1x5 80 | 1x4 85 | 1x3 90 | 1x2 95",
+                "rpe": "",
+                "note": "Femo 1-2\"",
+                "setDetails": [
+                  { "reps": "6", "rpe": "75" },
+                  { "reps": "5", "rpe": "80" },
+                  { "reps": "4", "rpe": "85" },
+                  { "reps": "3", "rpe": "90" },
+                  { "reps": "2", "rpe": "95" }
+                ]
+              },
+              {
+                "id": "e_rpe_only",
+                "name": "Overhead Press (Barbell)",
+                "sets": "1",
+                "reps": "5",
+                "rpe": "@7.5",
+                "note": "Legacy single @RPE",
+                "setDetails": [{ "reps": "5", "rpe": "@7.5" }]
+              },
+              {
+                "id": "e_messy",
+                "name": "Incline Dumbbell Press (Dumbbell)",
+                "sets": "1",
+                "reps": "3x3100",
+                "rpe": "",
+                "note": "Dato legacy corrotto 3x3100",
+                "setDetails": [{ "line": "3x3100" }]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "S3",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Upper A",
+            "exercises": [
+              {
+                "id": "e_long_pyramid",
+                "name": "Romanian Deadlift (Barbell)",
+                "sets": "8",
+                "reps": "8 step pyramid",
+                "rpe": "",
+                "setDetails": [
+                  { "reps": "8", "rpe": "60" },
+                  { "reps": "8", "rpe": "70" },
+                  { "reps": "6", "rpe": "80" },
+                  { "reps": "6", "rpe": "90" },
+                  { "reps": "5", "rpe": "100" },
+                  { "reps": "4", "rpe": "110" },
+                  { "reps": "3", "rpe": "120" },
+                  { "reps": "2", "rpe": "130" }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "S4",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Upper A",
+            "exercises": [
+              {
+                "id": "e_identical",
+                "name": "Lat Pulldown (Cable)",
+                "prescriptionScope": "allWeeks",
+                "sets": "4",
+                "reps": "4x10",
+                "rpe": "@8",
+                "note": "Nota condivisa tutte le settimane",
+                "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8" }]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

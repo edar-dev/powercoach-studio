@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "routine": {
+    "name": "PDF Stress — Legacy senza campi v2",
+    "mobilitySections": [
+      { "id": "sec_upper", "name": "Upper Body" },
+      { "id": "sec_lower", "name": "Lower Body" }
+    ],
+    "mobilityItems": [
+      {
+        "id": "m_old_1",
+        "title": "Band pull apart",
+        "subtitle": "20 reps",
+        "sectionId": "sec_upper",
+        "categoryIndex": 0
+      },
+      {
+        "id": "m_old_2",
+        "title": "Couch stretch",
+        "subtitle": "",
+        "sectionId": "sec_lower",
+        "categoryIndex": 1
+      }
+    ],
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "Week 1",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Day 1",
+            "exercises": [
+              {
+                "id": "legacy_1",
+                "name": "Bench Press (Barbell)",
+                "sets": "5",
+                "reps": "5",
+                "rpe": "80kg",
+                "note": ""
+              },
+              {
+                "id": "legacy_2",
+                "name": "Conventional Deadlift (Barbell)",
+                "sets": "1",
+                "reps": "1x5@7",
+                "rpe": "",
+                "note": "Doppio @ nel reps"
+              },
+              {
+                "id": "legacy_3",
+                "name": "Pull Up (Bodyweight)",
+                "sets": "4",
+                "reps": "AMRAP",
+                "rpe": "",
+                "note": "Senza setDetails"
+              },
+              {
+                "id": "legacy_4",
+                "name": "Barbell Curl (Barbell)",
+                "sets": "3",
+                "reps": "3x12",
+                "rpe": "30kg",
+                "note": "Femo 2\" in basso"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "Week 2",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Day 1",
+            "exercises": [
+              {
+                "id": "legacy_5",
+                "name": "Bench Press (Barbell)",
+                "sets": "5",
+                "reps": "5",
+                "rpe": "82.5kg",
+                "note": ""
+              },
+              {
+                "id": "legacy_6",
+                "name": "Conventional Deadlift (Barbell)",
+                "sets": "3",
+                "reps": "3",
+                "rpe": "140",
+                "note": ""
+              },
+              {
+                "id": "legacy_7",
+                "name": "Pull Up (Bodyweight)",
+                "sets": "4",
+                "reps": "4x6",
+                "rpe": "+10kg",
+                "note": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "Week 3",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Day 1",
+            "exercises": [
+              {
+                "id": "legacy_8",
+                "name": "Bench Press (Barbell)",
+                "sets": "3",
+                "reps": "3",
+                "rpe": "85kg",
+                "note": "Touch and go"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "Week 4",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Day 1",
+            "exercises": [
+              {
+                "id": "legacy_9",
+                "name": "Bench Press (Barbell)",
+                "sets": "3",
+                "reps": "3",
+                "rpe": "85kg",
+                "note": "Touch and go"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

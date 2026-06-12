@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-12T12:10:00.000Z",
+  "routine": {
+    "name": "PDF Stress - Esercizi rotanti per settimana",
+    "startDate": "2026-08-01",
+    "endDate": "2026-08-28",
+    "mobilitySections": [],
+    "mobilityItems": [],
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "S1 - Accumulo",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Slot A",
+            "exercises": [
+              { "id": "s1a", "name": "Goblet Squat (Dumbbell)", "customExerciseId": "w1_d1_a", "sets": "4", "reps": "4x10", "rpe": "@7", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@7" }] },
+              { "id": "s1b", "name": "Push Up (Bodyweight)", "customExerciseId": "w1_d1_b", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Slot B",
+            "exercises": [
+              { "id": "s2a", "name": "Kettlebell Swing (Kettlebell)", "customExerciseId": "w1_d2_a", "sets": "5", "reps": "5x15", "rpe": "24kg", "setDetails": [{ "sets": "5", "reps": "15", "rpe": "24kg" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Slot C",
+            "exercises": [
+              { "id": "s3a", "name": "Walking Lunge (Dumbbell)", "customExerciseId": "w1_d3_a", "sets": "3", "reps": "3x10", "rpe": "12kg", "note": "10 passi per gamba", "setDetails": [{ "sets": "3", "reps": "10", "rpe": "12kg" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Slot D",
+            "exercises": [
+              { "id": "s4a", "name": "Plank (Bodyweight)", "customExerciseId": "w1_d4_a", "sets": "3", "reps": "3x45s", "rpe": "", "setDetails": [{ "line": "3x45s" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "S2 - Ipertrofia",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Slot A",
+            "exercises": [
+              { "id": "s1a_w2", "name": "Leg Press (Machine)", "customExerciseId": "w2_d1_a", "sets": "4", "reps": "4x12", "rpe": "RPE 8", "setDetails": [{ "sets": "4", "reps": "12", "rpe": "RPE 8" }] },
+              { "id": "s1b_w2", "name": "Chest Press (Machine)", "customExerciseId": "w2_d1_b", "sets": "3", "reps": "3x12", "rpe": "@8", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@8" }] },
+              { "id": "s1c_w2", "name": "Cable Fly (Cable)", "customExerciseId": "w2_d1_c", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Slot B",
+            "exercises": [
+              { "id": "s2a_w2", "name": "Hip Thrust (Barbell)", "customExerciseId": "w2_d2_a", "sets": "4", "reps": "4x8", "rpe": "100", "setDetails": [{ "sets": "4", "reps": "8", "rpe": "100" }] },
+              { "id": "s2b_w2", "name": "Glute Ham Raise", "customExerciseId": "w2_d2_b", "sets": "3", "reps": "3x8", "rpe": "", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Slot C",
+            "exercises": [
+              { "id": "s3a_w2", "name": "Seated Cable Row - V Grip (Cable)", "shortName": "Cable Row (V)", "customExerciseId": "w2_d3_a", "sets": "4", "reps": "4x10", "rpe": "@8", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Slot D",
+            "exercises": [
+              { "id": "s4a_w2", "name": "Farmer Walk (Dumbbell)", "customExerciseId": "w2_d4_a", "sets": "4", "reps": "4x40m", "rpe": "32kg", "setDetails": [{ "line": "4x40m 32kg" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "S3 - Intensita",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Slot A",
+            "exercises": [
+              { "id": "s1a_w3", "name": "Back Squat (Barbell)", "customExerciseId": "w3_d1_a", "sets": "5", "reps": "5x3", "rpe": "105", "setDetails": [{ "sets": "5", "reps": "3", "rpe": "105" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Slot B",
+            "exercises": [
+              { "id": "s2a_w3", "name": "Bench Press (Barbell)", "customExerciseId": "w3_d2_a", "sets": "5", "reps": "5x3", "rpe": "85", "setDetails": [{ "sets": "5", "reps": "3", "rpe": "85" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Slot C",
+            "exercises": [
+              { "id": "s3a_w3", "name": "Sumo Deadlift (Barbell)", "shortName": "Sumo DL", "customExerciseId": "w3_d3_a", "sets": "4", "reps": "4x3", "rpe": "160", "note": "Fermo 1-2\"", "setDetails": [{ "sets": "4", "reps": "3", "rpe": "160" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Slot D",
+            "exercises": [
+              { "id": "s4a_w3", "name": "Overhead Press (Barbell)", "customExerciseId": "w3_d4_a", "sets": "4", "reps": "4x5", "rpe": "55", "setDetails": [{ "sets": "4", "reps": "5", "rpe": "55" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "S4 - Deload",
+        "days": [
+          {
+            "id": "d1",
+            "name": "Slot A",
+            "exercises": [
+              { "id": "s1a_w4", "name": "Trap Bar Deadlift (Trap Bar)", "customExerciseId": "w4_d1_a", "sets": "3", "reps": "3x5", "rpe": "120", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "120" }] },
+              { "id": "s1b_w4", "name": "Box Squat (Barbell)", "customExerciseId": "w4_d1_b", "sets": "3", "reps": "3x5", "rpe": "80", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "80" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "Slot B",
+            "exercises": [
+              { "id": "s2a_w4", "name": "Floor Press (Barbell)", "customExerciseId": "w4_d2_a", "sets": "3", "reps": "3x8", "rpe": "60", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "60" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "Slot C",
+            "exercises": [
+              { "id": "s3a_w4", "name": "Pull Up (Bodyweight)", "customExerciseId": "w4_d3_a", "sets": "4", "reps": "4x6", "rpe": "+10kg", "setDetails": [{ "sets": "4", "reps": "6", "rpe": "+10kg" }] },
+              { "id": "s3b_w4", "name": "Chin Up (Bodyweight)", "customExerciseId": "w4_d3_b", "sets": "3", "reps": "3x8", "rpe": "", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "Slot D",
+            "exercises": [
+              { "id": "s4a_w4", "name": "Dead Bug", "customExerciseId": "w4_d4_a", "prescriptionScope": "allWeeks", "sets": "3", "reps": "3x8", "rpe": "", "note": "8/side", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "" }] }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

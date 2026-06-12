@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "format": "powercoach-workout-routine",
+  "exportedAt": "2026-06-12T12:20:00.000Z",
+  "routine": {
+    "name": "PDF Stress - Giorno mega 14 esercizi",
+    "weeks": [
+      {
+        "id": "w1",
+        "name": "S1",
+        "days": [
+          {
+            "id": "d1",
+            "name": "GIORNO 1 - Normale",
+            "exercises": [
+              { "id": "n1", "name": "Bench Press (Barbell)", "customExerciseId": "n_bench", "sets": "3", "reps": "3x5", "rpe": "80", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "80" }] },
+              { "id": "n2", "name": "Back Squat (Barbell)", "customExerciseId": "n_squat", "sets": "3", "reps": "3x5", "rpe": "100", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "100" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "GIORNO 2 - Mega sessione bodybuilding",
+            "exercises": [
+              { "id": "m01", "name": "Incline Bench Press (Dumbbell)", "shortName": "Incline DB", "customExerciseId": "mega_01", "sets": "4", "reps": "4x10", "rpe": "@8", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8" }] },
+              { "id": "m02", "name": "Flat Dumbbell Press (Dumbbell)", "customExerciseId": "mega_02", "sets": "3", "reps": "3x12", "rpe": "@8", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@8" }] },
+              { "id": "m03", "name": "Cable Fly (Cable)", "customExerciseId": "mega_03", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m04", "name": "Lat Pulldown (Cable)", "customExerciseId": "mega_04", "sets": "4", "reps": "4x10", "rpe": "@8", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8" }] },
+              { "id": "m05", "name": "Seated Cable Row - V Grip (Cable)", "shortName": "Cable Row (V)", "customExerciseId": "mega_05", "sets": "4", "reps": "4x10", "rpe": "@8", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8" }] },
+              { "id": "m06", "name": "Single Arm Cable Row (Cable)", "customExerciseId": "mega_06", "sets": "3", "reps": "3x12", "rpe": "", "note": "12/side", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m07", "name": "Lateral Raise (Dumbbell)", "customExerciseId": "mega_07", "prescriptionScope": "allWeeks", "sets": "4", "reps": "4x15", "rpe": "", "setDetails": [{ "sets": "4", "reps": "15", "rpe": "" }] },
+              { "id": "m08", "name": "Rear Delt Fly (Dumbbell)", "customExerciseId": "mega_08", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m09", "name": "Triceps Pushdown (Cable)", "customExerciseId": "mega_09", "sets": "3", "reps": "3x12", "rpe": "@9", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@9" }] },
+              { "id": "m10", "name": "Overhead Triceps Extension (Cable)", "customExerciseId": "mega_10", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m11", "name": "Barbell Curl (Barbell)", "customExerciseId": "mega_11", "sets": "3", "reps": "3x10", "rpe": "30", "setDetails": [{ "sets": "3", "reps": "10", "rpe": "30" }] },
+              { "id": "m12", "name": "Hammer Curl (Dumbbell)", "customExerciseId": "mega_12", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m13", "name": "Leg Extension (Machine)", "customExerciseId": "mega_13", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m14", "name": "Leg Curl (Machine)", "customExerciseId": "mega_14", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "GIORNO 3 - Cardio + core",
+            "exercises": [
+              { "id": "c1", "name": "Assault Bike", "customExerciseId": "cardio_bike", "sets": "1", "reps": "10 min", "rpe": "Z2", "setDetails": [{ "line": "10 min Z2" }] },
+              { "id": "c2", "name": "Hanging Leg Raise", "customExerciseId": "core_hlr", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "GIORNO 4 - Recovery",
+            "exercises": [
+              { "id": "r1", "name": "Sled Push (Sled)", "customExerciseId": "rec_sled", "sets": "5", "reps": "5x20m", "rpe": "", "setDetails": [{ "line": "5x20m" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w2",
+        "name": "S2",
+        "days": [
+          {
+            "id": "d1",
+            "name": "GIORNO 1 - Normale",
+            "exercises": [
+              { "id": "n1w2", "name": "Bench Press (Barbell)", "customExerciseId": "n_bench", "sets": "3", "reps": "3x5", "rpe": "82.5", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "82.5" }] },
+              { "id": "n2w2", "name": "Back Squat (Barbell)", "customExerciseId": "n_squat", "sets": "3", "reps": "3x5", "rpe": "102.5", "setDetails": [{ "sets": "3", "reps": "5", "rpe": "102.5" }] }
+            ]
+          },
+          {
+            "id": "d2",
+            "name": "GIORNO 2 - Mega sessione bodybuilding",
+            "exercises": [
+              { "id": "m01w2", "name": "Incline Bench Press (Dumbbell)", "shortName": "Incline DB", "customExerciseId": "mega_01", "sets": "4", "reps": "4x10", "rpe": "@8.5", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8.5" }] },
+              { "id": "m02w2", "name": "Flat Dumbbell Press (Dumbbell)", "customExerciseId": "mega_02", "sets": "3", "reps": "3x12", "rpe": "@8.5", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@8.5" }] },
+              { "id": "m03w2", "name": "Cable Fly (Cable)", "customExerciseId": "mega_03", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m04w2", "name": "Lat Pulldown (Cable)", "customExerciseId": "mega_04", "sets": "4", "reps": "4x10", "rpe": "@8.5", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8.5" }] },
+              { "id": "m05w2", "name": "Seated Cable Row - V Grip (Cable)", "shortName": "Cable Row (V)", "customExerciseId": "mega_05", "sets": "4", "reps": "4x10", "rpe": "@8.5", "setDetails": [{ "sets": "4", "reps": "10", "rpe": "@8.5" }] },
+              { "id": "m06w2", "name": "Single Arm Cable Row (Cable)", "customExerciseId": "mega_06", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m07w2", "name": "Lateral Raise (Dumbbell)", "customExerciseId": "mega_07", "prescriptionScope": "allWeeks", "sets": "4", "reps": "4x15", "rpe": "", "setDetails": [{ "sets": "4", "reps": "15", "rpe": "" }] },
+              { "id": "m08w2", "name": "Rear Delt Fly (Dumbbell)", "customExerciseId": "mega_08", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m09w2", "name": "Triceps Pushdown (Cable)", "customExerciseId": "mega_09", "sets": "3", "reps": "3x12", "rpe": "@9", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "@9" }] },
+              { "id": "m10w2", "name": "Overhead Triceps Extension (Cable)", "customExerciseId": "mega_10", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m11w2", "name": "Barbell Curl (Barbell)", "customExerciseId": "mega_11", "sets": "3", "reps": "3x10", "rpe": "32.5", "setDetails": [{ "sets": "3", "reps": "10", "rpe": "32.5" }] },
+              { "id": "m12w2", "name": "Hammer Curl (Dumbbell)", "customExerciseId": "mega_12", "sets": "3", "reps": "3x12", "rpe": "", "setDetails": [{ "sets": "3", "reps": "12", "rpe": "" }] },
+              { "id": "m13w2", "name": "Leg Extension (Machine)", "customExerciseId": "mega_13", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] },
+              { "id": "m14w2", "name": "Leg Curl (Machine)", "customExerciseId": "mega_14", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d3",
+            "name": "GIORNO 3 - Cardio + core",
+            "exercises": [
+              { "id": "c1w2", "name": "Assault Bike", "customExerciseId": "cardio_bike", "sets": "1", "reps": "12 min", "rpe": "Z2", "setDetails": [{ "line": "12 min Z2" }] },
+              { "id": "c2w2", "name": "Hanging Leg Raise", "customExerciseId": "core_hlr", "sets": "3", "reps": "3x15", "rpe": "", "setDetails": [{ "sets": "3", "reps": "15", "rpe": "" }] }
+            ]
+          },
+          {
+            "id": "d4",
+            "name": "GIORNO 4 - Recovery",
+            "exercises": [
+              { "id": "r1w2", "name": "Sled Push (Sled)", "customExerciseId": "rec_sled", "sets": "4", "reps": "4x25m", "rpe": "", "setDetails": [{ "line": "4x25m" }] }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "w3",
+        "name": "S3",
+        "days": [
+          { "id": "d1", "name": "GIORNO 1 - Normale", "exercises": [{ "id": "n1w3", "name": "Bench Press (Barbell)", "customExerciseId": "n_bench", "sets": "4", "reps": "4x4", "rpe": "85", "setDetails": [{ "sets": "4", "reps": "4", "rpe": "85" }] }] },
+          { "id": "d2", "name": "GIORNO 2 - Mega sessione bodybuilding", "exercises": [{ "id": "m01w3", "name": "Incline Bench Press (Dumbbell)", "customExerciseId": "mega_01", "sets": "3", "reps": "3x8", "rpe": "@9", "setDetails": [{ "sets": "3", "reps": "8", "rpe": "@9" }] }] },
+          { "id": "d3", "name": "GIORNO 3 - Cardio + core", "exercises": [{ "id": "c1w3", "name": "Assault Bike", "customExerciseId": "cardio_bike", "sets": "1", "reps": "8 min", "rpe": "Z2", "setDetails": [{ "line": "8 min Z2" }] }] },
+          { "id": "d4", "name": "GIORNO 4 - Recovery", "exercises": [{ "id": "r1w3", "name": "Sled Push (Sled)", "customExerciseId": "rec_sled", "sets": "3", "reps": "3x15m", "rpe": "", "setDetails": [{ "line": "3x15m" }] }] }
+        ]
+      },
+      {
+        "id": "w4",
+        "name": "S4",
+        "days": [
+          { "id": "d1", "name": "GIORNO 1 - Normale", "exercises": [{ "id": "n1w4", "name": "Bench Press (Barbell)", "customExerciseId": "n_bench", "sets": "2", "reps": "2x8", "rpe": "70", "setDetails": [{ "sets": "2", "reps": "8", "rpe": "70" }] }] },
+          { "id": "d2", "name": "GIORNO 2 - Mega sessione bodybuilding", "exercises": [{ "id": "m01w4", "name": "Incline Bench Press (Dumbbell)", "customExerciseId": "mega_01", "sets": "2", "reps": "2x15", "rpe": "leggero", "setDetails": [{ "sets": "2", "reps": "15", "rpe": "leggero" }] }] },
+          { "id": "d3", "name": "GIORNO 3 - Cardio + core", "exercises": [{ "id": "c1w4", "name": "Assault Bike", "customExerciseId": "cardio_bike", "sets": "1", "reps": "15 min", "rpe": "Z1", "setDetails": [{ "line": "15 min Z1" }] }] },
+          { "id": "d4", "name": "GIORNO 4 - Recovery", "exercises": [{ "id": "r1w4", "name": "Sled Push (Sled)", "customExerciseId": "rec_sled", "sets": "2", "reps": "2x30m", "rpe": "", "setDetails": [{ "line": "2x30m" }] }] }
+        ]
+      }
+    ]
+  }
+}
