@@ -760,6 +760,31 @@
   "workoutTemplatesSemanticList": "Workout templates list",
   "workoutTemplatesAssignSearchHint": "Search by name…",
   "workoutTemplatesAssignNoMatch": "No customers match your search.",
+  "workoutTemplatesSearchHint": "Search by name, phase, or tag",
+  "workoutTemplatesSortTitle": "Sort templates",
+  "workoutTemplatesSortNameAsc": "Name (A-Z)",
+  "workoutTemplatesSortUpdatedDesc": "Last updated",
+  "workoutTemplatesSortWeekCountDesc": "Most weeks",
+  "workoutTemplatesNoMatch": "No templates match your search.",
+  "workoutTemplatesPreviewTitle": "Template preview",
+  "workoutTemplatesPreviewEmpty": "No structure available for this template.",
+  "workoutTemplatesStructureSummary": "{weeks} weeks · {days} days · {exercises} exercises",
+  "@workoutTemplatesStructureSummary": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "days": { "type": "int" },
+      "exercises": { "type": "int" }
+    }
+  },
+  "workoutTemplatesPreviewExercisesMore": "+{count} more exercises",
+  "@workoutTemplatesPreviewExercisesMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutTemplatesAssignStartDate": "Optional start date",
+  "workoutTemplatesAssignStartDateHint": "Tap to choose a start date",
+  "workoutTemplatesAssignStartDateSkip": "Skip",
   "workoutDiaryTitle": "Diary",
   "workoutStatsTitle": "Stats",
   "placeholderComingSoon": "Coming soon",

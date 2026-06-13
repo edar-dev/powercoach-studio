@@ -760,6 +760,31 @@
   "workoutTemplatesSemanticList": "Elenco template allenamento",
   "workoutTemplatesAssignSearchHint": "Cerca per nome…",
   "workoutTemplatesAssignNoMatch": "Nessun cliente corrisponde alla ricerca.",
+  "workoutTemplatesSearchHint": "Cerca per nome, fase o tag",
+  "workoutTemplatesSortTitle": "Ordina template",
+  "workoutTemplatesSortNameAsc": "Nome (A-Z)",
+  "workoutTemplatesSortUpdatedDesc": "Ultima modifica",
+  "workoutTemplatesSortWeekCountDesc": "Più settimane",
+  "workoutTemplatesNoMatch": "Nessun template corrisponde alla ricerca.",
+  "workoutTemplatesPreviewTitle": "Anteprima template",
+  "workoutTemplatesPreviewEmpty": "Nessuna struttura disponibile per questo template.",
+  "workoutTemplatesStructureSummary": "{weeks} sett. · {days} giorni · {exercises} esercizi",
+  "@workoutTemplatesStructureSummary": {
+    "placeholders": {
+      "weeks": { "type": "int" },
+      "days": { "type": "int" },
+      "exercises": { "type": "int" }
+    }
+  },
+  "workoutTemplatesPreviewExercisesMore": "+{count} altri esercizi",
+  "@workoutTemplatesPreviewExercisesMore": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutTemplatesAssignStartDate": "Data di inizio opzionale",
+  "workoutTemplatesAssignStartDateHint": "Tocca per scegliere una data di inizio",
+  "workoutTemplatesAssignStartDateSkip": "Salta",
   "workoutDiaryTitle": "Diario",
   "workoutStatsTitle": "Statistiche",
   "placeholderComingSoon": "In arrivo",

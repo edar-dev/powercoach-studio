@@ -3406,6 +3406,84 @@ abstract class AppLocalizations {
   /// **'No customers match your search.'**
   String get workoutTemplatesAssignNoMatch;
 
+  /// No description provided for @workoutTemplatesSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name, phase, or tag'**
+  String get workoutTemplatesSearchHint;
+
+  /// No description provided for @workoutTemplatesSortTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort templates'**
+  String get workoutTemplatesSortTitle;
+
+  /// No description provided for @workoutTemplatesSortNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (A-Z)'**
+  String get workoutTemplatesSortNameAsc;
+
+  /// No description provided for @workoutTemplatesSortUpdatedDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get workoutTemplatesSortUpdatedDesc;
+
+  /// No description provided for @workoutTemplatesSortWeekCountDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Most weeks'**
+  String get workoutTemplatesSortWeekCountDesc;
+
+  /// No description provided for @workoutTemplatesNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No templates match your search.'**
+  String get workoutTemplatesNoMatch;
+
+  /// No description provided for @workoutTemplatesPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Template preview'**
+  String get workoutTemplatesPreviewTitle;
+
+  /// No description provided for @workoutTemplatesPreviewEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No structure available for this template.'**
+  String get workoutTemplatesPreviewEmpty;
+
+  /// No description provided for @workoutTemplatesStructureSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{weeks} weeks · {days} days · {exercises} exercises'**
+  String workoutTemplatesStructureSummary(int weeks, int days, int exercises);
+
+  /// No description provided for @workoutTemplatesPreviewExercisesMore.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more exercises'**
+  String workoutTemplatesPreviewExercisesMore(int count);
+
+  /// No description provided for @workoutTemplatesAssignStartDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional start date'**
+  String get workoutTemplatesAssignStartDate;
+
+  /// No description provided for @workoutTemplatesAssignStartDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose a start date'**
+  String get workoutTemplatesAssignStartDateHint;
+
+  /// No description provided for @workoutTemplatesAssignStartDateSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get workoutTemplatesAssignStartDateSkip;
+
   /// No description provided for @workoutDiaryTitle.
   ///
   /// In en, this message translates to:
