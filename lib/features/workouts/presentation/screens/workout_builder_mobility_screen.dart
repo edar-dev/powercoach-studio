@@ -364,6 +364,7 @@ class _WorkoutBuilderMobilityScreenState
     final notes = _notesController.text.trim();
 
     var success = false;
+    var createdPlanIdForUrlSync = '';
     try {
       if (widget.editorMode && widget.customerId != null) {
         if (_loadedPlanId != null) {
@@ -388,6 +389,7 @@ class _WorkoutBuilderMobilityScreenState
             tags: tags.isEmpty ? null : tags,
             notes: notes.isEmpty ? null : notes,
           );
+          createdPlanIdForUrlSync = created.id;
           if (mounted) {
             setState(() => _loadedPlanId = created.id);
           }
@@ -407,6 +409,17 @@ class _WorkoutBuilderMobilityScreenState
               ),
               behavior: SnackBarBehavior.floating,
               backgroundColor: StitchM3Theme.accent,
+            ),
+          );
+        }
+        if (createdPlanIdForUrlSync.isNotEmpty && mounted) {
+          navigateReplace(
+            context,
+            customerWorkoutEditorPath(
+              widget.customerId!,
+              planId: createdPlanIdForUrlSync,
+              weekIndex: _selectedWeekIndex,
+              dayIndex: _selectedDayIndex,
             ),
           );
         }

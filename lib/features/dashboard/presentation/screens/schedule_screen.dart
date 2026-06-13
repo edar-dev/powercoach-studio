@@ -172,7 +172,8 @@ class _ScheduleEventsList extends StatelessWidget {
                   cs: cs,
                   onTap: () {
                     HapticFeedback.mediumImpact();
-                    context.push(
+                    navigateTo(
+                      context,
                       customerWorkoutEditorPath(
                         event.customerId,
                         planId: event.planId,
