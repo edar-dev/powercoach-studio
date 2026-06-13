@@ -1042,6 +1042,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutEditorUnsavedState => 'Unsaved';
 
   @override
+  String get workoutEditorAutosaveHint =>
+      'Changes save automatically. Use Save to force an immediate save.';
+
+  @override
+  String get workoutBuilderWeekMenuTooltip => 'Actions for the selected week';
+
+  @override
+  String get workoutBuilderDayMenuTooltip => 'Actions for the selected day';
+
+  @override
+  String get workoutBuilderExerciseMenuTooltip => 'Actions for this exercise';
+
+  @override
   String get workoutBuilderEditSectionTitle => 'Edit section';
 
   @override

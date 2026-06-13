@@ -2008,6 +2008,30 @@ abstract class AppLocalizations {
   /// **'Unsaved'**
   String get workoutEditorUnsavedState;
 
+  /// No description provided for @workoutEditorAutosaveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes save automatically. Use Save to force an immediate save.'**
+  String get workoutEditorAutosaveHint;
+
+  /// No description provided for @workoutBuilderWeekMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions for the selected week'**
+  String get workoutBuilderWeekMenuTooltip;
+
+  /// No description provided for @workoutBuilderDayMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions for the selected day'**
+  String get workoutBuilderDayMenuTooltip;
+
+  /// No description provided for @workoutBuilderExerciseMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions for this exercise'**
+  String get workoutBuilderExerciseMenuTooltip;
+
   /// No description provided for @workoutBuilderEditSectionTitle.
   ///
   /// In en, this message translates to:

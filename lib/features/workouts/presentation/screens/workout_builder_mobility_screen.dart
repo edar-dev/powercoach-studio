@@ -24,6 +24,7 @@ import '../../data/workout_plan_repository.dart';
 import 'package:file_picker/file_picker.dart';
 
 import '../../../exercise_library/data/import_file_reader.dart';
+import '../../domain/day_scheduled_weekday.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
@@ -120,6 +121,13 @@ class _WorkoutBuilderMobilityScreenState
     savedSnapshot: _savedSnapshot,
     currentSnapshot: _currentSnapshot(),
   );
+
+  bool get _shouldShowManualSaveButton {
+    if (_loading) return false;
+    if (!widget.editorMode) return true;
+    if (_loadedPlanId == null) return true;
+    return _editorSaveState != _WorkoutEditorSaveState.saved;
+  }
 
   @override
   void initState() {
@@ -218,7 +226,7 @@ class _WorkoutBuilderMobilityScreenState
     final loaded = await WorkoutRoutineStorage.load();
     if (!mounted) return;
     setState(() {
-      _routine = loaded;
+      _routine = hydrateScheduledWeekdays(loaded);
       _routineNameController.text = loaded.name;
       _selectedWeekIndex = 0;
       _selectedDayIndex = 0;
@@ -234,7 +242,7 @@ class _WorkoutBuilderMobilityScreenState
       if (widget.planId != null && widget.planId!.isNotEmpty) {
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
-          final routine = planDataToRoutine(plan.planData);
+          final routine = hydrateScheduledWeekdays(planDataToRoutine(plan.planData));
           final (weekIndex, dayIndex) = _resolveInitialSelection(routine);
           setState(() {
             _routine = routine;
@@ -295,7 +303,7 @@ class _WorkoutBuilderMobilityScreenState
     return (week, day);
   }
 
-  int _weekdayFromDayIndex(int dayIndex) => (dayIndex % 7) + 1;
+  int _weekdayFromDayIndex(int dayIndex) => inferredScheduledWeekday(dayIndex);
 
   Future<void> _pickRoutineStartDate() async {
     final now = DateTime.now();
@@ -543,43 +551,49 @@ class _WorkoutBuilderMobilityScreenState
       _WorkoutEditorSaveState.saving => (
         Icons.sync,
         l10n.workoutEditorAutosaving,
-        cs.primary,
+        cs.onPrimaryContainer,
         cs.primaryContainer,
       ),
       _WorkoutEditorSaveState.unsaved => (
         Icons.warning_amber_rounded,
         l10n.workoutEditorUnsavedState,
-        cs.tertiary,
-        cs.tertiaryContainer,
+        const Color(0xFFB45309),
+        StitchM3Theme.warning.withValues(alpha: 0.22),
       ),
       _WorkoutEditorSaveState.saved => (
         Icons.check_circle_outline,
         l10n.workoutEditorSavedState,
-        cs.secondary,
-        cs.secondaryContainer,
+        StitchM3Theme.success,
+        StitchM3Theme.success.withValues(alpha: 0.2),
       ),
     };
 
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: background,
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: foreground),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: foreground,
-              fontWeight: FontWeight.w600,
+    return Tooltip(
+      message: widget.editorMode && _loadedPlanId != null
+          ? l10n.workoutEditorAutosaveHint
+          : label,
+      child: Container(
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(color: foreground.withValues(alpha: 0.35)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 16, color: foreground),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: foreground,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -701,7 +715,7 @@ class _WorkoutBuilderMobilityScreenState
       final imported = decodeWorkoutRoutineJson(content);
       if (!mounted) return;
       setState(() {
-        _routine = imported;
+        _routine = hydrateScheduledWeekdays(imported);
         _routineNameController.text = imported.name;
       });
       ScaffoldMessenger.of(context).showSnackBar(
@@ -1838,43 +1852,44 @@ class _WorkoutBuilderMobilityScreenState
               ),
             if (widget.editorMode && !_loading)
               _buildSaveStatusIndicator(l10n, cs),
-            Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: SizedBox(
-                width: 88,
-                height: 36,
-                child: FilledButton(
-                  onPressed: (_loading || _saving)
-                      ? null
-                      : () {
-                          _saveRoutine();
-                        },
-                  style: FilledButton.styleFrom(
-                    backgroundColor: StitchM3Theme.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
+            if (_shouldShowManualSaveButton)
+              Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: SizedBox(
+                  width: 88,
+                  height: 36,
+                  child: FilledButton(
+                    onPressed: (_loading || _saving)
+                        ? null
+                        : () {
+                            _saveRoutine();
+                          },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: StitchM3Theme.accent,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                  child: _saving
-                      ? SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
+                    child: _saving
+                        ? SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Colors.white,
+                              ),
                             ),
-                          ),
-                        )
-                      : Text(l10n.customerSave),
+                          )
+                        : Text(l10n.customerSave),
+                  ),
                 ),
               ),
-            ),
           ],
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(1),
@@ -3995,7 +4010,7 @@ class _TrainingSection extends StatelessWidget {
           final l10n = AppLocalizations.of(context);
           final partition = partitionExercisesBySuperset(day.exercises);
           return ListView(
-            padding: const EdgeInsets.only(bottom: 88, right: 4),
+            padding: const EdgeInsets.only(bottom: 96, right: 4),
             children: [
               for (final entry in partition.asMap().entries) ...[
                 if (entry.value is Exercise)
@@ -4464,7 +4479,7 @@ class _ExerciseCard extends StatelessWidget {
                         color: cs.onSurfaceVariant,
                       ),
                       padding: EdgeInsets.zero,
-                      tooltip: l10n.workoutBuilderMoreActions,
+                      tooltip: l10n.workoutBuilderExerciseMenuTooltip,
                       onSelected: (value) {
                         if (value == 'edit') {
                           _openEditDialog(context);
