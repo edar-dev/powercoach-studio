@@ -1960,6 +1960,54 @@ abstract class AppLocalizations {
   /// **'Routine saved'**
   String get workoutBuilderRoutineSaved;
 
+  /// No description provided for @workoutEditorUnsavedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved changes'**
+  String get workoutEditorUnsavedTitle;
+
+  /// No description provided for @workoutEditorUnsavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You have unsaved changes. Save before leaving this screen?'**
+  String get workoutEditorUnsavedMessage;
+
+  /// No description provided for @workoutEditorSaveAndExit.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and exit'**
+  String get workoutEditorSaveAndExit;
+
+  /// No description provided for @workoutEditorDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard'**
+  String get workoutEditorDiscard;
+
+  /// No description provided for @workoutEditorCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get workoutEditorCancel;
+
+  /// No description provided for @workoutEditorAutosaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get workoutEditorAutosaving;
+
+  /// No description provided for @workoutEditorSavedState.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get workoutEditorSavedState;
+
+  /// No description provided for @workoutEditorUnsavedState.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved'**
+  String get workoutEditorUnsavedState;
+
   /// No description provided for @workoutBuilderEditSectionTitle.
   ///
   /// In en, this message translates to:

@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +31,10 @@ import '../../domain/exercise_summary_sync.dart';
 import '../../domain/export_pdf_usecase.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_routine_json_codec.dart';
+import '../workout_editor_snapshot.dart';
 import '../widgets/training_week_day_panel.dart';
+import '../widgets/workout_export_sheet.dart';
+import '../widgets/workout_plan_details_tab.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
 import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
 import '../../../customers/data/customer_exercise_record_repository.dart';
@@ -56,6 +59,10 @@ List<({String id, String label})> _getSupersetGroupOptions(Day day) {
 /// Workout Builder variant: Enhanced Mobility (694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6), Intuitive Super Set (7ce630e5).
 enum WorkoutBuilderVariant { mobility, multiset, superset, intuitiveSuperset }
 
+enum _WorkoutEditorExitAction { save, discard, cancel }
+
+enum _WorkoutEditorSaveState { saved, saving, unsaved }
+
 /// Workout Builder – Enhanced Mobility Controls (Stitch 694ace9b83514965989f12ac2a3d54fa).
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
@@ -77,7 +84,8 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
       _WorkoutBuilderMobilityScreenState();
 }
 
-class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScreen>
+class _WorkoutBuilderMobilityScreenState
+    extends State<WorkoutBuilderMobilityScreen>
     with SingleTickerProviderStateMixin {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
@@ -91,6 +99,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   WorkoutRoutine _routine = WorkoutRoutine.empty();
   bool _loading = true;
   bool _saving = false;
+  bool _suspendEditorTracking = false;
   int _initialWeekNumber = 1;
   int _selectedMobilitySectionIndex = 0;
   int _selectedWeekIndex = 0;
@@ -99,9 +108,18 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   int? _pendingSelectedDayIndex;
   bool _didReadDeepLinkSelection = false;
   late final TabController _sectionTabController;
+  Timer? _autosaveTimer;
+  String? _savedSnapshot;
+  String? _lastObservedSnapshot;
+  _WorkoutEditorSaveState _editorSaveState = _WorkoutEditorSaveState.saved;
 
   bool get _showsMobilityTab =>
       widget.variant == WorkoutBuilderVariant.mobility;
+
+  bool get _isDirty => isWorkoutEditorDirty(
+    savedSnapshot: _savedSnapshot,
+    currentSnapshot: _currentSnapshot(),
+  );
 
   @override
   void initState() {
@@ -110,6 +128,11 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       length: _showsMobilityTab ? 3 : 2,
       vsync: this,
     );
+    _routineNameController.addListener(_onMetadataEdited);
+    _initialWeekController.addListener(_onMetadataEdited);
+    _phaseController.addListener(_onMetadataEdited);
+    _tagsController.addListener(_onMetadataEdited);
+    _notesController.addListener(_onMetadataEdited);
     _loadRoutine();
   }
 
@@ -127,6 +150,64 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final query = GoRouterState.of(context).uri.queryParameters;
     _pendingSelectedWeekIndex = int.tryParse(query['week'] ?? '');
     _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
+  }
+
+  String _currentSnapshot() {
+    final parsedInitialWeek = int.tryParse(_initialWeekController.text.trim());
+    final resolvedInitialWeek =
+        (parsedInitialWeek != null && parsedInitialWeek >= 1)
+        ? parsedInitialWeek
+        : _initialWeekNumber;
+    return buildWorkoutEditorSnapshot(
+      routine: _routine,
+      planName: _routineNameController.text,
+      initialWeekNumber: resolvedInitialWeek,
+      phase: _phaseController.text,
+      tags: _tagsController.text,
+      notes: _notesController.text,
+    );
+  }
+
+  void _captureSavedSnapshot() {
+    final snapshot = _currentSnapshot();
+    _savedSnapshot = snapshot;
+    _lastObservedSnapshot = snapshot;
+    _editorSaveState = _WorkoutEditorSaveState.saved;
+  }
+
+  void _onMetadataEdited() {
+    if (!widget.editorMode || _suspendEditorTracking || _loading || !mounted) {
+      return;
+    }
+    setState(() {});
+  }
+
+  void _trackEditorChangesIfNeeded() {
+    if (!widget.editorMode || _suspendEditorTracking || _loading) {
+      return;
+    }
+    final current = _currentSnapshot();
+    if (_lastObservedSnapshot == current) {
+      return;
+    }
+    _lastObservedSnapshot = current;
+    final nextState = _isDirty
+        ? _WorkoutEditorSaveState.unsaved
+        : _WorkoutEditorSaveState.saved;
+    if (_editorSaveState != nextState) {
+      _editorSaveState = nextState;
+    }
+    _scheduleAutosave();
+  }
+
+  void _scheduleAutosave() {
+    _autosaveTimer?.cancel();
+    if (!widget.editorMode || _loadedPlanId == null || !_isDirty) {
+      return;
+    }
+    _autosaveTimer = Timer(const Duration(milliseconds: 2500), () {
+      _saveRoutine(silent: true);
+    });
   }
 
   Future<void> _loadRoutine() async {
@@ -149,6 +230,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final customerId = widget.customerId!;
     try {
       Customer? customer;
+      _suspendEditorTracking = true;
       if (widget.planId != null && widget.planId!.isNotEmpty) {
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
@@ -180,14 +262,18 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       setState(() {
         _editorCustomer = customer;
         _loading = false;
+        _captureSavedSnapshot();
       });
+      _suspendEditorTracking = false;
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _selectedWeekIndex = 0;
         _selectedDayIndex = 0;
         _loading = false;
+        _captureSavedSnapshot();
       });
+      _suspendEditorTracking = false;
     }
   }
 
@@ -248,9 +334,17 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
-  Future<void> _saveRoutine() async {
-    if (_saving) return;
-    setState(() => _saving = true);
+  Future<bool> _saveRoutine({bool silent = false}) async {
+    if (_saving) return false;
+    _autosaveTimer?.cancel();
+    if (mounted) {
+      setState(() {
+        _saving = true;
+        if (widget.editorMode) {
+          _editorSaveState = _WorkoutEditorSaveState.saving;
+        }
+      });
+    }
     final name = _routineNameController.text.trim();
     final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
     final savedInitialWeek = () {
@@ -261,34 +355,43 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final tags = _tagsController.text.trim();
     final notes = _notesController.text.trim();
 
+    var success = false;
     try {
       if (widget.editorMode && widget.customerId != null) {
-        try {
-          if (_loadedPlanId != null) {
-            await _planRepo.update(
-              planId: _loadedPlanId!,
-              name: toSave.name,
-              planDataJson: _encodeRoutine(toSave),
-              initialWeekNumber: savedInitialWeek,
-              phase: phase.isEmpty ? null : phase,
-              tags: tags.isEmpty ? null : tags,
-              notes: notes.isEmpty ? null : notes,
-            );
-          } else {
-            final created = await _planRepo.create(
-              customerId: widget.customerId!,
-              name: toSave.name,
-              planDataJson: _encodeRoutine(toSave),
-              initialWeekNumber: savedInitialWeek,
-              pdfHeader: _editorCustomer?.pdfHeader,
-              useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
-              phase: phase.isEmpty ? null : phase,
-              tags: tags.isEmpty ? null : tags,
-              notes: notes.isEmpty ? null : notes,
-            );
-            if (mounted) setState(() => _loadedPlanId = created.id);
+        if (_loadedPlanId != null) {
+          await _planRepo.update(
+            planId: _loadedPlanId!,
+            name: toSave.name,
+            planDataJson: _encodeRoutine(toSave),
+            initialWeekNumber: savedInitialWeek,
+            phase: phase.isEmpty ? null : phase,
+            tags: tags.isEmpty ? null : tags,
+            notes: notes.isEmpty ? null : notes,
+          );
+        } else {
+          final created = await _planRepo.create(
+            customerId: widget.customerId!,
+            name: toSave.name,
+            planDataJson: _encodeRoutine(toSave),
+            initialWeekNumber: savedInitialWeek,
+            pdfHeader: _editorCustomer?.pdfHeader,
+            useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
+            phase: phase.isEmpty ? null : phase,
+            tags: tags.isEmpty ? null : tags,
+            notes: notes.isEmpty ? null : notes,
+          );
+          if (mounted) {
+            setState(() => _loadedPlanId = created.id);
           }
-          if (!mounted) return;
+        }
+        success = true;
+        if (!mounted) return success;
+        setState(() {
+          _routine = toSave;
+          _initialWeekNumber = savedInitialWeek;
+          _captureSavedSnapshot();
+        });
+        if (!silent) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
@@ -298,32 +401,44 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               backgroundColor: StitchM3Theme.accent,
             ),
           );
-        } catch (_) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context).workoutExportError),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Theme.of(context).colorScheme.errorContainer,
-            ),
-          );
         }
       } else {
         await WorkoutRoutineStorage.save(toSave);
-        if (!mounted) return;
+        success = true;
+        if (!mounted) return success;
+        setState(() {
+          _routine = toSave;
+        });
+        if (!silent) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                AppLocalizations.of(context).workoutBuilderRoutineSaved,
+              ),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: StitchM3Theme.accent,
+            ),
+          );
+        }
+      }
+    } catch (_) {
+      if (!mounted) return success;
+      if (widget.editorMode) {
+        setState(() => _editorSaveState = _WorkoutEditorSaveState.unsaved);
+      }
+      if (!silent) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              AppLocalizations.of(context).workoutBuilderRoutineSaved,
-            ),
+            content: Text(AppLocalizations.of(context).workoutExportError),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: StitchM3Theme.accent,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
         );
       }
     } finally {
       if (mounted) setState(() => _saving = false);
     }
+    return success;
   }
 
   static String _encodeRoutine(WorkoutRoutine r) {
@@ -344,68 +459,128 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   }
 
   void _showPdfExportSheet() {
-    final l10n = AppLocalizations.of(context);
-    var selected = WorkoutPdfLayout.dense;
-    var includeMobility = _routine.mobilityItems.isNotEmpty;
-    showAppBottomSheet<void>(
+    showWorkoutExportSheet(
       context: context,
-      title: l10n.workoutExportPdfSheetTitle,
-      bodyBuilder: (sheetContext) => StatefulBuilder(
-        builder: (ctx, setModalState) => Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.workoutPdfSheetSubtitle,
-              style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            SegmentedButton<WorkoutPdfLayout>(
-              segments: [
-                ButtonSegment<WorkoutPdfLayout>(
-                  value: WorkoutPdfLayout.canonical,
-                  label: Text(l10n.workoutPdfLayoutCanonical),
-                ),
-                ButtonSegment<WorkoutPdfLayout>(
-                  value: WorkoutPdfLayout.dense,
-                  label: Text(l10n.workoutPdfLayoutDense),
-                ),
-              ],
-              selected: {selected},
-              onSelectionChanged: (set) {
-                if (set.isNotEmpty) setModalState(() => selected = set.first);
-              },
-            ),
-            if (selected == WorkoutPdfLayout.dense)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text(
-                  l10n.workoutPdfLayoutDenseDescription,
-                  style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(ctx).colorScheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            if (_routine.mobilityItems.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: Text(l10n.workoutPdfIncludeMobility),
-                value: includeMobility,
-                onChanged: (v) => setModalState(() => includeMobility = v),
-              ),
-            ],
-          ],
-        ),
-      ),
-      primaryActionLabel: l10n.workoutExportPdfGenerateAndDownload,
-      onPrimaryAction: () {
-        final layout = selected;
-        final mobility = includeMobility;
-        Navigator.of(context).pop();
-        _exportPdfAndShare(layout, includeMobility: mobility);
+      routine: _routine,
+      onExportPdf: (options) {
+        _exportPdfAndShare(
+          options.layout,
+          includeMobility: options.includeMobility,
+        );
       },
+    );
+  }
+
+  Future<_WorkoutEditorExitAction?> _showUnsavedChangesDialog() async {
+    final l10n = AppLocalizations.of(context);
+    return showDialog<_WorkoutEditorExitAction>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.workoutEditorUnsavedTitle),
+        content: Text(l10n.workoutEditorUnsavedMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(_WorkoutEditorExitAction.cancel),
+            child: Text(l10n.workoutEditorCancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(
+              dialogContext,
+            ).pop(_WorkoutEditorExitAction.discard),
+            child: Text(l10n.workoutEditorDiscard),
+          ),
+          FilledButton(
+            onPressed: () =>
+                Navigator.of(dialogContext).pop(_WorkoutEditorExitAction.save),
+            child: Text(l10n.workoutEditorSaveAndExit),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateBackToPreviousScreen() {
+    final customerId = widget.customerId;
+    if (widget.editorMode &&
+        customerId != null &&
+        customerId.isNotEmpty &&
+        customerId != kWorkoutPlanTemplateScopeId) {
+      navigateBack(context, fallback: customerWorkoutsPath(customerId));
+      return;
+    }
+    if (widget.editorMode && customerId == kWorkoutPlanTemplateScopeId) {
+      navigateBack(context, fallback: '/workouts/templates');
+      return;
+    }
+    navigateBack(context, fallback: '/workouts/builder');
+  }
+
+  Future<void> _handleExitAttempt() async {
+    if (!widget.editorMode || !_isDirty) {
+      _navigateBackToPreviousScreen();
+      return;
+    }
+    final action = await _showUnsavedChangesDialog();
+    if (!mounted ||
+        action == null ||
+        action == _WorkoutEditorExitAction.cancel) {
+      return;
+    }
+    if (action == _WorkoutEditorExitAction.discard) {
+      _navigateBackToPreviousScreen();
+      return;
+    }
+    final didSave = await _saveRoutine();
+    if (didSave && mounted) {
+      _navigateBackToPreviousScreen();
+    }
+  }
+
+  Widget _buildSaveStatusIndicator(AppLocalizations l10n, ColorScheme cs) {
+    final (icon, label, foreground, background) = switch (_editorSaveState) {
+      _WorkoutEditorSaveState.saving => (
+        Icons.sync,
+        l10n.workoutEditorAutosaving,
+        cs.primary,
+        cs.primaryContainer,
+      ),
+      _WorkoutEditorSaveState.unsaved => (
+        Icons.warning_amber_rounded,
+        l10n.workoutEditorUnsavedState,
+        cs.tertiary,
+        cs.tertiaryContainer,
+      ),
+      _WorkoutEditorSaveState.saved => (
+        Icons.check_circle_outline,
+        l10n.workoutEditorSavedState,
+        cs.secondary,
+        cs.secondaryContainer,
+      ),
+    };
+
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: foreground),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              color: foreground,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -433,10 +608,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final routine = _routine.copyWith(
       name: name.isEmpty ? _routine.name : name,
     );
-    showPdfExportProgressDialog(
-      context,
-      message: labels.exportGenerating,
-    );
+    showPdfExportProgressDialog(context, message: labels.exportGenerating);
     try {
       final customer = await _loadCustomerIfNeeded();
       final coachHeader = await _resolvePdfCoachHeader();
@@ -586,9 +758,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final hasKey = await HevySettingsStore.instance.hasApiKey();
     if (!hasKey) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.hevyExportNoCatalogHint)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.hevyExportNoCatalogHint)));
       return;
     }
     if (_routine.weeks.isEmpty) return;
@@ -706,7 +878,10 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   void _editMobilitySection(int index) {
     if (index < 0 || index >= _routine.mobilitySections.length) return;
     final section = _routine.mobilitySections[index];
-    _showEditSectionDialog(section.name, section.scheduleHint, (newName, scheduleHint) {
+    _showEditSectionDialog(section.name, section.scheduleHint, (
+      newName,
+      scheduleHint,
+    ) {
       if (newName.trim().isEmpty) return;
       setState(() {
         final updated = _routine.mobilitySections
@@ -1353,6 +1528,12 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
 
   @override
   void dispose() {
+    _autosaveTimer?.cancel();
+    _routineNameController.removeListener(_onMetadataEdited);
+    _initialWeekController.removeListener(_onMetadataEdited);
+    _phaseController.removeListener(_onMetadataEdited);
+    _tagsController.removeListener(_onMetadataEdited);
+    _notesController.removeListener(_onMetadataEdited);
     _sectionTabController.dispose();
     _routineNameController.dispose();
     _initialWeekController.dispose();
@@ -1393,203 +1574,27 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   }
 
   Widget _buildDetailsTab(ThemeData theme, ColorScheme cs) {
-    final l10n = AppLocalizations.of(context);
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-      children: [
-        Text(
-          l10n.workoutRoutineStartDate,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: cs.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        ListTile(
-          contentPadding: EdgeInsets.zero,
-          leading: Icon(Icons.calendar_today_outlined, color: cs.primary),
-          title: Text(
-            _routine.startDate != null
-                ? MaterialLocalizations.of(context).formatFullDate(
-                    _routine.startDate!,
-                  )
-                : l10n.workoutRoutineStartDatePlaceholder,
-            style: theme.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: _pickRoutineStartDate,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-          ),
-          tileColor: cs.surfaceContainerHighest,
-        ),
-        if (widget.editorMode) ...[
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutStartingWeek,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _initialWeekController,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: InputDecoration(
-              hintText: l10n.workoutStartingWeekHint,
-              filled: true,
-              fillColor: cs.surfaceContainerHighest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            onChanged: (s) {
-              final v = int.tryParse(s);
-              if (v != null && v >= 1) {
-                setState(() => _initialWeekNumber = v);
-              }
-            },
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutRoutineEndDate,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(Icons.event_outlined, color: cs.primary),
-            title: Text(
-              _routine.endDate != null
-                  ? MaterialLocalizations.of(context).formatFullDate(
-                      _routine.endDate!,
-                    )
-                  : l10n.workoutRoutineEndDatePlaceholder,
-              style: theme.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: _pickRoutineEndDate,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            ),
-            tileColor: cs.surfaceContainerHighest,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutRoutineCurrentWeek,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          DropdownButtonFormField<int>(
-            key: ValueKey(_routine.currentWeek),
-            initialValue: _routine.currentWeek,
-            hint: Text(l10n.workoutRoutineCurrentWeekHint),
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: cs.surfaceContainerHighest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            items: [
-              for (
-                var i = 1;
-                i <= math.max(math.max(_routine.weeks.length, 1), _routine.currentWeek ?? 1);
-                i++
-              )
-                DropdownMenuItem<int>(
-                  value: i,
-                  child: Text('${l10n.workoutRoutineCurrentWeek} $i'),
-                ),
-            ],
-            onChanged: (value) {
-              if (value == null) return;
-              setState(() {
-                _routine = _routine.copyWith(currentWeek: value);
-              });
-            },
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutPlanPhaseLabel,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _phaseController,
-            decoration: InputDecoration(
-              hintText: l10n.workoutPlanPhaseHint,
-              filled: true,
-              fillColor: cs.surfaceContainerHighest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutPlanTagsLabel,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _tagsController,
-            decoration: InputDecoration(
-              hintText: l10n.workoutPlanTagsHint,
-              filled: true,
-              fillColor: cs.surfaceContainerHighest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.workoutPlanNotesLabel,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          TextField(
-            controller: _notesController,
-            minLines: 3,
-            maxLines: 5,
-            decoration: InputDecoration(
-              hintText: l10n.workoutPlanNotesHint,
-              filled: true,
-              fillColor: cs.surfaceContainerHighest,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                borderSide: BorderSide.none,
-              ),
-            ),
-          ),
-        ],
-      ],
+    return WorkoutPlanDetailsTab(
+      routine: _routine,
+      editorMode: widget.editorMode,
+      initialWeekController: _initialWeekController,
+      phaseController: _phaseController,
+      tagsController: _tagsController,
+      notesController: _notesController,
+      onPickStartDate: _pickRoutineStartDate,
+      onPickEndDate: _pickRoutineEndDate,
+      onInitialWeekChanged: (value) {
+        final v = int.tryParse(value);
+        if (v != null && v >= 1) {
+          setState(() => _initialWeekNumber = v);
+        }
+      },
+      onCurrentWeekChanged: (value) {
+        setState(() {
+          _routine = _routine.copyWith(currentWeek: value);
+        });
+      },
+      onMetadataChanged: _onMetadataEdited,
     );
   }
 
@@ -1700,12 +1705,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                   title: item.title,
                   subtitle: item.subtitle,
                   shortTitle: item.shortTitle,
-                  onEdit: (t, s, short) => _updateMobilityItem(
-                        item.id,
-                        t,
-                        s,
-                        shortTitle: short,
-                      ),
+                  onEdit: (t, s, short) =>
+                      _updateMobilityItem(item.id, t, s, shortTitle: short),
                   onDelete: () => _removeMobilityItem(item.id),
                 ),
               );
@@ -1765,152 +1766,156 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     final l10n = AppLocalizations.of(context);
     final hideExportMenu =
         widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
+    _trackEditorChangesIfNeeded();
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            final customerId = widget.customerId;
-            if (widget.editorMode &&
-                customerId != null &&
-                customerId.isNotEmpty &&
-                customerId != kWorkoutPlanTemplateScopeId) {
-              navigateBack(
-                context,
-                fallback: customerWorkoutsPath(customerId),
-              );
-              return;
-            }
-            if (widget.editorMode &&
-                customerId == kWorkoutPlanTemplateScopeId) {
-              navigateBack(context, fallback: '/workouts/templates');
-              return;
-            }
-            navigateBack(context, fallback: '/workouts/builder');
-          },
-        ),
-        title: Text(
-          l10n.workoutBuilderTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: cs.onSurface,
+    return PopScope(
+      canPop: !(widget.editorMode && _isDirty),
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        await _handleExitAttempt();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () async {
+              HapticFeedback.mediumImpact();
+              await _handleExitAttempt();
+            },
           ),
-        ),
-        actions: [
-          if (!widget.editorMode)
-            IconButton(
-              icon: const Icon(Icons.bookmark_outline),
-              tooltip: l10n.workoutTemplatesTitle,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                context.push('/workouts/templates');
-              },
+          title: Text(
+            l10n.workoutBuilderTitle,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: cs.onSurface,
             ),
-          if (!_loading)
-            IconButton(
-              icon: const Icon(Icons.upload_file),
-              tooltip: l10n.workoutImportJson,
-              onPressed: _importJsonFromFile,
-            ),
-          if (!_loading && !hideExportMenu)
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.ios_share),
-              tooltip: l10n.workoutExport,
-              onSelected: (value) {
-                if (value == 'pdf') _showPdfExportSheet();
-                if (value == 'excel') _exportExcelAndShare();
-                if (value == 'json') _exportJsonAndDownload();
-                if (value == 'hevy') _exportCurrentDayToHevy();
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem(value: 'pdf', child: Text(l10n.workoutExportPdf)),
-                PopupMenuItem(
-                  value: 'excel',
-                  child: Text(l10n.workoutExportExcel),
-                ),
-                PopupMenuItem(
-                  value: 'json',
-                  child: Text(l10n.workoutExportJson),
-                ),
-                PopupMenuItem(
-                  value: 'hevy',
-                  child: Text(l10n.workoutExportHevy),
-                ),
-              ],
-            ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: SizedBox(
-              width: 88,
-              height: 36,
-              child: FilledButton(
-                onPressed: (_loading || _saving) ? null : _saveRoutine,
-                style: FilledButton.styleFrom(
-                  backgroundColor: StitchM3Theme.accent,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
+          ),
+          actions: [
+            if (!widget.editorMode)
+              IconButton(
+                icon: const Icon(Icons.bookmark_outline),
+                tooltip: l10n.workoutTemplatesTitle,
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  context.push('/workouts/templates');
+                },
+              ),
+            if (!_loading)
+              IconButton(
+                icon: const Icon(Icons.upload_file),
+                tooltip: l10n.workoutImportJson,
+                onPressed: _importJsonFromFile,
+              ),
+            if (!_loading && !hideExportMenu)
+              PopupMenuButton<String>(
+                icon: const Icon(Icons.ios_share),
+                tooltip: l10n.workoutExport,
+                onSelected: (value) {
+                  if (value == 'pdf') _showPdfExportSheet();
+                  if (value == 'excel') _exportExcelAndShare();
+                  if (value == 'json') _exportJsonAndDownload();
+                  if (value == 'hevy') _exportCurrentDayToHevy();
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'pdf',
+                    child: Text(l10n.workoutExportPdf),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(999),
+                  PopupMenuItem(
+                    value: 'excel',
+                    child: Text(l10n.workoutExportExcel),
                   ),
-                ),
-                child: _saving
-                    ? SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
+                  PopupMenuItem(
+                    value: 'json',
+                    child: Text(l10n.workoutExportJson),
+                  ),
+                  PopupMenuItem(
+                    value: 'hevy',
+                    child: Text(l10n.workoutExportHevy),
+                  ),
+                ],
+              ),
+            if (widget.editorMode && !_loading)
+              _buildSaveStatusIndicator(l10n, cs),
+            Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: SizedBox(
+                width: 88,
+                height: 36,
+                child: FilledButton(
+                  onPressed: (_loading || _saving)
+                      ? null
+                      : () {
+                          _saveRoutine();
+                        },
+                  style: FilledButton.styleFrom(
+                    backgroundColor: StitchM3Theme.accent,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  child: _saving
+                      ? SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                    : Text(l10n.customerSave),
+                        )
+                      : Text(l10n.customerSave),
+                ),
               ),
             ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(color: cs.outline, height: 1),
           ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: cs.outline, height: 1),
         ),
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                _buildRoutineNameBar(theme, cs, l10n),
-                TabBar(
-                  controller: _sectionTabController,
-                  labelColor: StitchM3Theme.accent,
-                  unselectedLabelColor: cs.onSurfaceVariant,
-                  indicatorColor: StitchM3Theme.accent,
-                  tabs: [
-                    Tab(text: l10n.workoutBuilderTabTraining),
-                    if (_showsMobilityTab)
-                      Tab(text: l10n.workoutBuilderTabMobility),
-                    Tab(text: l10n.workoutBuilderTabDetails),
-                  ],
-                ),
-                Expanded(
-                  child: TabBarView(
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : Column(
+                children: [
+                  _buildRoutineNameBar(theme, cs, l10n),
+                  TabBar(
                     controller: _sectionTabController,
-                    children: [
-                      _buildTrainingTab(theme, cs),
-                      if (_showsMobilityTab) _buildMobilityTab(theme, cs),
-                      _buildDetailsTab(theme, cs),
+                    labelColor: StitchM3Theme.accent,
+                    unselectedLabelColor: cs.onSurfaceVariant,
+                    indicatorColor: StitchM3Theme.accent,
+                    tabs: [
+                      Tab(text: l10n.workoutBuilderTabTraining),
+                      if (_showsMobilityTab)
+                        Tab(text: l10n.workoutBuilderTabMobility),
+                      Tab(text: l10n.workoutBuilderTabDetails),
                     ],
                   ),
-                ),
-                if (!widget.editorMode)
-                  _WorkoutBuilderBottomNav(navContext: context, selectedIndex: 1),
-              ],
-            ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _sectionTabController,
+                      children: [
+                        _buildTrainingTab(theme, cs),
+                        if (_showsMobilityTab) _buildMobilityTab(theme, cs),
+                        _buildDetailsTab(theme, cs),
+                      ],
+                    ),
+                  ),
+                  if (!widget.editorMode)
+                    _WorkoutBuilderBottomNav(
+                      navContext: context,
+                      selectedIndex: 1,
+                    ),
+                ],
+              ),
+      ),
     );
   }
 }
@@ -3509,7 +3514,8 @@ void _showEditExerciseDialog(
     List<ExerciseSet> setDetails, {
     String shortName,
     ExercisePrescriptionScope prescriptionScope,
-  })? onSaveWithSets,
+  })?
+  onSaveWithSets,
 }) {
   final nameController = TextEditingController(text: initialName);
   final noteController = TextEditingController(text: initialNote);
@@ -3948,7 +3954,7 @@ class _TrainingSection extends StatelessWidget {
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
   final void Function(int weekIndex, int dayIndex, int weekday)
-      onUpdateScheduledWeekday;
+  onUpdateScheduledWeekday;
 
   @override
   Widget build(BuildContext context) {
@@ -3967,7 +3973,11 @@ class _TrainingSection extends StatelessWidget {
         onDeleteWeek: onDeleteWeek,
         onEditWeek: (weekIndex) {
           final week = weeks[weekIndex];
-          _showRenameWeekDialog(context, week.name, (name) => onRenameWeek(weekIndex, name));
+          _showRenameWeekDialog(
+            context,
+            week.name,
+            (name) => onRenameWeek(weekIndex, name),
+          );
         },
         onAddDay: onAddDay,
         onEditDay: (weekIndex, dayIndex) {
@@ -4015,8 +4025,8 @@ class _TrainingSection extends StatelessWidget {
                                       .supersetGroupId !=
                                   null
                           ? (entry.value as List<Exercise>)
-                              .first
-                              .supersetGroupId!
+                                .first
+                                .supersetGroupId!
                           : null,
                       onAddExercise: () => onAddExercise(weekIndex, dayIndex),
                       onAddExerciseToSuperset: onAddExerciseToSuperset,
@@ -4066,29 +4076,29 @@ class _TrainingSection extends StatelessWidget {
       onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
       onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
       onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-      onEdit: (
-        name,
-        sets,
-        reps,
-        rpe,
-        note, {
-        setDetails,
-        shortName,
-        prescriptionScope,
-      }) =>
-          onUpdateExercise(
-        weekIndex,
-        dayIndex,
-        ex.id,
-        name: name,
-        sets: sets,
-        reps: reps,
-        rpe: rpe,
-        note: note,
-        setDetails: setDetails,
-        shortName: shortName,
-        prescriptionScope: prescriptionScope,
-      ),
+      onEdit:
+          (
+            name,
+            sets,
+            reps,
+            rpe,
+            note, {
+            setDetails,
+            shortName,
+            prescriptionScope,
+          }) => onUpdateExercise(
+            weekIndex,
+            dayIndex,
+            ex.id,
+            name: name,
+            sets: sets,
+            reps: reps,
+            rpe: rpe,
+            note: note,
+            setDetails: setDetails,
+            shortName: shortName,
+            prescriptionScope: prescriptionScope,
+          ),
       onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
       onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(
         weekIndex,
@@ -4102,9 +4112,9 @@ class _TrainingSection extends StatelessWidget {
       ),
       onRemoveSet: (setIndex) =>
           onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-      supersetOptions: _getSupersetGroupOptions(day)
-          .where((o) => o.id != ex.supersetGroupId)
-          .toList(),
+      supersetOptions: _getSupersetGroupOptions(
+        day,
+      ).where((o) => o.id != ex.supersetGroupId).toList(),
       onAssignToSuperset: (groupId) =>
           onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
       onRemoveFromSuperset: ex.supersetGroupId != null
@@ -4218,17 +4228,17 @@ class _SuperSetBlock extends StatelessWidget {
                     onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
                 onMoveDown: () =>
                     onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-                onEdit: (
-                  name,
-                  sets,
-                  reps,
-                  rpe,
-                  note, {
-                  setDetails,
-                  shortName,
-                  prescriptionScope,
-                }) =>
-                    onUpdateExercise(
+                onEdit:
+                    (
+                      name,
+                      sets,
+                      reps,
+                      rpe,
+                      note, {
+                      setDetails,
+                      shortName,
+                      prescriptionScope,
+                    }) => onUpdateExercise(
                       weekIndex,
                       dayIndex,
                       ex.id,
@@ -4327,7 +4337,8 @@ class _ExerciseCard extends StatelessWidget {
     List<ExerciseSet>? setDetails,
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
-  })? onEdit;
+  })?
+  onEdit;
   final VoidCallback? onAddSet;
   final void Function(
     int setIndex,
@@ -4357,17 +4368,23 @@ class _ExerciseCard extends StatelessWidget {
       initialShortName: exercise.shortName,
       initialScope: exercise.prescriptionScope,
       initialSetDetails: exercise.effectiveSetDetails,
-      onSaveWithSets: (name, note, setDetails, {shortName = '', prescriptionScope = ExercisePrescriptionScope.perWeek}) =>
-          onEdit!(
-        name,
-        exercise.sets,
-        exercise.reps,
-        exercise.rpe,
-        note,
-        setDetails: setDetails,
-        shortName: shortName,
-        prescriptionScope: prescriptionScope,
-      ),
+      onSaveWithSets:
+          (
+            name,
+            note,
+            setDetails, {
+            shortName = '',
+            prescriptionScope = ExercisePrescriptionScope.perWeek,
+          }) => onEdit!(
+            name,
+            exercise.sets,
+            exercise.reps,
+            exercise.rpe,
+            note,
+            setDetails: setDetails,
+            shortName: shortName,
+            prescriptionScope: prescriptionScope,
+          ),
     );
   }
 
@@ -4569,7 +4586,11 @@ class _ExerciseCard extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: TextButton.icon(
                     onPressed: onAddSet,
-                    icon: Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
+                    icon: Icon(
+                      Icons.add,
+                      size: 16,
+                      color: StitchM3Theme.accent,
+                    ),
                     label: Text(l10n.workoutBuilderAddSet),
                   ),
                 ),
@@ -4587,9 +4608,7 @@ class _ExerciseCard extends StatelessWidget {
                     color: exercise.note.isNotEmpty
                         ? cs.onSurface
                         : cs.onSurfaceVariant,
-                    fontStyle: exercise.note.isEmpty
-                        ? FontStyle.italic
-                        : null,
+                    fontStyle: exercise.note.isEmpty ? FontStyle.italic : null,
                   ),
                 ),
               ],

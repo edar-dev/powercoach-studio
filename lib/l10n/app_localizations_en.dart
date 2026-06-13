@@ -1017,6 +1017,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderRoutineSaved => 'Routine saved';
 
   @override
+  String get workoutEditorUnsavedTitle => 'Unsaved changes';
+
+  @override
+  String get workoutEditorUnsavedMessage =>
+      'You have unsaved changes. Save before leaving this screen?';
+
+  @override
+  String get workoutEditorSaveAndExit => 'Save and exit';
+
+  @override
+  String get workoutEditorDiscard => 'Discard';
+
+  @override
+  String get workoutEditorCancel => 'Cancel';
+
+  @override
+  String get workoutEditorAutosaving => 'Saving...';
+
+  @override
+  String get workoutEditorSavedState => 'Saved';
+
+  @override
+  String get workoutEditorUnsavedState => 'Unsaved';
+
+  @override
   String get workoutBuilderEditSectionTitle => 'Edit section';
 
   @override
