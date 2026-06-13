@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
@@ -12,6 +13,7 @@ import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../data/workout_plan_api_model.dart';
 import '../../data/workout_plan_repository.dart';
+import '../../domain/workout_template_list_helpers.dart';
 
 /// Library of reusable workout plan templates (`/workouts/templates`).
 class WorkoutPlanTemplatesScreen extends StatefulWidget {
@@ -26,14 +28,28 @@ class _WorkoutPlanTemplatesScreenState
     extends State<WorkoutPlanTemplatesScreen> {
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
   final CustomerRepository _customerRepo = CustomerRepository();
+
   List<WorkoutPlanApiModel> _templates = [];
+  final Map<String, TemplateSummary> _summaryByPlanId = {};
   bool _loading = true;
   String? _error;
+  String _searchQuery = '';
+  TemplateSort _sort = TemplateSort.updatedDesc;
+
+  List<WorkoutPlanApiModel> get _visibleTemplates => applyTemplateListQuery(
+    templates: _templates,
+    searchQuery: _searchQuery,
+    sort: _sort,
+  );
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  TemplateSummary _summaryFor(WorkoutPlanApiModel plan) {
+    return _summaryByPlanId.putIfAbsent(plan.id, () => summarizeTemplate(plan));
   }
 
   Future<void> _load() async {
@@ -46,6 +62,11 @@ class _WorkoutPlanTemplatesScreenState
       if (!mounted) return;
       setState(() {
         _templates = list;
+        _summaryByPlanId
+          ..clear()
+          ..addEntries(
+            list.map((plan) => MapEntry(plan.id, summarizeTemplate(plan))),
+          );
         _loading = false;
       });
     } catch (e, st) {
@@ -86,17 +107,33 @@ class _WorkoutPlanTemplatesScreenState
       );
       return;
     }
+
     final chosen = await showDialog<Customer>(
       context: context,
       builder: (ctx) => _AssignTemplateCustomerDialog(customers: customers),
     );
     if (chosen == null || !mounted) return;
+
+    final startDateChoice = await showDialog<_AssignStartDateResult>(
+      context: context,
+      builder: (ctx) => const _AssignStartDateDialog(),
+    );
+    if (startDateChoice == null || startDateChoice.cancelled || !mounted) {
+      return;
+    }
+
     try {
-      await _planRepo.duplicateToCustomer(
+      final created = await _planRepo.duplicateToCustomer(
         sourcePlanId: template.id,
         customerId: chosen.id,
         name: template.name,
       );
+      if (startDateChoice.startDate != null) {
+        await _planRepo.updateScheduleMarkers(
+          planId: created.id,
+          startDate: startDateChoice.startDate,
+        );
+      }
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -210,6 +247,30 @@ class _WorkoutPlanTemplatesScreenState
     }
   }
 
+  Future<void> _openTemplatePreview(WorkoutPlanApiModel template) async {
+    final l10n = AppLocalizations.of(context);
+    final summary = _summaryFor(template);
+    final previewWeeks = parseTemplatePreviewWeeks(template.planData);
+    await showAppBottomSheet<void>(
+      context: context,
+      title: l10n.workoutTemplatesPreviewTitle,
+      fullScreen: true,
+      bodyBuilder: (sheetContext) => _TemplatePreviewContent(
+        template: template,
+        summary: summary,
+        previewWeeks: previewWeeks,
+        onAssign: () {
+          Navigator.of(sheetContext).pop();
+          _assignToCustomer(template);
+        },
+        onEdit: () {
+          Navigator.of(sheetContext).pop();
+          _openEditor(template);
+        },
+      ),
+    );
+  }
+
   void _openEditor(WorkoutPlanApiModel template) {
     HapticFeedback.mediumImpact();
     final uri = Uri(
@@ -232,11 +293,31 @@ class _WorkoutPlanTemplatesScreenState
     });
   }
 
+  String _formatUpdatedAgo(AppLocalizations l10n, DateTime updated) {
+    final diff = DateTime.now().difference(updated);
+    if (diff.inDays > 0) return l10n.updatedDaysAgo(diff.inDays);
+    if (diff.inHours > 0) return l10n.updatedHoursAgo(diff.inHours);
+    if (diff.inMinutes > 0) return l10n.updatedMinutesAgo(diff.inMinutes);
+    return l10n.updatedJustNow;
+  }
+
+  String _sortLabel(AppLocalizations l10n, TemplateSort sort) {
+    switch (sort) {
+      case TemplateSort.nameAsc:
+        return l10n.workoutTemplatesSortNameAsc;
+      case TemplateSort.updatedDesc:
+        return l10n.workoutTemplatesSortUpdatedDesc;
+      case TemplateSort.weekCountDesc:
+        return l10n.workoutTemplatesSortWeekCountDesc;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final visible = _visibleTemplates;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -261,6 +342,35 @@ class _WorkoutPlanTemplatesScreenState
             color: cs.onSurface,
           ),
         ),
+        actions: [
+          if (!_loading && _error == null && _templates.isNotEmpty)
+            PopupMenuButton<TemplateSort>(
+              tooltip: l10n.workoutTemplatesSortTitle,
+              icon: Icon(Icons.sort, color: cs.onSurfaceVariant),
+              onSelected: (value) => setState(() => _sort = value),
+              itemBuilder: (context) => TemplateSort.values
+                  .map(
+                    (sort) => PopupMenuItem(
+                      value: sort,
+                      child: Row(
+                        children: [
+                          if (sort == _sort)
+                            Icon(
+                              Icons.check,
+                              size: 18,
+                              color: StitchM3Theme.accent,
+                            )
+                          else
+                            const SizedBox(width: 18),
+                          const SizedBox(width: 8),
+                          Expanded(child: Text(_sortLabel(l10n, sort))),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+        ],
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -313,115 +423,91 @@ class _WorkoutPlanTemplatesScreenState
                 container: true,
                 label: l10n.workoutTemplatesSemanticList,
                 explicitChildNodes: true,
-                child: ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _templates.length,
-                  itemBuilder: (context, index) {
-                    final t = _templates[index];
-                    final title = t.name.trim().isEmpty
-                        ? l10n.customerUnnamedPlan
-                        : t.name;
-                    return Padding(
-                      padding: EdgeInsets.only(
-                        bottom: index < _templates.length - 1 ? 12 : 0,
-                      ),
-                      child: Material(
-                        color: cs.surfaceContainerHighest,
-                        borderRadius: BorderRadius.circular(
-                          StitchM3Theme.radiusLg,
-                        ),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(
-                            StitchM3Theme.radiusLg,
-                          ),
-                          onTap: () => _openEditor(t),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                        child: TextField(
+                          onChanged: (value) =>
+                              setState(() => _searchQuery = value),
+                          decoration: InputDecoration(
+                            hintText: l10n.workoutTemplatesSearchHint,
+                            hintStyle: TextStyle(color: cs.onSurfaceVariant),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: cs.onSurfaceVariant,
+                              size: 22,
                             ),
-                            decoration: BoxDecoration(
+                            filled: true,
+                            fillColor: cs.surfaceContainerHighest,
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(
                                 StitchM3Theme.radiusLg,
                               ),
-                              border: Border.all(
-                                color: cs.outline.withValues(alpha: 0.5),
-                              ),
+                              borderSide: BorderSide.none,
                             ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.bookmark_outline,
-                                  color: StitchM3Theme.accent,
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    title: Text(
-                                      title,
-                                      style: theme.textTheme.titleSmall
-                                          ?.copyWith(
-                                            fontWeight: FontWeight.w700,
-                                            color: cs.onSurface,
-                                          ),
-                                    ),
-                                    subtitle: Text(
-                                      DateFormat.yMMMd(
-                                        l10n.localeName,
-                                      ).format(t.updatedAt),
-                                      style: theme.textTheme.bodySmall
-                                          ?.copyWith(
-                                            color: cs.onSurfaceVariant,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                                PopupMenuButton<String>(
-                                  icon: Icon(
-                                    Icons.more_vert,
-                                    color: cs.onSurfaceVariant,
-                                  ),
-                                  onSelected: (value) {
-                                    HapticFeedback.mediumImpact();
-                                    if (value == 'edit') {
-                                      _openEditor(t);
-                                    } else if (value == 'assign') {
-                                      _assignToCustomer(t);
-                                    } else if (value == 'dup') {
-                                      _duplicateTemplate(t);
-                                    } else if (value == 'del') {
-                                      _confirmDelete(t);
-                                    }
-                                  },
-                                  itemBuilder: (ctx) => [
-                                    PopupMenuItem(
-                                      value: 'edit',
-                                      child: Text(l10n.workoutTemplatesEdit),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'assign',
-                                      child: Text(l10n.workoutTemplatesAssign),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'dup',
-                                      child: Text(
-                                        l10n.workoutTemplatesDuplicate,
-                                      ),
-                                    ),
-                                    PopupMenuItem(
-                                      value: 'del',
-                                      child: Text(l10n.workoutTemplatesDelete),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 14,
                             ),
                           ),
                         ),
                       ),
-                    );
-                  },
+                    ),
+                    if (visible.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Text(
+                              l10n.workoutTemplatesNoMatch,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: cs.onSurfaceVariant,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 100),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate((
+                            context,
+                            index,
+                          ) {
+                            if (index.isOdd) return const SizedBox(height: 12);
+                            final plan = visible[index ~/ 2];
+                            final title = plan.name.trim().isEmpty
+                                ? l10n.customerUnnamedPlan
+                                : plan.name;
+                            final summary = _summaryFor(plan);
+                            return _TemplateCard(
+                              title: title,
+                              updatedAgo: _formatUpdatedAgo(
+                                l10n,
+                                plan.updatedAt,
+                              ),
+                              summaryText: l10n
+                                  .workoutTemplatesStructureSummary(
+                                    summary.weekCount,
+                                    summary.dayCount,
+                                    summary.exerciseCount,
+                                  ),
+                              phase: summary.phase,
+                              onTap: () => _openTemplatePreview(plan),
+                              onEdit: () => _openEditor(plan),
+                              onAssign: () => _assignToCustomer(plan),
+                              onDuplicate: () => _duplicateTemplate(plan),
+                              onDelete: () => _confirmDelete(plan),
+                            );
+                          }, childCount: visible.length * 2 - 1),
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ),
@@ -431,6 +517,283 @@ class _WorkoutPlanTemplatesScreenState
         label: Text(l10n.workoutTemplatesNew),
         backgroundColor: StitchM3Theme.accent,
       ),
+    );
+  }
+}
+
+class _TemplateCard extends StatelessWidget {
+  const _TemplateCard({
+    required this.title,
+    required this.updatedAgo,
+    required this.summaryText,
+    required this.onTap,
+    required this.onEdit,
+    required this.onAssign,
+    required this.onDuplicate,
+    required this.onDelete,
+    this.phase,
+  });
+
+  final String title;
+  final String updatedAgo;
+  final String summaryText;
+  final String? phase;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onAssign;
+  final VoidCallback onDuplicate;
+  final VoidCallback onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final cleanPhase = phase?.trim();
+    return Material(
+      color: cs.surfaceContainerHighest,
+      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+            border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.bookmark_outline, color: StitchM3Theme.accent),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      summaryText,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      updatedAgo,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    if (cleanPhase != null && cleanPhase.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: StitchM3Theme.accent.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Text(
+                          cleanPhase,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: StitchM3Theme.accent,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              PopupMenuButton<String>(
+                icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
+                onSelected: (value) {
+                  HapticFeedback.mediumImpact();
+                  if (value == 'edit') {
+                    onEdit();
+                  } else if (value == 'assign') {
+                    onAssign();
+                  } else if (value == 'dup') {
+                    onDuplicate();
+                  } else if (value == 'del') {
+                    onDelete();
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text(l10n.workoutTemplatesEdit),
+                  ),
+                  PopupMenuItem(
+                    value: 'assign',
+                    child: Text(l10n.workoutTemplatesAssign),
+                  ),
+                  PopupMenuItem(
+                    value: 'dup',
+                    child: Text(l10n.workoutTemplatesDuplicate),
+                  ),
+                  PopupMenuItem(
+                    value: 'del',
+                    child: Text(l10n.workoutTemplatesDelete),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TemplatePreviewContent extends StatelessWidget {
+  const _TemplatePreviewContent({
+    required this.template,
+    required this.summary,
+    required this.previewWeeks,
+    required this.onEdit,
+    required this.onAssign,
+  });
+
+  final WorkoutPlanApiModel template;
+  final TemplateSummary summary;
+  final List<TemplatePreviewWeek> previewWeeks;
+  final VoidCallback onEdit;
+  final VoidCallback onAssign;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          template.name.trim().isEmpty
+              ? l10n.customerUnnamedPlan
+              : template.name,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+            color: cs.onSurface,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.workoutTemplatesStructureSummary(
+            summary.weekCount,
+            summary.dayCount,
+            summary.exerciseCount,
+          ),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: cs.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 16),
+        if (previewWeeks.isEmpty)
+          Text(
+            l10n.workoutTemplatesPreviewEmpty,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+            ),
+          )
+        else
+          ...previewWeeks.map(
+            (week) => Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: cs.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                  border: Border.all(color: cs.outline.withValues(alpha: 0.35)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      week.name,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    ...week.days.map(
+                      (day) => Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              day.name,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: cs.onSurface,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ...day.exercises.map(
+                              (exercise) => Padding(
+                                padding: const EdgeInsets.only(bottom: 2),
+                                child: Text(
+                                  '\u2022 $exercise',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            if (day.remainingExercises > 0)
+                              Text(
+                                l10n.workoutTemplatesPreviewExercisesMore(
+                                  day.remainingExercises,
+                                ),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: cs.onSurfaceVariant,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: onEdit,
+                child: Text(l10n.workoutTemplatesEdit),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: FilledButton(
+                onPressed: onAssign,
+                child: Text(l10n.workoutTemplatesAssign),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -518,5 +881,191 @@ class _AssignTemplateCustomerDialogState
         ),
       ],
     );
+  }
+}
+
+class _AssignStartDateResult {
+  const _AssignStartDateResult._({
+    required this.cancelled,
+    required this.startDate,
+  });
+
+  const _AssignStartDateResult.cancelled()
+    : this._(cancelled: true, startDate: null);
+  const _AssignStartDateResult.confirmed(DateTime? startDate)
+    : this._(cancelled: false, startDate: startDate);
+
+  final bool cancelled;
+  final DateTime? startDate;
+}
+
+class _AssignStartDateDialog extends StatefulWidget {
+  const _AssignStartDateDialog();
+
+  @override
+  State<_AssignStartDateDialog> createState() => _AssignStartDateDialogState();
+}
+
+class _AssignStartDateDialogState extends State<_AssignStartDateDialog> {
+  DateTime? _selectedStartDate;
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final initial =
+        _selectedStartDate ?? DateTime(now.year, now.month, now.day);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(now.year + 10, 12, 31),
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      _selectedStartDate = DateTime(picked.year, picked.month, picked.day);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final materialL10n = MaterialLocalizations.of(context);
+    return AlertDialog(
+      title: Text(l10n.workoutTemplatesAssignStartDate),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.calendar_today_outlined),
+            title: Text(
+              _selectedStartDate == null
+                  ? l10n.workoutTemplatesAssignStartDateHint
+                  : materialL10n.formatFullDate(_selectedStartDate!),
+            ),
+            trailing: _selectedStartDate == null
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.close),
+                    tooltip: l10n.workoutFollowUpStartDateClear,
+                    onPressed: () => setState(() => _selectedStartDate = null),
+                  ),
+            onTap: _pickDate,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(
+            context,
+          ).pop(const _AssignStartDateResult.cancelled()),
+          child: Text(materialL10n.cancelButtonLabel),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(
+            context,
+          ).pop(const _AssignStartDateResult.confirmed(null)),
+          child: Text(l10n.workoutTemplatesAssignStartDateSkip),
+        ),
+        FilledButton(
+          onPressed: _selectedStartDate == null
+              ? null
+              : () => Navigator.of(
+                  context,
+                ).pop(_AssignStartDateResult.confirmed(_selectedStartDate)),
+          child: Text(l10n.workoutTemplatesAssign),
+        ),
+      ],
+    );
+  }
+}
+
+class TemplatePreviewWeek {
+  const TemplatePreviewWeek({required this.name, required this.days});
+
+  final String name;
+  final List<TemplatePreviewDay> days;
+}
+
+class TemplatePreviewDay {
+  const TemplatePreviewDay({
+    required this.name,
+    required this.exercises,
+    required this.remainingExercises,
+  });
+
+  final String name;
+  final List<String> exercises;
+  final int remainingExercises;
+}
+
+List<TemplatePreviewWeek> parseTemplatePreviewWeeks(
+  String planData, {
+  int maxWeeks = 5,
+  int maxExercisesPerDay = 3,
+}) {
+  try {
+    final decoded = jsonDecode(planData);
+    if (decoded is! Map<String, dynamic>) return const [];
+    final rawWeeks = decoded['weeks'];
+    if (rawWeeks is! List) return const [];
+
+    final weeks = <TemplatePreviewWeek>[];
+    final safeWeekCount = rawWeeks.length < maxWeeks
+        ? rawWeeks.length
+        : maxWeeks;
+
+    for (var weekIndex = 0; weekIndex < safeWeekCount; weekIndex++) {
+      final weekMap = rawWeeks[weekIndex];
+      if (weekMap is! Map) continue;
+      final weekNameRaw = weekMap['name']?.toString().trim();
+      final weekName = (weekNameRaw == null || weekNameRaw.isEmpty)
+          ? 'Week ${weekIndex + 1}'
+          : weekNameRaw;
+
+      final rawDays = weekMap['days'];
+      final days = <TemplatePreviewDay>[];
+      if (rawDays is List) {
+        for (var dayIndex = 0; dayIndex < rawDays.length; dayIndex++) {
+          final dayMap = rawDays[dayIndex];
+          if (dayMap is! Map) continue;
+          final dayNameRaw = dayMap['name']?.toString().trim();
+          final dayName = (dayNameRaw == null || dayNameRaw.isEmpty)
+              ? 'Day ${dayIndex + 1}'
+              : dayNameRaw;
+
+          final rawExercises = dayMap['exercises'];
+          final exerciseNames = <String>[];
+          var remaining = 0;
+          if (rawExercises is List) {
+            final takeCount = rawExercises.length < maxExercisesPerDay
+                ? rawExercises.length
+                : maxExercisesPerDay;
+            for (var i = 0; i < takeCount; i++) {
+              final exercise = rawExercises[i];
+              if (exercise is! Map) continue;
+              final name = exercise['name']?.toString().trim();
+              if (name != null && name.isNotEmpty) {
+                exerciseNames.add(name);
+              }
+            }
+            remaining = rawExercises.length - takeCount;
+          }
+
+          days.add(
+            TemplatePreviewDay(
+              name: dayName,
+              exercises: exerciseNames,
+              remainingExercises: remaining < 0 ? 0 : remaining,
+            ),
+          );
+        }
+      }
+
+      weeks.add(TemplatePreviewWeek(name: weekName, days: days));
+    }
+
+    return weeks;
+  } catch (_) {
+    return const [];
   }
 }

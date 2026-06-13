@@ -1812,6 +1812,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutTemplatesAssignNoMatch => 'No customers match your search.';
 
   @override
+  String get workoutTemplatesSearchHint => 'Search by name, phase, or tag';
+
+  @override
+  String get workoutTemplatesSortTitle => 'Sort templates';
+
+  @override
+  String get workoutTemplatesSortNameAsc => 'Name (A-Z)';
+
+  @override
+  String get workoutTemplatesSortUpdatedDesc => 'Last updated';
+
+  @override
+  String get workoutTemplatesSortWeekCountDesc => 'Most weeks';
+
+  @override
+  String get workoutTemplatesNoMatch => 'No templates match your search.';
+
+  @override
+  String get workoutTemplatesPreviewTitle => 'Template preview';
+
+  @override
+  String get workoutTemplatesPreviewEmpty =>
+      'No structure available for this template.';
+
+  @override
+  String workoutTemplatesStructureSummary(int weeks, int days, int exercises) {
+    return '$weeks weeks · $days days · $exercises exercises';
+  }
+
+  @override
+  String workoutTemplatesPreviewExercisesMore(int count) {
+    return '+$count more exercises';
+  }
+
+  @override
+  String get workoutTemplatesAssignStartDate => 'Optional start date';
+
+  @override
+  String get workoutTemplatesAssignStartDateHint =>
+      'Tap to choose a start date';
+
+  @override
+  String get workoutTemplatesAssignStartDateSkip => 'Skip';
+
+  @override
   String get workoutDiaryTitle => 'Diary';
 
   @override
