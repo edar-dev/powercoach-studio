@@ -4,6 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/day_scheduled_weekday.dart';
 
 /// Horizontal week/day planner used by the workout builder training tab.
 class TrainingWeekDayPanel extends StatelessWidget {
@@ -123,7 +124,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
               ),
             ),
             IconButton(
-              tooltip: l10n.workoutBuilderMoreActions,
+              tooltip: l10n.workoutBuilderWeekMenuTooltip,
               icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
               onPressed: () => _showPlannerMenuSheet(
                 context,
@@ -182,19 +183,9 @@ class TrainingWeekDayPanel extends StatelessWidget {
                   ),
                 ),
               ),
-              if (days.length > 1) ...[
-                const SizedBox(height: 6),
-                Text(
-                  l10n.workoutBuilderSwipeDayHint,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
               if (day != null)
                 IconButton(
-                  tooltip: l10n.workoutBuilderMoreActions,
+                  tooltip: l10n.workoutBuilderDayMenuTooltip,
                   icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
                   onPressed: () => _showPlannerMenuSheet(
                     context,
@@ -217,6 +208,16 @@ class TrainingWeekDayPanel extends StatelessWidget {
                 ),
             ],
           ),
+          if (days.length > 1) ...[
+            const SizedBox(height: 6),
+            Text(
+              l10n.workoutBuilderSwipeDayHint,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
           if (day != null) ...[
             const SizedBox(height: 10),
             Row(
@@ -245,27 +246,45 @@ class TrainingWeekDayPanel extends StatelessWidget {
               spacing: 6,
               runSpacing: 6,
               children: [
-                for (final entry in _weekdayLabels.entries)
-                  FilterChip(
-                    label: Text(entry.value),
-                    selected: (day.scheduledWeekday ?? -1) == entry.key,
-                    onSelected: (_) =>
-                        onUpdateScheduledWeekday(weekIndex, dayIndex, entry.key),
-                    showCheckmark: false,
-                    visualDensity: VisualDensity.compact,
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    labelStyle: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: (day.scheduledWeekday ?? -1) == entry.key
-                          ? Colors.white
-                          : cs.onSurface,
-                    ),
-                    selectedColor: StitchM3Theme.accent,
-                    backgroundColor: cs.surfaceContainerHighest,
-                    side: BorderSide(
-                      color: (day.scheduledWeekday ?? -1) == entry.key
-                          ? StitchM3Theme.accent
-                          : cs.outline.withValues(alpha: 0.35),
+                for (final entry in kItalianWeekdayShortLabels.entries)
+                  Tooltip(
+                    message: kItalianWeekdayFullLabels[entry.key] ?? entry.value,
+                    child: FilterChip(
+                      label: Text(entry.value),
+                      selected: effectiveScheduledWeekday(
+                            day: day,
+                            dayIndex: dayIndex,
+                          ) ==
+                          entry.key,
+                      onSelected: (_) => onUpdateScheduledWeekday(
+                        weekIndex,
+                        dayIndex,
+                        entry.key,
+                      ),
+                      showCheckmark: false,
+                      visualDensity: VisualDensity.compact,
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      labelStyle: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: effectiveScheduledWeekday(
+                                  day: day,
+                                  dayIndex: dayIndex,
+                                ) ==
+                                entry.key
+                            ? Colors.white
+                            : cs.onSurface,
+                      ),
+                      selectedColor: StitchM3Theme.accent,
+                      backgroundColor: cs.surfaceContainerHighest,
+                      side: BorderSide(
+                        color: effectiveScheduledWeekday(
+                                  day: day,
+                                  dayIndex: dayIndex,
+                                ) ==
+                                entry.key
+                            ? StitchM3Theme.accent
+                            : cs.outline.withValues(alpha: 0.35),
+                      ),
                     ),
                   ),
               ],
@@ -291,7 +310,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
                 ),
                 if (onAddExercise != null)
                   Padding(
-                    padding: const EdgeInsets.only(right: 4, bottom: 8),
+                    padding: const EdgeInsets.only(right: 4, bottom: 12),
                     child: FloatingActionButton.extended(
                       heroTag: 'workout_builder_add_exercise',
                       onPressed: () => onAddExercise!(weekIndex, dayIndex),
@@ -335,16 +354,6 @@ class TrainingWeekDayPanel extends StatelessWidget {
     );
   }
 }
-
-const Map<int, String> _weekdayLabels = {
-  DateTime.monday: 'L',
-  DateTime.tuesday: 'M',
-  DateTime.wednesday: 'M',
-  DateTime.thursday: 'G',
-  DateTime.friday: 'V',
-  DateTime.saturday: 'S',
-  DateTime.sunday: 'D',
-};
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.text, required this.theme, required this.cs});
