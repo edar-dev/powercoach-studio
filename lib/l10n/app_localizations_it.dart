@@ -1243,6 +1243,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderDaysLabel => 'Giorni';
 
   @override
+  String get workoutBuilderCalendarWeekdayLabel => 'Giorno calendario';
+
+  @override
+  String get workoutBuilderCalendarWeekdayHint =>
+      'Giorno della settimana usato per pianificare questa sessione nel calendario.';
+
+  @override
   String get workoutBuilderAddDayChip => 'Giorno';
 
   @override
@@ -1547,6 +1554,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sessionSkipped => 'Saltata';
+
+  @override
+  String get sessionPlanned => 'Pianificata';
+
+  @override
+  String get sessionMarkPlanned => 'Segna come pianificata';
 
   @override
   String get dashboardWorkoutBuilder => 'Builder workout';

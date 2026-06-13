@@ -23,6 +23,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
     required this.onAddDay,
     required this.onEditDay,
     required this.onDeleteDay,
+    required this.onUpdateScheduledWeekday,
     this.onAddExercise,
     required this.exerciseListBuilder,
   });
@@ -41,6 +42,8 @@ class TrainingWeekDayPanel extends StatelessWidget {
   final void Function(int) onAddDay;
   final void Function(int weekIndex, int dayIndex) onEditDay;
   final void Function(int, int) onDeleteDay;
+  final void Function(int weekIndex, int dayIndex, int weekday)
+      onUpdateScheduledWeekday;
   final void Function(int weekIndex, int dayIndex)? onAddExercise;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
   exerciseListBuilder;
@@ -214,6 +217,60 @@ class TrainingWeekDayPanel extends StatelessWidget {
                 ),
             ],
           ),
+          if (day != null) ...[
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.workoutBuilderCalendarWeekdayLabel,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                Tooltip(
+                  message: l10n.workoutBuilderCalendarWeekdayHint,
+                  child: Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: cs.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final entry in _weekdayLabels.entries)
+                  FilterChip(
+                    label: Text(entry.value),
+                    selected: (day.scheduledWeekday ?? -1) == entry.key,
+                    onSelected: (_) =>
+                        onUpdateScheduledWeekday(weekIndex, dayIndex, entry.key),
+                    showCheckmark: false,
+                    visualDensity: VisualDensity.compact,
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    labelStyle: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: (day.scheduledWeekday ?? -1) == entry.key
+                          ? Colors.white
+                          : cs.onSurface,
+                    ),
+                    selectedColor: StitchM3Theme.accent,
+                    backgroundColor: cs.surfaceContainerHighest,
+                    side: BorderSide(
+                      color: (day.scheduledWeekday ?? -1) == entry.key
+                          ? StitchM3Theme.accent
+                          : cs.outline.withValues(alpha: 0.35),
+                    ),
+                  ),
+              ],
+            ),
+          ],
         ],
         const SizedBox(height: 12),
         if (day != null) ...[
@@ -278,6 +335,16 @@ class TrainingWeekDayPanel extends StatelessWidget {
     );
   }
 }
+
+const Map<int, String> _weekdayLabels = {
+  DateTime.monday: 'L',
+  DateTime.tuesday: 'M',
+  DateTime.wednesday: 'M',
+  DateTime.thursday: 'G',
+  DateTime.friday: 'V',
+  DateTime.saturday: 'S',
+  DateTime.sunday: 'D',
+};
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.text, required this.theme, required this.cs});

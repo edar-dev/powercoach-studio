@@ -29,6 +29,16 @@ void main() {
       );
       expect(date, DateTime(2026, 5, 10));
     });
+
+    test('uses scheduled weekday when present', () {
+      final date = planSessionDate(
+        startDate: DateTime(2026, 5, 1), // Friday
+        weekIndex: 0,
+        dayIndex: 0,
+        scheduledWeekday: DateTime.monday,
+      );
+      expect(date, DateTime(2026, 5, 4));
+    });
   });
 
   group('CalendarEventLoader', () {
@@ -67,6 +77,41 @@ void main() {
       );
 
       expect(events.first.status, PlanSessionStatus.completed);
+    });
+
+    test('supports flexible weekday scheduling and keeps legacy behavior', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        startDate: DateTime(2026, 5, 1), // Friday
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(id: 'd1', name: 'Legacy day', exercises: []),
+              Day(
+                id: 'd2',
+                name: 'Thursday day',
+                exercises: [],
+                scheduledWeekday: DateTime.thursday,
+              ),
+            ],
+          ),
+        ],
+      );
+      final events = CalendarEventLoader.eventsForPlans(
+        plans: [_plan(jsonEncode(routine.toJson()))],
+        customerNamesById: const {'c1': 'Anna'},
+        rangeStart: DateTime(2026, 5, 1),
+        rangeEndExclusive: DateTime(2026, 5, 16),
+        unknownClientLabel: '?',
+        untitledProgramLabel: 'Untitled',
+      );
+
+      expect(events, hasLength(2));
+      expect(events.first.sessionLabel, 'Legacy day');
+      expect(events.first.day, DateTime(2026, 5, 1)); // v1 fallback (dayIndex 0)
+      expect(events.last.sessionLabel, 'Thursday day');
+      expect(events.last.day, DateTime(2026, 5, 7)); // aligned weekday
     });
   });
 }

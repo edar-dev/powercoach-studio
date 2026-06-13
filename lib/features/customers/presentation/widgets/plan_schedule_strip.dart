@@ -11,10 +11,14 @@ class PlanScheduleStrip extends StatelessWidget {
     super.key,
     required this.plan,
     required this.localeName,
+    this.onSessionTap,
+    this.onSessionLongPress,
   });
 
   final WorkoutPlanApiModel plan;
   final String localeName;
+  final void Function(PlanCalendarEvent event)? onSessionTap;
+  final Future<void> Function(PlanCalendarEvent event)? onSessionLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +49,24 @@ class PlanScheduleStrip extends StatelessWidget {
           runSpacing: 8,
           children: [
             for (final event in events)
-              InputChip(
-                avatar: Icon(
-                  _statusIcon(event.status),
-                  size: 16,
-                  color: _statusColor(event.status, colorScheme),
+              GestureDetector(
+                onLongPress: onSessionLongPress == null
+                    ? null
+                    : () => onSessionLongPress!(event),
+                child: InputChip(
+                  avatar: Icon(
+                    _statusIcon(event.status),
+                    size: 16,
+                    color: _statusColor(event.status, colorScheme),
+                  ),
+                  label: Text(
+                    '${DateFormat.Md(localeName).format(event.day)} · ${event.sessionLabel}',
+                    style: theme.textTheme.labelMedium,
+                  ),
+                  onPressed: onSessionTap == null
+                      ? null
+                      : () => onSessionTap!(event),
                 ),
-                label: Text(
-                  '${DateFormat.Md(localeName).format(event.day)} · ${event.sessionLabel}',
-                  style: theme.textTheme.labelMedium,
-                ),
-                onPressed: () {},
               ),
           ],
         ),

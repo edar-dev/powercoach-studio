@@ -39,6 +39,7 @@ class CalendarEventLoader {
               startDate: startDate,
               weekIndex: weekIndex,
               dayIndex: dayIndex,
+              scheduledWeekday: day.scheduledWeekday,
             );
             if (!isPlanSessionWithinRange(
               sessionDay: sessionDay,
@@ -116,6 +117,7 @@ class CalendarEventLoader {
               startDate: startDate,
               weekIndex: weekIndex,
               dayIndex: dayIndex,
+              scheduledWeekday: day.scheduledWeekday,
             ),
           );
           if (sessionDay.isBefore(from)) {

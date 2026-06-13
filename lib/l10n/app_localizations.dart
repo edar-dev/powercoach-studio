@@ -2368,6 +2368,18 @@ abstract class AppLocalizations {
   /// **'Days'**
   String get workoutBuilderDaysLabel;
 
+  /// No description provided for @workoutBuilderCalendarWeekdayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar weekday'**
+  String get workoutBuilderCalendarWeekdayLabel;
+
+  /// No description provided for @workoutBuilderCalendarWeekdayHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekday used for scheduling this day in calendar views.'**
+  String get workoutBuilderCalendarWeekdayHint;
+
   /// No description provided for @workoutBuilderAddDayChip.
   ///
   /// In en, this message translates to:
@@ -2901,6 +2913,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skipped'**
   String get sessionSkipped;
+
+  /// No description provided for @sessionPlanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Planned'**
+  String get sessionPlanned;
+
+  /// No description provided for @sessionMarkPlanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark as planned'**
+  String get sessionMarkPlanned;
 
   /// No description provided for @dashboardWorkoutBuilder.
   ///

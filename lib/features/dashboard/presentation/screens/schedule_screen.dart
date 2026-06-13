@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
+import '../../../../core/constants/workout_plan_template_scope.dart';
 import '../../../customers/data/customer_repository.dart';
-import '../../../workouts/data/workout_plan_api_model.dart';
+import '../../domain/calendar_event_loader.dart';
+import '../../domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -21,7 +24,7 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final CustomerRepository _customerRepo = CustomerRepository();
   final WorkoutPlanRepository _workoutPlanRepo = WorkoutPlanRepository();
-  List<_ScheduleListItem> _items = const [];
+  List<PlanCalendarEvent> _events = const [];
   bool _loading = true;
 
   @override
@@ -42,41 +45,27 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       final customerById = <String, String>{
         for (final c in customers) c.id: c.name,
       };
-      final schedule = plans
-          .map((plan) => _toScheduleItem(plan, customerById, l10n))
-          .whereType<_ScheduleListItem>()
-          .toList()
-        ..sort((a, b) => a.date.compareTo(b.date));
+      final today = calendarDayOnly(DateTime.now());
+      final events = CalendarEventLoader.eventsForPlans(
+        plans: plans
+            .where((p) => p.customerId != kWorkoutPlanTemplateScopeId)
+            .toList(),
+        customerNamesById: customerById,
+        rangeStart: today,
+        rangeEndExclusive: today.add(const Duration(days: 30)),
+        unknownClientLabel: l10n.dashboardUnknownClient,
+        untitledProgramLabel: l10n.dashboardUntitledWorkout,
+      );
       setState(() {
-        _items = schedule;
+        _events = events;
         _loading = false;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _items = const [];
+        _events = const [];
         _loading = false;
       });
-    }
-  }
-
-  _ScheduleListItem? _toScheduleItem(
-    WorkoutPlanApiModel plan,
-    Map<String, String> customerById,
-    AppLocalizations l10n,
-  ) {
-    try {
-      final routine = planDataToRoutine(plan.planData);
-      final startDate = routine.startDate;
-      if (startDate == null) return null;
-      final safeDate = DateTime(startDate.year, startDate.month, startDate.day);
-      return _ScheduleListItem(
-        date: safeDate,
-        clientName: customerById[plan.customerId] ?? l10n.dashboardUnknownClient,
-        programName: plan.name.trim().isEmpty ? l10n.dashboardUntitledWorkout : plan.name,
-      );
-    } catch (_) {
-      return null;
     }
   }
 
@@ -118,7 +107,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : _items.isEmpty
+          : _events.isEmpty
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -129,81 +118,94 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 ),
               ),
             )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _items.length,
-              itemBuilder: (context, index) {
-                final item = _items[index];
-                final time = DateFormat('dd MMM', localeName)
-                    .format(item.date)
-                    .toUpperCase();
-                final period = DateFormat('EEE', localeName)
-                    .format(item.date)
-                    .toUpperCase();
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _ScheduleTile(
-                    theme: theme,
-                    cs: cs,
-                    time: time,
-                    period: period,
-                    clientName: item.clientName,
-                    programName: item.programName,
-                    onTap: () {
-                      HapticFeedback.mediumImpact();
-                      context.push(
-                        Uri(
-                          path: '/dashboard/schedule/detail',
-                          queryParameters: {
-                            'time': time,
-                            'period': period,
-                            'client': item.clientName,
-                            'program': item.programName,
-                          },
-                        ).toString(),
-                      );
-                    },
-                  ),
-                );
-              },
+          : _ScheduleEventsList(
+              events: _events,
+              theme: theme,
+              cs: cs,
+              localeName: localeName,
             ),
     );
   }
 }
 
-class _ScheduleListItem {
-  const _ScheduleListItem({
-    required this.date,
-    required this.clientName,
-    required this.programName,
-  });
-
-  final DateTime date;
-  final String clientName;
-  final String programName;
-}
-
-class _ScheduleTile extends StatelessWidget {
-  const _ScheduleTile({
+class _ScheduleEventsList extends StatelessWidget {
+  const _ScheduleEventsList({
+    required this.events,
     required this.theme,
     required this.cs,
-    required this.time,
-    required this.period,
-    required this.clientName,
-    required this.programName,
+    required this.localeName,
+  });
+
+  final List<PlanCalendarEvent> events;
+  final ThemeData theme;
+  final ColorScheme cs;
+  final String localeName;
+
+  @override
+  Widget build(BuildContext context) {
+    final grouped = <DateTime, List<PlanCalendarEvent>>{};
+    for (final event in events) {
+      final key = calendarDayOnly(event.day);
+      grouped.putIfAbsent(key, () => []).add(event);
+    }
+    final sortedDays = grouped.keys.toList()..sort();
+
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+      children: [
+        for (final day in sortedDays) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text(
+              DateFormat.yMMMEd(localeName).format(day),
+              style: theme.textTheme.titleSmall?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          ...grouped[day]!.map((event) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: _SessionTile(
+                  event: event,
+                  theme: theme,
+                  cs: cs,
+                  onTap: () {
+                    HapticFeedback.mediumImpact();
+                    context.push(
+                      customerWorkoutEditorPath(
+                        event.customerId,
+                        planId: event.planId,
+                        weekIndex: event.weekIndex,
+                        dayIndex: event.dayIndex,
+                      ),
+                    );
+                  },
+                ),
+              )),
+          const SizedBox(height: 8),
+        ],
+      ],
+    );
+  }
+}
+
+class _SessionTile extends StatelessWidget {
+  const _SessionTile({
+    required this.event,
+    required this.theme,
+    required this.cs,
     required this.onTap,
   });
 
+  final PlanCalendarEvent event;
   final ThemeData theme;
   final ColorScheme cs;
-  final String time;
-  final String period;
-  final String clientName;
-  final String programName;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Material(
       color: cs.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
@@ -211,36 +213,20 @@ class _ScheduleTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    time,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSurface,
-                    ),
-                  ),
-                  Text(
-                    period,
-                    style: theme.textTheme.labelSmall?.copyWith(color: cs.onSurfaceVariant),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      clientName,
+                      event.customerName,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
                         color: cs.onSurface,
@@ -248,16 +234,59 @@ class _ScheduleTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      programName,
-                      style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                      '${event.programName} · ${event.sessionLabel}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
+              const SizedBox(width: 12),
+              _StatusPill(
+                label: switch (event.status) {
+                  PlanSessionStatus.completed => l10n.sessionCompleted,
+                  PlanSessionStatus.skipped => l10n.sessionSkipped,
+                  PlanSessionStatus.planned => l10n.sessionPlanned,
+                },
+                color: switch (event.status) {
+                  PlanSessionStatus.completed => cs.tertiary,
+                  PlanSessionStatus.skipped => cs.error,
+                  PlanSessionStatus.planned => cs.onSurfaceVariant,
+                },
+              ),
+              const SizedBox(width: 6),
+              Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 22),
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _StatusPill extends StatelessWidget {
+  const _StatusPill({required this.label, required this.color});
+
+  final String label;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+              color: cs.onSurface,
+              fontWeight: FontWeight.w600,
+            ),
       ),
     );
   }
