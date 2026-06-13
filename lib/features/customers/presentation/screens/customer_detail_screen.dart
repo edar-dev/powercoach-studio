@@ -82,12 +82,11 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     _load();
   }
 
-  Future<void> _openWorkoutEditor({String? planId}) async {
-    await navigatePush(
+  void _openWorkoutEditor({String? planId}) {
+    navigateTo(
       context,
       customerWorkoutEditorPath(widget.customerId, planId: planId),
     );
-    if (mounted) _loadWorkoutPlans();
   }
 
   Future<void> _loadWorkoutPlans() async {
@@ -1006,13 +1005,9 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
               ),
               if (_workoutPlans.isNotEmpty)
                 TextButton(
-                  onPressed: () async {
+                  onPressed: () {
                     HapticFeedback.mediumImpact();
-                    await navigatePush(
-                      context,
-                      customerWorkoutsPath(widget.customerId),
-                    );
-                    if (mounted) _loadWorkoutPlans();
+                    navigateTo(context, customerWorkoutsPath(widget.customerId));
                   },
                   child: Text(l10n.customerViewAll, style: TextStyle(color: StitchM3Theme.accent, fontWeight: FontWeight.w700)),
                 ),

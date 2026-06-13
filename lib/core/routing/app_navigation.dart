@@ -2,11 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 /// Declarative navigation that always updates the browser URL on web.
+///
+/// Prefer this for customer workout editor/list routes so refresh and deep links
+/// keep the current screen. Returning screens reload in [initState] when needed.
 void navigateTo(BuildContext context, String location) {
   context.go(location);
 }
 
+/// Replaces the current route and updates the browser URL without adding history.
+void navigateReplace(BuildContext context, String location) {
+  context.replace(location);
+}
+
 /// Pushes [location] so the current route stays on the stack and can refresh on return.
+///
+/// Avoid for customer workout editor routes on web — [navigateTo] keeps the URL in sync.
 Future<T?> navigatePush<T>(BuildContext context, String location) {
   return context.push<T>(location);
 }

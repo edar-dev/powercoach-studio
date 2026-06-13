@@ -56,12 +56,12 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     _loadPlans();
   }
 
-  Future<void> _openWorkoutEditor({
+  void _openWorkoutEditor({
     String? planId,
     int? weekIndex,
     int? dayIndex,
-  }) async {
-    await navigatePush(
+  }) {
+    navigateTo(
       context,
       customerWorkoutEditorPath(
         widget.customerId,
@@ -70,7 +70,6 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
         dayIndex: dayIndex,
       ),
     );
-    if (mounted) _loadPlans();
   }
 
   Future<void> _showSessionActions(PlanCalendarEvent event) async {
