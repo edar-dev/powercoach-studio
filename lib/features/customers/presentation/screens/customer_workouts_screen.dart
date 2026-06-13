@@ -5,8 +5,10 @@ import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
+import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../widgets/plan_schedule_strip.dart';
 
@@ -23,6 +25,8 @@ class CustomerWorkoutsScreen extends StatefulWidget {
 
 class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
+  final PlanSessionStatusService _sessionStatusService =
+      PlanSessionStatusService();
   List<WorkoutPlanApiModel> _plans = [];
   bool _loading = true;
   String? _error;
@@ -52,12 +56,72 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     _loadPlans();
   }
 
-  Future<void> _openWorkoutEditor({String? planId}) async {
+  Future<void> _openWorkoutEditor({
+    String? planId,
+    int? weekIndex,
+    int? dayIndex,
+  }) async {
     await navigatePush(
       context,
-      customerWorkoutEditorPath(widget.customerId, planId: planId),
+      customerWorkoutEditorPath(
+        widget.customerId,
+        planId: planId,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+      ),
     );
     if (mounted) _loadPlans();
+  }
+
+  Future<void> _showSessionActions(PlanCalendarEvent event) async {
+    final l10n = AppLocalizations.of(context);
+    final nextStatus = await showModalBottomSheet<PlanSessionStatus>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.check_circle_outline),
+              title: Text(l10n.sessionCompleted),
+              onTap: () =>
+                  Navigator.of(ctx).pop(PlanSessionStatus.completed),
+            ),
+            ListTile(
+              leading: const Icon(Icons.remove_circle_outline),
+              title: Text(l10n.sessionSkipped),
+              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.skipped),
+            ),
+            ListTile(
+              leading: const Icon(Icons.restart_alt),
+              title: Text(l10n.sessionMarkPlanned),
+              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.planned),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (nextStatus == null || !mounted) return;
+    try {
+      await _sessionStatusService.setSessionStatus(
+        planId: event.planId,
+        weekIndex: event.weekIndex,
+        dayIndex: event.dayIndex,
+        status: nextStatus,
+      );
+      if (!mounted) return;
+      await _loadPlans();
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.calendarUpdateError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   Future<void> _loadPlans() async {
@@ -267,6 +331,12 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                   subtitle: _formatPlanSubtitle(l10n, plan),
                   plan: plan,
                   localeName: l10n.localeName,
+                  onSessionTap: (event) => _openWorkoutEditor(
+                    planId: event.planId,
+                    weekIndex: event.weekIndex,
+                    dayIndex: event.dayIndex,
+                  ),
+                  onSessionLongPress: _showSessionActions,
                   onTap: () => _openWorkoutEditor(planId: plan.id),
                   onCreateFollowUp: () => _createFollowUpWorkout(plan),
                   onDuplicate: () => _duplicatePlan(plan),
@@ -671,6 +741,8 @@ class _WorkoutListCard extends StatelessWidget {
     required this.subtitle,
     this.plan,
     this.localeName,
+    this.onSessionTap,
+    this.onSessionLongPress,
     this.onTap,
     this.onCreateFollowUp,
     this.onDuplicate,
@@ -684,6 +756,8 @@ class _WorkoutListCard extends StatelessWidget {
   final String subtitle;
   final WorkoutPlanApiModel? plan;
   final String? localeName;
+  final void Function(PlanCalendarEvent event)? onSessionTap;
+  final Future<void> Function(PlanCalendarEvent event)? onSessionLongPress;
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
   final VoidCallback? onDuplicate;
@@ -725,7 +799,12 @@ class _WorkoutListCard extends StatelessWidget {
                     ),
                     if (plan != null && localeName != null) ...[
                       const SizedBox(height: 12),
-                      PlanScheduleStrip(plan: plan!, localeName: localeName!),
+                      PlanScheduleStrip(
+                        plan: plan!,
+                        localeName: localeName!,
+                        onSessionTap: onSessionTap,
+                        onSessionLongPress: onSessionLongPress,
+                      ),
                     ],
                   ],
                 ),

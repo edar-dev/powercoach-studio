@@ -95,6 +95,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
   int _selectedMobilitySectionIndex = 0;
   int _selectedWeekIndex = 0;
   int _selectedDayIndex = 0;
+  int? _pendingSelectedWeekIndex;
+  int? _pendingSelectedDayIndex;
+  bool _didReadDeepLinkSelection = false;
   late final TabController _sectionTabController;
 
   bool get _showsMobilityTab =>
@@ -108,6 +111,22 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       vsync: this,
     );
     _loadRoutine();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_didReadDeepLinkSelection) {
+      return;
+    }
+    _didReadDeepLinkSelection = true;
+    _readDeepLinkSelection();
+  }
+
+  void _readDeepLinkSelection() {
+    final query = GoRouterState.of(context).uri.queryParameters;
+    _pendingSelectedWeekIndex = int.tryParse(query['week'] ?? '');
+    _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
   }
 
   Future<void> _loadRoutine() async {
@@ -134,6 +153,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
           final routine = planDataToRoutine(plan.planData);
+          final (weekIndex, dayIndex) = _resolveInitialSelection(routine);
           setState(() {
             _routine = routine;
             _routineNameController.text = routine.name;
@@ -143,8 +163,8 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
             _loadedPlanId = plan.id;
             _initialWeekNumber = plan.initialWeekNumber;
             _initialWeekController.text = plan.initialWeekNumber.toString();
-            _selectedWeekIndex = 0;
-            _selectedDayIndex = 0;
+            _selectedWeekIndex = weekIndex;
+            _selectedDayIndex = dayIndex;
           });
         }
       } else {
@@ -170,6 +190,26 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       });
     }
   }
+
+  (int, int) _resolveInitialSelection(WorkoutRoutine routine) {
+    final week = _pendingSelectedWeekIndex;
+    final day = _pendingSelectedDayIndex;
+    if (week == null || day == null) {
+      return (0, 0);
+    }
+    if (week < 0 || week >= routine.weeks.length) {
+      return (0, 0);
+    }
+    final days = routine.weeks[week].days;
+    if (day < 0 || day >= days.length) {
+      return (week, 0);
+    }
+    _pendingSelectedWeekIndex = null;
+    _pendingSelectedDayIndex = null;
+    return (week, day);
+  }
+
+  int _weekdayFromDayIndex(int dayIndex) => (dayIndex % 7) + 1;
 
   Future<void> _pickRoutineStartDate() async {
     final now = DateTime.now();
@@ -770,6 +810,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 id: '${id}_d1',
                 name: l10n.workoutBuilderDayNumbered(1),
                 exercises: [],
+                scheduledWeekday: _weekdayFromDayIndex(0),
               ),
             ],
           ),
@@ -825,6 +866,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                     ),
                   )
                   .toList(),
+              scheduledWeekday: d.scheduledWeekday,
             ),
           )
           .toList();
@@ -922,6 +964,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           id: dayId,
           name: l10n.workoutBuilderDayNumbered(week.days.length + 1),
           exercises: [],
+          scheduledWeekday: _weekdayFromDayIndex(week.days.length),
         ),
       ];
       final newWeeks = List<Week>.from(_routine.weeks);
@@ -929,6 +972,21 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       _routine = _routine.copyWith(weeks: newWeeks);
       _selectedWeekIndex = weekIndex;
       _selectedDayIndex = newDays.length - 1;
+    });
+  }
+
+  void _setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    if (weekday < DateTime.monday || weekday > DateTime.sunday) return;
+    final week = _routine.weeks[weekIndex];
+    if (dayIndex < 0 || dayIndex >= week.days.length) return;
+    setState(() {
+      final day = week.days[dayIndex];
+      final newDays = List<Day>.from(week.days);
+      newDays[dayIndex] = day.copyWith(scheduledWeekday: weekday);
+      final newWeeks = List<Week>.from(_routine.weeks);
+      newWeeks[weekIndex] = week.copyWith(days: newDays);
+      _routine = _routine.copyWith(weeks: newWeeks);
     });
   }
 
@@ -1696,6 +1754,7 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
         _selectedDayIndex = 0;
       }),
       onSelectDay: (i) => setState(() => _selectedDayIndex = i),
+      onUpdateScheduledWeekday: _setDayScheduledWeekday,
     );
   }
 
@@ -3836,6 +3895,7 @@ class _TrainingSection extends StatelessWidget {
     required this.onAddExerciseToSuperset,
     required this.onSelectWeek,
     required this.onSelectDay,
+    required this.onUpdateScheduledWeekday,
   });
 
   final ThemeData theme;
@@ -3887,6 +3947,8 @@ class _TrainingSection extends StatelessWidget {
   final void Function(int, int, String) onAddExerciseToSuperset;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
+  final void Function(int weekIndex, int dayIndex, int weekday)
+      onUpdateScheduledWeekday;
 
   @override
   Widget build(BuildContext context) {
@@ -3917,6 +3979,7 @@ class _TrainingSection extends StatelessWidget {
           );
         },
         onDeleteDay: onDeleteDay,
+        onUpdateScheduledWeekday: onUpdateScheduledWeekday,
         onAddExercise: onAddExercise,
         exerciseListBuilder: (context, weekIndex, dayIndex, day) {
           final l10n = AppLocalizations.of(context);

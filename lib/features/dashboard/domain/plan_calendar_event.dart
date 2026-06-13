@@ -39,9 +39,20 @@ DateTime planSessionDate({
   required DateTime startDate,
   required int weekIndex,
   required int dayIndex,
+  int? scheduledWeekday,
 }) {
   final normalized = DateTime(startDate.year, startDate.month, startDate.day);
-  return normalized.add(Duration(days: weekIndex * 7 + dayIndex));
+  final weekStart = normalized.add(Duration(days: weekIndex * 7));
+  if (scheduledWeekday == null) {
+    return weekStart.add(Duration(days: dayIndex));
+  }
+  final normalizedWeekday = scheduledWeekday < DateTime.monday
+      ? DateTime.monday
+      : (scheduledWeekday > DateTime.sunday
+            ? DateTime.sunday
+            : scheduledWeekday);
+  final offset = (normalizedWeekday - weekStart.weekday + 7) % 7;
+  return weekStart.add(Duration(days: offset));
 }
 
 DateTime calendarDayOnly(DateTime value) =>

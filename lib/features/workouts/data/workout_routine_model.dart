@@ -309,16 +309,24 @@ class Week {
 }
 
 class Day {
-  const Day({required this.id, required this.name, required this.exercises});
+  const Day({
+    required this.id,
+    required this.name,
+    required this.exercises,
+    this.scheduledWeekday,
+  });
 
   final String id;
   final String name;
   final List<Exercise> exercises;
+  /// Optional ISO weekday: 1=Mon ... 7=Sun.
+  final int? scheduledWeekday;
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
         'exercises': exercises.map((e) => e.toJson()).toList(),
+        if (scheduledWeekday != null) 'scheduledWeekday': scheduledWeekday,
       };
 
   static Day fromJson(Map<String, dynamic> json) => Day(
@@ -328,10 +336,31 @@ class Day {
                 ?.map((e) => Exercise.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
+        scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
       );
 
-  Day copyWith({String? id, String? name, List<Exercise>? exercises}) =>
-      Day(id: id ?? this.id, name: name ?? this.name, exercises: exercises ?? this.exercises);
+  Day copyWith({
+    String? id,
+    String? name,
+    List<Exercise>? exercises,
+    int? scheduledWeekday,
+    bool clearScheduledWeekday = false,
+  }) => Day(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        exercises: exercises ?? this.exercises,
+        scheduledWeekday: clearScheduledWeekday
+            ? null
+            : (scheduledWeekday ?? this.scheduledWeekday),
+      );
+
+  static int? _parseScheduledWeekday(dynamic raw) {
+    final parsed = (raw as num?)?.toInt();
+    if (parsed == null || parsed < DateTime.monday || parsed > DateTime.sunday) {
+      return null;
+    }
+    return parsed;
+  }
 }
 
 /// Partitions exercises into standalone (single) and superset groups.

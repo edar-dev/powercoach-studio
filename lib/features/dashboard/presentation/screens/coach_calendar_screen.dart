@@ -8,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
 import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
+import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../domain/calendar_event_loader.dart';
 import '../../domain/plan_calendar_event.dart';
@@ -24,6 +25,8 @@ class CoachCalendarScreen extends StatefulWidget {
 class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
   final CustomerRepository _customerRepo = CustomerRepository();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
+  final PlanSessionStatusService _sessionStatusService =
+      PlanSessionStatusService();
 
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -116,11 +119,13 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
 
   Future<void> _toggleCompleted(PlanCalendarEvent event, bool completed) async {
     try {
-      await _planRepo.setSessionCompleted(
+      await _sessionStatusService.setSessionStatus(
         planId: event.planId,
         weekIndex: event.weekIndex,
         dayIndex: event.dayIndex,
-        completed: completed,
+        status: completed
+            ? PlanSessionStatus.completed
+            : PlanSessionStatus.planned,
       );
       await _loadEvents();
     } catch (_) {
@@ -297,12 +302,13 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                             );
                           },
                           onLongPress: () async {
-                            await _planRepo.setSessionCompleted(
+                            await _sessionStatusService.setSessionStatus(
                               planId: event.planId,
                               weekIndex: event.weekIndex,
                               dayIndex: event.dayIndex,
-                              completed: false,
-                              skipped: event.status != PlanSessionStatus.skipped,
+                              status: event.status == PlanSessionStatus.skipped
+                                  ? PlanSessionStatus.planned
+                                  : PlanSessionStatus.skipped,
                             );
                             await _loadEvents();
                           },

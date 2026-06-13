@@ -1233,6 +1233,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderDaysLabel => 'Days';
 
   @override
+  String get workoutBuilderCalendarWeekdayLabel => 'Calendar weekday';
+
+  @override
+  String get workoutBuilderCalendarWeekdayHint =>
+      'Weekday used for scheduling this day in calendar views.';
+
+  @override
   String get workoutBuilderAddDayChip => 'Day';
 
   @override
@@ -1532,6 +1539,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionSkipped => 'Skipped';
+
+  @override
+  String get sessionPlanned => 'Planned';
+
+  @override
+  String get sessionMarkPlanned => 'Mark as planned';
 
   @override
   String get dashboardWorkoutBuilder => 'Workout Builder';

@@ -25,9 +25,23 @@ String customerWorkoutsPath(String customerId) =>
     '/customers/$customerId/workouts';
 
 /// New plan editor for [customerId], or edit when [planId] is set.
-String customerWorkoutEditorPath(String customerId, {String? planId}) {
-  if (planId != null && planId.isNotEmpty) {
-    return '/customers/$customerId/workouts/$planId';
+String customerWorkoutEditorPath(
+  String customerId, {
+  String? planId,
+  int? weekIndex,
+  int? dayIndex,
+}) {
+  final path = (planId != null && planId.isNotEmpty)
+      ? '/customers/$customerId/workouts/$planId'
+      : '/customers/$customerId/workouts/new';
+  if (weekIndex == null || dayIndex == null) {
+    return path;
   }
-  return '/customers/$customerId/workouts/new';
+  return Uri(
+    path: path,
+    queryParameters: {
+      'week': '$weekIndex',
+      'day': '$dayIndex',
+    },
+  ).toString();
 }
