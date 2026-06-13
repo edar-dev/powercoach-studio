@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
@@ -9,7 +7,6 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
-import '../../../workouts/data/workout_routine_model.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../widgets/plan_schedule_strip.dart';
 
@@ -272,6 +269,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                   localeName: l10n.localeName,
                   onTap: () => _openWorkoutEditor(planId: plan.id),
                   onCreateFollowUp: () => _createFollowUpWorkout(plan),
+                  onDuplicate: () => _duplicatePlan(plan),
                   onSaveAsTemplate: () => _savePlanAsTemplate(plan),
                   onDelete: () => _deletePlan(plan),
                 );
@@ -454,22 +452,20 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
+    final draft = await _showFollowUpDialog(plan);
+    if (draft == null || !mounted) return;
     try {
-      final routine = planDataToRoutine(plan.planData);
-      final numWeeks = routine.weeks.isEmpty ? 1 : routine.weeks.length;
-      final newStartingWeek = plan.initialWeekNumber + numWeeks;
-      final emptyPlanData = jsonEncode(WorkoutRoutine.empty().toJson());
-      await _planRepo.create(
-        customerId: widget.customerId,
-        name: AppLocalizations.of(context).workoutNewPlanName,
-        planDataJson: emptyPlanData,
-        initialWeekNumber: newStartingWeek,
+      await _planRepo.createFollowUpFromPlan(
+        sourcePlanId: plan.id,
+        name: draft.name,
+        newStartDate: draft.startDate,
       );
       if (!mounted) return;
-      _loadPlans();
+      await _loadPlans();
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).workoutDuplicatedMessage),
+          content: Text(AppLocalizations.of(context).workoutFollowUpCreatedMessage),
           behavior: SnackBarBehavior.floating,
           backgroundColor: StitchM3Theme.accent,
         ),
@@ -483,6 +479,152 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
+    }
+  }
+
+  Future<void> _duplicatePlan(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController(text: '${plan.name} (2)');
+    String? name;
+    try {
+      name = await showDialog<String>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(l10n.workoutDuplicateTitle),
+          content: TextField(
+            controller: controller,
+            decoration: InputDecoration(labelText: l10n.workoutDuplicateNameHint),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: Text(l10n.customerCancel),
+            ),
+            FilledButton(
+              onPressed: () {
+                final s = controller.text.trim();
+                if (s.isEmpty) return;
+                Navigator.of(ctx).pop(s);
+              },
+              child: Text(l10n.workoutDuplicateAction),
+            ),
+          ],
+        ),
+      );
+    } finally {
+      controller.dispose();
+    }
+    if (name == null || name.isEmpty || !mounted) return;
+    try {
+      await _planRepo.duplicateToCustomer(
+        sourcePlanId: plan.id,
+        customerId: widget.customerId,
+        name: name,
+      );
+      if (!mounted) return;
+      await _loadPlans();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutDuplicatedMessage),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
+  }
+
+  Future<({String name, DateTime? startDate})?> _showFollowUpDialog(
+    WorkoutPlanApiModel plan,
+  ) async {
+    final l10n = AppLocalizations.of(context);
+    final controller = TextEditingController(
+      text: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
+    );
+    DateTime? selectedStartDate;
+    try {
+      return await showDialog<({String name, DateTime? startDate})>(
+        context: context,
+        builder: (ctx) => StatefulBuilder(
+          builder: (ctx, setDialogState) => AlertDialog(
+            title: Text(l10n.workoutFollowUpTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(labelText: l10n.workoutFollowUpNameHint),
+                  autofocus: true,
+                ),
+                const SizedBox(height: 16),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(Icons.calendar_today_outlined),
+                  title: Text(
+                    selectedStartDate != null
+                        ? MaterialLocalizations.of(ctx).formatFullDate(selectedStartDate!)
+                        : l10n.workoutFollowUpStartDateOptional,
+                  ),
+                  trailing: selectedStartDate != null
+                      ? IconButton(
+                          icon: const Icon(Icons.close),
+                          tooltip: l10n.workoutFollowUpStartDateClear,
+                          onPressed: () =>
+                              setDialogState(() => selectedStartDate = null),
+                        )
+                      : null,
+                  onTap: () async {
+                    final now = DateTime.now();
+                    final initial = selectedStartDate ?? DateTime(now.year, now.month, now.day);
+                    final picked = await showDatePicker(
+                      context: ctx,
+                      initialDate: initial,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(now.year + 10, 12, 31),
+                    );
+                    if (picked == null) return;
+                    setDialogState(() {
+                      selectedStartDate = DateTime(
+                        picked.year,
+                        picked.month,
+                        picked.day,
+                      );
+                    });
+                  },
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text(l10n.customerCancel),
+              ),
+              FilledButton(
+                onPressed: () {
+                  final name = controller.text.trim();
+                  if (name.isEmpty) return;
+                  Navigator.of(ctx).pop(
+                    (name: name, startDate: selectedStartDate),
+                  );
+                },
+                child: Text(l10n.workoutFollowUpCreateAction),
+              ),
+            ],
+          ),
+        ),
+      );
+    } finally {
+      controller.dispose();
     }
   }
 
@@ -531,6 +673,7 @@ class _WorkoutListCard extends StatelessWidget {
     this.localeName,
     this.onTap,
     this.onCreateFollowUp,
+    this.onDuplicate,
     this.onSaveAsTemplate,
     this.onDelete,
   });
@@ -543,6 +686,7 @@ class _WorkoutListCard extends StatelessWidget {
   final String? localeName;
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
+  final VoidCallback? onDuplicate;
   final VoidCallback? onSaveAsTemplate;
   final VoidCallback? onDelete;
 
@@ -586,7 +730,10 @@ class _WorkoutListCard extends StatelessWidget {
                   ],
                 ),
               ),
-              if (onCreateFollowUp != null || onSaveAsTemplate != null || onDelete != null)
+              if (onCreateFollowUp != null ||
+                  onDuplicate != null ||
+                  onSaveAsTemplate != null ||
+                  onDelete != null)
                 PopupMenuButton<String>(
                   icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant, size: 24),
                   padding: EdgeInsets.zero,
@@ -595,6 +742,8 @@ class _WorkoutListCard extends StatelessWidget {
                     HapticFeedback.mediumImpact();
                     if (value == 'follow_up') {
                       onCreateFollowUp?.call();
+                    } else if (value == 'duplicate') {
+                      onDuplicate?.call();
                     } else if (value == 'template') {
                       onSaveAsTemplate?.call();
                     } else if (value == 'delete') {
@@ -606,6 +755,11 @@ class _WorkoutListCard extends StatelessWidget {
                       PopupMenuItem(
                         value: 'follow_up',
                         child: Text(l10n.workoutCreateNewFromThis),
+                      ),
+                    if (onDuplicate != null)
+                      PopupMenuItem(
+                        value: 'duplicate',
+                        child: Text(l10n.workoutDuplicateAction),
                       ),
                     if (onSaveAsTemplate != null)
                       PopupMenuItem(

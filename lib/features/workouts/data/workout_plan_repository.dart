@@ -5,6 +5,7 @@ import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'workout_plan_api_model.dart';
 import 'workout_routine_model.dart';
+import '../domain/workout_follow_up_factory.dart';
 
 /// Persists workout plans in local storage.
 class WorkoutPlanRepository {
@@ -225,6 +226,42 @@ class WorkoutPlanRepository {
       useCustomPdfHeader: src.useCustomPdfHeader,
       theme: src.theme,
       initialWeekNumber: src.initialWeekNumber,
+      phase: src.phase,
+      tags: src.tags,
+      notes: src.notes,
+    );
+  }
+
+  /// Creates a follow-up plan from an existing one for the same customer.
+  ///
+  /// - Deep-clones and resets progress/session maps.
+  /// - Bumps [initialWeekNumber] by source routine length.
+  /// - Optionally sets a new routine [startDate].
+  Future<WorkoutPlanApiModel> createFollowUpFromPlan({
+    required String sourcePlanId,
+    String? name,
+    DateTime? newStartDate,
+  }) async {
+    final src = await getById(sourcePlanId);
+    if (src == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final sourceRoutine = planDataToRoutine(src.planData);
+    final followUpRoutine = prepareFollowUpRoutine(
+      source: sourceRoutine,
+      newStartDate: newStartDate,
+    );
+    final numWeeks = sourceRoutine.weeks.isEmpty ? 1 : sourceRoutine.weeks.length;
+    final resolvedName =
+        (name != null && name.trim().isNotEmpty) ? name.trim() : src.name;
+    return create(
+      customerId: src.customerId,
+      name: resolvedName,
+      planDataJson: jsonEncode(followUpRoutine.toJson()),
+      pdfHeader: src.pdfHeader,
+      useCustomPdfHeader: src.useCustomPdfHeader,
+      theme: src.theme,
+      initialWeekNumber: src.initialWeekNumber + numWeeks,
       phase: src.phase,
       tags: src.tags,
       notes: src.notes,

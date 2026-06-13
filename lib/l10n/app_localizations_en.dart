@@ -768,7 +768,67 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutRoutineStartDatePlaceholder => 'Tap to choose';
 
   @override
+  String get workoutRoutineEndDate => 'End date';
+
+  @override
+  String get workoutRoutineEndDatePlaceholder => 'Tap to choose';
+
+  @override
+  String get workoutRoutineCurrentWeek => 'Current week';
+
+  @override
+  String get workoutRoutineCurrentWeekHint => 'Select week';
+
+  @override
+  String get workoutPlanPhaseLabel => 'Phase';
+
+  @override
+  String get workoutPlanPhaseHint => 'e.g. Hypertrophy, Strength, Deload';
+
+  @override
+  String get workoutPlanTagsLabel => 'Tags';
+
+  @override
+  String get workoutPlanTagsHint => 'e.g. upper body, shoulder rehab';
+
+  @override
+  String get workoutPlanNotesLabel => 'Plan notes';
+
+  @override
+  String get workoutPlanNotesHint => 'Internal notes for this plan';
+
+  @override
   String get workoutCreateNewFromThis => 'Create new workout from this';
+
+  @override
+  String get workoutDuplicateTitle => 'Duplicate workout';
+
+  @override
+  String get workoutDuplicateNameHint => 'Name for the copy';
+
+  @override
+  String get workoutDuplicateAction => 'Duplicate';
+
+  @override
+  String get workoutFollowUpTitle => 'Create follow-up workout';
+
+  @override
+  String get workoutFollowUpNameHint => 'Workout name';
+
+  @override
+  String get workoutFollowUpStartDateOptional => 'Optional start date';
+
+  @override
+  String get workoutFollowUpStartDateClear => 'Clear date';
+
+  @override
+  String get workoutFollowUpCreateAction => 'Create follow-up';
+
+  @override
+  String get workoutFollowUpCreatedMessage => 'Follow-up workout created.';
+
+  @override
+  String get workoutFollowUpDefaultSuffix => 'Follow-up';
 
   @override
   String workoutDuplicateOf(Object name) {

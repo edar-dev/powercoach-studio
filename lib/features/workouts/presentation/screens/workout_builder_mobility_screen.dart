@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,6 +81,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     with SingleTickerProviderStateMixin {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
+  final _phaseController = TextEditingController();
+  final _tagsController = TextEditingController();
+  final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
   String? _loadedPlanId;
@@ -133,6 +137,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
           setState(() {
             _routine = routine;
             _routineNameController.text = routine.name;
+            _phaseController.text = plan.phase ?? '';
+            _tagsController.text = plan.tags ?? '';
+            _notesController.text = plan.notes ?? '';
             _loadedPlanId = plan.id;
             _initialWeekNumber = plan.initialWeekNumber;
             _initialWeekController.text = plan.initialWeekNumber.toString();
@@ -182,6 +189,25 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     });
   }
 
+  Future<void> _pickRoutineEndDate() async {
+    final now = DateTime.now();
+    final fallback = DateTime(now.year, now.month, now.day);
+    final initial = _routine.endDate ?? _routine.startDate ?? fallback;
+    final firstDate = _routine.startDate ?? DateTime(2000);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(firstDate.year, firstDate.month, firstDate.day),
+      lastDate: DateTime(now.year + 10, 12, 31),
+    );
+    if (!mounted || picked == null) return;
+    setState(() {
+      _routine = _routine.copyWith(
+        endDate: DateTime(picked.year, picked.month, picked.day),
+      );
+    });
+  }
+
   Future<void> _saveRoutine() async {
     if (_saving) return;
     setState(() => _saving = true);
@@ -191,6 +217,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
       final v = int.tryParse(_initialWeekController.text.trim());
       return (v != null && v >= 1) ? v : _initialWeekNumber;
     }();
+    final phase = _phaseController.text.trim();
+    final tags = _tagsController.text.trim();
+    final notes = _notesController.text.trim();
 
     try {
       if (widget.editorMode && widget.customerId != null) {
@@ -201,6 +230,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               name: toSave.name,
               planDataJson: _encodeRoutine(toSave),
               initialWeekNumber: savedInitialWeek,
+              phase: phase.isEmpty ? null : phase,
+              tags: tags.isEmpty ? null : tags,
+              notes: notes.isEmpty ? null : notes,
             );
           } else {
             final created = await _planRepo.create(
@@ -210,6 +242,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
               initialWeekNumber: savedInitialWeek,
               pdfHeader: _editorCustomer?.pdfHeader,
               useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
+              phase: phase.isEmpty ? null : phase,
+              tags: tags.isEmpty ? null : tags,
+              notes: notes.isEmpty ? null : notes,
             );
             if (mounted) setState(() => _loadedPlanId = created.id);
           }
@@ -1263,6 +1298,9 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
     _sectionTabController.dispose();
     _routineNameController.dispose();
     _initialWeekController.dispose();
+    _phaseController.dispose();
+    _tagsController.dispose();
+    _notesController.dispose();
     super.dispose();
   }
 
@@ -1358,6 +1396,139 @@ class _WorkoutBuilderMobilityScreenState extends State<WorkoutBuilderMobilityScr
                 setState(() => _initialWeekNumber = v);
               }
             },
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.workoutRoutineEndDate,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.event_outlined, color: cs.primary),
+            title: Text(
+              _routine.endDate != null
+                  ? MaterialLocalizations.of(context).formatFullDate(
+                      _routine.endDate!,
+                    )
+                  : l10n.workoutRoutineEndDatePlaceholder,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: _pickRoutineEndDate,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+            ),
+            tileColor: cs.surfaceContainerHighest,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.workoutRoutineCurrentWeek,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          DropdownButtonFormField<int>(
+            key: ValueKey(_routine.currentWeek),
+            initialValue: _routine.currentWeek,
+            hint: Text(l10n.workoutRoutineCurrentWeekHint),
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: cs.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                borderSide: BorderSide.none,
+              ),
+            ),
+            items: [
+              for (
+                var i = 1;
+                i <= math.max(math.max(_routine.weeks.length, 1), _routine.currentWeek ?? 1);
+                i++
+              )
+                DropdownMenuItem<int>(
+                  value: i,
+                  child: Text('${l10n.workoutRoutineCurrentWeek} $i'),
+                ),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              setState(() {
+                _routine = _routine.copyWith(currentWeek: value);
+              });
+            },
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.workoutPlanPhaseLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _phaseController,
+            decoration: InputDecoration(
+              hintText: l10n.workoutPlanPhaseHint,
+              filled: true,
+              fillColor: cs.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.workoutPlanTagsLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _tagsController,
+            decoration: InputDecoration(
+              hintText: l10n.workoutPlanTagsHint,
+              filled: true,
+              fillColor: cs.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                borderSide: BorderSide.none,
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            l10n.workoutPlanNotesLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _notesController,
+            minLines: 3,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: l10n.workoutPlanNotesHint,
+              filled: true,
+              fillColor: cs.surfaceContainerHighest,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                borderSide: BorderSide.none,
+              ),
+            ),
           ),
         ],
       ],

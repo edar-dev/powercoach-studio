@@ -1496,11 +1496,131 @@ abstract class AppLocalizations {
   /// **'Tap to choose'**
   String get workoutRoutineStartDatePlaceholder;
 
+  /// No description provided for @workoutRoutineEndDate.
+  ///
+  /// In en, this message translates to:
+  /// **'End date'**
+  String get workoutRoutineEndDate;
+
+  /// No description provided for @workoutRoutineEndDatePlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to choose'**
+  String get workoutRoutineEndDatePlaceholder;
+
+  /// No description provided for @workoutRoutineCurrentWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Current week'**
+  String get workoutRoutineCurrentWeek;
+
+  /// No description provided for @workoutRoutineCurrentWeekHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select week'**
+  String get workoutRoutineCurrentWeekHint;
+
+  /// No description provided for @workoutPlanPhaseLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase'**
+  String get workoutPlanPhaseLabel;
+
+  /// No description provided for @workoutPlanPhaseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Hypertrophy, Strength, Deload'**
+  String get workoutPlanPhaseHint;
+
+  /// No description provided for @workoutPlanTagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get workoutPlanTagsLabel;
+
+  /// No description provided for @workoutPlanTagsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. upper body, shoulder rehab'**
+  String get workoutPlanTagsHint;
+
+  /// No description provided for @workoutPlanNotesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan notes'**
+  String get workoutPlanNotesLabel;
+
+  /// No description provided for @workoutPlanNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal notes for this plan'**
+  String get workoutPlanNotesHint;
+
   /// No description provided for @workoutCreateNewFromThis.
   ///
   /// In en, this message translates to:
   /// **'Create new workout from this'**
   String get workoutCreateNewFromThis;
+
+  /// No description provided for @workoutDuplicateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate workout'**
+  String get workoutDuplicateTitle;
+
+  /// No description provided for @workoutDuplicateNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name for the copy'**
+  String get workoutDuplicateNameHint;
+
+  /// No description provided for @workoutDuplicateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get workoutDuplicateAction;
+
+  /// No description provided for @workoutFollowUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create follow-up workout'**
+  String get workoutFollowUpTitle;
+
+  /// No description provided for @workoutFollowUpNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout name'**
+  String get workoutFollowUpNameHint;
+
+  /// No description provided for @workoutFollowUpStartDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional start date'**
+  String get workoutFollowUpStartDateOptional;
+
+  /// No description provided for @workoutFollowUpStartDateClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear date'**
+  String get workoutFollowUpStartDateClear;
+
+  /// No description provided for @workoutFollowUpCreateAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Create follow-up'**
+  String get workoutFollowUpCreateAction;
+
+  /// No description provided for @workoutFollowUpCreatedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up workout created.'**
+  String get workoutFollowUpCreatedMessage;
+
+  /// No description provided for @workoutFollowUpDefaultSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up'**
+  String get workoutFollowUpDefaultSuffix;
 
   /// No description provided for @workoutDuplicateOf.
   ///
