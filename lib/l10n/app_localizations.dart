@@ -3208,6 +3208,30 @@ abstract class AppLocalizations {
   /// **'Muscle Mass'**
   String get customerMuscleMass;
 
+  /// No description provided for @customerOverviewNoMeasurements.
+  ///
+  /// In en, this message translates to:
+  /// **'No measurements yet. Add one to track progress over time.'**
+  String get customerOverviewNoMeasurements;
+
+  /// No description provided for @customerOverviewLastMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Last measurement: {date}'**
+  String customerOverviewLastMeasurement(String date);
+
+  /// No description provided for @customerOverviewViewHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'View measurement history'**
+  String get customerOverviewViewHistory;
+
+  /// No description provided for @customerOverviewFromProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'From profile'**
+  String get customerOverviewFromProfile;
+
   /// No description provided for @customerWorkoutPlans.
   ///
   /// In en, this message translates to:

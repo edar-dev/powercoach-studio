@@ -1711,6 +1711,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerMuscleMass => 'Muscle Mass';
 
   @override
+  String get customerOverviewNoMeasurements =>
+      'No measurements yet. Add one to track progress over time.';
+
+  @override
+  String customerOverviewLastMeasurement(String date) {
+    return 'Last measurement: $date';
+  }
+
+  @override
+  String get customerOverviewViewHistory => 'View measurement history';
+
+  @override
+  String get customerOverviewFromProfile => 'From profile';
+
+  @override
   String get customerWorkoutPlans => 'Workout plans';
 
   @override

@@ -1939,7 +1939,7 @@ class _WorkoutBuilderMobilityScreenState
                   if (!widget.editorMode)
                     _WorkoutBuilderBottomNav(
                       navContext: context,
-                      selectedIndex: 1,
+                      selectedIndex: 0,
                     ),
                 ],
               ),
@@ -4793,10 +4793,8 @@ class _WorkoutBuilderBottomNav extends StatelessWidget {
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
     final items = [
-      (Icons.library_books, l10n.workoutBuilderNavLibrary, '/workouts/library'),
       (Icons.add_circle, l10n.workoutBuilderNavBuilder, '/workouts/builder'),
-      (Icons.calendar_month, l10n.workoutBuilderNavDiary, '/workouts/diary'),
-      (Icons.bar_chart, l10n.workoutBuilderNavStats, '/workouts/stats'),
+      (Icons.library_books, l10n.workoutTemplatesTitle, '/workouts/templates'),
       (Icons.person, l10n.profileTitle, '/profile'),
     ];
     return Container(

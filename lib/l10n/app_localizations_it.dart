@@ -1728,6 +1728,21 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerMuscleMass => 'Massa muscolare';
 
   @override
+  String get customerOverviewNoMeasurements =>
+      'Nessuna misura ancora. Aggiungine una per seguire i progressi.';
+
+  @override
+  String customerOverviewLastMeasurement(String date) {
+    return 'Ultima misura: $date';
+  }
+
+  @override
+  String get customerOverviewViewHistory => 'Vedi storico misure';
+
+  @override
+  String get customerOverviewFromProfile => 'Dal profilo';
+
+  @override
   String get customerWorkoutPlans => 'Piani di allenamento';
 
   @override

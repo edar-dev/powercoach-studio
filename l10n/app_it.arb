@@ -727,6 +727,17 @@
   "customerGoalLabel": "Obiettivo",
   "customerCurrentWeight": "Peso attuale",
   "customerMuscleMass": "Massa muscolare",
+  "customerOverviewNoMeasurements": "Nessuna misura ancora. Aggiungine una per seguire i progressi.",
+  "customerOverviewLastMeasurement": "Ultima misura: {date}",
+  "@customerOverviewLastMeasurement": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "customerOverviewViewHistory": "Vedi storico misure",
+  "customerOverviewFromProfile": "Dal profilo",
   "customerWorkoutPlans": "Piani di allenamento",
   "customerViewAll": "Vedi tutti",
   "customerNoWorkoutPlansYet": "Nessun piano di allenamento",
