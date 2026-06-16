@@ -427,6 +427,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseLibraryDelete => 'Delete';
 
   @override
+  String get exerciseLibraryPin => 'Pin';
+
+  @override
+  String get exerciseLibraryUnpin => 'Unpin';
+
+  @override
   String get exerciseLibraryCancel => 'Cancel';
 
   @override

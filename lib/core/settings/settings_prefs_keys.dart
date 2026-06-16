@@ -11,4 +11,10 @@ abstract final class SettingsPrefsKeys {
 
   /// JSON map powercoachKey → hevyTemplateId for manual export overrides.
   static const hevyExerciseMappingsJson = 'hevy_exercise_mappings_json_v1';
+
+  /// JSON list of recently selected custom exercise IDs.
+  static const recentExerciseIdsJson = 'recent_exercise_ids_json_v1';
+
+  /// JSON list of pinned custom exercise IDs.
+  static const pinnedExerciseIdsJson = 'pinned_exercise_ids_json_v1';
 }

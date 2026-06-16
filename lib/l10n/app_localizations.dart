@@ -884,6 +884,18 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get exerciseLibraryDelete;
 
+  /// No description provided for @exerciseLibraryPin.
+  ///
+  /// In en, this message translates to:
+  /// **'Pin'**
+  String get exerciseLibraryPin;
+
+  /// No description provided for @exerciseLibraryUnpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Unpin'**
+  String get exerciseLibraryUnpin;
+
   /// No description provided for @exerciseLibraryCancel.
   ///
   /// In en, this message translates to:

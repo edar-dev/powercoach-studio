@@ -138,6 +138,8 @@
   "exerciseLibraryEditExercise": "Edit exercise",
   "exerciseLibraryEdit": "Edit",
   "exerciseLibraryDelete": "Delete",
+  "exerciseLibraryPin": "Pin",
+  "exerciseLibraryUnpin": "Unpin",
   "exerciseLibraryCancel": "Cancel",
   "exerciseLibrarySave": "Save",
   "exerciseLibraryRetry": "Retry",
