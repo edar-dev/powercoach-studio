@@ -6,6 +6,7 @@ import '../../../core/sync/offline_repository_support.dart';
 import 'workout_plan_api_model.dart';
 import 'workout_routine_model.dart';
 import '../domain/workout_follow_up_factory.dart';
+import '../../dashboard/domain/plan_calendar_event.dart';
 
 /// Persists workout plans in local storage.
 class WorkoutPlanRepository {
@@ -402,6 +403,62 @@ class WorkoutPlanRepository {
       map.remove('sessionSkippedByKey');
     } else {
       map['sessionSkippedByKey'] = skippedByKey;
+    }
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<WorkoutPlanApiModel> setSessionOccurrenceOverride({
+    required String planId,
+    required int weekIndex,
+    required int dayIndex,
+    required DateTime originalDay,
+    required SessionOverride override,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final overridesRaw = map['sessionOverrides'];
+    final overrides = overridesRaw is Map<String, dynamic>
+        ? Map<String, dynamic>.from(overridesRaw)
+        : <String, dynamic>{};
+    final key = sessionOccurrenceKey(
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      originalDay: originalDay,
+    );
+    overrides[key] = override.toJson();
+    map['sessionOverrides'] = overrides;
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<WorkoutPlanApiModel> removeSessionOccurrenceOverride({
+    required String planId,
+    required int weekIndex,
+    required int dayIndex,
+    required DateTime originalDay,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final overridesRaw = map['sessionOverrides'];
+    if (overridesRaw is! Map) {
+      return plan;
+    }
+    final overrides = Map<String, dynamic>.from(overridesRaw);
+    final key = sessionOccurrenceKey(
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      originalDay: originalDay,
+    );
+    overrides.remove(key);
+    if (overrides.isEmpty) {
+      map.remove('sessionOverrides');
+    } else {
+      map['sessionOverrides'] = overrides;
     }
     return update(planId: planId, planDataJson: jsonEncode(map));
   }

@@ -668,6 +668,9 @@
   "sessionMarkPlanned": "Segna come pianificata",
   "sessionDetailOpenBuilder": "Apri nel builder",
   "sessionDetailExercisesCount": "{count} esercizi",
+  "sessionReschedule": "Riprogramma sessione",
+  "sessionSkipDate": "Salta questa data",
+  "sessionOverrideClear": "Rimuovi override data",
   "@sessionDetailExercisesCount": {
     "placeholders": {
       "count": {

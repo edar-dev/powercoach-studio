@@ -28,8 +28,9 @@ class CalendarEventLoader {
 
         final customerName =
             customerNamesById[plan.customerId] ?? unknownClientLabel;
-        final programName =
-            plan.name.trim().isEmpty ? untitledProgramLabel : plan.name.trim();
+        final programName = plan.name.trim().isEmpty
+            ? untitledProgramLabel
+            : plan.name.trim();
 
         for (var weekIndex = 0; weekIndex < routine.weeks.length; weekIndex++) {
           final week = routine.weeks[weekIndex];
@@ -41,13 +42,22 @@ class CalendarEventLoader {
               dayIndex: dayIndex,
               scheduledWeekday: day.scheduledWeekday,
             );
+            final effectiveDay = resolveSessionOverrideDay(
+              weekIndex: weekIndex,
+              dayIndex: dayIndex,
+              originalDay: sessionDay,
+              sessionOverrides: routine.sessionOverrides,
+            );
+            if (effectiveDay == null) {
+              continue;
+            }
             if (!isPlanSessionWithinRange(
-              sessionDay: sessionDay,
+              sessionDay: effectiveDay,
               endDate: routine.endDate,
             )) {
               continue;
             }
-            final normalizedSessionDay = calendarDayOnly(sessionDay);
+            final normalizedSessionDay = calendarDayOnly(effectiveDay);
             if (normalizedSessionDay.isBefore(normalizedStart) ||
                 !normalizedSessionDay.isBefore(normalizedEnd)) {
               continue;
@@ -65,6 +75,7 @@ class CalendarEventLoader {
                 sessionLabel: day.name.trim().isEmpty
                     ? 'W${weekIndex + 1} D${dayIndex + 1}'
                     : day.name.trim(),
+                originalDay: calendarDayOnly(sessionDay),
                 status: planSessionStatus(
                   completionByKey: routine.sessionCompletionByKey,
                   skippedByKey: routine.sessionSkippedByKey,
@@ -120,18 +131,28 @@ class CalendarEventLoader {
               scheduledWeekday: day.scheduledWeekday,
             ),
           );
-          if (sessionDay.isBefore(from)) {
+          final effectiveDay = resolveSessionOverrideDay(
+            weekIndex: weekIndex,
+            dayIndex: dayIndex,
+            originalDay: sessionDay,
+            sessionOverrides: routine.sessionOverrides,
+          );
+          if (effectiveDay == null) {
+            continue;
+          }
+          final normalizedEffectiveDay = calendarDayOnly(effectiveDay);
+          if (normalizedEffectiveDay.isBefore(from)) {
             continue;
           }
           if (!isPlanSessionWithinRange(
-            sessionDay: sessionDay,
+            sessionDay: normalizedEffectiveDay,
             endDate: routine.endDate,
           )) {
             continue;
           }
           events.add(
             PlanCalendarEvent(
-              day: sessionDay,
+              day: normalizedEffectiveDay,
               customerId: plan.customerId,
               planId: plan.id,
               customerName: '',
@@ -141,6 +162,7 @@ class CalendarEventLoader {
               sessionLabel: day.name.trim().isEmpty
                   ? 'W${weekIndex + 1} D${dayIndex + 1}'
                   : day.name.trim(),
+              originalDay: sessionDay,
               status: planSessionStatus(
                 completionByKey: routine.sessionCompletionByKey,
                 skippedByKey: routine.sessionSkippedByKey,

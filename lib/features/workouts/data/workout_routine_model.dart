@@ -4,10 +4,10 @@ import '../domain/exercise_prescription_scope.dart';
 import '../domain/exercise_summary_sync.dart';
 
 List<MobilitySection> _defaultMobilitySections() => [
-      const MobilitySection(id: 'sec_upper', name: 'Upper Body'),
-      const MobilitySection(id: 'sec_lower', name: 'Lower Body'),
-      const MobilitySection(id: 'sec_full', name: 'Full Body'),
-    ];
+  const MobilitySection(id: 'sec_upper', name: 'Upper Body'),
+  const MobilitySection(id: 'sec_lower', name: 'Lower Body'),
+  const MobilitySection(id: 'sec_full', name: 'Full Body'),
+];
 
 /// A named section in the mobility routine (e.g. Upper Body, Lower Body). User can add, edit, delete.
 class MobilitySection {
@@ -19,20 +19,21 @@ class MobilitySection {
 
   final String id;
   final String name;
+
   /// Optional cadence hint for PDF (e.g. "Giorni pari 2, 4, 6").
   final String scheduleHint;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        if (scheduleHint.trim().isNotEmpty) 'scheduleHint': scheduleHint.trim(),
-      };
+    'id': id,
+    'name': name,
+    if (scheduleHint.trim().isNotEmpty) 'scheduleHint': scheduleHint.trim(),
+  };
 
   static MobilitySection fromJson(Map<String, dynamic> json) => MobilitySection(
-        id: json['id'] as String? ?? '',
-        name: json['name'] as String? ?? '',
-        scheduleHint: json['scheduleHint'] as String? ?? '',
-      );
+    id: json['id'] as String? ?? '',
+    name: json['name'] as String? ?? '',
+    scheduleHint: json['scheduleHint'] as String? ?? '',
+  );
 
   MobilitySection copyWith({String? id, String? name, String? scheduleHint}) =>
       MobilitySection(
@@ -53,51 +54,78 @@ class WorkoutRoutine {
     this.currentWeek,
     this.sessionCompletionByKey = const {},
     this.sessionSkippedByKey = const {},
+    this.sessionOverrides = const {},
   });
 
   final String name;
   final List<MobilitySection> mobilitySections;
   final List<MobilityItem> mobilityItems;
   final List<Week> weeks;
+
   /// Calendar start of the plan; persisted in planData. Null for legacy JSON.
   final DateTime? startDate;
+
   /// Optional explicit end date for the assignment window.
   final DateTime? endDate;
+
   /// Coach-facing progress marker (1-based week index when set).
   final int? currentWeek;
+
   /// Keys `weekIndex-dayIndex` → completed session.
   final Map<String, bool> sessionCompletionByKey;
+
   /// Keys `weekIndex-dayIndex` → skipped session.
   final Map<String, bool> sessionSkippedByKey;
 
-  static String sessionKey(int weekIndex, int dayIndex) => '$weekIndex-$dayIndex';
+  /// Keys `weekIndex-dayIndex-yyyy-MM-dd` → occurrence-level override.
+  final Map<String, SessionOverride> sessionOverrides;
+
+  static String sessionKey(int weekIndex, int dayIndex) =>
+      '$weekIndex-$dayIndex';
 
   Map<String, dynamic> toJson() => {
-        'name': name,
-        'mobilitySections': mobilitySections.map((e) => e.toJson()).toList(),
-        'mobilityItems': mobilityItems.map((e) => e.toJson()).toList(),
-        'weeks': weeks.map((e) => e.toJson()).toList(),
-        if (startDate != null)
-          'startDate': DateTime(startDate!.year, startDate!.month, startDate!.day).toIso8601String(),
-        if (endDate != null)
-          'endDate': DateTime(endDate!.year, endDate!.month, endDate!.day).toIso8601String(),
-        if (currentWeek != null) 'currentWeek': currentWeek,
-        if (sessionCompletionByKey.isNotEmpty)
-          'sessionCompletionByKey': sessionCompletionByKey,
-        if (sessionSkippedByKey.isNotEmpty) 'sessionSkippedByKey': sessionSkippedByKey,
-      };
+    'name': name,
+    'mobilitySections': mobilitySections.map((e) => e.toJson()).toList(),
+    'mobilityItems': mobilityItems.map((e) => e.toJson()).toList(),
+    'weeks': weeks.map((e) => e.toJson()).toList(),
+    if (startDate != null)
+      'startDate': DateTime(
+        startDate!.year,
+        startDate!.month,
+        startDate!.day,
+      ).toIso8601String(),
+    if (endDate != null)
+      'endDate': DateTime(
+        endDate!.year,
+        endDate!.month,
+        endDate!.day,
+      ).toIso8601String(),
+    if (currentWeek != null) 'currentWeek': currentWeek,
+    if (sessionCompletionByKey.isNotEmpty)
+      'sessionCompletionByKey': sessionCompletionByKey,
+    if (sessionSkippedByKey.isNotEmpty)
+      'sessionSkippedByKey': sessionSkippedByKey,
+    if (sessionOverrides.isNotEmpty)
+      'sessionOverrides': {
+        for (final entry in sessionOverrides.entries)
+          entry.key: entry.value.toJson(),
+      },
+  };
 
   static WorkoutRoutine fromJson(Map<String, dynamic> json) {
     final sectionsJson = json['mobilitySections'] as List<dynamic>?;
     final sections = sectionsJson != null && sectionsJson.isNotEmpty
         ? sectionsJson
-            .map((e) => MobilitySection.fromJson(e as Map<String, dynamic>))
-            .toList()
+              .map((e) => MobilitySection.fromJson(e as Map<String, dynamic>))
+              .toList()
         : _defaultMobilitySections();
 
     final itemsJson = json['mobilityItems'] as List<dynamic>?;
-    final items = itemsJson
-            ?.map((e) => MobilityItem.fromJson(e as Map<String, dynamic>, sections))
+    final items =
+        itemsJson
+            ?.map(
+              (e) => MobilityItem.fromJson(e as Map<String, dynamic>, sections),
+            )
             .toList() ??
         [];
 
@@ -106,7 +134,11 @@ class WorkoutRoutine {
     if (sd != null) {
       parsedStart = DateTime.tryParse(sd.toString());
       if (parsedStart != null) {
-        parsedStart = DateTime(parsedStart.year, parsedStart.month, parsedStart.day);
+        parsedStart = DateTime(
+          parsedStart.year,
+          parsedStart.month,
+          parsedStart.day,
+        );
       }
     }
 
@@ -119,15 +151,17 @@ class WorkoutRoutine {
       }
     }
 
-  final currentWeek = (json['currentWeek'] as num?)?.toInt();
-  final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
-  final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
+    final currentWeek = (json['currentWeek'] as num?)?.toInt();
+    final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
+    final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
+    final overrides = _parseSessionOverrides(json['sessionOverrides']);
 
     return WorkoutRoutine(
       name: json['name'] as String? ?? 'Hypertrophy Phase 1',
       mobilitySections: sections,
       mobilityItems: items,
-      weeks: (json['weeks'] as List<dynamic>?)
+      weeks:
+          (json['weeks'] as List<dynamic>?)
               ?.map((e) => Week.fromJson(e as Map<String, dynamic>))
               .toList() ??
           defaultWeeks(),
@@ -136,6 +170,7 @@ class WorkoutRoutine {
       currentWeek: currentWeek,
       sessionCompletionByKey: completionByKey,
       sessionSkippedByKey: skippedByKey,
+      sessionOverrides: overrides,
     );
   }
 
@@ -153,22 +188,51 @@ class WorkoutRoutine {
     return parsed;
   }
 
+  static Map<String, SessionOverride> _parseSessionOverrides(dynamic raw) {
+    if (raw is! Map) return const {};
+    final parsed = <String, SessionOverride>{};
+    for (final entry in raw.entries) {
+      final key = entry.key.toString();
+      final value = entry.value;
+      if (value is Map<String, dynamic>) {
+        parsed[key] = SessionOverride.fromJson(value);
+      } else if (value is Map) {
+        parsed[key] = SessionOverride.fromJson(value.cast<String, dynamic>());
+      }
+    }
+    return parsed;
+  }
+
   static List<Week> defaultWeeks() => [
-        Week(
-          id: 'w1',
-          name: 'WEEK 1: ACCLIMATION',
-          days: [
-            Day(
-              id: 'd1',
-              name: 'DAY 1 - Lower Body Push',
-              exercises: [
-                const Exercise(id: 'e1', name: 'Barbell Back Squat', sets: '3', reps: '8-10', rpe: '@8', note: ''),
-                const Exercise(id: 'e2', name: 'Leg Press', sets: '3', reps: '12', rpe: '315lb', note: ''),
-              ],
+    Week(
+      id: 'w1',
+      name: 'WEEK 1: ACCLIMATION',
+      days: [
+        Day(
+          id: 'd1',
+          name: 'DAY 1 - Lower Body Push',
+          exercises: [
+            const Exercise(
+              id: 'e1',
+              name: 'Barbell Back Squat',
+              sets: '3',
+              reps: '8-10',
+              rpe: '@8',
+              note: '',
+            ),
+            const Exercise(
+              id: 'e2',
+              name: 'Leg Press',
+              sets: '3',
+              reps: '12',
+              rpe: '315lb',
+              note: '',
             ),
           ],
         ),
-      ];
+      ],
+    ),
+  ];
 
   /// Empty routine for creating a new workout from scratch (one default mobility section).
   static WorkoutRoutine empty() {
@@ -192,18 +256,52 @@ class WorkoutRoutine {
     int? currentWeek,
     Map<String, bool>? sessionCompletionByKey,
     Map<String, bool>? sessionSkippedByKey,
-  }) =>
-      WorkoutRoutine(
-        name: name ?? this.name,
-        mobilitySections: mobilitySections ?? this.mobilitySections,
-        mobilityItems: mobilityItems ?? this.mobilityItems,
-        weeks: weeks ?? this.weeks,
-        startDate: startDate ?? this.startDate,
-        endDate: endDate ?? this.endDate,
-        currentWeek: currentWeek ?? this.currentWeek,
-        sessionCompletionByKey: sessionCompletionByKey ?? this.sessionCompletionByKey,
-        sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
-      );
+    Map<String, SessionOverride>? sessionOverrides,
+  }) => WorkoutRoutine(
+    name: name ?? this.name,
+    mobilitySections: mobilitySections ?? this.mobilitySections,
+    mobilityItems: mobilityItems ?? this.mobilityItems,
+    weeks: weeks ?? this.weeks,
+    startDate: startDate ?? this.startDate,
+    endDate: endDate ?? this.endDate,
+    currentWeek: currentWeek ?? this.currentWeek,
+    sessionCompletionByKey:
+        sessionCompletionByKey ?? this.sessionCompletionByKey,
+    sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
+    sessionOverrides: sessionOverrides ?? this.sessionOverrides,
+  );
+}
+
+enum SessionOverrideKind { skipped, moved }
+
+class SessionOverride {
+  const SessionOverride.skipped()
+    : kind = SessionOverrideKind.skipped,
+      movedToDate = null;
+
+  SessionOverride.moved(DateTime date)
+    : kind = SessionOverrideKind.moved,
+      movedToDate = DateTime(date.year, date.month, date.day);
+
+  final SessionOverrideKind kind;
+  final DateTime? movedToDate;
+
+  Map<String, dynamic> toJson() => {
+    'kind': kind == SessionOverrideKind.skipped ? 'skipped' : 'moved',
+    if (movedToDate != null) 'movedToDate': movedToDate!.toIso8601String(),
+  };
+
+  static SessionOverride fromJson(Map<String, dynamic> json) {
+    final kindRaw = json['kind']?.toString();
+    if (kindRaw == 'moved') {
+      final movedRaw = json['movedToDate'];
+      final moved = movedRaw == null
+          ? null
+          : DateTime.tryParse(movedRaw.toString());
+      if (moved != null) return SessionOverride.moved(moved);
+    }
+    return const SessionOverride.skipped();
+  }
 }
 
 class MobilityItem {
@@ -220,32 +318,42 @@ class MobilityItem {
   final String id;
   final String title;
   final String subtitle;
+
   /// Compact title for dense PDF rows when [title] is long.
   final String shortTitle;
+
   /// Id of the [MobilitySection] this item belongs to.
   final String sectionId;
+
   /// Kept for backward compatibility when reading old JSON.
   final int categoryIndex;
+
   /// When set, this item is linked to the user's custom exercise library (GymBlog.API).
   final String? customExerciseId;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'subtitle': subtitle,
-        'sectionId': sectionId,
-        'categoryIndex': categoryIndex,
-        if (shortTitle.trim().isNotEmpty) 'shortTitle': shortTitle.trim(),
-        if (customExerciseId != null && customExerciseId!.isNotEmpty) 'customExerciseId': customExerciseId,
-      };
+    'id': id,
+    'title': title,
+    'subtitle': subtitle,
+    'sectionId': sectionId,
+    'categoryIndex': categoryIndex,
+    if (shortTitle.trim().isNotEmpty) 'shortTitle': shortTitle.trim(),
+    if (customExerciseId != null && customExerciseId!.isNotEmpty)
+      'customExerciseId': customExerciseId,
+  };
 
-  static MobilityItem fromJson(Map<String, dynamic> json, [List<MobilitySection>? sections]) {
+  static MobilityItem fromJson(
+    Map<String, dynamic> json, [
+    List<MobilitySection>? sections,
+  ]) {
     final secs = sections ?? _defaultMobilitySections();
     final sectionId = json['sectionId'] as String?;
     final categoryIndex = json['categoryIndex'] as int? ?? 0;
     final resolvedSectionId = sectionId != null && sectionId.isNotEmpty
         ? sectionId
-        : (categoryIndex >= 0 && categoryIndex < secs.length ? secs[categoryIndex].id : secs.first.id);
+        : (categoryIndex >= 0 && categoryIndex < secs.length
+              ? secs[categoryIndex].id
+              : secs.first.id);
     return MobilityItem(
       id: json['id'] as String? ?? '',
       title: json['title'] as String? ?? '',
@@ -265,16 +373,15 @@ class MobilityItem {
     String? sectionId,
     int? categoryIndex,
     String? customExerciseId,
-  }) =>
-      MobilityItem(
-        id: id ?? this.id,
-        title: title ?? this.title,
-        subtitle: subtitle ?? this.subtitle,
-        shortTitle: shortTitle ?? this.shortTitle,
-        sectionId: sectionId ?? this.sectionId,
-        categoryIndex: categoryIndex ?? this.categoryIndex,
-        customExerciseId: customExerciseId ?? this.customExerciseId,
-      );
+  }) => MobilityItem(
+    id: id ?? this.id,
+    title: title ?? this.title,
+    subtitle: subtitle ?? this.subtitle,
+    shortTitle: shortTitle ?? this.shortTitle,
+    sectionId: sectionId ?? this.sectionId,
+    categoryIndex: categoryIndex ?? this.categoryIndex,
+    customExerciseId: customExerciseId ?? this.customExerciseId,
+  );
 
   String get pdfTitle {
     final compact = shortTitle.trim();
@@ -290,19 +397,20 @@ class Week {
   final List<Day> days;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'days': days.map((e) => e.toJson()).toList(),
-      };
+    'id': id,
+    'name': name,
+    'days': days.map((e) => e.toJson()).toList(),
+  };
 
   static Week fromJson(Map<String, dynamic> json) => Week(
-        id: json['id'] as String? ?? '',
-        name: json['name'] as String? ?? 'Week',
-        days: (json['days'] as List<dynamic>?)
-                ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
-                .toList() ??
-            [],
-      );
+    id: json['id'] as String? ?? '',
+    name: json['name'] as String? ?? 'Week',
+    days:
+        (json['days'] as List<dynamic>?)
+            ?.map((e) => Day.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
+  );
 
   Week copyWith({String? id, String? name, List<Day>? days}) =>
       Week(id: id ?? this.id, name: name ?? this.name, days: days ?? this.days);
@@ -319,25 +427,27 @@ class Day {
   final String id;
   final String name;
   final List<Exercise> exercises;
+
   /// Optional ISO weekday: 1=Mon ... 7=Sun.
   final int? scheduledWeekday;
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'exercises': exercises.map((e) => e.toJson()).toList(),
-        if (scheduledWeekday != null) 'scheduledWeekday': scheduledWeekday,
-      };
+    'id': id,
+    'name': name,
+    'exercises': exercises.map((e) => e.toJson()).toList(),
+    if (scheduledWeekday != null) 'scheduledWeekday': scheduledWeekday,
+  };
 
   static Day fromJson(Map<String, dynamic> json) => Day(
-        id: json['id'] as String? ?? '',
-        name: json['name'] as String? ?? 'Day',
-        exercises: (json['exercises'] as List<dynamic>?)
-                ?.map((e) => Exercise.fromJson(e as Map<String, dynamic>))
-                .toList() ??
-            [],
-        scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
-      );
+    id: json['id'] as String? ?? '',
+    name: json['name'] as String? ?? 'Day',
+    exercises:
+        (json['exercises'] as List<dynamic>?)
+            ?.map((e) => Exercise.fromJson(e as Map<String, dynamic>))
+            .toList() ??
+        [],
+    scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
+  );
 
   Day copyWith({
     String? id,
@@ -346,17 +456,19 @@ class Day {
     int? scheduledWeekday,
     bool clearScheduledWeekday = false,
   }) => Day(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        exercises: exercises ?? this.exercises,
-        scheduledWeekday: clearScheduledWeekday
-            ? null
-            : (scheduledWeekday ?? this.scheduledWeekday),
-      );
+    id: id ?? this.id,
+    name: name ?? this.name,
+    exercises: exercises ?? this.exercises,
+    scheduledWeekday: clearScheduledWeekday
+        ? null
+        : (scheduledWeekday ?? this.scheduledWeekday),
+  );
 
   static int? _parseScheduledWeekday(dynamic raw) {
     final parsed = (raw as num?)?.toInt();
-    if (parsed == null || parsed < DateTime.monday || parsed > DateTime.sunday) {
+    if (parsed == null ||
+        parsed < DateTime.monday ||
+        parsed > DateTime.sunday) {
       return null;
     }
     return parsed;
@@ -374,7 +486,9 @@ List<Object> partitionExercisesBySuperset(List<Exercise> exercises) {
     } else {
       if (!seenGroupIds.contains(e.supersetGroupId)) {
         seenGroupIds.add(e.supersetGroupId!);
-        final group = exercises.where((x) => x.supersetGroupId == e.supersetGroupId).toList();
+        final group = exercises
+            .where((x) => x.supersetGroupId == e.supersetGroupId)
+            .toList();
         result.add(group);
       }
     }
@@ -395,9 +509,11 @@ class ExerciseSet {
 
   /// Free-form line (e.g. "1x3 75kg"). When set, used as display.
   final String line;
+
   /// Number of sets for this block (e.g. "1", "3").
   final String sets;
   final String reps;
+
   /// Load or RPE (e.g. "75kg", "@8").
   final String rpe;
   final String note;
@@ -421,12 +537,12 @@ class ExerciseSet {
   }
 
   Map<String, dynamic> toJson() => {
-        if (line.isNotEmpty) 'line': line,
-        if (sets != '1') 'sets': sets,
-        'reps': reps,
-        'rpe': rpe,
-        if (note.isNotEmpty) 'note': note,
-      };
+    if (line.isNotEmpty) 'line': line,
+    if (sets != '1') 'sets': sets,
+    'reps': reps,
+    'rpe': rpe,
+    if (note.isNotEmpty) 'note': note,
+  };
 
   static ExerciseSet fromJson(Map<String, dynamic> json) {
     final lineStr = json['line'] as String? ?? '';
@@ -439,13 +555,19 @@ class ExerciseSet {
     );
   }
 
-  ExerciseSet copyWith({String? line, String? sets, String? reps, String? rpe, String? note}) => ExerciseSet(
-        line: line ?? this.line,
-        sets: sets ?? this.sets,
-        reps: reps ?? this.reps,
-        rpe: rpe ?? this.rpe,
-        note: note ?? this.note,
-      );
+  ExerciseSet copyWith({
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  }) => ExerciseSet(
+    line: line ?? this.line,
+    sets: sets ?? this.sets,
+    reps: reps ?? this.reps,
+    rpe: rpe ?? this.rpe,
+    note: note ?? this.note,
+  );
 }
 
 class Exercise {
@@ -469,13 +591,17 @@ class Exercise {
   final String reps;
   final String rpe;
   final String note;
+
   /// Optional compact label for PDF tables.
   final String shortName;
   final ExercisePrescriptionScope prescriptionScope;
+
   /// Multiple set prescriptions (e.g. top set/backoff). When null or empty, use [sets]/[reps]/[rpe] as single prescription.
   final List<ExerciseSet>? setDetails;
+
   /// When non-null, exercises in the same day with the same id form a superset.
   final String? supersetGroupId;
+
   /// When set, this exercise is linked to the user's custom exercise library (GymBlog.API).
   final String? customExerciseId;
 
@@ -488,14 +614,16 @@ class Exercise {
       'reps': synced.reps,
       'rpe': synced.rpe,
       'note': synced.note,
-      if (synced.shortName.trim().isNotEmpty) 'shortName': synced.shortName.trim(),
+      if (synced.shortName.trim().isNotEmpty)
+        'shortName': synced.shortName.trim(),
       if (synced.prescriptionScope != ExercisePrescriptionScope.perWeek)
         'prescriptionScope': synced.prescriptionScope.toJson(),
       if (synced.setDetails != null && synced.setDetails!.isNotEmpty)
         'setDetails': synced.setDetails!.map((s) => s.toJson()).toList(),
       if (synced.supersetGroupId != null && synced.supersetGroupId!.isNotEmpty)
         'supersetGroupId': synced.supersetGroupId,
-      if (synced.customExerciseId != null && synced.customExerciseId!.isNotEmpty)
+      if (synced.customExerciseId != null &&
+          synced.customExerciseId!.isNotEmpty)
         'customExerciseId': synced.customExerciseId,
     };
   }
@@ -531,7 +659,9 @@ class Exercise {
 
   /// Effective list of set prescriptions (never null/empty: at least one from setDetails or legacy).
   List<ExerciseSet> get effectiveSetDetails =>
-      (setDetails != null && setDetails!.isNotEmpty) ? setDetails! : [ExerciseSet(reps: reps, rpe: rpe, note: note)];
+      (setDetails != null && setDetails!.isNotEmpty)
+      ? setDetails!
+      : [ExerciseSet(reps: reps, rpe: rpe, note: note)];
 
   Exercise copyWith({
     String? id,
@@ -546,18 +676,19 @@ class Exercise {
     String? supersetGroupId,
     String? customExerciseId,
     bool clearSupersetGroupId = false,
-  }) =>
-      Exercise(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        sets: sets ?? this.sets,
-        reps: reps ?? this.reps,
-        rpe: rpe ?? this.rpe,
-        note: note ?? this.note,
-        shortName: shortName ?? this.shortName,
-        prescriptionScope: prescriptionScope ?? this.prescriptionScope,
-        setDetails: setDetails ?? this.setDetails,
-        supersetGroupId: clearSupersetGroupId ? null : (supersetGroupId ?? this.supersetGroupId),
-        customExerciseId: customExerciseId ?? this.customExerciseId,
-      );
+  }) => Exercise(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    sets: sets ?? this.sets,
+    reps: reps ?? this.reps,
+    rpe: rpe ?? this.rpe,
+    note: note ?? this.note,
+    shortName: shortName ?? this.shortName,
+    prescriptionScope: prescriptionScope ?? this.prescriptionScope,
+    setDetails: setDetails ?? this.setDetails,
+    supersetGroupId: clearSupersetGroupId
+        ? null
+        : (supersetGroupId ?? this.supersetGroupId),
+    customExerciseId: customExerciseId ?? this.customExerciseId,
+  );
 }

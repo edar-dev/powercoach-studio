@@ -22,6 +22,20 @@ void main() {
     expect(restored.name, 'Legacy');
   });
 
+  test('round-trip preserves session occurrence overrides', () {
+    final routine = WorkoutRoutine.empty().copyWith(
+      startDate: DateTime(2026, 6, 16),
+      sessionOverrides: {'0-0-2026-06-16': const SessionOverride.skipped()},
+    );
+    final jsonText = encodeWorkoutRoutineJson(routine);
+    final restored = decodeWorkoutRoutineJson(jsonText);
+    expect(restored.sessionOverrides.containsKey('0-0-2026-06-16'), isTrue);
+    expect(
+      restored.sessionOverrides['0-0-2026-06-16']?.kind,
+      SessionOverrideKind.skipped,
+    );
+  });
+
   test('rejects unsupported schema version', () {
     final payload = {
       'schemaVersion': 99,
