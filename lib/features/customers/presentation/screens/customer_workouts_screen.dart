@@ -715,6 +715,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   ) async {
     final l10n = AppLocalizations.of(context);
     final executions = await _executionService.listForPlan(plan.id);
+    if (!mounted) return null;
     final completedCount = countCompletedExecutions(executions);
     final controller = TextEditingController(
       text: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
@@ -722,6 +723,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     DateTime? selectedStartDate;
     var applyExecutedLoads = completedCount > 0;
     try {
+      if (!mounted) return null;
       return await showDialog<({
         String name,
         DateTime? startDate,

@@ -134,6 +134,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
         var notes = '';
         if (status == PlanSessionStatus.completed) {
           final plan = await _planRepo.getById(event.planId);
+          if (!mounted) return;
           if (plan != null) {
             final routine = planDataToRoutine(plan.planData);
             if (event.weekIndex < routine.weeks.length &&
@@ -141,6 +142,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                     routine.weeks[event.weekIndex].days.length) {
               final day =
                   routine.weeks[event.weekIndex].days[event.dayIndex];
+              if (!context.mounted) return;
               final logResult = await showSessionLogSheet(
                 context: context,
                 plannedExercises: day.exercises,

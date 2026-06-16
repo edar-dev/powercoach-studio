@@ -521,19 +521,21 @@ class _BackupImportPreviewDialogState extends State<_BackupImportPreviewDialog> 
             ),
           ),
           const SizedBox(height: 16),
-          RadioListTile<bool>(
-            value: false,
-            groupValue: _replaceAll,
-            onChanged: (v) => setState(() => _replaceAll = v ?? false),
-            title: Text(l10n.backupImportMerge),
-            contentPadding: EdgeInsets.zero,
-          ),
-          RadioListTile<bool>(
-            value: true,
-            groupValue: _replaceAll,
-            onChanged: (v) => setState(() => _replaceAll = v ?? true),
-            title: Text(l10n.backupImportReplaceAll),
-            contentPadding: EdgeInsets.zero,
+          SegmentedButton<bool>(
+            segments: [
+              ButtonSegment<bool>(
+                value: false,
+                label: Text(l10n.backupImportMerge),
+              ),
+              ButtonSegment<bool>(
+                value: true,
+                label: Text(l10n.backupImportReplaceAll),
+              ),
+            ],
+            selected: {_replaceAll},
+            onSelectionChanged: (selection) {
+              setState(() => _replaceAll = selection.first);
+            },
           ),
         ],
       ),
