@@ -42,6 +42,8 @@ import '../../../customers/data/customer_exercise_record_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
 import '../../../customers/data/models/customer_exercise_record.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
+import '../../../exercise_library/data/pinned_exercises_store.dart';
+import '../../../exercise_library/data/recent_exercises_store.dart';
 
 /// Returns list of superset group options for the day (id + label) for "Add to superset" menu.
 List<({String id, String label})> _getSupersetGroupOptions(Day day) {
@@ -2787,7 +2789,11 @@ class _AddExerciseDialogContent extends StatefulWidget {
 class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
   final _customExerciseRepo = CustomExerciseRepository();
   final _recordRepo = CustomerExerciseRecordRepository();
+  final _recentStore = RecentExercisesStore.instance;
+  final _pinnedStore = PinnedExercisesStore.instance;
   List<CustomExerciseItem> _exerciseOptions = [];
+  List<CustomExerciseItem> _recentExercises = [];
+  Set<String> _pinnedExerciseIds = <String>{};
   final Map<String, int> _exerciseDepth = {};
   final Map<String, String> _exerciseParentName = {};
   bool _loadingExercises = true;
@@ -3056,9 +3062,34 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
       for (final root in items) {
         visit(root, 0, null);
       }
+      final recentIds = await _recentStore.getRecentIds();
+      final pinnedIds = await _pinnedStore.getPinnedIds();
+      final byId = {for (final e in flat) e.id: e};
+      final recent = recentIds
+          .map((id) => byId[id])
+          .whereType<CustomExerciseItem>()
+          .toList();
+      final sorted = List<CustomExerciseItem>.from(flat)
+        ..sort((a, b) {
+          final aPinned = pinnedIds.contains(a.id);
+          final bPinned = pinnedIds.contains(b.id);
+          if (aPinned != bPinned) return aPinned ? -1 : 1;
+          final ai = recentIds.indexOf(a.id);
+          final bi = recentIds.indexOf(b.id);
+          if (ai >= 0 || bi >= 0) {
+            if (ai < 0) return 1;
+            if (bi < 0) return -1;
+            return ai.compareTo(bi);
+          }
+          return _exerciseDisplayName(
+            a,
+          ).toLowerCase().compareTo(_exerciseDisplayName(b).toLowerCase());
+        });
       if (mounted) {
         setState(() {
-          _exerciseOptions = flat;
+          _exerciseOptions = sorted;
+          _recentExercises = recent.take(6).toList();
+          _pinnedExerciseIds = pinnedIds;
           _loadingExercises = false;
         });
       }
@@ -3162,6 +3193,7 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
     }).toList();
 
     if (_fromLibrary && _selectedExercise != null) {
+      unawaited(_recentStore.recordUse(_selectedExercise!.id));
       widget.onSaveWithSets(
         _selectedExercise!.name,
         note,
@@ -3268,6 +3300,27 @@ class _AddExerciseDialogContentState extends State<_AddExerciseDialogContent> {
             ),
           ),
           const SizedBox(height: 6),
+          if (_recentExercises.isNotEmpty) ...[
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: _recentExercises
+                  .map(
+                    (e) => ActionChip(
+                      label: Text(e.name),
+                      avatar: _pinnedExerciseIds.contains(e.id)
+                          ? const Icon(Icons.push_pin, size: 14)
+                          : null,
+                      onPressed: () {
+                        setState(() => _selectedExercise = e);
+                        _loadRecordsForExercise(e.id);
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
+            const SizedBox(height: 8),
+          ],
           Autocomplete<CustomExerciseItem>(
             initialValue: _selectedExercise != null
                 ? TextEditingValue(

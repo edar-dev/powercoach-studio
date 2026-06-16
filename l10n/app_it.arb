@@ -138,6 +138,8 @@
   "exerciseLibraryEditExercise": "Modifica esercizio",
   "exerciseLibraryEdit": "Modifica",
   "exerciseLibraryDelete": "Elimina",
+  "exerciseLibraryPin": "Fissa",
+  "exerciseLibraryUnpin": "Rimuovi fissato",
   "exerciseLibraryCancel": "Annulla",
   "exerciseLibrarySave": "Salva",
   "exerciseLibraryRetry": "Riprova",

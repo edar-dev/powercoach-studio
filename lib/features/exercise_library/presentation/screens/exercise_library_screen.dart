@@ -13,6 +13,7 @@ import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/import_file_reader.dart';
+import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../../data/default_exercise_catalog.dart';
 import '../../../integrations/hevy/data/hevy_api_models.dart';
@@ -31,7 +32,9 @@ class ExerciseLibraryScreen extends StatefulWidget {
 class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     with SingleTickerProviderStateMixin {
   final CustomExerciseRepository _exerciseRepo = CustomExerciseRepository();
+  final PinnedExercisesStore _pinnedStore = PinnedExercisesStore.instance;
   List<CustomExerciseItem> _items = [];
+  Set<String> _pinnedIds = <String>{};
   bool _loading = true;
   String? _error;
   late final TabController _tabController;
@@ -62,9 +65,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     });
     try {
       final items = await _exerciseRepo.getTree();
+      final pinned = await _pinnedStore.getPinnedIds();
       if (mounted) {
         setState(() {
           _items = items;
+          _pinnedIds = pinned;
           _loading = false;
           _error = null;
         });
@@ -85,19 +90,24 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       final isMobility = _tabController.index == 1;
       final roots = await _exerciseRepo.getTree(mobility: isMobility);
       final data = _flattenTree(roots)
-          .map((e) => <String, dynamic>{
-                'id': e.id,
-                'name': e.name,
-                'description': e.description,
-                'parentId': e.parentId,
-                'sortOrder': e.sortOrder,
-                'isMobility': e.isMobility,
-              })
+          .map(
+            (e) => <String, dynamic>{
+              'id': e.id,
+              'name': e.name,
+              'description': e.description,
+              'parentId': e.parentId,
+              'sortOrder': e.sortOrder,
+              'isMobility': e.isMobility,
+            },
+          )
           .toList();
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       if (data.isEmpty) {
-        showAppSnackBar(context, content: Text(l10n.exerciseLibraryExportEmpty));
+        showAppSnackBar(
+          context,
+          content: Text(l10n.exerciseLibraryExportEmpty),
+        );
         return;
       }
       final json = const JsonEncoder.withIndent('  ').convert(data);
@@ -110,10 +120,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       );
     } catch (e) {
       if (mounted) {
-        showAppSnackBar(
-          context,
-          content: Text(e.toString()),
-        );
+        showAppSnackBar(context, content: Text(e.toString()));
       }
     }
   }
@@ -163,10 +170,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     final hasKey = await HevySettingsStore.instance.hasApiKey();
     if (!hasKey) {
       if (!mounted) return;
-      showAppSnackBar(
-        context,
-        content: Text(l10n.hevyExportNoCatalogHint),
-      );
+      showAppSnackBar(context, content: Text(l10n.hevyExportNoCatalogHint));
       return;
     }
     if (!mounted) return;
@@ -212,7 +216,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(context, content: Text(l10n.hevyImportFailed(e.toString())));
+      showAppSnackBar(
+        context,
+        content: Text(l10n.hevyImportFailed(e.toString())),
+      );
     }
   }
 
@@ -250,7 +257,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       if (decoded is! List) {
         if (mounted) {
           final l10n = AppLocalizations.of(context);
-          showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
+          showAppSnackBar(
+            context,
+            content: Text(l10n.exerciseLibraryImportInvalidFormat),
+          );
         }
         return;
       }
@@ -260,7 +270,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     } catch (_) {
       if (mounted) {
         final l10n = AppLocalizations.of(context);
-        showAppSnackBar(context, content: Text(l10n.exerciseLibraryImportInvalidFormat));
+        showAppSnackBar(
+          context,
+          content: Text(l10n.exerciseLibraryImportInvalidFormat),
+        );
       }
       return;
     }
@@ -299,8 +312,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
 
           final parentId = hasParent ? importedByLegacyId[rawParentId] : null;
           final rawMobility = item['isMobility'];
-          final itemIsMobility =
-              rawMobility is bool ? rawMobility : fallbackMobilityWhenMissing;
+          final itemIsMobility = rawMobility is bool
+              ? rawMobility
+              : fallbackMobilityWhenMissing;
           final created = await _exerciseRepo.create(<String, dynamic>{
             'name': name,
             'description': item['description']?.toString(),
@@ -323,8 +337,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             final name = item['name']?.toString().trim() ?? '';
             if (name.isEmpty) continue;
             final rawMobility = item['isMobility'];
-            final itemIsMobility =
-                rawMobility is bool ? rawMobility : fallbackMobilityWhenMissing;
+            final itemIsMobility = rawMobility is bool
+                ? rawMobility
+                : fallbackMobilityWhenMissing;
             final created = await _exerciseRepo.create(<String, dynamic>{
               'name': name,
               'description': item['description']?.toString(),
@@ -367,6 +382,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         visit(c);
       }
     }
+
     for (final r in roots) {
       visit(r);
     }
@@ -392,7 +408,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         .toList();
   }
 
-  List<CustomExerciseItem> _filterNodeByMobility(CustomExerciseItem node, bool isMobility) {
+  List<CustomExerciseItem> _filterNodeByMobility(
+    CustomExerciseItem node,
+    bool isMobility,
+  ) {
     if (node.catalogSource == ExerciseCatalogSource.hevy) {
       return const [];
     }
@@ -418,7 +437,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           updatedAt: node.updatedAt,
           rowVersion: node.rowVersion,
           children: filteredChildren,
-        )
+        ),
       ];
     }
 
@@ -437,7 +456,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     );
   }
 
-  void _showAddDialogWithParent(String? parentId, {int? sortOrder, required bool isMobility}) {
+  void _showAddDialogWithParent(
+    String? parentId, {
+    int? sortOrder,
+    required bool isMobility,
+  }) {
     final l10n = AppLocalizations.of(context);
     showAppBottomSheet<void>(
       context: context,
@@ -454,8 +477,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           try {
             await _exerciseRepo.create({
               'name': name,
-              if (description != null && description.isNotEmpty) 'description': description,
-              if (selectedParentId != null && selectedParentId.isNotEmpty) 'parentId': selectedParentId,
+              if (description != null && description.isNotEmpty)
+                'description': description,
+              if (selectedParentId != null && selectedParentId.isNotEmpty)
+                'parentId': selectedParentId,
               if (sortOrder != null) 'sortOrder': sortOrder,
               'isMobility': isMobility,
             });
@@ -482,8 +507,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   void _showEditDialog(CustomExerciseItem item) {
     final l10n = AppLocalizations.of(context);
     final excludeIds = {item.id, ...item.flat.map((e) => e.id)};
-    final parentCandidates =
-        _flattenTree(_items).where((e) => !excludeIds.contains(e.id)).toList();
+    final parentCandidates = _flattenTree(
+      _items,
+    ).where((e) => !excludeIds.contains(e.id)).toList();
     showAppBottomSheet<void>(
       context: context,
       title: l10n.exerciseLibraryEditExercise,
@@ -566,6 +592,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     });
   }
 
+  Future<void> _togglePin(CustomExerciseItem item) async {
+    await _pinnedStore.toggle(item.id);
+    if (!mounted) return;
+    final latest = await _pinnedStore.getPinnedIds();
+    if (!mounted) return;
+    setState(() => _pinnedIds = latest);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -638,6 +672,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
+            onTogglePin: _togglePin,
+            isPinned: (item) => _pinnedIds.contains(item.id),
           ),
           _ExerciseLibraryTabView(
             isMobility: true,
@@ -649,6 +685,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
+            onTogglePin: _togglePin,
+            isPinned: (item) => _pinnedIds.contains(item.id),
           ),
           _ExerciseLibraryTabView(
             isMobility: false,
@@ -660,6 +698,8 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
+            onTogglePin: _togglePin,
+            isPinned: (item) => _pinnedIds.contains(item.id),
             readOnlyFolders: true,
           ),
         ],
@@ -667,35 +707,41 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       floatingActionButton: _tabController.index == 2
           ? null
           : FloatingActionButton.extended(
-        onPressed: _loading ? null : () => _showAddDialog(isMobility: _tabController.index == 1),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.exerciseLibraryAddExercise),
-        backgroundColor: StitchM3Theme.accent,
-        foregroundColor: Colors.white,
-      ),
+              onPressed: _loading
+                  ? null
+                  : () => _showAddDialog(isMobility: _tabController.index == 1),
+              icon: const Icon(Icons.add),
+              label: Text(l10n.exerciseLibraryAddExercise),
+              backgroundColor: StitchM3Theme.accent,
+              foregroundColor: Colors.white,
+            ),
     );
   }
 }
 
-
 class _ExerciseTile extends StatelessWidget {
   const _ExerciseTile({
     required this.item,
+    required this.isPinned,
     required this.onEdit,
     required this.onDelete,
     required this.onAddVariant,
+    required this.onTogglePin,
     this.readOnlyFolders = false,
   });
 
   final CustomExerciseItem item;
+  final bool Function(CustomExerciseItem item) isPinned;
   final void Function(CustomExerciseItem item) onEdit;
   final void Function(CustomExerciseItem item) onDelete;
   final void Function(CustomExerciseItem item) onAddVariant;
+  final void Function(CustomExerciseItem item) onTogglePin;
   final bool readOnlyFolders;
 
   @override
   Widget build(BuildContext context) {
     final hasChildren = item.children.isNotEmpty;
+    final pinned = isPinned(item);
     final l10n = AppLocalizations.of(context);
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
@@ -713,10 +759,19 @@ class _ExerciseTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               )
             : null,
-        trailing: readOnlyFolders && (item.isHevyFolder || item.children.isNotEmpty)
+        trailing:
+            readOnlyFolders && (item.isHevyFolder || item.children.isNotEmpty)
             ? null
             : PopupMenuButton<String>(
                 itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'pin',
+                    child: Text(
+                      pinned
+                          ? l10n.exerciseLibraryUnpin
+                          : l10n.exerciseLibraryPin,
+                    ),
+                  ),
                   PopupMenuItem(
                     value: 'addVariant',
                     child: Text(l10n.exerciseLibraryAddVariant),
@@ -731,6 +786,7 @@ class _ExerciseTile extends StatelessWidget {
                   ),
                 ],
                 onSelected: (value) {
+                  if (value == 'pin') onTogglePin(item);
                   if (value == 'addVariant') onAddVariant(item);
                   if (value == 'edit') onEdit(item);
                   if (value == 'delete') onDelete(item);
@@ -742,9 +798,11 @@ class _ExerciseTile extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 24, right: 8, bottom: 4),
                 child: _ExerciseTile(
                   item: child,
+                  isPinned: isPinned,
                   onEdit: onEdit,
                   onDelete: onDelete,
                   onAddVariant: onAddVariant,
+                  onTogglePin: onTogglePin,
                   readOnlyFolders: readOnlyFolders,
                 ),
               ),
@@ -766,6 +824,8 @@ class _ExerciseLibraryTabView extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onAddVariant,
+    required this.onTogglePin,
+    required this.isPinned,
     this.readOnlyFolders = false,
   });
 
@@ -781,6 +841,8 @@ class _ExerciseLibraryTabView extends StatelessWidget {
   final void Function(CustomExerciseItem item) onEdit;
   final void Function(CustomExerciseItem item) onDelete;
   final void Function(CustomExerciseItem item) onAddVariant;
+  final void Function(CustomExerciseItem item) onTogglePin;
+  final bool Function(CustomExerciseItem item) isPinned;
 
   @override
   Widget build(BuildContext context) {
@@ -814,58 +876,62 @@ class _ExerciseLibraryTabView extends StatelessWidget {
               ),
             )
           : loading && allItemsEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : Builder(
-                  builder: (context) {
-                    final list = buildList();
-                    if (list.isEmpty) {
-                      return Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              Icons.fitness_center_outlined,
-                              size: 64,
-                              color: cs.outline,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              isMobility ? l10n.exerciseLibraryEmptyMobility : l10n.exerciseLibraryEmpty,
-                              style: theme.textTheme.bodyLarge,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              isMobility ? l10n.exerciseLibraryEmptyMobilityHint : l10n.exerciseLibraryEmptyHint,
-                              style: theme.textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+          ? const Center(child: CircularProgressIndicator())
+          : Builder(
+              builder: (context) {
+                final list = buildList();
+                if (list.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.fitness_center_outlined,
+                          size: 64,
+                          color: cs.outline,
                         ),
-                      );
-                    }
+                        const SizedBox(height: 16),
+                        Text(
+                          isMobility
+                              ? l10n.exerciseLibraryEmptyMobility
+                              : l10n.exerciseLibraryEmpty,
+                          style: theme.textTheme.bodyLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          isMobility
+                              ? l10n.exerciseLibraryEmptyMobilityHint
+                              : l10n.exerciseLibraryEmptyHint,
+                          style: theme.textTheme.bodySmall,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
-                    return ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ).copyWith(
-                        bottom: 112,
-                      ),
-                      itemCount: list.length,
-                      itemBuilder: (context, index) {
-                        final it = list[index];
-                        return _ExerciseTile(
-                          item: it,
-                          onEdit: onEdit,
-                          onDelete: onDelete,
-                          onAddVariant: onAddVariant,
-                          readOnlyFolders: readOnlyFolders,
-                        );
-                      },
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ).copyWith(bottom: 112),
+                  itemCount: list.length,
+                  itemBuilder: (context, index) {
+                    final it = list[index];
+                    return _ExerciseTile(
+                      item: it,
+                      isPinned: isPinned,
+                      onEdit: onEdit,
+                      onDelete: onDelete,
+                      onAddVariant: onAddVariant,
+                      onTogglePin: onTogglePin,
+                      readOnlyFolders: readOnlyFolders,
                     );
                   },
-                ),
+                );
+              },
+            ),
     );
   }
 }
