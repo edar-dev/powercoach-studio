@@ -101,17 +101,10 @@ class _WorkoutBuilderMobilityScreenState
   bool get _isDirty =>
       widget.editorMode ? _editorController.isDirty : false;
 
-  bool get _shouldShowManualSaveButton =>
-      _editorController.shouldShowManualSaveButton(
-        loading: _loading,
-        editorMode: widget.editorMode,
-      );
-
   @override
   void initState() {
     super.initState();
     _editorController = WorkoutEditorController(planRepo: _planRepo);
-    _editorController.addListener(_onEditorControllerChanged);
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
       vsync: this,
@@ -156,17 +149,6 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
-  bool _suppressEditorScheduling = false;
-
-  void _onEditorControllerChanged() {
-    if (!mounted) return;
-    _suppressEditorScheduling = true;
-    setState(() {
-      _saving = _editorController.saving;
-    });
-    _suppressEditorScheduling = false;
-  }
-
   void _scheduleEditorContentChanged() {
     if (!widget.editorMode || _loading) {
       return;
@@ -185,9 +167,7 @@ class _WorkoutBuilderMobilityScreenState
       return;
     }
     super.setState(fn);
-    if (!_suppressEditorScheduling) {
-      _scheduleEditorContentChanged();
-    }
+    _scheduleEditorContentChanged();
   }
 
   void _onMetadataEdited() {
@@ -1514,7 +1494,6 @@ class _WorkoutBuilderMobilityScreenState
 
   @override
   void dispose() {
-    _editorController.removeListener(_onEditorControllerChanged);
     _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
     _initialWeekController.removeListener(_onMetadataEdited);
@@ -1646,95 +1625,124 @@ class _WorkoutBuilderMobilityScreenState
     final hideExportMenu =
         widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
 
-    return PopScope(
-      canPop: !(widget.editorMode && _isDirty),
-      onPopInvokedWithResult: (didPop, _) async {
-        if (didPop) return;
-        await _handleExitAttempt();
-      },
-      child: Scaffold(
-        appBar: WorkoutEditorAppBar(
-          theme: theme,
-          colorScheme: cs,
-          l10n: l10n,
-          editorMode: widget.editorMode,
-          loading: _loading,
-          hideExportMenu: hideExportMenu,
-          saving: _saving,
-          showManualSaveButton: _shouldShowManualSaveButton,
-          onBack: () async {
-            HapticFeedback.mediumImpact();
-            await _handleExitAttempt();
-          },
-          onOpenTemplates: () {
-            HapticFeedback.mediumImpact();
-            context.push('/workouts/templates');
-          },
-          onImportJson: _importJsonFromFile,
-          onExport: (value) {
-            if (value == 'pdf') _showPdfExportSheet();
-            if (value == 'excel') _exportExcelAndShare();
-            if (value == 'json') _exportJsonAndDownload();
-            if (value == 'hevy') _exportCurrentDayToHevy();
-          },
-          onSave: () {
-            _saveRoutine();
-          },
-          saveStatusIndicator: widget.editorMode && !_loading
-              ? _buildSaveStatusIndicator(l10n, cs)
-              : null,
-        ),
-        body: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  _buildRoutineNameBar(theme, cs, l10n),
-                  TabBar(
-                    controller: _sectionTabController,
-                    labelColor: StitchM3Theme.accent,
-                    unselectedLabelColor: cs.onSurfaceVariant,
-                    indicatorColor: StitchM3Theme.accent,
-                    tabs: [
-                      Tab(text: l10n.workoutBuilderTabTraining),
-                      if (_showsMobilityTab)
-                        Tab(text: l10n.workoutBuilderTabMobility),
-                      Tab(text: l10n.workoutBuilderTabDetails),
-                    ],
-                  ),
-                  Expanded(
-                    child: TabBarView(
+    Widget buildShell({
+      required bool canPop,
+      required bool saving,
+      required bool showManualSaveButton,
+      Widget? saveStatusIndicator,
+    }) {
+      return PopScope(
+        canPop: canPop,
+        onPopInvokedWithResult: (didPop, _) async {
+          if (didPop) return;
+          await _handleExitAttempt();
+        },
+        child: Scaffold(
+          appBar: WorkoutEditorAppBar(
+            theme: theme,
+            colorScheme: cs,
+            l10n: l10n,
+            editorMode: widget.editorMode,
+            loading: _loading,
+            hideExportMenu: hideExportMenu,
+            saving: saving,
+            showManualSaveButton: showManualSaveButton,
+            onBack: () async {
+              HapticFeedback.mediumImpact();
+              await _handleExitAttempt();
+            },
+            onOpenTemplates: () {
+              HapticFeedback.mediumImpact();
+              context.push('/workouts/templates');
+            },
+            onImportJson: _importJsonFromFile,
+            onExport: (value) {
+              if (value == 'pdf') _showPdfExportSheet();
+              if (value == 'excel') _exportExcelAndShare();
+              if (value == 'json') _exportJsonAndDownload();
+              if (value == 'hevy') _exportCurrentDayToHevy();
+            },
+            onSave: () {
+              _saveRoutine();
+            },
+            saveStatusIndicator: saveStatusIndicator,
+          ),
+          body: _loading
+              ? const Center(child: CircularProgressIndicator())
+              : Column(
+                  children: [
+                    _buildRoutineNameBar(theme, cs, l10n),
+                    TabBar(
                       controller: _sectionTabController,
-                      children: [
-                        WorkoutLazyTab(
-                          tabController: _sectionTabController,
-                          tabIndex: 0,
-                          builder: (_) => RepaintBoundary(
-                            child: _buildTrainingTab(theme, cs),
-                          ),
-                        ),
+                      labelColor: StitchM3Theme.accent,
+                      unselectedLabelColor: cs.onSurfaceVariant,
+                      indicatorColor: StitchM3Theme.accent,
+                      tabs: [
+                        Tab(text: l10n.workoutBuilderTabTraining),
                         if (_showsMobilityTab)
-                          WorkoutLazyTab(
-                            tabController: _sectionTabController,
-                            tabIndex: 1,
-                            builder: (_) => RepaintBoundary(
-                              child: _buildMobilityTab(theme, cs),
-                            ),
-                          ),
-                        WorkoutLazyTab(
-                          tabController: _sectionTabController,
-                          tabIndex: _showsMobilityTab ? 2 : 1,
-                          builder: (_) => _buildDetailsTab(theme, cs),
-                        ),
+                          Tab(text: l10n.workoutBuilderTabMobility),
+                        Tab(text: l10n.workoutBuilderTabDetails),
                       ],
                     ),
-                  ),
-                  if (!widget.editorMode)
-                    WorkoutBuilderBottomNav(
-                      navContext: context,
-                      selectedIndex: 0,
+                    Expanded(
+                      child: TabBarView(
+                        controller: _sectionTabController,
+                        children: [
+                          WorkoutLazyTab(
+                            tabController: _sectionTabController,
+                            tabIndex: 0,
+                            builder: (_) => RepaintBoundary(
+                              child: _buildTrainingTab(theme, cs),
+                            ),
+                          ),
+                          if (_showsMobilityTab)
+                            WorkoutLazyTab(
+                              tabController: _sectionTabController,
+                              tabIndex: 1,
+                              builder: (_) => RepaintBoundary(
+                                child: _buildMobilityTab(theme, cs),
+                              ),
+                            ),
+                          WorkoutLazyTab(
+                            tabController: _sectionTabController,
+                            tabIndex: _showsMobilityTab ? 2 : 1,
+                            builder: (_) => _buildDetailsTab(theme, cs),
+                          ),
+                        ],
+                      ),
                     ),
-                ],
-              ),
+                    if (!widget.editorMode)
+                      WorkoutBuilderBottomNav(
+                        navContext: context,
+                        selectedIndex: 0,
+                      ),
+                  ],
+                ),
+        ),
+      );
+    }
+
+    if (!widget.editorMode) {
+      return buildShell(
+        canPop: true,
+        saving: _saving,
+        showManualSaveButton: true,
+        saveStatusIndicator: null,
+      );
+    }
+
+    return ListenableBuilder(
+      listenable: _editorController,
+      builder: (context, _) => buildShell(
+        canPop: !_editorController.isDirty,
+        saving: _editorController.saving,
+        showManualSaveButton: _editorController.shouldShowManualSaveButton(
+          loading: _loading,
+          editorMode: widget.editorMode,
+        ),
+        saveStatusIndicator: !_loading
+            ? _buildSaveStatusIndicator(l10n, cs)
+            : null,
       ),
     );
   }

@@ -2968,6 +2968,12 @@ abstract class AppLocalizations {
   /// **'Retry'**
   String get syncRetry;
 
+  /// No description provided for @syncIssueDiscard.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard operation'**
+  String get syncIssueDiscard;
+
   /// No description provided for @syncRetryStarted.
   ///
   /// In en, this message translates to:

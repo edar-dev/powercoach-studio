@@ -92,6 +92,10 @@ class PendingOperationResolver {
     }
   }
 
+  Future<void> discard(PendingOperation op) async {
+    await _removePending(op.id);
+  }
+
   Map<String, dynamic> _extractRemoteEntityPayload(
     Map<String, dynamic> remote,
   ) {

@@ -11,6 +11,7 @@ import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/pinned_exercises_store.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
+import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/workout_routine_model.dart';
 import 'exercise_set_edit_controllers.dart';
 
@@ -91,6 +92,7 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   bool _saving = false;
   List<CustomerExerciseRecord> _recordsForExercise = [];
   bool _loadingRecords = false;
+  final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
 
   bool get _apiConfigured => true;
   bool get _hasCustomerContext =>
@@ -319,6 +321,7 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
 
   @override
   void dispose() {
+    _exerciseFilter.cancel();
     _nameController.dispose();
     _noteController.dispose();
     _loadPercentInputController.dispose();
@@ -613,10 +616,11 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
                   )
                 : const TextEditingValue(),
             optionsBuilder: (TextEditingValue value) {
-              final query = value.text.trim().toLowerCase();
-              if (query.isEmpty) return _exerciseOptions;
-              return _exerciseOptions.where(
-                (e) => _exerciseDisplayName(e).toLowerCase().contains(query),
+              return _exerciseFilter.optionsFor<CustomExerciseItem>(
+                query: value.text,
+                options: _exerciseOptions,
+                displayName: _exerciseDisplayName,
+                isActive: () => mounted,
               );
             },
             displayStringForOption: _exerciseDisplayName,

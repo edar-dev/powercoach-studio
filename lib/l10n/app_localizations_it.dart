@@ -1582,6 +1582,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get syncRetry => 'Riprova';
 
   @override
+  String get syncIssueDiscard => 'Elimina operazione';
+
+  @override
   String syncRetryStarted(int count) {
     return 'Riprova avviata per $count operazioni';
   }

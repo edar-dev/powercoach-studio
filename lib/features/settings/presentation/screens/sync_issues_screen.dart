@@ -231,6 +231,23 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
                 label: Text(l10n.syncRetry),
               ),
             ),
+          ] else if (op.status == PendingOperationStatus.deadLetter ||
+              op.status == PendingOperationStatus.blockedAuth) ...[
+            ValueListenableBuilder<bool>(
+              valueListenable: busy,
+              builder: (_, isBusy, __) => OutlinedButton.icon(
+                onPressed: isBusy
+                    ? null
+                    : () => _resolve(
+                        sheetContext,
+                        busy,
+                        () => _resolver.discard(op),
+                        l10n.syncIssueDiscard,
+                      ),
+                icon: const Icon(Icons.delete_outline),
+                label: Text(l10n.syncIssueDiscard),
+              ),
+            ),
           ],
         ],
       ),
