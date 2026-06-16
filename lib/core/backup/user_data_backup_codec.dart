@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import '../settings/settings_prefs_keys.dart';
-
+import '../sync/offline_models.dart';
+import '../../features/workouts/domain/session_execution.dart';
 /// Stable identifier for the JSON envelope (do not rename without a version bump).
 const kUserBackupExportFormat = 'powercoach_user_backup_v1';
 
@@ -155,4 +156,75 @@ List<Map<String, dynamic>> _parseRemindersList(dynamic raw) {
     out.add(item.cast<String, dynamic>());
   }
   return out;
+}
+
+/// Entity counts shown in the backup import preview dialog.
+class BackupPreviewCounts {
+  const BackupPreviewCounts({
+    required this.customers,
+    required this.plans,
+    required this.executions,
+    required this.reminders,
+  });
+
+  final int customers;
+  final int plans;
+  final int executions;
+  final int reminders;
+}
+
+/// Summarizes backup contents for import preview.
+BackupPreviewCounts previewCountsFromBackup(ParsedUserBackup parsed) {
+  var customers = 0;
+  var plans = 0;
+  var executions = 0;
+
+  for (final entity in parsed.entities) {
+    final type = entity['type']?.toString();
+    if (type == OfflineEntityType.customer.name) {
+      customers++;
+    }
+    if (type == OfflineEntityType.workoutPlan.name ||
+        entity.containsKey('planData')) {
+      plans++;
+    }
+    executions += _countSessionExecutionsInEntity(entity);
+  }
+
+  return BackupPreviewCounts(
+    customers: customers,
+    plans: plans,
+    executions: executions,
+    reminders: parsed.reminders.length,
+  );
+}
+
+int _countSessionExecutionsInEntity(Map<String, dynamic> entity) {
+  final payload = entity['payload'];
+  if (payload is Map) {
+    final planData = payload['planData'];
+    return _countExecutionsInPlanData(planData);
+  }
+  if (entity.containsKey('planData')) {
+    return _countExecutionsInPlanData(entity['planData']);
+  }
+  return 0;
+}
+
+int _countExecutionsInPlanData(dynamic planData) {
+  if (planData is String) {
+    try {
+      final decoded = jsonDecode(planData);
+      if (decoded is Map) {
+        return parseSessionExecutions(decoded['sessionExecutions']).length;
+      }
+    } catch (_) {
+      return 0;
+    }
+    return 0;
+  }
+  if (planData is Map) {
+    return parseSessionExecutions(planData['sessionExecutions']).length;
+  }
+  return 0;
 }

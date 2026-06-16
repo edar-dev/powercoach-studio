@@ -3727,7 +3727,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutDiaryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Diary'**
+  /// **'Workout diary'**
   String get workoutDiaryTitle;
 
   /// No description provided for @workoutStatsTitle.
@@ -3981,6 +3981,234 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export to Hevy'**
   String get calendarExportHevy;
+
+  /// No description provided for @workoutDiaryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No logged sessions yet. Mark a session complete from the schedule to start your diary.'**
+  String get workoutDiaryEmpty;
+
+  /// No description provided for @workoutDiaryFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All clients'**
+  String get workoutDiaryFilterAll;
+
+  /// No description provided for @coachStatsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach stats'**
+  String get coachStatsTitle;
+
+  /// No description provided for @coachStatsAdherence.
+  ///
+  /// In en, this message translates to:
+  /// **'Adherence'**
+  String get coachStatsAdherence;
+
+  /// No description provided for @coachStatsCompletedSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed sessions'**
+  String get coachStatsCompletedSessions;
+
+  /// No description provided for @coachStatsSkippedSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'Skipped sessions'**
+  String get coachStatsSkippedSessions;
+
+  /// No description provided for @coachStatsActiveClients.
+  ///
+  /// In en, this message translates to:
+  /// **'Active clients'**
+  String get coachStatsActiveClients;
+
+  /// No description provided for @coachStatsPeriod7d.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 7 days'**
+  String get coachStatsPeriod7d;
+
+  /// No description provided for @coachStatsPeriod30d.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 30 days'**
+  String get coachStatsPeriod30d;
+
+  /// No description provided for @sessionLogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log session'**
+  String get sessionLogTitle;
+
+  /// No description provided for @sessionLogNotesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Session notes (optional)'**
+  String get sessionLogNotesHint;
+
+  /// No description provided for @sessionLogSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save session'**
+  String get sessionLogSave;
+
+  /// No description provided for @sessionLogExercisesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises performed'**
+  String get sessionLogExercisesLabel;
+
+  /// No description provided for @customerProgressTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Training progress'**
+  String get customerProgressTitle;
+
+  /// No description provided for @customerProgressAdherence.
+  ///
+  /// In en, this message translates to:
+  /// **'Adherence (30 days)'**
+  String get customerProgressAdherence;
+
+  /// No description provided for @customerProgressLastSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Last session'**
+  String get customerProgressLastSession;
+
+  /// No description provided for @customerProgressRecentPrs.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent PRs'**
+  String get customerProgressRecentPrs;
+
+  /// No description provided for @customerProgressNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'No training data yet. Assign a plan and log sessions to see progress.'**
+  String get customerProgressNoData;
+
+  /// No description provided for @customerProgressNoSession.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions logged'**
+  String get customerProgressNoSession;
+
+  /// No description provided for @customerProgressDaysAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days ago'**
+  String customerProgressDaysAgo(int count);
+
+  /// No description provided for @customerProgressToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get customerProgressToday;
+
+  /// No description provided for @customerProgressYesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get customerProgressYesterday;
+
+  /// No description provided for @settingsCalendarRemindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reminders'**
+  String get settingsCalendarRemindersTitle;
+
+  /// No description provided for @settingsCalendarRemindersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notify before scheduled sessions'**
+  String get settingsCalendarRemindersSubtitle;
+
+  /// No description provided for @settingsCalendarReminderLead.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get settingsCalendarReminderLead;
+
+  /// No description provided for @settingsCalendarReminderLeadHours.
+  ///
+  /// In en, this message translates to:
+  /// **'{hours} hours before'**
+  String settingsCalendarReminderLeadHours(int hours);
+
+  /// No description provided for @workoutFollowUpFromExecution.
+  ///
+  /// In en, this message translates to:
+  /// **'Use loads from last execution'**
+  String get workoutFollowUpFromExecution;
+
+  /// No description provided for @workoutFollowUpFromExecutionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Based on {count} logged sessions'**
+  String workoutFollowUpFromExecutionHint(int count);
+
+  /// No description provided for @workoutFollowUpNoExecutionData.
+  ///
+  /// In en, this message translates to:
+  /// **'No execution data — structure only will be copied.'**
+  String get workoutFollowUpNoExecutionData;
+
+  /// No description provided for @localDataQueueTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Local data queue'**
+  String get localDataQueueTitle;
+
+  /// No description provided for @localDataQueueSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending local operations'**
+  String get localDataQueueSubtitle;
+
+  /// No description provided for @backupImportPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Import backup'**
+  String get backupImportPreviewTitle;
+
+  /// No description provided for @backupImportReplaceAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace all local data'**
+  String get backupImportReplaceAll;
+
+  /// No description provided for @backupImportMerge.
+  ///
+  /// In en, this message translates to:
+  /// **'Merge by id (keep newer)'**
+  String get backupImportMerge;
+
+  /// No description provided for @backupImportConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get backupImportConfirm;
+
+  /// No description provided for @backupImportCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{customers} clients · {plans} plans · {executions} session logs'**
+  String backupImportCounts(int customers, int plans, int executions);
+
+  /// No description provided for @backupImportTypeConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Type IMPORT to confirm replacing all data'**
+  String get backupImportTypeConfirm;
+
+  /// No description provided for @backupImportTypeConfirmHint.
+  ///
+  /// In en, this message translates to:
+  /// **'IMPORT'**
+  String get backupImportTypeConfirmHint;
 }
 
 class _AppLocalizationsDelegate

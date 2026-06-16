@@ -5,6 +5,7 @@ import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'workout_plan_api_model.dart';
 import 'workout_routine_model.dart';
+import '../domain/session_execution.dart';
 import '../domain/workout_follow_up_factory.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
 
@@ -251,15 +252,21 @@ class WorkoutPlanRepository {
     required String sourcePlanId,
     String? name,
     DateTime? newStartDate,
+    bool applyExecutedLoads = false,
   }) async {
     final src = await getById(sourcePlanId);
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
     final sourceRoutine = planDataToRoutine(src.planData);
+    final executions = applyExecutedLoads
+        ? await listSessionExecutionsForPlan(sourcePlanId)
+        : const <SessionExecution>[];
     final followUpRoutine = prepareFollowUpRoutine(
       source: sourceRoutine,
       newStartDate: newStartDate,
+      executions: executions,
+      options: FollowUpOptions(applyExecutedLoads: applyExecutedLoads),
     );
     final numWeeks = sourceRoutine.weeks.isEmpty
         ? 1
@@ -459,6 +466,70 @@ class WorkoutPlanRepository {
       map.remove('sessionOverrides');
     } else {
       map['sessionOverrides'] = overrides;
+    }
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<SessionExecution?> getSessionExecution({
+    required String planId,
+    required String sessionKey,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) return null;
+    final routine = planDataToRoutine(plan.planData);
+    return routine.sessionExecutions[sessionKey];
+  }
+
+  Future<List<SessionExecution>> listSessionExecutionsForPlan(
+    String planId,
+  ) async {
+    final plan = await getById(planId);
+    if (plan == null) return const [];
+    final routine = planDataToRoutine(plan.planData);
+    final list = routine.sessionExecutions.values.toList();
+    list.sort((a, b) {
+      final aDate = a.completedAt ?? a.sessionDate;
+      final bDate = b.completedAt ?? b.sessionDate;
+      return bDate.compareTo(aDate);
+    });
+    return list;
+  }
+
+  Future<WorkoutPlanApiModel> upsertSessionExecution({
+    required String planId,
+    required SessionExecution execution,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final raw = map['sessionExecutions'];
+    final executions = raw is Map<String, dynamic>
+        ? Map<String, dynamic>.from(raw)
+        : <String, dynamic>{};
+    executions[execution.sessionKey] = execution.toJson();
+    map['sessionExecutions'] = executions;
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<WorkoutPlanApiModel> deleteSessionExecution({
+    required String planId,
+    required String sessionKey,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final raw = map['sessionExecutions'];
+    if (raw is! Map) return plan;
+    final executions = Map<String, dynamic>.from(raw);
+    executions.remove(sessionKey);
+    if (executions.isEmpty) {
+      map.remove('sessionExecutions');
+    } else {
+      map['sessionExecutions'] = executions;
     }
     return update(planId: planId, planDataJson: jsonEncode(map));
   }

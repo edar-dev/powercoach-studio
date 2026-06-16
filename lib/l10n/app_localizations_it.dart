@@ -2006,7 +2006,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutTemplatesAssignStartDateSkip => 'Salta';
 
   @override
-  String get workoutDiaryTitle => 'Diario';
+  String get workoutDiaryTitle => 'Diario allenamenti';
 
   @override
   String get workoutStatsTitle => 'Statistiche';
@@ -2155,4 +2155,132 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get calendarExportHevy => 'Esporta su Hevy';
+
+  @override
+  String get workoutDiaryEmpty =>
+      'Nessuna sessione registrata. Segna una sessione come completata dal calendario per iniziare il diario.';
+
+  @override
+  String get workoutDiaryFilterAll => 'Tutti i clienti';
+
+  @override
+  String get coachStatsTitle => 'Statistiche coach';
+
+  @override
+  String get coachStatsAdherence => 'Aderenza';
+
+  @override
+  String get coachStatsCompletedSessions => 'Sessioni completate';
+
+  @override
+  String get coachStatsSkippedSessions => 'Sessioni saltate';
+
+  @override
+  String get coachStatsActiveClients => 'Clienti attivi';
+
+  @override
+  String get coachStatsPeriod7d => 'Ultimi 7 giorni';
+
+  @override
+  String get coachStatsPeriod30d => 'Ultimi 30 giorni';
+
+  @override
+  String get sessionLogTitle => 'Registra sessione';
+
+  @override
+  String get sessionLogNotesHint => 'Note sessione (opzionale)';
+
+  @override
+  String get sessionLogSave => 'Salva sessione';
+
+  @override
+  String get sessionLogExercisesLabel => 'Esercizi eseguiti';
+
+  @override
+  String get customerProgressTitle => 'Progresso allenamento';
+
+  @override
+  String get customerProgressAdherence => 'Aderenza (30 giorni)';
+
+  @override
+  String get customerProgressLastSession => 'Ultima sessione';
+
+  @override
+  String get customerProgressRecentPrs => 'PR recenti';
+
+  @override
+  String get customerProgressNoData =>
+      'Nessun dato di allenamento. Assegna un piano e registra le sessioni per vedere il progresso.';
+
+  @override
+  String get customerProgressNoSession => 'Nessuna sessione registrata';
+
+  @override
+  String customerProgressDaysAgo(int count) {
+    return '$count giorni fa';
+  }
+
+  @override
+  String get customerProgressToday => 'Oggi';
+
+  @override
+  String get customerProgressYesterday => 'Ieri';
+
+  @override
+  String get settingsCalendarRemindersTitle => 'Promemoria sessioni';
+
+  @override
+  String get settingsCalendarRemindersSubtitle =>
+      'Notifica prima delle sessioni pianificate';
+
+  @override
+  String get settingsCalendarReminderLead => 'Avvisami';
+
+  @override
+  String settingsCalendarReminderLeadHours(int hours) {
+    return '$hours ore prima';
+  }
+
+  @override
+  String get workoutFollowUpFromExecution =>
+      'Usa i carichi dell\'ultima esecuzione';
+
+  @override
+  String workoutFollowUpFromExecutionHint(int count) {
+    return 'Basato su $count sessioni registrate';
+  }
+
+  @override
+  String get workoutFollowUpNoExecutionData =>
+      'Nessun dato di esecuzione — verrà copiata solo la struttura.';
+
+  @override
+  String get localDataQueueTitle => 'Coda dati locale';
+
+  @override
+  String get localDataQueueSubtitle => 'Operazioni locali in sospeso';
+
+  @override
+  String get backupImportPreviewTitle => 'Importa backup';
+
+  @override
+  String get backupImportReplaceAll => 'Sostituisci tutti i dati locali';
+
+  @override
+  String get backupImportMerge => 'Unisci per id (mantieni il più recente)';
+
+  @override
+  String get backupImportConfirm => 'Importa';
+
+  @override
+  String backupImportCounts(int customers, int plans, int executions) {
+    return '$customers clienti · $plans piani · $executions log sessioni';
+  }
+
+  @override
+  String get backupImportTypeConfirm =>
+      'Digita IMPORT per confermare la sostituzione di tutti i dati';
+
+  @override
+  String get backupImportTypeConfirmHint => 'IMPORT';
 }

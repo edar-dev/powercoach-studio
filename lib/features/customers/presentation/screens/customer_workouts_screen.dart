@@ -10,6 +10,8 @@ import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
+import '../../../workouts/domain/session_execution_service.dart';
+import '../../../workouts/domain/workout_follow_up_factory.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../widgets/plan_schedule_strip.dart';
 
@@ -30,6 +32,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
       PlanSessionStatusService();
   final PlanSessionOverrideService _sessionOverrideService =
       PlanSessionOverrideService();
+  final SessionExecutionService _executionService = SessionExecutionService();
   List<WorkoutPlanApiModel> _plans = [];
   bool _loading = true;
   String? _error;
@@ -616,6 +619,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
         sourcePlanId: plan.id,
         name: draft.name,
         newStartDate: draft.startDate,
+        applyExecutedLoads: draft.applyExecutedLoads,
       );
       if (!mounted) return;
       await _loadPlans();
@@ -705,16 +709,26 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     }
   }
 
-  Future<({String name, DateTime? startDate})?> _showFollowUpDialog(
+  Future<({String name, DateTime? startDate, bool applyExecutedLoads})?>
+  _showFollowUpDialog(
     WorkoutPlanApiModel plan,
   ) async {
     final l10n = AppLocalizations.of(context);
+    final executions = await _executionService.listForPlan(plan.id);
+    if (!mounted) return null;
+    final completedCount = countCompletedExecutions(executions);
     final controller = TextEditingController(
       text: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
     );
     DateTime? selectedStartDate;
+    var applyExecutedLoads = completedCount > 0;
     try {
-      return await showDialog<({String name, DateTime? startDate})>(
+      if (!mounted) return null;
+      return await showDialog<({
+        String name,
+        DateTime? startDate,
+        bool applyExecutedLoads,
+      })>(
         context: context,
         builder: (ctx) => StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
@@ -769,6 +783,27 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                     });
                   },
                 ),
+                if (completedCount > 0)
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    value: applyExecutedLoads,
+                    onChanged: (v) => setDialogState(
+                      () => applyExecutedLoads = v ?? false,
+                    ),
+                    title: Text(l10n.workoutFollowUpFromExecution),
+                    subtitle: Text(
+                      l10n.workoutFollowUpFromExecutionHint(completedCount),
+                    ),
+                    controlAffinity: ListTileControlAffinity.leading,
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      l10n.workoutFollowUpNoExecutionData,
+                      style: Theme.of(ctx).textTheme.bodySmall,
+                    ),
+                  ),
               ],
             ),
             actions: [
@@ -780,9 +815,12 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                 onPressed: () {
                   final name = controller.text.trim();
                   if (name.isEmpty) return;
-                  Navigator.of(
-                    ctx,
-                  ).pop((name: name, startDate: selectedStartDate));
+                  Navigator.of(ctx).pop((
+                    name: name,
+                    startDate: selectedStartDate,
+                    applyExecutedLoads:
+                        completedCount > 0 && applyExecutedLoads,
+                  ));
                 },
                 child: Text(l10n.workoutFollowUpCreateAction),
               ),

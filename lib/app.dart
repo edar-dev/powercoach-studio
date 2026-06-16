@@ -30,6 +30,8 @@ import 'features/settings/presentation/screens/sync_issues_screen.dart';
 import 'features/settings/presentation/screens/subscription_screen.dart';
 import 'features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'features/workouts/presentation/screens/workout_plan_templates_screen.dart';
+import 'features/workouts/presentation/screens/workout_diary_screen.dart';
+import 'features/workouts/presentation/screens/coach_stats_screen.dart';
 import 'features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'l10n/app_localizations.dart';
 
@@ -261,12 +263,12 @@ void configureAppRouter() {
         GoRoute(
           path: 'diary',
           parentNavigatorKey: appRootNavigatorKey,
-          redirect: (_, __) => '/dashboard/schedule',
+          builder: (context, state) => const WorkoutDiaryScreen(),
         ),
         GoRoute(
           path: 'stats',
           parentNavigatorKey: appRootNavigatorKey,
-          redirect: (_, __) => '/dashboard',
+          builder: (context, state) => const CoachStatsScreen(),
         ),
       ],
     ),

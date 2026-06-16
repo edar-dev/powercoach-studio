@@ -13,7 +13,9 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../domain/customer_overview_metrics.dart';
+import '../../domain/customer_progress_metrics.dart';
 import '../widgets/customer_overview_metrics_panel.dart';
+import '../widgets/customer_progress_panel.dart';
 import '../widgets/customer_reminder_sheet.dart';
 import '../../data/customer_repository.dart';
 import '../../data/customer_exercise_record_repository.dart';
@@ -26,6 +28,7 @@ import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../../../workouts/data/workout_routine_model.dart';
 import 'customer_measurement_form_screen.dart';
@@ -58,6 +61,9 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
   bool _recordsLoading = false;
   List<WorkoutPlanApiModel> _workoutPlans = [];
   bool _workoutPlansLoading = false;
+  CustomerProgressSnapshot? _progressSnapshot;
+  bool _progressLoading = false;
+  final SessionExecutionService _executionService = SessionExecutionService();
   int _unreadNotesCount = 0;
   late TabController _tabController;
 
@@ -100,6 +106,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           _workoutPlans = sortWorkoutPlans(list, WorkoutPlanSort.startDateDesc);
           _workoutPlansLoading = false;
         });
+        _loadProgress();
       }
     } catch (_) {
       if (mounted) setState(() => _workoutPlansLoading = false);
@@ -163,9 +170,29 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
           _exerciseNameById = exerciseNameById;
           _recordsLoading = false;
         });
+        _loadProgress();
       }
     } catch (_) {
       if (mounted) setState(() => _recordsLoading = false);
+    }
+  }
+
+  Future<void> _loadProgress() async {
+    setState(() => _progressLoading = true);
+    try {
+      final allExecutions = await _executionService.listAll();
+      if (!mounted) return;
+      setState(() {
+        _progressSnapshot = CustomerProgressMetrics.build(
+          customerId: widget.customerId,
+          plans: _workoutPlans,
+          exerciseRecords: _records,
+          allExecutions: allExecutions,
+        );
+        _progressLoading = false;
+      });
+    } catch (_) {
+      if (mounted) setState(() => _progressLoading = false);
     }
   }
 
@@ -560,6 +587,20 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                   if (added == true) _loadMeasurements();
                 },
                 onViewHistory: () => _openMeasurementHistory(c),
+              ),
+              const SizedBox(height: 24),
+              CustomerProgressPanel(
+                snapshot: _progressSnapshot ??
+                    const CustomerProgressSnapshot(
+                      adherencePercent: null,
+                      completedSessions30d: 0,
+                      skippedSessions30d: 0,
+                      lastSessionDate: null,
+                      recentPrs: [],
+                      last4Weeks: [],
+                      hasAnyData: false,
+                    ),
+                loading: _progressLoading,
               ),
               const SizedBox(height: 24),
               // Workout plans – in evidenza

@@ -42,6 +42,7 @@ import '../widgets/exercise_add_sheet.dart';
 import '../widgets/workout_mobility_tab.dart';
 import '../widgets/workout_training_helpers.dart';
 import '../widgets/workout_lazy_tab.dart';
+import '../widgets/workout_superset_actions.dart';
 import '../widgets/workout_training_tab.dart';
 import '../widgets/mobility_add_sheet.dart';
 import '../widgets/workout_plan_details_tab.dart';
@@ -1031,46 +1032,22 @@ class _WorkoutBuilderMobilityScreenState
     }, customerId: widget.customerId);
   }
 
-  /// Adds a new exercise to the day and assigns it to the given superset group.
-  /// The new exercise is inserted immediately after the last exercise of that group.
-  /// Stesso dialog multi-serie della creazione normale.
   void _addExerciseToSuperset(
     int weekIndex,
     int dayIndex,
     String supersetGroupId,
   ) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
-      return;
-    }
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    showAddExerciseDialog(context, theme, cs, (
-      name,
-      note,
-      details, [
-      customExerciseId,
-    ]) {
-      final trimmedName = name.trim();
-      if (trimmedName.isEmpty) return;
-      final updated = addExerciseToSupersetInRoutine(
-        routine: _routine,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-        supersetGroupId: supersetGroupId,
-        exercise: buildExerciseFromPrescription(
-          id: exId,
-          name: trimmedName,
-          note: note,
-          setDetails: details,
-          customExerciseId: customExerciseId,
-          supersetGroupId: supersetGroupId,
-        ),
-      );
-      if (updated == null) return;
-      setState(() => _routine = updated);
-    }, customerId: widget.customerId);
+    WorkoutSupersetActions.showAddExerciseToSupersetDialog(
+      context: context,
+      theme: Theme.of(context),
+      colorScheme: Theme.of(context).colorScheme,
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      supersetGroupId: supersetGroupId,
+      customerId: widget.customerId,
+      onRoutineChanged: (updated) => setState(() => _routine = updated),
+    );
   }
 
   void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
@@ -1210,7 +1187,7 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId,
     String supersetGroupId,
   ) {
-    final updated = assignExerciseToSupersetInRoutine(
+    final updated = WorkoutSupersetActions.assignToSuperset(
       routine: _routine,
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -1222,7 +1199,7 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
-    final updated = removeExerciseFromSupersetInRoutine(
+    final updated = WorkoutSupersetActions.removeFromSuperset(
       routine: _routine,
       weekIndex: weekIndex,
       dayIndex: dayIndex,

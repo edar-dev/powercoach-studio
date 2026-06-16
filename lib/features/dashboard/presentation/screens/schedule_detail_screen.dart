@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
+import '../../../workouts/domain/session_execution.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
+import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/presentation/widgets/session_log_sheet.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../domain/session_detail_loader.dart';
 import '../widgets/session_detail_view.dart';
@@ -22,6 +25,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
   final PlanSessionStatusService _statusService = PlanSessionStatusService();
   final PlanSessionOverrideService _overrideService =
       PlanSessionOverrideService();
+  final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
   SessionDetailSnapshot? _snapshot;
   bool _loading = true;
   String? _error;
@@ -125,11 +129,39 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           'status_skipped' => PlanSessionStatus.skipped,
           _ => PlanSessionStatus.planned,
         };
+
+        List<ExecutedExercise> exercises = const [];
+        var notes = '';
+        if (status == PlanSessionStatus.completed) {
+          final plan = await _planRepo.getById(event.planId);
+          if (!mounted) return;
+          if (plan != null) {
+            final routine = planDataToRoutine(plan.planData);
+            if (event.weekIndex < routine.weeks.length &&
+                event.dayIndex <
+                    routine.weeks[event.weekIndex].days.length) {
+              final day =
+                  routine.weeks[event.weekIndex].days[event.dayIndex];
+              if (!context.mounted) return;
+              final logResult = await showSessionLogSheet(
+                context: context,
+                plannedExercises: day.exercises,
+              );
+              if (logResult == null || !mounted) return;
+              exercises = logResult.exercises;
+              notes = logResult.notes;
+            }
+          }
+        }
+
         await _statusService.setSessionStatus(
           planId: event.planId,
           weekIndex: event.weekIndex,
           dayIndex: event.dayIndex,
           status: status,
+          sessionDate: event.day,
+          exercises: exercises,
+          notes: notes,
         );
       } else if (selected == 'override_skip') {
         await _overrideService.skipSessionOccurrence(
