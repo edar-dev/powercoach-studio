@@ -645,6 +645,21 @@
     }
   },
   "settingsSyncRetryFailed": "Riprova operazioni fallite",
+  "syncIssuesScreenTitle": "Problemi di sincronizzazione",
+  "syncIssueDetailTitle": "Dettaglio problema sync",
+  "syncIssueLocalVersion": "Versione locale",
+  "syncIssueRemoteVersion": "Versione remota",
+  "syncIssuePathLabel": "Percorso",
+  "syncNoIssues": "Nessun problema di sincronizzazione da risolvere",
+  "syncRetry": "Riprova",
+  "syncRetryStarted": "Riprova avviata per {count} operazioni",
+  "@syncRetryStarted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardTitle": "Dashboard",
   "dashboardWeeklyProgress": "Progressi settimanali",
   "dashboardPlansUpdatedThisWeek": "Piani aggiornati questa settimana",

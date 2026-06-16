@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
-import '../../../../core/sync/offline_models.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
@@ -58,85 +57,6 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       _snapshot = snap;
       _loading = false;
     });
-  }
-
-  String _pendingStatusLabel(AppLocalizations l10n, PendingOperationStatus s) {
-    switch (s) {
-      case PendingOperationStatus.pending:
-        return l10n.dashboardSyncStatusPending;
-      case PendingOperationStatus.syncing:
-        return l10n.dashboardSyncStatusSyncing;
-      case PendingOperationStatus.failed:
-        return l10n.dashboardSyncStatusFailed;
-      case PendingOperationStatus.conflict:
-        return l10n.dashboardSyncStatusConflict;
-      case PendingOperationStatus.completed:
-        return l10n.dashboardSyncStatusCompleted;
-      case PendingOperationStatus.deadLetter:
-        return l10n.dashboardSyncStatusDeadLetter;
-      case PendingOperationStatus.blockedAuth:
-        return l10n.dashboardSyncStatusBlockedAuth;
-    }
-  }
-
-  void _showPendingDetail(
-    BuildContext context,
-    DashboardPendingAttentionItem item,
-  ) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final status = _pendingStatusLabel(l10n, item.status);
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.dashboardPendingDetailTitle),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                l10n.dashboardPendingStatusLabel(status),
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.dashboardPendingEntityLabel(item.entityType.name),
-                style: theme.textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                l10n.dashboardPendingPathLabel(item.path),
-                style: theme.textTheme.bodySmall,
-              ),
-              if (item.errorMessage != null &&
-                  item.errorMessage!.trim().isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  item.errorMessage!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: Text(MaterialLocalizations.of(ctx).closeButtonLabel),
-          ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(ctx).pop();
-              context.push('/settings');
-            },
-            child: Text(l10n.dashboardOpenSyncSettings),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -498,10 +418,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             child: InkWell(
               borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-              onTap: () {
-                HapticFeedback.mediumImpact();
-                _showPendingDetail(context, item);
-              },
+            onTap: () {
+              HapticFeedback.mediumImpact();
+              context.push('/settings/sync-issues?opId=${item.operationId}');
+            },
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),

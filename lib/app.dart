@@ -26,6 +26,7 @@ import 'features/customers/presentation/screens/customer_list_screen.dart';
 import 'features/customers/presentation/screens/customer_workouts_screen.dart';
 import 'features/settings/presentation/screens/personal_info_screen.dart';
 import 'features/settings/presentation/screens/settings_screen.dart';
+import 'features/settings/presentation/screens/sync_issues_screen.dart';
 import 'features/settings/presentation/screens/subscription_screen.dart';
 import 'features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'features/workouts/presentation/screens/workout_plan_templates_screen.dart';
@@ -99,6 +100,13 @@ void configureAppRouter() {
           path: 'subscription',
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const SubscriptionScreen(),
+        ),
+        GoRoute(
+          path: 'sync-issues',
+          parentNavigatorKey: appRootNavigatorKey,
+          builder: (context, state) => SyncIssuesScreen(
+            preselectedOpId: state.uri.queryParameters['opId'],
+          ),
         ),
       ],
     ),
