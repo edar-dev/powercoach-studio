@@ -12,6 +12,8 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 import '../../../../widgets/app_sheet.dart';
+import '../../domain/customer_overview_metrics.dart';
+import '../widgets/customer_overview_metrics_panel.dart';
 import '../widgets/customer_reminder_sheet.dart';
 import '../../data/customer_repository.dart';
 import '../../data/customer_exercise_record_repository.dart';
@@ -122,6 +124,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
     if (mounted) {
       await _loadUnreadNotes();
     }
+  }
+
+  void _openMeasurementHistory(Customer customer) {
+    final name = customer.name.trim();
+    final uri = name.isEmpty
+        ? '/customers/${widget.customerId}/measurements/history'
+        : '/customers/${widget.customerId}/measurements/history?customerName=${Uri.encodeComponent(name)}';
+    navigateTo(context, uri);
   }
 
   Future<void> _loadMeasurements() async {
@@ -532,17 +542,24 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
                 ],
               ),
               const SizedBox(height: 24),
-              // Stats grid
-              Row(
-                children: [
-                  Expanded(
-                    child: _statCard(context, l10n.customerCurrentWeight, c.weightKg != null ? '${c.weightKg}' : '—', 'kg', '+1.2%'),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: _statCard(context, l10n.customerMuscleMass, '—', 'kg', '+0.5%'),
-                  ),
-                ],
+              CustomerOverviewMetricsPanel(
+                snapshot: CustomerOverviewMetrics.build(
+                  customer: c,
+                  measurements: _measurements,
+                  muscleMassLabel: l10n.customerMuscleMass,
+                  bodyFatLabel: l10n.measurementBodyFat,
+                ),
+                loading: _measurementsLoading,
+                onAddMeasurement: () async {
+                  final added = await Navigator.of(context).push<bool>(
+                    MaterialPageRoute(
+                      builder: (ctx) =>
+                          CustomerMeasurementFormScreen(customerId: widget.customerId),
+                    ),
+                  );
+                  if (added == true) _loadMeasurements();
+                },
+                onViewHistory: () => _openMeasurementHistory(c),
               ),
               const SizedBox(height: 24),
               // Workout plans – in evidenza
@@ -891,67 +908,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> with Single
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: cs.outline, height: 1),
-      ),
-    );
-  }
-
-  Widget _statCard(BuildContext context, String label, String value, String unit, String trend) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusXl),
-        border: Border.all(color: cs.outline),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: cs.onSurfaceVariant,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                value,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                unit,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: cs.onSurfaceVariant,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Row(
-            children: [
-              Icon(Icons.trending_up, size: 14, color: StitchM3Theme.success),
-              const SizedBox(width: 4),
-              Text(
-                trend,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: StitchM3Theme.success,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

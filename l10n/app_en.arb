@@ -727,6 +727,17 @@
   "customerGoalLabel": "Goal",
   "customerCurrentWeight": "Current Weight",
   "customerMuscleMass": "Muscle Mass",
+  "customerOverviewNoMeasurements": "No measurements yet. Add one to track progress over time.",
+  "customerOverviewLastMeasurement": "Last measurement: {date}",
+  "@customerOverviewLastMeasurement": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "customerOverviewViewHistory": "View measurement history",
+  "customerOverviewFromProfile": "From profile",
   "customerWorkoutPlans": "Workout plans",
   "customerViewAll": "View all",
   "customerNoWorkoutPlansYet": "No workout plans yet",
