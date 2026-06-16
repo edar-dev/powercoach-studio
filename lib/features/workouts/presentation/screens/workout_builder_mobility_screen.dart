@@ -34,6 +34,8 @@ import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_routine_json_codec.dart';
 import '../workout_editor_snapshot.dart';
 import '../widgets/training_week_day_panel.dart';
+import '../widgets/workout_builder_bottom_nav.dart';
+import '../widgets/workout_editor_app_bar.dart';
 import '../widgets/workout_export_sheet.dart';
 import '../widgets/workout_plan_details_tab.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
@@ -1822,112 +1824,36 @@ class _WorkoutBuilderMobilityScreenState
         await _handleExitAttempt();
       },
       child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () async {
-              HapticFeedback.mediumImpact();
-              await _handleExitAttempt();
-            },
-          ),
-          title: Text(
-            l10n.workoutBuilderTitle,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: cs.onSurface,
-            ),
-          ),
-          actions: [
-            if (!widget.editorMode)
-              IconButton(
-                icon: const Icon(Icons.bookmark_outline),
-                tooltip: l10n.workoutTemplatesTitle,
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  context.push('/workouts/templates');
-                },
-              ),
-            if (!_loading)
-              IconButton(
-                icon: const Icon(Icons.upload_file),
-                tooltip: l10n.workoutImportJson,
-                onPressed: _importJsonFromFile,
-              ),
-            if (!_loading && !hideExportMenu)
-              PopupMenuButton<String>(
-                icon: const Icon(Icons.ios_share),
-                tooltip: l10n.workoutExport,
-                onSelected: (value) {
-                  if (value == 'pdf') _showPdfExportSheet();
-                  if (value == 'excel') _exportExcelAndShare();
-                  if (value == 'json') _exportJsonAndDownload();
-                  if (value == 'hevy') _exportCurrentDayToHevy();
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'pdf',
-                    child: Text(l10n.workoutExportPdf),
-                  ),
-                  PopupMenuItem(
-                    value: 'excel',
-                    child: Text(l10n.workoutExportExcel),
-                  ),
-                  PopupMenuItem(
-                    value: 'json',
-                    child: Text(l10n.workoutExportJson),
-                  ),
-                  PopupMenuItem(
-                    value: 'hevy',
-                    child: Text(l10n.workoutExportHevy),
-                  ),
-                ],
-              ),
-            if (widget.editorMode && !_loading)
-              _buildSaveStatusIndicator(l10n, cs),
-            if (_shouldShowManualSaveButton)
-              Padding(
-                padding: const EdgeInsets.only(right: 12),
-                child: SizedBox(
-                  width: 88,
-                  height: 36,
-                  child: FilledButton(
-                    onPressed: (_loading || _saving)
-                        ? null
-                        : () {
-                            _saveRoutine();
-                          },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: StitchM3Theme.accent,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                    ),
-                    child: _saving
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Colors.white,
-                              ),
-                            ),
-                          )
-                        : Text(l10n.customerSave),
-                  ),
-                ),
-              ),
-          ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(1),
-            child: Container(color: cs.outline, height: 1),
-          ),
+        appBar: WorkoutEditorAppBar(
+          theme: theme,
+          colorScheme: cs,
+          l10n: l10n,
+          editorMode: widget.editorMode,
+          loading: _loading,
+          hideExportMenu: hideExportMenu,
+          saving: _saving,
+          showManualSaveButton: _shouldShowManualSaveButton,
+          onBack: () async {
+            HapticFeedback.mediumImpact();
+            await _handleExitAttempt();
+          },
+          onOpenTemplates: () {
+            HapticFeedback.mediumImpact();
+            context.push('/workouts/templates');
+          },
+          onImportJson: _importJsonFromFile,
+          onExport: (value) {
+            if (value == 'pdf') _showPdfExportSheet();
+            if (value == 'excel') _exportExcelAndShare();
+            if (value == 'json') _exportJsonAndDownload();
+            if (value == 'hevy') _exportCurrentDayToHevy();
+          },
+          onSave: () {
+            _saveRoutine();
+          },
+          saveStatusIndicator: widget.editorMode && !_loading
+              ? _buildSaveStatusIndicator(l10n, cs)
+              : null,
         ),
         body: _loading
             ? const Center(child: CircularProgressIndicator())
@@ -1957,7 +1883,7 @@ class _WorkoutBuilderMobilityScreenState
                     ),
                   ),
                   if (!widget.editorMode)
-                    _WorkoutBuilderBottomNav(
+                    WorkoutBuilderBottomNav(
                       navContext: context,
                       selectedIndex: 0,
                     ),
@@ -4845,75 +4771,6 @@ class _SetRepCell extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _WorkoutBuilderBottomNav extends StatelessWidget {
-  const _WorkoutBuilderBottomNav({
-    required this.navContext,
-    required this.selectedIndex,
-  });
-
-  final BuildContext navContext;
-  final int selectedIndex;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final l10n = AppLocalizations.of(context);
-    final items = [
-      (Icons.add_circle, l10n.workoutBuilderNavBuilder, '/workouts/builder'),
-      (Icons.library_books, l10n.workoutTemplatesTitle, '/workouts/templates'),
-      (Icons.person, l10n.profileTitle, '/profile'),
-    ];
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
-      decoration: BoxDecoration(
-        color: cs.surface.withValues(alpha: 0.9),
-        border: Border(top: BorderSide(color: cs.outline)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: List.generate(items.length, (i) {
-          final (icon, label, route) = items[i];
-          final selected = i == selectedIndex;
-          return InkWell(
-            onTap: () {
-              if (route != '/workouts/builder' || !selected) {
-                GoRouter.of(navContext).go(route);
-              }
-            },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    icon,
-                    size: 24,
-                    color: selected
-                        ? StitchM3Theme.accent
-                        : cs.onSurfaceVariant,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    label,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: selected
-                          ? StitchM3Theme.accent
-                          : cs.onSurfaceVariant,
-                      fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        }),
-      ),
     );
   }
 }
