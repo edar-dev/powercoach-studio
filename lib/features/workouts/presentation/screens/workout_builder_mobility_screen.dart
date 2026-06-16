@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -31,7 +30,7 @@ import '../../domain/exercise_summary_sync.dart';
 import '../../domain/export_pdf_usecase.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_routine_json_codec.dart';
-import '../workout_editor_snapshot.dart';
+import '../workout_editor_controller.dart';
 import '../widgets/training_week_day_panel.dart';
 import '../widgets/workout_builder_bottom_nav.dart';
 import '../widgets/workout_editor_app_bar.dart';
@@ -64,8 +63,6 @@ enum WorkoutBuilderVariant { mobility, multiset, superset, intuitiveSuperset }
 
 enum _WorkoutEditorExitAction { save, discard, cancel }
 
-enum _WorkoutEditorSaveState { saved, saving, unsaved }
-
 /// Workout Builder – Enhanced Mobility Controls (Stitch 694ace9b83514965989f12ac2a3d54fa).
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
@@ -97,12 +94,11 @@ class _WorkoutBuilderMobilityScreenState
   final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
-  String? _loadedPlanId;
+  late final WorkoutEditorController _editorController;
   Customer? _editorCustomer;
   WorkoutRoutine _routine = WorkoutRoutine.empty();
   bool _loading = true;
   bool _saving = false;
-  bool _suspendEditorTracking = false;
   int _initialWeekNumber = 1;
   int _selectedMobilitySectionIndex = 0;
   int _selectedWeekIndex = 0;
@@ -111,29 +107,24 @@ class _WorkoutBuilderMobilityScreenState
   int? _pendingSelectedDayIndex;
   bool _didReadDeepLinkSelection = false;
   late final TabController _sectionTabController;
-  Timer? _autosaveTimer;
-  String? _savedSnapshot;
-  String? _lastObservedSnapshot;
-  _WorkoutEditorSaveState _editorSaveState = _WorkoutEditorSaveState.saved;
 
   bool get _showsMobilityTab =>
       widget.variant == WorkoutBuilderVariant.mobility;
 
-  bool get _isDirty => isWorkoutEditorDirty(
-    savedSnapshot: _savedSnapshot,
-    currentSnapshot: _currentSnapshot(),
-  );
+  bool get _isDirty =>
+      widget.editorMode ? _editorController.isDirty : false;
 
-  bool get _shouldShowManualSaveButton {
-    if (_loading) return false;
-    if (!widget.editorMode) return true;
-    if (_loadedPlanId == null) return true;
-    return _editorSaveState != _WorkoutEditorSaveState.saved;
-  }
+  bool get _shouldShowManualSaveButton =>
+      _editorController.shouldShowManualSaveButton(
+        loading: _loading,
+        editorMode: widget.editorMode,
+      );
 
   @override
   void initState() {
     super.initState();
+    _editorController = WorkoutEditorController(planRepo: _planRepo);
+    _editorController.addListener(_onEditorControllerChanged);
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
       vsync: this,
@@ -162,13 +153,13 @@ class _WorkoutBuilderMobilityScreenState
     _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
   }
 
-  String _currentSnapshot() {
+  WorkoutEditorSession _editorSession() {
     final parsedInitialWeek = int.tryParse(_initialWeekController.text.trim());
     final resolvedInitialWeek =
         (parsedInitialWeek != null && parsedInitialWeek >= 1)
         ? parsedInitialWeek
         : _initialWeekNumber;
-    return buildWorkoutEditorSnapshot(
+    return WorkoutEditorSession(
       routine: _routine,
       planName: _routineNameController.text,
       initialWeekNumber: resolvedInitialWeek,
@@ -178,46 +169,30 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
-  void _captureSavedSnapshot() {
-    final snapshot = _currentSnapshot();
-    _savedSnapshot = snapshot;
-    _lastObservedSnapshot = snapshot;
-    _editorSaveState = _WorkoutEditorSaveState.saved;
+  void _onEditorControllerChanged() {
+    if (!mounted) return;
+    setState(() {
+      _saving = _editorController.saving;
+    });
   }
 
   void _onMetadataEdited() {
-    if (!widget.editorMode || _suspendEditorTracking || _loading || !mounted) {
+    if (!widget.editorMode || _editorController.trackingSuspended || _loading || !mounted) {
       return;
     }
     setState(() {});
   }
 
   void _trackEditorChangesIfNeeded() {
-    if (!widget.editorMode || _suspendEditorTracking || _loading) {
+    if (!widget.editorMode) {
       return;
     }
-    final current = _currentSnapshot();
-    if (_lastObservedSnapshot == current) {
-      return;
-    }
-    _lastObservedSnapshot = current;
-    final nextState = _isDirty
-        ? _WorkoutEditorSaveState.unsaved
-        : _WorkoutEditorSaveState.saved;
-    if (_editorSaveState != nextState) {
-      _editorSaveState = nextState;
-    }
-    _scheduleAutosave();
-  }
-
-  void _scheduleAutosave() {
-    _autosaveTimer?.cancel();
-    if (!widget.editorMode || _loadedPlanId == null || !_isDirty) {
-      return;
-    }
-    _autosaveTimer = Timer(const Duration(milliseconds: 2500), () {
-      _saveRoutine(silent: true);
-    });
+    _editorController.notifyContentChanged(
+      session: _editorSession(),
+      editorMode: widget.editorMode,
+      loading: _loading,
+      onAutosave: () => _saveRoutine(silent: true),
+    );
   }
 
   Future<void> _loadRoutine() async {
@@ -240,7 +215,9 @@ class _WorkoutBuilderMobilityScreenState
     final customerId = widget.customerId!;
     try {
       Customer? customer;
-      _suspendEditorTracking = true;
+      _editorController.suspendTracking();
+      String? loadedPlanId;
+      var loadedInitialWeek = _initialWeekNumber;
       if (widget.planId != null && widget.planId!.isNotEmpty) {
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
@@ -248,13 +225,14 @@ class _WorkoutBuilderMobilityScreenState
             planDataToRoutine(plan.planData),
           );
           final (weekIndex, dayIndex) = _resolveInitialSelection(routine);
+          loadedPlanId = plan.id;
+          loadedInitialWeek = plan.initialWeekNumber;
           setState(() {
             _routine = routine;
             _routineNameController.text = routine.name;
             _phaseController.text = plan.phase ?? '';
             _tagsController.text = plan.tags ?? '';
             _notesController.text = plan.notes ?? '';
-            _loadedPlanId = plan.id;
             _initialWeekNumber = plan.initialWeekNumber;
             _initialWeekController.text = plan.initialWeekNumber.toString();
             _selectedWeekIndex = weekIndex;
@@ -274,18 +252,20 @@ class _WorkoutBuilderMobilityScreenState
       setState(() {
         _editorCustomer = customer;
         _loading = false;
-        _captureSavedSnapshot();
       });
-      _suspendEditorTracking = false;
+      _editorController.markLoaded(
+        session: _editorSession(),
+        planId: loadedPlanId,
+        loadedInitialWeekNumber: loadedInitialWeek,
+      );
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _selectedWeekIndex = 0;
         _selectedDayIndex = 0;
         _loading = false;
-        _captureSavedSnapshot();
       });
-      _suspendEditorTracking = false;
+      _editorController.markLoaded(session: _editorSession());
     }
   }
 
@@ -347,67 +327,24 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Future<bool> _saveRoutine({bool silent = false}) async {
-    if (_saving) return false;
-    _autosaveTimer?.cancel();
-    if (mounted) {
-      setState(() {
-        _saving = true;
-        if (widget.editorMode) {
-          _editorSaveState = _WorkoutEditorSaveState.saving;
-        }
-      });
-    }
-    final name = _routineNameController.text.trim();
-    final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
-    final savedInitialWeek = () {
-      final v = int.tryParse(_initialWeekController.text.trim());
-      return (v != null && v >= 1) ? v : _initialWeekNumber;
-    }();
-    final phase = _phaseController.text.trim();
-    final tags = _tagsController.text.trim();
-    final notes = _notesController.text.trim();
-
-    var success = false;
-    var createdPlanIdForUrlSync = '';
-    try {
-      if (widget.editorMode && widget.customerId != null) {
-        if (_loadedPlanId != null) {
-          final existingPlan = await _planRepo.getById(_loadedPlanId!);
-          await _planRepo.update(
-            planId: _loadedPlanId!,
-            name: toSave.name,
-            planDataJson: _encodeRoutine(
-              toSave,
-              existingPlanData: existingPlan?.planData,
-            ),
-            initialWeekNumber: savedInitialWeek,
-            phase: phase.isEmpty ? null : phase,
-            tags: tags.isEmpty ? null : tags,
-            notes: notes.isEmpty ? null : notes,
-          );
-        } else {
-          final created = await _planRepo.create(
-            customerId: widget.customerId!,
-            name: toSave.name,
-            planDataJson: _encodeRoutine(toSave),
-            initialWeekNumber: savedInitialWeek,
-            pdfHeader: _editorCustomer?.pdfHeader,
-            useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
-            phase: phase.isEmpty ? null : phase,
-            tags: tags.isEmpty ? null : tags,
-            notes: notes.isEmpty ? null : notes,
-          );
-          createdPlanIdForUrlSync = created.id;
-          if (mounted) {
-            setState(() => _loadedPlanId = created.id);
-          }
-        }
-        success = true;
-        if (!mounted) return success;
+    if (widget.editorMode && widget.customerId != null) {
+      if (_editorController.saving) return false;
+      final outcome = await _editorController.save(
+        session: _editorSession(),
+        customerId: widget.customerId!,
+        pdfHeader: _editorCustomer?.pdfHeader,
+        useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
+        silent: silent,
+      );
+      if (!mounted) return outcome.success;
+      if (outcome.success) {
         setState(() {
-          _routine = toSave;
-          _initialWeekNumber = savedInitialWeek;
-          _captureSavedSnapshot();
+          if (outcome.savedRoutine != null) {
+            _routine = outcome.savedRoutine!;
+          }
+          if (outcome.savedInitialWeekNumber != null) {
+            _initialWeekNumber = outcome.savedInitialWeekNumber!;
+          }
         });
         if (!silent) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -420,41 +357,55 @@ class _WorkoutBuilderMobilityScreenState
             ),
           );
         }
-        if (createdPlanIdForUrlSync.isNotEmpty && mounted) {
+        final createdPlanId = outcome.createdPlanId;
+        if (createdPlanId != null && createdPlanId.isNotEmpty && mounted) {
           navigateReplace(
             context,
             customerWorkoutEditorPath(
               widget.customerId!,
-              planId: createdPlanIdForUrlSync,
+              planId: createdPlanId,
               weekIndex: _selectedWeekIndex,
               dayIndex: _selectedDayIndex,
             ),
           );
         }
-      } else {
-        await WorkoutRoutineStorage.save(toSave);
-        success = true;
-        if (!mounted) return success;
-        setState(() {
-          _routine = toSave;
-        });
-        if (!silent) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context).workoutBuilderRoutineSaved,
-              ),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: StitchM3Theme.accent,
+      } else if (!silent) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context).workoutExportError),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ),
+        );
+      }
+      return outcome.success;
+    }
+
+    if (_saving) return false;
+    if (mounted) setState(() => _saving = true);
+    final name = _routineNameController.text.trim();
+    final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
+
+    try {
+      await WorkoutRoutineStorage.save(toSave);
+      if (!mounted) return true;
+      setState(() {
+        _routine = toSave;
+      });
+      if (!silent) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).workoutBuilderRoutineSaved,
             ),
-          );
-        }
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: StitchM3Theme.accent,
+          ),
+        );
       }
+      return true;
     } catch (_) {
-      if (!mounted) return success;
-      if (widget.editorMode) {
-        setState(() => _editorSaveState = _WorkoutEditorSaveState.unsaved);
-      }
+      if (!mounted) return false;
       if (!silent) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -464,26 +415,10 @@ class _WorkoutBuilderMobilityScreenState
           ),
         );
       }
+      return false;
     } finally {
       if (mounted) setState(() => _saving = false);
     }
-    return success;
-  }
-
-  static String _encodeRoutine(WorkoutRoutine r, {String? existingPlanData}) {
-    final encoded = Map<String, dynamic>.from(r.toJson());
-    if (existingPlanData != null && existingPlanData.isNotEmpty) {
-      try {
-        final existing = jsonDecode(existingPlanData) as Map<String, dynamic>;
-        if (existing.containsKey('archivedAt')) {
-          encoded['archivedAt'] = existing['archivedAt'];
-        }
-        if (existing.containsKey('completedAt')) {
-          encoded['completedAt'] = existing['completedAt'];
-        }
-      } catch (_) {}
-    }
-    return jsonEncode(encoded);
   }
 
   Future<Customer?> _loadCustomerIfNeeded() async {
@@ -580,20 +515,22 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Widget _buildSaveStatusIndicator(AppLocalizations l10n, ColorScheme cs) {
-    final (icon, label, foreground, background) = switch (_editorSaveState) {
-      _WorkoutEditorSaveState.saving => (
+    final (icon, label, foreground, background) = switch (
+      _editorController.saveState
+    ) {
+      WorkoutEditorSaveState.saving => (
         Icons.sync,
         l10n.workoutEditorAutosaving,
         cs.onPrimaryContainer,
         cs.primaryContainer,
       ),
-      _WorkoutEditorSaveState.unsaved => (
+      WorkoutEditorSaveState.unsaved => (
         Icons.warning_amber_rounded,
         l10n.workoutEditorUnsavedState,
         const Color(0xFFB45309),
         StitchM3Theme.warning.withValues(alpha: 0.22),
       ),
-      _WorkoutEditorSaveState.saved => (
+      WorkoutEditorSaveState.saved => (
         Icons.check_circle_outline,
         l10n.workoutEditorSavedState,
         StitchM3Theme.success,
@@ -602,7 +539,7 @@ class _WorkoutBuilderMobilityScreenState
     };
 
     return Tooltip(
-      message: widget.editorMode && _loadedPlanId != null
+      message: widget.editorMode && _editorController.loadedPlanId != null
           ? l10n.workoutEditorAutosaveHint
           : label,
       child: Container(
@@ -1575,7 +1512,8 @@ class _WorkoutBuilderMobilityScreenState
 
   @override
   void dispose() {
-    _autosaveTimer?.cancel();
+    _editorController.removeListener(_onEditorControllerChanged);
+    _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
     _initialWeekController.removeListener(_onMetadataEdited);
     _phaseController.removeListener(_onMetadataEdited);
