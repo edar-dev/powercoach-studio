@@ -141,6 +141,17 @@ void main() {
       controller.dispose();
     });
 
+    test('scheduleContentChanged defers dirty state until debounce fires', () {
+      controller.markLoaded(session: session());
+      controller.scheduleContentChanged(
+        session: session(planName: 'Plan B'),
+        editorMode: true,
+        loading: false,
+      );
+      expect(controller.isDirty, isFalse);
+      expect(controller.saveState, WorkoutEditorSaveState.saved);
+    });
+
     test('marks dirty after metadata change', () {
       controller.markLoaded(session: session());
       expect(controller.isDirty, isFalse);

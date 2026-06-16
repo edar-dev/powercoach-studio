@@ -129,66 +129,66 @@ class WorkoutTrainingTab extends StatelessWidget {
         exerciseListBuilder: (context, weekIndex, dayIndex, day) {
           final l10n = AppLocalizations.of(context);
           final partition = partitionExercisesBySuperset(day.exercises);
-          return ListView(
-            padding: const EdgeInsets.only(bottom: 96, right: 4),
-            children: [
-              for (final entry in partition.asMap().entries) ...[
-                if (entry.value is Exercise)
-                  Padding(
+          final itemCount =
+              partition.length + (day.exercises.isEmpty ? 1 : 0);
+          return RepaintBoundary(
+            child: ListView.builder(
+              padding: const EdgeInsets.only(bottom: 96, right: 4),
+              itemCount: itemCount,
+              itemBuilder: (context, index) {
+                if (day.exercises.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Text(
+                      l10n.workoutBuilderExerciseCount(0),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  );
+                }
+                final entry = partition[index];
+                if (entry is Exercise) {
+                  return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: _buildExerciseCard(
                       context,
                       weekIndex: weekIndex,
                       dayIndex: dayIndex,
                       day: day,
-                      exercise: entry.value as Exercise,
+                      exercise: entry,
                     ),
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _WorkoutSupersetBlock(
-                      theme: theme,
-                      cs: cs,
-                      weekIndex: weekIndex,
-                      dayIndex: dayIndex,
-                      exercises: entry.value as List<Exercise>,
-                      supersetGroupId:
-                          (entry.value as List<Exercise>).isNotEmpty &&
-                              (entry.value as List<Exercise>)
-                                      .first
-                                      .supersetGroupId !=
-                                  null
-                          ? (entry.value as List<Exercise>)
-                                .first
-                                .supersetGroupId!
-                          : null,
-                      onAddExercise: () => onAddExercise(weekIndex, dayIndex),
-                      onAddExerciseToSuperset: onAddExerciseToSuperset,
-                      onRemoveExercise: onRemoveExercise,
-                      onMoveExercise: onMoveExercise,
-                      onUpdateExercise: onUpdateExercise,
-                      onAddSetToExercise: onAddSetToExercise,
-                      onUpdateExerciseSet: onUpdateExerciseSet,
-                      onRemoveExerciseSet: onRemoveExerciseSet,
-                      onAssignToSuperset: onAssignToSuperset,
-                      onRemoveFromSuperset: onRemoveFromSuperset,
-                      supersetOptionsForDay: getSupersetGroupOptions(day),
-                    ),
+                  );
+                }
+                final exercises = entry as List<Exercise>;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: _WorkoutSupersetBlock(
+                    theme: theme,
+                    cs: cs,
+                    weekIndex: weekIndex,
+                    dayIndex: dayIndex,
+                    exercises: exercises,
+                    supersetGroupId: exercises.isNotEmpty &&
+                            exercises.first.supersetGroupId != null
+                        ? exercises.first.supersetGroupId!
+                        : null,
+                    onAddExercise: () => onAddExercise(weekIndex, dayIndex),
+                    onAddExerciseToSuperset: onAddExerciseToSuperset,
+                    onRemoveExercise: onRemoveExercise,
+                    onMoveExercise: onMoveExercise,
+                    onUpdateExercise: onUpdateExercise,
+                    onAddSetToExercise: onAddSetToExercise,
+                    onUpdateExerciseSet: onUpdateExerciseSet,
+                    onRemoveExerciseSet: onRemoveExerciseSet,
+                    onAssignToSuperset: onAssignToSuperset,
+                    onRemoveFromSuperset: onRemoveFromSuperset,
+                    supersetOptionsForDay: getSupersetGroupOptions(day),
                   ),
-              ],
-              if (day.exercises.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24),
-                  child: Text(
-                    l10n.workoutBuilderExerciseCount(0),
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-            ],
+                );
+              },
+            ),
           );
         },
       ),
