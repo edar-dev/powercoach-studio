@@ -1561,6 +1561,32 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsSyncRetryFailed => 'Riprova operazioni fallite';
 
   @override
+  String get syncIssuesScreenTitle => 'Problemi di sincronizzazione';
+
+  @override
+  String get syncIssueDetailTitle => 'Dettaglio problema sync';
+
+  @override
+  String get syncIssueLocalVersion => 'Versione locale';
+
+  @override
+  String get syncIssueRemoteVersion => 'Versione remota';
+
+  @override
+  String get syncIssuePathLabel => 'Percorso';
+
+  @override
+  String get syncNoIssues => 'Nessun problema di sincronizzazione da risolvere';
+
+  @override
+  String get syncRetry => 'Riprova';
+
+  @override
+  String syncRetryStarted(int count) {
+    return 'Riprova avviata per $count operazioni';
+  }
+
+  @override
   String get dashboardTitle => 'Dashboard';
 
   @override

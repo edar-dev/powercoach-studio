@@ -2926,6 +2926,54 @@ abstract class AppLocalizations {
   /// **'Retry failed operations'**
   String get settingsSyncRetryFailed;
 
+  /// No description provided for @syncIssuesScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync issues'**
+  String get syncIssuesScreenTitle;
+
+  /// No description provided for @syncIssueDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync issue details'**
+  String get syncIssueDetailTitle;
+
+  /// No description provided for @syncIssueLocalVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Local version'**
+  String get syncIssueLocalVersion;
+
+  /// No description provided for @syncIssueRemoteVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Remote version'**
+  String get syncIssueRemoteVersion;
+
+  /// No description provided for @syncIssuePathLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Path'**
+  String get syncIssuePathLabel;
+
+  /// No description provided for @syncNoIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'No sync issues need attention'**
+  String get syncNoIssues;
+
+  /// No description provided for @syncRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get syncRetry;
+
+  /// No description provided for @syncRetryStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry queued for {count} operations'**
+  String syncRetryStarted(int count);
+
   /// No description provided for @dashboardTitle.
   ///
   /// In en, this message translates to:

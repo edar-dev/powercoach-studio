@@ -645,6 +645,21 @@
     }
   },
   "settingsSyncRetryFailed": "Retry failed operations",
+  "syncIssuesScreenTitle": "Sync issues",
+  "syncIssueDetailTitle": "Sync issue details",
+  "syncIssueLocalVersion": "Local version",
+  "syncIssueRemoteVersion": "Remote version",
+  "syncIssuePathLabel": "Path",
+  "syncNoIssues": "No sync issues need attention",
+  "syncRetry": "Retry",
+  "syncRetryStarted": "Retry queued for {count} operations",
+  "@syncRetryStarted": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardTitle": "Dashboard",
   "dashboardWeeklyProgress": "Weekly Progress",
   "dashboardPlansUpdatedThisWeek": "Plans Updated This Week",

@@ -1549,6 +1549,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsSyncRetryFailed => 'Retry failed operations';
 
   @override
+  String get syncIssuesScreenTitle => 'Sync issues';
+
+  @override
+  String get syncIssueDetailTitle => 'Sync issue details';
+
+  @override
+  String get syncIssueLocalVersion => 'Local version';
+
+  @override
+  String get syncIssueRemoteVersion => 'Remote version';
+
+  @override
+  String get syncIssuePathLabel => 'Path';
+
+  @override
+  String get syncNoIssues => 'No sync issues need attention';
+
+  @override
+  String get syncRetry => 'Retry';
+
+  @override
+  String syncRetryStarted(int count) {
+    return 'Retry queued for $count operations';
+  }
+
+  @override
   String get dashboardTitle => 'Dashboard';
 
   @override
