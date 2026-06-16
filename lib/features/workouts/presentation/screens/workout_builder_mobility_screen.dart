@@ -37,6 +37,7 @@ import '../widgets/workout_export_sheet.dart';
 import '../widgets/exercise_add_sheet.dart';
 import '../widgets/workout_mobility_tab.dart';
 import '../widgets/workout_training_helpers.dart';
+import '../widgets/workout_lazy_tab.dart';
 import '../widgets/workout_training_tab.dart';
 import '../widgets/mobility_add_sheet.dart';
 import '../widgets/workout_plan_details_tab.dart';
@@ -155,11 +156,38 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
+  bool _suppressEditorScheduling = false;
+
   void _onEditorControllerChanged() {
     if (!mounted) return;
+    _suppressEditorScheduling = true;
     setState(() {
       _saving = _editorController.saving;
     });
+    _suppressEditorScheduling = false;
+  }
+
+  void _scheduleEditorContentChanged() {
+    if (!widget.editorMode || _loading) {
+      return;
+    }
+    _editorController.scheduleContentChanged(
+      session: _editorSession(),
+      editorMode: widget.editorMode,
+      loading: _loading,
+      onAutosave: () => _saveRoutine(silent: true),
+    );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (!mounted) {
+      return;
+    }
+    super.setState(fn);
+    if (!_suppressEditorScheduling) {
+      _scheduleEditorContentChanged();
+    }
   }
 
   void _onMetadataEdited() {
@@ -167,18 +195,6 @@ class _WorkoutBuilderMobilityScreenState
       return;
     }
     setState(() {});
-  }
-
-  void _trackEditorChangesIfNeeded() {
-    if (!widget.editorMode) {
-      return;
-    }
-    _editorController.notifyContentChanged(
-      session: _editorSession(),
-      editorMode: widget.editorMode,
-      loading: _loading,
-      onAutosave: () => _saveRoutine(silent: true),
-    );
   }
 
   Future<void> _loadRoutine() async {
@@ -1629,7 +1645,6 @@ class _WorkoutBuilderMobilityScreenState
     final l10n = AppLocalizations.of(context);
     final hideExportMenu =
         widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
-    _trackEditorChangesIfNeeded();
 
     return PopScope(
       canPop: !(widget.editorMode && _isDirty),
@@ -1690,9 +1705,26 @@ class _WorkoutBuilderMobilityScreenState
                     child: TabBarView(
                       controller: _sectionTabController,
                       children: [
-                        _buildTrainingTab(theme, cs),
-                        if (_showsMobilityTab) _buildMobilityTab(theme, cs),
-                        _buildDetailsTab(theme, cs),
+                        WorkoutLazyTab(
+                          tabController: _sectionTabController,
+                          tabIndex: 0,
+                          builder: (_) => RepaintBoundary(
+                            child: _buildTrainingTab(theme, cs),
+                          ),
+                        ),
+                        if (_showsMobilityTab)
+                          WorkoutLazyTab(
+                            tabController: _sectionTabController,
+                            tabIndex: 1,
+                            builder: (_) => RepaintBoundary(
+                              child: _buildMobilityTab(theme, cs),
+                            ),
+                          ),
+                        WorkoutLazyTab(
+                          tabController: _sectionTabController,
+                          tabIndex: _showsMobilityTab ? 2 : 1,
+                          builder: (_) => _buildDetailsTab(theme, cs),
+                        ),
                       ],
                     ),
                   ),

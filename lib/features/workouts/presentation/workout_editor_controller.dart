@@ -76,6 +76,7 @@ class WorkoutEditorController extends ChangeNotifier {
     WorkoutEditorPlanCreator? createPlan,
     WorkoutEditorPlanUpdater? updatePlan,
     this.autosaveDelay = const Duration(milliseconds: 2500),
+    this.dirtyDebounceDelay = const Duration(milliseconds: 300),
   }) : _getPlanById =
            getPlanById ?? ((planId) => planRepo!.getById(planId)),
        _createPlan =
@@ -126,6 +127,7 @@ class WorkoutEditorController extends ChangeNotifier {
            });
 
   final Duration autosaveDelay;
+  final Duration dirtyDebounceDelay;
   final WorkoutEditorPlanGetter _getPlanById;
   final WorkoutEditorPlanCreator _createPlan;
   final WorkoutEditorPlanUpdater _updatePlan;
@@ -139,6 +141,7 @@ class WorkoutEditorController extends ChangeNotifier {
   String? _savedSnapshot;
   String? _lastObservedSnapshot;
   Timer? _autosaveTimer;
+  Timer? _dirtyDebounceTimer;
 
   bool isDirtyFor(WorkoutEditorSession session) => isWorkoutEditorDirty(
     savedSnapshot: _savedSnapshot,
@@ -178,6 +181,26 @@ class WorkoutEditorController extends ChangeNotifier {
 
   void suspendTracking() {
     trackingSuspended = true;
+  }
+
+  void scheduleContentChanged({
+    required WorkoutEditorSession session,
+    required bool editorMode,
+    required bool loading,
+    Future<void> Function()? onAutosave,
+  }) {
+    if (!editorMode || trackingSuspended || loading) {
+      return;
+    }
+    _dirtyDebounceTimer?.cancel();
+    _dirtyDebounceTimer = Timer(dirtyDebounceDelay, () {
+      notifyContentChanged(
+        session: session,
+        editorMode: editorMode,
+        loading: loading,
+        onAutosave: onAutosave,
+      );
+    });
   }
 
   void notifyContentChanged({
@@ -292,6 +315,7 @@ class WorkoutEditorController extends ChangeNotifier {
   @override
   void dispose() {
     _autosaveTimer?.cancel();
+    _dirtyDebounceTimer?.cancel();
     super.dispose();
   }
 
