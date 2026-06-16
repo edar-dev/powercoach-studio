@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
+import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/models/customer_exercise_record.dart';
 
@@ -45,6 +46,7 @@ class _CustomerExerciseRecordFormScreenState
   late DateTime _recordedAt;
   final _noteController = TextEditingController();
   bool _saving = false;
+  final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
 
   static const List<({String value, String labelKey})> _units = [
     (value: 'kg', labelKey: 'recordUnitKg'),
@@ -86,6 +88,7 @@ class _CustomerExerciseRecordFormScreenState
 
   @override
   void dispose() {
+    _exerciseFilter.cancel();
     _valueController.dispose();
     _noteController.dispose();
     super.dispose();
@@ -268,10 +271,12 @@ class _CustomerExerciseRecordFormScreenState
                           ? TextEditingValue(text: _exerciseDisplayName(_selectedExercise!))
                           : const TextEditingValue(),
                       optionsBuilder: (TextEditingValue value) {
-                        final query = value.text.trim().toLowerCase();
-                        if (query.isEmpty) return _exerciseOptions;
-                        return _exerciseOptions.where((e) =>
-                            _exerciseDisplayName(e).toLowerCase().contains(query));
+                        return _exerciseFilter.optionsFor<CustomExerciseItem>(
+                          query: value.text,
+                          options: _exerciseOptions,
+                          displayName: _exerciseDisplayName,
+                          isActive: () => mounted,
+                        );
                       },
                       displayStringForOption: _exerciseDisplayName,
                       onSelected: (e) => setState(() => _selectedExerciseId = e.id),

@@ -69,6 +69,11 @@ typedef WorkoutEditorPlanUpdater =
     });
 
 /// Tracks dirty state, autosave scheduling, and editor-mode plan persistence.
+///
+/// Dirty snapshots are debounced ([dirtyDebounceDelay], default 300ms) so rapid
+/// metadata edits do not re-encode the full routine on every keystroke.
+/// Profile large plans in DevTools Timeline — target sustained frames under 32ms
+/// while scrolling a 30-exercise day list.
 class WorkoutEditorController extends ChangeNotifier {
   WorkoutEditorController({
     WorkoutPlanRepository? planRepo,
