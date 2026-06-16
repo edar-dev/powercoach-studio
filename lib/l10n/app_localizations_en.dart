@@ -1620,6 +1620,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get sessionReschedule => 'Reschedule session';
+
+  @override
+  String get sessionSkipDate => 'Skip this date';
+
+  @override
+  String get sessionOverrideClear => 'Remove date override';
+
+  @override
   String get dashboardWorkoutBuilder => 'Workout Builder';
 
   @override

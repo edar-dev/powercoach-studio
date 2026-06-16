@@ -59,6 +59,17 @@ class SessionDetailLoader {
         : day.name.trim();
     final eventDate =
         explicitDate ??
+        resolveSessionOverrideDay(
+          weekIndex: weekIndex,
+          dayIndex: dayIndex,
+          originalDay: planSessionDate(
+            startDate: routine.startDate ?? DateTime.now(),
+            weekIndex: weekIndex,
+            dayIndex: dayIndex,
+            scheduledWeekday: day.scheduledWeekday,
+          ),
+          sessionOverrides: routine.sessionOverrides,
+        ) ??
         planSessionDate(
           startDate: routine.startDate ?? DateTime.now(),
           weekIndex: weekIndex,

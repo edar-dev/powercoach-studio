@@ -3064,6 +3064,24 @@ abstract class AppLocalizations {
   /// **'{count} exercises'**
   String sessionDetailExercisesCount(int count);
 
+  /// No description provided for @sessionReschedule.
+  ///
+  /// In en, this message translates to:
+  /// **'Reschedule session'**
+  String get sessionReschedule;
+
+  /// No description provided for @sessionSkipDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip this date'**
+  String get sessionSkipDate;
+
+  /// No description provided for @sessionOverrideClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove date override'**
+  String get sessionOverrideClear;
+
   /// No description provided for @dashboardWorkoutBuilder.
   ///
   /// In en, this message translates to:

@@ -1,9 +1,7 @@
+import '../../workouts/data/workout_routine_model.dart';
+
 /// Session state for calendarized workout slots.
-enum PlanSessionStatus {
-  planned,
-  completed,
-  skipped,
-}
+enum PlanSessionStatus { planned, completed, skipped }
 
 /// Calendar row derived from a workout plan assignment.
 class PlanCalendarEvent {
@@ -17,6 +15,7 @@ class PlanCalendarEvent {
     required this.dayIndex,
     required this.sessionLabel,
     required this.status,
+    this.originalDay,
   });
 
   final DateTime day;
@@ -28,6 +27,7 @@ class PlanCalendarEvent {
   final int dayIndex;
   final String sessionLabel;
   final PlanSessionStatus status;
+  final DateTime? originalDay;
 
   String get sessionKey => '$weekIndex-$dayIndex';
 }
@@ -83,4 +83,33 @@ bool isPlanSessionWithinRange({
   }
   final end = calendarDayOnly(endDate);
   return !calendarDayOnly(sessionDay).isAfter(end);
+}
+
+String sessionOccurrenceKey({
+  required int weekIndex,
+  required int dayIndex,
+  required DateTime originalDay,
+}) {
+  final d = calendarDayOnly(originalDay);
+  final y = d.year.toString().padLeft(4, '0');
+  final m = d.month.toString().padLeft(2, '0');
+  final day = d.day.toString().padLeft(2, '0');
+  return '$weekIndex-$dayIndex-$y-$m-$day';
+}
+
+DateTime? resolveSessionOverrideDay({
+  required int weekIndex,
+  required int dayIndex,
+  required DateTime originalDay,
+  required Map<String, SessionOverride> sessionOverrides,
+}) {
+  final key = sessionOccurrenceKey(
+    weekIndex: weekIndex,
+    dayIndex: dayIndex,
+    originalDay: originalDay,
+  );
+  final override = sessionOverrides[key];
+  if (override == null) return originalDay;
+  if (override.kind == SessionOverrideKind.skipped) return null;
+  return override.movedToDate ?? originalDay;
 }

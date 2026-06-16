@@ -23,5 +23,6 @@ WorkoutRoutine prepareFollowUpRoutine({
     currentWeek: 1,
     sessionCompletionByKey: const {},
     sessionSkippedByKey: const {},
+    sessionOverrides: const {},
   );
 }

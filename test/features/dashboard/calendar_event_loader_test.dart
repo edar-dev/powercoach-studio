@@ -109,9 +109,50 @@ void main() {
 
       expect(events, hasLength(2));
       expect(events.first.sessionLabel, 'Legacy day');
-      expect(events.first.day, DateTime(2026, 5, 1)); // v1 fallback (dayIndex 0)
+      expect(
+        events.first.day,
+        DateTime(2026, 5, 1),
+      ); // v1 fallback (dayIndex 0)
       expect(events.last.sessionLabel, 'Thursday day');
       expect(events.last.day, DateTime(2026, 5, 7)); // aligned weekday
+    });
+
+    test('moves one occurrence to a specific date', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        startDate: DateTime(2026, 5, 1),
+        weeks: WorkoutRoutine.defaultWeeks(),
+        sessionOverrides: {
+          '0-0-2026-05-01': SessionOverride.moved(DateTime(2026, 5, 3)),
+        },
+      );
+      final events = CalendarEventLoader.eventsForPlans(
+        plans: [_plan(jsonEncode(routine.toJson()))],
+        customerNamesById: const {'c1': 'Anna'},
+        rangeStart: DateTime(2026, 5, 1),
+        rangeEndExclusive: DateTime(2026, 5, 10),
+        unknownClientLabel: '?',
+        untitledProgramLabel: 'Untitled',
+      );
+      expect(events, hasLength(1));
+      expect(events.first.day, DateTime(2026, 5, 3));
+      expect(events.first.originalDay, DateTime(2026, 5, 1));
+    });
+
+    test('skips one occurrence when override is skipped', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        startDate: DateTime(2026, 5, 1),
+        weeks: WorkoutRoutine.defaultWeeks(),
+        sessionOverrides: {'0-0-2026-05-01': const SessionOverride.skipped()},
+      );
+      final events = CalendarEventLoader.eventsForPlans(
+        plans: [_plan(jsonEncode(routine.toJson()))],
+        customerNamesById: const {'c1': 'Anna'},
+        rangeStart: DateTime(2026, 5, 1),
+        rangeEndExclusive: DateTime(2026, 5, 10),
+        unknownClientLabel: '?',
+        untitledProgramLabel: 'Untitled',
+      );
+      expect(events, isEmpty);
     });
   });
 }

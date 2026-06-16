@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../workouts/domain/plan_session_status_service.dart';
+import '../../../workouts/domain/plan_session_override_service.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../domain/session_detail_loader.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -20,6 +21,8 @@ class ScheduleDetailScreen extends StatefulWidget {
 class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
   final SessionDetailLoader _loader = SessionDetailLoader();
   final PlanSessionStatusService _statusService = PlanSessionStatusService();
+  final PlanSessionOverrideService _overrideService =
+      PlanSessionOverrideService();
   SessionDetailSnapshot? _snapshot;
   bool _loading = true;
   String? _error;
@@ -73,7 +76,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
 
   Future<void> _showSessionActions(PlanCalendarEvent event) async {
     final l10n = AppLocalizations.of(context);
-    final nextStatus = await showModalBottomSheet<PlanSessionStatus>(
+    final selected = await showModalBottomSheet<String>(
       context: context,
       showDragHandle: true,
       builder: (ctx) => SafeArea(
@@ -83,30 +86,82 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
             ListTile(
               leading: const Icon(Icons.check_circle_outline),
               title: Text(l10n.sessionCompleted),
-              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.completed),
+              onTap: () => Navigator.of(ctx).pop('status_completed'),
             ),
             ListTile(
               leading: const Icon(Icons.remove_circle_outline),
               title: Text(l10n.sessionSkipped),
-              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.skipped),
+              onTap: () => Navigator.of(ctx).pop('status_skipped'),
             ),
             ListTile(
               leading: const Icon(Icons.restart_alt),
               title: Text(l10n.sessionMarkPlanned),
-              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.planned),
+              onTap: () => Navigator.of(ctx).pop('status_planned'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.event_busy_outlined),
+              title: Text(l10n.sessionSkipDate),
+              onTap: () => Navigator.of(ctx).pop('override_skip'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.event_repeat_outlined),
+              title: Text(l10n.sessionReschedule),
+              onTap: () => Navigator.of(ctx).pop('override_move'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.restart_alt),
+              title: Text(l10n.sessionOverrideClear),
+              onTap: () => Navigator.of(ctx).pop('override_clear'),
             ),
           ],
         ),
       ),
     );
-    if (nextStatus == null || !mounted) return;
+    if (selected == null || !mounted) return;
+    final originalDay = event.originalDay ?? event.day;
     try {
-      await _statusService.setSessionStatus(
-        planId: event.planId,
-        weekIndex: event.weekIndex,
-        dayIndex: event.dayIndex,
-        status: nextStatus,
-      );
+      if (selected.startsWith('status_')) {
+        final status = switch (selected) {
+          'status_completed' => PlanSessionStatus.completed,
+          'status_skipped' => PlanSessionStatus.skipped,
+          _ => PlanSessionStatus.planned,
+        };
+        await _statusService.setSessionStatus(
+          planId: event.planId,
+          weekIndex: event.weekIndex,
+          dayIndex: event.dayIndex,
+          status: status,
+        );
+      } else if (selected == 'override_skip') {
+        await _overrideService.skipSessionOccurrence(
+          planId: event.planId,
+          weekIndex: event.weekIndex,
+          dayIndex: event.dayIndex,
+          originalDay: originalDay,
+        );
+      } else if (selected == 'override_move') {
+        final picked = await showDatePicker(
+          context: context,
+          initialDate: event.day,
+          firstDate: DateTime(2000),
+          lastDate: DateTime(2100, 12, 31),
+        );
+        if (picked == null || !mounted) return;
+        await _overrideService.moveSessionOccurrence(
+          planId: event.planId,
+          weekIndex: event.weekIndex,
+          dayIndex: event.dayIndex,
+          originalDay: originalDay,
+          movedToDate: picked,
+        );
+      } else if (selected == 'override_clear') {
+        await _overrideService.clearSessionOccurrenceOverride(
+          planId: event.planId,
+          weekIndex: event.weekIndex,
+          dayIndex: event.dayIndex,
+          originalDay: originalDay,
+        );
+      }
       if (!mounted) return;
       await _load();
     } catch (_) {
