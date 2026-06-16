@@ -38,6 +38,7 @@ import '../widgets/workout_editor_app_bar.dart';
 import '../widgets/workout_export_sheet.dart';
 import '../widgets/exercise_add_sheet.dart';
 import '../widgets/exercise_set_edit_controllers.dart';
+import '../widgets/workout_mobility_tab.dart';
 import '../widgets/mobility_add_sheet.dart';
 import '../widgets/workout_plan_details_tab.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
@@ -1645,129 +1646,21 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Widget _buildMobilityTab(ThemeData theme, ColorScheme cs) {
-    final l10n = AppLocalizations.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.workoutBuilderMobilityRoutineTitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              TextButton.icon(
-                onPressed: _addMobilityItem,
-                icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                label: Text(
-                  l10n.workoutBuilderAddShort,
-                  style: TextStyle(
-                    color: StitchM3Theme.accent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                for (var i = 0; i < _routine.mobilitySections.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 8),
-                  _MobilitySectionChip(
-                    label: _routine.mobilitySections[i].name,
-                    selected:
-                        _selectedMobilitySectionIndex.clamp(
-                          0,
-                          _routine.mobilitySections.length - 1,
-                        ) ==
-                        i,
-                    onTap: () =>
-                        setState(() => _selectedMobilitySectionIndex = i),
-                    onEdit: () => _editMobilitySection(i),
-                    onDelete: _routine.mobilitySections.length > 1
-                        ? () => _deleteMobilitySection(i)
-                        : null,
-                  ),
-                ],
-                const SizedBox(width: 8),
-                InkWell(
-                  onTap: _addMobilitySection,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                        const SizedBox(width: 4),
-                        Text(
-                          l10n.workoutBuilderSectionHeading,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: StitchM3Theme.accent,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: ReorderableListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            buildDefaultDragHandles: false,
-            onReorder: (oldIndex, newIndex) {
-              var target = newIndex;
-              if (target > oldIndex) target--;
-              _reorderMobility(oldIndex, target);
-            },
-            itemCount: _mobilityItemsForSelectedSection.length,
-            itemBuilder: (context, index) {
-              final item = _mobilityItemsForSelectedSection[index];
-              return Padding(
-                key: ValueKey(item.id),
-                padding: EdgeInsets.only(
-                  bottom: index < _mobilityItemsForSelectedSection.length - 1
-                      ? 8
-                      : 0,
-                ),
-                child: _MobilityItem(
-                  index: index,
-                  title: item.title,
-                  subtitle: item.subtitle,
-                  shortTitle: item.shortTitle,
-                  onEdit: (t, s, short) =>
-                      _updateMobilityItem(item.id, t, s, shortTitle: short),
-                  onDelete: () => _removeMobilityItem(item.id),
-                ),
-              );
-            },
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: _DashedButton(
-            icon: Icons.add,
-            label: l10n.workoutBuilderAddExercise,
-            onPressed: _selectedSectionId != null ? _addMobilityItem : null,
-          ),
-        ),
-      ],
+    return WorkoutMobilityTab(
+      theme: theme,
+      colorScheme: cs,
+      sections: _routine.mobilitySections,
+      selectedSectionIndex: _selectedMobilitySectionIndex,
+      itemsForSelectedSection: _mobilityItemsForSelectedSection,
+      onAddItem: _addMobilityItem,
+      onAddSection: _addMobilitySection,
+      onEditSection: _editMobilitySection,
+      onDeleteSection: _deleteMobilitySection,
+      onSelectSection: (i) => setState(() => _selectedMobilitySectionIndex = i),
+      onReorderItems: _reorderMobility,
+      onUpdateItem: (itemId, t, s, short) =>
+          _updateMobilityItem(itemId, t, s, shortTitle: short),
+      onDeleteItem: _removeMobilityItem,
     );
   }
 
@@ -1891,187 +1784,6 @@ class _WorkoutBuilderMobilityScreenState
   }
 }
 
-class _MobilitySectionChip extends StatelessWidget {
-  const _MobilitySectionChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    required this.onEdit,
-    this.onDelete,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-  final VoidCallback onEdit;
-  final VoidCallback? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: selected ? cs.onSurface : cs.onSurfaceVariant,
-                ),
-              ),
-              if (selected) ...[
-                const SizedBox(width: 6),
-                InkWell(
-                  onTap: onEdit,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.edit,
-                      size: 18,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ),
-                if (onDelete != null) ...[
-                  const SizedBox(width: 4),
-                  InkWell(
-                    onTap: onDelete,
-                    borderRadius: BorderRadius.circular(999),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(
-                        Icons.delete_outline,
-                        size: 18,
-                        color: StitchM3Theme.danger,
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            height: 2,
-            width: 60,
-            color: selected ? StitchM3Theme.accent : Colors.transparent,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MobilityItem extends StatelessWidget {
-  const _MobilityItem({
-    required this.index,
-    required this.title,
-    required this.subtitle,
-    this.shortTitle = '',
-    this.onEdit,
-    this.onDelete,
-  });
-
-  final int index;
-  final String title;
-  final String subtitle;
-  final String shortTitle;
-  final void Function(String title, String subtitle, String shortTitle)? onEdit;
-  final VoidCallback? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        border: Border.all(color: cs.outline),
-      ),
-      child: Row(
-        children: [
-          ReorderableDragStartListener(
-            index: index,
-            child: Icon(
-              Icons.drag_indicator,
-              size: 20,
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: cs.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, size: 20, color: cs.onSurfaceVariant),
-            padding: EdgeInsets.zero,
-            onSelected: (value) {
-              if (value == 'edit' && onEdit != null) {
-                _showEditMobilityDialog(
-                  context,
-                  theme,
-                  cs,
-                  title,
-                  subtitle,
-                  shortTitle,
-                  onEdit!,
-                );
-              } else if (value == 'delete') {
-                onDelete?.call();
-              }
-            },
-            itemBuilder: (ctx) {
-              final menuL10n = AppLocalizations.of(ctx);
-              return [
-                if (onEdit != null)
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Text(menuL10n.workoutBuilderEditExercise),
-                  ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(
-                    menuL10n.workoutBuilderDeleteExercise,
-                    style: const TextStyle(color: StitchM3Theme.danger),
-                  ),
-                ),
-              ];
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 void _showRenameDayDialog(
   BuildContext context,
   String initialName,
@@ -2168,56 +1880,6 @@ void _showRenameWeekDialog(
       final name = controller.text.trim();
       if (name.isEmpty) return;
       onSave(name);
-      Navigator.of(context).pop();
-    },
-  );
-}
-
-void _showEditMobilityDialog(
-  BuildContext context,
-  ThemeData theme,
-  ColorScheme cs,
-  String initialTitle,
-  String initialSubtitle,
-  String initialShortTitle,
-  void Function(String title, String subtitle, String shortTitle) onSave,
-) {
-  final l10n = AppLocalizations.of(context);
-  final titleController = TextEditingController(text: initialTitle);
-  final subtitleController = TextEditingController(text: initialSubtitle);
-  final shortTitleController = TextEditingController(text: initialShortTitle);
-  showAppBottomSheet<void>(
-    context: context,
-    title: l10n.workoutBuilderEditMobilityExerciseTitle,
-    fullScreen: false,
-    bodyBuilder: (sheetContext) => Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        TextField(
-          controller: titleController,
-          decoration: InputDecoration(labelText: l10n.mobilityTitle),
-          autofocus: false,
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: shortTitleController,
-          decoration: InputDecoration(labelText: l10n.mobilityShortTitleLabel),
-        ),
-        const SizedBox(height: 12),
-        TextField(
-          controller: subtitleController,
-          decoration: InputDecoration(labelText: l10n.mobilitySubtitle),
-          maxLines: 2,
-        ),
-      ],
-    ),
-    primaryActionLabel: l10n.customerSave,
-    onPrimaryAction: () {
-      onSave(
-        titleController.text.trim(),
-        subtitleController.text.trim(),
-        shortTitleController.text.trim(),
-      );
       Navigator.of(context).pop();
     },
   );
