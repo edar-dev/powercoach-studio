@@ -152,6 +152,141 @@ void main() {
       expect(controller.saveState, WorkoutEditorSaveState.saved);
     });
 
+    test('marks dirty after debounce elapses', () async {
+      final debounced = WorkoutEditorController(
+        getPlanById: (planId) async => plans[planId],
+        createPlan:
+            ({
+              required customerId,
+              required name,
+              required planDataJson,
+              pdfHeader,
+              useCustomPdfHeader = false,
+              initialWeekNumber = 1,
+              phase,
+              tags,
+              notes,
+            }) async {
+              final created = plan(
+                id: 'plan-new',
+                name: name,
+                planData: planDataJson,
+                initialWeekNumber: initialWeekNumber,
+                phase: phase,
+                tags: tags,
+                notes: notes,
+              );
+              plans[created.id] = created;
+              return created;
+            },
+        updatePlan:
+            ({
+              required planId,
+              name,
+              planDataJson,
+              initialWeekNumber,
+              phase,
+              tags,
+              notes,
+            }) async {
+              final existing = plans[planId]!;
+              final updated = plan(
+                id: planId,
+                name: name ?? existing.name,
+                planData: planDataJson ?? existing.planData,
+                initialWeekNumber: initialWeekNumber ?? existing.initialWeekNumber,
+                phase: phase ?? existing.phase,
+                tags: tags ?? existing.tags,
+                notes: notes ?? existing.notes,
+              );
+              plans[planId] = updated;
+              return updated;
+            },
+        dirtyDebounceDelay: const Duration(milliseconds: 50),
+      );
+      addTearDown(debounced.dispose);
+
+      debounced.markLoaded(session: session());
+      debounced.scheduleContentChanged(
+        session: session(planName: 'Plan B'),
+        editorMode: true,
+        loading: false,
+      );
+      expect(debounced.isDirty, isFalse);
+
+      await Future<void>.delayed(const Duration(milliseconds: 60));
+
+      expect(debounced.isDirty, isTrue);
+      expect(debounced.saveState, WorkoutEditorSaveState.unsaved);
+    });
+
+    test('coalesces rapid changes into one dirty update after debounce', () async {
+      final debounced = WorkoutEditorController(
+        getPlanById: (planId) async => plans[planId],
+        createPlan:
+            ({
+              required customerId,
+              required name,
+              required planDataJson,
+              pdfHeader,
+              useCustomPdfHeader = false,
+              initialWeekNumber = 1,
+              phase,
+              tags,
+              notes,
+            }) async {
+              final created = plan(
+                id: 'plan-new',
+                name: name,
+                planData: planDataJson,
+              );
+              plans[created.id] = created;
+              return created;
+            },
+        updatePlan:
+            ({
+              required planId,
+              name,
+              planDataJson,
+              initialWeekNumber,
+              phase,
+              tags,
+              notes,
+            }) async {
+              final existing = plans[planId]!;
+              return plan(
+                id: planId,
+                name: name ?? existing.name,
+                planData: planDataJson ?? existing.planData,
+              );
+            },
+        dirtyDebounceDelay: const Duration(milliseconds: 80),
+      );
+      addTearDown(debounced.dispose);
+
+      debounced.markLoaded(session: session());
+      debounced.scheduleContentChanged(
+        session: session(planName: 'Plan A'),
+        editorMode: true,
+        loading: false,
+      );
+      debounced.scheduleContentChanged(
+        session: session(planName: 'Plan B'),
+        editorMode: true,
+        loading: false,
+      );
+      debounced.scheduleContentChanged(
+        session: session(planName: 'Plan C'),
+        editorMode: true,
+        loading: false,
+      );
+
+      await Future<void>.delayed(const Duration(milliseconds: 100));
+
+      expect(debounced.isDirty, isTrue);
+      expect(debounced.saveState, WorkoutEditorSaveState.unsaved);
+    });
+
     test('marks dirty after metadata change', () {
       controller.markLoaded(session: session());
       expect(controller.isDirty, isFalse);
