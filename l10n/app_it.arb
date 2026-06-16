@@ -336,6 +336,13 @@
   "workoutDeleteConfirmMessage": "Questa azione non può essere annullata.",
   "workoutDeletedMessage": "Workout eliminato.",
   "workoutDeleteError": "Impossibile eliminare il workout.",
+  "workoutPlanArchiveAction": "Archivia",
+  "workoutPlanUnarchiveAction": "Ripristina",
+  "workoutPlanCompleteAction": "Segna completato",
+  "workoutPlanStatusArchived": "Archiviato",
+  "workoutPlanStatusCompleted": "Completato",
+  "workoutPlanStatusActive": "Attivo",
+  "workoutPlanStatusDraft": "Bozza",
   "mobilityAddExercise": "Aggiungi esercizio mobilità",
   "mobilityCreateNew": "Crea nuovo",
   "mobilityFromMobilityLibrary": "Da library mobilità",
@@ -657,6 +664,15 @@
   "sessionSkipped": "Saltata",
   "sessionPlanned": "Pianificata",
   "sessionMarkPlanned": "Segna come pianificata",
+  "sessionDetailOpenBuilder": "Apri nel builder",
+  "sessionDetailExercisesCount": "{count} esercizi",
+  "@sessionDetailExercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardWorkoutBuilder": "Builder workout",
   "dashboardSessionTitle": "Sessione",
   "dashboardDetailHint": "I dettagli si basano sulla data di inizio del piano selezionato.",
@@ -751,6 +767,7 @@
   "customerWorkoutsFilterScheduled": "Con date",
   "customerWorkoutsFilterUnscheduled": "Senza data",
   "customerWorkoutsFilterEnded": "Terminati",
+  "customerWorkoutsFilterArchived": "Archiviati",
   "customerWorkoutsFilterStale": "Da aggiornare",
   "customerWorkoutsSortTitle": "Ordina per",
   "customerWorkoutsSortStartDateDesc": "Data inizio (recente)",

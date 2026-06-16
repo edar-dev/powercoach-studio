@@ -1670,6 +1670,48 @@ abstract class AppLocalizations {
   /// **'Could not delete workout.'**
   String get workoutDeleteError;
 
+  /// No description provided for @workoutPlanArchiveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Archive'**
+  String get workoutPlanArchiveAction;
+
+  /// No description provided for @workoutPlanUnarchiveAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Unarchive'**
+  String get workoutPlanUnarchiveAction;
+
+  /// No description provided for @workoutPlanCompleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Mark completed'**
+  String get workoutPlanCompleteAction;
+
+  /// No description provided for @workoutPlanStatusArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get workoutPlanStatusArchived;
+
+  /// No description provided for @workoutPlanStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get workoutPlanStatusCompleted;
+
+  /// No description provided for @workoutPlanStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get workoutPlanStatusActive;
+
+  /// No description provided for @workoutPlanStatusDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft'**
+  String get workoutPlanStatusDraft;
+
   /// No description provided for @mobilityAddExercise.
   ///
   /// In en, this message translates to:
@@ -2998,6 +3040,18 @@ abstract class AppLocalizations {
   /// **'Mark as planned'**
   String get sessionMarkPlanned;
 
+  /// No description provided for @sessionDetailOpenBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in builder'**
+  String get sessionDetailOpenBuilder;
+
+  /// No description provided for @sessionDetailExercisesCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises'**
+  String sessionDetailExercisesCount(int count);
+
   /// No description provided for @dashboardWorkoutBuilder.
   ///
   /// In en, this message translates to:
@@ -3309,6 +3363,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Ended'**
   String get customerWorkoutsFilterEnded;
+
+  /// No description provided for @customerWorkoutsFilterArchived.
+  ///
+  /// In en, this message translates to:
+  /// **'Archived'**
+  String get customerWorkoutsFilterArchived;
 
   /// No description provided for @customerWorkoutsFilterStale.
   ///

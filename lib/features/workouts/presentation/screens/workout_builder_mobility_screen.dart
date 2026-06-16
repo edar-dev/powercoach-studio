@@ -242,7 +242,9 @@ class _WorkoutBuilderMobilityScreenState
       if (widget.planId != null && widget.planId!.isNotEmpty) {
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
-          final routine = hydrateScheduledWeekdays(planDataToRoutine(plan.planData));
+          final routine = hydrateScheduledWeekdays(
+            planDataToRoutine(plan.planData),
+          );
           final (weekIndex, dayIndex) = _resolveInitialSelection(routine);
           setState(() {
             _routine = routine;
@@ -368,10 +370,14 @@ class _WorkoutBuilderMobilityScreenState
     try {
       if (widget.editorMode && widget.customerId != null) {
         if (_loadedPlanId != null) {
+          final existingPlan = await _planRepo.getById(_loadedPlanId!);
           await _planRepo.update(
             planId: _loadedPlanId!,
             name: toSave.name,
-            planDataJson: _encodeRoutine(toSave),
+            planDataJson: _encodeRoutine(
+              toSave,
+              existingPlanData: existingPlan?.planData,
+            ),
             initialWeekNumber: savedInitialWeek,
             phase: phase.isEmpty ? null : phase,
             tags: tags.isEmpty ? null : tags,
@@ -462,8 +468,20 @@ class _WorkoutBuilderMobilityScreenState
     return success;
   }
 
-  static String _encodeRoutine(WorkoutRoutine r) {
-    return jsonEncode(r.toJson());
+  static String _encodeRoutine(WorkoutRoutine r, {String? existingPlanData}) {
+    final encoded = Map<String, dynamic>.from(r.toJson());
+    if (existingPlanData != null && existingPlanData.isNotEmpty) {
+      try {
+        final existing = jsonDecode(existingPlanData) as Map<String, dynamic>;
+        if (existing.containsKey('archivedAt')) {
+          encoded['archivedAt'] = existing['archivedAt'];
+        }
+        if (existing.containsKey('completedAt')) {
+          encoded['completedAt'] = existing['completedAt'];
+        }
+      } catch (_) {}
+    }
+    return jsonEncode(encoded);
   }
 
   Future<Customer?> _loadCustomerIfNeeded() async {

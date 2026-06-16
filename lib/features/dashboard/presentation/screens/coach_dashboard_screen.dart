@@ -16,14 +16,11 @@ import '../widgets/dashboard_surface_card.dart';
 
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
-  const CoachDashboardScreen({
-    super.key,
-    this.loadSnapshot,
-  });
+  const CoachDashboardScreen({super.key, this.loadSnapshot});
 
   /// When set (tests), skips repositories and returns this future instead.
   final Future<DashboardSnapshot> Function(String unknownClientLabel)?
-      loadSnapshot;
+  loadSnapshot;
 
   @override
   State<CoachDashboardScreen> createState() => _CoachDashboardScreenState();
@@ -259,7 +256,13 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           title: l10n.dashboardSectionAttention,
                         ),
                         const SizedBox(height: 12),
-                        ..._buildAttentionSection(context, theme, cs, l10n, snap),
+                        ..._buildAttentionSection(
+                          context,
+                          theme,
+                          cs,
+                          l10n,
+                          snap,
+                        ),
                       ],
                     ),
                   ),
@@ -301,7 +304,11 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.trending_up, size: 20, color: StitchM3Theme.accent),
+                          Icon(
+                            Icons.trending_up,
+                            size: 20,
+                            color: StitchM3Theme.accent,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             l10n.dashboardWeeklyProgress,
@@ -338,7 +345,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       child: _StatCard(
                         theme: theme,
                         cs: cs,
-                        value: (_loading && snap == null) ? '–' : '${snap?.clientCount ?? 0}',
+                        value: (_loading && snap == null)
+                            ? '–'
+                            : '${snap?.clientCount ?? 0}',
                         label: l10n.dashboardTotalClients,
                       ),
                     ),
@@ -347,7 +356,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       child: _StatCard(
                         theme: theme,
                         cs: cs,
-                        value: (_loading && snap == null) ? '–' : '${snap?.activePrograms ?? 0}',
+                        value: (_loading && snap == null)
+                            ? '–'
+                            : '${snap?.activePrograms ?? 0}',
                         label: l10n.dashboardActivePrograms,
                       ),
                     ),
@@ -369,7 +380,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                            borderRadius: BorderRadius.circular(
+                              StitchM3Theme.radiusLg,
+                            ),
                           ),
                         ),
                       ),
@@ -388,7 +401,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           side: const BorderSide(color: StitchM3Theme.accent),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                            borderRadius: BorderRadius.circular(
+                              StitchM3Theme.radiusLg,
+                            ),
                           ),
                         ),
                       ),
@@ -429,10 +444,14 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     }
     final localeName = l10n.localeName;
     return items.map((item) {
-      final dateLabel =
-          DateFormat('dd MMM', localeName).format(item.date).toUpperCase();
-      final weekdayLabel =
-          DateFormat('EEE', localeName).format(item.date).toUpperCase();
+      final dateLabel = DateFormat(
+        'dd MMM',
+        localeName,
+      ).format(item.date).toUpperCase();
+      final weekdayLabel = DateFormat(
+        'EEE',
+        localeName,
+      ).format(item.date).toUpperCase();
       final programLabel = item.programName.trim().isEmpty
           ? l10n.dashboardUntitledWorkout
           : item.programName;
@@ -447,7 +466,16 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           programName: programLabel,
           onTap: () {
             HapticFeedback.mediumImpact();
-            navigateTo(context, '/customers/${item.customerId}/workouts');
+            navigateTo(
+              context,
+              scheduleSessionDetailPath(
+                customerId: item.customerId,
+                planId: item.planId,
+                weekIndex: item.weekIndex,
+                dayIndex: item.dayIndex,
+                date: item.date,
+              ),
+            );
           },
         ),
       );
@@ -743,7 +771,9 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             label,
-            style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: cs.onSurfaceVariant,
+            ),
           ),
         ],
       ),
@@ -882,7 +912,9 @@ class _DashboardDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.bookmark_outline),
-              title: Text(AppLocalizations.of(context).workoutTemplatesDrawerLabel),
+              title: Text(
+                AppLocalizations.of(context).workoutTemplatesDrawerLabel,
+              ),
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) context.push('/workouts/templates');
