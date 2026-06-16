@@ -28,6 +28,7 @@ import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/export_pdf_usecase.dart';
 import '../../domain/workout_exercise_mutations.dart';
+import '../../domain/workout_mobility_mutations.dart';
 import '../../domain/workout_routine_mutations.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_plan_list_helpers.dart';
@@ -730,17 +731,15 @@ class _WorkoutBuilderMobilityScreenState
       if (t.isEmpty && s.isEmpty) return;
       setState(() {
         final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-        _routine = _routine.copyWith(
-          mobilityItems: [
-            ..._routine.mobilityItems,
-            MobilityItem(
-              id: id,
-              title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
-              subtitle: s,
-              sectionId: sectionId,
-              customExerciseId: customExerciseId,
-            ),
-          ],
+        _routine = addMobilityItemToRoutine(
+          routine: _routine,
+          item: MobilityItem(
+            id: id,
+            title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
+            subtitle: s,
+            sectionId: sectionId,
+            customExerciseId: customExerciseId,
+          ),
         );
       });
     });
@@ -748,8 +747,9 @@ class _WorkoutBuilderMobilityScreenState
 
   void _removeMobilityItem(String id) {
     setState(() {
-      _routine = _routine.copyWith(
-        mobilityItems: _routine.mobilityItems.where((e) => e.id != id).toList(),
+      _routine = removeMobilityItemFromRoutine(
+        routine: _routine,
+        itemId: id,
       );
     });
   }
@@ -757,21 +757,13 @@ class _WorkoutBuilderMobilityScreenState
   void _reorderMobility(int oldIndex, int newIndex) {
     final sectionId = _selectedSectionId;
     if (sectionId == null) return;
-    final sectionItems = _mobilityItemsForSelectedSection;
-    if (oldIndex < 0 ||
-        oldIndex >= sectionItems.length ||
-        newIndex < 0 ||
-        newIndex >= sectionItems.length) {
-      return;
-    }
     setState(() {
-      final reordered = List<MobilityItem>.from(sectionItems);
-      final item = reordered.removeAt(oldIndex);
-      reordered.insert(newIndex, item);
-      final others = _routine.mobilityItems
-          .where((e) => e.sectionId != sectionId)
-          .toList();
-      _routine = _routine.copyWith(mobilityItems: [...others, ...reordered]);
+      _routine = reorderMobilityItemsInSection(
+        routine: _routine,
+        sectionId: sectionId,
+        oldIndex: oldIndex,
+        newIndex: newIndex,
+      );
     });
   }
 
@@ -782,11 +774,9 @@ class _WorkoutBuilderMobilityScreenState
       final name = l10n.workoutBuilderSectionNumbered(
         _routine.mobilitySections.length + 1,
       );
-      _routine = _routine.copyWith(
-        mobilitySections: [
-          ..._routine.mobilitySections,
-          MobilitySection(id: id, name: name),
-        ],
+      _routine = addMobilitySectionToRoutine(
+        routine: _routine,
+        section: MobilitySection(id: id, name: name),
       );
       _selectedMobilitySectionIndex = _routine.mobilitySections.length - 1;
     });
@@ -801,17 +791,12 @@ class _WorkoutBuilderMobilityScreenState
     ) {
       if (newName.trim().isEmpty) return;
       setState(() {
-        final updated = _routine.mobilitySections
-            .map(
-              (s) => s.id == section.id
-                  ? s.copyWith(
-                      name: newName.trim(),
-                      scheduleHint: scheduleHint.trim(),
-                    )
-                  : s,
-            )
-            .toList();
-        _routine = _routine.copyWith(mobilitySections: updated);
+        _routine = updateMobilitySectionInRoutine(
+          routine: _routine,
+          sectionId: section.id,
+          name: newName,
+          scheduleHint: scheduleHint,
+        );
       });
     });
   }
@@ -821,23 +806,13 @@ class _WorkoutBuilderMobilityScreenState
     if (_routine.mobilitySections.length <= 1) {
       return; // keep at least one section
     }
-    final section = _routine.mobilitySections[index];
-    final firstOtherId = _routine.mobilitySections
-        .firstWhere((s) => s.id != section.id)
-        .id;
     setState(() {
-      _routine = _routine.copyWith(
-        mobilitySections: _routine.mobilitySections
-            .where((s) => s.id != section.id)
-            .toList(),
-        mobilityItems: _routine.mobilityItems
-            .map(
-              (m) => m.sectionId == section.id
-                  ? m.copyWith(sectionId: firstOtherId)
-                  : m,
-            )
-            .toList(),
+      final updated = deleteMobilitySectionFromRoutine(
+        routine: _routine,
+        sectionIndex: index,
       );
+      if (updated == null) return;
+      _routine = updated;
       _selectedMobilitySectionIndex = (_selectedMobilitySectionIndex.clamp(
         0,
         _routine.mobilitySections.length - 1,
@@ -1133,18 +1108,12 @@ class _WorkoutBuilderMobilityScreenState
     String shortTitle = '',
   }) {
     setState(() {
-      _routine = _routine.copyWith(
-        mobilityItems: _routine.mobilityItems
-            .map(
-              (e) => e.id == id
-                  ? e.copyWith(
-                      title: title,
-                      subtitle: subtitle,
-                      shortTitle: shortTitle,
-                    )
-                  : e,
-            )
-            .toList(),
+      _routine = updateMobilityItemInRoutine(
+        routine: _routine,
+        itemId: id,
+        title: title,
+        subtitle: subtitle,
+        shortTitle: shortTitle,
       );
     });
   }

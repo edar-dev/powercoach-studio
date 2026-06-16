@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../core/sync/pending_operation_resolver.dart';
+import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
@@ -45,6 +46,7 @@ class _SyncSettingsSectionState extends State<SyncSettingsSection> {
       return;
     }
     await PendingOperationResolver().retryAllFailed(ops);
+    await syncReplayHook.requestReplay();
     if (!mounted) return;
     showAppSnackBar(context, content: Text(l10n.syncRetryStarted(failed.length)));
     await _loadCounts();

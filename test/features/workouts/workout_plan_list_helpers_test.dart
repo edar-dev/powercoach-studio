@@ -10,6 +10,7 @@ WorkoutPlanApiModel _plan({
   String? startDate,
   String? endDate,
   DateTime? updatedAt,
+  String? archivedAt,
 }) {
   final routine = <String, dynamic>{
     'name': name,
@@ -18,6 +19,7 @@ WorkoutPlanApiModel _plan({
     'weeks': [],
     if (startDate != null) 'startDate': startDate,
     if (endDate != null) 'endDate': endDate,
+    if (archivedAt != null) 'archivedAt': archivedAt,
   };
   final now = DateTime(2026, 6, 15);
   return WorkoutPlanApiModel(
@@ -70,6 +72,32 @@ void main() {
         now: today,
       );
       expect(filtered.map((p) => p.id), ['2']);
+    });
+
+    test('archived filter returns only archived plans', () {
+      final plans = [
+        _plan(id: '1', name: 'Active', startDate: '2026-06-01'),
+        _plan(
+          id: '2',
+          name: 'Archived',
+          archivedAt: '2026-05-15T00:00:00.000',
+        ),
+      ];
+      final filtered = filterWorkoutPlans(plans, WorkoutPlanFilter.archived);
+      expect(filtered.map((p) => p.id), ['2']);
+    });
+
+    test('all filter excludes archived plans', () {
+      final plans = [
+        _plan(id: '1', name: 'Active', startDate: '2026-06-01'),
+        _plan(
+          id: '2',
+          name: 'Archived',
+          archivedAt: '2026-05-15T00:00:00.000',
+        ),
+      ];
+      final filtered = filterWorkoutPlans(plans, WorkoutPlanFilter.all);
+      expect(filtered.map((p) => p.id), ['1']);
     });
   });
 

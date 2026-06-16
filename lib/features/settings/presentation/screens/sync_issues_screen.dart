@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../core/sync/offline_models.dart';
 import '../../../../core/sync/pending_operation_resolver.dart';
+import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
@@ -124,6 +125,7 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
       return;
     }
     await _resolver.retryAllFailed(_operations);
+    await syncReplayHook.requestReplay();
     if (!mounted) return;
     showAppSnackBar(context, content: Text(l10n.syncRetryStarted(failed.length)));
     await _load();
@@ -196,6 +198,7 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
                         busy,
                         () => _resolver.keepLocal(op),
                         l10n.syncConflictUseLocal,
+                        requestReplay: true,
                       ),
                 child: Text(l10n.syncConflictUseLocal),
               ),
@@ -226,6 +229,7 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
                         busy,
                         () => _resolver.retry(op),
                         l10n.syncRetry,
+                        requestReplay: true,
                       ),
                 icon: const Icon(Icons.refresh),
                 label: Text(l10n.syncRetry),
@@ -260,11 +264,15 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
     BuildContext sheetContext,
     ValueNotifier<bool> busy,
     Future<void> Function() action,
-    String successLabel,
-  ) async {
+    String successLabel, {
+    bool requestReplay = false,
+  }) async {
     busy.value = true;
     try {
       await action();
+      if (requestReplay) {
+        await syncReplayHook.requestReplay();
+      }
       if (!sheetContext.mounted) return;
       Navigator.of(sheetContext).pop();
       if (!mounted) return;
