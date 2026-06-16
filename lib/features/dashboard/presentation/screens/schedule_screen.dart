@@ -113,7 +113,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                 padding: const EdgeInsets.all(24),
                 child: Text(
                   l10n.dashboardNoScheduledWorkoutsYet,
-                  style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -164,26 +166,29 @@ class _ScheduleEventsList extends StatelessWidget {
               ),
             ),
           ),
-          ...grouped[day]!.map((event) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: _SessionTile(
-                  event: event,
-                  theme: theme,
-                  cs: cs,
-                  onTap: () {
-                    HapticFeedback.mediumImpact();
-                    navigateTo(
-                      context,
-                      customerWorkoutEditorPath(
-                        event.customerId,
-                        planId: event.planId,
-                        weekIndex: event.weekIndex,
-                        dayIndex: event.dayIndex,
-                      ),
-                    );
-                  },
-                ),
-              )),
+          ...grouped[day]!.map(
+            (event) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _SessionTile(
+                event: event,
+                theme: theme,
+                cs: cs,
+                onTap: () {
+                  HapticFeedback.mediumImpact();
+                  navigateTo(
+                    context,
+                    scheduleSessionDetailPath(
+                      customerId: event.customerId,
+                      planId: event.planId,
+                      weekIndex: event.weekIndex,
+                      dayIndex: event.dayIndex,
+                      date: event.day,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
           const SizedBox(height: 8),
         ],
       ],
@@ -285,9 +290,9 @@ class _StatusPill extends StatelessWidget {
       child: Text(
         label,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: cs.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
+          color: cs.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'dart:convert';
 
 import '../../../core/sync/offline_models.dart';
 import '../../customers/data/models/customer.dart';
@@ -17,6 +18,9 @@ class DashboardTodayItem {
   const DashboardTodayItem({
     required this.customerId,
     required this.planId,
+    required this.weekIndex,
+    required this.dayIndex,
+    required this.sessionLabel,
     required this.clientName,
     required this.programName,
     required this.date,
@@ -24,6 +28,9 @@ class DashboardTodayItem {
 
   final String customerId;
   final String planId;
+  final int weekIndex;
+  final int dayIndex;
+  final String sessionLabel;
   final String clientName;
   final String programName;
   final DateTime date;
@@ -93,16 +100,16 @@ class DashboardSnapshot {
   });
 
   factory DashboardSnapshot.error(String message) => DashboardSnapshot(
-        errorMessage: message,
-        clientCount: 0,
-        activePrograms: 0,
-        weeklyUpdates: 0,
-        todayItems: const [],
-        stalePlans: const [],
-        customersWithoutPlan: const [],
-        attentionPending: const [],
-        queuedSyncCount: 0,
-      );
+    errorMessage: message,
+    clientCount: 0,
+    activePrograms: 0,
+    weeklyUpdates: 0,
+    todayItems: const [],
+    stalePlans: const [],
+    customersWithoutPlan: const [],
+    attentionPending: const [],
+    queuedSyncCount: 0,
+  );
 
   final String? errorMessage;
   final int clientCount;
@@ -117,10 +124,17 @@ class DashboardSnapshot {
   bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
 }
 
-({DateTime start, DateTime endExclusive}) dashboardWeekRangeContaining(DateTime now) {
+({DateTime start, DateTime endExclusive}) dashboardWeekRangeContaining(
+  DateTime now,
+) {
   final dayStart = DateTime(now.year, now.month, now.day);
-  final weekStart = dayStart.subtract(Duration(days: now.weekday - DateTime.monday));
-  return (start: weekStart, endExclusive: weekStart.add(const Duration(days: 7)));
+  final weekStart = dayStart.subtract(
+    Duration(days: now.weekday - DateTime.monday),
+  );
+  return (
+    start: weekStart,
+    endExclusive: weekStart.add(const Duration(days: 7)),
+  );
 }
 
 /// Pure aggregation for tests and [DashboardSnapshotLoader].
@@ -140,6 +154,7 @@ DashboardSnapshot buildDashboardSnapshot({
 
   final planCountByCustomerId = <String, int>{};
   for (final p in plans) {
+    if (_isArchivedPlan(p)) continue;
     planCountByCustomerId.update(p.customerId, (n) => n + 1, ifAbsent: () => 1);
   }
 
@@ -169,6 +184,9 @@ DashboardSnapshot buildDashboardSnapshot({
         (event) => DashboardTodayItem(
           customerId: event.customerId,
           planId: event.planId,
+          weekIndex: event.weekIndex,
+          dayIndex: event.dayIndex,
+          sessionLabel: event.sessionLabel,
           clientName: event.customerName,
           programName: event.programName,
           date: event.day,
@@ -176,10 +194,14 @@ DashboardSnapshot buildDashboardSnapshot({
       )
       .toList();
 
-  final thresholdDay =
-      DateTime(now.year, now.month, now.day).subtract(Duration(days: stalePlanDays));
+  final thresholdDay = DateTime(
+    now.year,
+    now.month,
+    now.day,
+  ).subtract(Duration(days: stalePlanDays));
   final staleCandidates = <DashboardStalePlanItem>[];
   for (final plan in plans) {
+    if (_isArchivedPlan(plan)) continue;
     final updatedDay = DateTime(
       plan.updatedAt.year,
       plan.updatedAt.month,
@@ -241,7 +263,7 @@ DashboardSnapshot buildDashboardSnapshot({
 
   return DashboardSnapshot(
     clientCount: customers.length,
-    activePrograms: plans.length,
+    activePrograms: plans.where((p) => !_isArchivedPlan(p)).length,
     weeklyUpdates: weeklyUpdates,
     todayItems: todayItems,
     stalePlans: stalePlans,
@@ -249,4 +271,13 @@ DashboardSnapshot buildDashboardSnapshot({
     attentionPending: attentionPending,
     queuedSyncCount: queued,
   );
+}
+
+bool _isArchivedPlan(WorkoutPlanApiModel plan) {
+  try {
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    return map['archivedAt'] != null;
+  } catch (_) {
+    return false;
+  }
 }

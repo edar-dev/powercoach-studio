@@ -10,13 +10,15 @@ import '../domain/workout_follow_up_factory.dart';
 /// Persists workout plans in local storage.
 class WorkoutPlanRepository {
   WorkoutPlanRepository({OfflineRepositorySupport? offline})
-      : _offline = offline ?? OfflineRepositorySupport();
+    : _offline = offline ?? OfflineRepositorySupport();
 
   final OfflineRepositorySupport _offline;
 
   /// All workout plans **except** templates ([kWorkoutPlanTemplateScopeId]).
   Future<List<WorkoutPlanApiModel>> getAll() async {
-    final local = await _offline.readLocalEntities(OfflineEntityType.workoutPlan);
+    final local = await _offline.readLocalEntities(
+      OfflineEntityType.workoutPlan,
+    );
     final models = local
         .map(WorkoutPlanApiModel.fromJson)
         .where((p) => p.customerId != kWorkoutPlanTemplateScopeId)
@@ -117,9 +119,13 @@ class WorkoutPlanRepository {
     if (name != null) body['name'] = name;
     if (planDataJson != null) body['planData'] = planDataJson;
     if (pdfHeader != null) body['pdfHeader'] = pdfHeader;
-    if (useCustomPdfHeader != null) body['useCustomPdfHeader'] = useCustomPdfHeader;
+    if (useCustomPdfHeader != null) {
+      body['useCustomPdfHeader'] = useCustomPdfHeader;
+    }
     if (theme != null) body['theme'] = theme;
-    if (initialWeekNumber != null) body['initialWeekNumber'] = initialWeekNumber;
+    if (initialWeekNumber != null) {
+      body['initialWeekNumber'] = initialWeekNumber;
+    }
     if (phase != null) body['phase'] = phase;
     if (tags != null) body['tags'] = tags;
     if (notes != null) body['notes'] = notes;
@@ -137,7 +143,10 @@ class WorkoutPlanRepository {
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
       id: planId,
-      scopeId: merged['customerId']?.toString() ?? current?['customerId']?.toString() ?? '',
+      scopeId:
+          merged['customerId']?.toString() ??
+          current?['customerId']?.toString() ??
+          '',
       payload: merged,
       localOnly: false,
     );
@@ -251,9 +260,12 @@ class WorkoutPlanRepository {
       source: sourceRoutine,
       newStartDate: newStartDate,
     );
-    final numWeeks = sourceRoutine.weeks.isEmpty ? 1 : sourceRoutine.weeks.length;
-    final resolvedName =
-        (name != null && name.trim().isNotEmpty) ? name.trim() : src.name;
+    final numWeeks = sourceRoutine.weeks.isEmpty
+        ? 1
+        : sourceRoutine.weeks.length;
+    final resolvedName = (name != null && name.trim().isNotEmpty)
+        ? name.trim()
+        : src.name;
     return create(
       customerId: src.customerId,
       name: resolvedName,
@@ -291,7 +303,11 @@ class WorkoutPlanRepository {
     if (endDate != null) {
       if (effectiveStart != null &&
           _dateOnly(endDate).isBefore(_dateOnly(effectiveStart))) {
-        throw ArgumentError.value(endDate, 'endDate', 'must be on or after startDate');
+        throw ArgumentError.value(
+          endDate,
+          'endDate',
+          'must be on or after startDate',
+        );
       }
       map['endDate'] = _dateOnlyIso(endDate);
     }
@@ -302,6 +318,49 @@ class WorkoutPlanRepository {
       map['currentWeek'] = currentWeek;
     }
     return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<WorkoutPlanApiModel> updateLifecycleMarkers({
+    required String planId,
+    DateTime? archivedAt,
+    DateTime? completedAt,
+    bool clearArchivedAt = false,
+    bool clearCompletedAt = false,
+  }) async {
+    final plan = await getById(planId);
+    if (plan == null) {
+      throw StateError('workout_plan_not_found');
+    }
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    if (clearArchivedAt) {
+      map.remove('archivedAt');
+    } else if (archivedAt != null) {
+      map['archivedAt'] = _dateOnlyIso(archivedAt);
+    }
+    if (clearCompletedAt) {
+      map.remove('completedAt');
+    } else if (completedAt != null) {
+      map['completedAt'] = _dateOnlyIso(completedAt);
+    }
+    return update(planId: planId, planDataJson: jsonEncode(map));
+  }
+
+  Future<WorkoutPlanApiModel> archivePlan(String planId) {
+    return updateLifecycleMarkers(planId: planId, archivedAt: DateTime.now());
+  }
+
+  Future<WorkoutPlanApiModel> unarchivePlan(String planId) {
+    return updateLifecycleMarkers(planId: planId, clearArchivedAt: true);
+  }
+
+  Future<WorkoutPlanApiModel> markPlanCompleted(
+    String planId, {
+    DateTime? completedAt,
+  }) {
+    return updateLifecycleMarkers(
+      planId: planId,
+      completedAt: completedAt ?? DateTime.now(),
+    );
   }
 
   /// Persists completion/skip flags for a week/day slot inside [planData].
@@ -372,7 +431,13 @@ void _sortPlansByStartDateDesc(List<WorkoutPlanApiModel> plans) {
 /// Deep-clone [planData] JSON string; throws [FormatException] if not valid JSON.
 String _cloneWorkoutPlanDataJson(String planData) {
   try {
-    return jsonEncode(jsonDecode(planData));
+    final decoded = jsonDecode(planData);
+    if (decoded is Map<String, dynamic>) {
+      decoded.remove('archivedAt');
+      decoded.remove('completedAt');
+      return jsonEncode(decoded);
+    }
+    return jsonEncode(decoded);
   } catch (_) {
     throw FormatException('invalid_workout_plan_data');
   }

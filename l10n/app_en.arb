@@ -336,6 +336,13 @@
   "workoutDeleteConfirmMessage": "This action cannot be undone.",
   "workoutDeletedMessage": "Workout deleted.",
   "workoutDeleteError": "Could not delete workout.",
+  "workoutPlanArchiveAction": "Archive",
+  "workoutPlanUnarchiveAction": "Unarchive",
+  "workoutPlanCompleteAction": "Mark completed",
+  "workoutPlanStatusArchived": "Archived",
+  "workoutPlanStatusCompleted": "Completed",
+  "workoutPlanStatusActive": "Active",
+  "workoutPlanStatusDraft": "Draft",
   "mobilityAddExercise": "Add mobility exercise",
   "mobilityCreateNew": "Create new",
   "mobilityFromMobilityLibrary": "From mobility library",
@@ -657,6 +664,15 @@
   "sessionSkipped": "Skipped",
   "sessionPlanned": "Planned",
   "sessionMarkPlanned": "Mark as planned",
+  "sessionDetailOpenBuilder": "Open in builder",
+  "sessionDetailExercisesCount": "{count} exercises",
+  "@sessionDetailExercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardWorkoutBuilder": "Workout Builder",
   "dashboardSessionTitle": "Session",
   "dashboardDetailHint": "Details are based on the selected workout plan start date.",
@@ -751,6 +767,7 @@
   "customerWorkoutsFilterScheduled": "Scheduled",
   "customerWorkoutsFilterUnscheduled": "Unscheduled",
   "customerWorkoutsFilterEnded": "Ended",
+  "customerWorkoutsFilterArchived": "Archived",
   "customerWorkoutsFilterStale": "Needs update",
   "customerWorkoutsSortTitle": "Sort by",
   "customerWorkoutsSortStartDateDesc": "Start date (newest)",

@@ -84,7 +84,9 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
 
   List<PlanCalendarEvent> _eventsOnDay(DateTime day) {
     final normalized = calendarDayOnly(day);
-    return _events.where((event) => calendarDayOnly(event.day) == normalized).toList();
+    return _events
+        .where((event) => calendarDayOnly(event.day) == normalized)
+        .toList();
   }
 
   Future<void> _exportEventToHevy(PlanCalendarEvent event) async {
@@ -201,7 +203,8 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                         firstDay: DateTime.utc(2020, 1, 1),
                         lastDay: DateTime.utc(2035, 12, 31),
                         focusedDay: _focusedDay,
-                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        selectedDayPredicate: (day) =>
+                            isSameDay(_selectedDay, day),
                         eventLoader: _eventsOnDay,
                         startingDayOfWeek: StartingDayOfWeek.monday,
                         locale: locale,
@@ -267,10 +270,16 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                         child: ListTile(
                           leading: CircleAvatar(
                             backgroundColor: color.withValues(alpha: 0.2),
-                            child: Icon(Icons.fitness_center, color: color, size: 20),
+                            child: Icon(
+                              Icons.fitness_center,
+                              color: color,
+                              size: 20,
+                            ),
                           ),
                           title: Text(event.customerName),
-                          subtitle: Text('${event.programName} · ${event.sessionLabel}'),
+                          subtitle: Text(
+                            '${event.programName} · ${event.sessionLabel}',
+                          ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -289,7 +298,8 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                                 ],
                               ),
                               Checkbox(
-                                value: event.status == PlanSessionStatus.completed,
+                                value:
+                                    event.status == PlanSessionStatus.completed,
                                 onChanged: (value) =>
                                     _toggleCompleted(event, value ?? false),
                               ),
@@ -298,7 +308,13 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                           onTap: () {
                             navigateTo(
                               context,
-                              '/customers/${event.customerId}/workouts',
+                              scheduleSessionDetailPath(
+                                customerId: event.customerId,
+                                planId: event.planId,
+                                weekIndex: event.weekIndex,
+                                dayIndex: event.dayIndex,
+                                date: event.day,
+                              ),
                             );
                           },
                           onLongPress: () async {

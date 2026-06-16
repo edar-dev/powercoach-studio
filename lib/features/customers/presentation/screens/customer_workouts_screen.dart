@@ -36,6 +36,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
 
   static const List<WorkoutPlanFilter> _filters = [
     WorkoutPlanFilter.all,
+    WorkoutPlanFilter.archived,
     WorkoutPlanFilter.active,
     WorkoutPlanFilter.scheduled,
     WorkoutPlanFilter.unscheduled,
@@ -44,11 +45,11 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   ];
 
   List<WorkoutPlanApiModel> get _visiblePlans => applyWorkoutPlanListQuery(
-        plans: _plans,
-        filter: _filter,
-        sort: _sort,
-        searchQuery: _searchQuery,
-      );
+    plans: _plans,
+    filter: _filter,
+    sort: _sort,
+    searchQuery: _searchQuery,
+  );
 
   @override
   void initState() {
@@ -56,11 +57,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     _loadPlans();
   }
 
-  void _openWorkoutEditor({
-    String? planId,
-    int? weekIndex,
-    int? dayIndex,
-  }) {
+  void _openWorkoutEditor({String? planId, int? weekIndex, int? dayIndex}) {
     navigateTo(
       context,
       customerWorkoutEditorPath(
@@ -84,8 +81,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
             ListTile(
               leading: const Icon(Icons.check_circle_outline),
               title: Text(l10n.sessionCompleted),
-              onTap: () =>
-                  Navigator.of(ctx).pop(PlanSessionStatus.completed),
+              onTap: () => Navigator.of(ctx).pop(PlanSessionStatus.completed),
             ),
             ListTile(
               leading: const Icon(Icons.remove_circle_outline),
@@ -186,7 +182,11 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                       child: Row(
                         children: [
                           if (sort == _sort)
-                            Icon(Icons.check, size: 18, color: StitchM3Theme.accent)
+                            Icon(
+                              Icons.check,
+                              size: 18,
+                              color: StitchM3Theme.accent,
+                            )
                           else
                             const SizedBox(width: 18),
                           const SizedBox(width: 8),
@@ -202,36 +202,38 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.error_outline, size: 48, color: cs.error),
-                        const SizedBox(height: 16),
-                        Text(
-                          _error!,
-                          style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 24),
-                        FilledButton(
-                          onPressed: _loadPlans,
-                          child: Text(l10n.customersRetry),
-                        ),
-                      ],
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, size: 48, color: cs.error),
+                    const SizedBox(height: 16),
+                    Text(
+                      _error!,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                )
-              : _plans.isEmpty
-                  ? _buildEmptyState(context, theme, cs, l10n)
-                  : _visiblePlans.isEmpty
-                      ? _buildNoMatchState(context, theme, cs, l10n)
-                      : RefreshIndicator(
-                          onRefresh: _loadPlans,
-                          child: _buildPlansList(context, theme, cs, l10n),
-                        ),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      onPressed: _loadPlans,
+                      child: Text(l10n.customersRetry),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : _plans.isEmpty
+          ? _buildEmptyState(context, theme, cs, l10n)
+          : _visiblePlans.isEmpty
+          ? _buildNoMatchState(context, theme, cs, l10n)
+          : RefreshIndicator(
+              onRefresh: _loadPlans,
+              child: _buildPlansList(context, theme, cs, l10n),
+            ),
       floatingActionButton: !_loading && _error == null
           ? FloatingActionButton.extended(
               onPressed: () {
@@ -258,7 +260,11 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.fitness_center, size: 64, color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
+            Icon(
+              Icons.fitness_center,
+              size: 64,
+              color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 16),
             Text(
               l10n.workoutsNoWorkoutsYet,
@@ -270,7 +276,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
             const SizedBox(height: 8),
             Text(
               l10n.workoutsAssignHint,
-              style: theme.textTheme.bodyMedium?.copyWith(color: cs.onSurfaceVariant),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -295,7 +303,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
               padding: const EdgeInsets.all(24),
               child: Text(
                 l10n.customerWorkoutsNoMatch,
-                style: theme.textTheme.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
@@ -318,33 +328,35 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
           sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index.isOdd) return const SizedBox(height: 12);
-                final planIndex = index ~/ 2;
-                final plan = visible[planIndex];
-                return _WorkoutListCard(
-                  theme: theme,
-                  cs: cs,
-                  title: plan.name.isNotEmpty ? plan.name : l10n.customerUnnamedPlan,
-                  subtitle: _formatPlanSubtitle(l10n, plan),
-                  plan: plan,
-                  localeName: l10n.localeName,
-                  onSessionTap: (event) => _openWorkoutEditor(
-                    planId: event.planId,
-                    weekIndex: event.weekIndex,
-                    dayIndex: event.dayIndex,
-                  ),
-                  onSessionLongPress: _showSessionActions,
-                  onTap: () => _openWorkoutEditor(planId: plan.id),
-                  onCreateFollowUp: () => _createFollowUpWorkout(plan),
-                  onDuplicate: () => _duplicatePlan(plan),
-                  onSaveAsTemplate: () => _savePlanAsTemplate(plan),
-                  onDelete: () => _deletePlan(plan),
-                );
-              },
-              childCount: visible.isEmpty ? 0 : visible.length * 2 - 1,
-            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              if (index.isOdd) return const SizedBox(height: 12);
+              final planIndex = index ~/ 2;
+              final plan = visible[planIndex];
+              return _WorkoutListCard(
+                theme: theme,
+                cs: cs,
+                title: plan.name.isNotEmpty
+                    ? plan.name
+                    : l10n.customerUnnamedPlan,
+                subtitle: _formatPlanSubtitle(l10n, plan),
+                plan: plan,
+                localeName: l10n.localeName,
+                onSessionTap: (event) => _openWorkoutEditor(
+                  planId: event.planId,
+                  weekIndex: event.weekIndex,
+                  dayIndex: event.dayIndex,
+                ),
+                onSessionLongPress: _showSessionActions,
+                onTap: () => _openWorkoutEditor(planId: plan.id),
+                onCreateFollowUp: () => _createFollowUpWorkout(plan),
+                onDuplicate: () => _duplicatePlan(plan),
+                onSaveAsTemplate: () => _savePlanAsTemplate(plan),
+                onArchive: () => _archivePlan(plan),
+                onUnarchive: () => _unarchivePlan(plan),
+                onMarkCompleted: () => _markPlanCompleted(plan),
+                onDelete: () => _deletePlan(plan),
+              );
+            }, childCount: visible.isEmpty ? 0 : visible.length * 2 - 1),
           ),
         ),
       ],
@@ -365,14 +377,21 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
             decoration: InputDecoration(
               hintText: l10n.customerWorkoutsSearchHint,
               hintStyle: TextStyle(color: cs.onSurfaceVariant),
-              prefixIcon: Icon(Icons.search, color: cs.onSurfaceVariant, size: 22),
+              prefixIcon: Icon(
+                Icons.search,
+                color: cs.onSurfaceVariant,
+                size: 22,
+              ),
               filled: true,
               fillColor: cs.surfaceContainerHighest,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 14,
+              ),
             ),
           ),
         ),
@@ -397,9 +416,14 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                   },
                   borderRadius: BorderRadius.circular(999),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
-                      color: selected ? StitchM3Theme.accent : cs.surfaceContainerHighest,
+                      color: selected
+                          ? StitchM3Theme.accent
+                          : cs.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(999),
                     ),
                     alignment: Alignment.center,
@@ -407,7 +431,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                       _filterLabel(l10n, filter),
                       style: theme.textTheme.labelLarge?.copyWith(
                         color: selected ? Colors.white : cs.onSurface,
-                        fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                        fontWeight: selected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
                       ),
                     ),
                   ),
@@ -426,6 +452,8 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
         return l10n.customerWorkoutsFilterAll;
       case WorkoutPlanFilter.active:
         return l10n.customerWorkoutsFilterActive;
+      case WorkoutPlanFilter.archived:
+        return l10n.customerWorkoutsFilterArchived;
       case WorkoutPlanFilter.scheduled:
         return l10n.customerWorkoutsFilterScheduled;
       case WorkoutPlanFilter.unscheduled:
@@ -475,7 +503,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           title: Text(l10n.workoutTemplatesSaveAsTemplateTitle),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(labelText: l10n.workoutTemplatesNameHint),
+            decoration: InputDecoration(
+              labelText: l10n.workoutTemplatesNameHint,
+            ),
             autofocus: true,
           ),
           actions: [
@@ -499,7 +529,10 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
     }
     if (name == null || name.isEmpty || !mounted) return;
     try {
-      await _planRepo.createTemplateFromPlan(sourcePlanId: plan.id, templateName: name);
+      await _planRepo.createTemplateFromPlan(
+        sourcePlanId: plan.id,
+        templateName: name,
+      );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -534,7 +567,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(AppLocalizations.of(context).workoutFollowUpCreatedMessage),
+          content: Text(
+            AppLocalizations.of(context).workoutFollowUpCreatedMessage,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: StitchM3Theme.accent,
         ),
@@ -562,7 +597,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           title: Text(l10n.workoutDuplicateTitle),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(labelText: l10n.workoutDuplicateNameHint),
+            decoration: InputDecoration(
+              labelText: l10n.workoutDuplicateNameHint,
+            ),
             autofocus: true,
           ),
           actions: [
@@ -632,7 +669,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
               children: [
                 TextField(
                   controller: controller,
-                  decoration: InputDecoration(labelText: l10n.workoutFollowUpNameHint),
+                  decoration: InputDecoration(
+                    labelText: l10n.workoutFollowUpNameHint,
+                  ),
                   autofocus: true,
                 ),
                 const SizedBox(height: 16),
@@ -641,7 +680,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                   leading: const Icon(Icons.calendar_today_outlined),
                   title: Text(
                     selectedStartDate != null
-                        ? MaterialLocalizations.of(ctx).formatFullDate(selectedStartDate!)
+                        ? MaterialLocalizations.of(
+                            ctx,
+                          ).formatFullDate(selectedStartDate!)
                         : l10n.workoutFollowUpStartDateOptional,
                   ),
                   trailing: selectedStartDate != null
@@ -654,7 +695,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                       : null,
                   onTap: () async {
                     final now = DateTime.now();
-                    final initial = selectedStartDate ?? DateTime(now.year, now.month, now.day);
+                    final initial =
+                        selectedStartDate ??
+                        DateTime(now.year, now.month, now.day);
                     final picked = await showDatePicker(
                       context: ctx,
                       initialDate: initial,
@@ -682,9 +725,9 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
                 onPressed: () {
                   final name = controller.text.trim();
                   if (name.isEmpty) return;
-                  Navigator.of(ctx).pop(
-                    (name: name, startDate: selectedStartDate),
-                  );
+                  Navigator.of(
+                    ctx,
+                  ).pop((name: name, startDate: selectedStartDate));
                 },
                 child: Text(l10n.workoutFollowUpCreateAction),
               ),
@@ -730,6 +773,30 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
       );
     }
   }
+
+  Future<void> _archivePlan(WorkoutPlanApiModel plan) async {
+    try {
+      await _planRepo.archivePlan(plan.id);
+      if (!mounted) return;
+      await _loadPlans();
+    } catch (_) {}
+  }
+
+  Future<void> _unarchivePlan(WorkoutPlanApiModel plan) async {
+    try {
+      await _planRepo.unarchivePlan(plan.id);
+      if (!mounted) return;
+      await _loadPlans();
+    } catch (_) {}
+  }
+
+  Future<void> _markPlanCompleted(WorkoutPlanApiModel plan) async {
+    try {
+      await _planRepo.markPlanCompleted(plan.id);
+      if (!mounted) return;
+      await _loadPlans();
+    } catch (_) {}
+  }
 }
 
 class _WorkoutListCard extends StatelessWidget {
@@ -746,6 +813,9 @@ class _WorkoutListCard extends StatelessWidget {
     this.onCreateFollowUp,
     this.onDuplicate,
     this.onSaveAsTemplate,
+    this.onArchive,
+    this.onUnarchive,
+    this.onMarkCompleted,
     this.onDelete,
   });
 
@@ -761,6 +831,9 @@ class _WorkoutListCard extends StatelessWidget {
   final VoidCallback? onCreateFollowUp;
   final VoidCallback? onDuplicate;
   final VoidCallback? onSaveAsTemplate;
+  final VoidCallback? onArchive;
+  final VoidCallback? onUnarchive;
+  final VoidCallback? onMarkCompleted;
   final VoidCallback? onDelete;
 
   @override
@@ -791,10 +864,16 @@ class _WorkoutListCard extends StatelessWidget {
                         color: cs.onSurface,
                       ),
                     ),
+                    if (plan != null) ...[
+                      const SizedBox(height: 6),
+                      _PlanLifecyclePill(plan: plan!),
+                    ],
                     const SizedBox(height: 4),
                     Text(
                       subtitle,
-                      style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
                     ),
                     if (plan != null && localeName != null) ...[
                       const SizedBox(height: 12),
@@ -811,9 +890,16 @@ class _WorkoutListCard extends StatelessWidget {
               if (onCreateFollowUp != null ||
                   onDuplicate != null ||
                   onSaveAsTemplate != null ||
+                  onArchive != null ||
+                  onUnarchive != null ||
+                  onMarkCompleted != null ||
                   onDelete != null)
                 PopupMenuButton<String>(
-                  icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant, size: 24),
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: cs.onSurfaceVariant,
+                    size: 24,
+                  ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 0),
                   onSelected: (value) {
@@ -824,6 +910,12 @@ class _WorkoutListCard extends StatelessWidget {
                       onDuplicate?.call();
                     } else if (value == 'template') {
                       onSaveAsTemplate?.call();
+                    } else if (value == 'archive') {
+                      onArchive?.call();
+                    } else if (value == 'unarchive') {
+                      onUnarchive?.call();
+                    } else if (value == 'complete') {
+                      onMarkCompleted?.call();
                     } else if (value == 'delete') {
                       onDelete?.call();
                     }
@@ -844,6 +936,27 @@ class _WorkoutListCard extends StatelessWidget {
                         value: 'template',
                         child: Text(l10n.workoutTemplatesSaveAsTemplate),
                       ),
+                    if (plan != null &&
+                        onArchive != null &&
+                        !isArchivedPlan(plan!))
+                      PopupMenuItem(
+                        value: 'archive',
+                        child: Text(l10n.workoutPlanArchiveAction),
+                      ),
+                    if (plan != null &&
+                        onUnarchive != null &&
+                        isArchivedPlan(plan!))
+                      PopupMenuItem(
+                        value: 'unarchive',
+                        child: Text(l10n.workoutPlanUnarchiveAction),
+                      ),
+                    if (plan != null &&
+                        onMarkCompleted != null &&
+                        !isArchivedPlan(plan!))
+                      PopupMenuItem(
+                        value: 'complete',
+                        child: Text(l10n.workoutPlanCompleteAction),
+                      ),
                     if (onDelete != null)
                       PopupMenuItem(
                         value: 'delete',
@@ -854,6 +967,44 @@ class _WorkoutListCard extends StatelessWidget {
               Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlanLifecyclePill extends StatelessWidget {
+  const _PlanLifecyclePill({required this.plan});
+
+  final WorkoutPlanApiModel plan;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final archived = isArchivedPlan(plan);
+    final completed = completedAtForPlan(plan) != null || isEndedPlan(plan);
+    final active = isActivePlan(plan);
+    final (label, color) = archived
+        ? (l10n.workoutPlanStatusArchived, cs.onSurfaceVariant)
+        : completed
+        ? (l10n.workoutPlanStatusCompleted, cs.tertiary)
+        : active
+        ? (l10n.workoutPlanStatusActive, StitchM3Theme.accent)
+        : (l10n.workoutPlanStatusDraft, cs.primary);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.14),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: color.withValues(alpha: 0.4)),
+      ),
+      child: Text(
+        label,
+        style: theme.textTheme.labelSmall?.copyWith(
+          color: cs.onSurface,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );

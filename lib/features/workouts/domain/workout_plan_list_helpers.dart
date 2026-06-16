@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../../dashboard/domain/dashboard_snapshot.dart';
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_plan_repository.dart';
@@ -13,6 +15,7 @@ enum WorkoutPlanSort {
 
 enum WorkoutPlanFilter {
   all,
+  archived,
   active,
   scheduled,
   unscheduled,
@@ -42,6 +45,26 @@ DateTime? endDateForPlan(WorkoutPlanApiModel plan) {
   return null;
 }
 
+DateTime? _lifecycleDateForPlan(WorkoutPlanApiModel plan, String key) {
+  try {
+    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final raw = map[key];
+    if (raw == null) return null;
+    return DateTime.tryParse(raw.toString());
+  } catch (_) {
+    return null;
+  }
+}
+
+DateTime? archivedAtForPlan(WorkoutPlanApiModel plan) =>
+    _lifecycleDateForPlan(plan, 'archivedAt');
+
+DateTime? completedAtForPlan(WorkoutPlanApiModel plan) =>
+    _lifecycleDateForPlan(plan, 'completedAt');
+
+bool isArchivedPlan(WorkoutPlanApiModel plan) =>
+    archivedAtForPlan(plan) != null;
+
 bool hasScheduledStart(WorkoutPlanApiModel plan) {
   try {
     return planDataToRoutine(plan.planData).startDate != null;
@@ -51,6 +74,8 @@ bool hasScheduledStart(WorkoutPlanApiModel plan) {
 }
 
 bool isActivePlan(WorkoutPlanApiModel plan, {DateTime? now}) {
+  if (isArchivedPlan(plan)) return false;
+  if (completedAtForPlan(plan) != null) return false;
   if (!hasScheduledStart(plan)) return false;
   final today = _dateOnly(now ?? DateTime.now());
   final start = startDateForPlan(plan);
@@ -61,6 +86,8 @@ bool isActivePlan(WorkoutPlanApiModel plan, {DateTime? now}) {
 }
 
 bool isEndedPlan(WorkoutPlanApiModel plan, {DateTime? now}) {
+  if (isArchivedPlan(plan)) return false;
+  if (completedAtForPlan(plan) != null) return true;
   final end = endDateForPlan(plan);
   if (end == null) return false;
   final today = _dateOnly(now ?? DateTime.now());
@@ -87,6 +114,8 @@ bool matchesWorkoutPlanFilter(
   switch (filter) {
     case WorkoutPlanFilter.all:
       return true;
+    case WorkoutPlanFilter.archived:
+      return isArchivedPlan(plan);
     case WorkoutPlanFilter.active:
       return isActivePlan(plan, now: now);
     case WorkoutPlanFilter.scheduled:
@@ -106,9 +135,14 @@ List<WorkoutPlanApiModel> filterWorkoutPlans(
   int staleDays = kStalePlanDays,
   DateTime? now,
 }) {
-  if (filter == WorkoutPlanFilter.all) return List<WorkoutPlanApiModel>.from(plans);
+  if (filter == WorkoutPlanFilter.all) {
+    return plans.where((p) => !isArchivedPlan(p)).toList();
+  }
   return plans
-      .where((p) => matchesWorkoutPlanFilter(p, filter, staleDays: staleDays, now: now))
+      .where(
+        (p) =>
+            matchesWorkoutPlanFilter(p, filter, staleDays: staleDays, now: now),
+      )
       .toList();
 }
 
@@ -165,7 +199,12 @@ List<WorkoutPlanApiModel> applyWorkoutPlanListQuery({
   int staleDays = kStalePlanDays,
   DateTime? now,
 }) {
-  var result = filterWorkoutPlans(plans, filter, staleDays: staleDays, now: now);
+  var result = filterWorkoutPlans(
+    plans,
+    filter,
+    staleDays: staleDays,
+    now: now,
+  );
   result = searchWorkoutPlans(result, searchQuery);
   return sortWorkoutPlans(result, sort);
 }

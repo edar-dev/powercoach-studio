@@ -26,4 +26,17 @@ void main() {
       '/customers/cust-1/workouts/plan-9?week=2&day=4',
     );
   });
+
+  test('schedule session detail path serializes query params', () {
+    expect(
+      scheduleSessionDetailPath(
+        customerId: 'cust-1',
+        planId: 'plan-9',
+        weekIndex: 2,
+        dayIndex: 4,
+        date: DateTime(2026, 6, 16),
+      ),
+      '/dashboard/schedule/detail?customerId=cust-1&planId=plan-9&week=2&day=4&date=2026-06-16T00%3A00%3A00.000',
+    );
+  });
 }

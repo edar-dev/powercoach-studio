@@ -864,6 +864,27 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutDeleteError => 'Impossibile eliminare il workout.';
 
   @override
+  String get workoutPlanArchiveAction => 'Archivia';
+
+  @override
+  String get workoutPlanUnarchiveAction => 'Ripristina';
+
+  @override
+  String get workoutPlanCompleteAction => 'Segna completato';
+
+  @override
+  String get workoutPlanStatusArchived => 'Archiviato';
+
+  @override
+  String get workoutPlanStatusCompleted => 'Completato';
+
+  @override
+  String get workoutPlanStatusActive => 'Attivo';
+
+  @override
+  String get workoutPlanStatusDraft => 'Bozza';
+
+  @override
   String get mobilityAddExercise => 'Aggiungi esercizio mobilità';
 
   @override
@@ -1601,6 +1622,14 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sessionMarkPlanned => 'Segna come pianificata';
 
   @override
+  String get sessionDetailOpenBuilder => 'Apri nel builder';
+
+  @override
+  String sessionDetailExercisesCount(int count) {
+    return '$count esercizi';
+  }
+
+  @override
   String get dashboardWorkoutBuilder => 'Builder workout';
 
   @override
@@ -1781,6 +1810,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get customerWorkoutsFilterEnded => 'Terminati';
+
+  @override
+  String get customerWorkoutsFilterArchived => 'Archiviati';
 
   @override
   String get customerWorkoutsFilterStale => 'Da aggiornare';

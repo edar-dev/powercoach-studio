@@ -34,6 +34,26 @@ String customerPath(String customerId) => '/customers/$customerId';
 String customerWorkoutsPath(String customerId) =>
     '/customers/$customerId/workouts';
 
+String scheduleSessionDetailPath({
+  required String customerId,
+  required String planId,
+  required int weekIndex,
+  required int dayIndex,
+  DateTime? date,
+}) {
+  return Uri(
+    path: '/dashboard/schedule/detail',
+    queryParameters: {
+      'customerId': customerId,
+      'planId': planId,
+      'week': '$weekIndex',
+      'day': '$dayIndex',
+      if (date != null)
+        'date': DateTime(date.year, date.month, date.day).toIso8601String(),
+    },
+  ).toString();
+}
+
 /// New plan editor for [customerId], or edit when [planId] is set.
 String customerWorkoutEditorPath(
   String customerId, {
@@ -49,9 +69,6 @@ String customerWorkoutEditorPath(
   }
   return Uri(
     path: path,
-    queryParameters: {
-      'week': '$weekIndex',
-      'day': '$dayIndex',
-    },
+    queryParameters: {'week': '$weekIndex', 'day': '$dayIndex'},
   ).toString();
 }
