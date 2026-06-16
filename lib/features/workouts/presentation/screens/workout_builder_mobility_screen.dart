@@ -26,10 +26,11 @@ import '../../domain/day_scheduled_weekday.dart';
 import '../../domain/export_excel_usecase.dart';
 import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/exercise_summary_sync.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../domain/workout_exercise_mutations.dart';
 import '../../domain/workout_routine_mutations.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
+import '../../domain/workout_plan_list_helpers.dart';
 import '../../domain/workout_routine_json_codec.dart';
 import '../workout_editor_controller.dart';
 import '../widgets/workout_builder_bottom_nav.dart';
@@ -88,6 +89,8 @@ class _WorkoutBuilderMobilityScreenState
   WorkoutRoutine _routine = WorkoutRoutine.empty();
   bool _loading = true;
   bool _saving = false;
+  bool _planCompleted = false;
+  bool _planArchived = false;
   int _initialWeekNumber = 1;
   int _selectedMobilitySectionIndex = 0;
   int _selectedWeekIndex = 0;
@@ -221,6 +224,8 @@ class _WorkoutBuilderMobilityScreenState
             _initialWeekController.text = plan.initialWeekNumber.toString();
             _selectedWeekIndex = weekIndex;
             _selectedDayIndex = dayIndex;
+            _planCompleted = completedAtForPlan(plan) != null;
+            _planArchived = isArchivedPlan(plan);
           });
         }
       } else {
@@ -1034,31 +1039,20 @@ class _WorkoutBuilderMobilityScreenState
     ]) {
       final trimmedName = name.trim();
       if (trimmedName.isEmpty) return;
-      final list = details.isEmpty ? [const ExerciseSet()] : details;
-      setState(() {
-        final week = _routine.weeks[weekIndex];
-        if (dayIndex < 0 || dayIndex >= week.days.length) return;
-        final day = week.days[dayIndex];
-        final newExercise = Exercise(
+      final updated = addExerciseToDayInRoutine(
+        routine: _routine,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        exercise: buildExerciseFromPrescription(
           id: exId,
           name: trimmedName,
-          sets: '${list.length}',
-          reps: list
-              .map((s) => s.displayText)
-              .where((r) => r.isNotEmpty)
-              .join(' | '),
-          rpe: '',
           note: note,
-          setDetails: list,
+          setDetails: details,
           customExerciseId: customExerciseId,
-        );
-        final newEx = [...day.exercises, newExercise];
-        final newDays = List<Day>.from(week.days);
-        newDays[dayIndex] = day.copyWith(exercises: newEx);
-        final newWeeks = List<Week>.from(_routine.weeks);
-        newWeeks[weekIndex] = week.copyWith(days: newDays);
-        _routine = _routine.copyWith(weeks: newWeeks);
-      });
+        ),
+      );
+      if (updated == null) return;
+      setState(() => _routine = updated);
     }, customerId: widget.customerId);
   }
 
@@ -1071,17 +1065,9 @@ class _WorkoutBuilderMobilityScreenState
     String supersetGroupId,
   ) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    final day = week.days[dayIndex];
-    int insertIndex = -1;
-    for (var i = day.exercises.length - 1; i >= 0; i--) {
-      if (day.exercises[i].supersetGroupId == supersetGroupId) {
-        insertIndex = i + 1;
-        break;
-      }
+    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
+      return;
     }
-    if (insertIndex < 0) insertIndex = day.exercises.length;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
@@ -1093,49 +1079,34 @@ class _WorkoutBuilderMobilityScreenState
     ]) {
       final trimmedName = name.trim();
       if (trimmedName.isEmpty) return;
-      final list = details.isEmpty ? [const ExerciseSet()] : details;
-      setState(() {
-        final w = _routine.weeks[weekIndex];
-        if (dayIndex < 0 || dayIndex >= w.days.length) return;
-        final d = w.days[dayIndex];
-        final newExercise = Exercise(
+      final updated = addExerciseToSupersetInRoutine(
+        routine: _routine,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        supersetGroupId: supersetGroupId,
+        exercise: buildExerciseFromPrescription(
           id: exId,
           name: trimmedName,
-          sets: '${list.length}',
-          reps: list
-              .map((s) => s.displayText)
-              .where((r) => r.isNotEmpty)
-              .join(' | '),
-          rpe: '',
           note: note,
+          setDetails: details,
           customExerciseId: customExerciseId,
-          setDetails: list,
           supersetGroupId: supersetGroupId,
-        );
-        final newEx = List<Exercise>.from(d.exercises)
-          ..insert(insertIndex, newExercise);
-        final newDays = List<Day>.from(w.days);
-        newDays[dayIndex] = d.copyWith(exercises: newEx);
-        final newWeeks = List<Week>.from(_routine.weeks);
-        newWeeks[weekIndex] = w.copyWith(days: newDays);
-        _routine = _routine.copyWith(weeks: newWeeks);
-      });
+        ),
+      );
+      if (updated == null) return;
+      setState(() => _routine = updated);
     }, customerId: widget.customerId);
   }
 
   void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises.where((e) => e.id != exerciseId).toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = removeExerciseFromDayInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _moveExerciseInDay(
@@ -1144,27 +1115,15 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId, {
     required bool up,
   }) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    final day = week.days[dayIndex];
-
-    final currentIndex = day.exercises.indexWhere((e) => e.id == exerciseId);
-    if (currentIndex < 0) return;
-    final targetIndex = up ? currentIndex - 1 : currentIndex + 1;
-    if (targetIndex < 0 || targetIndex >= day.exercises.length) return;
-
-    setState(() {
-      final reordered = List<Exercise>.from(day.exercises);
-      final item = reordered.removeAt(currentIndex);
-      reordered.insert(targetIndex, item);
-
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: reordered);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = moveExerciseInDayInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      up: up,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _updateMobilityItem(
@@ -1203,51 +1162,33 @@ class _WorkoutBuilderMobilityScreenState
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   }) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) {
-        if (e.id != exerciseId) return e;
-        return ExerciseSummarySync.apply(
-          e.copyWith(
-            name: name ?? e.name,
-            sets: sets ?? e.sets,
-            reps: reps ?? e.reps,
-            rpe: rpe ?? e.rpe,
-            note: note ?? e.note,
-            shortName: shortName ?? e.shortName,
-            prescriptionScope: prescriptionScope ?? e.prescriptionScope,
-            setDetails: setDetails ?? e.setDetails,
-          ),
-        );
-      }).toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = updateExerciseInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      name: name,
+      sets: sets,
+      reps: reps,
+      rpe: rpe,
+      note: note,
+      shortName: shortName,
+      prescriptionScope: prescriptionScope,
+      setDetails: setDetails,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _addSetToExercise(int weekIndex, int dayIndex, String exerciseId) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) {
-        if (e.id != exerciseId) return e;
-        final details = [...e.effectiveSetDetails, const ExerciseSet()];
-        return e.copyWith(setDetails: details);
-      }).toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = addSetToExerciseInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _updateExerciseSet(
@@ -1261,49 +1202,20 @@ class _WorkoutBuilderMobilityScreenState
     String? rpe,
     String? note,
   }) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) {
-        if (e.id != exerciseId) return e;
-        final details = e.effectiveSetDetails;
-        if (setIndex < 0 || setIndex >= details.length) return e;
-        final newDetails = List<ExerciseSet>.from(details);
-        final cur = details[setIndex];
-        if (line != null) {
-          final trimmed = line.trim();
-          if (trimmed.isNotEmpty) {
-            newDetails[setIndex] = ExerciseSet(
-              line: trimmed,
-              sets: '1',
-              reps: '',
-              rpe: '',
-              note: note ?? cur.note,
-            );
-          } else {
-            newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-          }
-        } else if (sets != null || reps != null || rpe != null) {
-          newDetails[setIndex] = ExerciseSet(
-            line: '',
-            sets: sets ?? cur.sets,
-            reps: reps ?? cur.reps,
-            rpe: rpe ?? cur.rpe,
-            note: note ?? cur.note,
-          );
-        } else {
-          newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-        }
-        return e.copyWith(setDetails: newDetails);
-      }).toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = updateExerciseSetInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      setIndex: setIndex,
+      line: line,
+      sets: sets,
+      reps: reps,
+      rpe: rpe,
+      note: note,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _removeExerciseSet(
@@ -1312,25 +1224,15 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId,
     int setIndex,
   ) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises.map((e) {
-        if (e.id != exerciseId) return e;
-        final details = e.effectiveSetDetails;
-        if (details.length <= 1) return e;
-        if (setIndex < 0 || setIndex >= details.length) return e;
-        final newDetails = List<ExerciseSet>.from(details)..removeAt(setIndex);
-        return e.copyWith(setDetails: newDetails);
-      }).toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = removeExerciseSetInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      setIndex: setIndex,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _assignToSuperset(
@@ -1339,44 +1241,26 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId,
     String supersetGroupId,
   ) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises
-          .map(
-            (e) => e.id == exerciseId
-                ? e.copyWith(supersetGroupId: supersetGroupId)
-                : e,
-          )
-          .toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = assignExerciseToSupersetInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      supersetGroupId: supersetGroupId,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newEx = day.exercises
-          .map(
-            (e) =>
-                e.id == exerciseId ? e.copyWith(clearSupersetGroupId: true) : e,
-          )
-          .toList();
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(exercises: newEx);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = removeExerciseFromSupersetInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   @override
@@ -1448,7 +1332,44 @@ class _WorkoutBuilderMobilityScreenState
         });
       },
       onMetadataChanged: _onMetadataEdited,
+      planCompleted: _planCompleted,
+      planArchived: _planArchived,
+      onMarkCompleted: _editorController.loadedPlanId != null &&
+              !_planCompleted &&
+              !_planArchived
+          ? _markPlanCompletedFromEditor
+          : null,
     );
+  }
+
+  Future<void> _markPlanCompletedFromEditor() async {
+    final planId = _editorController.loadedPlanId;
+    if (planId == null) return;
+    final l10n = AppLocalizations.of(context);
+    try {
+      await _planRepo.markPlanCompleted(planId);
+      if (!mounted) return;
+      final now = DateTime.now();
+      final today = DateTime(now.year, now.month, now.day);
+      setState(() {
+        _planCompleted = true;
+        _routine = _routine.copyWith(endDate: _routine.endDate ?? today);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutPlanCompleteAction),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   Widget _buildMobilityTab(ThemeData theme, ColorScheme cs) {
