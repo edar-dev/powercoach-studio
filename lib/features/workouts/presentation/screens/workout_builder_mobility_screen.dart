@@ -28,11 +28,13 @@ import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/exercise_summary_sync.dart';
 import '../../domain/export_pdf_usecase.dart';
+import '../../domain/workout_routine_mutations.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_routine_json_codec.dart';
 import '../workout_editor_controller.dart';
 import '../widgets/workout_builder_bottom_nav.dart';
 import '../widgets/workout_editor_app_bar.dart';
+import '../widgets/workout_editor_save_status_indicator.dart';
 import '../widgets/workout_export_sheet.dart';
 import '../widgets/exercise_add_sheet.dart';
 import '../widgets/workout_mobility_tab.dart';
@@ -269,8 +271,6 @@ class _WorkoutBuilderMobilityScreenState
     return (week, day);
   }
 
-  int _weekdayFromDayIndex(int dayIndex) => inferredScheduledWeekday(dayIndex);
-
   Future<void> _pickRoutineStartDate() async {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -494,60 +494,6 @@ class _WorkoutBuilderMobilityScreenState
     if (didSave && mounted) {
       _navigateBackToPreviousScreen();
     }
-  }
-
-  Widget _buildSaveStatusIndicator(AppLocalizations l10n, ColorScheme cs) {
-    final (icon, label, foreground, background) = switch (
-      _editorController.saveState
-    ) {
-      WorkoutEditorSaveState.saving => (
-        Icons.sync,
-        l10n.workoutEditorAutosaving,
-        cs.onPrimaryContainer,
-        cs.primaryContainer,
-      ),
-      WorkoutEditorSaveState.unsaved => (
-        Icons.warning_amber_rounded,
-        l10n.workoutEditorUnsavedState,
-        const Color(0xFFB45309),
-        StitchM3Theme.warning.withValues(alpha: 0.22),
-      ),
-      WorkoutEditorSaveState.saved => (
-        Icons.check_circle_outline,
-        l10n.workoutEditorSavedState,
-        StitchM3Theme.success,
-        StitchM3Theme.success.withValues(alpha: 0.2),
-      ),
-    };
-
-    return Tooltip(
-      message: widget.editorMode && _editorController.loadedPlanId != null
-          ? l10n.workoutEditorAutosaveHint
-          : label,
-      child: Container(
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: background,
-          borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: foreground.withValues(alpha: 0.35)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 16, color: foreground),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: foreground,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
@@ -940,22 +886,12 @@ class _WorkoutBuilderMobilityScreenState
     setState(() {
       final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
       final next = _routine.weeks.length + 1;
-      _routine = _routine.copyWith(
-        weeks: [
-          ..._routine.weeks,
-          Week(
-            id: id,
-            name: l10n.workoutBuilderWeekNumbered(next),
-            days: [
-              Day(
-                id: '${id}_d1',
-                name: l10n.workoutBuilderDayNumbered(1),
-                exercises: [],
-                scheduledWeekday: _weekdayFromDayIndex(0),
-              ),
-            ],
-          ),
-        ],
+      _routine = addWeekToRoutine(
+        routine: _routine,
+        weekId: id,
+        weekName: l10n.workoutBuilderWeekNumbered(next),
+        firstDayId: '${id}_d1',
+        firstDayName: l10n.workoutBuilderDayNumbered(1),
       );
       _selectedWeekIndex = _routine.weeks.length - 1;
       _selectedDayIndex = 0;
@@ -973,58 +909,26 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _cloneWeekWithName(int weekIndex, String name) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
+    final updated = cloneWeekInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      newWeekName: name,
+      newWeekId: newId,
+    );
+    if (updated == null) return;
     setState(() {
-      final source = _routine.weeks[weekIndex];
-      final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
-      final newDays = source.days
-          .map(
-            (d) => Day(
-              id: '${newId}_d_${d.id}',
-              name: d.name,
-              exercises: d.exercises
-                  .map(
-                    (e) => Exercise(
-                      id: '${e.id}_$newId',
-                      name: e.name,
-                      sets: e.sets,
-                      reps: e.reps,
-                      rpe: e.rpe,
-                      note: e.note,
-                      setDetails: e.setDetails
-                          ?.map(
-                            (s) => ExerciseSet(
-                              line: s.line,
-                              sets: s.sets,
-                              reps: s.reps,
-                              rpe: s.rpe,
-                              note: s.note,
-                            ),
-                          )
-                          .toList(),
-                      supersetGroupId: e.supersetGroupId,
-                      customExerciseId: e.customExerciseId,
-                    ),
-                  )
-                  .toList(),
-              scheduledWeekday: d.scheduledWeekday,
-            ),
-          )
-          .toList();
-      final newWeek = Week(id: newId, name: name, days: newDays);
-      _routine = _routine.copyWith(weeks: [..._routine.weeks, newWeek]);
+      _routine = updated;
       _selectedWeekIndex = _routine.weeks.length - 1;
       _selectedDayIndex = 0;
     });
   }
 
   void _deleteWeek(int weekIndex) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final weekId = _routine.weeks[weekIndex].id;
+    final updated = deleteWeekFromRoutine(routine: _routine, weekIndex: weekIndex);
+    if (updated == null) return;
     setState(() {
-      _routine = _routine.copyWith(
-        weeks: _routine.weeks.where((w) => w.id != weekId).toList(),
-      );
+      _routine = updated;
       _selectedWeekIndex = _selectedWeekIndex.clamp(
         0,
         _routine.weeks.isNotEmpty ? _routine.weeks.length - 1 : 0,
@@ -1047,48 +951,39 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _renameDay(int weekIndex, int dayIndex, String newName) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    final name = newName.trim();
-    if (name.isEmpty) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(name: name);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = renameDayInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      newName: newName,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _renameWeek(int weekIndex, String newName) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final name = newName.trim();
-    if (name.isEmpty) return;
-    setState(() {
-      final week = _routine.weeks[weekIndex];
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(name: name);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = renameWeekInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      newName: newName,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _deleteDay(int weekIndex, int dayIndex) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    if (week.days.length <= 1) return; // keep at least one day
+    final updated = deleteDayFromRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+    );
+    if (updated == null) return;
     setState(() {
-      final newDays = week.days
-          .where((d) => d.id != week.days[dayIndex].id)
-          .toList();
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
+      _routine = updated;
+      final week = _routine.weeks[weekIndex.clamp(0, _routine.weeks.length - 1)];
       _selectedDayIndex = _selectedDayIndex.clamp(
         0,
-        newDays.isNotEmpty ? newDays.length - 1 : 0,
+        week.days.isNotEmpty ? week.days.length - 1 : 0,
       );
     });
   }
@@ -1096,39 +991,31 @@ class _WorkoutBuilderMobilityScreenState
   void _addDayToWeek(int weekIndex) {
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final l10n = AppLocalizations.of(context);
+    final week = _routine.weeks[weekIndex];
+    final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
+    final updated = addDayToWeekInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayId: dayId,
+      dayName: l10n.workoutBuilderDayNumbered(week.days.length + 1),
+    );
+    if (updated == null) return;
     setState(() {
-      final week = _routine.weeks[weekIndex];
-      final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
-      final newDays = [
-        ...week.days,
-        Day(
-          id: dayId,
-          name: l10n.workoutBuilderDayNumbered(week.days.length + 1),
-          exercises: [],
-          scheduledWeekday: _weekdayFromDayIndex(week.days.length),
-        ),
-      ];
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
+      _routine = updated;
       _selectedWeekIndex = weekIndex;
-      _selectedDayIndex = newDays.length - 1;
+      _selectedDayIndex = updated.weeks[weekIndex].days.length - 1;
     });
   }
 
   void _setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    if (weekday < DateTime.monday || weekday > DateTime.sunday) return;
-    final week = _routine.weeks[weekIndex];
-    if (dayIndex < 0 || dayIndex >= week.days.length) return;
-    setState(() {
-      final day = week.days[dayIndex];
-      final newDays = List<Day>.from(week.days);
-      newDays[dayIndex] = day.copyWith(scheduledWeekday: weekday);
-      final newWeeks = List<Week>.from(_routine.weeks);
-      newWeeks[weekIndex] = week.copyWith(days: newDays);
-      _routine = _routine.copyWith(weeks: newWeeks);
-    });
+    final updated = setDayScheduledWeekdayInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      weekday: weekday,
+    );
+    if (updated == null) return;
+    setState(() => _routine = updated);
   }
 
   void _addExerciseToDay(int weekIndex, int dayIndex) {
@@ -1741,7 +1628,14 @@ class _WorkoutBuilderMobilityScreenState
           editorMode: widget.editorMode,
         ),
         saveStatusIndicator: !_loading
-            ? _buildSaveStatusIndicator(l10n, cs)
+            ? WorkoutEditorSaveStatusIndicator(
+                saveState: _editorController.saveState,
+                l10n: l10n,
+                colorScheme: cs,
+                textTheme: theme.textTheme,
+                editorMode: widget.editorMode,
+                hasLoadedPlan: _editorController.loadedPlanId != null,
+              )
             : null,
       ),
     );
