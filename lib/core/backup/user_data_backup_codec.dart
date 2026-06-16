@@ -38,6 +38,10 @@ class ParsedUserBackup {
 }
 
 /// Validates and parses user backup JSON. Unknown top-level keys are ignored.
+///
+/// Workout plan lifecycle markers (`archivedAt`, `completedAt`) live inside each
+/// plan entity's `planData` JSON blob; they are preserved automatically on export
+/// because entity payloads are copied verbatim.
 ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUserId) {
   if (expectedAccountUserId.isEmpty) {
     throw UserBackupImportException('missing_account');

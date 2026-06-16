@@ -93,6 +93,33 @@ void main() {
       expect(entities['plan-1']?.deleted, isFalse);
     });
 
+    test('acceptRemote unwraps nested customer payload', () async {
+      pendingOps.add(
+        PendingOperation(
+          id: 'op-cust',
+          userId: 'user-1',
+          entityType: OfflineEntityType.customer,
+          entityId: 'cust-1',
+          scopeId: 'cust-1',
+          operationType: OfflineOperationType.update,
+          path: '/customers/cust-1',
+          payload: const {'id': 'cust-1', 'name': 'Local'},
+          createdAt: DateTime(2026, 1, 1),
+          updatedAt: DateTime(2026, 1, 1),
+          status: PendingOperationStatus.conflict,
+          conflictRemotePayload: const {
+            'payload': {'id': 'cust-1', 'name': 'Remote Client'},
+          },
+        ),
+      );
+
+      await resolver.acceptRemote(pendingOps.single);
+
+      expect(pendingOps, isEmpty);
+      expect(entities['cust-1']?.payload['name'], 'Remote Client');
+      expect(entities['cust-1']?.type, OfflineEntityType.customer);
+    });
+
     test('discard removes pending operation', () async {
       pendingOps.add(
         op(status: PendingOperationStatus.deadLetter),

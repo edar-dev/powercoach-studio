@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 /// Defers building [builder] until this tab is first selected, then keeps state.
+///
+/// Performance: profile with Flutter DevTools (Timeline + rebuild stats) when
+/// changing tab count or builder weight; expect first paint only on first visit.
 class WorkoutLazyTab extends StatefulWidget {
   const WorkoutLazyTab({
     super.key,

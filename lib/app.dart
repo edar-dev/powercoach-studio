@@ -31,7 +31,6 @@ import 'features/settings/presentation/screens/subscription_screen.dart';
 import 'features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'features/workouts/presentation/screens/workout_plan_templates_screen.dart';
 import 'features/exercise_library/presentation/screens/exercise_library_screen.dart';
-import 'features/workouts/presentation/screens/workout_placeholder_screen.dart';
 import 'l10n/app_localizations.dart';
 
 late final GoRouter appGoRouter;
@@ -257,17 +256,17 @@ void configureAppRouter() {
         GoRoute(
           path: 'library',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutLibraryTitle),
+          redirect: (_, __) => '/exercise-library',
         ),
         GoRoute(
           path: 'diary',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutDiaryTitle),
+          redirect: (_, __) => '/dashboard/schedule',
         ),
         GoRoute(
           path: 'stats',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, _) => WorkoutPlaceholderScreen(title: AppLocalizations.of(context).workoutStatsTitle),
+          redirect: (_, __) => '/dashboard',
         ),
       ],
     ),

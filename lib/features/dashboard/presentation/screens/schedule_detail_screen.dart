@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../domain/session_detail_loader.dart';
+import '../widgets/session_detail_view.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
 
 class ScheduleDetailScreen extends StatefulWidget {
   const ScheduleDetailScreen({super.key});
@@ -218,101 +217,20 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                 ),
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(
-                        StitchM3Theme.radiusLg,
-                      ),
-                      border: Border.all(
-                        color: cs.outline.withValues(alpha: 0.5),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          DateFormat.yMMMEd(
-                            l10n.localeName,
-                          ).format(snapshot.event.day),
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          snapshot.event.customerName,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: cs.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${snapshot.event.programName} · ${snapshot.event.sessionLabel}',
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                        if ((snapshot.phase ?? '').trim().isNotEmpty) ...[
-                          const SizedBox(height: 6),
-                          Text(
-                            snapshot.phase!,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
+          : SessionDetailView(
+              snapshot: snapshot,
+              onOpenBuilder: () {
+                navigateTo(
+                  context,
+                  customerWorkoutEditorPath(
+                    snapshot.event.customerId,
+                    planId: snapshot.event.planId,
+                    weekIndex: snapshot.event.weekIndex,
+                    dayIndex: snapshot.event.dayIndex,
                   ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(
-                        StitchM3Theme.radiusLg,
-                      ),
-                    ),
-                    child: Text(
-                      l10n.sessionDetailExercisesCount(snapshot.exerciseCount),
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        color: cs.onSurface,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () {
-                      navigateTo(
-                        context,
-                        customerWorkoutEditorPath(
-                          snapshot.event.customerId,
-                          planId: snapshot.event.planId,
-                          weekIndex: snapshot.event.weekIndex,
-                          dayIndex: snapshot.event.dayIndex,
-                        ),
-                      );
-                    },
-                    icon: const Icon(Icons.open_in_new),
-                    label: Text(l10n.sessionDetailOpenBuilder),
-                  ),
-                  const SizedBox(height: 8),
-                  OutlinedButton.icon(
-                    onPressed: () => _showSessionActions(snapshot.event),
-                    icon: const Icon(Icons.check_circle_outline),
-                    label: Text(l10n.sessionMarkPlanned),
-                  ),
-                ],
-              ),
+                );
+              },
+              onSessionActions: () => _showSessionActions(snapshot.event),
             ),
     );
   }
