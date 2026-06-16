@@ -652,6 +652,7 @@
   "syncIssuePathLabel": "Path",
   "syncNoIssues": "No sync issues need attention",
   "syncRetry": "Retry",
+  "syncIssueDiscard": "Discard operation",
   "syncRetryStarted": "Retry queued for {count} operations",
   "@syncRetryStarted": {
     "placeholders": {

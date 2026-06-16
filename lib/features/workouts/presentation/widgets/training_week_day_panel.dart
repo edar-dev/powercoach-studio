@@ -302,25 +302,27 @@ class TrainingWeekDayPanel extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Expanded(
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              children: [
-                Positioned.fill(
-                  child: exerciseListBuilder(context, weekIndex, dayIndex, day),
-                ),
-                if (onAddExercise != null)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4, bottom: 12),
-                    child: FloatingActionButton.extended(
-                      heroTag: 'workout_builder_add_exercise',
-                      onPressed: () => onAddExercise!(weekIndex, dayIndex),
-                      backgroundColor: StitchM3Theme.accent,
-                      foregroundColor: Colors.white,
-                      icon: const Icon(Icons.add),
-                      label: Text(l10n.workoutBuilderAddExercise),
-                    ),
+            child: RepaintBoundary(
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Positioned.fill(
+                    child: exerciseListBuilder(context, weekIndex, dayIndex, day),
                   ),
-              ],
+                  if (onAddExercise != null)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4, bottom: 12),
+                      child: FloatingActionButton.extended(
+                        heroTag: 'workout_builder_add_exercise',
+                        onPressed: () => onAddExercise!(weekIndex, dayIndex),
+                        backgroundColor: StitchM3Theme.accent,
+                        foregroundColor: Colors.white,
+                        icon: const Icon(Icons.add),
+                        label: Text(l10n.workoutBuilderAddExercise),
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ] else ...[

@@ -4,6 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
+import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 
 enum MobilitySource { createNew, fromMobilityLibrary, fromExerciseLibrary }
 
@@ -65,6 +66,7 @@ class AddMobilityExerciseDialogContentState
   final Map<String, String> _mobilityParentName = {};
   final Map<String, int> _exerciseDepth = {};
   final Map<String, String> _exerciseParentName = {};
+  final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
 
   bool get _apiConfigured => true;
 
@@ -87,6 +89,7 @@ class AddMobilityExerciseDialogContentState
 
   @override
   void dispose() {
+    _exerciseFilter.cancel();
     _titleController.dispose();
     _subtitleController.dispose();
     super.dispose();
@@ -336,10 +339,11 @@ class AddMobilityExerciseDialogContentState
                         )
                       : const TextEditingValue(),
                   optionsBuilder: (TextEditingValue value) {
-                    final query = value.text.trim().toLowerCase();
-                    if (query.isEmpty) return libraryOptions;
-                    return libraryOptions.where(
-                      (e) => displayName(e).toLowerCase().contains(query),
+                    return _exerciseFilter.optionsFor<CustomExerciseItem>(
+                      query: value.text,
+                      options: libraryOptions,
+                      displayName: displayName,
+                      isActive: () => mounted,
                     );
                   },
                   displayStringForOption: displayName,

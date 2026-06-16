@@ -93,16 +93,14 @@ void main() {
       expect(entities['plan-1']?.deleted, isFalse);
     });
 
-    test('retry failed op clears error and increments retry count', () async {
+    test('discard removes pending operation', () async {
       pendingOps.add(
-        op(status: PendingOperationStatus.failed),
+        op(status: PendingOperationStatus.deadLetter),
       );
 
-      await resolver.retry(pendingOps.single);
+      await resolver.discard(pendingOps.single);
 
-      expect(pendingOps.single.status, PendingOperationStatus.pending);
-      expect(pendingOps.single.retryCount, 1);
-      expect(pendingOps.single.errorMessage, isNull);
+      expect(pendingOps, isEmpty);
     });
   });
 

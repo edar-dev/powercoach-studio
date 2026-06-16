@@ -1570,6 +1570,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get syncRetry => 'Retry';
 
   @override
+  String get syncIssueDiscard => 'Discard operation';
+
+  @override
   String syncRetryStarted(int count) {
     return 'Retry queued for $count operations';
   }
