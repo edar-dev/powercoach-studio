@@ -21,6 +21,9 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     required this.onInitialWeekChanged,
     required this.onCurrentWeekChanged,
     this.onMetadataChanged,
+    this.planCompleted = false,
+    this.planArchived = false,
+    this.onMarkCompleted,
   });
 
   final WorkoutRoutine routine;
@@ -34,6 +37,9 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
   final ValueChanged<String> onInitialWeekChanged;
   final ValueChanged<int> onCurrentWeekChanged;
   final VoidCallback? onMetadataChanged;
+  final bool planCompleted;
+  final bool planArchived;
+  final VoidCallback? onMarkCompleted;
 
   @override
   Widget build(BuildContext context) {
@@ -236,6 +242,33 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
             ),
             onChanged: (_) => onMetadataChanged?.call(),
           ),
+          if (planCompleted || planArchived) ...[
+            const SizedBox(height: 24),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                if (planArchived)
+                  Chip(
+                    label: Text(l10n.workoutPlanStatusArchived),
+                    avatar: const Icon(Icons.inventory_2_outlined, size: 18),
+                  ),
+                if (planCompleted)
+                  Chip(
+                    label: Text(l10n.workoutPlanStatusCompleted),
+                    avatar: const Icon(Icons.check_circle_outline, size: 18),
+                  ),
+              ],
+            ),
+          ],
+          if (onMarkCompleted != null) ...[
+            const SizedBox(height: 24),
+            FilledButton.tonalIcon(
+              onPressed: onMarkCompleted,
+              icon: const Icon(Icons.flag_outlined),
+              label: Text(l10n.workoutPlanCompleteAction),
+            ),
+          ],
         ],
       ],
     );

@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
+import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 
 enum MobilitySource { createNew, fromMobilityLibrary, fromExerciseLibrary }
@@ -52,6 +55,7 @@ class AddMobilityExerciseDialogContent extends StatefulWidget {
 class AddMobilityExerciseDialogContentState
     extends State<AddMobilityExerciseDialogContent> {
   final _customExerciseRepo = CustomExerciseRepository();
+  final _recentStore = RecentExercisesStore.instance;
   MobilitySource _source = MobilitySource.fromMobilityLibrary;
   final _titleController = TextEditingController();
   final _subtitleController = TextEditingController();
@@ -183,6 +187,7 @@ class AddMobilityExerciseDialogContentState
             final id = res['id']?.toString();
             if (id != null && mounted) {
               customExerciseId = id;
+              unawaited(_recentStore.recordUse(id));
               widget.onSave(title, subtitle, customExerciseId);
               Navigator.of(context).pop();
             }
@@ -209,6 +214,9 @@ class AddMobilityExerciseDialogContentState
         break;
     }
 
+    if (customExerciseId != null && customExerciseId.isNotEmpty) {
+      unawaited(_recentStore.recordUse(customExerciseId));
+    }
     widget.onSave(title, subtitle, customExerciseId);
     Navigator.of(context).pop();
   }

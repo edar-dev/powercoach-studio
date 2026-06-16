@@ -7,7 +7,10 @@ typedef EntityUpserter = Future<void> Function(OfflineEntity entity);
 typedef EntityDeleter =
     Future<void> Function(OfflineEntityType type, String entityId);
 
-/// Applies keep-local / accept-remote / retry decisions for pending sync ops.
+/// Applies keep-local / accept-remote / retry / discard for pending sync ops.
+///
+/// Updates local outbox and entity cache only. Remote replay requires
+/// [SyncOrchestrator] when online sync is re-enabled.
 class PendingOperationResolver {
   PendingOperationResolver({
     OfflineLocalStore? store,
