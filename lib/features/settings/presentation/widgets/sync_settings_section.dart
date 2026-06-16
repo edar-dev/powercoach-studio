@@ -5,6 +5,7 @@ import '../../../../core/storage/offline_local_store.dart';
 import '../../../../core/sync/pending_operation_resolver.dart';
 import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
+import '../../../../core/sync/local_first_sync_config.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../widgets/app_snackbar.dart';
 
@@ -62,12 +63,16 @@ class _SyncSettingsSectionState extends State<SyncSettingsSection> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          l10n.settingsSyncSectionTitle,
+          kLocalFirstSyncMode
+              ? l10n.localDataQueueTitle
+              : l10n.settingsSyncSectionTitle,
           style: theme.textTheme.titleSmall?.copyWith(color: cs.primary),
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.settingsSyncSectionSubtitle(_queued, _attention),
+          kLocalFirstSyncMode
+              ? l10n.localDataQueueSubtitle
+              : l10n.settingsSyncSectionSubtitle(_queued, _attention),
           style: theme.textTheme.bodySmall?.copyWith(
             color: cs.onSurfaceVariant,
           ),
@@ -78,7 +83,11 @@ class _SyncSettingsSectionState extends State<SyncSettingsSection> {
             _attention > 0 ? Icons.sync_problem : Icons.sync,
             color: _attention > 0 ? cs.error : cs.onSurfaceVariant,
           ),
-          title: Text(l10n.syncIssuesScreenTitle),
+          title: Text(
+            kLocalFirstSyncMode
+                ? l10n.localDataQueueTitle
+                : l10n.syncIssuesScreenTitle,
+          ),
           subtitle: _loading
               ? null
               : Text(

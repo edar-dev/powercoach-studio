@@ -28,6 +28,7 @@ void main() {
     expect(followUp.currentWeek, 1);
     expect(followUp.sessionCompletionByKey, isEmpty);
     expect(followUp.sessionSkippedByKey, isEmpty);
+    expect(followUp.sessionExecutions, isEmpty);
   });
 
   test('prepareFollowUpRoutine keeps source start date when not provided', () {

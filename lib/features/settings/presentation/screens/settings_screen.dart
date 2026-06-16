@@ -13,6 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/backup/backup_path_reader.dart';
 import '../../../../core/backup/user_data_backup_codec.dart';
 import '../../../../core/backup/user_data_backup_service.dart';
+import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/notifications/notification_scheduler_service.dart';
 import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/settings/settings_prefs_keys.dart';
@@ -34,6 +35,8 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
+  bool _calendarRemindersEnabled = false;
+  int _calendarReminderLeadHours = CalendarReminderScheduler.defaultLeadHours;
   bool _loadingPrefs = true;
 
   @override
@@ -45,6 +48,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     var enabled = prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+    final calendarEnabled =
+        prefs.getBool(SettingsPrefsKeys.calendarRemindersEnabled) ?? false;
+    final leadHours =
+        prefs.getInt(SettingsPrefsKeys.calendarReminderLeadHours) ??
+        CalendarReminderScheduler.defaultLeadHours;
 
     if (!kIsWeb &&
         NotificationSchedulerService.instance.supportsLocalNotifications) {
@@ -60,8 +68,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
     setState(() {
       _notificationsEnabled = enabled;
+      _calendarRemindersEnabled = calendarEnabled;
+      _calendarReminderLeadHours = leadHours;
       _loadingPrefs = false;
     });
+  }
+
+  Future<void> _onCalendarRemindersToggle(bool value) async {
+    final l10n = AppLocalizations.of(context);
+    if (kIsWeb) {
+      showAppSnackBar(context, content: Text(l10n.reminderWebNotSupported));
+      return;
+    }
+    if (value && !_notificationsEnabled) {
+      showAppSnackBar(
+        context,
+        content: Text(l10n.settingsNotificationsDescription),
+      );
+      return;
+    }
+    await CalendarReminderScheduler.instance.setEnabled(value);
+    if (!mounted) return;
+    setState(() => _calendarRemindersEnabled = value);
+  }
+
+  Future<void> _pickCalendarLeadHours(AppLocalizations l10n) async {
+    const options = [12, 24, 48];
+    final selected = await showModalBottomSheet<int>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: options
+              .map(
+                (hours) => ListTile(
+                  title: Text(l10n.settingsCalendarReminderLeadHours(hours)),
+                  trailing: _calendarReminderLeadHours == hours
+                      ? const Icon(Icons.check)
+                      : null,
+                  onTap: () => Navigator.of(ctx).pop(hours),
+                ),
+              )
+              .toList(),
+        ),
+      ),
+    );
+    if (selected == null || !mounted) return;
+    await CalendarReminderScheduler.instance.setLeadHours(selected);
+    if (!mounted) return;
+    setState(() => _calendarReminderLeadHours = selected);
   }
 
   Future<void> _onNotificationsToggle(bool value) async {
@@ -233,30 +289,62 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
 
     if (!mounted) return;
-    final confirmed = await showDialog<bool>(
+    final counts = UserDataBackupService.instance.previewCounts(parsed);
+    final decision = await showDialog<_BackupImportDecision>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.settingsBackupImportConfirmTitle),
-        content: Text(l10n.settingsBackupImportConfirmMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(l10n.exerciseLibraryCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: TextButton.styleFrom(
-              foregroundColor: Theme.of(ctx).colorScheme.error,
-            ),
-            child: Text(l10n.settingsBackupImportConfirmReplace),
-          ),
-        ],
+      builder: (ctx) => _BackupImportPreviewDialog(
+        l10n: l10n,
+        counts: counts,
       ),
     );
-    if (confirmed != true || !mounted) return;
+    if (decision == null || !mounted) return;
+
+    if (decision.replaceAll) {
+      final typed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) {
+          final controller = TextEditingController();
+          return AlertDialog(
+            title: Text(l10n.backupImportPreviewTitle),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(l10n.backupImportTypeConfirm),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controller,
+                  decoration: InputDecoration(
+                    hintText: l10n.backupImportTypeConfirmHint,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(l10n.exerciseLibraryCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(
+                  controller.text.trim().toUpperCase() ==
+                      l10n.backupImportTypeConfirmHint,
+                ),
+                child: Text(l10n.backupImportConfirm),
+              ),
+            ],
+          );
+        },
+      );
+      if (typed != true || !mounted) return;
+    }
 
     try {
-      await UserDataBackupService.instance.restoreParsed(parsed, uid);
+      if (decision.replaceAll) {
+        await UserDataBackupService.instance.restoreParsed(parsed, uid);
+      } else {
+        await UserDataBackupService.instance.mergeRestore(parsed, uid);
+      }
       await _loadPreferences();
       if (!mounted) return;
       showAppSnackBar(context, content: Text(l10n.settingsBackupImportSuccess));
@@ -304,6 +392,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   value: _notificationsEnabled,
                   onChanged: kIsWeb ? null : _onNotificationsToggle,
                 ),
+                SwitchListTile(
+                  title: Text(l10n.settingsCalendarRemindersTitle),
+                  subtitle: Text(
+                    l10n.settingsCalendarRemindersSubtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  value: _calendarRemindersEnabled,
+                  onChanged: kIsWeb || !_notificationsEnabled
+                      ? null
+                      : _onCalendarRemindersToggle,
+                ),
+                if (_calendarRemindersEnabled)
+                  ListTile(
+                    title: Text(l10n.settingsCalendarReminderLead),
+                    subtitle: Text(
+                      l10n.settingsCalendarReminderLeadHours(
+                        _calendarReminderLeadHours,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: kIsWeb ? null : () => _pickCalendarLeadHours(l10n),
+                  ),
                 const Divider(height: 32),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -363,6 +475,80 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _BackupImportDecision {
+  const _BackupImportDecision({required this.replaceAll});
+
+  final bool replaceAll;
+}
+
+class _BackupImportPreviewDialog extends StatefulWidget {
+  const _BackupImportPreviewDialog({
+    required this.l10n,
+    required this.counts,
+  });
+
+  final AppLocalizations l10n;
+  final BackupPreviewCounts counts;
+
+  @override
+  State<_BackupImportPreviewDialog> createState() =>
+      _BackupImportPreviewDialogState();
+}
+
+class _BackupImportPreviewDialogState extends State<_BackupImportPreviewDialog> {
+  var _replaceAll = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = widget.l10n;
+    final counts = widget.counts;
+
+    return AlertDialog(
+      title: Text(l10n.backupImportPreviewTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.backupImportCounts(
+              counts.customers,
+              counts.plans,
+              counts.executions,
+            ),
+          ),
+          const SizedBox(height: 16),
+          RadioListTile<bool>(
+            value: false,
+            groupValue: _replaceAll,
+            onChanged: (v) => setState(() => _replaceAll = v ?? false),
+            title: Text(l10n.backupImportMerge),
+            contentPadding: EdgeInsets.zero,
+          ),
+          RadioListTile<bool>(
+            value: true,
+            groupValue: _replaceAll,
+            onChanged: (v) => setState(() => _replaceAll = v ?? true),
+            title: Text(l10n.backupImportReplaceAll),
+            contentPadding: EdgeInsets.zero,
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(l10n.exerciseLibraryCancel),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(
+            context,
+          ).pop(_BackupImportDecision(replaceAll: _replaceAll)),
+          child: Text(l10n.backupImportConfirm),
+        ),
+      ],
     );
   }
 }

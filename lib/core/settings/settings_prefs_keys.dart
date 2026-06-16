@@ -17,4 +17,10 @@ abstract final class SettingsPrefsKeys {
 
   /// JSON list of pinned custom exercise IDs.
   static const pinnedExerciseIdsJson = 'pinned_exercise_ids_json_v1';
+
+  /// When true, schedule reminders before planned calendar sessions.
+  static const calendarRemindersEnabled = 'settings_calendar_reminders_enabled';
+
+  /// Hours before a session when the calendar reminder fires (default 24).
+  static const calendarReminderLeadHours = 'settings_calendar_reminder_lead_hours';
 }

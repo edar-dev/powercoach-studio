@@ -50,12 +50,6 @@ String? resolveAppRouteRedirect(GoRouterState state) {
   if (path == '/workouts/library') {
     return '/exercise-library';
   }
-  if (path == '/workouts/diary') {
-    return '/dashboard/schedule';
-  }
-  if (path == '/workouts/stats') {
-    return '/dashboard';
-  }
 
   return null;
 }

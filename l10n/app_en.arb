@@ -929,5 +929,66 @@
   "hevyExportSuccess": "Routine created on Hevy.",
   "hevyExportError": "Hevy export failed. Try again.",
   "hevyExportNoCatalogHint": "Sync the Hevy catalog from Settings or Exercise Library first.",
-  "calendarExportHevy": "Export to Hevy"
+  "calendarExportHevy": "Export to Hevy",
+  "workoutDiaryTitle": "Workout diary",
+  "workoutDiaryEmpty": "No logged sessions yet. Mark a session complete from the schedule to start your diary.",
+  "workoutDiaryFilterAll": "All clients",
+  "coachStatsTitle": "Coach stats",
+  "coachStatsAdherence": "Adherence",
+  "coachStatsCompletedSessions": "Completed sessions",
+  "coachStatsSkippedSessions": "Skipped sessions",
+  "coachStatsActiveClients": "Active clients",
+  "coachStatsPeriod7d": "Last 7 days",
+  "coachStatsPeriod30d": "Last 30 days",
+  "sessionLogTitle": "Log session",
+  "sessionLogNotesHint": "Session notes (optional)",
+  "sessionLogSave": "Save session",
+  "sessionLogExercisesLabel": "Exercises performed",
+  "customerProgressTitle": "Training progress",
+  "customerProgressAdherence": "Adherence (30 days)",
+  "customerProgressLastSession": "Last session",
+  "customerProgressRecentPrs": "Recent PRs",
+  "customerProgressNoData": "No training data yet. Assign a plan and log sessions to see progress.",
+  "customerProgressNoSession": "No sessions logged",
+  "customerProgressDaysAgo": "{count} days ago",
+  "@customerProgressDaysAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "customerProgressToday": "Today",
+  "customerProgressYesterday": "Yesterday",
+  "settingsCalendarRemindersTitle": "Session reminders",
+  "settingsCalendarRemindersSubtitle": "Notify before scheduled sessions",
+  "settingsCalendarReminderLead": "Remind me",
+  "settingsCalendarReminderLeadHours": "{hours} hours before",
+  "@settingsCalendarReminderLeadHours": {
+    "placeholders": {
+      "hours": { "type": "int" }
+    }
+  },
+  "workoutFollowUpFromExecution": "Use loads from last execution",
+  "workoutFollowUpFromExecutionHint": "Based on {count} logged sessions",
+  "@workoutFollowUpFromExecutionHint": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutFollowUpNoExecutionData": "No execution data — structure only will be copied.",
+  "localDataQueueTitle": "Local data queue",
+  "localDataQueueSubtitle": "Pending local operations",
+  "backupImportPreviewTitle": "Import backup",
+  "backupImportReplaceAll": "Replace all local data",
+  "backupImportMerge": "Merge by id (keep newer)",
+  "backupImportConfirm": "Import",
+  "backupImportCounts": "{customers} clients · {plans} plans · {executions} session logs",
+  "@backupImportCounts": {
+    "placeholders": {
+      "customers": { "type": "int" },
+      "plans": { "type": "int" },
+      "executions": { "type": "int" }
+    }
+  },
+  "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
+  "backupImportTypeConfirmHint": "IMPORT"
 }

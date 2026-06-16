@@ -7,6 +7,7 @@ import '../../../../core/sync/offline_models.dart';
 import '../../../../core/sync/pending_operation_resolver.dart';
 import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
+import '../../../../core/sync/local_first_sync_config.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_snackbar.dart';
@@ -66,7 +67,11 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.syncIssuesScreenTitle),
+        title: Text(
+          kLocalFirstSyncMode
+              ? l10n.localDataQueueTitle
+              : l10n.syncIssuesScreenTitle,
+        ),
         actions: [
           IconButton(
             tooltip: l10n.settingsSyncRetryFailed,
@@ -203,21 +208,23 @@ class _SyncIssuesScreenState extends State<SyncIssuesScreen> {
                 child: Text(l10n.syncConflictUseLocal),
               ),
             ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder<bool>(
-              valueListenable: busy,
-              builder: (_, isBusy, __) => OutlinedButton(
-                onPressed: isBusy || op.conflictRemotePayload == null
-                    ? null
-                    : () => _resolve(
-                        sheetContext,
-                        busy,
-                        () => _resolver.acceptRemote(op),
-                        l10n.syncConflictUseRemote,
-                      ),
-                child: Text(l10n.syncConflictUseRemote),
+            if (!kLocalFirstSyncMode) ...[
+              const SizedBox(height: 8),
+              ValueListenableBuilder<bool>(
+                valueListenable: busy,
+                builder: (_, isBusy, __) => OutlinedButton(
+                  onPressed: isBusy || op.conflictRemotePayload == null
+                      ? null
+                      : () => _resolve(
+                          sheetContext,
+                          busy,
+                          () => _resolver.acceptRemote(op),
+                          l10n.syncConflictUseRemote,
+                        ),
+                  child: Text(l10n.syncConflictUseRemote),
+                ),
               ),
-            ),
+            ],
           ] else if (op.status == PendingOperationStatus.failed) ...[
             ValueListenableBuilder<bool>(
               valueListenable: busy,

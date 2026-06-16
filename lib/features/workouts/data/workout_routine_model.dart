@@ -2,6 +2,7 @@
 
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/exercise_summary_sync.dart';
+import '../domain/session_execution.dart';
 
 List<MobilitySection> _defaultMobilitySections() => [
   const MobilitySection(id: 'sec_upper', name: 'Upper Body'),
@@ -55,6 +56,7 @@ class WorkoutRoutine {
     this.sessionCompletionByKey = const {},
     this.sessionSkippedByKey = const {},
     this.sessionOverrides = const {},
+    this.sessionExecutions = const {},
   });
 
   final String name;
@@ -79,6 +81,9 @@ class WorkoutRoutine {
 
   /// Keys `weekIndex-dayIndex-yyyy-MM-dd` → occurrence-level override.
   final Map<String, SessionOverride> sessionOverrides;
+
+  /// Keys `weekIndex-dayIndex` → session execution log.
+  final Map<String, SessionExecution> sessionExecutions;
 
   static String sessionKey(int weekIndex, int dayIndex) =>
       '$weekIndex-$dayIndex';
@@ -108,6 +113,11 @@ class WorkoutRoutine {
     if (sessionOverrides.isNotEmpty)
       'sessionOverrides': {
         for (final entry in sessionOverrides.entries)
+          entry.key: entry.value.toJson(),
+      },
+    if (sessionExecutions.isNotEmpty)
+      'sessionExecutions': {
+        for (final entry in sessionExecutions.entries)
           entry.key: entry.value.toJson(),
       },
   };
@@ -155,6 +165,7 @@ class WorkoutRoutine {
     final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
     final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
     final overrides = _parseSessionOverrides(json['sessionOverrides']);
+    final executions = parseSessionExecutions(json['sessionExecutions']);
 
     return WorkoutRoutine(
       name: json['name'] as String? ?? 'Hypertrophy Phase 1',
@@ -171,6 +182,7 @@ class WorkoutRoutine {
       sessionCompletionByKey: completionByKey,
       sessionSkippedByKey: skippedByKey,
       sessionOverrides: overrides,
+      sessionExecutions: executions,
     );
   }
 
@@ -257,6 +269,7 @@ class WorkoutRoutine {
     Map<String, bool>? sessionCompletionByKey,
     Map<String, bool>? sessionSkippedByKey,
     Map<String, SessionOverride>? sessionOverrides,
+    Map<String, SessionExecution>? sessionExecutions,
   }) => WorkoutRoutine(
     name: name ?? this.name,
     mobilitySections: mobilitySections ?? this.mobilitySections,
@@ -269,6 +282,7 @@ class WorkoutRoutine {
         sessionCompletionByKey ?? this.sessionCompletionByKey,
     sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
     sessionOverrides: sessionOverrides ?? this.sessionOverrides,
+    sessionExecutions: sessionExecutions ?? this.sessionExecutions,
   );
 }
 
