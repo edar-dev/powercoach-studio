@@ -98,6 +98,63 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     });
   }
 
+  Future<void> _showEntryDetail(
+    BuildContext context,
+    SessionExecutionEntry entry,
+    AppLocalizations l10n,
+  ) async {
+    final execution = entry.execution;
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                '${entry.planName} · W${execution.weekIndex + 1} D${execution.dayIndex + 1}',
+                style: Theme.of(ctx).textTheme.titleMedium,
+              ),
+              if (execution.notes.trim().isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(execution.notes),
+              ],
+              if (execution.exercises.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(
+                  l10n.sessionLogExercisesLabel,
+                  style: Theme.of(ctx).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 8),
+                ...execution.exercises.map(
+                  (e) => ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: Icon(
+                      e.completed
+                          ? Icons.check_circle_outline
+                          : Icons.radio_button_unchecked,
+                    ),
+                    title: Text(e.name),
+                    subtitle: e.sets.isEmpty
+                        ? null
+                        : Text(
+                            e.sets
+                                .map((s) => '${s.reps} ${s.load}'.trim())
+                                .join(' · '),
+                          ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -161,6 +218,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     child: ListTile(
                       onTap: () {
                         HapticFeedback.selectionClick();
+                        _showEntryDetail(context, entry, l10n);
                       },
                       title: Text(
                         '${dateFormat.format(date)} · ${_customerName(entry.customerId)}',
