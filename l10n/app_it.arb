@@ -775,6 +775,8 @@
   },
   "customerOverviewViewHistory": "Vedi storico misure",
   "customerOverviewFromProfile": "Dal profilo",
+  "customerOverviewProfileWeightHint": "Peso dal profilo. Aggiungi una misura per seguire l'andamento nel tempo.",
+  "customerOverviewNoSecondaryData": "Nessun dato",
   "customerWorkoutPlans": "Piani di allenamento",
   "customerViewAll": "Vedi tutti",
   "customerNoWorkoutPlansYet": "Nessun piano di allenamento",

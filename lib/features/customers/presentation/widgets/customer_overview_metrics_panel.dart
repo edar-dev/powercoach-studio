@@ -43,42 +43,49 @@ class CustomerOverviewMetricsPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _OverviewStatCard(
-                label: l10n.customerCurrentWeight,
-                value: snapshot.weightKg == null
-                    ? '—'
-                    : CustomerOverviewMetrics.formatMetricValue(
-                        snapshot.weightKg!,
-                        isPercent: false,
-                      ),
-                unit: 'kg',
-                subtitle: snapshot.weightFromProfile
-                    ? l10n.customerOverviewFromProfile
-                    : null,
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: _OverviewStatCard(
+                  label: l10n.customerCurrentWeight,
+                  value: snapshot.weightKg == null
+                      ? '—'
+                      : CustomerOverviewMetrics.formatMetricValue(
+                          snapshot.weightKg!,
+                          isPercent: false,
+                        ),
+                  unit: 'kg',
+                  subtitle: snapshot.weightFromProfile
+                      ? l10n.customerOverviewFromProfile
+                      : null,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _OverviewStatCard(
-                label: snapshot.secondaryLabel,
-                value: snapshot.secondaryValue == null
-                    ? '—'
-                    : CustomerOverviewMetrics.formatMetricValue(
-                        snapshot.secondaryValue!,
-                        isPercent: snapshot.secondaryUnit == '%',
-                      ),
-                unit: snapshot.secondaryUnit,
-                trendText: snapshot.showSecondaryTrend
-                    ? CustomerOverviewMetrics.formatTrendPercent(
-                        snapshot.secondaryTrend!.percentChange!,
-                      )
-                    : null,
+              const SizedBox(width: 16),
+              Expanded(
+                child: _OverviewStatCard(
+                  label: snapshot.secondaryLabel,
+                  value: snapshot.secondaryValue == null
+                      ? '—'
+                      : CustomerOverviewMetrics.formatMetricValue(
+                          snapshot.secondaryValue!,
+                          isPercent: snapshot.secondaryUnit == '%',
+                        ),
+                  unit: snapshot.secondaryUnit,
+                  subtitle: snapshot.secondaryValue == null &&
+                          snapshot.showSecondaryTrend == false
+                      ? l10n.customerOverviewNoSecondaryData
+                      : null,
+                  trendText: snapshot.showSecondaryTrend
+                      ? CustomerOverviewMetrics.formatTrendPercent(
+                          snapshot.secondaryTrend!.percentChange!,
+                        )
+                      : null,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         if (snapshot.lastMeasurementDate != null) ...[
           const SizedBox(height: 8),
@@ -98,7 +105,9 @@ class CustomerOverviewMetricsPanel extends StatelessWidget {
           _OverviewSparkline(points: snapshot.sparklinePoints)
         else
           Text(
-            l10n.customerOverviewNoMeasurements,
+            !snapshot.hasMeasurements && snapshot.weightFromProfile
+                ? l10n.customerOverviewProfileWeightHint
+                : l10n.customerOverviewNoMeasurements,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: cs.onSurfaceVariant,
             ),
@@ -180,35 +189,41 @@ class _OverviewStatCard extends StatelessWidget {
               ),
             ],
           ),
-          if (subtitle != null) ...[
-            const SizedBox(height: 4),
-            Text(
-              subtitle!,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 18,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: subtitle != null
+                  ? Text(
+                      subtitle!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    )
+                  : trendText != null
+                      ? Row(
+                          children: [
+                            Icon(
+                              Icons.trending_up,
+                              size: 14,
+                              color: cs.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              trendText!,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: cs.onSurfaceVariant,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        )
+                      : null,
             ),
-          ],
-          if (trendText != null) ...[
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(
-                  Icons.trending_up,
-                  size: 14,
-                  color: cs.onSurfaceVariant,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  trendText!,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ],
+          ),
         ],
       ),
     );

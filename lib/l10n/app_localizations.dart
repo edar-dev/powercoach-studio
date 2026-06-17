@@ -3370,6 +3370,18 @@ abstract class AppLocalizations {
   /// **'From profile'**
   String get customerOverviewFromProfile;
 
+  /// No description provided for @customerOverviewProfileWeightHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight from profile. Add a measurement to track changes over time.'**
+  String get customerOverviewProfileWeightHint;
+
+  /// No description provided for @customerOverviewNoSecondaryData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data yet'**
+  String get customerOverviewNoSecondaryData;
+
   /// No description provided for @customerWorkoutPlans.
   ///
   /// In en, this message translates to:

@@ -775,6 +775,8 @@
   },
   "customerOverviewViewHistory": "View measurement history",
   "customerOverviewFromProfile": "From profile",
+  "customerOverviewProfileWeightHint": "Weight from profile. Add a measurement to track changes over time.",
+  "customerOverviewNoSecondaryData": "No data yet",
   "customerWorkoutPlans": "Workout plans",
   "customerViewAll": "View all",
   "customerNoWorkoutPlansYet": "No workout plans yet",

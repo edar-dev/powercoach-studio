@@ -200,30 +200,40 @@ class _WeeklyAdherenceStrip extends StatelessWidget {
     final cs = theme.colorScheme;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var i = 0; i < dots.length; i++) ...[
-          if (i > 0) const SizedBox(width: CustomerProgressPanel._weekDotGap),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _WeekDot(dot: dots[i]),
-              const SizedBox(height: 6),
-              SizedBox(
-                width: CustomerProgressPanel._weekDotSize + 20,
-                child: Text(
-                  weekLabelBuilder(i),
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontSize: 10,
-                  ),
-                ),
+        for (var i = 0; i < dots.length; i++)
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(
+                left: i == 0 ? 0 : CustomerProgressPanel._weekDotGap / 2,
+                right: i == dots.length - 1
+                    ? 0
+                    : CustomerProgressPanel._weekDotGap / 2,
               ),
-            ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: _WeekDot(dot: dots[i]),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    weekLabelBuilder(i),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    softWrap: true,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: cs.onSurfaceVariant,
+                      fontSize: 11,
+                      height: 1.2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ],
       ],
     );
   }

@@ -1816,6 +1816,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerOverviewFromProfile => 'Dal profilo';
 
   @override
+  String get customerOverviewProfileWeightHint =>
+      'Peso dal profilo. Aggiungi una misura per seguire l\'andamento nel tempo.';
+
+  @override
+  String get customerOverviewNoSecondaryData => 'Nessun dato';
+
+  @override
   String get customerWorkoutPlans => 'Piani di allenamento';
 
   @override
