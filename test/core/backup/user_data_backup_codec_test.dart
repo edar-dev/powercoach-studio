@@ -150,4 +150,49 @@ void main() {
     expect(parsed.entities.single['type'], 'customerNote');
     expect(parsed.entities.single['scopeId'], 'c1');
   });
+
+  test('previewCountsFromBackup counts session executions in planData', () {
+    final jsonText = jsonEncode(
+      minimalEnvelope(
+        entities: <Map<String, dynamic>>[
+          <String, dynamic>{
+            'id': 'c1',
+            'type': 'customer',
+            'scopeId': 'c1',
+            'payload': <String, dynamic>{'id': 'c1', 'name': 'Marco'},
+            'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
+          <String, dynamic>{
+            'id': 'p1',
+            'type': 'workoutPlan',
+            'scopeId': 'c1',
+            'payload': <String, dynamic>{
+              'id': 'p1',
+              'customerId': 'c1',
+              'planData': jsonEncode({
+                'name': 'Plan',
+                'mobilitySections': [],
+                'mobilityItems': [],
+                'weeks': [],
+                'sessionExecutions': {
+                  '0-0': {'sessionKey': '0-0', 'weekIndex': 0, 'dayIndex': 0},
+                  '0-1': {'sessionKey': '0-1', 'weekIndex': 0, 'dayIndex': 1},
+                },
+              }),
+            },
+            'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
+        ],
+      ),
+    );
+    final parsed = parseUserBackupJson(jsonText, uid);
+    final counts = previewCountsFromBackup(parsed);
+    expect(counts.customers, 1);
+    expect(counts.plans, 1);
+    expect(counts.executions, 2);
+  });
 }

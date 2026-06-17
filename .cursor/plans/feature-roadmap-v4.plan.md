@@ -76,20 +76,26 @@ flowchart LR
 - **30**: decisione esplicita local-only vs SyncOrchestrator; semplificazione UX di conseguenza
 - **31**: restore selettivo, validazione envelope, test compatibilità
 
-## Stato attuale rilevante (post-v3, giu 2026)
+## Stato attuale rilevante (post-v4, giu 2026)
 
 | Area | Stato |
 |------|--------|
-| Session status | `sessionCompletionByKey` + `PlanSessionStatusService` — solo boolean completed/skipped |
-| Session detail | `SessionDetailView` + loader reale; nessun log esercizi eseguiti |
-| Diary / Stats | Route legacy redirect (`/workouts/diary` → schedule, `/workouts/stats` → dashboard) |
-| Dashboard | `DashboardSnapshot` reale da repo locali; nessuna analytics aderenza |
-| Overview cliente | `CustomerOverviewMetrics` da misure reali; aderenza assente |
-| Reminder | `NotificationSchedulerService` + reminder manuali da customer/dashboard |
-| Follow-up | `prepareFollowUpRoutine` clona struttura; ignora esecuzione |
-| Builder | ~1500 righe; mobility/exercise mutations estratte; superset UI nel monolite |
-| Sync | `SyncIssuesScreen` + `SyncReplayHook` no-op; app local-only |
-| Backup | `user_data_backup_v1`; lifecycle markers documentati in codec |
+| Session execution | `sessionExecutions` in planData + `SessionExecutionService` |
+| Session status | `PlanSessionStatusService` sincronizza flag e log |
+| Diary / Stats | `WorkoutDiaryScreen`, `CoachStatsScreen` (route reali) |
+| Session log | `session_log_sheet` da schedule detail |
+| Progress cliente | `CustomerProgressPanel` (aderenza, PR, strip 4 settimane) |
+| Reminder calendario | `CalendarReminderScheduler` + toggle Settings; reschedule on resume/archive |
+| Follow-up | `applyExecutedLoads` da esecuzioni precedenti |
+| Builder fase 3 | `workout_superset_actions.dart` estratto; screen ~1510 righe (target 1000 deferito) |
+| Sync | Local-first (`docs/sync-strategy.md`); coda dati locale |
+| Backup v2 | Preview import, merge by id, conferma IMPORT per replace |
+
+### Deferito post-v4
+
+- Builder screen sotto 1000 righe e `WorkoutSupersetPanel` UI dedicata (F29 parziale)
+- Grafico settimanale in coach stats (KPI numerici presenti)
+- Cloud sync / `SyncOrchestrator` (decisione: local-first)
 
 ## Decisione prodotto obbligatoria (Wave D)
 

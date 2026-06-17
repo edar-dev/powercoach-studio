@@ -8,6 +8,7 @@ import '../../../../widgets/app_sheet.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
 import '../../../workouts/domain/session_execution_service.dart';
@@ -870,6 +871,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   Future<void> _archivePlan(WorkoutPlanApiModel plan) async {
     try {
       await _planRepo.archivePlan(plan.id);
+      await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
     } catch (_) {}
@@ -878,6 +880,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   Future<void> _unarchivePlan(WorkoutPlanApiModel plan) async {
     try {
       await _planRepo.unarchivePlan(plan.id);
+      await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
     } catch (_) {}

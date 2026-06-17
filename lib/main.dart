@@ -7,6 +7,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
+import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
@@ -82,7 +83,7 @@ class _BootstrapApp extends StatefulWidget {
   State<_BootstrapApp> createState() => _BootstrapAppState();
 }
 
-class _BootstrapAppState extends State<_BootstrapApp> {
+class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserver {
   bool _ready = false;
   String? _error;
   final Stopwatch _bootstrapWatch = Stopwatch();
@@ -90,6 +91,7 @@ class _BootstrapAppState extends State<_BootstrapApp> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _bootstrapWatch.start();
     _logStartupStep('bootstrap widget initState', _bootstrapWatch);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -129,6 +131,7 @@ class _BootstrapAppState extends State<_BootstrapApp> {
 
       await NotificationSchedulerService.instance.ensureInitialized();
       await NotificationSchedulerService.instance.syncWithNotificationPreference();
+      await CalendarReminderScheduler.instance.rescheduleUpcoming();
       _logStartupStep('local notifications synced', _bootstrapWatch);
 
       if (!mounted) return;
@@ -142,6 +145,19 @@ class _BootstrapAppState extends State<_BootstrapApp> {
         _error = e.toString();
       });
       _logStartupStep('bootstrap error: $e', _bootstrapWatch);
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(CalendarReminderScheduler.instance.rescheduleUpcoming());
     }
   }
 
