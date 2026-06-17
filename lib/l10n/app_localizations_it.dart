@@ -2227,6 +2227,17 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerProgressYesterday => 'Ieri';
 
   @override
+  String get customerProgressLast4Weeks => 'Ultime 4 settimane';
+
+  @override
+  String get customerProgressThisWeek => 'Questa sett.';
+
+  @override
+  String customerProgressWeeksAgo(int count) {
+    return '$count sett. fa';
+  }
+
+  @override
   String get settingsCalendarRemindersTitle => 'Promemoria sessioni';
 
   @override

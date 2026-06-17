@@ -4114,6 +4114,24 @@ abstract class AppLocalizations {
   /// **'Yesterday'**
   String get customerProgressYesterday;
 
+  /// No description provided for @customerProgressLast4Weeks.
+  ///
+  /// In en, this message translates to:
+  /// **'Last 4 weeks'**
+  String get customerProgressLast4Weeks;
+
+  /// No description provided for @customerProgressThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get customerProgressThisWeek;
+
+  /// No description provided for @customerProgressWeeksAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} wk ago'**
+  String customerProgressWeeksAgo(int count);
+
   /// No description provided for @settingsCalendarRemindersTitle.
   ///
   /// In en, this message translates to:

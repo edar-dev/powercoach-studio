@@ -958,6 +958,14 @@
   },
   "customerProgressToday": "Today",
   "customerProgressYesterday": "Yesterday",
+  "customerProgressLast4Weeks": "Last 4 weeks",
+  "customerProgressThisWeek": "This week",
+  "customerProgressWeeksAgo": "{count} wk ago",
+  "@customerProgressWeeksAgo": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
   "settingsCalendarRemindersTitle": "Session reminders",
   "settingsCalendarRemindersSubtitle": "Notify before scheduled sessions",
   "settingsCalendarReminderLead": "Remind me",
