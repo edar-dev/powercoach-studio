@@ -2062,6 +2062,24 @@ abstract class AppLocalizations {
   /// **'Unsaved'**
   String get workoutEditorUnsavedState;
 
+  /// No description provided for @workoutEditorSaveFailedState.
+  ///
+  /// In en, this message translates to:
+  /// **'Save failed'**
+  String get workoutEditorSaveFailedState;
+
+  /// No description provided for @workoutEditorRetrySave.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get workoutEditorRetrySave;
+
+  /// No description provided for @workoutEditorAutosaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Autosave failed. You can keep editing and retry.'**
+  String get workoutEditorAutosaveFailed;
+
   /// No description provided for @workoutEditorAutosaveHint.
   ///
   /// In en, this message translates to:
@@ -2247,6 +2265,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exercise'**
   String get workoutBuilderExerciseLabel;
+
+  /// No description provided for @workoutBuilderExerciseLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the exercise library.'**
+  String get workoutBuilderExerciseLoadError;
+
+  /// No description provided for @workoutBuilderExerciseRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get workoutBuilderExerciseRetry;
 
   /// No description provided for @workoutBuilderFromLibrary.
   ///
@@ -2457,6 +2487,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete exercise'**
   String get workoutBuilderDeleteExercise;
+
+  /// No description provided for @workoutBuilderDuplicateExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate exercise'**
+  String get workoutBuilderDuplicateExercise;
+
+  /// No description provided for @workoutBuilderExerciseRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise removed'**
+  String get workoutBuilderExerciseRemoved;
+
+  /// No description provided for @workoutBuilderUndo.
+  ///
+  /// In en, this message translates to:
+  /// **'Undo'**
+  String get workoutBuilderUndo;
 
   /// No description provided for @workoutBuilderNavLibrary.
   ///

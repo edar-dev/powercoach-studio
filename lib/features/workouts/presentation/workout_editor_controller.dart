@@ -8,7 +8,7 @@ import '../data/workout_routine_model.dart';
 import '../domain/workout_routine_plan_encoder.dart';
 import 'workout_editor_snapshot.dart';
 
-enum WorkoutEditorSaveState { saved, saving, unsaved }
+enum WorkoutEditorSaveState { saved, saving, unsaved, failed }
 
 /// Editor-mode session inputs used for dirty tracking and persistence.
 class WorkoutEditorSession {
@@ -82,8 +82,7 @@ class WorkoutEditorController extends ChangeNotifier {
     WorkoutEditorPlanUpdater? updatePlan,
     this.autosaveDelay = const Duration(milliseconds: 2500),
     this.dirtyDebounceDelay = const Duration(milliseconds: 300),
-  }) : _getPlanById =
-           getPlanById ?? ((planId) => planRepo!.getById(planId)),
+  }) : _getPlanById = getPlanById ?? ((planId) => planRepo!.getById(planId)),
        _createPlan =
            createPlan ??
            (({
@@ -311,7 +310,7 @@ class WorkoutEditorController extends ChangeNotifier {
       );
     } catch (_) {
       saving = false;
-      saveState = WorkoutEditorSaveState.unsaved;
+      saveState = WorkoutEditorSaveState.failed;
       notifyListeners();
       return const WorkoutEditorSaveOutcome(success: false);
     }

@@ -83,6 +83,7 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   final Map<String, int> _exerciseDepth = {};
   final Map<String, String> _exerciseParentName = {};
   bool _loadingExercises = true;
+  bool _exerciseLoadFailed = false;
   bool _fromLibrary = true;
   CustomExerciseItem? _selectedExercise;
   final _nameController = TextEditingController();
@@ -335,6 +336,12 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   }
 
   Future<void> _loadExercises() async {
+    if (mounted) {
+      setState(() {
+        _loadingExercises = true;
+        _exerciseLoadFailed = false;
+      });
+    }
     try {
       final items = await _customExerciseRepo.getTree();
       final flat = <CustomExerciseItem>[];
@@ -379,10 +386,16 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
           _recentExercises = recent.take(6).toList();
           _pinnedExerciseIds = pinnedIds;
           _loadingExercises = false;
+          _exerciseLoadFailed = false;
         });
       }
     } catch (_) {
-      if (mounted) setState(() => _loadingExercises = false);
+      if (mounted) {
+        setState(() {
+          _loadingExercises = false;
+          _exerciseLoadFailed = true;
+        });
+      }
     }
   }
 
@@ -550,6 +563,35 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
           OutlinedButton(
             onPressed: widget.onCancel,
             child: Text(l10n.customerCancel),
+          ),
+        ],
+      );
+    }
+
+    if (_exerciseLoadFailed && _apiConfigured && _fromLibrary) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const SizedBox(height: 24),
+          Icon(Icons.cloud_off_outlined, size: 40, color: cs.onSurfaceVariant),
+          const SizedBox(height: 12),
+          Text(
+            l10n.workoutBuilderExerciseLoadError,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          FilledButton.icon(
+            onPressed: _loadExercises,
+            icon: const Icon(Icons.refresh),
+            label: Text(l10n.workoutBuilderExerciseRetry),
+          ),
+          const SizedBox(height: 8),
+          OutlinedButton(
+            onPressed: () => setState(() => _fromLibrary = false),
+            child: Text(l10n.workoutBuilderCreateNew),
           ),
         ],
       );

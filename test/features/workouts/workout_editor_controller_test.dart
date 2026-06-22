@@ -126,7 +126,8 @@ void main() {
                 id: planId,
                 name: name ?? existing.name,
                 planData: planDataJson ?? existing.planData,
-                initialWeekNumber: initialWeekNumber ?? existing.initialWeekNumber,
+                initialWeekNumber:
+                    initialWeekNumber ?? existing.initialWeekNumber,
                 phase: phase ?? existing.phase,
                 tags: tags ?? existing.tags,
                 notes: notes ?? existing.notes,
@@ -194,7 +195,8 @@ void main() {
                 id: planId,
                 name: name ?? existing.name,
                 planData: planDataJson ?? existing.planData,
-                initialWeekNumber: initialWeekNumber ?? existing.initialWeekNumber,
+                initialWeekNumber:
+                    initialWeekNumber ?? existing.initialWeekNumber,
                 phase: phase ?? existing.phase,
                 tags: tags ?? existing.tags,
                 notes: notes ?? existing.notes,
@@ -220,72 +222,75 @@ void main() {
       expect(debounced.saveState, WorkoutEditorSaveState.unsaved);
     });
 
-    test('coalesces rapid changes into one dirty update after debounce', () async {
-      final debounced = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
-        createPlan:
-            ({
-              required customerId,
-              required name,
-              required planDataJson,
-              pdfHeader,
-              useCustomPdfHeader = false,
-              initialWeekNumber = 1,
-              phase,
-              tags,
-              notes,
-            }) async {
-              final created = plan(
-                id: 'plan-new',
-                name: name,
-                planData: planDataJson,
-              );
-              plans[created.id] = created;
-              return created;
-            },
-        updatePlan:
-            ({
-              required planId,
-              name,
-              planDataJson,
-              initialWeekNumber,
-              phase,
-              tags,
-              notes,
-            }) async {
-              final existing = plans[planId]!;
-              return plan(
-                id: planId,
-                name: name ?? existing.name,
-                planData: planDataJson ?? existing.planData,
-              );
-            },
-        dirtyDebounceDelay: const Duration(milliseconds: 80),
-      );
-      addTearDown(debounced.dispose);
+    test(
+      'coalesces rapid changes into one dirty update after debounce',
+      () async {
+        final debounced = WorkoutEditorController(
+          getPlanById: (planId) async => plans[planId],
+          createPlan:
+              ({
+                required customerId,
+                required name,
+                required planDataJson,
+                pdfHeader,
+                useCustomPdfHeader = false,
+                initialWeekNumber = 1,
+                phase,
+                tags,
+                notes,
+              }) async {
+                final created = plan(
+                  id: 'plan-new',
+                  name: name,
+                  planData: planDataJson,
+                );
+                plans[created.id] = created;
+                return created;
+              },
+          updatePlan:
+              ({
+                required planId,
+                name,
+                planDataJson,
+                initialWeekNumber,
+                phase,
+                tags,
+                notes,
+              }) async {
+                final existing = plans[planId]!;
+                return plan(
+                  id: planId,
+                  name: name ?? existing.name,
+                  planData: planDataJson ?? existing.planData,
+                );
+              },
+          dirtyDebounceDelay: const Duration(milliseconds: 80),
+        );
+        addTearDown(debounced.dispose);
 
-      debounced.markLoaded(session: session());
-      debounced.scheduleContentChanged(
-        session: session(planName: 'Plan A'),
-        editorMode: true,
-        loading: false,
-      );
-      debounced.scheduleContentChanged(
-        session: session(planName: 'Plan B'),
-        editorMode: true,
-        loading: false,
-      );
-      debounced.scheduleContentChanged(
-        session: session(planName: 'Plan C'),
-        editorMode: true,
-        loading: false,
-      );
+        debounced.markLoaded(session: session());
+        debounced.scheduleContentChanged(
+          session: session(planName: 'Plan A'),
+          editorMode: true,
+          loading: false,
+        );
+        debounced.scheduleContentChanged(
+          session: session(planName: 'Plan B'),
+          editorMode: true,
+          loading: false,
+        );
+        debounced.scheduleContentChanged(
+          session: session(planName: 'Plan C'),
+          editorMode: true,
+          loading: false,
+        );
 
-      await Future<void>.delayed(const Duration(milliseconds: 100));
+        await Future<void>.delayed(const Duration(milliseconds: 100));
 
-      expect(debounced.isDirty, isTrue);
-      expect(debounced.saveState, WorkoutEditorSaveState.unsaved);
-    });
+        expect(debounced.isDirty, isTrue);
+        expect(debounced.saveState, WorkoutEditorSaveState.unsaved);
+      },
+    );
 
     test('marks dirty after metadata change', () {
       controller.markLoaded(session: session());
@@ -308,10 +313,7 @@ void main() {
         loadedInitialWeekNumber: 1,
       );
       controller.notifyContentChanged(
-        session: session(
-          planName: 'Plan A',
-          phase: 'Strength',
-        ),
+        session: session(planName: 'Plan A', phase: 'Strength'),
         editorMode: true,
         loading: false,
       );
@@ -356,17 +358,13 @@ void main() {
         planId: 'plan-1',
       );
       controller.notifyContentChanged(
-        session: session(
-          routine: routine.copyWith(currentWeek: 2),
-        ),
+        session: session(routine: routine.copyWith(currentWeek: 2)),
         editorMode: true,
         loading: false,
       );
 
       await controller.save(
-        session: session(
-          routine: routine.copyWith(currentWeek: 2),
-        ),
+        session: session(routine: routine.copyWith(currentWeek: 2)),
         customerId: 'cust-1',
       );
 
@@ -374,6 +372,160 @@ void main() {
       expect(savedJson, contains('"archivedAt"'));
       expect(savedJson, contains('"completedAt"'));
       expect(savedJson, contains('"currentWeek":2'));
+    });
+
+    test('autosave fires once after dirty existing plan delay', () async {
+      var autosaveCalls = 0;
+      final autosaving = WorkoutEditorController(
+        getPlanById: (planId) async => plans[planId],
+        createPlan:
+            ({
+              required customerId,
+              required name,
+              required planDataJson,
+              pdfHeader,
+              useCustomPdfHeader = false,
+              initialWeekNumber = 1,
+              phase,
+              tags,
+              notes,
+            }) async => plan(id: 'created', name: name, planData: planDataJson),
+        updatePlan:
+            ({
+              required planId,
+              name,
+              planDataJson,
+              initialWeekNumber,
+              phase,
+              tags,
+              notes,
+            }) async => plans[planId]!,
+        autosaveDelay: const Duration(milliseconds: 30),
+      );
+      addTearDown(autosaving.dispose);
+      autosaving.markLoaded(session: session(), planId: 'plan-1');
+
+      autosaving.notifyContentChanged(
+        session: session(planName: 'Plan B'),
+        editorMode: true,
+        loading: false,
+        onAutosave: () async {
+          autosaveCalls++;
+        },
+      );
+      autosaving.notifyContentChanged(
+        session: session(planName: 'Plan C'),
+        editorMode: true,
+        loading: false,
+        onAutosave: () async {
+          autosaveCalls++;
+        },
+      );
+
+      await Future<void>.delayed(const Duration(milliseconds: 45));
+
+      expect(autosaveCalls, 1);
+    });
+
+    test('autosave is not scheduled for new plans without id', () async {
+      var autosaveCalls = 0;
+      controller.markLoaded(session: session());
+      controller.notifyContentChanged(
+        session: session(planName: 'Draft'),
+        editorMode: true,
+        loading: false,
+        onAutosave: () async {
+          autosaveCalls++;
+        },
+      );
+
+      await Future<void>.delayed(const Duration(milliseconds: 20));
+
+      expect(controller.isDirty, isTrue);
+      expect(autosaveCalls, 0);
+    });
+
+    test('save failure leaves unsaved state', () async {
+      final failing = WorkoutEditorController(
+        getPlanById: (planId) async => plans[planId],
+        createPlan:
+            ({
+              required customerId,
+              required name,
+              required planDataJson,
+              pdfHeader,
+              useCustomPdfHeader = false,
+              initialWeekNumber = 1,
+              phase,
+              tags,
+              notes,
+            }) async => throw StateError('boom'),
+        updatePlan:
+            ({
+              required planId,
+              name,
+              planDataJson,
+              initialWeekNumber,
+              phase,
+              tags,
+              notes,
+            }) async => throw StateError('boom'),
+      );
+      addTearDown(failing.dispose);
+      failing.markLoaded(session: session(), planId: 'plan-1');
+
+      final outcome = await failing.save(
+        session: session(planName: 'Broken'),
+        customerId: 'cust-1',
+      );
+
+      expect(outcome.success, isFalse);
+      expect(failing.saving, isFalse);
+      expect(failing.saveState, WorkoutEditorSaveState.failed);
+    });
+
+    test('shouldShowManualSaveButton reflects loading and editor state', () {
+      expect(
+        controller.shouldShowManualSaveButton(loading: true, editorMode: false),
+        isFalse,
+      );
+      expect(
+        controller.shouldShowManualSaveButton(
+          loading: false,
+          editorMode: false,
+        ),
+        isTrue,
+      );
+
+      controller.markLoaded(session: session(), planId: 'plan-1');
+      expect(
+        controller.shouldShowManualSaveButton(loading: false, editorMode: true),
+        isFalse,
+      );
+
+      controller.notifyContentChanged(
+        session: session(planName: 'Dirty'),
+        editorMode: true,
+        loading: false,
+      );
+      expect(
+        controller.shouldShowManualSaveButton(loading: false, editorMode: true),
+        isTrue,
+      );
+    });
+
+    test('suspendTracking blocks dirty updates', () {
+      controller.markLoaded(session: session());
+      controller.suspendTracking();
+
+      controller.notifyContentChanged(
+        session: session(planName: 'Ignored'),
+        editorMode: true,
+        loading: false,
+      );
+
+      expect(controller.isDirty, isFalse);
+      expect(controller.saveState, WorkoutEditorSaveState.saved);
     });
   });
 }

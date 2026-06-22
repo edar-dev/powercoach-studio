@@ -1069,6 +1069,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutEditorUnsavedState => 'Unsaved';
 
   @override
+  String get workoutEditorSaveFailedState => 'Save failed';
+
+  @override
+  String get workoutEditorRetrySave => 'Retry';
+
+  @override
+  String get workoutEditorAutosaveFailed =>
+      'Autosave failed. You can keep editing and retry.';
+
+  @override
   String get workoutEditorAutosaveHint =>
       'Changes save automatically. Use Save to force an immediate save.';
 
@@ -1169,6 +1179,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderExerciseLabel => 'Exercise';
+
+  @override
+  String get workoutBuilderExerciseLoadError =>
+      'Could not load the exercise library.';
+
+  @override
+  String get workoutBuilderExerciseRetry => 'Retry';
 
   @override
   String get workoutBuilderFromLibrary => 'From library';
@@ -1278,6 +1295,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderDeleteExercise => 'Delete exercise';
+
+  @override
+  String get workoutBuilderDuplicateExercise => 'Duplicate exercise';
+
+  @override
+  String get workoutBuilderExerciseRemoved => 'Exercise removed';
+
+  @override
+  String get workoutBuilderUndo => 'Undo';
 
   @override
   String get workoutBuilderNavLibrary => 'Library';
