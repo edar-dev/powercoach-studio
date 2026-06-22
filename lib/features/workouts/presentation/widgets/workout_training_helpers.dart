@@ -6,6 +6,7 @@ import '../../../../widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import 'exercise_set_edit_controllers.dart';
+import 'exercise_prescription_scope_selector.dart';
 
 /// Returns list of superset group options for the day (id + label) for "Add to superset" menu.
 List<({String id, String label})> getSupersetGroupOptions(Day day) {
@@ -257,14 +258,14 @@ void showEditExerciseDialog(
                 ),
               ),
             ),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: Text(
-                l10n.workoutExerciseScopeAllWeeks,
-                style: theme.textTheme.bodyMedium,
+            ExercisePrescriptionScopeSelector(
+              value: allWeeksScope
+                  ? ExercisePrescriptionScope.allWeeks
+                  : ExercisePrescriptionScope.perWeek,
+              onChanged: (scope) => setState(
+                () =>
+                    allWeeksScope = scope == ExercisePrescriptionScope.allWeeks,
               ),
-              value: allWeeksScope,
-              onChanged: (value) => setState(() => allWeeksScope = value),
             ),
             if (useMultiSet) ...[
               const SizedBox(height: 12),

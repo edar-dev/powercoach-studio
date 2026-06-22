@@ -5,7 +5,7 @@ import '../../../../theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import 'training_week_day_panel.dart';
-import 'workout_dashed_button.dart';
+import 'workout_superset_panel.dart';
 import 'workout_training_helpers.dart';
 
 class WorkoutTrainingTab extends StatelessWidget {
@@ -25,6 +25,7 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onRenameDay,
     required this.onDeleteDay,
     required this.onAddExercise,
+    required this.onDuplicateExercise,
     required this.onRemoveExercise,
     required this.onMoveExercise,
     required this.onUpdateExercise,
@@ -53,6 +54,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   final void Function(int, int, String) onRenameDay;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int) onAddExercise;
+  final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
   final void Function(
@@ -129,8 +131,7 @@ class WorkoutTrainingTab extends StatelessWidget {
         exerciseListBuilder: (context, weekIndex, dayIndex, day) {
           final l10n = AppLocalizations.of(context);
           final partition = partitionExercisesBySuperset(day.exercises);
-          final itemCount =
-              partition.length + (day.exercises.isEmpty ? 1 : 0);
+          final itemCount = partition.length + (day.exercises.isEmpty ? 1 : 0);
           return RepaintBoundary(
             child: ListView.builder(
               padding: const EdgeInsets.only(bottom: 96, right: 4),
@@ -170,11 +171,13 @@ class WorkoutTrainingTab extends StatelessWidget {
                     weekIndex: weekIndex,
                     dayIndex: dayIndex,
                     exercises: exercises,
-                    supersetGroupId: exercises.isNotEmpty &&
+                    supersetGroupId:
+                        exercises.isNotEmpty &&
                             exercises.first.supersetGroupId != null
                         ? exercises.first.supersetGroupId!
                         : null,
                     onAddExercise: () => onAddExercise(weekIndex, dayIndex),
+                    onDuplicateExercise: onDuplicateExercise,
                     onAddExerciseToSuperset: onAddExerciseToSuperset,
                     onRemoveExercise: onRemoveExercise,
                     onMoveExercise: onMoveExercise,
@@ -208,6 +211,7 @@ class WorkoutTrainingTab extends StatelessWidget {
       cs: cs,
       exercise: ex,
       compact: true,
+      onDuplicate: () => onDuplicateExercise(weekIndex, dayIndex, ex),
       onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
       onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
       onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
@@ -268,6 +272,7 @@ class _WorkoutSupersetBlock extends StatelessWidget {
     required this.exercises,
     this.supersetGroupId,
     required this.onAddExercise,
+    required this.onDuplicateExercise,
     this.onAddExerciseToSuperset,
     required this.onRemoveExercise,
     required this.onMoveExercise,
@@ -287,6 +292,7 @@ class _WorkoutSupersetBlock extends StatelessWidget {
   final List<Exercise> exercises;
   final String? supersetGroupId;
   final VoidCallback onAddExercise;
+  final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String)? onAddExerciseToSuperset;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
@@ -324,114 +330,80 @@ class _WorkoutSupersetBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        border: Border(left: BorderSide(color: StitchM3Theme.accent, width: 4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.link, size: 18, color: StitchM3Theme.accent),
-              const SizedBox(width: 8),
-              Text(
-                l10n.workoutBuilderSuperSetHeading,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  color: StitchM3Theme.accent,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          ...exercises.map(
-            (ex) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: _WorkoutExerciseCard(
-                theme: theme,
-                cs: cs,
-                exercise: ex,
-                compact: false,
-                linked: true,
-                onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-                onMoveUp: () =>
-                    onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
-                onMoveDown: () =>
-                    onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
-                onEdit:
-                    (
-                      name,
-                      sets,
-                      reps,
-                      rpe,
-                      note, {
-                      setDetails,
-                      shortName,
-                      prescriptionScope,
-                    }) => onUpdateExercise(
-                      weekIndex,
-                      dayIndex,
-                      ex.id,
-                      name: name,
-                      sets: sets,
-                      reps: reps,
-                      rpe: rpe,
-                      note: note,
-                      setDetails: setDetails,
-                      shortName: shortName,
-                      prescriptionScope: prescriptionScope,
-                    ),
-                onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-                onUpdateSet: (setIndex, sets, reps, load, note) =>
-                    onUpdateExerciseSet(
-                      weekIndex,
-                      dayIndex,
-                      ex.id,
-                      setIndex,
-                      sets: sets,
-                      reps: reps,
-                      rpe: load,
-                      note: note,
-                    ),
-                onRemoveSet: (setIndex) =>
-                    onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
-                supersetOptions: supersetOptionsForDay
-                    .where((o) => o.id != ex.supersetGroupId)
-                    .toList(),
-                onAssignToSuperset: onAssignToSuperset != null
-                    ? (groupId) => onAssignToSuperset!(
-                        weekIndex,
-                        dayIndex,
-                        ex.id,
-                        groupId,
-                      )
-                    : null,
-                onRemoveFromSuperset: onRemoveFromSuperset != null
-                    ? () => onRemoveFromSuperset!(weekIndex, dayIndex, ex.id)
-                    : null,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          WorkoutDashedButton(
-            icon: Icons.add,
-            label: l10n.workoutBuilderAddExercise,
-            onPressed:
-                supersetGroupId != null && onAddExerciseToSuperset != null
-                ? () => onAddExerciseToSuperset!(
+    return WorkoutSupersetPanel(
+      theme: theme,
+      colorScheme: cs,
+      onAddExercise: supersetGroupId != null && onAddExerciseToSuperset != null
+          ? () =>
+                onAddExerciseToSuperset!(weekIndex, dayIndex, supersetGroupId!)
+          : onAddExercise,
+      children: [
+        ...exercises.map(
+          (ex) => Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: _WorkoutExerciseCard(
+              theme: theme,
+              cs: cs,
+              exercise: ex,
+              compact: false,
+              linked: true,
+              onDuplicate: () => onDuplicateExercise(weekIndex, dayIndex, ex),
+              onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
+              onMoveUp: () =>
+                  onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+              onMoveDown: () =>
+                  onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
+              onEdit:
+                  (
+                    name,
+                    sets,
+                    reps,
+                    rpe,
+                    note, {
+                    setDetails,
+                    shortName,
+                    prescriptionScope,
+                  }) => onUpdateExercise(
                     weekIndex,
                     dayIndex,
-                    supersetGroupId!,
-                  )
-                : onAddExercise,
+                    ex.id,
+                    name: name,
+                    sets: sets,
+                    reps: reps,
+                    rpe: rpe,
+                    note: note,
+                    setDetails: setDetails,
+                    shortName: shortName,
+                    prescriptionScope: prescriptionScope,
+                  ),
+              onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
+              onUpdateSet: (setIndex, sets, reps, load, note) =>
+                  onUpdateExerciseSet(
+                    weekIndex,
+                    dayIndex,
+                    ex.id,
+                    setIndex,
+                    sets: sets,
+                    reps: reps,
+                    rpe: load,
+                    note: note,
+                  ),
+              onRemoveSet: (setIndex) =>
+                  onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
+              supersetOptions: supersetOptionsForDay
+                  .where((o) => o.id != ex.supersetGroupId)
+                  .toList(),
+              onAssignToSuperset: onAssignToSuperset != null
+                  ? (groupId) =>
+                        onAssignToSuperset!(weekIndex, dayIndex, ex.id, groupId)
+                  : null,
+              onRemoveFromSuperset: onRemoveFromSuperset != null
+                  ? () => onRemoveFromSuperset!(weekIndex, dayIndex, ex.id)
+                  : null,
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -443,6 +415,7 @@ class _WorkoutExerciseCard extends StatelessWidget {
     required this.exercise,
     required this.compact,
     this.linked = false,
+    this.onDuplicate,
     this.onRemove,
     this.onMoveUp,
     this.onMoveDown,
@@ -460,6 +433,7 @@ class _WorkoutExerciseCard extends StatelessWidget {
   final Exercise exercise;
   final bool compact;
   final bool linked;
+  final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
   final VoidCallback? onMoveDown;
@@ -533,6 +507,7 @@ class _WorkoutExerciseCard extends StatelessWidget {
         : details.first.displayText;
     final hasMenu =
         onEdit != null ||
+        onDuplicate != null ||
         onRemove != null ||
         onMoveUp != null ||
         onMoveDown != null ||
@@ -603,6 +578,8 @@ class _WorkoutExerciseCard extends StatelessWidget {
                       onSelected: (value) {
                         if (value == 'edit') {
                           _openEditDialog(context);
+                        } else if (value == 'duplicate') {
+                          onDuplicate?.call();
                         } else if (value == 'up') {
                           onMoveUp?.call();
                         } else if (value == 'down') {
@@ -636,6 +613,13 @@ class _WorkoutExerciseCard extends StatelessWidget {
                             PopupMenuItem(
                               value: 'down',
                               child: Text(menuL10n.workoutBuilderMoveDown),
+                            ),
+                          if (onDuplicate != null)
+                            PopupMenuItem(
+                              value: 'duplicate',
+                              child: Text(
+                                menuL10n.workoutBuilderDuplicateExercise,
+                              ),
                             ),
                           if (onAssignToSuperset != null)
                             PopupMenuItem(

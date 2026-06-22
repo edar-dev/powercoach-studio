@@ -16,8 +16,8 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../../theme/stitch_m3_theme.dart';
 import '../../../../widgets/app_sheet.dart';
+import '../../data/workout_draft_store.dart';
 import '../../data/workout_routine_model.dart';
-import '../../data/workout_routine_storage.dart';
 import '../../data/workout_plan_repository.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -28,12 +28,14 @@ import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/export_pdf_usecase.dart';
 import '../../domain/workout_exercise_mutations.dart';
+import '../../domain/workout_import_export_coordinator.dart';
 import '../../domain/workout_mobility_mutations.dart';
 import '../../domain/workout_routine_mutations.dart';
 import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_plan_list_helpers.dart';
-import '../../domain/workout_routine_json_codec.dart';
+import '../workout_builder_session_controller.dart';
 import '../workout_editor_controller.dart';
+import '../workout_editor_snapshot.dart';
 import '../widgets/workout_builder_bottom_nav.dart';
 import '../widgets/workout_editor_app_bar.dart';
 import '../widgets/workout_editor_save_status_indicator.dart';
@@ -86,31 +88,48 @@ class _WorkoutBuilderMobilityScreenState
   final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
+  final WorkoutDraftStore _draftStore = const SharedPrefsWorkoutDraftStore();
+  late final WorkoutBuilderSessionController _builderSession;
   late final WorkoutEditorController _editorController;
   Customer? _editorCustomer;
-  WorkoutRoutine _routine = WorkoutRoutine.empty();
   bool _loading = true;
   bool _saving = false;
   bool _planCompleted = false;
   bool _planArchived = false;
   int _initialWeekNumber = 1;
   int _selectedMobilitySectionIndex = 0;
-  int _selectedWeekIndex = 0;
-  int _selectedDayIndex = 0;
+  String? _standaloneSavedSnapshot;
   int? _pendingSelectedWeekIndex;
   int? _pendingSelectedDayIndex;
   bool _didReadDeepLinkSelection = false;
   late final TabController _sectionTabController;
 
+  WorkoutRoutine get _routine => _builderSession.routine;
+  set _routine(WorkoutRoutine value) => _builderSession.setRoutine(value);
+
+  int get _selectedWeekIndex => _builderSession.selectedWeekIndex;
+  set _selectedWeekIndex(int value) => _builderSession.selectWeek(value);
+
+  int get _selectedDayIndex => _builderSession.selectedDayIndex;
+  set _selectedDayIndex(int value) => _builderSession.selectDay(value);
+
   bool get _showsMobilityTab =>
       widget.variant == WorkoutBuilderVariant.mobility;
 
-  bool get _isDirty =>
-      widget.editorMode ? _editorController.isDirty : false;
+  bool get _isDirty => widget.editorMode ? _editorController.isDirty : false;
+
+  bool get _isStandaloneDirty {
+    if (widget.editorMode || _standaloneSavedSnapshot == null) return false;
+    return isWorkoutEditorDirty(
+      savedSnapshot: _standaloneSavedSnapshot,
+      currentSnapshot: _standaloneSnapshot(),
+    );
+  }
 
   @override
   void initState() {
     super.initState();
+    _builderSession = WorkoutBuilderSessionController();
     _editorController = WorkoutEditorController(planRepo: _planRepo);
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
@@ -156,6 +175,21 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
+  String _standaloneSnapshot() => buildWorkoutEditorSnapshot(
+    routine: _routine,
+    planName: _routineNameController.text,
+    initialWeekNumber: _initialWeekNumber,
+    phase: _phaseController.text,
+    tags: _tagsController.text,
+    notes: _notesController.text,
+  );
+
+  void _captureStandaloneSnapshot() {
+    if (!widget.editorMode) {
+      _standaloneSavedSnapshot = _standaloneSnapshot();
+    }
+  }
+
   void _scheduleEditorContentChanged() {
     if (!widget.editorMode || _loading) {
       return;
@@ -178,9 +212,14 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _onMetadataEdited() {
-    if (!widget.editorMode || _editorController.trackingSuspended || _loading || !mounted) {
+    if (_loading || !mounted) {
       return;
     }
+    if (!widget.editorMode) {
+      setState(() {});
+      return;
+    }
+    if (_editorController.trackingSuspended) return;
     setState(() {});
   }
 
@@ -189,7 +228,7 @@ class _WorkoutBuilderMobilityScreenState
       await _loadForEditorMode();
       return;
     }
-    final loaded = await WorkoutRoutineStorage.load();
+    final loaded = await _draftStore.load();
     if (!mounted) return;
     setState(() {
       _routine = hydrateScheduledWeekdays(loaded);
@@ -198,6 +237,7 @@ class _WorkoutBuilderMobilityScreenState
       _selectedDayIndex = 0;
       _loading = false;
     });
+    _captureStandaloneSnapshot();
   }
 
   Future<void> _loadForEditorMode() async {
@@ -358,7 +398,22 @@ class _WorkoutBuilderMobilityScreenState
             ),
           );
         }
-      } else if (!silent) {
+      } else if (silent) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context).workoutEditorAutosaveFailed,
+            ),
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: AppLocalizations.of(context).workoutEditorRetrySave,
+              onPressed: () {
+                _saveRoutine();
+              },
+            ),
+          ),
+        );
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(AppLocalizations.of(context).workoutExportError),
@@ -376,11 +431,12 @@ class _WorkoutBuilderMobilityScreenState
     final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
 
     try {
-      await WorkoutRoutineStorage.save(toSave);
+      await _draftStore.save(toSave);
       if (!mounted) return true;
       setState(() {
         _routine = toSave;
       });
+      _captureStandaloneSnapshot();
       if (!silent) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -483,7 +539,11 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Future<void> _handleExitAttempt() async {
-    if (!widget.editorMode || !_isDirty) {
+    if (!widget.editorMode && !_isStandaloneDirty) {
+      _navigateBackToPreviousScreen();
+      return;
+    }
+    if (widget.editorMode && !_isDirty) {
       _navigateBackToPreviousScreen();
       return;
     }
@@ -617,7 +677,11 @@ class _WorkoutBuilderMobilityScreenState
       } else {
         throw const FormatException('empty file');
       }
-      final imported = decodeWorkoutRoutineJson(content);
+      final importResult = parseWorkoutRoutineImport(content);
+      final imported = importResult.routine;
+      if (imported == null) {
+        throw FormatException(importResult.failureReason?.name ?? 'invalid');
+      }
       if (!mounted) return;
       setState(() {
         _routine = hydrateScheduledWeekdays(imported);
@@ -748,10 +812,7 @@ class _WorkoutBuilderMobilityScreenState
 
   void _removeMobilityItem(String id) {
     setState(() {
-      _routine = removeMobilityItemFromRoutine(
-        routine: _routine,
-        itemId: id,
-      );
+      _routine = removeMobilityItemFromRoutine(routine: _routine, itemId: id);
     });
   }
 
@@ -906,7 +967,10 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _deleteWeek(int weekIndex) {
-    final updated = deleteWeekFromRoutine(routine: _routine, weekIndex: weekIndex);
+    final updated = deleteWeekFromRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+    );
     if (updated == null) return;
     setState(() {
       _routine = updated;
@@ -961,7 +1025,8 @@ class _WorkoutBuilderMobilityScreenState
     if (updated == null) return;
     setState(() {
       _routine = updated;
-      final week = _routine.weeks[weekIndex.clamp(0, _routine.weeks.length - 1)];
+      final week =
+          _routine.weeks[weekIndex.clamp(0, _routine.weeks.length - 1)];
       _selectedDayIndex = _selectedDayIndex.clamp(
         0,
         week.days.isNotEmpty ? week.days.length - 1 : 0,
@@ -1051,6 +1116,20 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
+    final day =
+        weekIndex >= 0 &&
+            weekIndex < _routine.weeks.length &&
+            dayIndex >= 0 &&
+            dayIndex < _routine.weeks[weekIndex].days.length
+        ? _routine.weeks[weekIndex].days[dayIndex]
+        : null;
+    Exercise? removed;
+    for (final exercise in day?.exercises ?? const <Exercise>[]) {
+      if (exercise.id == exerciseId) {
+        removed = exercise;
+        break;
+      }
+    }
     final updated = removeExerciseFromDayInRoutine(
       routine: _routine,
       weekIndex: weekIndex,
@@ -1059,6 +1138,40 @@ class _WorkoutBuilderMobilityScreenState
     );
     if (updated == null) return;
     setState(() => _routine = updated);
+    final removedExercise = removed;
+    if (removedExercise == null || !mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.workoutBuilderExerciseRemoved),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: l10n.workoutBuilderUndo,
+          onPressed: () {
+            final restored = addExerciseToDayInRoutine(
+              routine: _routine,
+              weekIndex: weekIndex,
+              dayIndex: dayIndex,
+              exercise: removedExercise,
+            );
+            if (restored == null || !mounted) return;
+            setState(() => _routine = restored);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _duplicateExercise(int weekIndex, int dayIndex, Exercise exercise) {
+    final newId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+    final duplicated = _builderSession.duplicateExercise(
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      source: exercise,
+      newExerciseId: newId,
+    );
+    if (!duplicated) return;
+    setState(() {});
   }
 
   void _moveExerciseInDay(
@@ -1211,6 +1324,7 @@ class _WorkoutBuilderMobilityScreenState
 
   @override
   void dispose() {
+    _builderSession.dispose();
     _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
     _initialWeekController.removeListener(_onMetadataEdited);
@@ -1280,7 +1394,8 @@ class _WorkoutBuilderMobilityScreenState
       onMetadataChanged: _onMetadataEdited,
       planCompleted: _planCompleted,
       planArchived: _planArchived,
-      onMarkCompleted: _editorController.loadedPlanId != null &&
+      onMarkCompleted:
+          _editorController.loadedPlanId != null &&
               !_planCompleted &&
               !_planArchived
           ? _markPlanCompletedFromEditor
@@ -1353,6 +1468,7 @@ class _WorkoutBuilderMobilityScreenState
       onRenameDay: _renameDay,
       onDeleteDay: _deleteDay,
       onAddExercise: _addExerciseToDay,
+      onDuplicateExercise: _duplicateExercise,
       onRemoveExercise: _removeExercise,
       onMoveExercise: _moveExerciseInDay,
       onUpdateExercise: _updateExercise,
@@ -1478,7 +1594,7 @@ class _WorkoutBuilderMobilityScreenState
 
     if (!widget.editorMode) {
       return buildShell(
-        canPop: true,
+        canPop: !_isStandaloneDirty,
         saving: _saving,
         showManualSaveButton: true,
         saveStatusIndicator: null,
@@ -1502,6 +1618,9 @@ class _WorkoutBuilderMobilityScreenState
                 textTheme: theme.textTheme,
                 editorMode: widget.editorMode,
                 hasLoadedPlan: _editorController.loadedPlanId != null,
+                onRetry: () {
+                  _saveRoutine();
+                },
               )
             : null,
       ),
