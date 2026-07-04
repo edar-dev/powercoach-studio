@@ -1,20 +1,20 @@
 ---
-description: Drift ORM, SQLite schema, and offline sync conventions
+description: Drift ORM, SQLite schema, and local storage conventions
 globs: lib/core/storage/**,lib/core/sync/**
 alwaysApply: false
 ---
 
-# Offline Sync & Drift ORM
+# Local Storage & Drift ORM
 
 ## Database Schema (`lib/core/storage/app_database.dart`)
 
 | Table | Purpose |
 |-------|---------|
-| `LocalEntities` | Cached remote entities (JSON payload, keyed by `userId + type + id`) |
-| `PendingOperations` | Write outbox — mutations waiting to be replayed to the API |
-| `SyncMetaEntries` | Per-user key/value store for sync cursors / last-fetched markers |
+| `LocalEntities` | Local entity cache (JSON payload, keyed by `userId + type + id`) |
+| `PendingOperations` | Legacy outbox — retained for sync-issues UI; no remote replay today |
+| `SyncMetaEntries` | Per-user key/value metadata |
 
-`AppDatabase` is a singleton — obtain via `getIt` if registered, or `AppDatabase()` in tests.
+`AppDatabase` is obtained via `OfflineLocalStore` or constructed directly in tests.
 
 ## Drift Rules
 
@@ -24,7 +24,6 @@ alwaysApply: false
 ```dart
 await db.transaction(() async {
   await db.into(db.localEntities).insertOnConflictUpdate(row);
-  await db.into(db.pendingOperations).insert(op);
 });
 ```
 
@@ -36,16 +35,16 @@ dart run build_runner build --delete-conflicting-outputs
 
 The generated file is `app_database.g.dart` — do not edit it manually.
 
-## PendingOperations Lifecycle
+## PendingOperations (legacy)
 
-```
-status: 0 = pending  →  1 = in-flight  →  2 = done
-                                        →  3 = conflict
-                                        →  4 = error
-```
+Status codes: `0` pending · `1` in-flight · `2` done · `3` conflict · `4` error.
 
-`retryCount` is incremented by `SyncOrchestrator` on transient failures. Do not reset it manually.
+The app is local-only; operations are not replayed to a remote API. Use `sync_issues_screen` filters only when debugging stale rows.
 
 ## Schema Migrations
 
 Increment `AppDatabase.schemaVersion` and add a `MigrationStrategy` with `onUpgrade` for every breaking table change. Never drop the schema silently.
+
+## SharedPreferences
+
+Use for lightweight per-user prefs (locale, notification toggle, workout drafts, Hevy API key). Keys are centralized in `lib/core/settings/settings_prefs_keys.dart` where possible.

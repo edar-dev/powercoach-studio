@@ -8,7 +8,7 @@ import 'package:powercoach_studio/features/auth/presentation/screens/forgot_pass
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/registration_screen.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
-import 'package:powercoach_studio/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 Widget _wrapWithApp(Widget child) {
   return MaterialApp(

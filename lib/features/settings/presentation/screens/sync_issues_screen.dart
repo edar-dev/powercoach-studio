@@ -9,9 +9,9 @@ import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
 import '../../../../core/sync/local_first_sync_config.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_snackbar.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 
 /// Lists failed/conflict sync operations and lets the coach resolve them.
 class SyncIssuesScreen extends StatefulWidget {

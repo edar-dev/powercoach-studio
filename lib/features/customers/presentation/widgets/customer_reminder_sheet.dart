@@ -9,7 +9,7 @@ import '../../../../core/notifications/reminder.dart';
 import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/settings/settings_prefs_keys.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 
 /// Date + time picker → save [Reminder] and schedule OS notification.
 Future<void> _composeReminderWithTitle(

@@ -7,8 +7,8 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../data/workout_plan_api_model.dart';

@@ -8,9 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_snackbar.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/import_file_reader.dart';
 import '../../data/pinned_exercises_store.dart';
@@ -20,7 +20,7 @@ import '../../../integrations/hevy/data/hevy_api_models.dart';
 import '../../../integrations/hevy/data/hevy_catalog_import_service.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
 import '../../../integrations/hevy/domain/exercise_catalog_source.dart';
-import '../widgets/custom_exercise_edit_dialog.dart';
+import 'package:powercoach_studio/features/exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen({super.key});

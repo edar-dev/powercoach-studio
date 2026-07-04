@@ -10,7 +10,7 @@ import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/presentation/widgets/session_log_sheet.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../domain/session_detail_loader.dart';
-import '../widgets/session_detail_view.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/session_detail_view.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class ScheduleDetailScreen extends StatefulWidget {

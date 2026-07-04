@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';

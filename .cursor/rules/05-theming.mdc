@@ -8,26 +8,24 @@ alwaysApply: false
 
 ## Active Theme
 
-`StitchM3Theme` (`lib/theme/stitch_m3_theme.dart`) is the **canonical** theme.  
-`AppTheme` in `lib/core/theme/app_theme.dart` is a secondary design-token layer — prefer `StitchM3Theme` for new work.
+`StitchM3Theme` (`lib/core/theme/stitch_m3_theme.dart`) is the **only** theme and design-token source.
 
 The app defaults to **dark mode** (`ThemeMode.dark`).
 
 ## Color Usage
 
-Always resolve colors from the active `ColorScheme` — never hardcode hex values.
+Prefer resolving colors from the active `ColorScheme`. `StitchM3Theme` static tokens (e.g. `StitchM3Theme.accent`) are acceptable for Stitch pixel-match widgets.
 
 ```dart
-// ✅ GOOD
+// ✅ GOOD — theme-aware
 final cs = Theme.of(context).colorScheme;
 Container(color: cs.surface);
-Text('Hello', style: TextStyle(color: cs.onSurface));
 
-// ❌ BAD
-Container(color: const Color(0xFF121212));
+// ✅ OK — Stitch tokens in feature widgets
+Container(color: StitchM3Theme.accent);
 ```
 
-Brand primary blue is `#0D59F2` — it is exposed as `colorScheme.primary` in `StitchM3Theme`.
+Brand primary blue is `#0D59F2` — exposed as `colorScheme.primary` in `StitchM3Theme`.
 
 ## Typography
 

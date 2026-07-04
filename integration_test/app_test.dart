@@ -1,5 +1,5 @@
 // E2E tests for PowerCoach Studio: UI and user interaction.
-// Requires .env with SUPABASE_URL and SUPABASE_ANON_KEY so the app can build the router.
+// Requires Supabase credentials in the bundled env asset (see scripts/ensure-env.sh).
 // Run: flutter test integration_test/
 
 import 'package:flutter/material.dart';
@@ -9,20 +9,19 @@ import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:powercoach_studio/app.dart';
-import 'package:powercoach_studio/core/di/service_locator.dart';
+import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 
 Future<void> _initForTest() async {
   try {
-    await dotenv.load(fileName: '.env');
+    await loadAppEnv();
   } catch (_) {
-    // .env optional for local runs; Supabase.initialize will be no-op if empty
+    // Optional for local runs; Supabase.initialize will be no-op if empty
   }
   final url = dotenv.env['SUPABASE_URL']?.trim() ?? '';
   final key = dotenv.env['SUPABASE_ANON_KEY']?.trim() ?? '';
   if (url.isNotEmpty && key.isNotEmpty) {
     await Supabase.initialize(url: url, anonKey: key);
   }
-  configureDependencies();
 }
 
 void main() {

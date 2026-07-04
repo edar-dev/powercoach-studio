@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/coach_stats_loader.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Coach-facing adherence and activity KPIs.
 class CoachStatsScreen extends StatefulWidget {

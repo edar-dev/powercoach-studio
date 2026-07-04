@@ -10,7 +10,7 @@ import '../../domain/calendar_event_loader.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 /// Lista completa "Today's Schedule" – route /dashboard/schedule.
 /// Mostra solo elementi reali derivati dai piani con start date valorizzata.

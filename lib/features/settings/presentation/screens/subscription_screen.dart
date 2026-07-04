@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 
 import '../../../../core/storage/local_user_profile_store.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Subscription Settings – Stitch screen ID 1224a49f9c5849fcb205e965ebc0b9a4.
 /// Shows current plan from local profile storage.

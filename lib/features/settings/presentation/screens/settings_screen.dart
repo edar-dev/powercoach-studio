@@ -19,9 +19,9 @@ import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/settings/settings_prefs_keys.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
-import '../widgets/sync_settings_section.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/sync_settings_section.dart';
 import '../../../integrations/hevy/presentation/hevy_settings_section.dart';
 
 /// Simplified App Settings – Stitch screen ID 8ab8a84172594c1c9911b5762e2a7257.

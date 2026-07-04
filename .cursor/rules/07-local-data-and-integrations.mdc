@@ -1,0 +1,42 @@
+---
+description: Local data persistence and Hevy integration (replaces legacy GymBlog.API rule)
+globs: lib/core/storage/**,lib/core/backup/**,lib/features/integrations/**
+alwaysApply: false
+---
+
+# Local Data & Integrations
+
+## Local persistence
+
+Business data is **local-first**. Use these entry points:
+
+| Layer | Use for |
+|-------|---------|
+| `OfflineLocalStore` | Customers, workout plans, entities in Drift |
+| Feature `*Store` / `*Repository` classes | Feature-specific reads/writes |
+| `SharedPreferences` | Settings, drafts, exercise pins, Hevy API key |
+| `UserDataBackupService` | JSON backup export/import |
+
+Always scope reads/writes by authenticated Supabase `userId`.
+
+```dart
+final store = OfflineLocalStore.instance;
+await store.ensureReady(userId);
+// use store methods — never raw Supabase for business CRUD
+```
+
+## Hevy integration (optional)
+
+The only external REST integration is **Hevy** export:
+
+- Client: `lib/features/integrations/hevy/data/hevy_api_client.dart` (Dio)
+- API key: stored in SharedPreferences via `HevySettingsStore`
+- Instantiate `HevyApiClient` directly in the integration layer — no service locator
+
+Handle errors at the presentation boundary; show user-facing messages from l10n.
+
+## Do not add
+
+- GymBlog.API client or `GYMBLOG_API_URL` wiring
+- Remote sync replay without an approved plan (see `.cursor/plans/feature-30-sync-strategy-v2.plan.md`)
+- Direct Supabase table CRUD for coach/client/workout data

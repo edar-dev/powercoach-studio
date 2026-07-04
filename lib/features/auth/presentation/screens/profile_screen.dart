@@ -7,9 +7,9 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/stitch_card.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_card.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Updated Coach Profile – matches Stitch prototype (screen ID 5863bd21319d467b828ad322f8670305).
 /// Loads and saves profile locally per authenticated user.

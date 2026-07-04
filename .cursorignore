@@ -1,0 +1,22 @@
+# Generated / build output
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.g.dart
+lib/l10n/app_localizations*.dart
+
+# Design reference assets (large; index via design/*.md instead)
+design/stitch-assets/
+
+# Platform ephemeral symlinks
+**/ephemeral/
+
+# Dependencies
+.pub-cache/
+.flutter_sdk/
+
+# Archives and local env overrides
+Archives/
+.env
+.env.local

@@ -21,10 +21,9 @@ if [[ ! -f web/drift_worker.js ]]; then
     "https://github.com/simolus3/drift/releases/download/drift-2.31.0/drift_worker.js"
 fi
 
-cat > .env <<EOF
+cat > .env.example <<EOF
 SUPABASE_URL=${SUPABASE_URL:-}
 SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-}
-GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
 SENTRY_DSN=${SENTRY_DSN:-}
 SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
 EOF

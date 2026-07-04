@@ -6,7 +6,7 @@ import 'package:powercoach_studio/features/workouts/presentation/widgets/workout
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_plan_details_tab.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_editor_controller.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
-import 'package:powercoach_studio/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(

@@ -4,7 +4,7 @@
 **Project ID:** `13531110169329089006`
 
 Estratti da Stitch: layout, colori HEX, typography (fontSize, weight), spacing, elevation/shadows.  
-Implementazione Flutter: `lib/screens/`, `lib/widgets/`, Material 3 (`ThemeData(useMaterial3: true)`), solo Material widgets.
+Implementazione Flutter: `lib/core/ui/widgets/`, `lib/features/`, Material 3 (`StitchM3Theme`), solo Material widgets.
 
 ---
 
@@ -34,7 +34,7 @@ Implementazione Flutter: `lib/screens/`, `lib/widgets/`, Material 3 (`ThemeData(
 
 ## Design tokens (pixel-perfect)
 
-- **Colori HEX (Stitch):** vedi `lib/theme/stitch_m3_theme.dart`: primary/accent `#0D59F2`, background-light/bgSecondary `#F5F6F8`, bg `#FFFFFF`, textPrimary `#1F2937`, textMuted `#6B7280`, border `#E5E7EB`, accentLight `#E8EEFE`, logo gradient `#3B82F6` → `#9333EA`, danger/success/warning.
+- **Colori HEX (Stitch):** vedi `lib/core/theme/stitch_m3_theme.dart`: primary/accent `#0D59F2`, background-light/bgSecondary `#F5F6F8`, bg `#FFFFFF`, textPrimary `#1F2937`, textMuted `#6B7280`, border `#E5E7EB`, accentLight `#E8EEFE`, logo gradient `#3B82F6` → `#9333EA`, danger/success/warning.
 - **Spacing:** padding 16, 24; gap 16, 24, 32; `formFieldSpacing = 20`; `radiusMd = 8`, `radiusLg = 12`, `radiusXl = 16`.
 - **Typography:** displayMedium 36px w700, headlineMedium 24 w700, titleLarge 18 w600, body 16/14, label 14 w500.
 - **Cards:** bg white, rounded-xl (12), border gray-200, shadow blur 10, offset (0, 2), alpha 0.05.

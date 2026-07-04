@@ -7,7 +7,7 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/ui/breakpoints.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../data/hevy_api_client.dart';
 import '../data/hevy_api_models.dart';
 import '../data/hevy_catalog_import_service.dart';

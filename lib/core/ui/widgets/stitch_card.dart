@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 /// Card Stitch: superficie dal tema (light/dark), rounded-xl (12), bordo, shadow-sm.
 /// Se [useTheme] è true (default quando usato in schermate con tema), usa colorScheme.

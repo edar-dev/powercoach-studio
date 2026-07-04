@@ -1,5 +1,5 @@
 name: Setup Flutter app
-description: Install Flutter, cache Dart tooling, resolve dependencies, and prepare CI .env
+description: Install Flutter, cache Dart tooling, resolve dependencies, and prepare CI env asset
 
 inputs:
   flutter-version:
@@ -26,16 +26,18 @@ runs:
           dart-tool-${{ runner.os }}-${{ hashFiles('pubspec.lock') }}-
           dart-tool-${{ runner.os }}-
 
+    - name: Prepare env asset for CI
+      shell: bash
+      run: |
+        if [ -n "${SUPABASE_URL:-}" ] && [ -n "${SUPABASE_ANON_KEY:-}" ]; then
+          cat > .env.example <<EOF
+        SUPABASE_URL=${SUPABASE_URL}
+        SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+        SENTRY_DSN=${SENTRY_DSN:-}
+        SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-ci}
+        EOF
+        fi
+
     - name: Resolve Flutter dependencies
       shell: bash
       run: flutter pub get
-
-    - name: Prepare .env for CI
-      shell: bash
-      run: |
-        if [ -f .env.example ]; then
-          cp .env.example .env
-        else
-          echo "SUPABASE_URL=https://placeholder.supabase.co" > .env
-          echo "SUPABASE_ANON_KEY=placeholder-anon-key" >> .env
-        fi

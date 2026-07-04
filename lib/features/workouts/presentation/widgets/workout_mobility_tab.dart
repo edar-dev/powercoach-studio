@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 
 class WorkoutMobilityTab extends StatelessWidget {
@@ -126,11 +126,7 @@ class WorkoutMobilityTab extends StatelessWidget {
           child: ReorderableListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             buildDefaultDragHandles: false,
-            onReorder: (oldIndex, newIndex) {
-              var target = newIndex;
-              if (target > oldIndex) target--;
-              onReorderItems(oldIndex, target);
-            },
+            onReorderItem: onReorderItems,
             itemCount: itemsForSelectedSection.length,
             itemBuilder: (context, index) {
               final item = itemsForSelectedSection[index];

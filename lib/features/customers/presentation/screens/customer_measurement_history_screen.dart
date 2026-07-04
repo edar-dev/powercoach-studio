@@ -9,8 +9,8 @@ import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
 import '../../../../core/storage/local_user_profile_store.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
-import '../../../../widgets/pdf_export_progress_dialog.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer_measurement.dart';
 import '../../domain/export_measurement_csv_usecase.dart';
@@ -18,7 +18,7 @@ import '../../domain/export_measurement_pdf_usecase.dart';
 import '../../domain/measurement_metric.dart';
 import '../../domain/measurement_period_compare.dart';
 import '../../domain/measurement_series_builder.dart';
-import '../widgets/measurement_history_chart.dart';
+import 'package:powercoach_studio/features/customers/presentation/widgets/measurement_history_chart.dart';
 
 class CustomerMeasurementHistoryScreen extends StatefulWidget {
   const CustomerMeasurementHistoryScreen({

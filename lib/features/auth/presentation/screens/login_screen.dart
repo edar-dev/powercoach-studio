@@ -6,9 +6,9 @@ import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../utils/auth_error_message.dart';
 
 /// Login Page – matches Stitch prototype (screen ID 3e212f412ed849a9b6bcfc0772cf15fd).

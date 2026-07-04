@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 /// App bar Stitch: logo + titolo, bordo inferiore, solo Material.
 class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {

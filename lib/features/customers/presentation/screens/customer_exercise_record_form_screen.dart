@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/customer_exercise_record_repository.dart';

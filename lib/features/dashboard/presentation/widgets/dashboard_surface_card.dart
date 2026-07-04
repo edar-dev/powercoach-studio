@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 /// Rounded surface used for dashboard section bodies and empty states.
 class DashboardSurfaceCard extends StatelessWidget {

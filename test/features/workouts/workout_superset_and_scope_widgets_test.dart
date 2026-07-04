@@ -4,7 +4,7 @@ import 'package:powercoach_studio/features/workouts/domain/exercise_prescription
 import 'package:powercoach_studio/features/workouts/presentation/widgets/exercise_prescription_scope_selector.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_superset_panel.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
-import 'package:powercoach_studio/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 Widget _wrap(Widget child) {
   return MaterialApp(

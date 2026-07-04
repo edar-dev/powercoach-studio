@@ -5,9 +5,9 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Forgot Password – Stitch ID 3563377ad3864dfca42385fcd5ea0840.
 /// Sends reset link via Supabase Auth resetPasswordForEmail.

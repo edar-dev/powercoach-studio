@@ -1,63 +1,40 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
 import '../../../../core/routing/app_navigation.dart';
-import '../../../../core/export/export_share.dart';
-import '../../../../core/pdf/pdf_coach_header.dart';
-import '../../../../core/pdf/pdf_export_labels_l10n.dart';
-import '../../../../core/storage/local_user_profile_store.dart';
-import '../../../../widgets/pdf_export_progress_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_sheet.dart';
+import '../../../customers/data/models/customer.dart' show Customer;
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_draft_store.dart';
-import '../../data/workout_routine_model.dart';
 import '../../data/workout_plan_repository.dart';
-import 'package:file_picker/file_picker.dart';
-
-import '../../../exercise_library/data/import_file_reader.dart';
+import '../../data/workout_routine_model.dart';
 import '../../domain/day_scheduled_weekday.dart';
-import '../../domain/export_excel_usecase.dart';
-import '../../domain/export_json_usecase.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/export_pdf_usecase.dart';
 import '../../domain/workout_exercise_mutations.dart';
-import '../../domain/workout_import_export_coordinator.dart';
 import '../../domain/workout_mobility_mutations.dart';
-import '../../domain/workout_routine_mutations.dart';
-import '../../../../core/pdf/pdf_plan_metadata.dart';
 import '../../domain/workout_plan_list_helpers.dart';
+import '../../domain/workout_routine_mutations.dart';
+import '../workout_builder_editor_exit.dart';
+import '../workout_builder_export_actions.dart';
 import '../workout_builder_session_controller.dart';
+import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
-import '../widgets/workout_builder_bottom_nav.dart';
-import '../widgets/workout_editor_app_bar.dart';
-import '../widgets/workout_editor_save_status_indicator.dart';
-import '../widgets/workout_export_sheet.dart';
-import '../widgets/exercise_add_sheet.dart';
-import '../widgets/workout_mobility_tab.dart';
-import '../widgets/workout_training_helpers.dart';
-import '../widgets/workout_lazy_tab.dart';
-import '../widgets/workout_superset_actions.dart';
-import '../widgets/workout_training_tab.dart';
-import '../widgets/mobility_add_sheet.dart';
-import '../widgets/workout_plan_details_tab.dart';
-import '../../../integrations/hevy/data/hevy_settings_store.dart';
-import '../../../integrations/hevy/presentation/hevy_export_review_sheet.dart';
-import '../../../customers/data/models/customer.dart' show Customer;
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/exercise_add_sheet.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/mobility_add_sheet.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_editor_shell.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_export_sheet.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_helpers.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_plan_details_tab.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_superset_actions.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_tab.dart';
 
-/// Workout Builder variant: Enhanced Mobility (694ace9b), Multi-set (9ffa631f), Super Set (e63b1ef6), Intuitive Super Set (7ce630e5).
-enum WorkoutBuilderVariant { mobility, multiset, superset, intuitiveSuperset }
-
-enum _WorkoutEditorExitAction { save, discard, cancel }
-
-/// Workout Builder – Enhanced Mobility Controls (Stitch 694ace9b83514965989f12ac2a3d54fa).
+/// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
   const WorkoutBuilderMobilityScreen({
@@ -113,8 +90,15 @@ class _WorkoutBuilderMobilityScreenState
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
   set _selectedDayIndex(int value) => _builderSession.selectDay(value);
 
-  bool get _showsMobilityTab =>
-      widget.variant == WorkoutBuilderVariant.mobility;
+  bool get _showsMobilityTab => widget.variant.showsMobilityTab;
+
+  WorkoutBuilderExportActions get _exportActions => WorkoutBuilderExportActions(
+        context: context,
+        routineNameController: _routineNameController,
+        customerRepo: _customerRepo,
+        editorCustomer: _editorCustomer,
+        editorMode: widget.editorMode,
+      );
 
   bool get _isDirty => widget.editorMode ? _editorController.isDirty : false;
 
@@ -466,305 +450,68 @@ class _WorkoutBuilderMobilityScreenState
     }
   }
 
-  Future<Customer?> _loadCustomerIfNeeded() async {
-    if (widget.editorMode && _editorCustomer != null) return _editorCustomer;
-    final customerId =
-        widget.customerId ??
-        GoRouterState.of(context).uri.queryParameters['customerId'];
-    if (customerId == null || customerId.isEmpty) return null;
-    try {
-      return await _customerRepo.getById(customerId);
-    } catch (_) {
-      return null;
-    }
-  }
-
   void _showPdfExportSheet() {
     showWorkoutExportSheet(
       context: context,
       routine: _routine,
       onExportPdf: (options) {
-        _exportPdfAndShare(
-          options.layout,
+        _exportActions.exportPdf(
+          _routine,
+          layout: options.layout,
           includeMobility: options.includeMobility,
         );
       },
     );
   }
 
-  Future<_WorkoutEditorExitAction?> _showUnsavedChangesDialog() async {
-    final l10n = AppLocalizations.of(context);
-    return showDialog<_WorkoutEditorExitAction>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(l10n.workoutEditorUnsavedTitle),
-        content: Text(l10n.workoutEditorUnsavedMessage),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(
-              dialogContext,
-            ).pop(_WorkoutEditorExitAction.cancel),
-            child: Text(l10n.workoutEditorCancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(
-              dialogContext,
-            ).pop(_WorkoutEditorExitAction.discard),
-            child: Text(l10n.workoutEditorDiscard),
-          ),
-          FilledButton(
-            onPressed: () =>
-                Navigator.of(dialogContext).pop(_WorkoutEditorExitAction.save),
-            child: Text(l10n.workoutEditorSaveAndExit),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _navigateBackToPreviousScreen() {
-    final customerId = widget.customerId;
-    if (widget.editorMode &&
-        customerId != null &&
-        customerId.isNotEmpty &&
-        customerId != kWorkoutPlanTemplateScopeId) {
-      navigateBack(context, fallback: customerWorkoutsPath(customerId));
-      return;
-    }
-    if (widget.editorMode && customerId == kWorkoutPlanTemplateScopeId) {
-      navigateBack(context, fallback: '/workouts/templates');
-      return;
-    }
-    navigateBack(context, fallback: '/workouts/builder');
-  }
-
   Future<void> _handleExitAttempt() async {
     if (!widget.editorMode && !_isStandaloneDirty) {
-      _navigateBackToPreviousScreen();
+      navigateBackFromWorkoutBuilder(
+        context: context,
+        editorMode: widget.editorMode,
+        customerId: widget.customerId,
+      );
       return;
     }
     if (widget.editorMode && !_isDirty) {
-      _navigateBackToPreviousScreen();
+      navigateBackFromWorkoutBuilder(
+        context: context,
+        editorMode: widget.editorMode,
+        customerId: widget.customerId,
+      );
       return;
     }
-    final action = await _showUnsavedChangesDialog();
+    final action = await showWorkoutEditorUnsavedDialog(context);
     if (!mounted ||
         action == null ||
-        action == _WorkoutEditorExitAction.cancel) {
+        action == WorkoutEditorExitAction.cancel) {
       return;
     }
-    if (action == _WorkoutEditorExitAction.discard) {
-      _navigateBackToPreviousScreen();
+    if (action == WorkoutEditorExitAction.discard) {
+      navigateBackFromWorkoutBuilder(
+        context: context,
+        editorMode: widget.editorMode,
+        customerId: widget.customerId,
+      );
       return;
     }
     final didSave = await _saveRoutine();
     if (didSave && mounted) {
-      _navigateBackToPreviousScreen();
-    }
-  }
-
-  Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
-    final labels = AppLocalizations.of(context).toPdfExportLabels();
-    final customer = await _loadCustomerIfNeeded();
-    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-    final profile = await LocalUserProfileStore.instance.read(uid);
-    final email = Supabase.instance.client.auth.currentUser?.email;
-    return buildPdfCoachHeader(
-      labels: labels,
-      customer: customer,
-      profile: profile,
-      authEmail: email,
-    );
-  }
-
-  Future<void> _exportPdfAndShare(
-    WorkoutPdfLayout layout, {
-    required bool includeMobility,
-  }) async {
-    final l10n = AppLocalizations.of(context);
-    final labels = l10n.toPdfExportLabels();
-    final name = _routineNameController.text.trim();
-    final routine = _routine.copyWith(
-      name: name.isEmpty ? _routine.name : name,
-    );
-    showPdfExportProgressDialog(context, message: labels.exportGenerating);
-    try {
-      final customer = await _loadCustomerIfNeeded();
-      final coachHeader = await _resolvePdfCoachHeader();
-      final planMetadata = buildPdfPlanMetadata(
-        routine: routine,
-        labels: labels,
-        clientName: customer?.name,
-      );
-      final artifact = await exportWorkoutRoutineToPdf(
-        routine,
-        labels: labels,
-        coachHeader: coachHeader,
-        planMetadata: planMetadata,
-        layout: layout,
-        includeMobility: includeMobility,
-      );
-      if (!mounted) return;
-      await downloadExportArtifact(artifact);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportSuccess),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    } finally {
-      if (mounted) hidePdfExportProgressDialog(context);
-    }
-  }
-
-  Future<void> _exportJsonAndDownload() async {
-    final l10n = AppLocalizations.of(context);
-    final name = _routineNameController.text.trim();
-    final routine = _routine.copyWith(
-      name: name.isEmpty ? _routine.name : name,
-    );
-    try {
-      final artifact = await exportWorkoutRoutineToJson(routine);
-      if (!mounted) return;
-      await downloadExportArtifact(artifact);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportSuccess),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      navigateBackFromWorkoutBuilder(
+        context: context,
+        editorMode: widget.editorMode,
+        customerId: widget.customerId,
       );
     }
   }
 
   Future<void> _importJsonFromFile() async {
-    final l10n = AppLocalizations.of(context);
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['json'],
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty || !mounted) return;
-
-    final file = result.files.single;
-    try {
-      final String content;
-      if (file.bytes != null) {
-        content = utf8.decode(file.bytes!);
-      } else if (file.path != null) {
-        content = await readImportFileFromPath(file.path!);
-      } else {
-        throw const FormatException('empty file');
-      }
-      final importResult = parseWorkoutRoutineImport(content);
-      final imported = importResult.routine;
-      if (imported == null) {
-        throw FormatException(importResult.failureReason?.name ?? 'invalid');
-      }
-      if (!mounted) return;
-      setState(() {
-        _routine = hydrateScheduledWeekdays(imported);
-        _routineNameController.text = imported.name;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutImportJsonSuccess),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutImportJsonError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
-  Future<void> _exportExcelAndShare() async {
-    final l10n = AppLocalizations.of(context);
-    final name = _routineNameController.text.trim();
-    final routine = _routine.copyWith(
-      name: name.isEmpty ? _routine.name : name,
-    );
-    try {
-      final artifact = await exportWorkoutRoutineToExcel(routine);
-      if (!mounted) return;
-      await downloadExportArtifact(artifact);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportSuccess),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
-  Future<void> _exportCurrentDayToHevy() async {
-    final l10n = AppLocalizations.of(context);
-    final hasKey = await HevySettingsStore.instance.hasApiKey();
-    if (!hasKey) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.hevyExportNoCatalogHint)));
-      return;
-    }
-    if (_routine.weeks.isEmpty) return;
-    final weekIndex = _selectedWeekIndex.clamp(0, _routine.weeks.length - 1);
-    final week = _routine.weeks[weekIndex];
-    if (week.days.isEmpty) return;
-    final dayIndex = _selectedDayIndex.clamp(0, week.days.length - 1);
-    final day = week.days[dayIndex];
-    final programName = _routineNameController.text.trim().isEmpty
-        ? _routine.name
-        : _routineNameController.text.trim();
-
-    if (!mounted) return;
-    await showHevyExportReviewSheet(
-      context: context,
-      day: day,
-      programName: programName,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      customerName: _editorCustomer?.name,
-    );
+    final imported = await _exportActions.importJson();
+    if (imported == null || !mounted) return;
+    setState(() {
+      _routine = hydrateScheduledWeekdays(imported);
+      _routineNameController.text = imported.name;
+    });
   }
 
   String? get _selectedSectionId {
@@ -1340,36 +1087,6 @@ class _WorkoutBuilderMobilityScreenState
     super.dispose();
   }
 
-  Widget _buildRoutineNameBar(
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-      child: TextField(
-        controller: _routineNameController,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: cs.onSurface,
-        ),
-        maxLines: 1,
-        textInputAction: TextInputAction.done,
-        decoration: InputDecoration(
-          isDense: true,
-          border: InputBorder.none,
-          hintText: l10n.workoutBuilderRoutineNameHint,
-          hintStyle: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w500,
-            color: cs.onSurfaceVariant,
-          ),
-          prefixIcon: Icon(Icons.fitness_center, color: StitchM3Theme.accent),
-          prefixIconConstraints: const BoxConstraints(minWidth: 40),
-        ),
-      ),
-    );
-  }
-
   Widget _buildDetailsTab(ThemeData theme, ColorScheme cs) {
     return WorkoutPlanDetailsTab(
       routine: _routine,
@@ -1487,113 +1204,60 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
+  WorkoutBuilderEditorShell _editorShell({
+    required bool canPop,
+    required bool saving,
+    required bool showManualSaveButton,
+    Widget? saveStatusIndicator,
+  }) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final hideExportMenu =
+        widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
+
+    return WorkoutBuilderEditorShell(
+      canPop: canPop,
+      saving: saving,
+      showManualSaveButton: showManualSaveButton,
+      saveStatusIndicator: saveStatusIndicator,
+      editorMode: widget.editorMode,
+      loading: _loading,
+      hideExportMenu: hideExportMenu,
+      showsMobilityTab: _showsMobilityTab,
+      sectionTabController: _sectionTabController,
+      routineNameController: _routineNameController,
+      trainingTab: _buildTrainingTab(theme, cs),
+      mobilityTab: _buildMobilityTab(theme, cs),
+      detailsTab: _buildDetailsTab(theme, cs),
+      showBottomNav: !widget.editorMode,
+      onPopInvoked: _handleExitAttempt,
+      onBack: _handleExitAttempt,
+      onOpenTemplates: () {},
+      onImportJson: _importJsonFromFile,
+      onExport: (value) {
+        if (value == 'pdf') _showPdfExportSheet();
+        if (value == 'excel') _exportActions.exportExcel(_routine);
+        if (value == 'json') _exportActions.exportJson(_routine);
+        if (value == 'hevy') {
+          _exportActions.exportCurrentDayToHevy(
+            routine: _routine,
+            selectedWeekIndex: _selectedWeekIndex,
+            selectedDayIndex: _selectedDayIndex,
+          );
+        }
+      },
+      onSave: () => _saveRoutine(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
-    final hideExportMenu =
-        widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
-
-    Widget buildShell({
-      required bool canPop,
-      required bool saving,
-      required bool showManualSaveButton,
-      Widget? saveStatusIndicator,
-    }) {
-      return PopScope(
-        canPop: canPop,
-        onPopInvokedWithResult: (didPop, _) async {
-          if (didPop) return;
-          await _handleExitAttempt();
-        },
-        child: Scaffold(
-          appBar: WorkoutEditorAppBar(
-            theme: theme,
-            colorScheme: cs,
-            l10n: l10n,
-            editorMode: widget.editorMode,
-            loading: _loading,
-            hideExportMenu: hideExportMenu,
-            saving: saving,
-            showManualSaveButton: showManualSaveButton,
-            onBack: () async {
-              HapticFeedback.mediumImpact();
-              await _handleExitAttempt();
-            },
-            onOpenTemplates: () {
-              HapticFeedback.mediumImpact();
-              context.push('/workouts/templates');
-            },
-            onImportJson: _importJsonFromFile,
-            onExport: (value) {
-              if (value == 'pdf') _showPdfExportSheet();
-              if (value == 'excel') _exportExcelAndShare();
-              if (value == 'json') _exportJsonAndDownload();
-              if (value == 'hevy') _exportCurrentDayToHevy();
-            },
-            onSave: () {
-              _saveRoutine();
-            },
-            saveStatusIndicator: saveStatusIndicator,
-          ),
-          body: _loading
-              ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    _buildRoutineNameBar(theme, cs, l10n),
-                    TabBar(
-                      controller: _sectionTabController,
-                      labelColor: StitchM3Theme.accent,
-                      unselectedLabelColor: cs.onSurfaceVariant,
-                      indicatorColor: StitchM3Theme.accent,
-                      tabs: [
-                        Tab(text: l10n.workoutBuilderTabTraining),
-                        if (_showsMobilityTab)
-                          Tab(text: l10n.workoutBuilderTabMobility),
-                        Tab(text: l10n.workoutBuilderTabDetails),
-                      ],
-                    ),
-                    Expanded(
-                      child: TabBarView(
-                        controller: _sectionTabController,
-                        children: [
-                          WorkoutLazyTab(
-                            tabController: _sectionTabController,
-                            tabIndex: 0,
-                            builder: (_) => RepaintBoundary(
-                              child: _buildTrainingTab(theme, cs),
-                            ),
-                          ),
-                          if (_showsMobilityTab)
-                            WorkoutLazyTab(
-                              tabController: _sectionTabController,
-                              tabIndex: 1,
-                              builder: (_) => RepaintBoundary(
-                                child: _buildMobilityTab(theme, cs),
-                              ),
-                            ),
-                          WorkoutLazyTab(
-                            tabController: _sectionTabController,
-                            tabIndex: _showsMobilityTab ? 2 : 1,
-                            builder: (_) => _buildDetailsTab(theme, cs),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (!widget.editorMode)
-                      WorkoutBuilderBottomNav(
-                        navContext: context,
-                        selectedIndex: 0,
-                      ),
-                  ],
-                ),
-        ),
-      );
-    }
 
     if (!widget.editorMode) {
-      return buildShell(
+      return _editorShell(
         canPop: !_isStandaloneDirty,
         saving: _saving,
         showManualSaveButton: true,
@@ -1603,7 +1267,7 @@ class _WorkoutBuilderMobilityScreenState
 
     return ListenableBuilder(
       listenable: _editorController,
-      builder: (context, _) => buildShell(
+      builder: (context, _) => _editorShell(
         canPop: !_editorController.isDirty,
         saving: _editorController.saving,
         showManualSaveButton: _editorController.shouldShowManualSaveButton(
@@ -1618,9 +1282,7 @@ class _WorkoutBuilderMobilityScreenState
                 textTheme: theme.textTheme,
                 editorMode: widget.editorMode,
                 hasLoadedPlan: _editorController.loadedPlanId != null,
-                onRetry: () {
-                  _saveRoutine();
-                },
+                onRetry: _saveRoutine,
               )
             : null,
       ),

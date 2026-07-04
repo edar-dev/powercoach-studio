@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../../data/customer_notes_repository.dart';
 import '../../domain/models/client_note_message.dart';
 

@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
-import 'package:powercoach_studio/core/di/service_locator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
+import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
 import 'package:powercoach_studio/core/routing/go_router_config.dart';
@@ -25,11 +25,11 @@ Future<void> main() async {
   configureAppRouter();
   _installDebugFrameTimingProbe();
   try {
-    await dotenv.load(fileName: '.env');
+    await loadAppEnv();
     _logStartupStep('dotenv.load completed', startupWatch);
   } catch (_) {
-    debugPrint('powercoach-studio: .env not found; Supabase may not work.');
-    _logStartupStep('dotenv.load skipped (missing .env)', startupWatch);
+    debugPrint('powercoach-studio: $appEnvAssetPath not found; Supabase may not work.');
+    _logStartupStep('dotenv.load skipped (missing $appEnvAssetPath)', startupWatch);
   }
 
   final dsn = dotenv.env['SENTRY_DSN']?.trim();
@@ -122,9 +122,6 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
           _bootstrapWatch,
         );
       }
-
-      configureDependencies();
-      _logStartupStep('configureDependencies completed', _bootstrapWatch);
 
       await AppLocaleController.instance.load();
       _logStartupStep('locale controller loaded', _bootstrapWatch);

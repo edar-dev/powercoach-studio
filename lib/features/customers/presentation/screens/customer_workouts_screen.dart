@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
@@ -14,7 +14,7 @@ import '../../../workouts/domain/plan_session_override_service.dart';
 import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/domain/workout_follow_up_factory.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
-import '../widgets/plan_schedule_strip.dart';
+import 'package:powercoach_studio/features/customers/presentation/widgets/plan_schedule_strip.dart';
 
 /// Lista workout del cliente – route /customers/:id/workouts.
 /// Carica i piani dall'API (WorkoutPlanRepository) e permette di aprirli in modifica.

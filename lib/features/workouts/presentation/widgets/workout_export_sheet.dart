@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/export_pdf_usecase.dart';
 

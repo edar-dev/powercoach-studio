@@ -7,7 +7,7 @@ import '../../../../core/sync/sync_replay_hook.dart';
 import '../../../../core/sync/sync_issue_filters.dart';
 import '../../../../core/sync/local_first_sync_config.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 
 /// Sync queue summary and entry point to issue resolution.
 class SyncSettingsSection extends StatefulWidget {

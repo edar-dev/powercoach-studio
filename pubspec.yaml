@@ -1,5 +1,5 @@
 name: powercoach_studio
-description: "A new Flutter project."
+description: "PowerCoach Studio — Flutter app for gym coaches (local-first, Supabase auth)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -52,7 +52,6 @@ dependencies:
 
   # HTTP client for GymBlog.API (customers, etc.)
   dio: ^5.7.0
-  connectivity_plus: ^6.1.4
 
   # Contact picker for "Import from contacts" (customer prefill)
   flutter_contacts: ^1.1.9
@@ -70,7 +69,6 @@ dependencies:
   drift: ^2.26.0
   sqlite3_flutter_libs: ^0.5.28
   uuid: ^4.5.1
-  get_it: ^8.0.3
 
   # Local notifications & scheduled reminders (Feature 02)
   flutter_local_notifications: ^18.0.1
@@ -127,7 +125,7 @@ flutter:
   generate: true
 
   assets:
-    - .env
+    - .env.example
     - assets/images/
 
   # An image asset can refer to one or more resolution-specific "variants", see

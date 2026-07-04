@@ -28,28 +28,22 @@ await tester.pumpWidget(
 );
 ```
 
-## Integration Tests
-
-- Require a valid `.env` file at the project root with real `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `GYMBLOG_API_URL`.
-- On Windows, **Developer Mode** must be enabled (symlink support).
-- See `integration_test/README.md` for full setup instructions.
-
-## DI in Tests
-
-Register test doubles before each test using `getIt`:
+Mock `SharedPreferences` in tests that touch prefs stores:
 
 ```dart
-setUp(() {
-  if (!getIt.isRegistered<GymBlogApiClient>()) {
-    getIt.registerSingleton<GymBlogApiClient>(MockGymBlogApiClient());
-  }
-});
-
-tearDown(() => getIt.reset());
+SharedPreferences.setMockInitialValues({});
 ```
+
+For Drift/offline tests, use in-memory or temp-file database patterns from existing tests under `test/local_only/` and `test/core/`.
+
+## Integration Tests
+
+- Require synced env asset: set credentials in `.env`, run `bash scripts/ensure-env.sh`, then test.
+- On Windows, **Developer Mode** must be enabled (symlink support).
+- See `integration_test/README.md` for full setup instructions.
 
 ## Assertions
 
 - Prefer `expect(find.text('...'), findsOneWidget)` for widget tests.
 - Use `verify` / `when` from `mockito` (add as dev dep if needed) for service mocks.
-- Keep test names descriptive: `test('shows error banner when API returns 401', ...)`.
+- Keep test names descriptive: `test('shows error banner when save fails', ...)`.

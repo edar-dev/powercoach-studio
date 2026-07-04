@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 typedef AppSheetBodyBuilder = Widget Function(BuildContext context);
 

@@ -13,7 +13,7 @@ import '../../../workouts/data/workout_plan_repository.dart';
 import '../../domain/calendar_event_loader.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../widgets/app_snackbar.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 
 class CoachCalendarScreen extends StatefulWidget {
   const CoachCalendarScreen({super.key});

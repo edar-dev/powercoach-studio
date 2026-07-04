@@ -9,10 +9,11 @@ import 'package:integration_test/integration_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:powercoach_studio/app.dart';
+import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 
 Future<void> _initForTest() async {
   try {
-    await dotenv.load(fileName: '.env');
+    await loadAppEnv();
   } catch (_) {}
   final url = dotenv.env['SUPABASE_URL']?.trim() ?? '';
   final key = dotenv.env['SUPABASE_ANON_KEY']?.trim() ?? '';

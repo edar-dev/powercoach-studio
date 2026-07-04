@@ -1,5 +1,5 @@
 ---
-description: Architecture patterns — feature modules, routing, DI, Supabase auth, and offline sync
+description: Architecture patterns — feature modules, routing, Supabase auth, local data
 alwaysApply: true
 ---
 
@@ -14,48 +14,44 @@ lib/features/my_feature/
   presentation/
     screens/       # full-page widgets (Screens)
     widgets/       # reusable feature-scoped widgets
-  data/            # repositories, API mappers (optional)
+  data/            # repositories, stores (optional)
   domain/          # models, interfaces (optional)
 ```
 
-Shared widgets used across features belong in `lib/widgets/`.
+Shared widgets used across features belong in `lib/core/ui/widgets/`.
 
 ## Routing (GoRouter)
 
-All routes are declared in `lib/app.dart`.
+Routes are declared in `lib/core/routing/app_routes.dart` via `buildAppRoutes()`. Router setup lives in `lib/app.dart` (`configureAppRouter`).
 
 - Navigate imperatively: `context.go('/customers')` or `context.push('/customers/new')`.
 - Pass params via path (`':id'`) or query string (`state.uri.queryParameters`).
-- **Protected routes**: `/dashboard`, `/customers`, `/workouts`, `/profile`, `/settings`, `/exercise-library` all require an authenticated Supabase user. The global `redirect` guard in `_goRouter` handles this automatically.
-- When adding a new protected route, add its path prefix to the `isProtectedRoute` check in `lib/app.dart`.
+- **Protected routes** require an authenticated Supabase user. When adding a new protected path prefix, update `resolveAppRouteRedirect` in `lib/core/routing/route_redirect.dart`.
 
-## Dependency Injection (get_it)
+## Services & repositories
 
-```dart
-// Register (in service_locator.dart)
-getIt.registerLazySingleton<MyService>(() => MyService());
+There is no global DI container. Use:
 
-// Resolve (anywhere)
-final service = getIt<MyService>();
-```
+- **Singletons** on store classes (e.g. `OfflineLocalStore.instance`, `AppLocaleController.instance`).
+- **Constructor injection** in tests via fakes/mocks.
+- **Direct instantiation** for feature-scoped repositories when stateless.
 
-Never instantiate services directly inside widgets or screens — always resolve from `getIt`.
+Do not reintroduce `get_it` unless several layers need shared test doubles.
 
 ## Supabase Auth
 
 ```dart
-// Current user
 final user = Supabase.instance.client.auth.currentUser;
-
-// Bearer token for GymBlog.API (injected by GymBlogApiClient interceptor)
-final token = Supabase.instance.client.auth.currentSession?.accessToken;
+final session = Supabase.instance.client.auth.currentSession;
 ```
 
-## Offline-First Write Path
+Supabase is for **authentication only**. Do not add Supabase table CRUD for business data.
 
-1. Write mutations to `PendingOperations` outbox via `OfflineLocalStore`.
-2. Optimistically update `LocalEntities` cache.
-3. `SyncOrchestrator` replays the outbox when online / on auth change / on app resume.
-4. Conflicts land in `PendingOpRow.conflictRemoteJson` for manual resolution.
+## Local write path
 
-Never call the remote API directly from a screen for write operations — go through the offline store so changes survive connectivity loss.
+1. Read/write business entities through `OfflineLocalStore` (Drift `LocalEntities`).
+2. Use SharedPreferences stores for small keyed prefs (drafts, pins, settings).
+3. Scope all data by authenticated `userId`.
+4. Backup/export via `UserDataBackupService` when users need portability.
+
+Remote replay/sync (`SyncOrchestrator`, GymBlog API) is **not active**. Legacy sync UI (`sync_issues_screen`) and `PendingOperations` tables remain for future re-enable — do not add new remote write paths without an explicit plan.

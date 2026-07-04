@@ -24,14 +24,13 @@ workflows:
           set -e
           test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL" && exit 1)
           test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY" && exit 1)
-      - name: Create runtime .env
+      - name: Create runtime env asset
         script: |
-          cat > .env <<EOF
+          cat > .env.example <<EOF
           SUPABASE_URL=$SUPABASE_URL
           SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
           SENTRY_DSN=${SENTRY_DSN:-}
           SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-ci}
-          GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
           EOF
       - name: Install dependencies
         script: flutter pub get
@@ -69,14 +68,13 @@ workflows:
           test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD" && exit 1)
           test -n "$ANDROID_KEY_ALIAS" || (echo "Missing ANDROID_KEY_ALIAS" && exit 1)
           test -n "$ANDROID_KEY_PASSWORD" || (echo "Missing ANDROID_KEY_PASSWORD" && exit 1)
-      - name: Create runtime .env
+      - name: Create runtime env asset
         script: |
-          cat > .env <<EOF
+          cat > .env.example <<EOF
           SUPABASE_URL=$SUPABASE_URL
           SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
           SENTRY_DSN=${SENTRY_DSN:-}
           SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
-          GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
           EOF
       - name: Create Android keystore and key.properties
         script: |
@@ -151,14 +149,13 @@ workflows:
           test -n "$ANDROID_KEYSTORE_PASSWORD" || (echo "Missing ANDROID_KEYSTORE_PASSWORD" && exit 1)
           test -n "$ANDROID_KEY_ALIAS" || (echo "Missing ANDROID_KEY_ALIAS" && exit 1)
           test -n "$ANDROID_KEY_PASSWORD" || (echo "Missing ANDROID_KEY_PASSWORD" && exit 1)
-      - name: Create runtime .env
+      - name: Create runtime env asset
         script: |
-          cat > .env <<EOF
+          cat > .env.example <<EOF
           SUPABASE_URL=$SUPABASE_URL
           SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
           SENTRY_DSN=${SENTRY_DSN:-}
           SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
-          GYMBLOG_API_URL=${GYMBLOG_API_URL:-}
           EOF
       - name: Create Android keystore and key.properties
         script: |

@@ -5,13 +5,13 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
-import '../widgets/dashboard_empty_placeholder.dart';
-import '../widgets/dashboard_section_header.dart';
-import '../widgets/dashboard_surface_card.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_empty_placeholder.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_surface_card.dart';
 
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
