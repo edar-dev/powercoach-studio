@@ -35,6 +35,20 @@ When `SENTRY_DSN` is set, release builds send errors and navigation traces to [S
 
 Coach profile fields (display name, phone, bio, etc.) are stored locally per user, not in Supabase tables.
 
+## Dev environment
+
+CI pins **Flutter 3.35.6** (see `.flutter-version` and `.github/workflows/flutter-ci.yml`). Use the same version locally to avoid analyze/build drift:
+
+```bash
+# With FVM (optional)
+fvm use
+
+# Or install Flutter 3.35.6 and verify
+flutter --version
+```
+
+Before opening a PR: `flutter analyze` and `flutter test test/`.
+
 ## Testing
 
 - **Unit & widget tests** (no backend):  
@@ -47,11 +61,21 @@ Coach profile fields (display name, phone, bio, etc.) are stored locally per use
 
 Scheduled client/session reminders use `flutter_local_notifications`. See **`docs/local-notifications-reminders.md`**.
 
+## CI/CD
+
+| Trigger | Pipeline | Output |
+|---------|----------|--------|
+| PR → `main` | GitHub **Flutter CI** (`.github/workflows/flutter-ci.yml`) | analyze + `test/` |
+| Push → `main` | GitHub **Vercel Deploy** | web production |
+| Push → `main` | Codemagic **`android_release`** | signed APK + AAB |
+| Tag `v*` | Codemagic **`android_play_store`** | Play internal track |
+
+PR quality checks run on **GitHub Actions only** (Codemagic `pr_quality_gate` removed to avoid duplicate work).
+
 ## Codemagic CI/CD
 
-Three workflows in `codemagic.yaml`:
+Two Android workflows in `codemagic.yaml` (Flutter **3.35.6**):
 
-- **`pr_quality_gate`** (PR → `main`): `flutter pub get`, `flutter analyze`, `flutter test test/`
 - **`android_release`** (push → `main`): signed release APK + AAB
 - **`android_play_store`** (tag `v*`): AAB upload to Google Play internal track
 

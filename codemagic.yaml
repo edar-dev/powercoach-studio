@@ -1,49 +1,9 @@
 workflows:
-  pr_quality_gate:
-    name: PR Quality Gate
-    max_build_duration: 30
-    environment:
-      flutter: stable
-      groups:
-        - google_credentials
-    cache:
-      cache_paths:
-        - $HOME/.pub-cache
-        - $CM_BUILD_DIR/build
-        - $HOME/.gradle/caches
-    triggering:
-      events:
-        - pull_request
-      branch_patterns:
-        - pattern: main
-          include: true
-          source: true
-    scripts:
-      - name: Validate required environment variables
-        script: |
-          set -e
-          test -n "$SUPABASE_URL" || (echo "Missing SUPABASE_URL" && exit 1)
-          test -n "$SUPABASE_ANON_KEY" || (echo "Missing SUPABASE_ANON_KEY" && exit 1)
-      - name: Create runtime env asset
-        script: |
-          cat > .env.example <<EOF
-          SUPABASE_URL=$SUPABASE_URL
-          SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
-          SENTRY_DSN=${SENTRY_DSN:-}
-          SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-ci}
-          EOF
-      - name: Install dependencies
-        script: flutter pub get
-      - name: Static analysis
-        script: flutter analyze
-      - name: Unit and widget tests
-        script: flutter test test/
-
   android_release:
     name: Android Release Build
     max_build_duration: 45
     environment:
-      flutter: stable
+      flutter: 3.35.6
       groups:
         - google_credentials
     cache:
@@ -102,7 +62,7 @@ workflows:
     name: Android Play Store Publish
     max_build_duration: 60
     environment:
-      flutter: stable
+      flutter: 3.35.6
       groups:
         - google_credentials
     cache:

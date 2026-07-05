@@ -1,5 +1,6 @@
 ---
 name: local-only-auth-refactor
+status: archived
 overview: Refactor the app to run fully local-first with zero backend CRUD/sync calls, while retaining Supabase strictly for authentication/session. Replace API/sync-dependent repositories with local-store implementations scoped per authenticated user.
 todos:
   - id: bootstrap-di-cleanup

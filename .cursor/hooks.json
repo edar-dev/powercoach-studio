@@ -3,14 +3,14 @@
   "hooks": {
     "afterFileEdit": [
       {
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/check-drift-codegen.ps1",
+        "command": "bash .cursor/hooks/check-drift-codegen.sh",
         "matcher": "app_database\\.dart",
         "timeout": 5
       }
     ],
     "beforeShellExecution": [
       {
-        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File .cursor/hooks/guard-dangerous-commands.ps1",
+        "command": "bash .cursor/hooks/guard-dangerous-commands.sh",
         "matcher": "flutter clean|git reset|git push.*-f|drop table|truncate|rm -rf",
         "failClosed": false,
         "timeout": 5

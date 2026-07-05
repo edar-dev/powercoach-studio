@@ -125,4 +125,4 @@ La v4 **non blocca** le wave A–C su questa scelta.
 ## Riferimenti
 
 - Roadmap precedente: [feature-roadmap-v3.plan.md](feature-roadmap-v3.plan.md)
-- Gap analysis (parzialmente obsoleta): [`design/FEATURE_GAP_ANALYSIS.md`](../design/FEATURE_GAP_ANALYSIS.md)
+- Gap analysis (obsoleta, archiviata): [`docs/archive/FEATURE_GAP_ANALYSIS.md`](../../docs/archive/FEATURE_GAP_ANALYSIS.md)
