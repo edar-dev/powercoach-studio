@@ -1,5 +1,7 @@
 ---
 name: feature-30-sync-strategy-v2
+status: archived
+superseded_by: local-first-ux-v1
 overview: "Feature #7 v4 — Decisione e implementazione strategia sync: rafforzare local-only (semplifica UX) oppure ripristinare SyncOrchestrator con replay remoto via SyncReplayHook."
 todos:
   - id: product-decision

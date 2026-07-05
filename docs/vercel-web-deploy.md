@@ -9,9 +9,8 @@
 
 | Variable | Required | Notes |
 |----------|----------|-------|
-| `SUPABASE_URL` | Yes | Supabase project URL |
-| `SUPABASE_ANON_KEY` | Yes | Supabase anon key |
-| `GYMBLOG_API_URL` | Yes | GymBlog.API base URL (CORS must allow the Vercel origin) |
+| `SUPABASE_URL` | Yes | Supabase project URL (auth) |
+| `SUPABASE_ANON_KEY` | Yes | Supabase anon key (auth) |
 | `SENTRY_DSN` | No | Optional error monitoring |
 | `SENTRY_ENVIRONMENT` | No | e.g. `production` |
 | `FLUTTER_VERSION` | No | Defaults to `3.35.6` in `scripts/vercel-build.sh` |
@@ -65,7 +64,6 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 | `VERCEL_TOKEN` | **Classic** personal access token from [Vercel account tokens](https://vercel.com/account/tokens) (OAuth/CLI session tokens do not work in CI) |
 | `SUPABASE_URL` | Same value as Vercel Production env |
 | `SUPABASE_ANON_KEY` | Same value as Vercel Production env |
-| `GYMBLOG_API_URL` | Same value as Vercel Production env |
 | `SENTRY_DSN` | Optional |
 | `SENTRY_ENVIRONMENT` | e.g. `production` |
 | `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |

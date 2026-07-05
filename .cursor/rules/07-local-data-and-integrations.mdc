@@ -38,5 +38,14 @@ Handle errors at the presentation boundary; show user-facing messages from l10n.
 ## Do not add
 
 - GymBlog.API client or `GYMBLOG_API_URL` wiring
-- Remote sync replay without an approved plan (see `.cursor/plans/feature-30-sync-strategy-v2.plan.md`)
+- Remote sync replay without an approved plan (see `.cursor/plans/local-first-ux-v1.plan.md`)
 - Direct Supabase table CRUD for coach/client/workout data
+
+## Agent deny-list (do not reintroduce without approved plan)
+
+- `lib/core/network/gymblog_api_client.dart` or any GymBlog HTTP client
+- `GYMBLOG_API_URL` in env, CI secrets, or bundled assets
+- `SyncOrchestrator` remote replay wired in `main.dart` bootstrap
+- `get_it` or a global DI container
+- Remote write paths via `PendingOperations` expecting server ACK
+- Supabase `.from('...')` CRUD for business entities

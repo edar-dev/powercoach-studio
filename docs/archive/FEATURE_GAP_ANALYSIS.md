@@ -1,3 +1,6 @@
+> **Obsoleto (2026-07)** — descrive l'architettura pre local-first (GymBlog API, sync remoto).  
+> Per lo stato attuale vedi `README.md`, `docs/sync-strategy.md` e `.cursor/rules/07-local-data-and-integrations.mdc`.
+
 # Analisi feature mancanti – PowerCoach Studio
 
 Analisi delle funzionalità **documentate o presenti in UI** ma **non ancora implementate** (placeholder, link vuoti, schermate assenti, assenza di backend), più **improvements tecnici** implementati o da fare.

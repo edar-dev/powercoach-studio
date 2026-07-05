@@ -13,6 +13,16 @@ Use project subagents in `.cursor/agents` when tasks are non-trivial.
 - Use `flutter-test-runner` after substantive edits to run analyze/tests/codegen.
 - Use `flutter-reviewer` before final handoff for regression/risk checks.
 
+## Mandatory delegation thresholds
+
+| Condition | Required agents (in order) |
+|-----------|----------------------------|
+| Unfamiliar feature folder | `flutter-explorer` |
+| Edit touches file >300 lines | `flutter-explorer` before implement |
+| Multi-file feature or refactor | `flutter-implementer` |
+| Before handoff / PR | `flutter-reviewer` + `flutter-test-runner` |
+| Drift schema or ARB changed | `flutter-test-runner` (include `build_runner`) |
+
 ## Delegation quality bar
 - Delegate with explicit scope, expected output, and constraints.
 - Prefer parallel delegation when tasks are independent.

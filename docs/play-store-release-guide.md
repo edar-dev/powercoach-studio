@@ -80,11 +80,13 @@ Still in `google_credentials`, set:
 - `SUPABASE_ANON_KEY` (required)
 - `SENTRY_DSN` (optional)
 - `SENTRY_ENVIRONMENT` (optional)
-- `GYMBLOG_API_URL` (optional)
 
 ## 5) Pipeline Behavior (current `codemagic.yaml`)
 
-- `pr_quality_gate` (PR to `main`): analyze + tests.
+PR quality checks run on **GitHub Actions** (`.github/workflows/flutter-ci.yml`).
+
+Codemagic Android workflows (Flutter **3.35.6**):
+
 - `android_release` (push to `main`): builds APK + AAB artifacts only.
 - `android_play_store` (tag `v*`): validates secrets, reconstructs signing keystore, creates signed `key.properties`, builds AAB, publishes to Play `internal` track (released to internal testers, not draft).
 
