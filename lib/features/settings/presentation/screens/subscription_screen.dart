@@ -3,7 +3,6 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 
 import '../../../../core/storage/local_user_profile_store.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
@@ -93,30 +92,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  if (_plan != 'pro')
-                    FilledButton(
-                      onPressed: () => showNotImplementedAlert(context),
-                      style: FilledButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                        ),
-                      ),
-                      child: Text(l10n.subscriptionUpgrade),
-                    ),
-                  if (_plan == 'pro') ...[
-                    OutlinedButton(
-                      onPressed: () => showNotImplementedAlert(context),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                        ),
-                      ),
-                      child: Text(l10n.subscriptionManage),
-                    ),
-                  ],
                 ],
               ),
             ),

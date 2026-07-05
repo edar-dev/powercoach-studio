@@ -20,7 +20,6 @@ import 'package:powercoach_studio/features/landing/presentation/screens/landing_
 import 'package:powercoach_studio/features/settings/presentation/screens/personal_info_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
-import 'package:powercoach_studio/features/settings/presentation/screens/sync_issues_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_variant.dart';
@@ -85,13 +84,6 @@ List<RouteBase> buildAppRoutes() {
           path: 'subscription',
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const SubscriptionScreen(),
-        ),
-        GoRoute(
-          path: 'sync-issues',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => SyncIssuesScreen(
-            preselectedOpId: state.uri.queryParameters['opId'],
-          ),
         ),
       ],
     ),

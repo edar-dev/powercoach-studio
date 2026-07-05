@@ -8,7 +8,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/ui/breakpoints.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import '../../../../core/utils/not_implemented.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Landing page matching Stitch prototype: navbar, hero (chip, title, CTAs),
@@ -224,8 +223,6 @@ class _LandingScreenState extends State<LandingScreen> {
                     alignment: 0.2,
                     duration: const Duration(milliseconds: 500),
                   );
-                } else {
-                  showNotImplementedAlert(context);
                 }
               },
             ),

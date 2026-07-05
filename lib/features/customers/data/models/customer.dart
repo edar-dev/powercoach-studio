@@ -1,4 +1,4 @@
-/// Customer model aligned with GymBlog.API GET /api/customers response.
+/// Customer entity stored locally (Drift offline store).
 class Customer {
   const Customer({
     required this.id,

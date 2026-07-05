@@ -342,7 +342,7 @@ class MobilityItem {
   /// Kept for backward compatibility when reading old JSON.
   final int categoryIndex;
 
-  /// When set, this item is linked to the user's custom exercise library (GymBlog.API).
+  /// When set, this item is linked to the user's custom exercise library entry.
   final String? customExerciseId;
 
   Map<String, dynamic> toJson() => {
@@ -616,7 +616,7 @@ class Exercise {
   /// When non-null, exercises in the same day with the same id form a superset.
   final String? supersetGroupId;
 
-  /// When set, this exercise is linked to the user's custom exercise library (GymBlog.API).
+  /// When set, this exercise is linked to the user's custom exercise library entry.
   final String? customExerciseId;
 
   Map<String, dynamic> toJson() {

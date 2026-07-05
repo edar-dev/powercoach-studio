@@ -111,7 +111,7 @@
   "settingsLanguageEnglish": "English",
   "settingsLanguageSaved": "Language updated.",
   "settingsBackupSectionTitle": "Offline backup",
-  "settingsBackupSectionSubtitle": "Export or replace all local cached data for this account as JSON. Does not replace server data until you sync.",
+  "settingsBackupSectionSubtitle": "Export or replace all local data for this account as a JSON file. Use this to move data between devices.",
   "settingsBackupExport": "Export backup",
   "settingsBackupImport": "Import backup",
   "settingsBackupImportConfirmTitle": "Replace local data?",
@@ -195,7 +195,6 @@
   "customersLoadError": "Could not load customers.",
   "customerSaveError": "Could not save customer.",
   "customerDeleteError": "Could not delete customer.",
-  "customersApiNotConfigured": "API not configured. Set GYMBLOG_API_URL in .env.",
   "customersSessionExpired": "Session expired. Please log in again.",
   "customersRetry": "Retry",
   "customerDeletedMessage": "Customer deleted.",
@@ -710,17 +709,9 @@
   "dashboardSectionAttention": "Needs attention",
   "dashboardSectionStalePlans": "Plans to refresh",
   "dashboardSectionCustomersNoPlan": "Clients without a program",
-  "dashboardNoPending": "Nothing in the sync queue needs action right now.",
-  "dashboardQueuedOperationsCount": "{count, plural, one{{count} operation waiting to sync} other{{count} operations waiting to sync}}",
-  "@dashboardQueuedOperationsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardBackupHint": "Data stays on this device until it syncs. Export a backup from Settings before reinstalling.",
-  "dashboardOpenSyncSettings": "Open Settings",
+  "dashboardNoPending": "No items need your attention right now.",
+  "dashboardBackupHint": "Your data stays on this device. Export a backup from Settings before reinstalling or switching devices.",
+  "dashboardOpenBackupSettings": "Open backup settings",
   "dashboardLoadError": "Could not load the dashboard. Pull down to try again.",
   "dashboardNoStalePlans": "All programs were updated within the last {days} days.",
   "@dashboardNoStalePlans": {

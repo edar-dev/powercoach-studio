@@ -409,84 +409,6 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     AppLocalizations l10n,
     DashboardSnapshot snap,
   ) {
-    if (snap.attentionPending.isNotEmpty) {
-      return snap.attentionPending.map((item) {
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: Material(
-            color: cs.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              context.push('/settings/sync-issues?opId=${item.operationId}');
-            },
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                  border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.warning_amber_rounded, color: cs.tertiary),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.entityType.name,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurface,
-                            ),
-                          ),
-                          Text(
-                            item.path,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList();
-    }
-    if (snap.queuedSyncCount > 0) {
-      return [
-        DashboardSurfaceCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.dashboardQueuedOperationsCount(snap.queuedSyncCount),
-                style: theme.textTheme.bodyLarge?.copyWith(color: cs.onSurface),
-              ),
-              const SizedBox(height: 12),
-              TextButton(
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  context.push('/settings');
-                },
-                child: Text(l10n.dashboardOpenSyncSettings),
-              ),
-            ],
-          ),
-        ),
-      ];
-    }
     return [
       DashboardEmptyPlaceholder(
         message: l10n.dashboardNoPending,
@@ -509,7 +431,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                 HapticFeedback.mediumImpact();
                 context.push('/settings');
               },
-              child: Text(l10n.dashboardOpenSyncSettings),
+              child: Text(l10n.dashboardOpenBackupSettings),
             ),
           ],
         ),
