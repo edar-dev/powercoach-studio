@@ -54,4 +54,4 @@ Supabase is for **authentication only**. Do not add Supabase table CRUD for busi
 3. Scope all data by authenticated `userId`.
 4. Backup/export via `UserDataBackupService` when users need portability.
 
-Remote replay/sync (`SyncOrchestrator`, GymBlog API) is **not active**. Legacy sync UI (`sync_issues_screen`) and `PendingOperations` tables remain for future re-enable — do not add new remote write paths without an explicit plan.
+Remote replay/sync (`SyncOrchestrator`, GymBlog API) is **not active**. Legacy `PendingOperations` tables remain internally; sync-issues UI was removed in 2026-07 — do not add new remote write paths without an explicit plan.

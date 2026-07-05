@@ -111,7 +111,7 @@
   "settingsLanguageEnglish": "English",
   "settingsLanguageSaved": "Lingua aggiornata.",
   "settingsBackupSectionTitle": "Backup offline",
-  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali in cache per questo account come JSON. Il server non cambia finché non sincronizzi.",
+  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali di questo account come file JSON. Utile per spostare i dati tra dispositivi.",
   "settingsBackupExport": "Esporta backup",
   "settingsBackupImport": "Importa backup",
   "settingsBackupImportConfirmTitle": "Sostituire i dati locali?",
@@ -195,7 +195,6 @@
   "customersLoadError": "Impossibile caricare i clienti.",
   "customerSaveError": "Impossibile salvare il cliente.",
   "customerDeleteError": "Impossibile eliminare il cliente.",
-  "customersApiNotConfigured": "API non configurata. Imposta GYMBLOG_API_URL in .env.",
   "customersSessionExpired": "Sessione scaduta. Accedi di nuovo.",
   "customersRetry": "Riprova",
   "customerDeletedMessage": "Cliente eliminato.",
@@ -710,17 +709,9 @@
   "dashboardSectionAttention": "Richiede attenzione",
   "dashboardSectionStalePlans": "Programmi da aggiornare",
   "dashboardSectionCustomersNoPlan": "Clienti senza programma",
-  "dashboardNoPending": "In questo momento nulla in coda richiede un intervento.",
-  "dashboardQueuedOperationsCount": "{count, plural, one{{count} operazione in attesa di sincronizzazione} other{{count} operazioni in attesa di sincronizzazione}}",
-  "@dashboardQueuedOperationsCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardBackupHint": "I dati restano su questo dispositivo finché non sincronizzi. Esporta un backup da Impostazioni prima di reinstallare.",
-  "dashboardOpenSyncSettings": "Apri Impostazioni",
+  "dashboardNoPending": "Al momento non c'è nulla che richieda attenzione.",
+  "dashboardBackupHint": "I dati restano su questo dispositivo. Esporta un backup da Impostazioni prima di reinstallare o cambiare dispositivo.",
+  "dashboardOpenBackupSettings": "Apri backup",
   "dashboardLoadError": "Impossibile caricare la dashboard. Scorri verso il basso per riprovare.",
   "dashboardNoStalePlans": "Tutti i programmi sono stati aggiornati negli ultimi {days} giorni.",
   "@dashboardNoStalePlans": {

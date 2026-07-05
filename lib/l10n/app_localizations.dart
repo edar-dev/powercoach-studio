@@ -725,7 +725,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Export or replace all local cached data for this account as JSON. Does not replace server data until you sync.'**
+  /// **'Export or replace all local data for this account as a JSON file. Use this to move data between devices.'**
   String get settingsBackupSectionSubtitle;
 
   /// No description provided for @settingsBackupExport.
@@ -1183,12 +1183,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not delete customer.'**
   String get customerDeleteError;
-
-  /// No description provided for @customersApiNotConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'API not configured. Set GYMBLOG_API_URL in .env.'**
-  String get customersApiNotConfigured;
 
   /// No description provided for @customersSessionExpired.
   ///
@@ -3235,26 +3229,20 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardNoPending.
   ///
   /// In en, this message translates to:
-  /// **'Nothing in the sync queue needs action right now.'**
+  /// **'No items need your attention right now.'**
   String get dashboardNoPending;
-
-  /// No description provided for @dashboardQueuedOperationsCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count, plural, one{{count} operation waiting to sync} other{{count} operations waiting to sync}}'**
-  String dashboardQueuedOperationsCount(int count);
 
   /// No description provided for @dashboardBackupHint.
   ///
   /// In en, this message translates to:
-  /// **'Data stays on this device until it syncs. Export a backup from Settings before reinstalling.'**
+  /// **'Your data stays on this device. Export a backup from Settings before reinstalling or switching devices.'**
   String get dashboardBackupHint;
 
-  /// No description provided for @dashboardOpenSyncSettings.
+  /// No description provided for @dashboardOpenBackupSettings.
   ///
   /// In en, this message translates to:
-  /// **'Open Settings'**
-  String get dashboardOpenSyncSettings;
+  /// **'Open backup settings'**
+  String get dashboardOpenBackupSettings;
 
   /// No description provided for @dashboardLoadError.
   ///

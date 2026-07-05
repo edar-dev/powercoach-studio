@@ -65,13 +65,13 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     navigateTo(context, uri.toString());
   }
 
-  Future<void> _load({bool skipCache = false}) async {
+  Future<void> _load() async {
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final customers = await _repo.getAll(skipCache: skipCache);
+      final customers = await _repo.getAll();
       if (mounted) {
         setState(() {
           _customers = customers;
@@ -103,7 +103,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       backgroundColor: colorScheme.surfaceContainerHighest,
       appBar: _customerListAppBar(context, theme, l10n.customersTitle, showMenu: false),
       body: RefreshIndicator(
-        onRefresh: () => _load(skipCache: true),
+        onRefresh: () => _load(),
         child: _loading
             ? const Center(child: CircularProgressIndicator())
             : _error != null
@@ -165,7 +165,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 ],
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: () => _load(skipCache: true),
+                  onPressed: () => _load(),
                   child: Text(l10n.customersRetry),
                 ),
               ],

@@ -8,7 +8,7 @@ class CustomerRepository {
 
   final OfflineRepositorySupport _offline;
 
-  Future<List<Customer>> getAll({bool skipCache = false}) async {
+  Future<List<Customer>> getAll() async {
     final local = await _offline.readLocalEntities(OfflineEntityType.customer);
     return local.map(Customer.fromJson).toList();
   }

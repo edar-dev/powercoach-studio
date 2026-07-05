@@ -340,7 +340,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitle =>
-      'Export or replace all local cached data for this account as JSON. Does not replace server data until you sync.';
+      'Export or replace all local data for this account as a JSON file. Use this to move data between devices.';
 
   @override
   String get settingsBackupExport => 'Export backup';
@@ -586,10 +586,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerDeleteError => 'Could not delete customer.';
-
-  @override
-  String get customersApiNotConfigured =>
-      'API not configured. Set GYMBLOG_API_URL in .env.';
 
   @override
   String get customersSessionExpired => 'Session expired. Please log in again.';
@@ -1709,26 +1705,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardSectionCustomersNoPlan => 'Clients without a program';
 
   @override
-  String get dashboardNoPending =>
-      'Nothing in the sync queue needs action right now.';
-
-  @override
-  String dashboardQueuedOperationsCount(int count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count operations waiting to sync',
-      one: '$count operation waiting to sync',
-    );
-    return '$_temp0';
-  }
+  String get dashboardNoPending => 'No items need your attention right now.';
 
   @override
   String get dashboardBackupHint =>
-      'Data stays on this device until it syncs. Export a backup from Settings before reinstalling.';
+      'Your data stays on this device. Export a backup from Settings before reinstalling or switching devices.';
 
   @override
-  String get dashboardOpenSyncSettings => 'Open Settings';
+  String get dashboardOpenBackupSettings => 'Open backup settings';
 
   @override
   String get dashboardLoadError =>
