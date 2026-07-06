@@ -4,7 +4,7 @@ overview: "Ridurre god-object nel data layer (OfflineLocalStore, workout_routine
 todos:
   - id: extract-pending-ops-store
     content: "Estrarre PendingOperationsStore da offline_local_store.dart — CRUD pending ops isolato"
-    status: pending
+    status: completed
   - id: extract-sp-migration
     content: "Estrarre SharedPreferences→Drift migration in offline_migration.dart"
     status: pending
