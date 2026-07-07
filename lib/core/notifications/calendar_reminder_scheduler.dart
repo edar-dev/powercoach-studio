@@ -1,12 +1,10 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../features/customers/data/customer_repository.dart';
 import '../../features/dashboard/domain/calendar_event_loader.dart';
 import '../../features/dashboard/domain/plan_calendar_event.dart';
+import '../../features/settings/data/user_preferences_repository.dart';
 import '../../features/workouts/data/workout_plan_repository.dart';
 import '../notifications/notification_scheduler_service.dart';
 import '../notifications/reminder.dart';
-import '../settings/settings_prefs_keys.dart';
 
 /// Schedules local notifications for upcoming planned calendar sessions.
 class CalendarReminderScheduler {
@@ -21,19 +19,17 @@ class CalendarReminderScheduler {
   static const _idPrefix = 'cal-reminder-';
 
   Future<bool> isEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(SettingsPrefsKeys.calendarRemindersEnabled) ?? false;
+    return UserPreferencesRepository.instance.getCalendarRemindersEnabled();
   }
 
   Future<int> leadHours() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(SettingsPrefsKeys.calendarReminderLeadHours) ??
-        defaultLeadHours;
+    return UserPreferencesRepository.instance.getCalendarReminderLeadHours();
   }
 
   Future<void> setEnabled(bool enabled) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(SettingsPrefsKeys.calendarRemindersEnabled, enabled);
+    await UserPreferencesRepository.instance.setCalendarRemindersEnabled(
+      enabled,
+    );
     if (enabled) {
       await rescheduleUpcoming();
     } else {
@@ -42,9 +38,7 @@ class CalendarReminderScheduler {
   }
 
   Future<void> setLeadHours(int hours) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(
-      SettingsPrefsKeys.calendarReminderLeadHours,
+    await UserPreferencesRepository.instance.setCalendarReminderLeadHours(
       hours.clamp(1, 72),
     );
     if (await isEnabled()) {

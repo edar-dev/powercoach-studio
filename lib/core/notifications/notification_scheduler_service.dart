@@ -3,12 +3,11 @@ import '../platform/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../features/settings/data/user_preferences_repository.dart';
 import '../routing/root_navigator_key.dart';
-import '../settings/settings_prefs_keys.dart';
 import 'reminder.dart';
 import 'reminder_store.dart';
 
@@ -125,8 +124,7 @@ class NotificationSchedulerService {
   }
 
   Future<bool> _notificationsPreferenceEnabled() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+    return UserPreferencesRepository.instance.getNotificationsEnabled();
   }
 
   /// Cancels all pending local notifications for this app.
@@ -208,8 +206,8 @@ class NotificationSchedulerService {
   Future<void> downgradePreferenceIfOsDenied() async {
     if (!supportsLocalNotifications) return;
     await ensureInitialized();
-    final prefs = await SharedPreferences.getInstance();
-    final want = prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+    final want =
+        await UserPreferencesRepository.instance.getNotificationsEnabled();
     if (!want) return;
 
     var allowed = true;
@@ -220,7 +218,7 @@ class NotificationSchedulerService {
     }
 
     if (!allowed) {
-      await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, false);
+      await UserPreferencesRepository.instance.setNotificationsEnabled(false);
       await _plugin.cancelAll();
     }
   }
