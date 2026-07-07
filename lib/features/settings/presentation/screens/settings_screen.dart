@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/backup/backup_path_reader.dart';
@@ -16,8 +15,8 @@ import '../../../../core/backup/user_data_backup_service.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/notifications/notification_scheduler_service.dart';
 import '../../../../core/notifications/reminder_store.dart';
-import '../../../../core/settings/settings_prefs_keys.dart';
 import '../../../../core/storage/offline_local_store.dart';
+import '../../data/user_preferences_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
@@ -33,6 +32,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final UserPreferencesRepository _preferences =
+      UserPreferencesRepository.instance;
+
   bool _notificationsEnabled = true;
   bool _calendarRemindersEnabled = false;
   int _calendarReminderLeadHours = CalendarReminderScheduler.defaultLeadHours;
@@ -45,21 +47,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    var enabled = prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
-    final calendarEnabled =
-        prefs.getBool(SettingsPrefsKeys.calendarRemindersEnabled) ?? false;
-    final leadHours =
-        prefs.getInt(SettingsPrefsKeys.calendarReminderLeadHours) ??
-        CalendarReminderScheduler.defaultLeadHours;
+    var prefs = await _preferences.loadAll();
+    var enabled = prefs.notificationsEnabled;
+    final calendarEnabled = prefs.calendarRemindersEnabled;
+    final leadHours = prefs.calendarReminderLeadHours;
 
     if (!kIsWeb &&
         NotificationSchedulerService.instance.supportsLocalNotifications) {
       await NotificationSchedulerService.instance.ensureInitialized();
       await NotificationSchedulerService.instance.downgradePreferenceIfOsDenied();
-      final prefs2 = await SharedPreferences.getInstance();
-      enabled =
-          prefs2.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+      enabled = await _preferences.getNotificationsEnabled();
       await NotificationSchedulerService.instance
           .syncWithNotificationPreference();
     }
@@ -138,15 +135,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
         return;
       }
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, true);
+      await _preferences.setNotificationsEnabled(true);
       if (!mounted) return;
       setState(() => _notificationsEnabled = true);
       await NotificationSchedulerService.instance
           .syncWithNotificationPreference();
     } else {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, false);
+      await _preferences.setNotificationsEnabled(false);
       if (!mounted) return;
       setState(() => _notificationsEnabled = false);
       await NotificationSchedulerService.instance.cancelAllScheduled();

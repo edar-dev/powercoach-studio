@@ -1,13 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/notifications/notification_scheduler_service.dart';
 import '../../../../core/notifications/reminder.dart';
 import '../../../../core/notifications/reminder_store.dart';
-import '../../../../core/settings/settings_prefs_keys.dart';
+import '../../../settings/data/user_preferences_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 
@@ -28,10 +27,9 @@ Future<void> _composeReminderWithTitle(
     return;
   }
 
-  final prefs = await SharedPreferences.getInstance();
-  if (!context.mounted) return;
   final notificationsOn =
-      prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+      await UserPreferencesRepository.instance.getNotificationsEnabled();
+  if (!context.mounted) return;
   if (!notificationsOn) {
     showAppSnackBar(
       context,

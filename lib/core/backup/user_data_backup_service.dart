@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '../notifications/notification_scheduler_service.dart';
 import '../notifications/reminder.dart';
 import '../notifications/reminder_store.dart';
+import '../../features/settings/data/user_preferences_repository.dart';
 import '../settings/settings_prefs_keys.dart';
 import '../storage/local_user_profile_store.dart';
 import '../storage/offline_local_store.dart';
@@ -21,9 +20,8 @@ class UserDataBackupService {
     if (accountUserId.isEmpty) {
       throw StateError('accountUserId required');
     }
-    final prefs = await SharedPreferences.getInstance();
     final notificationsEnabled =
-        prefs.getBool(SettingsPrefsKeys.notificationsEnabled) ?? true;
+        await UserPreferencesRepository.instance.getNotificationsEnabled();
     final profile =
         await LocalUserProfileStore.instance.read(accountUserId);
     final store = OfflineLocalStore.instance;
@@ -64,9 +62,7 @@ class UserDataBackupService {
         ? const LocalUserProfileData()
         : LocalUserProfileData.fromJson(parsed.profileJson!);
     await LocalUserProfileStore.instance.write(accountUserId, profile);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(
-      SettingsPrefsKeys.notificationsEnabled,
+    await UserPreferencesRepository.instance.setNotificationsEnabled(
       parsed.notificationsEnabled,
     );
     await ReminderStore.instance.replaceFromMaps(parsed.reminders);
@@ -104,9 +100,7 @@ class UserDataBackupService {
       await LocalUserProfileStore.instance.write(accountUserId, profile);
     }
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(
-      SettingsPrefsKeys.notificationsEnabled,
+    await UserPreferencesRepository.instance.setNotificationsEnabled(
       parsed.notificationsEnabled,
     );
 
