@@ -27,13 +27,13 @@ todos:
     status: pending
   - id: auth-profile-repository
     content: "Creare auth/data/local_coach_profile_repository.dart — incapsula LocalUserProfileStore"
-    status: pending
+    status: completed
   - id: wire-screens-to-repos
     content: "settings_screen e profile_screen usano nuovi repository invece di store diretti"
-    status: pending
+    status: completed
   - id: tests-for-extractions
     content: "Test unit per PendingOperationsStore, codec split, preferences repo"
-    status: pending
+    status: completed
 isProject: false
 ---
 

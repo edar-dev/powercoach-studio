@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 
-import '../../../../core/storage/local_user_profile_store.dart';
+import '../../../auth/data/local_coach_profile_repository.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
@@ -34,7 +34,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       });
       return;
     }
-    final localProfile = await LocalUserProfileStore.instance.read(user.id);
+    final localProfile =
+        await LocalCoachProfileRepository.instance.getProfile(user.id);
     if (!mounted) return;
     setState(() {
       _isLoading = false;

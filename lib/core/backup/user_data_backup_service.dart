@@ -5,7 +5,7 @@ import '../notifications/reminder.dart';
 import '../notifications/reminder_store.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../settings/settings_prefs_keys.dart';
-import '../storage/local_user_profile_store.dart';
+import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../storage/offline_local_store.dart';
 import '../sync/offline_models.dart';
 import 'user_data_backup_codec.dart';
@@ -23,7 +23,7 @@ class UserDataBackupService {
     final notificationsEnabled =
         await UserPreferencesRepository.instance.getNotificationsEnabled();
     final profile =
-        await LocalUserProfileStore.instance.read(accountUserId);
+        await LocalCoachProfileRepository.instance.getProfile(accountUserId);
     final store = OfflineLocalStore.instance;
 
     return <String, dynamic>{
@@ -61,7 +61,7 @@ class UserDataBackupService {
     final profile = parsed.profileJson == null
         ? const LocalUserProfileData()
         : LocalUserProfileData.fromJson(parsed.profileJson!);
-    await LocalUserProfileStore.instance.write(accountUserId, profile);
+    await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
     await UserPreferencesRepository.instance.setNotificationsEnabled(
       parsed.notificationsEnabled,
     );
@@ -97,7 +97,7 @@ class UserDataBackupService {
 
     if (parsed.profileJson != null) {
       final profile = LocalUserProfileData.fromJson(parsed.profileJson!);
-      await LocalUserProfileStore.instance.write(accountUserId, profile);
+      await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
     }
 
     await UserPreferencesRepository.instance.setNotificationsEnabled(
