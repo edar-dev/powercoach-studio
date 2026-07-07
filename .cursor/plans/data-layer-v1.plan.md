@@ -7,10 +7,10 @@ todos:
     status: completed
   - id: extract-sp-migration
     content: "Estrarre SharedPreferences→Drift migration in offline_migration.dart"
-    status: pending
+    status: completed
   - id: slim-offline-local-store
     content: "OfflineLocalStore delega a PendingOperationsStore + entity helpers — target <350 righe"
-    status: pending
+    status: completed
   - id: split-routine-codec
     content: "Spostare JSON encode/decode da workout_routine_model.dart verso workout_routine_json_codec.dart (estendere esistente)"
     status: pending
