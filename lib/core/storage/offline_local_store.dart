@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../sync/offline_models.dart';
 import 'app_database.dart';
+import 'offline_migration.dart';
 import 'pending_operations_store.dart';
 
 /// Persistent offline cache and outbox backed by SQLite (Drift).
@@ -15,17 +15,15 @@ class OfflineLocalStore {
       ensureDb: _ensureDb,
       currentUserId: _currentUserId,
     );
+    _migration = OfflineMigration(pendingOps: _pendingOps);
   }
 
   static final OfflineLocalStore instance = OfflineLocalStore._();
 
-  static const _legacyEntitiesKey = 'offline_entities_v1';
-  static const _legacyPendingKey = 'offline_pending_ops_v1';
-  static const _migrationPrefsKey = 'offline_drift_sqlite_migrated_v1';
-
   AppDatabase? _db;
   bool _migrationChecked = false;
   late final PendingOperationsStore _pendingOps;
+  late final OfflineMigration _migration;
 
   String _currentUserId() {
     try {
@@ -45,64 +43,14 @@ class OfflineLocalStore {
   Future<AppDatabase> _ensureDb() async {
     _db ??= AppDatabase();
     if (!_migrationChecked) {
-      await _migrateFromSharedPreferencesIfNeeded(_db!);
+      await _migration.migrateFromSharedPreferencesIfNeeded(
+        db: _db!,
+        defaultUserId:
+            _currentUserId().isNotEmpty ? _currentUserId() : '__legacy__',
+      );
       _migrationChecked = true;
     }
     return _db!;
-  }
-
-  Future<void> _migrateFromSharedPreferencesIfNeeded(AppDatabase db) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool(_migrationPrefsKey) == true) return;
-
-    final uid = _currentUserId().isNotEmpty ? _currentUserId() : '__legacy__';
-
-    final entitiesRaw = prefs.getString(_legacyEntitiesKey);
-    if (entitiesRaw != null && entitiesRaw.isNotEmpty) {
-      final list = jsonDecode(entitiesRaw) as List<dynamic>;
-      await db.batch((b) {
-        for (final item in list) {
-          if (item is! Map) continue;
-          final e = OfflineEntity.fromJson(item.cast<String, dynamic>());
-          final rowUid = e.payload['userId']?.toString();
-          final effectiveUid =
-              (rowUid != null && rowUid.isNotEmpty) ? rowUid : uid;
-          b.insert(
-            db.localEntities,
-            LocalEntitiesCompanion.insert(
-              userId: effectiveUid,
-              type: e.type.index,
-              id: e.id,
-              scopeId: e.scopeId,
-              payloadJson: jsonEncode(e.payload),
-              updatedAt: e.updatedAt,
-              deleted: Value(e.deleted),
-              localOnly: Value(e.localOnly),
-            ),
-            mode: InsertMode.insertOrReplace,
-          );
-        }
-      });
-    }
-
-    final pendingRaw = prefs.getString(_legacyPendingKey);
-    if (pendingRaw != null && pendingRaw.isNotEmpty) {
-      final list = jsonDecode(pendingRaw) as List<dynamic>;
-      final legacyOps = <PendingOperation>[];
-      for (final item in list) {
-        if (item is! Map) continue;
-        legacyOps.add(PendingOperation.fromJson(item.cast<String, dynamic>()));
-      }
-      await _pendingOps.insertLegacyBatch(
-        db: db,
-        operations: legacyOps,
-        defaultUserId: uid,
-      );
-    }
-
-    await prefs.setBool(_migrationPrefsKey, true);
-    await prefs.remove(_legacyEntitiesKey);
-    await prefs.remove(_legacyPendingKey);
   }
 
   Future<List<OfflineEntity>> readEntities(
@@ -271,8 +219,7 @@ class OfflineLocalStore {
     await db.delete(db.localEntities).go();
     await _pendingOps.deleteAll();
     await db.delete(db.syncMetaEntries).go();
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_migrationPrefsKey);
+    await _migration.clearMigrationFlag();
   }
 
   Future<void> _deleteUserOfflineData(AppDatabase db, String userId) async {
