@@ -88,8 +88,9 @@ void main() {
   testWidgets('WorkoutBuilderEditorShell shows training and mobility tabs', (
     tester,
   ) async {
-    await tester.pumpWidget(_app(const _ShellHarness(showsMobilityTab: true)));
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: true)));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Programma test'), findsOneWidget);
     expect(find.text('Allenamento'), findsOneWidget);
@@ -101,8 +102,9 @@ void main() {
   testWidgets('WorkoutBuilderEditorShell hides mobility tab when disabled', (
     tester,
   ) async {
-    await tester.pumpWidget(_app(const _ShellHarness(showsMobilityTab: false)));
-    await tester.pumpAndSettle();
+    await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: false)));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Allenamento'), findsOneWidget);
     expect(find.text('Mobility'), findsNothing);

@@ -126,6 +126,7 @@ class WorkoutMobilityTab extends StatelessWidget {
           child: ReorderableListView.builder(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             buildDefaultDragHandles: false,
+            // ignore: deprecated_member_use
             onReorder: onReorderItems,
             itemCount: itemsForSelectedSection.length,
             itemBuilder: (context, index) {
