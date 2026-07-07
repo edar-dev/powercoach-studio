@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: split-plan-repository
     content: "Estrarre query/list helpers da workout_plan_repository.dart in workout_plan_query_helpers.dart"
-    status: pending
+    status: completed
   - id: settings-backup-repository
     content: "Creare settings/data/user_preferences_repository.dart — wrapper su SharedPreferences stores"
     status: pending

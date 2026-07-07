@@ -3,11 +3,14 @@ import 'dart:convert';
 import '../../../core/constants/workout_plan_template_scope.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
-import 'workout_plan_api_model.dart';
-import 'workout_routine_model.dart';
 import '../domain/session_execution.dart';
 import '../domain/workout_follow_up_factory.dart';
+import '../domain/workout_plan_query_helpers.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
+import 'workout_plan_api_model.dart';
+import 'workout_routine_model.dart';
+
+export '../domain/workout_plan_query_helpers.dart' show planDataToRoutine;
 
 /// Persists workout plans in local storage.
 class WorkoutPlanRepository {
@@ -21,12 +24,7 @@ class WorkoutPlanRepository {
     final local = await _offline.readLocalEntities(
       OfflineEntityType.workoutPlan,
     );
-    final models = local
-        .map(WorkoutPlanApiModel.fromJson)
-        .where((p) => p.customerId != kWorkoutPlanTemplateScopeId)
-        .toList();
-    _sortPlansByStartDateDesc(models);
-    return models;
+    return mapAndSortWorkoutPlans(local, excludeTemplateScope: true);
   }
 
   /// Reusable templates (sentinel [kWorkoutPlanTemplateScopeId] as `customerId` / scope).
@@ -35,9 +33,7 @@ class WorkoutPlanRepository {
       OfflineEntityType.workoutPlan,
       scopeId: kWorkoutPlanTemplateScopeId,
     );
-    final models = local.map(WorkoutPlanApiModel.fromJson).toList();
-    _sortPlansByStartDateDesc(models);
-    return models;
+    return mapAndSortWorkoutPlans(local);
   }
 
   Future<List<WorkoutPlanApiModel>> getByCustomerId(String customerId) async {
@@ -45,9 +41,7 @@ class WorkoutPlanRepository {
       OfflineEntityType.workoutPlan,
       scopeId: customerId,
     );
-    final models = local.map(WorkoutPlanApiModel.fromJson).toList();
-    _sortPlansByStartDateDesc(models);
-    return models;
+    return mapAndSortWorkoutPlans(local);
   }
 
   Future<WorkoutPlanApiModel?> getById(String planId) async {
@@ -194,7 +188,7 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final planDataCopy = _cloneWorkoutPlanDataJson(src.planData);
+    final planDataCopy = cloneWorkoutPlanDataJson(src.planData);
     return createTemplate(
       name: templateName.trim().isEmpty ? src.name : templateName.trim(),
       planDataJson: planDataCopy,
@@ -225,7 +219,7 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final planDataCopy = _cloneWorkoutPlanDataJson(src.planData);
+    final planDataCopy = cloneWorkoutPlanDataJson(src.planData);
     final resolvedName = (name != null && name.trim().isNotEmpty)
         ? name.trim()
         : src.name;
@@ -306,18 +300,18 @@ class WorkoutPlanRepository {
       effectiveStart = DateTime.tryParse(existingStart.toString());
     }
     if (startDate != null) {
-      map['startDate'] = _dateOnlyIso(startDate);
+      map['startDate'] = dateOnlyIso(startDate);
     }
     if (endDate != null) {
       if (effectiveStart != null &&
-          _dateOnly(endDate).isBefore(_dateOnly(effectiveStart))) {
+          dateOnly(endDate).isBefore(dateOnly(effectiveStart))) {
         throw ArgumentError.value(
           endDate,
           'endDate',
           'must be on or after startDate',
         );
       }
-      map['endDate'] = _dateOnlyIso(endDate);
+      map['endDate'] = dateOnlyIso(endDate);
     }
     if (currentWeek != null) {
       if (currentWeek < 1) {
@@ -343,12 +337,12 @@ class WorkoutPlanRepository {
     if (clearArchivedAt) {
       map.remove('archivedAt');
     } else if (archivedAt != null) {
-      map['archivedAt'] = _dateOnlyIso(archivedAt);
+      map['archivedAt'] = dateOnlyIso(archivedAt);
     }
     if (clearCompletedAt) {
       map.remove('completedAt');
     } else if (completedAt != null) {
-      map['completedAt'] = _dateOnlyIso(completedAt);
+      map['completedAt'] = dateOnlyIso(completedAt);
     }
     return update(planId: planId, planDataJson: jsonEncode(map));
   }
@@ -486,13 +480,7 @@ class WorkoutPlanRepository {
     final plan = await getById(planId);
     if (plan == null) return const [];
     final routine = planDataToRoutine(plan.planData);
-    final list = routine.sessionExecutions.values.toList();
-    list.sort((a, b) {
-      final aDate = a.completedAt ?? a.sessionDate;
-      final bDate = b.completedAt ?? b.sessionDate;
-      return bDate.compareTo(aDate);
-    });
-    return list;
+    return sortSessionExecutionsNewestFirst(routine.sessionExecutions.values);
   }
 
   Future<WorkoutPlanApiModel> upsertSessionExecution({
@@ -533,54 +521,4 @@ class WorkoutPlanRepository {
     }
     return update(planId: planId, planDataJson: jsonEncode(map));
   }
-}
-
-/// Sort key: routine `startDate` from [WorkoutPlanApiModel.planData], else [WorkoutPlanApiModel.updatedAt].
-DateTime _sortKeyForPlan(WorkoutPlanApiModel p) {
-  try {
-    final decoded = jsonDecode(p.planData);
-    if (decoded is Map<String, dynamic>) {
-      final sd = decoded['startDate'];
-      if (sd != null) {
-        final d = DateTime.tryParse(sd.toString());
-        if (d != null) {
-          return DateTime(d.year, d.month, d.day);
-        }
-      }
-    }
-  } catch (_) {}
-  return p.updatedAt;
-}
-
-void _sortPlansByStartDateDesc(List<WorkoutPlanApiModel> plans) {
-  plans.sort((a, b) => _sortKeyForPlan(b).compareTo(_sortKeyForPlan(a)));
-}
-
-/// Deep-clone [planData] JSON string; throws [FormatException] if not valid JSON.
-String _cloneWorkoutPlanDataJson(String planData) {
-  try {
-    final decoded = jsonDecode(planData);
-    if (decoded is Map<String, dynamic>) {
-      decoded.remove('archivedAt');
-      decoded.remove('completedAt');
-      return jsonEncode(decoded);
-    }
-    return jsonEncode(decoded);
-  } catch (_) {
-    throw FormatException('invalid_workout_plan_data');
-  }
-}
-
-/// Parses [WorkoutPlanApiModel.planData] into [WorkoutRoutine].
-WorkoutRoutine planDataToRoutine(String planDataJson) {
-  final map = jsonDecode(planDataJson) as Map<String, dynamic>;
-  return WorkoutRoutine.fromJson(map);
-}
-
-DateTime _dateOnly(DateTime value) =>
-    DateTime(value.year, value.month, value.day);
-
-String _dateOnlyIso(DateTime value) {
-  final day = _dateOnly(value);
-  return day.toIso8601String();
 }
