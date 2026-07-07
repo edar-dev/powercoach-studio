@@ -7,7 +7,7 @@ import '../../../../core/export/export_artifact.dart';
 import '../../../../core/export/export_share.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
-import '../../../../core/storage/local_user_profile_store.dart';
+import '../../../auth/data/local_coach_profile_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
@@ -117,7 +117,7 @@ class _CustomerMeasurementHistoryScreenState
   Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
     final labels = AppLocalizations.of(context).toPdfExportLabels();
     final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-    final profile = await LocalUserProfileStore.instance.read(uid);
+    final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
     final email = Supabase.instance.client.auth.currentUser?.email;
     return buildPdfCoachHeader(
       labels: labels,

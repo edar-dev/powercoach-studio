@@ -4,7 +4,7 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/storage/local_user_profile_store.dart';
+import '../../data/local_coach_profile_repository.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -61,7 +61,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return;
     }
     try {
-      final localProfile = await LocalUserProfileStore.instance.read(user.id);
+      final localProfile =
+          await LocalCoachProfileRepository.instance.getProfile(user.id);
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -93,8 +94,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() => _isSaving = true);
 
     try {
-      final current = await LocalUserProfileStore.instance.read(user.id);
-      await LocalUserProfileStore.instance.write(
+      final current =
+          await LocalCoachProfileRepository.instance.getProfile(user.id);
+      await LocalCoachProfileRepository.instance.saveProfile(
         user.id,
         LocalUserProfileData(
           displayName: _displayNameController.text.trim(),

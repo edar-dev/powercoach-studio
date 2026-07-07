@@ -7,7 +7,7 @@ import 'package:powercoach_studio/core/export/export_share.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels_l10n.dart';
 import 'package:powercoach_studio/core/pdf/pdf_plan_metadata.dart';
-import 'package:powercoach_studio/core/storage/local_user_profile_store.dart';
+import 'package:powercoach_studio/features/auth/data/local_coach_profile_repository.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
 import 'package:powercoach_studio/features/customers/data/customer_repository.dart';
@@ -60,7 +60,7 @@ class WorkoutBuilderExportActions {
     final labels = AppLocalizations.of(context).toPdfExportLabels();
     final customer = await loadCustomerIfNeeded();
     final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-    final profile = await LocalUserProfileStore.instance.read(uid);
+    final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
     final email = Supabase.instance.client.auth.currentUser?.email;
     return buildPdfCoachHeader(
       labels: labels,
