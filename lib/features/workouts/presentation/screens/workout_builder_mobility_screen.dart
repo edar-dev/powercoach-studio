@@ -25,6 +25,7 @@ import '../workout_editor_snapshot.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/exercise_add_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/mobility_add_sheet.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/mobility_section_editor_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_editor_shell.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_export_sheet.dart';
@@ -594,20 +595,22 @@ class _WorkoutBuilderMobilityScreenState
   void _editMobilitySection(int index) {
     if (index < 0 || index >= _routine.mobilitySections.length) return;
     final section = _routine.mobilitySections[index];
-    _showEditSectionDialog(section.name, section.scheduleHint, (
-      newName,
-      scheduleHint,
-    ) {
-      if (newName.trim().isEmpty) return;
-      setState(() {
-        _routine = updateMobilitySectionInRoutine(
-          routine: _routine,
-          sectionId: section.id,
-          name: newName,
-          scheduleHint: scheduleHint,
-        );
-      });
-    });
+    showEditMobilitySectionSheet(
+      context,
+      initialName: section.name,
+      initialScheduleHint: section.scheduleHint,
+      onSave: (newName, scheduleHint) {
+        if (newName.trim().isEmpty) return;
+        setState(() {
+          _routine = updateMobilitySectionInRoutine(
+            routine: _routine,
+            sectionId: section.id,
+            name: newName,
+            scheduleHint: scheduleHint,
+          );
+        });
+      },
+    );
   }
 
   void _deleteMobilitySection(int index) {
@@ -627,47 +630,6 @@ class _WorkoutBuilderMobilityScreenState
         _routine.mobilitySections.length - 1,
       ));
     });
-  }
-
-  void _showEditSectionDialog(
-    String initialName,
-    String initialScheduleHint,
-    void Function(String name, String scheduleHint) onSave,
-  ) {
-    final l10n = AppLocalizations.of(context);
-    final nameController = TextEditingController(text: initialName);
-    final scheduleController = TextEditingController(text: initialScheduleHint);
-    showAppBottomSheet<void>(
-      context: context,
-      title: l10n.workoutBuilderEditSectionTitle,
-      bodyBuilder: (sheetContext) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: InputDecoration(
-                labelText: l10n.workoutBuilderSectionNameLabel,
-              ),
-              autofocus: false,
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: scheduleController,
-              decoration: InputDecoration(
-                labelText: l10n.mobilitySectionScheduleHintLabel,
-              ),
-              maxLines: 2,
-            ),
-          ],
-        );
-      },
-      primaryActionLabel: l10n.customerSave,
-      onPrimaryAction: () {
-        onSave(nameController.text.trim(), scheduleController.text.trim());
-        Navigator.of(context).pop();
-      },
-    );
   }
 
   void _addWeek() {
