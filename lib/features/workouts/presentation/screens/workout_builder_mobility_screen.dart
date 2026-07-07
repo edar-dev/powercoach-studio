@@ -13,11 +13,11 @@ import '../../data/workout_routine_model.dart';
 import '../../domain/day_scheduled_weekday.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
-import '../../domain/workout_mobility_mutations.dart';
 import '../../domain/workout_plan_list_helpers.dart';
 import '../../domain/workout_routine_mutations.dart';
 import '../workout_builder_editor_exit.dart';
 import '../workout_builder_export_actions.dart';
+import '../mobility_builder_controller.dart';
 import '../workout_builder_session_controller.dart';
 import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
@@ -68,6 +68,7 @@ class _WorkoutBuilderMobilityScreenState
   final _planRepo = WorkoutPlanRepository();
   final WorkoutDraftStore _draftStore = const SharedPrefsWorkoutDraftStore();
   late final WorkoutBuilderSessionController _builderSession;
+  late final MobilityBuilderController _mobilityController;
   late final WorkoutEditorController _editorController;
   Customer? _editorCustomer;
   bool _loading = true;
@@ -75,7 +76,6 @@ class _WorkoutBuilderMobilityScreenState
   bool _planCompleted = false;
   bool _planArchived = false;
   int _initialWeekNumber = 1;
-  int _selectedMobilitySectionIndex = 0;
   String? _standaloneSavedSnapshot;
   int? _pendingSelectedWeekIndex;
   int? _pendingSelectedDayIndex;
@@ -115,6 +115,8 @@ class _WorkoutBuilderMobilityScreenState
   void initState() {
     super.initState();
     _builderSession = WorkoutBuilderSessionController();
+    _mobilityController = MobilityBuilderController(_builderSession);
+    _mobilityController.addListener(_onMobilityControllerChanged);
     _editorController = WorkoutEditorController(planRepo: _planRepo);
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
@@ -515,21 +517,8 @@ class _WorkoutBuilderMobilityScreenState
     });
   }
 
-  String? get _selectedSectionId {
-    final sections = _routine.mobilitySections;
-    if (sections.isEmpty) return null;
-    final idx = _selectedMobilitySectionIndex.clamp(0, sections.length - 1);
-    return sections[idx].id;
-  }
-
-  List<MobilityItem> get _mobilityItemsForSelectedSection {
-    final sid = _selectedSectionId;
-    if (sid == null) return [];
-    return _routine.mobilityItems.where((e) => e.sectionId == sid).toList();
-  }
-
   void _addMobilityItem() {
-    final sectionId = _selectedSectionId;
+    final sectionId = _mobilityController.selectedSectionId;
     if (sectionId == null) return;
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
@@ -542,54 +531,34 @@ class _WorkoutBuilderMobilityScreenState
       final t = title.trim();
       final s = subtitle.trim();
       if (t.isEmpty && s.isEmpty) return;
-      setState(() {
-        final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-        _routine = addMobilityItemToRoutine(
-          routine: _routine,
-          item: MobilityItem(
-            id: id,
-            title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
-            subtitle: s,
-            sectionId: sectionId,
-            customExerciseId: customExerciseId,
-          ),
-        );
-      });
+      final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
+      _mobilityController.addItem(
+        MobilityItem(
+          id: id,
+          title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
+          subtitle: s,
+          sectionId: sectionId,
+          customExerciseId: customExerciseId,
+        ),
+      );
     });
   }
 
   void _removeMobilityItem(String id) {
-    setState(() {
-      _routine = removeMobilityItemFromRoutine(routine: _routine, itemId: id);
-    });
+    _mobilityController.removeItem(id);
   }
 
   void _reorderMobility(int oldIndex, int newIndex) {
-    final sectionId = _selectedSectionId;
-    if (sectionId == null) return;
-    setState(() {
-      _routine = reorderMobilityItemsInSection(
-        routine: _routine,
-        sectionId: sectionId,
-        oldIndex: oldIndex,
-        newIndex: newIndex,
-      );
-    });
+    _mobilityController.reorderItems(oldIndex, newIndex);
   }
 
   void _addMobilitySection() {
     final l10n = AppLocalizations.of(context);
-    setState(() {
-      final id = 'sec_${DateTime.now().millisecondsSinceEpoch}';
-      final name = l10n.workoutBuilderSectionNumbered(
+    _mobilityController.addSection(
+      name: l10n.workoutBuilderSectionNumbered(
         _routine.mobilitySections.length + 1,
-      );
-      _routine = addMobilitySectionToRoutine(
-        routine: _routine,
-        section: MobilitySection(id: id, name: name),
-      );
-      _selectedMobilitySectionIndex = _routine.mobilitySections.length - 1;
-    });
+      ),
+    );
   }
 
   void _editMobilitySection(int index) {
@@ -601,35 +570,31 @@ class _WorkoutBuilderMobilityScreenState
       initialScheduleHint: section.scheduleHint,
       onSave: (newName, scheduleHint) {
         if (newName.trim().isEmpty) return;
-        setState(() {
-          _routine = updateMobilitySectionInRoutine(
-            routine: _routine,
-            sectionId: section.id,
-            name: newName,
-            scheduleHint: scheduleHint,
-          );
-        });
+        _mobilityController.updateSection(
+          sectionId: section.id,
+          name: newName,
+          scheduleHint: scheduleHint,
+        );
       },
     );
   }
 
   void _deleteMobilitySection(int index) {
-    if (index < 0 || index >= _routine.mobilitySections.length) return;
-    if (_routine.mobilitySections.length <= 1) {
-      return; // keep at least one section
-    }
-    setState(() {
-      final updated = deleteMobilitySectionFromRoutine(
-        routine: _routine,
-        sectionIndex: index,
-      );
-      if (updated == null) return;
-      _routine = updated;
-      _selectedMobilitySectionIndex = (_selectedMobilitySectionIndex.clamp(
-        0,
-        _routine.mobilitySections.length - 1,
-      ));
-    });
+    _mobilityController.deleteSection(index);
+  }
+
+  void _updateMobilityItem(
+    String id,
+    String title,
+    String subtitle, {
+    String shortTitle = '',
+  }) {
+    _mobilityController.updateItem(
+      itemId: id,
+      title: title,
+      subtitle: subtitle,
+      shortTitle: shortTitle,
+    );
   }
 
   void _addWeek() {
@@ -900,23 +865,6 @@ class _WorkoutBuilderMobilityScreenState
     setState(() => _routine = updated);
   }
 
-  void _updateMobilityItem(
-    String id,
-    String title,
-    String subtitle, {
-    String shortTitle = '',
-  }) {
-    setState(() {
-      _routine = updateMobilityItemInRoutine(
-        routine: _routine,
-        itemId: id,
-        title: title,
-        subtitle: subtitle,
-        shortTitle: shortTitle,
-      );
-    });
-  }
-
   void _updateExercise(
     int weekIndex,
     int dayIndex,
@@ -1031,8 +979,15 @@ class _WorkoutBuilderMobilityScreenState
     setState(() => _routine = updated);
   }
 
+  void _onMobilityControllerChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
   @override
   void dispose() {
+    _mobilityController.removeListener(_onMobilityControllerChanged);
+    _mobilityController.dispose();
     _builderSession.dispose();
     _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
@@ -1116,14 +1071,14 @@ class _WorkoutBuilderMobilityScreenState
     return WorkoutMobilityTab(
       theme: theme,
       colorScheme: cs,
-      sections: _routine.mobilitySections,
-      selectedSectionIndex: _selectedMobilitySectionIndex,
-      itemsForSelectedSection: _mobilityItemsForSelectedSection,
+      sections: _mobilityController.sections,
+      selectedSectionIndex: _mobilityController.selectedSectionIndex,
+      itemsForSelectedSection: _mobilityController.itemsForSelectedSection,
       onAddItem: _addMobilityItem,
       onAddSection: _addMobilitySection,
       onEditSection: _editMobilitySection,
       onDeleteSection: _deleteMobilitySection,
-      onSelectSection: (i) => setState(() => _selectedMobilitySectionIndex = i),
+      onSelectSection: _mobilityController.selectSection,
       onReorderItems: _reorderMobility,
       onUpdateItem: (itemId, t, s, short) =>
           _updateMobilityItem(itemId, t, s, shortTitle: short),

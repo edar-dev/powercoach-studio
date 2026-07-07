@@ -6,7 +6,7 @@ todos:
     content: "Confermare ordine split: mobility builder → customer workouts → templates → exercise library → exercise_add_sheet"
     status: completed
   - id: split-mobility-builder
-    content: "Estrarre da workout_builder_mobility_screen.dart (1291 righe): controller, tab shell, sheet handlers"
+    content: "Estrarre da workout_builder_mobility_screen.dart: MobilityBuilderController + sheet handlers (1208 righe rimanenti)"
     status: in_progress
   - id: split-customer-workouts
     content: "Estrarre da customer_workouts_screen.dart (1108 righe): plan list, session panel, actions bar"
