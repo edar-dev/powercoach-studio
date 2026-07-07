@@ -13,10 +13,10 @@ todos:
     status: completed
   - id: split-routine-codec
     content: "Spostare JSON encode/decode da workout_routine_model.dart verso workout_routine_json_codec.dart (estendere esistente)"
-    status: pending
+    status: completed
   - id: split-routine-domain-types
     content: "Tenere in workout_routine_model.dart solo tipi domain; mutazioni restano in workout_routine_mutations.dart"
-    status: pending
+    status: completed
   - id: split-plan-repository
     content: "Estrarre query/list helpers da workout_plan_repository.dart in workout_plan_query_helpers.dart"
     status: pending
