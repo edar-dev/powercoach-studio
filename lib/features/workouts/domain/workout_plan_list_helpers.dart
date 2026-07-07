@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import '../../dashboard/domain/dashboard_snapshot.dart';
 import '../data/workout_plan_api_model.dart';
-import '../data/workout_plan_repository.dart';
+import '../domain/workout_plan_query_helpers.dart';
 
 enum WorkoutPlanSort {
   startDateDesc,
