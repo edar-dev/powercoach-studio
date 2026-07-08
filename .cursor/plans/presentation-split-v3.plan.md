@@ -1,7 +1,7 @@
 ---
 name: presentation-split-v3
 overview: "Split opzionale su file presentation >400 righe rimasti fuori da v1/v2."
-status: in_progress
+status: closed
 dependsOn: presentation-split-v1
 todos:
   - id: inventory-v3
@@ -26,8 +26,8 @@ todos:
     content: "customer_detail_screen.dart 494 → 281 righe"
     status: completed
   - id: verify-v3
-    content: "flutter analyze + test/ per ogni PR — no behavior change"
-    status: pending
+    content: "flutter analyze + test/ — 280 passed on main post-PR #75/#76"
+    status: completed
 isProject: false
 ---
 
@@ -87,6 +87,10 @@ Dashboard e training tab hanno il maggiore impatto sul flusso coach quotidiano; 
 - Feature roadmap (#24–#31)
 - Sync/remote replay (legacy, non attivo)
 - File già ≤401 righe dai target v1
+
+## Completamento (2026-07-08)
+
+Tutti i todo pianificati sono stati completati via PR #71–#76. Candidati priorità 7–9 restano opzionali per un eventuale v4.
 
 ## Riferimenti
 
