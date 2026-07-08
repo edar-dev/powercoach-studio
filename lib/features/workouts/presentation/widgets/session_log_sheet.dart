@@ -4,6 +4,8 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/session_execution.dart';
+import '../../domain/session_log_draft.dart';
+import 'session_log_exercise_section.dart';
 
 /// Result of the session log bottom sheet.
 class SessionLogResult {
@@ -16,38 +18,57 @@ class SessionLogResult {
   final String notes;
 }
 
-/// Quick checklist of planned exercises plus optional session notes.
+/// Checklist of planned exercises with optional reps/load per set and notes.
 Future<SessionLogResult?> showSessionLogSheet({
   required BuildContext context,
   required List<Exercise> plannedExercises,
+  List<ExecutedExercise>? initialExercises,
+  String initialNotes = '',
 }) async {
   return showModalBottomSheet<SessionLogResult>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (ctx) => _SessionLogSheetBody(plannedExercises: plannedExercises),
+    builder: (ctx) => SessionLogSheetBody(
+      plannedExercises: plannedExercises,
+      initialExercises: initialExercises,
+      initialNotes: initialNotes,
+    ),
   );
 }
 
-class _SessionLogSheetBody extends StatefulWidget {
-  const _SessionLogSheetBody({required this.plannedExercises});
+class SessionLogSheetBody extends StatefulWidget {
+  const SessionLogSheetBody({
+    super.key,
+    required this.plannedExercises,
+    this.initialExercises,
+    this.initialNotes = '',
+  });
 
   final List<Exercise> plannedExercises;
+  final List<ExecutedExercise>? initialExercises;
+  final String initialNotes;
 
   @override
-  State<_SessionLogSheetBody> createState() => _SessionLogSheetBodyState();
+  State<SessionLogSheetBody> createState() => _SessionLogSheetBodyState();
 }
 
-class _SessionLogSheetBodyState extends State<_SessionLogSheetBody> {
-  late final Map<String, bool> _checked;
-  final _notesController = TextEditingController();
+class _SessionLogSheetBodyState extends State<SessionLogSheetBody> {
+  late List<SessionLogExerciseDraft> _drafts;
+  late final Map<String, bool> _expanded;
+  late final TextEditingController _notesController;
 
   @override
   void initState() {
     super.initState();
-    _checked = {
-      for (final e in widget.plannedExercises) e.id: true,
+    _drafts = buildSessionLogDrafts(
+      plannedExercises: widget.plannedExercises,
+      initialExercises: widget.initialExercises,
+    );
+    _expanded = {
+      for (final draft in _drafts) draft.exerciseId: _drafts.length <= 3,
     };
+    _notesController = TextEditingController(text: widget.initialNotes);
   }
 
   @override
@@ -56,26 +77,8 @@ class _SessionLogSheetBodyState extends State<_SessionLogSheetBody> {
     super.dispose();
   }
 
-  List<ExecutedExercise> _buildExecuted() {
-    return widget.plannedExercises.map((exercise) {
-      final done = _checked[exercise.id] ?? false;
-      final sets = exercise.setDetails ?? const [];
-      return ExecutedExercise(
-        exerciseId: exercise.id,
-        name: exercise.name,
-        customExerciseId: exercise.customExerciseId,
-        completed: done,
-        sets: sets
-            .map(
-              (s) => ExecutedSet(
-                reps: s.reps,
-                load: s.rpe,
-                completed: done,
-              ),
-            )
-            .toList(),
-      );
-    }).toList();
+  void _updateDraft(int index, SessionLogExerciseDraft draft) {
+    setState(() => _drafts[index] = draft);
   }
 
   @override
@@ -84,70 +87,112 @@ class _SessionLogSheetBodyState extends State<_SessionLogSheetBody> {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final maxHeight = MediaQuery.sizeOf(context).height * 0.88;
 
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.fromLTRB(24, 0, 24, 16 + bottomInset),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.sessionLogTitle,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.sessionLogExercisesLabel,
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Flexible(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.plannedExercises.length,
-                itemBuilder: (context, index) {
-                  final exercise = widget.plannedExercises[index];
-                  return CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: _checked[exercise.id] ?? false,
-                    onChanged: (v) {
-                      setState(() => _checked[exercise.id] = v ?? false);
-                    },
-                    title: Text(exercise.name),
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextField(
-              controller: _notesController,
-              decoration: InputDecoration(
-                hintText: l10n.sessionLogNotesHint,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: maxHeight),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                l10n.sessionLogTitle,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop(
-                  SessionLogResult(
-                    exercises: _buildExecuted(),
-                    notes: _notesController.text.trim(),
+              const SizedBox(height: 8),
+              Text(
+                l10n.sessionLogExercisesLabel,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _drafts.length,
+                  itemBuilder: (context, index) {
+                    final draft = _drafts[index];
+                    return SessionLogExerciseSection(
+                      draft: draft,
+                      l10n: l10n,
+                      expanded: _expanded[draft.exerciseId] ?? false,
+                      onExpandedChanged: (value) {
+                        setState(() => _expanded[draft.exerciseId] = value);
+                      },
+                      onCompletedChanged: (value) {
+                        _updateDraft(
+                          index,
+                          SessionLogExerciseDraft(
+                            exerciseId: draft.exerciseId,
+                            name: draft.name,
+                            customExerciseId: draft.customExerciseId,
+                            completed: value,
+                            sets: draft.sets,
+                          ),
+                        );
+                      },
+                      onSetChanged: (setIndex, setDraft) {
+                        final sets = List<SessionLogSetDraft>.from(draft.sets);
+                        sets[setIndex] = setDraft;
+                        _updateDraft(
+                          index,
+                          SessionLogExerciseDraft(
+                            exerciseId: draft.exerciseId,
+                            name: draft.name,
+                            customExerciseId: draft.customExerciseId,
+                            completed: draft.completed,
+                            sets: sets,
+                          ),
+                        );
+                      },
+                      onAddSet: () {
+                        final sets = List<SessionLogSetDraft>.from(draft.sets)
+                          ..add(SessionLogSetDraft());
+                        _updateDraft(
+                          index,
+                          SessionLogExerciseDraft(
+                            exerciseId: draft.exerciseId,
+                            name: draft.name,
+                            customExerciseId: draft.customExerciseId,
+                            completed: draft.completed,
+                            sets: sets,
+                          ),
+                        );
+                        setState(() => _expanded[draft.exerciseId] = true);
+                      },
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _notesController,
+                decoration: InputDecoration(
+                  hintText: l10n.sessionLogNotesHint,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
                   ),
-                );
-              },
-              child: Text(l10n.sessionLogSave),
-            ),
-          ],
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop(
+                    SessionLogResult(
+                      exercises: sessionLogDraftsToExecuted(_drafts),
+                      notes: _notesController.text.trim(),
+                    ),
+                  );
+                },
+                child: Text(l10n.sessionLogSave),
+              ),
+            ],
+          ),
         ),
       ),
     );

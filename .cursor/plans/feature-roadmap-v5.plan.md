@@ -10,7 +10,7 @@ todos:
     status: pending
   - id: wave-c-session-log
     content: "Implementare feature-35-session-log-enriched.plan.md"
-    status: pending
+    status: completed
   - id: wave-d-builder-superset
     content: "Implementare feature-36-builder-superset-panel.plan.md"
     status: pending

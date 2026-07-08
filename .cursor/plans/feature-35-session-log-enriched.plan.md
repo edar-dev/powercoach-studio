@@ -4,28 +4,28 @@ overview: "Feature #4 v5 — Session log arricchito: edit set/reps/load, allinea
 todos:
   - id: log-model
     content: "Verificare SessionExecutionEntry — supporto reps/load per set; estendere se manca"
-    status: pending
+    status: completed
   - id: log-ui-sets
     content: "session_log_set_row.dart — input reps/load opzionali per set; toggle completed per esercizio"
-    status: pending
+    status: completed
   - id: refactor-sheet
     content: "session_log_sheet.dart — estrarre body; ridurre a orchestrator (<200 righe)"
-    status: pending
+    status: completed
   - id: save-persist
     content: "SessionExecutionService.save — persist set details; aggiornare updatedAt"
-    status: pending
+    status: completed
   - id: diary-parity
     content: "WorkoutDiaryEntryScreen — riusa workout_diary_entry_body read-only da F33"
-    status: pending
+    status: completed
   - id: schedule-entry
     content: "schedule_detail_screen — CTA Registra sessione apre log enriched (non solo checklist)"
-    status: pending
+    status: completed
   - id: l10n
     content: "sessionLogSetReps, sessionLogSetLoad, sessionLogAddSet"
-    status: pending
+    status: completed
   - id: tests
     content: "session_execution_service_test — round-trip set data; widget test log sheet"
-    status: pending
+    status: completed
 isProject: false
 ---
 

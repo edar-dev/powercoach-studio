@@ -4186,6 +4186,42 @@ abstract class AppLocalizations {
   /// **'Exercises performed'**
   String get sessionLogExercisesLabel;
 
+  /// No description provided for @sessionLogSetReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Reps'**
+  String get sessionLogSetReps;
+
+  /// No description provided for @sessionLogSetLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get sessionLogSetLoad;
+
+  /// No description provided for @sessionLogAddSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Add set'**
+  String get sessionLogAddSet;
+
+  /// No description provided for @sessionLogSetLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Set {number}'**
+  String sessionLogSetLabel(int number);
+
+  /// No description provided for @sessionLogExpandSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Show sets'**
+  String get sessionLogExpandSets;
+
+  /// No description provided for @sessionLogCollapseSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide sets'**
+  String get sessionLogCollapseSets;
+
   /// No description provided for @customerProgressTitle.
   ///
   /// In en, this message translates to:

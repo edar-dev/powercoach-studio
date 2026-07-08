@@ -2235,6 +2235,26 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sessionLogExercisesLabel => 'Exercises performed';
 
   @override
+  String get sessionLogSetReps => 'Reps';
+
+  @override
+  String get sessionLogSetLoad => 'Load';
+
+  @override
+  String get sessionLogAddSet => 'Add set';
+
+  @override
+  String sessionLogSetLabel(int number) {
+    return 'Set $number';
+  }
+
+  @override
+  String get sessionLogExpandSets => 'Show sets';
+
+  @override
+  String get sessionLogCollapseSets => 'Hide sets';
+
+  @override
   String get customerProgressTitle => 'Training progress';
 
   @override

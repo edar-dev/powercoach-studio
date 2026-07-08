@@ -964,6 +964,17 @@
   "sessionLogNotesHint": "Note sessione (opzionale)",
   "sessionLogSave": "Salva sessione",
   "sessionLogExercisesLabel": "Esercizi eseguiti",
+  "sessionLogSetReps": "Reps",
+  "sessionLogSetLoad": "Carico",
+  "sessionLogAddSet": "Aggiungi set",
+  "sessionLogSetLabel": "Set {number}",
+  "@sessionLogSetLabel": {
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "sessionLogExpandSets": "Mostra set",
+  "sessionLogCollapseSets": "Nascondi set",
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",
