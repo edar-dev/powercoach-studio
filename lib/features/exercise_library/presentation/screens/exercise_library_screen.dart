@@ -1,20 +1,16 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../../domain/exercise_library_tree_helpers.dart';
+import '../exercise_library_crud_handler.dart';
+import '../exercise_library_export_handler.dart';
 import '../exercise_library_import_handler.dart';
-import 'package:powercoach_studio/features/exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
 import '../widgets/exercise_library_tab_view.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -38,6 +34,18 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         context: context,
         onReload: _load,
         isMobilityTab: () => _tabController.index == 1,
+      );
+
+  ExerciseLibraryCrudHandler get _crudHandler => ExerciseLibraryCrudHandler(
+        context: context,
+        exerciseRepo: _exerciseRepo,
+        items: () => _items,
+        onReload: _load,
+      );
+
+  ExerciseLibraryExportHandler get _exportHandler => ExerciseLibraryExportHandler(
+        context: context,
+        exerciseRepo: _exerciseRepo,
       );
 
   @override
@@ -86,195 +94,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     }
   }
 
-  Future<void> _export() async {
-    try {
-      final isMobility = _tabController.index == 1;
-      final roots = await _exerciseRepo.getTree(mobility: isMobility);
-      final data = flattenExerciseTree(roots)
-          .map(
-            (e) => <String, dynamic>{
-              'id': e.id,
-              'name': e.name,
-              'description': e.description,
-              'parentId': e.parentId,
-              'sortOrder': e.sortOrder,
-              'isMobility': e.isMobility,
-            },
-          )
-          .toList();
-      if (!mounted) return;
-      final l10n = AppLocalizations.of(context);
-      if (data.isEmpty) {
-        showAppSnackBar(
-          context,
-          content: Text(l10n.exerciseLibraryExportEmpty),
-        );
-        return;
-      }
-      final json = const JsonEncoder.withIndent('  ').convert(data);
-      final name =
-          'custom-exercises-${isMobility ? 'mobility' : 'standard'}-${DateTime.now().toIso8601String().split('T').first}.json';
-      await Share.share(
-        json,
-        subject: name,
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+  Future<void> _export() => _exportHandler.export(
+        isMobility: _tabController.index == 1,
       );
-    } catch (e) {
-      if (mounted) {
-        showAppSnackBar(context, content: Text(e.toString()));
-      }
-    }
-  }
 
   Future<void> _import() => _importHandler.showImportSheet();
-
-  void _showAddDialog({required bool isMobility}) {
-    _showAddDialogWithParent(null, isMobility: isMobility);
-  }
-
-  void _showAddVariantDialog(CustomExerciseItem parent) {
-    _showAddDialogWithParent(
-      parent.id,
-      sortOrder: parent.children.length,
-      isMobility: parent.isMobility,
-    );
-  }
-
-  void _showAddDialogWithParent(
-    String? parentId, {
-    int? sortOrder,
-    required bool isMobility,
-  }) {
-    final l10n = AppLocalizations.of(context);
-    showAppBottomSheet<void>(
-      context: context,
-      title: l10n.exerciseLibraryAddExercise,
-      fullScreen: false,
-      bodyBuilder: (sheetContext) => CustomExerciseEditDialog(
-        title: l10n.exerciseLibraryAddExercise,
-        name: '',
-        description: null,
-        isMobility: isMobility,
-        parentId: parentId,
-        parentCandidates: flattenExerciseTree(_items),
-        onSave: (name, description, selectedParentId, isMobility) async {
-          try {
-            await _exerciseRepo.create({
-              'name': name,
-              if (description != null && description.isNotEmpty)
-                'description': description,
-              if (selectedParentId != null && selectedParentId.isNotEmpty)
-                'parentId': selectedParentId,
-              if (sortOrder != null) 'sortOrder': sortOrder,
-              'isMobility': isMobility,
-            });
-            if (sheetContext.mounted) {
-              Navigator.of(sheetContext).pop();
-              _load();
-            }
-          } catch (e) {
-            if (sheetContext.mounted) {
-              ScaffoldMessenger.of(sheetContext).showSnackBar(
-                SnackBar(
-                  content: Text(e.toString()),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          }
-        },
-        onCancel: () => Navigator.of(sheetContext).pop(),
-      ),
-    );
-  }
-
-  void _showEditDialog(CustomExerciseItem item) {
-    final l10n = AppLocalizations.of(context);
-    final excludeIds = {item.id, ...item.flat.map((e) => e.id)};
-    final parentCandidates = flattenExerciseTree(
-      _items,
-    ).where((e) => !excludeIds.contains(e.id)).toList();
-    showAppBottomSheet<void>(
-      context: context,
-      title: l10n.exerciseLibraryEditExercise,
-      fullScreen: false,
-      bodyBuilder: (sheetContext) => CustomExerciseEditDialog(
-        title: l10n.exerciseLibraryEditExercise,
-        name: item.name,
-        description: item.description,
-        isMobility: item.isMobility,
-        parentId: item.parentId,
-        parentCandidates: parentCandidates,
-        onSave: (name, description, parentId, isMobility) async {
-          try {
-            await _exerciseRepo.update(item.id, {
-              'name': name,
-              'description': description?.isEmpty == true ? null : description,
-              'parentId': parentId?.isEmpty == true ? null : parentId,
-              'isMobility': isMobility,
-              'expectedRowVersion': item.rowVersion,
-            });
-            if (sheetContext.mounted) {
-              Navigator.of(sheetContext).pop();
-              _load();
-            }
-          } catch (e) {
-            if (sheetContext.mounted) {
-              ScaffoldMessenger.of(sheetContext).showSnackBar(
-                SnackBar(
-                  content: Text(e.toString()),
-                  behavior: SnackBarBehavior.floating,
-                ),
-              );
-            }
-          }
-        },
-        onCancel: () => Navigator.of(sheetContext).pop(),
-      ),
-    );
-  }
-
-  void _confirmDelete(CustomExerciseItem item) {
-    final l10n = AppLocalizations.of(context);
-    final hasChildren = item.children.isNotEmpty;
-    final message = hasChildren
-        ? l10n.exerciseLibraryDeleteHasChildren
-        : l10n.exerciseLibraryDeleteConfirm(item.name);
-    if (hasChildren) {
-      showAppBottomSheet<void>(
-        context: context,
-        title: l10n.exerciseLibraryDeleteTitle,
-        bodyBuilder: (_) => Text(message),
-        primaryActionLabel: l10n.exerciseLibraryCancel,
-        onPrimaryAction: () => Navigator.of(context).pop(),
-      );
-      return;
-    }
-
-    showAppConfirmDialog(
-      context: context,
-      title: l10n.exerciseLibraryDeleteTitle,
-      message: message,
-      confirmLabel: l10n.exerciseLibraryDelete,
-      cancelLabel: l10n.exerciseLibraryCancel,
-      destructive: true,
-    ).then((confirmed) async {
-      if (!confirmed) return;
-      try {
-        await _exerciseRepo.delete(item.id);
-        if (mounted) _load();
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
-      }
-    });
-  }
 
   Future<void> _togglePin(CustomExerciseItem item) async {
     await _pinnedStore.toggle(item.id);
@@ -353,9 +177,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             allItemsEmpty: _items.isEmpty,
             onRefresh: _load,
             buildList: () => filterExerciseRootsByMobility(_items, false),
-            onEdit: _showEditDialog,
-            onDelete: _confirmDelete,
-            onAddVariant: _showAddVariantDialog,
+            onEdit: _crudHandler.showEditDialog,
+            onDelete: _crudHandler.confirmDelete,
+            onAddVariant: _crudHandler.showAddVariantDialog,
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
           ),
@@ -366,9 +190,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             allItemsEmpty: _items.isEmpty,
             onRefresh: _load,
             buildList: () => filterExerciseRootsByMobility(_items, true),
-            onEdit: _showEditDialog,
-            onDelete: _confirmDelete,
-            onAddVariant: _showAddVariantDialog,
+            onEdit: _crudHandler.showEditDialog,
+            onDelete: _crudHandler.confirmDelete,
+            onAddVariant: _crudHandler.showAddVariantDialog,
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
           ),
@@ -379,9 +203,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             allItemsEmpty: filterHevyExerciseRoots(_items).isEmpty,
             onRefresh: _load,
             buildList: () => filterHevyExerciseRoots(_items),
-            onEdit: _showEditDialog,
-            onDelete: _confirmDelete,
-            onAddVariant: _showAddVariantDialog,
+            onEdit: _crudHandler.showEditDialog,
+            onDelete: _crudHandler.confirmDelete,
+            onAddVariant: _crudHandler.showAddVariantDialog,
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
             readOnlyFolders: true,
@@ -393,7 +217,9 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           : FloatingActionButton.extended(
               onPressed: _loading
                   ? null
-                  : () => _showAddDialog(isMobility: _tabController.index == 1),
+                  : () => _crudHandler.showAddDialog(
+                        isMobility: _tabController.index == 1,
+                      ),
               icon: const Icon(Icons.add),
               label: Text(l10n.exerciseLibraryAddExercise),
               backgroundColor: StitchM3Theme.accent,
