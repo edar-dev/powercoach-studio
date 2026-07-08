@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../data/workout_routine_model.dart';
+import '../workout_builder_session_controller.dart';
 import 'workout_exercise_card.dart';
 import 'workout_superset_block.dart';
 import 'workout_training_helpers.dart';
@@ -13,6 +14,7 @@ class WorkoutDayExerciseList extends StatelessWidget {
     super.key,
     required this.theme,
     required this.colorScheme,
+    required this.session,
     required this.weekIndex,
     required this.dayIndex,
     required this.day,
@@ -20,6 +22,7 @@ class WorkoutDayExerciseList extends StatelessWidget {
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
     required this.onMoveExercise,
+    required this.onMoveExerciseWithinSuperset,
     required this.onUpdateExercise,
     required this.onAddSetToExercise,
     required this.onUpdateExerciseSet,
@@ -31,6 +34,7 @@ class WorkoutDayExerciseList extends StatelessWidget {
 
   final ThemeData theme;
   final ColorScheme colorScheme;
+  final WorkoutBuilderSessionController session;
   final int weekIndex;
   final int dayIndex;
   final Day day;
@@ -38,6 +42,8 @@ class WorkoutDayExerciseList extends StatelessWidget {
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
+  final void Function(int, int, String, {required bool up})
+  onMoveExerciseWithinSuperset;
   final void Function(
     int,
     int,
@@ -105,6 +111,7 @@ class WorkoutDayExerciseList extends StatelessWidget {
             child: WorkoutSupersetBlock(
               theme: theme,
               colorScheme: colorScheme,
+              session: session,
               weekIndex: weekIndex,
               dayIndex: dayIndex,
               exercises: exercises,
@@ -114,17 +121,11 @@ class WorkoutDayExerciseList extends StatelessWidget {
                   ? exercises.first.supersetGroupId!
                   : null,
               onAddExercise: () => onAddExercise(weekIndex, dayIndex),
-              onDuplicateExercise: onDuplicateExercise,
               onAddExerciseToSuperset: onAddExerciseToSuperset,
               onRemoveExercise: onRemoveExercise,
-              onMoveExercise: onMoveExercise,
-              onUpdateExercise: onUpdateExercise,
-              onAddSetToExercise: onAddSetToExercise,
-              onUpdateExerciseSet: onUpdateExerciseSet,
-              onRemoveExerciseSet: onRemoveExerciseSet,
-              onAssignToSuperset: onAssignToSuperset,
+              onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
               onRemoveFromSuperset: onRemoveFromSuperset,
-              supersetOptionsForDay: getSupersetGroupOptions(day),
+              onUpdateExercise: onUpdateExercise,
             ),
           );
         },

@@ -7,13 +7,13 @@ todos:
     status: completed
   - id: wave-b-diary-stats
     content: "Implementare feature-33-workout-diary-v2.plan.md + feature-34-coach-stats-charts.plan.md (parallelo)"
-    status: pending
+    status: completed
   - id: wave-c-session-log
     content: "Implementare feature-35-session-log-enriched.plan.md"
     status: completed
   - id: wave-d-builder-superset
     content: "Implementare feature-36-builder-superset-panel.plan.md"
-    status: pending
+    status: completed
   - id: wave-e-progress-export
     content: "Implementare feature-37-customer-progress-export.plan.md"
     status: pending

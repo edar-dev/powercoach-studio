@@ -218,6 +218,23 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     );
   }
 
+  bool moveExerciseWithinSuperset({
+    required int weekIndex,
+    required int dayIndex,
+    required String exerciseId,
+    required bool up,
+  }) {
+    return _replace(
+      moveExerciseWithinSupersetInRoutine(
+        routine: _routine,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        exerciseId: exerciseId,
+        up: up,
+      ),
+    );
+  }
+
   bool updateExercise({
     required int weekIndex,
     required int dayIndex,

@@ -4,22 +4,22 @@ overview: "Feature #5 v5 — Pannello superset dedicato nel workout builder trai
 todos:
   - id: superset-panel-widget
     content: "workout_builder_superset_panel.dart — lista esercizi nel superset, reorder, rimuovi, aggiungi da library"
-    status: pending
+    status: completed
   - id: wire-training-tab
     content: "workout_builder_training_tab.dart — apri panel su tap superset block (sostituire dialog inline se presente)"
-    status: pending
+    status: completed
   - id: prescription-scope
     content: "Allineare prescription editor scope con superset — sets/reps a livello superset vs per-exercise (documentare scelta)"
-    status: pending
+    status: completed
   - id: actions-refactor
     content: "workout_superset_actions.dart — spostare create/link/unlink nel panel dove possibile"
-    status: pending
+    status: completed
   - id: l10n
     content: "builderSupersetPanelTitle, builderSupersetAddExercise, builderSupersetEmpty"
-    status: pending
+    status: completed
   - id: tests
     content: "Widget test panel con fake plan data; existing superset_actions tests green"
-    status: pending
+    status: completed
 isProject: false
 ---
 

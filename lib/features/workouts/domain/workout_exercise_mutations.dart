@@ -126,6 +126,34 @@ WorkoutRoutine? moveExerciseInDayInRoutine({
   );
 }
 
+/// Reorders an exercise only within its superset group (does not cross group bounds).
+WorkoutRoutine? moveExerciseWithinSupersetInRoutine({
+  required WorkoutRoutine routine,
+  required int weekIndex,
+  required int dayIndex,
+  required String exerciseId,
+  required bool up,
+}) {
+  return updateDayExercisesInRoutine(
+    routine: routine,
+    weekIndex: weekIndex,
+    dayIndex: dayIndex,
+    update: (exercises) {
+      final currentIndex = exercises.indexWhere((e) => e.id == exerciseId);
+      if (currentIndex < 0) return exercises;
+      final groupId = exercises[currentIndex].supersetGroupId;
+      if (groupId == null || groupId.isEmpty) return exercises;
+      final targetIndex = up ? currentIndex - 1 : currentIndex + 1;
+      if (targetIndex < 0 || targetIndex >= exercises.length) return exercises;
+      if (exercises[targetIndex].supersetGroupId != groupId) return exercises;
+      final reordered = List<Exercise>.from(exercises);
+      final item = reordered.removeAt(currentIndex);
+      reordered.insert(targetIndex, item);
+      return reordered;
+    },
+  );
+}
+
 WorkoutRoutine? updateExerciseInRoutine({
   required WorkoutRoutine routine,
   required int weekIndex,

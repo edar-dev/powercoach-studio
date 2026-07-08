@@ -219,6 +219,20 @@ class WorkoutBuilderTrainingHandlers {
     );
   }
 
+  void moveExerciseWithinSuperset(
+    int weekIndex,
+    int dayIndex,
+    String exerciseId, {
+    required bool up,
+  }) {
+    session.moveExerciseWithinSuperset(
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      exerciseId: exerciseId,
+      up: up,
+    );
+  }
+
   void updateExercise(
     int weekIndex,
     int dayIndex,

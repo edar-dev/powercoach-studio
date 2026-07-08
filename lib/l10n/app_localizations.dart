@@ -2410,6 +2410,36 @@ abstract class AppLocalizations {
   /// **'SUPER SET'**
   String get workoutBuilderSuperSetHeading;
 
+  /// No description provided for @builderSupersetPanelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage superset'**
+  String get builderSupersetPanelTitle;
+
+  /// No description provided for @builderSupersetAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise to superset'**
+  String get builderSupersetAddExercise;
+
+  /// No description provided for @builderSupersetEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises in this superset.'**
+  String get builderSupersetEmpty;
+
+  /// No description provided for @builderSupersetPrescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Prescription (lead exercise)'**
+  String get builderSupersetPrescriptionLabel;
+
+  /// No description provided for @builderSupersetManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get builderSupersetManage;
+
   /// No description provided for @workoutBuilderDeleteDayMenu.
   ///
   /// In en, this message translates to:

@@ -1,12 +1,67 @@
 import 'package:flutter/material.dart';
 
 import '../../data/workout_routine_model.dart';
+import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
+import '../workout_builder_session_controller.dart';
 import 'exercise_add_sheet.dart';
+import 'workout_builder_superset_editor_sheet.dart';
 
 /// Superset/multiset exercise actions extracted from the builder screen (phase 3).
 class WorkoutSupersetActions {
   const WorkoutSupersetActions._();
+
+  static Future<void> showSupersetEditorSheet({
+    required BuildContext context,
+    required WorkoutBuilderSessionController session,
+    required int weekIndex,
+    required int dayIndex,
+    required String supersetGroupId,
+    required ThemeData theme,
+    required ColorScheme colorScheme,
+    required void Function(int weekIndex, int dayIndex, String supersetGroupId)
+    onAddExerciseToSuperset,
+    required void Function(int weekIndex, int dayIndex, String exerciseId)
+    onRemoveExercise,
+    required void Function(
+      int weekIndex,
+      int dayIndex,
+      String exerciseId, {
+      required bool up,
+    })
+    onMoveExerciseWithinSuperset,
+    required void Function(int weekIndex, int dayIndex, String exerciseId)
+    onRemoveFromSuperset,
+    required void Function(
+      int weekIndex,
+      int dayIndex,
+      String exerciseId, {
+      String? name,
+      String? sets,
+      String? reps,
+      String? rpe,
+      String? note,
+      String? shortName,
+      ExercisePrescriptionScope? prescriptionScope,
+      List<ExerciseSet>? setDetails,
+    })
+    onUpdateExercise,
+  }) {
+    return showWorkoutBuilderSupersetEditorSheet(
+      context: context,
+      session: session,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      supersetGroupId: supersetGroupId,
+      theme: theme,
+      colorScheme: colorScheme,
+      onAddExerciseToSuperset: onAddExerciseToSuperset,
+      onRemoveExercise: onRemoveExercise,
+      onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
+      onRemoveFromSuperset: onRemoveFromSuperset,
+      onUpdateExercise: onUpdateExercise,
+    );
+  }
 
   static void showAddExerciseToSupersetDialog({
     required BuildContext context,
