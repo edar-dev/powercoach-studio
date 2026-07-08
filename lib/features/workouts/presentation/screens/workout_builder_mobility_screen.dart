@@ -2,36 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
-import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_draft_store.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/day_scheduled_weekday.dart';
-import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/workout_exercise_mutations.dart';
-import '../workout_builder_editor_exit.dart';
+import '../mobility_builder_controller.dart';
 import '../workout_builder_export_actions.dart';
 import '../workout_builder_load_helpers.dart';
-import '../mobility_builder_controller.dart';
+import '../workout_builder_mobility_handlers.dart';
+import '../workout_builder_routine_coordinator.dart';
 import '../workout_builder_session_controller.dart';
+import '../workout_builder_training_handlers.dart';
 import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/exercise_add_sheet.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/mobility_add_sheet.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/mobility_section_editor_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_editor_shell.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_export_sheet.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_helpers.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_plan_details_tab.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_superset_actions.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_tab.dart';
 
 /// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
@@ -69,6 +61,7 @@ class _WorkoutBuilderMobilityScreenState
   late final WorkoutBuilderSessionController _builderSession;
   late final MobilityBuilderController _mobilityController;
   late final WorkoutEditorController _editorController;
+  late final WorkoutBuilderRoutineCoordinator _routineCoordinator;
   Customer? _editorCustomer;
   bool _loading = true;
   bool _saving = false;
@@ -85,12 +78,22 @@ class _WorkoutBuilderMobilityScreenState
   set _routine(WorkoutRoutine value) => _builderSession.setRoutine(value);
 
   int get _selectedWeekIndex => _builderSession.selectedWeekIndex;
-  set _selectedWeekIndex(int value) => _builderSession.selectWeek(value);
-
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
-  set _selectedDayIndex(int value) => _builderSession.selectDay(value);
 
   bool get _showsMobilityTab => widget.variant.showsMobilityTab;
+
+  WorkoutBuilderTrainingHandlers get _trainingHandlers =>
+      WorkoutBuilderTrainingHandlers(
+        context: context,
+        session: _builderSession,
+        customerId: widget.customerId,
+      );
+
+  WorkoutBuilderMobilityHandlers get _mobilityHandlers =>
+      WorkoutBuilderMobilityHandlers(
+        context: context,
+        mobilityController: _mobilityController,
+      );
 
   WorkoutBuilderExportActions get _exportActions => WorkoutBuilderExportActions(
         context: context,
@@ -106,7 +109,9 @@ class _WorkoutBuilderMobilityScreenState
     if (widget.editorMode || _standaloneSavedSnapshot == null) return false;
     return isWorkoutEditorDirty(
       savedSnapshot: _standaloneSavedSnapshot,
-      currentSnapshot: _standaloneSnapshot(),
+      currentSnapshot: _routineCoordinator.standaloneSnapshot(
+        initialWeekNumber: _initialWeekNumber,
+      ),
     );
   }
 
@@ -118,6 +123,18 @@ class _WorkoutBuilderMobilityScreenState
     _mobilityController = MobilityBuilderController(_builderSession);
     _mobilityController.addListener(_onBuilderControllersChanged);
     _editorController = WorkoutEditorController(planRepo: _planRepo);
+    _routineCoordinator = WorkoutBuilderRoutineCoordinator(
+      builderSession: _builderSession,
+      editorController: _editorController,
+      planRepo: _planRepo,
+      customerRepo: _customerRepo,
+      draftStore: _draftStore,
+      routineNameController: _routineNameController,
+      initialWeekController: _initialWeekController,
+      phaseController: _phaseController,
+      tagsController: _tagsController,
+      notesController: _notesController,
+    );
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
       vsync: this,
@@ -146,34 +163,11 @@ class _WorkoutBuilderMobilityScreenState
     _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
   }
 
-  WorkoutEditorSession _editorSession() {
-    final parsedInitialWeek = int.tryParse(_initialWeekController.text.trim());
-    final resolvedInitialWeek =
-        (parsedInitialWeek != null && parsedInitialWeek >= 1)
-        ? parsedInitialWeek
-        : _initialWeekNumber;
-    return WorkoutEditorSession(
-      routine: _routine,
-      planName: _routineNameController.text,
-      initialWeekNumber: resolvedInitialWeek,
-      phase: _phaseController.text,
-      tags: _tagsController.text,
-      notes: _notesController.text,
-    );
-  }
-
-  String _standaloneSnapshot() => buildWorkoutEditorSnapshot(
-    routine: _routine,
-    planName: _routineNameController.text,
-    initialWeekNumber: _initialWeekNumber,
-    phase: _phaseController.text,
-    tags: _tagsController.text,
-    notes: _notesController.text,
-  );
-
   void _captureStandaloneSnapshot() {
     if (!widget.editorMode) {
-      _standaloneSavedSnapshot = _standaloneSnapshot();
+      _standaloneSavedSnapshot = _routineCoordinator.standaloneSnapshot(
+        initialWeekNumber: _initialWeekNumber,
+      );
     }
   }
 
@@ -182,7 +176,9 @@ class _WorkoutBuilderMobilityScreenState
       return;
     }
     _editorController.scheduleContentChanged(
-      session: _editorSession(),
+      session: _routineCoordinator.editorSession(
+        initialWeekNumber: _initialWeekNumber,
+      ),
       editorMode: widget.editorMode,
       loading: _loading,
       onAutosave: () => _saveRoutine(silent: true),
@@ -215,13 +211,12 @@ class _WorkoutBuilderMobilityScreenState
       await _loadForEditorMode();
       return;
     }
-    final loaded = await _draftStore.load();
+    final loaded = await _routineCoordinator.loadStandaloneDraft();
     if (!mounted) return;
     setState(() {
-      _routine = hydrateScheduledWeekdays(loaded);
+      _routine = loaded;
       _routineNameController.text = loaded.name;
-      _selectedWeekIndex = 0;
-      _selectedDayIndex = 0;
+      _builderSession.selectWeek(0, resetDay: true);
       _loading = false;
     });
     _captureStandaloneSnapshot();
@@ -230,69 +225,64 @@ class _WorkoutBuilderMobilityScreenState
   Future<void> _loadForEditorMode() async {
     final customerId = widget.customerId!;
     try {
-      Customer? customer;
-      _editorController.suspendTracking();
-      String? loadedPlanId;
-      var loadedInitialWeek = _initialWeekNumber;
-      if (widget.planId != null && widget.planId!.isNotEmpty) {
-        final plan = await _planRepo.getById(widget.planId!);
-        if (plan != null && mounted) {
-          final snapshot = buildEditorPlanSnapshot(
-            plan,
-            pendingWeekIndex: _pendingSelectedWeekIndex,
-            pendingDayIndex: _pendingSelectedDayIndex,
-          );
-          if (_pendingSelectedWeekIndex != null &&
-              _pendingSelectedDayIndex != null &&
-              _pendingSelectedWeekIndex! >= 0 &&
-              _pendingSelectedWeekIndex! < snapshot.routine.weeks.length) {
-            _pendingSelectedWeekIndex = null;
-            _pendingSelectedDayIndex = null;
-          }
-          loadedPlanId = plan.id;
-          loadedInitialWeek = snapshot.initialWeekNumber;
-          setState(() {
-            _routine = snapshot.routine;
-            _routineNameController.text = snapshot.routine.name;
-            _phaseController.text = snapshot.phase;
-            _tagsController.text = snapshot.tags;
-            _notesController.text = snapshot.notes;
-            _initialWeekNumber = snapshot.initialWeekNumber;
-            _initialWeekController.text =
-                snapshot.initialWeekNumber.toString();
-            _selectedWeekIndex = snapshot.weekIndex;
-            _selectedDayIndex = snapshot.dayIndex;
-            _planCompleted = snapshot.planCompleted;
-            _planArchived = snapshot.planArchived;
-          });
+      final result = await _routineCoordinator.loadEditorPlan(
+        customerId: customerId,
+        planId: widget.planId,
+        pendingWeekIndex: _pendingSelectedWeekIndex,
+        pendingDayIndex: _pendingSelectedDayIndex,
+      );
+      if (!mounted) return;
+      if (result.routine != null) {
+        if (_pendingSelectedWeekIndex != null &&
+            _pendingSelectedDayIndex != null &&
+            resolveWorkoutBuilderDeepLinkSelection(
+                  result.routine!,
+                  pendingWeekIndex: _pendingSelectedWeekIndex,
+                  pendingDayIndex: _pendingSelectedDayIndex,
+                ) !=
+                null) {
+          _pendingSelectedWeekIndex = null;
+          _pendingSelectedDayIndex = null;
         }
+        setState(() {
+          _routine = result.routine!;
+          _routineNameController.text = result.routine!.name;
+          _phaseController.text = result.phase;
+          _tagsController.text = result.tags;
+          _notesController.text = result.notes;
+          _initialWeekNumber = result.loadedInitialWeek;
+          _initialWeekController.text = result.loadedInitialWeek.toString();
+          _builderSession.selectWeekDay(result.weekIndex, result.dayIndex);
+          _planCompleted = result.planCompleted;
+          _planArchived = result.planArchived;
+        });
       } else {
         setState(() {
-          _selectedWeekIndex = 0;
-          _selectedDayIndex = 0;
+          _builderSession.selectWeek(0, resetDay: true);
         });
       }
-      try {
-        customer = await _customerRepo.getById(customerId);
-      } catch (_) {}
-      if (!mounted) return;
       setState(() {
-        _editorCustomer = customer;
+        _editorCustomer = result.customer;
         _loading = false;
       });
       _editorController.markLoaded(
-        session: _editorSession(),
-        planId: loadedPlanId,
-        loadedInitialWeekNumber: loadedInitialWeek,
+        session: _routineCoordinator.editorSession(
+          initialWeekNumber: _initialWeekNumber,
+        ),
+        planId: result.loadedPlanId,
+        loadedInitialWeekNumber: result.loadedInitialWeek,
       );
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _selectedWeekIndex = 0;
-        _selectedDayIndex = 0;
+        _builderSession.selectWeek(0, resetDay: true);
         _loading = false;
       });
-      _editorController.markLoaded(session: _editorSession());
+      _editorController.markLoaded(
+        session: _routineCoordinator.editorSession(
+          initialWeekNumber: _initialWeekNumber,
+        ),
+      );
     }
   }
 
@@ -334,114 +324,34 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Future<bool> _saveRoutine({bool silent = false}) async {
-    if (widget.editorMode && widget.customerId != null) {
-      if (_editorController.saving) return false;
-      final outcome = await _editorController.save(
-        session: _editorSession(),
-        customerId: widget.customerId!,
-        pdfHeader: _editorCustomer?.pdfHeader,
-        useCustomPdfHeader: _editorCustomer?.useCustomPdfHeader ?? false,
-        silent: silent,
-      );
-      if (!mounted) return outcome.success;
-      if (outcome.success) {
-        setState(() {
-          if (outcome.savedRoutine != null) {
-            _routine = outcome.savedRoutine!;
-          }
-          if (outcome.savedInitialWeekNumber != null) {
-            _initialWeekNumber = outcome.savedInitialWeekNumber!;
-          }
-        });
-        if (!silent) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context).workoutBuilderPlanSaved,
-              ),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: StitchM3Theme.accent,
-            ),
-          );
-        }
-        final createdPlanId = outcome.createdPlanId;
-        if (createdPlanId != null && createdPlanId.isNotEmpty && mounted) {
-          navigateReplace(
-            context,
-            customerWorkoutEditorPath(
-              widget.customerId!,
-              planId: createdPlanId,
-              weekIndex: _selectedWeekIndex,
-              dayIndex: _selectedDayIndex,
-            ),
-          );
-        }
-      } else if (silent) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).workoutEditorAutosaveFailed,
-            ),
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: AppLocalizations.of(context).workoutEditorRetrySave,
-              onPressed: () {
-                _saveRoutine();
-              },
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).workoutExportError),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.errorContainer,
-          ),
-        );
-      }
-      return outcome.success;
+    if (!widget.editorMode) {
+      if (_saving) return false;
+      setState(() => _saving = true);
     }
-
-    if (_saving) return false;
-    if (mounted) setState(() => _saving = true);
-    final name = _routineNameController.text.trim();
-    final toSave = _routine.copyWith(name: name.isEmpty ? _routine.name : name);
-
-    try {
-      await _draftStore.save(toSave);
-      if (!mounted) return true;
+    final outcome = await _routineCoordinator.saveRoutine(
+      context: context,
+      editorMode: widget.editorMode,
+      customerId: widget.customerId,
+      initialWeekNumber: _initialWeekNumber,
+      editorCustomer: _editorCustomer,
+      selectedWeekIndex: _selectedWeekIndex,
+      selectedDayIndex: _selectedDayIndex,
+      silent: silent,
+    );
+    if (!mounted) return outcome.success;
+    if (outcome.savedRoutine != null) {
       setState(() {
-        _routine = toSave;
+        _routine = outcome.savedRoutine!;
+        if (outcome.savedInitialWeekNumber != null) {
+          _initialWeekNumber = outcome.savedInitialWeekNumber!;
+        }
       });
-      _captureStandaloneSnapshot();
-      if (!silent) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              AppLocalizations.of(context).workoutBuilderRoutineSaved,
-            ),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: StitchM3Theme.accent,
-          ),
-        );
-      }
-      return true;
-    } catch (_) {
-      if (!mounted) return false;
-      if (!silent) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppLocalizations.of(context).workoutExportError),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.errorContainer,
-          ),
-        );
-      }
-      return false;
-    } finally {
-      if (mounted) setState(() => _saving = false);
     }
+    if (!widget.editorMode) {
+      _captureStandaloneSnapshot();
+      setState(() => _saving = false);
+    }
+    return outcome.success;
   }
 
   void _showPdfExportSheet() {
@@ -459,44 +369,15 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Future<void> _handleExitAttempt() async {
-    if (!widget.editorMode && !_isStandaloneDirty) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: widget.editorMode,
-        customerId: widget.customerId,
-      );
-      return;
-    }
-    if (widget.editorMode && !_isDirty) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: widget.editorMode,
-        customerId: widget.customerId,
-      );
-      return;
-    }
-    final action = await showWorkoutEditorUnsavedDialog(context);
-    if (!mounted ||
-        action == null ||
-        action == WorkoutEditorExitAction.cancel) {
-      return;
-    }
-    if (action == WorkoutEditorExitAction.discard) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: widget.editorMode,
-        customerId: widget.customerId,
-      );
-      return;
-    }
-    final didSave = await _saveRoutine();
-    if (didSave && mounted) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: widget.editorMode,
-        customerId: widget.customerId,
-      );
-    }
+    await _routineCoordinator.handleExitAttempt(
+      context: context,
+      editorMode: widget.editorMode,
+      customerId: widget.customerId,
+      isDirty: widget.editorMode ? _isDirty : _isStandaloneDirty,
+      onSave: ({bool silent = false}) {
+        return _saveRoutine(silent: silent);
+      },
+    );
   }
 
   Future<void> _importJsonFromFile() async {
@@ -506,383 +387,6 @@ class _WorkoutBuilderMobilityScreenState
       _routine = hydrateScheduledWeekdays(imported);
       _routineNameController.text = imported.name;
     });
-  }
-
-  void _addMobilityItem() {
-    final sectionId = _mobilityController.selectedSectionId;
-    if (sectionId == null) return;
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final l10n = AppLocalizations.of(context);
-    showAddMobilityExerciseDialog(context, theme, cs, (
-      title,
-      subtitle,
-      customExerciseId,
-    ) {
-      final t = title.trim();
-      final s = subtitle.trim();
-      if (t.isEmpty && s.isEmpty) return;
-      final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-      _mobilityController.addItem(
-        MobilityItem(
-          id: id,
-          title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
-          subtitle: s,
-          sectionId: sectionId,
-          customExerciseId: customExerciseId,
-        ),
-      );
-    });
-  }
-
-  void _removeMobilityItem(String id) {
-    _mobilityController.removeItem(id);
-  }
-
-  void _reorderMobility(int oldIndex, int newIndex) {
-    _mobilityController.reorderItems(oldIndex, newIndex);
-  }
-
-  void _addMobilitySection() {
-    final l10n = AppLocalizations.of(context);
-    _mobilityController.addSection(
-      name: l10n.workoutBuilderSectionNumbered(
-        _routine.mobilitySections.length + 1,
-      ),
-    );
-  }
-
-  void _editMobilitySection(int index) {
-    if (index < 0 || index >= _routine.mobilitySections.length) return;
-    final section = _routine.mobilitySections[index];
-    showEditMobilitySectionSheet(
-      context,
-      initialName: section.name,
-      initialScheduleHint: section.scheduleHint,
-      onSave: (newName, scheduleHint) {
-        if (newName.trim().isEmpty) return;
-        _mobilityController.updateSection(
-          sectionId: section.id,
-          name: newName,
-          scheduleHint: scheduleHint,
-        );
-      },
-    );
-  }
-
-  void _deleteMobilitySection(int index) {
-    _mobilityController.deleteSection(index);
-  }
-
-  void _updateMobilityItem(
-    String id,
-    String title,
-    String subtitle, {
-    String shortTitle = '',
-  }) {
-    _mobilityController.updateItem(
-      itemId: id,
-      title: title,
-      subtitle: subtitle,
-      shortTitle: shortTitle,
-    );
-  }
-
-  void _addWeek() {
-    final l10n = AppLocalizations.of(context);
-    final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
-    final next = _routine.weeks.length + 1;
-    _builderSession.addWeek(
-      weekId: id,
-      weekName: l10n.workoutBuilderWeekNumbered(next),
-      firstDayId: '${id}_d1',
-      firstDayName: l10n.workoutBuilderDayNumbered(1),
-    );
-  }
-
-  Future<void> _cloneWeek(int weekIndex) async {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final source = _routine.weeks[weekIndex];
-    final l10n = AppLocalizations.of(context);
-    final defaultName = '${source.name}${l10n.workoutBuilderNameCopySuffix}';
-    final name = await showDuplicateWeekDialog(context, defaultName);
-    if (!mounted || name == null || name.isEmpty) return;
-    _cloneWeekWithName(weekIndex, name);
-  }
-
-  void _cloneWeekWithName(int weekIndex, String name) {
-    final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
-    _builderSession.cloneWeek(
-      weekIndex: weekIndex,
-      newWeekName: name,
-      newWeekId: newId,
-    );
-  }
-
-  void _deleteWeek(int weekIndex) {
-    _builderSession.deleteWeek(weekIndex);
-  }
-
-  Future<void> _confirmDeleteWeek(BuildContext context, int weekIndex) async {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final l10n = AppLocalizations.of(context);
-    final confirmed = await showAppConfirmDialog(
-      context: context,
-      title: l10n.workoutBuilderDeleteWeekTitle,
-      message: l10n.workoutBuilderDeleteWeekMessage,
-      confirmLabel: l10n.customerDelete,
-      cancelLabel: l10n.customerCancel,
-      destructive: true,
-    );
-    if (confirmed && mounted) _deleteWeek(weekIndex);
-  }
-
-  void _renameDay(int weekIndex, int dayIndex, String newName) {
-    _builderSession.renameDay(weekIndex, dayIndex, newName);
-  }
-
-  void _renameWeek(int weekIndex, String newName) {
-    _builderSession.renameWeek(weekIndex, newName);
-  }
-
-  void _deleteDay(int weekIndex, int dayIndex) {
-    _builderSession.deleteDay(weekIndex, dayIndex);
-  }
-
-  void _addDayToWeek(int weekIndex) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    final l10n = AppLocalizations.of(context);
-    final week = _routine.weeks[weekIndex];
-    final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
-    _builderSession.addDayToWeek(
-      weekIndex: weekIndex,
-      dayId: dayId,
-      dayName: l10n.workoutBuilderDayNumbered(week.days.length + 1),
-    );
-  }
-
-  void _setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
-    _builderSession.setDayScheduledWeekday(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      weekday: weekday,
-    );
-  }
-
-  void _addExerciseToDay(int weekIndex, int dayIndex) {
-    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
-    if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
-      return;
-    }
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    showAddExerciseDialog(context, theme, cs, (
-      name,
-      note,
-      details, [
-      customExerciseId,
-    ]) {
-      final trimmedName = name.trim();
-      if (trimmedName.isEmpty) return;
-      _builderSession.addExerciseToDay(
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-        exercise: buildExerciseFromPrescription(
-          id: exId,
-          name: trimmedName,
-          note: note,
-          setDetails: details,
-          customExerciseId: customExerciseId,
-        ),
-      );
-    }, customerId: widget.customerId);
-  }
-
-  void _addExerciseToSuperset(
-    int weekIndex,
-    int dayIndex,
-    String supersetGroupId,
-  ) {
-    WorkoutSupersetActions.showAddExerciseToSupersetDialog(
-      context: context,
-      theme: Theme.of(context),
-      colorScheme: Theme.of(context).colorScheme,
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      supersetGroupId: supersetGroupId,
-      customerId: widget.customerId,
-      onRoutineChanged: (updated) => _builderSession.setRoutine(updated),
-    );
-  }
-
-  void _removeExercise(int weekIndex, int dayIndex, String exerciseId) {
-    final day =
-        weekIndex >= 0 &&
-            weekIndex < _routine.weeks.length &&
-            dayIndex >= 0 &&
-            dayIndex < _routine.weeks[weekIndex].days.length
-        ? _routine.weeks[weekIndex].days[dayIndex]
-        : null;
-    Exercise? removedExercise;
-    for (final exercise in day?.exercises ?? const <Exercise>[]) {
-      if (exercise.id == exerciseId) {
-        removedExercise = exercise;
-        break;
-      }
-    }
-    if (!_builderSession.removeExercise(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-    )) {
-      return;
-    }
-    if (removedExercise == null || !mounted) return;
-    final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.workoutBuilderExerciseRemoved),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: l10n.workoutBuilderUndo,
-          onPressed: () {
-            _builderSession.addExerciseToDay(
-              weekIndex: weekIndex,
-              dayIndex: dayIndex,
-              exercise: removedExercise!,
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  void _duplicateExercise(int weekIndex, int dayIndex, Exercise exercise) {
-    final newId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    _builderSession.duplicateExercise(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      source: exercise,
-      newExerciseId: newId,
-    );
-  }
-
-  void _moveExerciseInDay(
-    int weekIndex,
-    int dayIndex,
-    String exerciseId, {
-    required bool up,
-  }) {
-    _builderSession.moveExercise(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-      up: up,
-    );
-  }
-
-  void _updateExercise(
-    int weekIndex,
-    int dayIndex,
-    String exerciseId, {
-    String? name,
-    String? sets,
-    String? reps,
-    String? rpe,
-    String? note,
-    String? shortName,
-    ExercisePrescriptionScope? prescriptionScope,
-    List<ExerciseSet>? setDetails,
-  }) {
-    _builderSession.updateExercise(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-      name: name,
-      sets: sets,
-      reps: reps,
-      rpe: rpe,
-      note: note,
-      shortName: shortName,
-      prescriptionScope: prescriptionScope,
-      setDetails: setDetails,
-    );
-  }
-
-  void _addSetToExercise(int weekIndex, int dayIndex, String exerciseId) {
-    _builderSession.addSetToExercise(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-    );
-  }
-
-  void _updateExerciseSet(
-    int weekIndex,
-    int dayIndex,
-    String exerciseId,
-    int setIndex, {
-    String? line,
-    String? sets,
-    String? reps,
-    String? rpe,
-    String? note,
-  }) {
-    _builderSession.updateExerciseSet(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-      setIndex: setIndex,
-      line: line,
-      sets: sets,
-      reps: reps,
-      rpe: rpe,
-      note: note,
-    );
-  }
-
-  void _removeExerciseSet(
-    int weekIndex,
-    int dayIndex,
-    String exerciseId,
-    int setIndex,
-  ) {
-    _builderSession.removeExerciseSet(
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-      setIndex: setIndex,
-    );
-  }
-
-  void _assignToSuperset(
-    int weekIndex,
-    int dayIndex,
-    String exerciseId,
-    String supersetGroupId,
-  ) {
-    final updated = WorkoutSupersetActions.assignToSuperset(
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-      supersetGroupId: supersetGroupId,
-    );
-    if (updated == null) return;
-    _builderSession.setRoutine(updated);
-  }
-
-  void _removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
-    final updated = WorkoutSupersetActions.removeFromSuperset(
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      exerciseId: exerciseId,
-    );
-    if (updated == null) return;
-    _builderSession.setRoutine(updated);
   }
 
   void _onBuilderControllersChanged() {
@@ -947,31 +451,18 @@ class _WorkoutBuilderMobilityScreenState
   Future<void> _markPlanCompletedFromEditor() async {
     final planId = _editorController.loadedPlanId;
     if (planId == null) return;
-    final l10n = AppLocalizations.of(context);
-    try {
-      await _planRepo.markPlanCompleted(planId);
-      if (!mounted) return;
-      final now = DateTime.now();
-      final today = DateTime(now.year, now.month, now.day);
-      setState(() {
-        _planCompleted = true;
-        _routine = _routine.copyWith(endDate: _routine.endDate ?? today);
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutPlanCompleteAction),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
+    await _routineCoordinator.markPlanCompleted(
+      context: context,
+      planId: planId,
+      routine: _routine,
+      onRoutineUpdated: (updated) {
+        if (!mounted) return;
+        setState(() {
+          _planCompleted = true;
+          _routine = updated;
+        });
+      },
+    );
   }
 
   Widget _buildMobilityTab(ThemeData theme, ColorScheme cs) {
@@ -981,15 +472,15 @@ class _WorkoutBuilderMobilityScreenState
       sections: _mobilityController.sections,
       selectedSectionIndex: _mobilityController.selectedSectionIndex,
       itemsForSelectedSection: _mobilityController.itemsForSelectedSection,
-      onAddItem: _addMobilityItem,
-      onAddSection: _addMobilitySection,
-      onEditSection: _editMobilitySection,
-      onDeleteSection: _deleteMobilitySection,
+      onAddItem: _mobilityHandlers.addMobilityItem,
+      onAddSection: _mobilityHandlers.addMobilitySection,
+      onEditSection: _mobilityHandlers.editMobilitySection,
+      onDeleteSection: _mobilityHandlers.deleteMobilitySection,
       onSelectSection: _mobilityController.selectSection,
-      onReorderItems: _reorderMobility,
+      onReorderItems: _mobilityHandlers.reorderMobility,
       onUpdateItem: (itemId, t, s, short) =>
-          _updateMobilityItem(itemId, t, s, shortTitle: short),
-      onDeleteItem: _removeMobilityItem,
+          _mobilityHandlers.updateMobilityItem(itemId, t, s, shortTitle: short),
+      onDeleteItem: _mobilityHandlers.removeMobilityItem,
     );
   }
 
@@ -1001,27 +492,27 @@ class _WorkoutBuilderMobilityScreenState
       weeks: _routine.weeks,
       selectedWeekIndex: _selectedWeekIndex,
       selectedDayIndex: _selectedDayIndex,
-      onNewWeek: _addWeek,
-      onCloneWeek: _cloneWeek,
-      onDeleteWeek: (weekIndex) => _confirmDeleteWeek(context, weekIndex),
-      onRenameWeek: _renameWeek,
-      onAddDay: _addDayToWeek,
-      onRenameDay: _renameDay,
-      onDeleteDay: _deleteDay,
-      onAddExercise: _addExerciseToDay,
-      onDuplicateExercise: _duplicateExercise,
-      onRemoveExercise: _removeExercise,
-      onMoveExercise: _moveExerciseInDay,
-      onUpdateExercise: _updateExercise,
-      onAddSetToExercise: _addSetToExercise,
-      onUpdateExerciseSet: _updateExerciseSet,
-      onRemoveExerciseSet: _removeExerciseSet,
-      onAssignToSuperset: _assignToSuperset,
-      onRemoveFromSuperset: _removeFromSuperset,
-      onAddExerciseToSuperset: _addExerciseToSuperset,
+      onNewWeek: _trainingHandlers.addWeek,
+      onCloneWeek: _trainingHandlers.cloneWeek,
+      onDeleteWeek: _trainingHandlers.confirmDeleteWeek,
+      onRenameWeek: _trainingHandlers.renameWeek,
+      onAddDay: _trainingHandlers.addDayToWeek,
+      onRenameDay: _trainingHandlers.renameDay,
+      onDeleteDay: _trainingHandlers.deleteDay,
+      onAddExercise: _trainingHandlers.addExerciseToDay,
+      onDuplicateExercise: _trainingHandlers.duplicateExercise,
+      onRemoveExercise: _trainingHandlers.removeExercise,
+      onMoveExercise: _trainingHandlers.moveExerciseInDay,
+      onUpdateExercise: _trainingHandlers.updateExercise,
+      onAddSetToExercise: _trainingHandlers.addSetToExercise,
+      onUpdateExerciseSet: _trainingHandlers.updateExerciseSet,
+      onRemoveExerciseSet: _trainingHandlers.removeExerciseSet,
+      onAssignToSuperset: _trainingHandlers.assignToSuperset,
+      onRemoveFromSuperset: _trainingHandlers.removeFromSuperset,
+      onAddExerciseToSuperset: _trainingHandlers.addExerciseToSuperset,
       onSelectWeek: (i) => _builderSession.selectWeek(i, resetDay: true),
       onSelectDay: (i) => _builderSession.selectDay(i),
-      onUpdateScheduledWeekday: _setDayScheduledWeekday,
+      onUpdateScheduledWeekday: _trainingHandlers.setDayScheduledWeekday,
     );
   }
 
