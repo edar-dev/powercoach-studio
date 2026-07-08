@@ -13,10 +13,9 @@ import '../../data/workout_routine_model.dart';
 import '../../domain/day_scheduled_weekday.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
-import '../../domain/workout_plan_list_helpers.dart';
-import '../../domain/workout_routine_mutations.dart';
 import '../workout_builder_editor_exit.dart';
 import '../workout_builder_export_actions.dart';
+import '../workout_builder_load_helpers.dart';
 import '../mobility_builder_controller.dart';
 import '../workout_builder_session_controller.dart';
 import '../workout_builder_variant.dart';
@@ -115,8 +114,9 @@ class _WorkoutBuilderMobilityScreenState
   void initState() {
     super.initState();
     _builderSession = WorkoutBuilderSessionController();
+    _builderSession.addListener(_onBuilderControllersChanged);
     _mobilityController = MobilityBuilderController(_builderSession);
-    _mobilityController.addListener(_onMobilityControllerChanged);
+    _mobilityController.addListener(_onBuilderControllersChanged);
     _editorController = WorkoutEditorController(planRepo: _planRepo);
     _sectionTabController = TabController(
       length: _showsMobilityTab ? 3 : 2,
@@ -237,24 +237,33 @@ class _WorkoutBuilderMobilityScreenState
       if (widget.planId != null && widget.planId!.isNotEmpty) {
         final plan = await _planRepo.getById(widget.planId!);
         if (plan != null && mounted) {
-          final routine = hydrateScheduledWeekdays(
-            planDataToRoutine(plan.planData),
+          final snapshot = buildEditorPlanSnapshot(
+            plan,
+            pendingWeekIndex: _pendingSelectedWeekIndex,
+            pendingDayIndex: _pendingSelectedDayIndex,
           );
-          final (weekIndex, dayIndex) = _resolveInitialSelection(routine);
+          if (_pendingSelectedWeekIndex != null &&
+              _pendingSelectedDayIndex != null &&
+              _pendingSelectedWeekIndex! >= 0 &&
+              _pendingSelectedWeekIndex! < snapshot.routine.weeks.length) {
+            _pendingSelectedWeekIndex = null;
+            _pendingSelectedDayIndex = null;
+          }
           loadedPlanId = plan.id;
-          loadedInitialWeek = plan.initialWeekNumber;
+          loadedInitialWeek = snapshot.initialWeekNumber;
           setState(() {
-            _routine = routine;
-            _routineNameController.text = routine.name;
-            _phaseController.text = plan.phase ?? '';
-            _tagsController.text = plan.tags ?? '';
-            _notesController.text = plan.notes ?? '';
-            _initialWeekNumber = plan.initialWeekNumber;
-            _initialWeekController.text = plan.initialWeekNumber.toString();
-            _selectedWeekIndex = weekIndex;
-            _selectedDayIndex = dayIndex;
-            _planCompleted = completedAtForPlan(plan) != null;
-            _planArchived = isArchivedPlan(plan);
+            _routine = snapshot.routine;
+            _routineNameController.text = snapshot.routine.name;
+            _phaseController.text = snapshot.phase;
+            _tagsController.text = snapshot.tags;
+            _notesController.text = snapshot.notes;
+            _initialWeekNumber = snapshot.initialWeekNumber;
+            _initialWeekController.text =
+                snapshot.initialWeekNumber.toString();
+            _selectedWeekIndex = snapshot.weekIndex;
+            _selectedDayIndex = snapshot.dayIndex;
+            _planCompleted = snapshot.planCompleted;
+            _planArchived = snapshot.planArchived;
           });
         }
       } else {
@@ -285,24 +294,6 @@ class _WorkoutBuilderMobilityScreenState
       });
       _editorController.markLoaded(session: _editorSession());
     }
-  }
-
-  (int, int) _resolveInitialSelection(WorkoutRoutine routine) {
-    final week = _pendingSelectedWeekIndex;
-    final day = _pendingSelectedDayIndex;
-    if (week == null || day == null) {
-      return (0, 0);
-    }
-    if (week < 0 || week >= routine.weeks.length) {
-      return (0, 0);
-    }
-    final days = routine.weeks[week].days;
-    if (day < 0 || day >= days.length) {
-      return (week, 0);
-    }
-    _pendingSelectedWeekIndex = null;
-    _pendingSelectedDayIndex = null;
-    return (week, day);
   }
 
   Future<void> _pickRoutineStartDate() async {
@@ -599,19 +590,14 @@ class _WorkoutBuilderMobilityScreenState
 
   void _addWeek() {
     final l10n = AppLocalizations.of(context);
-    setState(() {
-      final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
-      final next = _routine.weeks.length + 1;
-      _routine = addWeekToRoutine(
-        routine: _routine,
-        weekId: id,
-        weekName: l10n.workoutBuilderWeekNumbered(next),
-        firstDayId: '${id}_d1',
-        firstDayName: l10n.workoutBuilderDayNumbered(1),
-      );
-      _selectedWeekIndex = _routine.weeks.length - 1;
-      _selectedDayIndex = 0;
-    });
+    final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
+    final next = _routine.weeks.length + 1;
+    _builderSession.addWeek(
+      weekId: id,
+      weekName: l10n.workoutBuilderWeekNumbered(next),
+      firstDayId: '${id}_d1',
+      firstDayName: l10n.workoutBuilderDayNumbered(1),
+    );
   }
 
   Future<void> _cloneWeek(int weekIndex) async {
@@ -626,33 +612,15 @@ class _WorkoutBuilderMobilityScreenState
 
   void _cloneWeekWithName(int weekIndex, String name) {
     final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
-    final updated = cloneWeekInRoutine(
-      routine: _routine,
+    _builderSession.cloneWeek(
       weekIndex: weekIndex,
       newWeekName: name,
       newWeekId: newId,
     );
-    if (updated == null) return;
-    setState(() {
-      _routine = updated;
-      _selectedWeekIndex = _routine.weeks.length - 1;
-      _selectedDayIndex = 0;
-    });
   }
 
   void _deleteWeek(int weekIndex) {
-    final updated = deleteWeekFromRoutine(
-      routine: _routine,
-      weekIndex: weekIndex,
-    );
-    if (updated == null) return;
-    setState(() {
-      _routine = updated;
-      _selectedWeekIndex = _selectedWeekIndex.clamp(
-        0,
-        _routine.weeks.isNotEmpty ? _routine.weeks.length - 1 : 0,
-      );
-    });
+    _builderSession.deleteWeek(weekIndex);
   }
 
   Future<void> _confirmDeleteWeek(BuildContext context, int weekIndex) async {
@@ -670,42 +638,15 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _renameDay(int weekIndex, int dayIndex, String newName) {
-    final updated = renameDayInRoutine(
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      newName: newName,
-    );
-    if (updated == null) return;
-    setState(() => _routine = updated);
+    _builderSession.renameDay(weekIndex, dayIndex, newName);
   }
 
   void _renameWeek(int weekIndex, String newName) {
-    final updated = renameWeekInRoutine(
-      routine: _routine,
-      weekIndex: weekIndex,
-      newName: newName,
-    );
-    if (updated == null) return;
-    setState(() => _routine = updated);
+    _builderSession.renameWeek(weekIndex, newName);
   }
 
   void _deleteDay(int weekIndex, int dayIndex) {
-    final updated = deleteDayFromRoutine(
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-    );
-    if (updated == null) return;
-    setState(() {
-      _routine = updated;
-      final week =
-          _routine.weeks[weekIndex.clamp(0, _routine.weeks.length - 1)];
-      _selectedDayIndex = _selectedDayIndex.clamp(
-        0,
-        week.days.isNotEmpty ? week.days.length - 1 : 0,
-      );
-    });
+    _builderSession.deleteDay(weekIndex, dayIndex);
   }
 
   void _addDayToWeek(int weekIndex) {
@@ -713,29 +654,19 @@ class _WorkoutBuilderMobilityScreenState
     final l10n = AppLocalizations.of(context);
     final week = _routine.weeks[weekIndex];
     final dayId = '${week.id}_d_${DateTime.now().millisecondsSinceEpoch}';
-    final updated = addDayToWeekInRoutine(
-      routine: _routine,
+    _builderSession.addDayToWeek(
       weekIndex: weekIndex,
       dayId: dayId,
       dayName: l10n.workoutBuilderDayNumbered(week.days.length + 1),
     );
-    if (updated == null) return;
-    setState(() {
-      _routine = updated;
-      _selectedWeekIndex = weekIndex;
-      _selectedDayIndex = updated.weeks[weekIndex].days.length - 1;
-    });
   }
 
   void _setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
-    final updated = setDayScheduledWeekdayInRoutine(
-      routine: _routine,
+    _builderSession.setDayScheduledWeekday(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       weekday: weekday,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _addExerciseToDay(int weekIndex, int dayIndex) {
@@ -754,8 +685,7 @@ class _WorkoutBuilderMobilityScreenState
     ]) {
       final trimmedName = name.trim();
       if (trimmedName.isEmpty) return;
-      final updated = addExerciseToDayInRoutine(
-        routine: _routine,
+      _builderSession.addExerciseToDay(
         weekIndex: weekIndex,
         dayIndex: dayIndex,
         exercise: buildExerciseFromPrescription(
@@ -766,8 +696,6 @@ class _WorkoutBuilderMobilityScreenState
           customExerciseId: customExerciseId,
         ),
       );
-      if (updated == null) return;
-      setState(() => _routine = updated);
     }, customerId: widget.customerId);
   }
 
@@ -785,7 +713,7 @@ class _WorkoutBuilderMobilityScreenState
       dayIndex: dayIndex,
       supersetGroupId: supersetGroupId,
       customerId: widget.customerId,
-      onRoutineChanged: (updated) => setState(() => _routine = updated),
+      onRoutineChanged: (updated) => _builderSession.setRoutine(updated),
     );
   }
 
@@ -797,22 +725,20 @@ class _WorkoutBuilderMobilityScreenState
             dayIndex < _routine.weeks[weekIndex].days.length
         ? _routine.weeks[weekIndex].days[dayIndex]
         : null;
-    Exercise? removed;
+    Exercise? removedExercise;
     for (final exercise in day?.exercises ?? const <Exercise>[]) {
       if (exercise.id == exerciseId) {
-        removed = exercise;
+        removedExercise = exercise;
         break;
       }
     }
-    final updated = removeExerciseFromDayInRoutine(
-      routine: _routine,
+    if (!_builderSession.removeExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
-    );
-    if (updated == null) return;
-    setState(() => _routine = updated);
-    final removedExercise = removed;
+    )) {
+      return;
+    }
     if (removedExercise == null || !mounted) return;
     final l10n = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
@@ -822,14 +748,11 @@ class _WorkoutBuilderMobilityScreenState
         action: SnackBarAction(
           label: l10n.workoutBuilderUndo,
           onPressed: () {
-            final restored = addExerciseToDayInRoutine(
-              routine: _routine,
+            _builderSession.addExerciseToDay(
               weekIndex: weekIndex,
               dayIndex: dayIndex,
-              exercise: removedExercise,
+              exercise: removedExercise!,
             );
-            if (restored == null || !mounted) return;
-            setState(() => _routine = restored);
           },
         ),
       ),
@@ -838,14 +761,12 @@ class _WorkoutBuilderMobilityScreenState
 
   void _duplicateExercise(int weekIndex, int dayIndex, Exercise exercise) {
     final newId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    final duplicated = _builderSession.duplicateExercise(
+    _builderSession.duplicateExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       source: exercise,
       newExerciseId: newId,
     );
-    if (!duplicated) return;
-    setState(() {});
   }
 
   void _moveExerciseInDay(
@@ -854,15 +775,12 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId, {
     required bool up,
   }) {
-    final updated = moveExerciseInDayInRoutine(
-      routine: _routine,
+    _builderSession.moveExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
       up: up,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _updateExercise(
@@ -878,8 +796,7 @@ class _WorkoutBuilderMobilityScreenState
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   }) {
-    final updated = updateExerciseInRoutine(
-      routine: _routine,
+    _builderSession.updateExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
@@ -892,19 +809,14 @@ class _WorkoutBuilderMobilityScreenState
       prescriptionScope: prescriptionScope,
       setDetails: setDetails,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _addSetToExercise(int weekIndex, int dayIndex, String exerciseId) {
-    final updated = addSetToExerciseInRoutine(
-      routine: _routine,
+    _builderSession.addSetToExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _updateExerciseSet(
@@ -918,8 +830,7 @@ class _WorkoutBuilderMobilityScreenState
     String? rpe,
     String? note,
   }) {
-    final updated = updateExerciseSetInRoutine(
-      routine: _routine,
+    _builderSession.updateExerciseSet(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
@@ -930,8 +841,6 @@ class _WorkoutBuilderMobilityScreenState
       rpe: rpe,
       note: note,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _removeExerciseSet(
@@ -940,15 +849,12 @@ class _WorkoutBuilderMobilityScreenState
     String exerciseId,
     int setIndex,
   ) {
-    final updated = removeExerciseSetInRoutine(
-      routine: _routine,
+    _builderSession.removeExerciseSet(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
       setIndex: setIndex,
     );
-    if (updated == null) return;
-    setState(() => _routine = updated);
   }
 
   void _assignToSuperset(
@@ -965,7 +871,7 @@ class _WorkoutBuilderMobilityScreenState
       supersetGroupId: supersetGroupId,
     );
     if (updated == null) return;
-    setState(() => _routine = updated);
+    _builderSession.setRoutine(updated);
   }
 
   void _removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
@@ -976,17 +882,18 @@ class _WorkoutBuilderMobilityScreenState
       exerciseId: exerciseId,
     );
     if (updated == null) return;
-    setState(() => _routine = updated);
+    _builderSession.setRoutine(updated);
   }
 
-  void _onMobilityControllerChanged() {
+  void _onBuilderControllersChanged() {
     if (!mounted) return;
     setState(() {});
   }
 
   @override
   void dispose() {
-    _mobilityController.removeListener(_onMobilityControllerChanged);
+    _builderSession.removeListener(_onBuilderControllersChanged);
+    _mobilityController.removeListener(_onBuilderControllersChanged);
     _mobilityController.dispose();
     _builderSession.dispose();
     _editorController.dispose();
@@ -1112,11 +1019,8 @@ class _WorkoutBuilderMobilityScreenState
       onAssignToSuperset: _assignToSuperset,
       onRemoveFromSuperset: _removeFromSuperset,
       onAddExerciseToSuperset: _addExerciseToSuperset,
-      onSelectWeek: (i) => setState(() {
-        _selectedWeekIndex = i;
-        _selectedDayIndex = 0;
-      }),
-      onSelectDay: (i) => setState(() => _selectedDayIndex = i),
+      onSelectWeek: (i) => _builderSession.selectWeek(i, resetDay: true),
+      onSelectDay: (i) => _builderSession.selectDay(i),
       onUpdateScheduledWeekday: _setDayScheduledWeekday,
     );
   }
