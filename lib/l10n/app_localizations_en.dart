@@ -2283,6 +2283,41 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String backupImportMetadata(String date, String version) {
+    return 'Backup from $date · app $version';
+  }
+
+  @override
+  String get backupImportSelectGroups => 'Choose what to import';
+
+  @override
+  String get backupImportPartialReplaceHint =>
+      'Deselected groups stay unchanged on this device.';
+
+  @override
+  String backupImportGroupCustomers(int count) {
+    return 'Clients and related data ($count)';
+  }
+
+  @override
+  String backupImportGroupPlans(int count) {
+    return 'Workout plans ($count)';
+  }
+
+  @override
+  String backupImportGroupExerciseLibrary(int count) {
+    return 'Exercise library ($count)';
+  }
+
+  @override
+  String backupImportGroupReminders(int count) {
+    return 'Reminders ($count)';
+  }
+
+  @override
+  String get backupImportGroupPreferences => 'Profile and preferences';
+
+  @override
   String get backupImportTypeConfirm =>
       'Type IMPORT to confirm replacing all data';
 

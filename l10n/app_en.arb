@@ -998,6 +998,40 @@
       "executions": { "type": "int" }
     }
   },
+  "backupImportMetadata": "Backup from {date} · app {version}",
+  "@backupImportMetadata": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "version": { "type": "String" }
+    }
+  },
+  "backupImportSelectGroups": "Choose what to import",
+  "backupImportPartialReplaceHint": "Deselected groups stay unchanged on this device.",
+  "backupImportGroupCustomers": "Clients and related data ({count})",
+  "@backupImportGroupCustomers": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupPlans": "Workout plans ({count})",
+  "@backupImportGroupPlans": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupExerciseLibrary": "Exercise library ({count})",
+  "@backupImportGroupExerciseLibrary": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupReminders": "Reminders ({count})",
+  "@backupImportGroupReminders": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupPreferences": "Profile and preferences",
   "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
   "backupImportTypeConfirmHint": "IMPORT"
 }

@@ -971,6 +971,40 @@
   "backupImportMerge": "Unisci per id (mantieni il più recente)",
   "backupImportConfirm": "Importa",
   "backupImportCounts": "{customers} clienti · {plans} piani · {executions} log sessioni",
+  "backupImportMetadata": "Backup del {date} · app {version}",
+  "@backupImportMetadata": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "version": { "type": "String" }
+    }
+  },
+  "backupImportSelectGroups": "Scegli cosa importare",
+  "backupImportPartialReplaceHint": "I gruppi deselezionati restano invariati su questo dispositivo.",
+  "backupImportGroupCustomers": "Clienti e dati correlati ({count})",
+  "@backupImportGroupCustomers": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupPlans": "Piani workout ({count})",
+  "@backupImportGroupPlans": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupExerciseLibrary": "Libreria esercizi ({count})",
+  "@backupImportGroupExerciseLibrary": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupReminders": "Promemoria ({count})",
+  "@backupImportGroupReminders": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "backupImportGroupPreferences": "Profilo e preferenze",
   "backupImportTypeConfirm": "Digita IMPORT per confermare la sostituzione di tutti i dati",
   "backupImportTypeConfirmHint": "IMPORT"
 }

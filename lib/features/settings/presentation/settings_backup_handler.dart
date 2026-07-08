@@ -111,9 +111,12 @@ class SettingsBackupHandler {
       builder: (ctx) => BackupImportPreviewDialog(
         l10n: l10n,
         counts: counts,
+        exportedAt: parsed.exportedAt,
+        appVersion: parsed.appVersion,
       ),
     );
     if (decision == null || !context.mounted) return;
+    if (decision.selectedGroups.isEmpty) return;
 
     if (decision.replaceAll) {
       final typed = await showDialog<bool>(
@@ -157,9 +160,17 @@ class SettingsBackupHandler {
 
     try {
       if (decision.replaceAll) {
-        await UserDataBackupService.instance.restoreParsed(parsed, uid);
+        await UserDataBackupService.instance.restoreParsed(
+          parsed,
+          uid,
+          groups: decision.selectedGroups,
+        );
       } else {
-        await UserDataBackupService.instance.mergeRestore(parsed, uid);
+        await UserDataBackupService.instance.mergeRestore(
+          parsed,
+          uid,
+          groups: decision.selectedGroups,
+        );
       }
       await onPreferencesReloaded();
       if (!context.mounted) return;

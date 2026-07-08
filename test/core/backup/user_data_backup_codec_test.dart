@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powercoach_studio/core/backup/backup_entity_groups.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
 import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
 
@@ -194,5 +195,67 @@ void main() {
     expect(counts.customers, 1);
     expect(counts.plans, 1);
     expect(counts.executions, 2);
+    expect(counts.exerciseLibrary, 0);
+  });
+
+  test('parse keeps optional export metadata', () {
+    final jsonText = jsonEncode({
+      ...minimalEnvelope(),
+      'exportedAt': DateTime.utc(2026, 7, 8, 12).toIso8601String(),
+      'appVersion': '1.0.7',
+      'entityCounts': <String, dynamic>{
+        'customers': 2,
+        'workoutPlans': 1,
+      },
+    });
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.exportedAt, isNotNull);
+    expect(parsed.appVersion, '1.0.7');
+    expect(parsed.entityCounts?['customers'], 2);
+  });
+
+  test('filterBackupEntities keeps only selected groups', () {
+    final entities = <Map<String, dynamic>>[
+      <String, dynamic>{
+        'id': 'c1',
+        'type': 'customer',
+        'scopeId': 'c1',
+        'payload': <String, dynamic>{'id': 'c1'},
+        'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+        'deleted': false,
+        'localOnly': false,
+      },
+      <String, dynamic>{
+        'id': 'e1',
+        'type': 'customExercise',
+        'scopeId': 'global',
+        'payload': <String, dynamic>{'id': 'e1'},
+        'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+        'deleted': false,
+        'localOnly': false,
+      },
+    ];
+    final filtered = filterBackupEntities(
+      entities,
+      {BackupEntityGroup.customers},
+    );
+    expect(filtered, hasLength(1));
+    expect(filtered.single['type'], 'customer');
+  });
+
+  test('entityCountsFromBackupEntities counts library and customer records', () {
+    final counts = entityCountsFromBackupEntities(
+      <Map<String, dynamic>>[
+        <String, dynamic>{'id': 'c1', 'type': 'customer'},
+        <String, dynamic>{'id': 'n1', 'type': 'customerNote'},
+        <String, dynamic>{'id': 'x1', 'type': 'customExercise'},
+      ],
+      reminders: 2,
+    );
+    expect(counts.customers, 1);
+    expect(counts.customerRecords, 1);
+    expect(counts.customersGroupTotal, 2);
+    expect(counts.exerciseLibrary, 1);
+    expect(counts.reminders, 2);
   });
 }
