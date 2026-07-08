@@ -23,8 +23,8 @@ todos:
     content: "settings_screen.dart 548 → 103 righe"
     status: completed
   - id: split-customer-detail
-    content: "customer_detail_screen.dart (494) — tab bodies già parziali, ridurre orchestrazione"
-    status: pending
+    content: "customer_detail_screen.dart 494 → 281 righe"
+    status: completed
   - id: verify-v3
     content: "flutter analyze + test/ per ogni PR — no behavior change"
     status: pending
