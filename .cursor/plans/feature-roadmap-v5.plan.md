@@ -19,7 +19,7 @@ todos:
     status: completed
   - id: wave-f-discoverability
     content: "Implementare feature-38-coach-hub-discoverability.plan.md"
-    status: pending
+    status: completed
 isProject: false
 ---
 

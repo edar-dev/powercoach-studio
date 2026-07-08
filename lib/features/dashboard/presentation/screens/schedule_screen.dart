@@ -11,6 +11,7 @@ import '../../domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/coach_hub_tools_menu.dart';
 
 /// Lista completa "Today's Schedule" – route /dashboard/schedule.
 /// Mostra solo elementi reali derivati dai piani con start date valorizzata.
@@ -100,6 +101,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             color: cs.onSurface,
           ),
         ),
+        actions: const [CoachHubToolsMenu()],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
           child: Container(color: cs.outline, height: 1),

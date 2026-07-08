@@ -4,25 +4,25 @@ overview: "Feature #7 v5 — Discoverability: entry point dashboard/hub verso di
 todos:
   - id: dashboard-cards
     content: "Dashboard — 2 card/quick actions: Diario workout, Statistiche coach (context.go routes esistenti)"
-    status: pending
+    status: completed
   - id: customer-detail-links
     content: "Customer detail — link Diario filtrato per cliente (query customerId)"
-    status: pending
+    status: completed
   - id: schedule-hub
     content: "Schedule screen — chip/link Diario + Stats in app bar o overflow menu"
-    status: pending
+    status: completed
   - id: diary-customer-filter
     content: "WorkoutDiaryScreen — leggere customerId da query e pre-applicare filtro (dipende F33 o MVP query only)"
-    status: pending
+    status: completed
   - id: settings-shortcuts
     content: "Opzionale — sezione Coach tools in settings con diary/stats (no duplicare se dashboard basta)"
-    status: pending
+    status: cancelled
   - id: l10n
     content: "dashboardDiaryAction, dashboardStatsAction, customerOpenDiary"
-    status: pending
+    status: completed
   - id: tests
     content: "Widget test dashboard taps navigate; diary pre-filter query test"
-    status: pending
+    status: completed
 isProject: false
 ---
 
