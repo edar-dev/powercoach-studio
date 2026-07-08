@@ -122,7 +122,12 @@ La v4 **non blocca** le wave A–C su questa scelta.
 - Decisione sync documentata e UX allineata.
 - Tutti i 8 piani figlio mergiati o deferiti con issue esplicita.
 
+## Roadmap successiva
+
+Residui v4 (grafici stats, diario dettaglio, backup selettivo, superset panel, export progresso) sono pianificati in **[feature-roadmap-v5.plan.md](feature-roadmap-v5.plan.md)** (feature-32 … feature-38).
+
 ## Riferimenti
 
 - Roadmap precedente: [feature-roadmap-v3.plan.md](feature-roadmap-v3.plan.md)
+- Roadmap successiva: [feature-roadmap-v5.plan.md](feature-roadmap-v5.plan.md)
 - Gap analysis (obsoleta, archiviata): [`docs/archive/FEATURE_GAP_ANALYSIS.md`](../../docs/archive/FEATURE_GAP_ANALYSIS.md)
