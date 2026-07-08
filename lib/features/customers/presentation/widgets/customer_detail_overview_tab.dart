@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
+import 'package:powercoach_studio/features/customers/data/models/customer_exercise_record.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer_measurement.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_overview_metrics.dart';
+import 'package:powercoach_studio/features/customers/domain/customer_progress_export_service.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_metrics.dart';
+import 'package:powercoach_studio/features/customers/presentation/customer_progress_export.dart';
 import 'package:powercoach_studio/features/customers/presentation/screens/customer_measurement_form_screen.dart';
 import 'package:powercoach_studio/features/customers/presentation/widgets/customer_detail_workout_plans_section.dart';
 import 'package:powercoach_studio/features/customers/presentation/widgets/customer_overview_metrics_panel.dart';
@@ -20,6 +23,7 @@ class CustomerDetailOverviewTab extends StatelessWidget {
     required this.goalLabel,
     required this.measurements,
     required this.measurementsLoading,
+    required this.exerciseRecords,
     required this.progressSnapshot,
     required this.progressLoading,
     required this.workoutPlans,
@@ -35,6 +39,7 @@ class CustomerDetailOverviewTab extends StatelessWidget {
   final String goalLabel;
   final List<CustomerMeasurement> measurements;
   final bool measurementsLoading;
+  final List<CustomerExerciseRecord> exerciseRecords;
   final CustomerProgressSnapshot? progressSnapshot;
   final bool progressLoading;
   final List<WorkoutPlanApiModel> workoutPlans;
@@ -194,6 +199,9 @@ class CustomerDetailOverviewTab extends StatelessWidget {
                   hasAnyData: false,
                 ),
             loading: progressLoading,
+            onExport: _canExportProgress
+                ? () => _exportProgress(context, l10n)
+                : null,
           ),
           const SizedBox(height: 24),
           CustomerDetailWorkoutPlansSection(
@@ -204,6 +212,39 @@ class CustomerDetailOverviewTab extends StatelessWidget {
             onPlansChanged: onReloadWorkoutPlans,
           ),
         ],
+      ),
+    );
+  }
+
+  bool get _canExportProgress {
+    final snapshot = progressSnapshot;
+    if (snapshot == null || progressLoading) return false;
+    return snapshot.hasAnyData || measurements.isNotEmpty;
+  }
+
+  Future<void> _exportProgress(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final snapshot = progressSnapshot;
+    if (snapshot == null) return;
+
+    await shareCustomerProgressExport(
+      context: context,
+      l10n: l10n,
+      export: () => exportCustomerProgressToCsv(
+        CustomerProgressExportInput(
+          customerName: customer.name,
+          progress: snapshot,
+          measurements: measurements,
+          overview: CustomerOverviewMetrics.build(
+            customer: customer,
+            measurements: measurements,
+            muscleMassLabel: l10n.customerMuscleMass,
+            bodyFatLabel: l10n.measurementBodyFat,
+          ),
+          exerciseRecords: exerciseRecords,
+        ),
       ),
     );
   }

@@ -4,25 +4,25 @@ overview: "Feature #6 v5 — Export/share riepilogo progresso cliente (aderenza,
 todos:
   - id: export-service
     content: "customer_progress_export_service.dart — build CSV e/o PDF da CustomerProgressPanel data"
-    status: pending
+    status: completed
   - id: csv-format
     content: "CSV — sezioni aderenza, sessioni recenti, PR, misure (header + rows)"
-    status: pending
+    status: completed
   - id: pdf-optional
     content: "PDF leggero via printing package OPPURE solo CSV MVP — decidere in implementazione (stop se nuova dep)"
-    status: pending
+    status: completed
   - id: ui-action
     content: "Customer detail overview — IconButton share/export accanto a progress panel"
-    status: pending
+    status: completed
   - id: share-plus
     content: "share_plus — share file temporaneo con nome cliente + data"
-    status: pending
+    status: completed
   - id: l10n
     content: "customerProgressExport, customerProgressExportSuccess, customerProgressExportFailed"
-    status: pending
+    status: completed
   - id: tests
     content: "Unit test export service — fixture progress snapshot → CSV string expected"
-    status: pending
+    status: completed
 isProject: false
 ---
 

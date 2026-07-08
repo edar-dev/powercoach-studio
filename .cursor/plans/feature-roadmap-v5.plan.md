@@ -16,7 +16,7 @@ todos:
     status: completed
   - id: wave-e-progress-export
     content: "Implementare feature-37-customer-progress-export.plan.md"
-    status: pending
+    status: completed
   - id: wave-f-discoverability
     content: "Implementare feature-38-coach-hub-discoverability.plan.md"
     status: pending

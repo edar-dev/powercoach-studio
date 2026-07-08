@@ -4324,6 +4324,24 @@ abstract class AppLocalizations {
   /// **'{count} wk ago'**
   String customerProgressWeeksAgo(int count);
 
+  /// No description provided for @customerProgressExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Export progress'**
+  String get customerProgressExport;
+
+  /// No description provided for @customerProgressExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress exported'**
+  String get customerProgressExportSuccess;
+
+  /// No description provided for @customerProgressExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress export failed'**
+  String get customerProgressExportFailed;
+
   /// No description provided for @settingsCalendarRemindersTitle.
   ///
   /// In en, this message translates to:

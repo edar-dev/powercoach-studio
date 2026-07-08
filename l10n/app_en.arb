@@ -997,6 +997,9 @@
   "customerProgressLast4Weeks": "Last 4 weeks",
   "customerProgressThisWeek": "This week",
   "customerProgressWeeksAgo": "{count} wk ago",
+  "customerProgressExport": "Export progress",
+  "customerProgressExportSuccess": "Progress exported",
+  "customerProgressExportFailed": "Progress export failed",
   "@customerProgressWeeksAgo": {
     "placeholders": {
       "count": { "type": "int" }

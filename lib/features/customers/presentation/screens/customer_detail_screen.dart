@@ -240,6 +240,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
               goalLabel: goalLabel,
               measurements: _measurements,
               measurementsLoading: _measurementsLoading,
+              exerciseRecords: _records,
               progressSnapshot: _progressSnapshot,
               progressLoading: _progressLoading,
               workoutPlans: _workoutPlans,
