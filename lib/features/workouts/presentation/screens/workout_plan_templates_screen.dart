@@ -316,7 +316,7 @@ class _WorkoutPlanTemplatesScreenState
             if (context.canPop()) {
               context.pop();
             } else {
-              context.go('/workouts');
+              context.go('/workouts/builder');
             }
           },
         ),

@@ -181,8 +181,12 @@ List<RouteBase> buildAppRoutes() {
     ),
     GoRoute(
       path: '/workouts',
-      builder: (_, __) =>
-          const WorkoutBuilderMobilityScreen(variant: WorkoutBuilderVariant.mobility),
+      redirect: (context, state) {
+        if (state.uri.path == '/workouts') {
+          return '/workouts/builder';
+        }
+        return null;
+      },
       routes: [
         GoRoute(
           path: 'editor',
