@@ -78,4 +78,28 @@ void main() {
     expect(restored.sessionExecutions, hasLength(1));
     expect(restored.sessionExecutions['0-0']!.exercises.first.name, 'Squat');
   });
+
+  test('upsertStatusStub persists exercise sets in planData', () async {
+    final execution = SessionExecution(
+      sessionKey: '0-0',
+      weekIndex: 0,
+      dayIndex: 0,
+      sessionDate: DateTime(2026, 6, 10),
+      status: PlanSessionStatus.completed,
+      exercises: const [
+        ExecutedExercise(
+          exerciseId: 'e1',
+          name: 'Squat',
+          completed: true,
+          sets: [
+            ExecutedSet(reps: '5', load: '100', completed: true),
+          ],
+        ),
+      ],
+    );
+    final json = execution.toJson();
+    final restored = SessionExecution.fromJson(json);
+    expect(restored.exercises.first.sets.first.reps, '5');
+    expect(restored.exercises.first.sets.first.load, '100');
+  });
 }

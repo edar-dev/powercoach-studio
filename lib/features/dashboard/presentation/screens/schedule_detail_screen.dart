@@ -6,7 +6,9 @@ import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import '../../../workouts/domain/session_execution.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
+import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/data/workout_routine_model.dart';
 import '../../../workouts/presentation/widgets/plan_session_actions_sheet.dart';
 import '../../../workouts/presentation/widgets/session_log_sheet.dart';
 import '../../domain/plan_calendar_event.dart';
@@ -27,6 +29,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
   final PlanSessionOverrideService _overrideService =
       PlanSessionOverrideService();
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
+  final SessionExecutionService _executionService = SessionExecutionService();
   SessionDetailSnapshot? _snapshot;
   bool _loading = true;
   String? _error;
@@ -103,10 +106,20 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                     routine.weeks[event.weekIndex].days.length) {
               final day =
                   routine.weeks[event.weekIndex].days[event.dayIndex];
-              if (!context.mounted) return;
+              final sessionKey = WorkoutRoutine.sessionKey(
+                event.weekIndex,
+                event.dayIndex,
+              );
+              final existing = await _executionService.get(
+                planId: event.planId,
+                sessionKey: sessionKey,
+              );
+              if (!mounted) return;
               final logResult = await showSessionLogSheet(
                 context: context,
                 plannedExercises: day.exercises,
+                initialExercises: existing?.exercises,
+                initialNotes: existing?.notes ?? '',
               );
               if (logResult == null || !mounted) return;
               exercises = logResult.exercises;
