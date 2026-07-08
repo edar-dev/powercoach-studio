@@ -14,8 +14,8 @@ todos:
     content: "workout_training_tab.dart 790 → 152 righe"
     status: completed
   - id: split-landing
-    content: "landing_screen.dart (766) — hero, features, CTA sections"
-    status: pending
+    content: "landing_screen.dart 766 → 168 righe"
+    status: completed
   - id: split-settings
     content: "settings_screen.dart (548) — preference groups / backup section"
     status: pending
