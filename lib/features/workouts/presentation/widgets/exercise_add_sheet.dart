@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../customers/data/customer_exercise_record_repository.dart';
 import '../../../customers/data/models/customer_exercise_record.dart';
@@ -13,6 +12,11 @@ import '../../../exercise_library/data/pinned_exercises_store.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/exercise_picker_index_helpers.dart';
+import 'exercise_add_library_picker.dart';
+import 'exercise_add_load_percent_tools.dart';
+import 'exercise_add_set_rows_editor.dart';
+import 'exercise_add_sheet_states.dart';
 import 'exercise_set_edit_controllers.dart';
 
 /// Shows the "Add exercise" dialog: choose from custom exercise library or create new on the fly.
@@ -88,7 +92,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   CustomExerciseItem? _selectedExercise;
   final _nameController = TextEditingController();
   final _noteController = TextEditingController();
-  final _loadPercentInputController = TextEditingController();
   final List<SetEditControllers> _setControllers = [];
   bool _saving = false;
   List<CustomerExerciseRecord> _recordsForExercise = [];
@@ -98,213 +101,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   bool get _apiConfigured => true;
   bool get _hasCustomerContext =>
       widget.customerId != null && widget.customerId!.isNotEmpty;
-
-  String _exerciseDisplayName(CustomExerciseItem e) {
-    final parentName = _exerciseParentName[e.id];
-    return parentName != null ? '$parentName › ${e.name}' : e.name;
-  }
-
-  Widget _buildRecordLine(
-    ThemeData theme,
-    ColorScheme cs,
-    CustomerExerciseRecord r,
-  ) {
-    final dateStr =
-        '${r.recordedAt.day.toString().padLeft(2, '0')}/${r.recordedAt.month.toString().padLeft(2, '0')}/${r.recordedAt.year}';
-    return Text(
-      '${r.value} ${r.unit} · $dateStr${r.note != null && r.note!.isNotEmpty ? ' · ${r.note}' : ''}',
-      style: theme.textTheme.bodySmall?.copyWith(color: cs.onSurface),
-    );
-  }
-
-  static bool _isMassBasedRecordUnit(String unit) {
-    final u = unit.trim().toLowerCase();
-    return u == 'kg' || u == 'lb' || u == 'lbs';
-  }
-
-  static String _formatLoadForDisplay(double v) {
-    final rounded = (v * 10).round() / 10;
-    if ((rounded - rounded.round()).abs() < 1e-9) {
-      return rounded.round().toString();
-    }
-    return rounded.toStringAsFixed(1);
-  }
-
-  /// Standard % ladder for powerlifting-style reference loads.
-  static const List<int> _loadPercentLadder = [
-    100,
-    95,
-    90,
-    85,
-    80,
-    75,
-    70,
-    65,
-    60,
-    55,
-    50,
-  ];
-
-  Widget _buildLoadPercentGuideContent(
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-    CustomerExerciseRecord r,
-    bool mass,
-  ) {
-    if (mass) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final p in _loadPercentLadder)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: Text(
-                l10n.workoutBuilderLoadPercentGuideRow(
-                  p.toString(),
-                  _formatLoadForDisplay(r.value * p / 100.0),
-                  r.unit,
-                ),
-                style: theme.textTheme.bodySmall?.copyWith(
-                  height: 1.45,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-        ],
-      );
-    }
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Text(
-        l10n.workoutBuilderLoadPercentGuideBody,
-        style: theme.textTheme.bodySmall?.copyWith(
-          height: 1.45,
-          color: cs.onSurface,
-        ),
-      ),
-    );
-  }
-
-  String _loadPercentResultLabel(
-    AppLocalizations l10n,
-    CustomerExerciseRecord r,
-  ) {
-    final raw = _loadPercentInputController.text.trim().replaceAll(',', '.');
-    if (raw.isEmpty) return '—';
-    final p = double.tryParse(raw);
-    if (p == null || p <= 0 || p > 100) {
-      return l10n.workoutBuilderLoadPercentInvalid;
-    }
-    final load = r.value * p / 100.0;
-    final w = _formatLoadForDisplay(load);
-    final percentStr = (p - p.round()).abs() < 1e-9
-        ? p.round().toString()
-        : _formatLoadForDisplay(p);
-    return l10n.workoutBuilderLoadPercentResult(w, r.unit, percentStr);
-  }
-
-  Widget _buildLoadPercentTools(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme cs,
-    CustomerExerciseRecord r,
-  ) {
-    final l10n = AppLocalizations.of(context);
-    final mass = _isMassBasedRecordUnit(r.unit);
-    final denseDecoration = InputDecoration(
-      isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      border: const OutlineInputBorder(),
-    );
-    return Card(
-      margin: EdgeInsets.zero,
-      color: cs.surfaceContainerHighest.withValues(alpha: 0.35),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 4, 10, 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Theme(
-              data: theme.copyWith(dividerColor: Colors.transparent),
-              child: ExpansionTile(
-                tilePadding: EdgeInsets.zero,
-                childrenPadding: const EdgeInsets.only(bottom: 8),
-                title: Text(
-                  l10n.workoutBuilderLoadPercentGuideTitle,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                subtitle: Text(
-                  mass
-                      ? l10n.workoutBuilderLoadPercentGuideIntroMass
-                      : l10n.workoutBuilderLoadPercentGuideIntroReps,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-                children: [
-                  _buildLoadPercentGuideContent(theme, cs, l10n, r, mass),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            const SizedBox(height: 8),
-            Text(
-              l10n.workoutBuilderLoadPercentCalculator,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            if (mass)
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: TextField(
-                      controller: _loadPercentInputController,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      decoration: denseDecoration.copyWith(
-                        labelText: l10n.workoutBuilderLoadPercentFieldLabel,
-                        hintText: l10n.workoutBuilderLoadPercentFieldHint,
-                      ),
-                      onChanged: (_) => setState(() {}),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    flex: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Text(
-                        _loadPercentResultLabel(l10n, r),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: cs.primary,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            else
-              Text(
-                l10n.workoutBuilderLoadPercentMassOnly,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: cs.onSurfaceVariant,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -325,7 +121,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
     _exerciseFilter.cancel();
     _nameController.dispose();
     _noteController.dispose();
-    _loadPercentInputController.dispose();
     for (final c in _setControllers) {
       c.sets.dispose();
       c.reps.dispose();
@@ -344,47 +139,34 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
     }
     try {
       final items = await _customExerciseRepo.getTree();
-      final flat = <CustomExerciseItem>[];
-      void visit(CustomExerciseItem node, int depth, String? parentName) {
-        flat.add(node);
-        _exerciseDepth[node.id] = depth;
-        if (parentName != null) _exerciseParentName[node.id] = parentName;
-        for (final c in node.children) {
-          visit(c, depth + 1, node.name);
-        }
-      }
-
-      for (final root in items) {
-        visit(root, 0, null);
-      }
+      final index = buildExercisePickerIndex(items);
       final recentIds = await _recentStore.getRecentIds();
       final pinnedIds = await _pinnedStore.getPinnedIds();
-      final byId = {for (final e in flat) e.id: e};
+      final byId = {for (final e in index.flat) e.id: e};
       final recent = recentIds
           .map((id) => byId[id])
           .whereType<CustomExerciseItem>()
           .toList();
-      final sorted = List<CustomExerciseItem>.from(flat)
-        ..sort((a, b) {
-          final aPinned = pinnedIds.contains(a.id);
-          final bPinned = pinnedIds.contains(b.id);
-          if (aPinned != bPinned) return aPinned ? -1 : 1;
-          final ai = recentIds.indexOf(a.id);
-          final bi = recentIds.indexOf(b.id);
-          if (ai >= 0 || bi >= 0) {
-            if (ai < 0) return 1;
-            if (bi < 0) return -1;
-            return ai.compareTo(bi);
-          }
-          return _exerciseDisplayName(
-            a,
-          ).toLowerCase().compareTo(_exerciseDisplayName(b).toLowerCase());
-        });
+      final sorted = sortExercisePickerOptions(
+        flat: index.flat,
+        pinnedIds: pinnedIds,
+        recentIds: recentIds,
+        displayName: (e) => exercisePickerDisplayName(
+          e,
+          index.parentNameById,
+        ),
+      );
       if (mounted) {
         setState(() {
           _exerciseOptions = sorted;
           _recentExercises = recent.take(6).toList();
           _pinnedExerciseIds = pinnedIds;
+          _exerciseDepth
+            ..clear()
+            ..addAll(index.depthById);
+          _exerciseParentName
+            ..clear()
+            ..addAll(index.parentNameById);
           _loadingExercises = false;
           _exerciseLoadFailed = false;
         });
@@ -406,15 +188,11 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
         setState(() {
           _recordsForExercise = [];
           _loadingRecords = false;
-          _loadPercentInputController.clear();
         });
       }
       return;
     }
-    setState(() {
-      _loadingRecords = true;
-      _loadPercentInputController.clear();
-    });
+    setState(() => _loadingRecords = true);
     try {
       final list = await _recordRepo.getByCustomerId(
         customerId,
@@ -435,6 +213,11 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
         });
       }
     }
+  }
+
+  void _onExerciseSelected(CustomExerciseItem exercise) {
+    setState(() => _selectedExercise = exercise);
+    _loadRecordsForExercise(exercise.id);
   }
 
   Future<void> _createCustomExerciseAndSave(
@@ -473,6 +256,28 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
         );
       }
     }
+  }
+
+  void _addSetRow() {
+    setState(
+      () => _setControllers.add(
+        SetEditControllers(
+          TextEditingController(),
+          TextEditingController(),
+          TextEditingController(),
+          TextEditingController(),
+        ),
+      ),
+    );
+  }
+
+  void _removeSetRow(int index) {
+    final removed = _setControllers.removeAt(index);
+    removed.sets.dispose();
+    removed.reps.dispose();
+    removed.load.dispose();
+    removed.note.dispose();
+    setState(() {});
   }
 
   void _doSave() {
@@ -543,57 +348,16 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = widget.theme;
-    final cs = widget.cs;
     final l10n = AppLocalizations.of(context);
-    final denseDecoration = InputDecoration(
-      isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-    );
 
     if (_loadingExercises && _apiConfigured) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(
-            height: 120,
-            child: Center(child: CircularProgressIndicator()),
-          ),
-          const SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: widget.onCancel,
-            child: Text(l10n.customerCancel),
-          ),
-        ],
-      );
+      return ExerciseAddSheetLoadingView(onCancel: widget.onCancel);
     }
 
     if (_exerciseLoadFailed && _apiConfigured && _fromLibrary) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const SizedBox(height: 24),
-          Icon(Icons.cloud_off_outlined, size: 40, color: cs.onSurfaceVariant),
-          const SizedBox(height: 12),
-          Text(
-            l10n.workoutBuilderExerciseLoadError,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 16),
-          FilledButton.icon(
-            onPressed: _loadExercises,
-            icon: const Icon(Icons.refresh),
-            label: Text(l10n.workoutBuilderExerciseRetry),
-          ),
-          const SizedBox(height: 8),
-          OutlinedButton(
-            onPressed: () => setState(() => _fromLibrary = false),
-            child: Text(l10n.workoutBuilderCreateNew),
-          ),
-        ],
+      return ExerciseAddSheetLoadErrorView(
+        onRetry: _loadExercises,
+        onCreateNew: () => setState(() => _fromLibrary = false),
       );
     }
 
@@ -622,153 +386,25 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
           ),
           const SizedBox(height: 12),
         ],
-        if (_apiConfigured && _fromLibrary && _exerciseOptions.isNotEmpty) ...[
-          Text(
-            l10n.workoutBuilderExerciseLabel,
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: 6),
-          if (_recentExercises.isNotEmpty) ...[
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: _recentExercises
-                  .map(
-                    (e) => ActionChip(
-                      label: Text(e.name),
-                      avatar: _pinnedExerciseIds.contains(e.id)
-                          ? const Icon(Icons.push_pin, size: 14)
-                          : null,
-                      onPressed: () {
-                        setState(() => _selectedExercise = e);
-                        _loadRecordsForExercise(e.id);
-                      },
-                    ),
+        if (_apiConfigured && _fromLibrary && _exerciseOptions.isNotEmpty)
+          ExerciseAddLibraryPicker(
+            exerciseOptions: _exerciseOptions,
+            recentExercises: _recentExercises,
+            pinnedExerciseIds: _pinnedExerciseIds,
+            depthById: _exerciseDepth,
+            parentNameById: _exerciseParentName,
+            selectedExercise: _selectedExercise,
+            exerciseFilter: _exerciseFilter,
+            isMounted: () => mounted,
+            onExerciseSelected: _onExerciseSelected,
+            customerRecordPanel: _hasCustomerContext && _selectedExercise != null
+                ? ExerciseAddCustomerRecordPanel(
+                    loading: _loadingRecords,
+                    records: _recordsForExercise,
                   )
-                  .toList(),
-            ),
-            const SizedBox(height: 8),
-          ],
-          Autocomplete<CustomExerciseItem>(
-            initialValue: _selectedExercise != null
-                ? TextEditingValue(
-                    text: _exerciseDisplayName(_selectedExercise!),
-                  )
-                : const TextEditingValue(),
-            optionsBuilder: (TextEditingValue value) {
-              return _exerciseFilter.optionsFor<CustomExerciseItem>(
-                query: value.text,
-                options: _exerciseOptions,
-                displayName: _exerciseDisplayName,
-                isActive: () => mounted,
-              );
-            },
-            displayStringForOption: _exerciseDisplayName,
-            onSelected: (e) {
-              setState(() => _selectedExercise = e);
-              _loadRecordsForExercise(e.id);
-            },
-            fieldViewBuilder:
-                (context, controller, focusNode, onFieldSubmitted) =>
-                    TextFormField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        hintText: l10n.recordSearchExerciseHint,
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                      ),
-                    ),
-            optionsViewBuilder: (context, onSelected, options) => Align(
-              alignment: Alignment.topLeft,
-              child: Material(
-                elevation: 4,
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 200),
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    itemCount: options.length,
-                    itemBuilder: (context, index) {
-                      final e = options.elementAt(index);
-                      final depth = _exerciseDepth[e.id] ?? 0;
-                      return Padding(
-                        padding: EdgeInsets.only(left: 16.0 + (depth * 16.0)),
-                        child: ListTile(
-                          dense: depth > 0,
-                          title: Text(
-                            depth > 0 ? e.name : _exerciseDisplayName(e),
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: depth == 0
-                                  ? FontWeight.w600
-                                  : FontWeight.normal,
-                            ),
-                          ),
-                          onTap: () => onSelected(e),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-          if (_hasCustomerContext && _selectedExercise != null) ...[
-            const SizedBox(height: 10),
-            Text(
-              l10n.workoutBuilderClientRecord,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 4),
-            if (_loadingRecords)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 8),
-                child: SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-              )
-            else if (_recordsForExercise.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Text(
-                  l10n.workoutBuilderNoExerciseRecord,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildRecordLine(theme, cs, _recordsForExercise.first),
-                    const SizedBox(height: 10),
-                    _buildLoadPercentTools(
-                      context,
-                      theme,
-                      cs,
-                      _recordsForExercise.first,
-                    ),
-                  ],
-                ),
-              ),
-          ],
-          const SizedBox(height: 12),
-        ] else ...[
-          // Create new (or no API): show name field
+                : null,
+          )
+        else ...[
           TextField(
             controller: _nameController,
             decoration: InputDecoration(
@@ -798,101 +434,10 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
           maxLines: 1,
         ),
         const SizedBox(height: 12),
-        Text(
-          l10n.workoutBuilderMultiSetBlockHeader,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: cs.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 6),
-        ...List.generate(_setControllers.length, (i) {
-          final c = _setControllers[i];
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    controller: c.sets,
-                    decoration: denseDecoration.copyWith(
-                      labelText: l10n.workoutBuilderSetLabel,
-                      hintText: '1',
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    controller: c.reps,
-                    decoration: denseDecoration.copyWith(
-                      labelText: l10n.workoutBuilderRepsLabel,
-                      hintText: '3',
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: c.load,
-                    decoration: denseDecoration.copyWith(
-                      labelText: l10n.workoutBuilderLoadLabel,
-                      hintText: '75kg',
-                    ),
-                    keyboardType: TextInputType.text,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    size: 22,
-                    color: _setControllers.length > 1
-                        ? StitchM3Theme.danger
-                        : cs.onSurfaceVariant,
-                  ),
-                  onPressed: _setControllers.length > 1
-                      ? () {
-                          final removed = _setControllers.removeAt(i);
-                          removed.sets.dispose();
-                          removed.reps.dispose();
-                          removed.load.dispose();
-                          removed.note.dispose();
-                          setState(() {});
-                        }
-                      : null,
-                  style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
-                ),
-              ],
-            ),
-          );
-        }),
-        const SizedBox(height: 4),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: TextButton.icon(
-            onPressed: () => setState(
-              () => _setControllers.add(
-                SetEditControllers(
-                  TextEditingController(),
-                  TextEditingController(),
-                  TextEditingController(),
-                  TextEditingController(),
-                ),
-              ),
-            ),
-            icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-            label: Text(
-              l10n.workoutBuilderAddSet,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: StitchM3Theme.accent,
-              ),
-            ),
-          ),
+        ExerciseAddSetRowsEditor(
+          setControllers: _setControllers,
+          onAddSet: _addSetRow,
+          onRemoveSet: _removeSetRow,
         ),
         const SizedBox(height: 16),
         Row(

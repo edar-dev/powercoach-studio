@@ -18,8 +18,8 @@ todos:
     content: "Estrarre da exercise_library_screen.dart (635 righe): tab view, list tile, tree helpers, import sheet"
     status: completed
   - id: split-exercise-add-sheet
-    content: "Estrarre da exercise_add_sheet.dart (~925 righe): search panel, selection state, confirm actions"
-    status: pending
+    content: "Estrarre da exercise_add_sheet.dart (470 righe): library picker, set rows, load % tools, sheet states"
+    status: completed
   - id: widget-tests-per-split
     content: "Aggiungere almeno 1 widget test per ogni file estratto critico (shell o controller)"
     status: pending
