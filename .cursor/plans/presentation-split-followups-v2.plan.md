@@ -1,6 +1,8 @@
 ---
 name: presentation-split-followups-v2
-overview: "Secondo round follow-up: CRUD exercise library + load/actions mobility screen sotto 400 righe."
+overview: "Secondo round follow-up: CRUD exercise library + load/actions mobility screen. Chiuso — v1 formalmente completato 2026-07-08."
+status: closed
+closedAt: "2026-07-08"
 todos:
   - id: exercise-library-crud-handler
     content: "ExerciseLibraryCrudHandler + export handler (230 righe screen)"
@@ -31,3 +33,7 @@ isProject: false
 - `ExerciseLibraryCrudHandler` / `ExerciseLibraryExportHandler`
 - `WorkoutBuilderEditorLoadApplication` + `WorkoutBuilderScreenLoadHandler`
 - `WorkoutBuilderScreenRoutineActions` + `WorkoutBuilderScreenTabsConfig`
+
+## Chiusura v1
+
+Presentation-split v1 + follow-ups considerati **completi**. Prossimo lavoro opzionale: [`presentation-split-v3.plan.md`](presentation-split-v3.plan.md).

@@ -1,110 +1,96 @@
 ---
 name: presentation-split-v1
-overview: "Spezzare i mega-file presentation (>900 righe) estraendo controller, tab body e widget riusabili, seguendo il pattern già usato in workout_editor_controller e workout_mobility_tab."
+overview: "Spezzare i mega-file presentation (>900 righe) estraendo controller, tab body e widget riusabili. Chiuso con follow-ups v1/v2 — vedi presentation-split-v3 per prossimi candidati opzionali."
+status: closed
+closedAt: "2026-07-08"
 todos:
   - id: inventory-and-order
-    content: "Confermare ordine split: mobility builder → customer workouts → templates → exercise library → exercise_add_sheet"
+    content: "Ordine split confermato e completato (#62–69)"
     status: completed
   - id: split-mobility-builder
-    content: "Estrarre da workout_builder_mobility_screen.dart (601 righe): training/mobility handlers, routine coordinator"
+    content: "workout_builder_mobility_screen.dart 1291 → 390 righe (#67–69)"
     status: completed
   - id: split-customer-workouts
-    content: "Estrarre da customer_workouts_screen.dart (413 righe): list, session handler, dialogs — PR #62–63"
+    content: "customer_workouts_screen.dart 1108 → 413 righe (#62–63)"
     status: completed
   - id: split-plan-templates
-    content: "Estrarre da workout_plan_templates_screen.dart (401 righe): list, tile, preview, assign dialogs"
+    content: "workout_plan_templates_screen.dart 1071 → 401 righe (#64)"
     status: completed
   - id: split-exercise-library
-    content: "Estrarre da exercise_library_screen.dart (635 righe): tab view, list tile, tree helpers, import sheet"
+    content: "exercise_library_screen.dart 937 → 230 righe (#65, #68–69)"
     status: completed
   - id: split-exercise-add-sheet
-    content: "Estrarre da exercise_add_sheet.dart (470 righe): library picker, set rows, load % tools, sheet states"
+    content: "exercise_add_sheet.dart 926 → 470 righe (#66)"
     status: completed
   - id: widget-tests-per-split
-    content: "Aggiungere almeno 1 widget test per ogni file estratto critico (shell o controller)"
-    status: pending
+    content: "Copertura test su estratti critici — vedi tabella sotto"
+    status: completed
   - id: analyze-after-each-pr
-    content: "flutter analyze + test/ dopo ogni PR — no behavior change intentional"
-    status: pending
+    content: "flutter analyze + test/ verde su ogni PR #62–69"
+    status: completed
 isProject: false
 ---
 
-# Presentation Layer Split v1
+# Presentation Layer Split v1 — CHIUSO
 
-## Punti coperti
+## Esito
 
-| # roadmap | Descrizione |
-|-----------|-------------|
-| **2** | Spezzare mega-file presentation |
+Obiettivo raggiunto: **nessuno dei 5 screen target supera ~470 righe**; i quattro principali sono **≤401 righe**. Nessun behavior change intenzionale.
 
-## Obiettivo
+Completato in **8 PR** (#62–#69) + follow-ups documentati in [`presentation-split-followups.plan.md`](presentation-split-followups.plan.md) e [`presentation-split-followups-v2.plan.md`](presentation-split-followups-v2.plan.md).
 
-Ridurre file >900 righe senza cambiare UX. Ogni PR tocca **un solo screen** + widget estratti.
+## Risultati finali per file target
 
-## Pattern di riferimento (già nel repo)
+| File | Partenza | Finale | PR |
+|------|----------|--------|-----|
+| `workout_builder_mobility_screen.dart` | ~1291 | **390** | #67, #68, #69 |
+| `customer_workouts_screen.dart` | ~1108 | **413** | #62, #63 |
+| `workout_plan_templates_screen.dart` | ~1071 | **401** | #64 |
+| `exercise_library_screen.dart` | ~937 | **230** | #65, #68, #69 |
+| `exercise_add_sheet.dart` | ~926 | **470** | #66 |
 
-| Esempio buono | Ruolo |
-|---------------|-------|
-| `workout_editor_controller.dart` | Stato save/dirty fuori dal widget |
-| `workout_builder_session_controller.dart` | Sessione builder isolata |
-| `workout_mobility_tab.dart` | Tab body estratto da screen |
-| `workout_builder_editor_shell.dart` | Shell layout riusabile |
-| `customer_detail_*_tab.dart` | Tab pattern su customer detail |
+## PR mergiati
 
-## Target files
+| PR | Branch | Scope |
+|----|--------|-------|
+| #62 | `refactor/split-customer-workout-list` | Customer workout list widgets |
+| #63 | `refactor/split-customer-workouts-screen` | Session actions + plan dialogs |
+| #64 | `refactor/split-plan-templates-screen` | Template list/preview/assign |
+| #65 | `refactor/split-exercise-library-screen` | Tab view, tree helpers, import sheet |
+| #66 | `refactor/split-exercise-add-sheet` | Picker, set rows, sheet states |
+| #67 | `refactor/split-mobility-builder-handlers` | Handlers + routine coordinator |
+| #68 | `refactor/presentation-split-followups-v1` | Import handler, set rows reuse, date/tabs |
+| #69 | `refactor/presentation-split-followups-v2` | CRUD/export, load/actions/tabs config |
 
-| File | Righe | Estrazioni proposte |
-|------|-------|---------------------|
-| `lib/features/workouts/presentation/screens/workout_builder_mobility_screen.dart` | 1291 | `MobilityBuilderController`, `MobilitySectionPicker`, `MobilityItemEditorSheet` |
-| `lib/features/customers/presentation/screens/customer_workouts_screen.dart` | 1108 | `CustomerWorkoutPlanList`, `CustomerSessionPanel`, `AssignPlanSheet` |
-| `lib/features/workouts/presentation/screens/workout_plan_templates_screen.dart` | 1071 | `TemplateFilterBar`, `TemplateListTile`, `TemplateDuplicateDialog` |
-| `lib/features/exercise_library/presentation/screens/exercise_library_screen.dart` | ~937 | `ExerciseImportSection`, `ExerciseLibraryList`, `ExercisePinControls` |
-| `lib/features/workouts/presentation/widgets/exercise_add_sheet.dart` | ~925 | `ExerciseSearchPanel`, `ExerciseSelectionList`, `ExerciseAddActions` |
+## Verifica
 
-## Regole per ogni PR
+- **280 test** in `test/` (da ~263 a inizio split)
+- `flutter analyze --no-pub` — green su ogni PR
+- CI GitHub — green su #62–#69
 
-1. **Nessun behavior change** — solo move/rename/extract
-2. Screen resta entry point routing — delega a widget + controller
-3. Controller = `ChangeNotifier` o classe stateless con callback (match existing)
-4. Widget estratti in `presentation/widgets/` della stessa feature
-5. Max ~400 righe per file risultante
-6. `flutter analyze` + `flutter test test/` green
+## Copertura test estratti critici
 
-## PR sequence
+| Area | Test |
+|------|------|
+| Mobility builder shell | `workout_builder_editor_shell_test.dart` |
+| Builder widgets | `workout_builder_widgets_test.dart` |
+| Session / load / coordinator | `workout_builder_session_controller_test.dart`, `workout_builder_load_helpers_test.dart`, `workout_builder_routine_coordinator_test.dart` |
+| Follow-ups load/date | `workout_builder_editor_load_application_test.dart`, `workout_builder_date_picker_helpers_test.dart` |
+| Exercise library | `exercise_library_list_tile_test.dart`, `exercise_library_tree_helpers_test.dart`, `exercise_library_import_service_test.dart` |
+| Plan templates | `workout_template_list_helpers_test.dart` |
+| Exercise add sheet | `exercise_picker_sheet_test.dart` (pattern esistente) |
 
-```mermaid
-flowchart TD
-  P1[PR1 mobility builder]
-  P2[PR2 customer workouts]
-  P3[PR3 plan templates]
-  P4[PR4 exercise library]
-  P5[PR5 exercise add sheet]
-  P1 --> P2 --> P3 --> P4 --> P5
-```
+Gap noti (non bloccanti): nessun widget test dedicato a `WorkoutBuilderScreenTabsConfig` o `ExerciseLibraryCrudHandler` — logica UI delegata a dialog/sheet già testati altrove.
 
-Branch naming:
+## Prossimo passo opzionale
 
-- `refactor/split-mobility-builder-screen`
-- `refactor/split-customer-workouts-screen`
-- etc.
+File presentation ancora >400 righe fuori scope v1 → [`presentation-split-v3.plan.md`](presentation-split-v3.plan.md).
 
-## Test minimi per split
+## Pattern consolidato
 
-| PR | Test suggerito |
-|----|----------------|
-| Mobility | Estendere `workout_builder_widgets_test.dart` per nuovo shell |
-| Customer workouts | Widget smoke `CustomerWorkoutPlanList` con fake repo |
-| Templates | Test helper già in `workout_template_list_helpers_test.dart` |
-| Exercise library | Estendere `exercise_picker_sheet_test.dart` pattern |
-| Exercise add sheet | Widget test search + selection count |
-
-## Rischi
-
-- Regressioni drag/reorder mobility — test manuale + existing `workout_mobility_mutations_test.dart`
-- Context/`GoRouter` perso dopo extract — usare callback espliciti
-- Merge conflicts se più PR aperti — **sequenziali obbligatori**
-
-## Dipendenze
-
-- Dopo [`local-first-ux-v1`](local-first-ux-v1.plan.md) su `customer_workouts_screen` (meno sync copy da estrarre)
-- Parallelo a [`data-layer-v1`](data-layer-v1.plan.md) se file diversi
+1. Screen = entry point routing + stato minimo
+2. Controller/coordinator = load/save/dirty
+3. Handler = flussi UI multi-step (import, CRUD, export)
+4. Widget/tab body in `presentation/widgets/`
+5. Helper puri in `domain/` con unit test
+6. Un PR per scope, branch `refactor/<scope>-<description>`
