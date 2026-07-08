@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import 'exercise_add_set_rows_editor.dart';
 import 'exercise_set_edit_controllers.dart';
 import 'exercise_prescription_scope_selector.dart';
 
@@ -207,17 +207,14 @@ void showEditExerciseDialog(
         void removeSetRow(int i) {
           if (setControllers.length <= 1) return;
           setState(() {
-            setControllers.removeAt(i);
+            final removed = setControllers.removeAt(i);
+            removed.sets.dispose();
+            removed.reps.dispose();
+            removed.load.dispose();
+            removed.note.dispose();
           });
         }
 
-        final denseDecoration = InputDecoration(
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 10,
-          ),
-        );
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -269,94 +266,21 @@ void showEditExerciseDialog(
             ),
             if (useMultiSet) ...[
               const SizedBox(height: 12),
-              Text(
-                l10n.workoutBuilderMultiSetBlockHeader,
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-              const SizedBox(height: 6),
-              ...setControllers.asMap().entries.map((entry) {
-                final i = entry.key;
-                final c = entry.value;
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: c.sets,
-                          decoration: denseDecoration.copyWith(
-                            labelText: l10n.workoutBuilderSetLabel,
-                            hintText: '1',
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        flex: 1,
-                        child: TextField(
-                          controller: c.reps,
-                          decoration: denseDecoration.copyWith(
-                            labelText: l10n.workoutBuilderRepsLabel,
-                            hintText: '3',
-                          ),
-                          keyboardType: TextInputType.number,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        flex: 2,
-                        child: TextField(
-                          controller: c.load,
-                          decoration: denseDecoration.copyWith(
-                            labelText: l10n.workoutBuilderLoadLabel,
-                            hintText: '75kg',
-                          ),
-                          keyboardType: TextInputType.text,
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_outline,
-                          size: 22,
-                          color: setControllers.length > 1
-                              ? StitchM3Theme.danger
-                              : cs.onSurfaceVariant,
-                        ),
-                        onPressed: setControllers.length > 1
-                            ? () => removeSetRow(i)
-                            : null,
-                        style: IconButton.styleFrom(
-                          padding: const EdgeInsets.all(8),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              const SizedBox(height: 4),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
-                  onPressed: addSetRow,
-                  icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                  label: Text(
-                    l10n.workoutBuilderAddSet,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: StitchM3Theme.accent,
-                    ),
-                  ),
-                ),
+              ExerciseAddSetRowsEditor(
+                setControllers: setControllers,
+                onAddSet: addSetRow,
+                onRemoveSet: removeSetRow,
               ),
             ] else ...[
               const SizedBox(height: 10),
               TextField(
                 controller: setsController,
-                decoration: denseDecoration.copyWith(
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   labelText: l10n.workoutBuilderSetsLabel,
                 ),
                 keyboardType: TextInputType.number,
@@ -364,14 +288,24 @@ void showEditExerciseDialog(
               const SizedBox(height: 8),
               TextField(
                 controller: repsController,
-                decoration: denseDecoration.copyWith(
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   labelText: l10n.workoutBuilderRepsLabel,
                 ),
               ),
               const SizedBox(height: 8),
               TextField(
                 controller: rpeController,
-                decoration: denseDecoration.copyWith(
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 10,
+                  ),
                   labelText: l10n.workoutBuilderRpeOrLoadLabel,
                 ),
               ),

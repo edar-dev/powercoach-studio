@@ -10,6 +10,7 @@ import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/day_scheduled_weekday.dart';
 import '../mobility_builder_controller.dart';
+import '../workout_builder_date_picker_helpers.dart';
 import '../workout_builder_export_actions.dart';
 import '../workout_builder_load_helpers.dart';
 import '../workout_builder_mobility_handlers.dart';
@@ -19,12 +20,9 @@ import '../workout_builder_training_handlers.dart';
 import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_editor_shell.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_screen_tabs.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_export_sheet.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_plan_details_tab.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_tab.dart';
 
 /// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
@@ -93,6 +91,65 @@ class _WorkoutBuilderMobilityScreenState
       WorkoutBuilderMobilityHandlers(
         context: context,
         mobilityController: _mobilityController,
+      );
+
+  WorkoutBuilderScreenTabs get _screenTabs => WorkoutBuilderScreenTabs(
+        context: context,
+        builderSession: _builderSession,
+        mobilityController: _mobilityController,
+        editorController: _editorController,
+        trainingHandlers: _trainingHandlers,
+        mobilityHandlers: _mobilityHandlers,
+        sectionTabController: _sectionTabController,
+        routineNameController: _routineNameController,
+        initialWeekController: _initialWeekController,
+        phaseController: _phaseController,
+        tagsController: _tagsController,
+        notesController: _notesController,
+        editorMode: widget.editorMode,
+        loading: _loading,
+        hideExportMenu:
+            widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId,
+        showsMobilityTab: _showsMobilityTab,
+        showBottomNav: !widget.editorMode,
+        planCompleted: _planCompleted,
+        planArchived: _planArchived,
+        onInitialWeekChanged: (value) {
+          final v = int.tryParse(value);
+          if (v != null && v >= 1) {
+            setState(() => _initialWeekNumber = v);
+          }
+        },
+        onCurrentWeekChanged: (value) {
+          setState(() {
+            _routine = _routine.copyWith(currentWeek: value);
+          });
+        },
+        onMetadataChanged: _onMetadataEdited,
+        onPickStartDate: _pickRoutineStartDate,
+        onPickEndDate: _pickRoutineEndDate,
+        onMarkCompleted:
+            _editorController.loadedPlanId != null &&
+                !_planCompleted &&
+                !_planArchived
+            ? _markPlanCompletedFromEditor
+            : null,
+        onPopInvoked: _handleExitAttempt,
+        onBack: _handleExitAttempt,
+        onImportJson: _importJsonFromFile,
+        onExport: (value) {
+          if (value == 'pdf') _showPdfExportSheet();
+          if (value == 'excel') _exportActions.exportExcel(_routine);
+          if (value == 'json') _exportActions.exportJson(_routine);
+          if (value == 'hevy') {
+            _exportActions.exportCurrentDayToHevy(
+              routine: _routine,
+              selectedWeekIndex: _selectedWeekIndex,
+              selectedDayIndex: _selectedDayIndex,
+            );
+          }
+        },
+        onSave: () => _saveRoutine(),
       );
 
   WorkoutBuilderExportActions get _exportActions => WorkoutBuilderExportActions(
@@ -287,40 +344,22 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   Future<void> _pickRoutineStartDate() async {
-    final now = DateTime.now();
-    final today = DateTime(now.year, now.month, now.day);
-    final initial = _routine.startDate ?? today;
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(now.year + 10, 12, 31),
+    final picked = await pickWorkoutRoutineStartDate(
+      context,
+      currentStart: _routine.startDate,
     );
     if (!mounted || picked == null) return;
-    setState(() {
-      _routine = _routine.copyWith(
-        startDate: DateTime(picked.year, picked.month, picked.day),
-      );
-    });
+    setState(() => _routine = applyRoutineStartDate(_routine, picked));
   }
 
   Future<void> _pickRoutineEndDate() async {
-    final now = DateTime.now();
-    final fallback = DateTime(now.year, now.month, now.day);
-    final initial = _routine.endDate ?? _routine.startDate ?? fallback;
-    final firstDate = _routine.startDate ?? DateTime(2000);
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: initial,
-      firstDate: DateTime(firstDate.year, firstDate.month, firstDate.day),
-      lastDate: DateTime(now.year + 10, 12, 31),
+    final picked = await pickWorkoutRoutineEndDate(
+      context,
+      startDate: _routine.startDate,
+      currentEnd: _routine.endDate,
     );
     if (!mounted || picked == null) return;
-    setState(() {
-      _routine = _routine.copyWith(
-        endDate: DateTime(picked.year, picked.month, picked.day),
-      );
-    });
+    setState(() => _routine = applyRoutineEndDate(_routine, picked));
   }
 
   Future<bool> _saveRoutine({bool silent = false}) async {
@@ -415,39 +454,6 @@ class _WorkoutBuilderMobilityScreenState
     super.dispose();
   }
 
-  Widget _buildDetailsTab(ThemeData theme, ColorScheme cs) {
-    return WorkoutPlanDetailsTab(
-      routine: _routine,
-      editorMode: widget.editorMode,
-      initialWeekController: _initialWeekController,
-      phaseController: _phaseController,
-      tagsController: _tagsController,
-      notesController: _notesController,
-      onPickStartDate: _pickRoutineStartDate,
-      onPickEndDate: _pickRoutineEndDate,
-      onInitialWeekChanged: (value) {
-        final v = int.tryParse(value);
-        if (v != null && v >= 1) {
-          setState(() => _initialWeekNumber = v);
-        }
-      },
-      onCurrentWeekChanged: (value) {
-        setState(() {
-          _routine = _routine.copyWith(currentWeek: value);
-        });
-      },
-      onMetadataChanged: _onMetadataEdited,
-      planCompleted: _planCompleted,
-      planArchived: _planArchived,
-      onMarkCompleted:
-          _editorController.loadedPlanId != null &&
-              !_planCompleted &&
-              !_planArchived
-          ? _markPlanCompletedFromEditor
-          : null,
-    );
-  }
-
   Future<void> _markPlanCompletedFromEditor() async {
     final planId = _editorController.loadedPlanId;
     if (planId == null) return;
@@ -465,111 +471,15 @@ class _WorkoutBuilderMobilityScreenState
     );
   }
 
-  Widget _buildMobilityTab(ThemeData theme, ColorScheme cs) {
-    return WorkoutMobilityTab(
-      theme: theme,
-      colorScheme: cs,
-      sections: _mobilityController.sections,
-      selectedSectionIndex: _mobilityController.selectedSectionIndex,
-      itemsForSelectedSection: _mobilityController.itemsForSelectedSection,
-      onAddItem: _mobilityHandlers.addMobilityItem,
-      onAddSection: _mobilityHandlers.addMobilitySection,
-      onEditSection: _mobilityHandlers.editMobilitySection,
-      onDeleteSection: _mobilityHandlers.deleteMobilitySection,
-      onSelectSection: _mobilityController.selectSection,
-      onReorderItems: _mobilityHandlers.reorderMobility,
-      onUpdateItem: (itemId, t, s, short) =>
-          _mobilityHandlers.updateMobilityItem(itemId, t, s, shortTitle: short),
-      onDeleteItem: _mobilityHandlers.removeMobilityItem,
-    );
-  }
-
-  Widget _buildTrainingTab(ThemeData theme, ColorScheme cs) {
-    return WorkoutTrainingTab(
-      theme: theme,
-      cs: cs,
-      embeddedInTab: true,
-      weeks: _routine.weeks,
-      selectedWeekIndex: _selectedWeekIndex,
-      selectedDayIndex: _selectedDayIndex,
-      onNewWeek: _trainingHandlers.addWeek,
-      onCloneWeek: _trainingHandlers.cloneWeek,
-      onDeleteWeek: _trainingHandlers.confirmDeleteWeek,
-      onRenameWeek: _trainingHandlers.renameWeek,
-      onAddDay: _trainingHandlers.addDayToWeek,
-      onRenameDay: _trainingHandlers.renameDay,
-      onDeleteDay: _trainingHandlers.deleteDay,
-      onAddExercise: _trainingHandlers.addExerciseToDay,
-      onDuplicateExercise: _trainingHandlers.duplicateExercise,
-      onRemoveExercise: _trainingHandlers.removeExercise,
-      onMoveExercise: _trainingHandlers.moveExerciseInDay,
-      onUpdateExercise: _trainingHandlers.updateExercise,
-      onAddSetToExercise: _trainingHandlers.addSetToExercise,
-      onUpdateExerciseSet: _trainingHandlers.updateExerciseSet,
-      onRemoveExerciseSet: _trainingHandlers.removeExerciseSet,
-      onAssignToSuperset: _trainingHandlers.assignToSuperset,
-      onRemoveFromSuperset: _trainingHandlers.removeFromSuperset,
-      onAddExerciseToSuperset: _trainingHandlers.addExerciseToSuperset,
-      onSelectWeek: (i) => _builderSession.selectWeek(i, resetDay: true),
-      onSelectDay: (i) => _builderSession.selectDay(i),
-      onUpdateScheduledWeekday: _trainingHandlers.setDayScheduledWeekday,
-    );
-  }
-
-  WorkoutBuilderEditorShell _editorShell({
-    required bool canPop,
-    required bool saving,
-    required bool showManualSaveButton,
-    Widget? saveStatusIndicator,
-  }) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final hideExportMenu =
-        widget.editorMode && widget.customerId == kWorkoutPlanTemplateScopeId;
-
-    return WorkoutBuilderEditorShell(
-      canPop: canPop,
-      saving: saving,
-      showManualSaveButton: showManualSaveButton,
-      saveStatusIndicator: saveStatusIndicator,
-      editorMode: widget.editorMode,
-      loading: _loading,
-      hideExportMenu: hideExportMenu,
-      showsMobilityTab: _showsMobilityTab,
-      sectionTabController: _sectionTabController,
-      routineNameController: _routineNameController,
-      trainingTab: _buildTrainingTab(theme, cs),
-      mobilityTab: _buildMobilityTab(theme, cs),
-      detailsTab: _buildDetailsTab(theme, cs),
-      showBottomNav: !widget.editorMode,
-      onPopInvoked: _handleExitAttempt,
-      onBack: _handleExitAttempt,
-      onOpenTemplates: () {},
-      onImportJson: _importJsonFromFile,
-      onExport: (value) {
-        if (value == 'pdf') _showPdfExportSheet();
-        if (value == 'excel') _exportActions.exportExcel(_routine);
-        if (value == 'json') _exportActions.exportJson(_routine);
-        if (value == 'hevy') {
-          _exportActions.exportCurrentDayToHevy(
-            routine: _routine,
-            selectedWeekIndex: _selectedWeekIndex,
-            selectedDayIndex: _selectedDayIndex,
-          );
-        }
-      },
-      onSave: () => _saveRoutine(),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final tabs = _screenTabs;
 
     if (!widget.editorMode) {
-      return _editorShell(
+      return tabs.buildEditorShell(
         canPop: !_isStandaloneDirty,
         saving: _saving,
         showManualSaveButton: true,
@@ -579,7 +489,7 @@ class _WorkoutBuilderMobilityScreenState
 
     return ListenableBuilder(
       listenable: _editorController,
-      builder: (context, _) => _editorShell(
+      builder: (context, _) => tabs.buildEditorShell(
         canPop: !_editorController.isDirty,
         saving: _editorController.saving,
         showManualSaveButton: _editorController.shouldShowManualSaveButton(

@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -12,17 +10,11 @@ import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/custom_exercise_item.dart';
-import '../../data/import_file_reader.dart';
 import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
-import '../../data/default_exercise_catalog.dart';
-import '../../../integrations/hevy/data/hevy_api_models.dart';
-import '../../../integrations/hevy/data/hevy_catalog_import_service.dart';
-import '../../../integrations/hevy/data/hevy_settings_store.dart';
-import '../../../integrations/hevy/domain/exercise_catalog_source.dart';
 import '../../domain/exercise_library_tree_helpers.dart';
+import '../exercise_library_import_handler.dart';
 import 'package:powercoach_studio/features/exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
-import '../widgets/exercise_library_import_source_sheet.dart';
 import '../widgets/exercise_library_tab_view.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
@@ -41,6 +33,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   bool _loading = true;
   String? _error;
   late final TabController _tabController;
+
+  ExerciseLibraryImportHandler get _importHandler => ExerciseLibraryImportHandler(
+        context: context,
+        onReload: _load,
+        isMobilityTab: () => _tabController.index == 1,
+      );
 
   @override
   void initState() {
@@ -128,236 +126,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     }
   }
 
-  Future<void> _import() async {
-    final l10n = AppLocalizations.of(context);
-    showAppBottomSheet<void>(
-      context: context,
-      title: l10n.exerciseLibraryImportSourceTitle,
-      bodyBuilder: (sheetContext) => ExerciseLibraryImportSourceSheet(
-        onImportDefault: () {
-          Navigator.of(sheetContext).pop();
-          _importDefaultCatalog();
-        },
-        onImportHevy: () {
-          Navigator.of(sheetContext).pop();
-          _importHevyCatalog();
-        },
-        onImportCustomFile: () {
-          Navigator.of(sheetContext).pop();
-          _importCustomFile();
-        },
-      ),
-    );
-  }
-
-  Future<void> _importHevyCatalog() async {
-    final l10n = AppLocalizations.of(context);
-    final hasKey = await HevySettingsStore.instance.hasApiKey();
-    if (!hasKey) {
-      if (!mounted) return;
-      showAppSnackBar(context, content: Text(l10n.hevyExportNoCatalogHint));
-      return;
-    }
-    if (!mounted) return;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        var label = l10n.hevyImportInProgress;
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: Text(l10n.exerciseLibraryImportSourceHevy),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const CircularProgressIndicator(),
-                  const SizedBox(height: 16),
-                  Text(label),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-    try {
-      final count = await HevyCatalogImportService().importAllFromApi(
-        onProgress: (current, total, progressLabel) {
-          // Dialog progress label updates are best-effort
-        },
-      );
-      if (!mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(
-        context,
-        content: Text(l10n.hevyImportSuccessCount(count)),
-      );
-      await _load();
-    } on HevyApiException catch (e) {
-      if (!mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(context, content: Text(l10n.hevyImportFailed(e.message)));
-    } catch (e) {
-      if (!mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(
-        context,
-        content: Text(l10n.hevyImportFailed(e.toString())),
-      );
-    }
-  }
-
-  Future<void> _importDefaultCatalog() async {
-    final l10n = AppLocalizations.of(context);
-    final defaults = buildDefaultExerciseCatalogJson();
-    await _importItems(
-      defaults,
-      l10n: l10n,
-      fallbackMobilityWhenMissing: false,
-      catalogSource: ExerciseCatalogSource.powercoach,
-    );
-  }
-
-  Future<void> _importCustomFile() async {
-    final isMobility = _tabController.index == 1;
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty || !mounted) return;
-    final file = result.files.single;
-    List<Map<String, dynamic>> items;
-    try {
-      String content;
-      if (file.bytes != null) {
-        content = utf8.decode(file.bytes!);
-      } else if (!kIsWeb && file.path != null) {
-        content = await readImportFileFromPath(file.path!);
-      } else {
-        content = '[]';
-      }
-      final decoded = jsonDecode(content);
-      if (decoded is! List) {
-        if (mounted) {
-          final l10n = AppLocalizations.of(context);
-          showAppSnackBar(
-            context,
-            content: Text(l10n.exerciseLibraryImportInvalidFormat),
-          );
-        }
-        return;
-      }
-      items = decoded
-          .map((e) => e is Map<String, dynamic> ? e : <String, dynamic>{})
-          .toList();
-    } catch (_) {
-      if (mounted) {
-        final l10n = AppLocalizations.of(context);
-        showAppSnackBar(
-          context,
-          content: Text(l10n.exerciseLibraryImportInvalidFormat),
-        );
-      }
-      return;
-    }
-    if (!mounted) return;
-    final l10n = AppLocalizations.of(context);
-    await _importItems(
-      items,
-      l10n: l10n,
-      fallbackMobilityWhenMissing: isMobility,
-    );
-  }
-
-  Future<void> _importItems(
-    List<Map<String, dynamic>> items, {
-    required AppLocalizations l10n,
-    required bool fallbackMobilityWhenMissing,
-    String catalogSource = ExerciseCatalogSource.manual,
-  }) async {
-    final importedByLegacyId = <String, String>{};
-    var importedCount = 0;
-    try {
-      final pending = List<Map<String, dynamic>>.from(items);
-      while (pending.isNotEmpty) {
-        var createdInPass = 0;
-        final unresolvedForNextPass = <Map<String, dynamic>>[];
-        for (final item in pending) {
-          final name = item['name']?.toString().trim() ?? '';
-          if (name.isEmpty) continue;
-
-          final rawParentId = item['parentId']?.toString();
-          final hasParent = rawParentId != null && rawParentId.isNotEmpty;
-          if (hasParent && !importedByLegacyId.containsKey(rawParentId)) {
-            unresolvedForNextPass.add(item);
-            continue;
-          }
-
-          final parentId = hasParent ? importedByLegacyId[rawParentId] : null;
-          final rawMobility = item['isMobility'];
-          final itemIsMobility = rawMobility is bool
-              ? rawMobility
-              : fallbackMobilityWhenMissing;
-          final created = await _exerciseRepo.create(<String, dynamic>{
-            'name': name,
-            'description': item['description']?.toString(),
-            if (parentId != null) 'parentId': parentId,
-            'sortOrder': item['sortOrder'],
-            'isMobility': itemIsMobility,
-            'catalogSource': catalogSource,
-          });
-          final legacyId = item['id']?.toString();
-          if (legacyId != null && legacyId.isNotEmpty) {
-            importedByLegacyId[legacyId] = created['id']?.toString() ?? '';
-          }
-          importedCount++;
-          createdInPass++;
-        }
-
-        if (createdInPass == 0) {
-          // Fallback: break potential cycles/invalid parents by importing remaining as roots.
-          for (final item in unresolvedForNextPass) {
-            final name = item['name']?.toString().trim() ?? '';
-            if (name.isEmpty) continue;
-            final rawMobility = item['isMobility'];
-            final itemIsMobility = rawMobility is bool
-                ? rawMobility
-                : fallbackMobilityWhenMissing;
-            final created = await _exerciseRepo.create(<String, dynamic>{
-              'name': name,
-              'description': item['description']?.toString(),
-              'sortOrder': item['sortOrder'],
-              'isMobility': itemIsMobility,
-              'catalogSource': catalogSource,
-            });
-            final legacyId = item['id']?.toString();
-            if (legacyId != null && legacyId.isNotEmpty) {
-              importedByLegacyId[legacyId] = created['id']?.toString() ?? '';
-            }
-            importedCount++;
-          }
-          break;
-        }
-
-        pending
-          ..clear()
-          ..addAll(unresolvedForNextPass);
-      }
-      if (mounted) {
-        showAppSnackBar(
-          context,
-          content: Text(l10n.exerciseLibraryImportSuccessCount(importedCount)),
-        );
-        _load();
-      }
-    } catch (e) {
-      if (mounted) {
-        showAppSnackBar(context, content: Text(e.toString()));
-      }
-    }
-  }
+  Future<void> _import() => _importHandler.showImportSheet();
 
   void _showAddDialog({required bool isMobility}) {
     _showAddDialogWithParent(null, isMobility: isMobility);
