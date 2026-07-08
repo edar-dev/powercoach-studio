@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/export/export_artifact.dart';
-import '../../../../core/export/export_share.dart';
-import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
-import '../../../auth/data/local_coach_profile_repository.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
-import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer_measurement.dart';
 import '../../domain/export_measurement_csv_usecase.dart';
@@ -18,7 +11,9 @@ import '../../domain/export_measurement_pdf_usecase.dart';
 import '../../domain/measurement_metric.dart';
 import '../../domain/measurement_period_compare.dart';
 import '../../domain/measurement_series_builder.dart';
-import 'package:powercoach_studio/features/customers/presentation/widgets/measurement_history_chart.dart';
+import '../customer_measurement_history_export.dart';
+import '../widgets/measurement_history_chart.dart';
+import '../widgets/measurement_history_period_compare_card.dart';
 
 class CustomerMeasurementHistoryScreen extends StatefulWidget {
   const CustomerMeasurementHistoryScreen({
@@ -37,7 +32,8 @@ class CustomerMeasurementHistoryScreen extends StatefulWidget {
 
 class _CustomerMeasurementHistoryScreenState
     extends State<CustomerMeasurementHistoryScreen> {
-  final CustomerMeasurementRepository _repository = CustomerMeasurementRepository();
+  final CustomerMeasurementRepository _repository =
+      CustomerMeasurementRepository();
 
   List<CustomerMeasurement> _measurements = [];
   MeasurementMetric? _selectedMetric;
@@ -57,73 +53,24 @@ class _CustomerMeasurementHistoryScreenState
     });
     try {
       final measurements = await _repository.getByCustomerId(widget.customerId);
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       final metrics = measurementMetricsWithData(measurements);
       setState(() {
         _measurements = measurements;
         _loading = false;
-        _selectedMetric = _selectedMetric != null && metrics.contains(_selectedMetric)
+        _selectedMetric =
+            _selectedMetric != null && metrics.contains(_selectedMetric)
             ? _selectedMetric
             : (metrics.isNotEmpty ? metrics.first : null);
       });
     } catch (error, stackTrace) {
       await Sentry.captureException(error, stackTrace: stackTrace);
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       setState(() {
         _loading = false;
         _error = error.toString();
       });
     }
-  }
-
-  Future<void> _shareExport(
-    Future<ExportArtifact> Function() export, {
-    bool showProgress = false,
-  }) async {
-    final l10n = AppLocalizations.of(context);
-    final labels = l10n.toPdfExportLabels();
-    if (showProgress) {
-      showPdfExportProgressDialog(
-        context,
-        message: labels.exportGenerating,
-      );
-    }
-    try {
-      final artifact = await export();
-      await downloadExportArtifact(artifact);
-      if (!mounted) {
-        return;
-      }
-      showAppSnackBar(context, content: Text(l10n.measurementExportSuccess));
-    } catch (error, stackTrace) {
-      await Sentry.captureException(error, stackTrace: stackTrace);
-      if (!mounted) {
-        return;
-      }
-      showAppSnackBar(
-        context,
-        content: Text(l10n.measurementExportError),
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-      );
-    } finally {
-      if (showProgress && mounted) hidePdfExportProgressDialog(context);
-    }
-  }
-
-  Future<PdfCoachHeaderInfo> _resolvePdfCoachHeader() async {
-    final labels = AppLocalizations.of(context).toPdfExportLabels();
-    final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
-    final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
-    final email = Supabase.instance.client.auth.currentUser?.email;
-    return buildPdfCoachHeader(
-      labels: labels,
-      profile: profile,
-      authEmail: email,
-    );
   }
 
   @override
@@ -147,15 +94,23 @@ class _CustomerMeasurementHistoryScreenState
                     ? widget.customerName!.trim()
                     : widget.customerId;
                 if (value == 'csv') {
-                  _shareExport(
-                    () => exportMeasurementsToCsv(_measurements, baseName),
+                  shareCustomerMeasurementExport(
+                    context: context,
+                    l10n: l10n,
+                    export: () =>
+                        exportMeasurementsToCsv(_measurements, baseName),
                   );
                 } else if (value == 'pdf') {
                   final labels = l10n.toPdfExportLabels();
-                  _shareExport(
+                  shareCustomerMeasurementExport(
+                    context: context,
+                    l10n: l10n,
                     showProgress: true,
-                    () async {
-                      final header = await _resolvePdfCoachHeader();
+                    export: () async {
+                      final header =
+                          await resolveCustomerMeasurementPdfCoachHeader(
+                            context,
+                          );
                       return exportMeasurementsToPdf(
                         _measurements,
                         l10n.measurementHistoryExportPdfTitle(baseName),
@@ -223,7 +178,11 @@ class _CustomerMeasurementHistoryScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.show_chart, size: 48, color: colorScheme.onSurfaceVariant),
+              Icon(
+                Icons.show_chart,
+                size: 48,
+                color: colorScheme.onSurfaceVariant,
+              ),
               const SizedBox(height: 16),
               Text(
                 l10n.measurementsEmpty,
@@ -258,7 +217,10 @@ class _CustomerMeasurementHistoryScreenState
             recentCount: 0,
             previousCount: 0,
           )
-        : MeasurementPeriodCompare.compareLast30Days(_measurements, selectedMetric);
+        : MeasurementPeriodCompare.compareLast30Days(
+            _measurements,
+            selectedMetric,
+          );
 
     return RefreshIndicator(
       onRefresh: _load,
@@ -280,9 +242,7 @@ class _CustomerMeasurementHistoryScreenState
                   ),
               ],
               onChanged: (metric) {
-                if (metric == null) {
-                  return;
-                }
+                if (metric == null) return;
                 setState(() => _selectedMetric = metric);
               },
             ),
@@ -312,135 +272,12 @@ class _CustomerMeasurementHistoryScreenState
               ),
             ),
           const SizedBox(height: 16),
-          _PeriodCompareCard(
+          MeasurementHistoryPeriodCompareCard(
             delta: periodDelta,
             metricLabel: selectedMetric?.label(l10n) ?? '',
           ),
         ],
       ),
-    );
-  }
-}
-
-class _PeriodCompareCard extends StatelessWidget {
-  const _PeriodCompareCard({
-    required this.delta,
-    required this.metricLabel,
-  });
-
-  final MeasurementPeriodDelta delta;
-  final String metricLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final percent = delta.percentChange;
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.measurementHistoryCompareTitle,
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.measurementHistoryCompareSubtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            if (delta.recentCount == 0 && delta.previousCount == 0)
-              Text(
-                l10n.measurementHistoryCompareInsufficient,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              )
-            else ...[
-              _CompareRow(
-                label: l10n.measurementHistoryCompareRecent,
-                value: delta.recentAverage,
-                count: delta.recentCount,
-              ),
-              const SizedBox(height: 8),
-              _CompareRow(
-                label: l10n.measurementHistoryComparePrevious,
-                value: delta.previousAverage,
-                count: delta.previousCount,
-              ),
-              if (percent != null) ...[
-                const SizedBox(height: 12),
-                Text(
-                  l10n.measurementHistoryCompareDelta(
-                    metricLabel,
-                    _formatSignedPercent(percent),
-                  ),
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: percent <= 0 ? colorScheme.tertiary : colorScheme.error,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _formatSignedPercent(double value) {
-    final sign = value > 0 ? '+' : '';
-    return '$sign${value.toStringAsFixed(1)}%';
-  }
-}
-
-class _CompareRow extends StatelessWidget {
-  const _CompareRow({
-    required this.label,
-    required this.value,
-    required this.count,
-  });
-
-  final String label;
-  final double? value;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final l10n = AppLocalizations.of(context);
-    final valueLabel = value == null
-        ? l10n.measurementHistoryCompareNoData
-        : value!.toStringAsFixed(1);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            label,
-            style: theme.textTheme.bodyMedium,
-          ),
-        ),
-        Text(
-          valueLabel,
-          style: theme.textTheme.titleSmall,
-        ),
-        const SizedBox(width: 8),
-        Text(
-          l10n.measurementHistoryCompareSampleCount(count),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
     );
   }
 }
