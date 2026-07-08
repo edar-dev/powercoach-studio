@@ -4,11 +4,12 @@ import 'package:flutter/services.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/customer_exercise_record_repository.dart';
 import '../../data/models/customer_exercise_record.dart';
+import '../customer_exercise_record_delete_handler.dart';
+import '../widgets/customer_exercise_record_form_fields.dart';
 
 /// Full-screen form to create or edit a customer exercise record.
 class CustomerExerciseRecordFormScreen extends StatefulWidget {
@@ -21,7 +22,6 @@ class CustomerExerciseRecordFormScreen extends StatefulWidget {
 
   final String customerId;
   final CustomerExerciseRecord? record;
-  /// When adding an "update" for an existing exercise, preselect this exercise.
   final String? initialCustomExerciseId;
 
   @override
@@ -35,9 +35,7 @@ class _CustomerExerciseRecordFormScreenState
   final _repo = CustomerExerciseRecordRepository();
   final _formKey = GlobalKey<FormState>();
   List<CustomExerciseItem> _exerciseOptions = [];
-  /// Depth in tree (0 = root, 1 = child).
   final Map<String, int> _exerciseDepth = {};
-  /// Parent exercise name for display (e.g. "Parent › Child").
   final Map<String, String> _exerciseParentName = {};
   bool _loadingExercises = true;
   String? _selectedExerciseId;
@@ -47,14 +45,6 @@ class _CustomerExerciseRecordFormScreenState
   final _noteController = TextEditingController();
   bool _saving = false;
   final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
-
-  static const List<({String value, String labelKey})> _units = [
-    (value: 'kg', labelKey: 'recordUnitKg'),
-    (value: 'reps', labelKey: 'recordUnitReps'),
-    (value: 'sec', labelKey: 'recordUnitSec'),
-    (value: 'min', labelKey: 'recordUnitMin'),
-    (value: 'other', labelKey: 'recordUnitOther'),
-  ];
 
   CustomExerciseItem? get _selectedExercise {
     if (_selectedExerciseId == null) return null;
@@ -145,7 +135,8 @@ class _CustomerExerciseRecordFormScreenState
         'value': value,
         'unit': _unit,
         'recordedAt': CustomerExerciseRecord.toDateString(_recordedAt),
-        if (_noteController.text.trim().isNotEmpty) 'note': _noteController.text.trim(),
+        if (_noteController.text.trim().isNotEmpty)
+          'note': _noteController.text.trim(),
       };
       if (widget.record != null) {
         await _repo.update(widget.customerId, widget.record!.id, {
@@ -155,7 +146,8 @@ class _CustomerExerciseRecordFormScreenState
           'value': value,
           'unit': _unit,
           'recordedAt': CustomerExerciseRecord.toDateString(_recordedAt),
-          if (_noteController.text.trim().isNotEmpty) 'note': _noteController.text.trim(),
+          if (_noteController.text.trim().isNotEmpty)
+            'note': _noteController.text.trim(),
           'expectedRowVersion': widget.record!.rowVersion,
         });
       } else {
@@ -184,20 +176,31 @@ class _CustomerExerciseRecordFormScreenState
     }
   }
 
-  String _unitLabel(AppLocalizations l10n, String labelKey) {
-    switch (labelKey) {
-      case 'recordUnitKg':
-        return l10n.recordUnitKg;
-      case 'recordUnitReps':
-        return l10n.recordUnitReps;
-      case 'recordUnitSec':
-        return l10n.recordUnitSec;
-      case 'recordUnitMin':
-        return l10n.recordUnitMin;
-      case 'recordUnitOther':
-        return l10n.recordUnitOther;
-      default:
-        return labelKey;
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _recordedAt,
+      firstDate: DateTime(2000),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (picked != null && mounted) {
+      setState(() => _recordedAt = picked);
+    }
+  }
+
+  Future<void> _deleteRecord() async {
+    final record = widget.record;
+    if (record == null) return;
+    setState(() => _saving = true);
+    try {
+      await deleteCustomerExerciseRecord(
+        context: context,
+        customerId: widget.customerId,
+        record: record,
+        repo: _repo,
+      );
+    } finally {
+      if (mounted) setState(() => _saving = false);
     }
   }
 
@@ -242,217 +245,30 @@ class _CustomerExerciseRecordFormScreenState
           ? const Center(child: CircularProgressIndicator())
           : Form(
               key: _formKey,
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (isEdit && widget.record != null) ...[
-                    Text(
-                      l10n.recordSelectExercise,
-                      style: theme.textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        widget.record!.displayName,
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                      enabled: false,
-                    ),
-                    const SizedBox(height: 20),
-                  ] else if (_exerciseOptions.isNotEmpty) ...[
-                    Text(
-                      l10n.recordSelectExercise,
-                      style: theme.textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Autocomplete<CustomExerciseItem>(
-                      initialValue: _selectedExercise != null
-                          ? TextEditingValue(text: _exerciseDisplayName(_selectedExercise!))
-                          : const TextEditingValue(),
-                      optionsBuilder: (TextEditingValue value) {
-                        return _exerciseFilter.optionsFor<CustomExerciseItem>(
-                          query: value.text,
-                          options: _exerciseOptions,
-                          displayName: _exerciseDisplayName,
-                          isActive: () => mounted,
-                        );
-                      },
-                      displayStringForOption: _exerciseDisplayName,
-                      onSelected: (e) => setState(() => _selectedExerciseId = e.id),
-                      fieldViewBuilder: (
-                        context,
-                        controller,
-                        focusNode,
-                        onFieldSubmitted,
-                      ) {
-                        return TextFormField(
-                          controller: controller,
-                          focusNode: focusNode,
-                          decoration: InputDecoration(
-                            hintText: l10n.recordSearchExerciseHint,
-                            border: const OutlineInputBorder(),
-                          ),
-                        );
-                      },
-                      optionsViewBuilder: (context, onSelected, options) {
-                        return Align(
-                          alignment: Alignment.topLeft,
-                          child: Material(
-                            elevation: 4,
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxHeight: 280),
-                              child: ListView.builder(
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                itemCount: options.length,
-                                itemBuilder: (context, index) {
-                                  final e = options.elementAt(index);
-                                  final depth = _exerciseDepth[e.id] ?? 0;
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 16.0 + (depth * 16.0)),
-                                    child: ListTile(
-                                      dense: depth > 0,
-                                      title: Text(
-                                        depth > 0 ? e.name : _exerciseDisplayName(e),
-                                        style: theme.textTheme.bodyMedium?.copyWith(
-                                          fontWeight: depth == 0
-                                              ? FontWeight.w600
-                                              : FontWeight.normal,
-                                        ),
-                                      ),
-                                      onTap: () => onSelected(e),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                  TextFormField(
-                    controller: _valueController,
-                    decoration: InputDecoration(
-                      labelText: l10n.recordValue,
-                      border: const OutlineInputBorder(),
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (v) {
-                      if (v == null || v.trim().isEmpty) return null;
-                      if (double.tryParse(v.trim()) == null) return null;
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    initialValue: _units.any((u) => u.value == _unit) ? _unit : 'kg',
-                    decoration: InputDecoration(
-                      labelText: l10n.recordUnit,
-                      border: const OutlineInputBorder(),
-                    ),
-                    items: _units
-                        .map(
-                          (u) => DropdownMenuItem(
-                            value: u.value,
-                            child: Text(_unitLabel(l10n, u.labelKey)),
-                          ),
-                        )
-                        .toList(),
-                    onChanged: (v) => setState(() => _unit = v ?? 'kg'),
-                  ),
-                  const SizedBox(height: 16),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(l10n.recordDate, style: theme.textTheme.labelLarge),
-                    subtitle: Text(
-                      '${_recordedAt.year}-${_recordedAt.month.toString().padLeft(2, '0')}-${_recordedAt.day.toString().padLeft(2, '0')}',
-                      style: theme.textTheme.bodyLarge,
-                    ),
-                    trailing: const Icon(Icons.calendar_today),
-                    onTap: () async {
-                      final picked = await showDatePicker(
-                        context: context,
-                        initialDate: _recordedAt,
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-                      if (picked != null && mounted) {
-                        setState(() => _recordedAt = picked);
-                      }
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _noteController,
-                    decoration: InputDecoration(
-                      labelText: l10n.recordNote,
-                      border: const OutlineInputBorder(),
-                    ),
-                    maxLines: 2,
-                  ),
-                  if (isEdit && widget.record != null) ...[
-                    const SizedBox(height: 24),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: TextButton.icon(
-                        onPressed: _saving ? null : _deleteRecord,
-                        icon: Icon(Icons.delete_outline, size: 20, color: cs.error),
-                        label: Text(
-                          l10n.recordDeleteButton,
-                          style: TextStyle(color: cs.error),
-                        ),
-                      ),
-                    ),
-                  ],
-                ],
+              child: CustomerExerciseRecordFormFields(
+                l10n: l10n,
+                theme: theme,
+                colorScheme: cs,
+                isEdit: isEdit,
+                record: widget.record,
+                exerciseOptions: _exerciseOptions,
+                exerciseDepth: _exerciseDepth,
+                exerciseFilter: _exerciseFilter,
+                exerciseDisplayName: _exerciseDisplayName,
+                selectedExerciseId: _selectedExerciseId,
+                onExerciseSelected: (id) =>
+                    setState(() => _selectedExerciseId = id),
+                valueController: _valueController,
+                unit: _unit,
+                onUnitChanged: (v) => setState(() => _unit = v),
+                recordedAt: _recordedAt,
+                onPickDate: _pickDate,
+                noteController: _noteController,
+                onDelete: _deleteRecord,
+                saving: _saving,
+                isMounted: () => mounted,
               ),
             ),
     );
-  }
-
-  Future<void> _deleteRecord() async {
-    final r = widget.record;
-    if (r == null) return;
-    final l10n = AppLocalizations.of(context);
-    final confirm = await showAppConfirmDialog(
-      context: context,
-      title: l10n.recordDeleteConfirm,
-      message: '',
-      confirmLabel: l10n.customerDelete,
-      cancelLabel: l10n.customerCancel,
-      destructive: true,
-    );
-    if (!confirm || !mounted) return;
-    setState(() => _saving = true);
-    final cs = Theme.of(context).colorScheme;
-    try {
-      await _repo.delete(widget.customerId, r.id);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.recordDeleted),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-      Navigator.of(context).pop(true);
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.recordDeleteError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: cs.errorContainer,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _saving = false);
-    }
   }
 }
