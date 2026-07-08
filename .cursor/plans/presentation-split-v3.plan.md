@@ -1,15 +1,15 @@
 ---
 name: presentation-split-v3
-overview: "Split opzionale su file presentation >400 righe rimasti fuori da v1/v2. Non avviato — da pianificare solo se serve ulteriore manutenibilità."
-status: draft
+overview: "Split opzionale su file presentation >400 righe rimasti fuori da v1/v2."
+status: in_progress
 dependsOn: presentation-split-v1
 todos:
   - id: inventory-v3
-    content: "Confermare ordine e priorità dei candidati sotto"
-    status: pending
+    content: "Ordine confermato — dashboard first"
+    status: completed
   - id: split-dashboard
-    content: "coach_dashboard_screen.dart (795) — tab body / today panel / stats cards"
-    status: pending
+    content: "coach_dashboard_screen.dart 795 → 251 righe"
+    status: completed
   - id: split-training-tab
     content: "workout_training_tab.dart (790) — week/day panel wiring, handler delegation"
     status: pending
