@@ -8,6 +8,7 @@ import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/presentation/workout_plan_display_helpers.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 class CustomerDetailWorkoutPlansSection extends StatelessWidget {
@@ -25,15 +26,6 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
   final bool loading;
   final void Function({String? planId}) onOpenEditor;
   final VoidCallback onPlansChanged;
-
-  static String formatPlanUpdated(AppLocalizations l10n, DateTime updatedAt) {
-    final now = DateTime.now();
-    final diff = now.difference(updatedAt);
-    if (diff.inDays > 0) return l10n.updatedDaysAgo(diff.inDays);
-    if (diff.inHours > 0) return l10n.updatedHoursAgo(diff.inHours);
-    if (diff.inMinutes > 0) return l10n.updatedMinutesAgo(diff.inMinutes);
-    return l10n.updatedJustNow;
-  }
 
   Future<void> _createFollowUp(
     BuildContext context,
@@ -262,7 +254,7 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  formatPlanUpdated(l10n, plan.updatedAt),
+                                  formatPlanUpdatedAt(l10n, plan.updatedAt),
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: colorScheme.onSurfaceVariant,
                                   ),
