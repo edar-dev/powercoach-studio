@@ -16,6 +16,9 @@ todos:
   - id: split-landing
     content: "landing_screen.dart 766 → 168 righe"
     status: completed
+  - id: split-training-week-day-panel
+    content: "training_week_day_panel.dart 562 → 197 righe"
+    status: completed
   - id: split-settings
     content: "settings_screen.dart (548) — preference groups / backup section"
     status: pending
