@@ -20,7 +20,10 @@ import '../../../integrations/hevy/data/hevy_api_models.dart';
 import '../../../integrations/hevy/data/hevy_catalog_import_service.dart';
 import '../../../integrations/hevy/data/hevy_settings_store.dart';
 import '../../../integrations/hevy/domain/exercise_catalog_source.dart';
+import '../../domain/exercise_library_tree_helpers.dart';
 import 'package:powercoach_studio/features/exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
+import '../widgets/exercise_library_import_source_sheet.dart';
+import '../widgets/exercise_library_tab_view.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen({super.key});
@@ -89,7 +92,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     try {
       final isMobility = _tabController.index == 1;
       final roots = await _exerciseRepo.getTree(mobility: isMobility);
-      final data = _flattenTree(roots)
+      final data = flattenExerciseTree(roots)
           .map(
             (e) => <String, dynamic>{
               'id': e.id,
@@ -130,37 +133,19 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     showAppBottomSheet<void>(
       context: context,
       title: l10n.exerciseLibraryImportSourceTitle,
-      bodyBuilder: (sheetContext) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.auto_awesome),
-            title: Text(l10n.exerciseLibraryImportSourceDefault),
-            subtitle: Text(l10n.exerciseLibraryImportSourceDefaultSubtitle),
-            onTap: () {
-              Navigator.of(sheetContext).pop();
-              _importDefaultCatalog();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.fitness_center),
-            title: Text(l10n.exerciseLibraryImportSourceHevy),
-            subtitle: Text(l10n.exerciseLibraryImportSourceHevySubtitle),
-            onTap: () {
-              Navigator.of(sheetContext).pop();
-              _importHevyCatalog();
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.upload_file),
-            title: Text(l10n.exerciseLibraryImportSourceCustom),
-            subtitle: Text(l10n.exerciseLibraryImportSourceCustomSubtitle),
-            onTap: () {
-              Navigator.of(sheetContext).pop();
-              _importCustomFile();
-            },
-          ),
-        ],
+      bodyBuilder: (sheetContext) => ExerciseLibraryImportSourceSheet(
+        onImportDefault: () {
+          Navigator.of(sheetContext).pop();
+          _importDefaultCatalog();
+        },
+        onImportHevy: () {
+          Navigator.of(sheetContext).pop();
+          _importHevyCatalog();
+        },
+        onImportCustomFile: () {
+          Navigator.of(sheetContext).pop();
+          _importCustomFile();
+        },
       ),
     );
   }
@@ -374,76 +359,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     }
   }
 
-  static List<CustomExerciseItem> _flattenTree(List<CustomExerciseItem> roots) {
-    final out = <CustomExerciseItem>[];
-    void visit(CustomExerciseItem node) {
-      out.add(node);
-      for (final c in node.children) {
-        visit(c);
-      }
-    }
-
-    for (final r in roots) {
-      visit(r);
-    }
-    return out;
-  }
-
-  /// Filters the tree so that the tab shows only exercises matching [isMobility].
-  ///
-  /// If a node doesn't match but some descendants do, we "lift" matching descendants
-  /// to the current level. This avoids showing the wrong category while keeping
-  /// the list readable.
-  List<CustomExerciseItem> _filterRootsByMobility(bool isMobility) {
-    final out = <CustomExerciseItem>[];
-    for (final r in _items) {
-      out.addAll(_filterNodeByMobility(r, isMobility));
-    }
-    return out;
-  }
-
-  List<CustomExerciseItem> _filterHevyRoots() {
-    return _items
-        .where((root) => root.catalogSource == ExerciseCatalogSource.hevy)
-        .toList();
-  }
-
-  List<CustomExerciseItem> _filterNodeByMobility(
-    CustomExerciseItem node,
-    bool isMobility,
-  ) {
-    if (node.catalogSource == ExerciseCatalogSource.hevy) {
-      return const [];
-    }
-    final filteredChildren = <CustomExerciseItem>[];
-    for (final c in node.children) {
-      filteredChildren.addAll(_filterNodeByMobility(c, isMobility));
-    }
-
-    if (node.isMobility == isMobility) {
-      return [
-        CustomExerciseItem(
-          id: node.id,
-          name: node.name,
-          description: node.description,
-          parentId: node.parentId,
-          sortOrder: node.sortOrder,
-          isMobility: node.isMobility,
-          catalogSource: node.catalogSource,
-          hevyTemplateId: node.hevyTemplateId,
-          hevyStableKey: node.hevyStableKey,
-          isHevyFolder: node.isHevyFolder,
-          createdAt: node.createdAt,
-          updatedAt: node.updatedAt,
-          rowVersion: node.rowVersion,
-          children: filteredChildren,
-        ),
-      ];
-    }
-
-    return filteredChildren;
-  }
-
   void _showAddDialog({required bool isMobility}) {
     _showAddDialogWithParent(null, isMobility: isMobility);
   }
@@ -472,7 +387,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         description: null,
         isMobility: isMobility,
         parentId: parentId,
-        parentCandidates: _flattenTree(_items),
+        parentCandidates: flattenExerciseTree(_items),
         onSave: (name, description, selectedParentId, isMobility) async {
           try {
             await _exerciseRepo.create({
@@ -507,7 +422,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   void _showEditDialog(CustomExerciseItem item) {
     final l10n = AppLocalizations.of(context);
     final excludeIds = {item.id, ...item.flat.map((e) => e.id)};
-    final parentCandidates = _flattenTree(
+    final parentCandidates = flattenExerciseTree(
       _items,
     ).where((e) => !excludeIds.contains(e.id)).toList();
     showAppBottomSheet<void>(
@@ -662,39 +577,39 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _ExerciseLibraryTabView(
+          ExerciseLibraryTabView(
             isMobility: false,
             loading: _loading,
             error: _error,
             allItemsEmpty: _items.isEmpty,
             onRefresh: _load,
-            buildList: () => _filterRootsByMobility(false),
+            buildList: () => filterExerciseRootsByMobility(_items, false),
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
           ),
-          _ExerciseLibraryTabView(
+          ExerciseLibraryTabView(
             isMobility: true,
             loading: _loading,
             error: _error,
             allItemsEmpty: _items.isEmpty,
             onRefresh: _load,
-            buildList: () => _filterRootsByMobility(true),
+            buildList: () => filterExerciseRootsByMobility(_items, true),
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
           ),
-          _ExerciseLibraryTabView(
+          ExerciseLibraryTabView(
             isMobility: false,
             loading: _loading,
             error: _error,
-            allItemsEmpty: _filterHevyRoots().isEmpty,
+            allItemsEmpty: filterHevyExerciseRoots(_items).isEmpty,
             onRefresh: _load,
-            buildList: _filterHevyRoots,
+            buildList: () => filterHevyExerciseRoots(_items),
             onEdit: _showEditDialog,
             onDelete: _confirmDelete,
             onAddVariant: _showAddVariantDialog,
@@ -714,223 +629,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
               label: Text(l10n.exerciseLibraryAddExercise),
               backgroundColor: StitchM3Theme.accent,
               foregroundColor: Colors.white,
-            ),
-    );
-  }
-}
-
-class _ExerciseTile extends StatelessWidget {
-  const _ExerciseTile({
-    required this.item,
-    required this.isPinned,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onAddVariant,
-    required this.onTogglePin,
-    this.readOnlyFolders = false,
-  });
-
-  final CustomExerciseItem item;
-  final bool Function(CustomExerciseItem item) isPinned;
-  final void Function(CustomExerciseItem item) onEdit;
-  final void Function(CustomExerciseItem item) onDelete;
-  final void Function(CustomExerciseItem item) onAddVariant;
-  final void Function(CustomExerciseItem item) onTogglePin;
-  final bool readOnlyFolders;
-
-  @override
-  Widget build(BuildContext context) {
-    final hasChildren = item.children.isNotEmpty;
-    final pinned = isPinned(item);
-    final l10n = AppLocalizations.of(context);
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ExpansionTile(
-        leading: Icon(
-          hasChildren ? Icons.folder_outlined : Icons.fitness_center_outlined,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-        title: Text(item.name),
-        subtitle: item.description != null && item.description!.isNotEmpty
-            ? Text(
-                item.description!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodySmall,
-              )
-            : null,
-        trailing:
-            readOnlyFolders && (item.isHevyFolder || item.children.isNotEmpty)
-            ? null
-            : PopupMenuButton<String>(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'pin',
-                    child: Text(
-                      pinned
-                          ? l10n.exerciseLibraryUnpin
-                          : l10n.exerciseLibraryPin,
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'addVariant',
-                    child: Text(l10n.exerciseLibraryAddVariant),
-                  ),
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Text(l10n.exerciseLibraryEdit),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Text(l10n.exerciseLibraryDelete),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'pin') onTogglePin(item);
-                  if (value == 'addVariant') onAddVariant(item);
-                  if (value == 'edit') onEdit(item);
-                  if (value == 'delete') onDelete(item);
-                },
-              ),
-        children: item.children
-            .map(
-              (child) => Padding(
-                padding: const EdgeInsets.only(left: 24, right: 8, bottom: 4),
-                child: _ExerciseTile(
-                  item: child,
-                  isPinned: isPinned,
-                  onEdit: onEdit,
-                  onDelete: onDelete,
-                  onAddVariant: onAddVariant,
-                  onTogglePin: onTogglePin,
-                  readOnlyFolders: readOnlyFolders,
-                ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-}
-
-class _ExerciseLibraryTabView extends StatelessWidget {
-  const _ExerciseLibraryTabView({
-    required this.isMobility,
-    required this.loading,
-    required this.error,
-    required this.allItemsEmpty,
-    required this.onRefresh,
-    required this.buildList,
-    required this.onEdit,
-    required this.onDelete,
-    required this.onAddVariant,
-    required this.onTogglePin,
-    required this.isPinned,
-    this.readOnlyFolders = false,
-  });
-
-  final bool isMobility;
-  final bool loading;
-  final String? error;
-  final bool allItemsEmpty;
-  final bool readOnlyFolders;
-
-  final Future<void> Function() onRefresh;
-  final List<CustomExerciseItem> Function() buildList;
-
-  final void Function(CustomExerciseItem item) onEdit;
-  final void Function(CustomExerciseItem item) onDelete;
-  final void Function(CustomExerciseItem item) onAddVariant;
-  final void Function(CustomExerciseItem item) onTogglePin;
-  final bool Function(CustomExerciseItem item) isPinned;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-
-    return RefreshIndicator(
-      onRefresh: onRefresh,
-      child: error != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      error!,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: onRefresh,
-                      child: Text(l10n.exerciseLibraryRetry),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : loading && allItemsEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Builder(
-              builder: (context) {
-                final list = buildList();
-                if (list.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.fitness_center_outlined,
-                          size: 64,
-                          color: cs.outline,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          isMobility
-                              ? l10n.exerciseLibraryEmptyMobility
-                              : l10n.exerciseLibraryEmpty,
-                          style: theme.textTheme.bodyLarge,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          isMobility
-                              ? l10n.exerciseLibraryEmptyMobilityHint
-                              : l10n.exerciseLibraryEmptyHint,
-                          style: theme.textTheme.bodySmall,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ).copyWith(bottom: 112),
-                  itemCount: list.length,
-                  itemBuilder: (context, index) {
-                    final it = list[index];
-                    return _ExerciseTile(
-                      item: it,
-                      isPinned: isPinned,
-                      onEdit: onEdit,
-                      onDelete: onDelete,
-                      onAddVariant: onAddVariant,
-                      onTogglePin: onTogglePin,
-                      readOnlyFolders: readOnlyFolders,
-                    );
-                  },
-                );
-              },
             ),
     );
   }
