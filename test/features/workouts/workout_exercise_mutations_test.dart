@@ -129,6 +129,72 @@ void main() {
       ]);
     });
 
+    test('moveExerciseWithinSupersetInRoutine stays inside group', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(
+                id: 'd1',
+                name: 'Day A',
+                exercises: [
+                  Exercise(
+                    id: 'e1',
+                    name: 'A',
+                    sets: '3',
+                    reps: '8',
+                    rpe: '',
+                    supersetGroupId: 'ss1',
+                  ),
+                  Exercise(
+                    id: 'e2',
+                    name: 'B',
+                    sets: '3',
+                    reps: '10',
+                    rpe: '',
+                    supersetGroupId: 'ss1',
+                  ),
+                  Exercise(
+                    id: 'e3',
+                    name: 'C',
+                    sets: '3',
+                    reps: '12',
+                    rpe: '',
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+
+      final blocked = moveExerciseWithinSupersetInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e2',
+        up: false,
+      );
+      expect(
+        blocked!.weeks.single.days.single.exercises.map((e) => e.id),
+        ['e1', 'e2', 'e3'],
+      );
+
+      final reordered = moveExerciseWithinSupersetInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e2',
+        up: true,
+      );
+      expect(
+        reordered!.weeks.single.days.single.exercises.map((e) => e.id),
+        ['e2', 'e1', 'e3'],
+      );
+    });
+
     test('addExerciseToSupersetInRoutine inserts after group', () {
       final routine = routineWithOneExercise().copyWith(
         weeks: [

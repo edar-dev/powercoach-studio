@@ -1257,6 +1257,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderSuperSetHeading => 'SUPER SET';
 
   @override
+  String get builderSupersetPanelTitle => 'Manage superset';
+
+  @override
+  String get builderSupersetAddExercise => 'Add exercise to superset';
+
+  @override
+  String get builderSupersetEmpty => 'No exercises in this superset.';
+
+  @override
+  String get builderSupersetPrescriptionLabel => 'Prescription (lead exercise)';
+
+  @override
+  String get builderSupersetManage => 'Manage';
+
+  @override
   String get workoutBuilderDeleteDayMenu => 'Delete day';
 
   @override

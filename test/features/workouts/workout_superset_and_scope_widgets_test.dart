@@ -45,6 +45,33 @@ void main() {
     expect(added, isTrue);
   });
 
+  testWidgets('WorkoutSupersetPanel manage action opens editor callback', (
+    tester,
+  ) async {
+    var managed = false;
+    await tester.pumpWidget(
+      _wrap(
+        Builder(
+          builder: (context) {
+            final theme = Theme.of(context);
+            return WorkoutSupersetPanel(
+              theme: theme,
+              colorScheme: theme.colorScheme,
+              prescriptionSummary: '3 × 12',
+              onOpenEditor: () => managed = true,
+              onAddExercise: () {},
+              children: const [Text('Curl'), Text('French press')],
+            );
+          },
+        ),
+      ),
+    );
+
+    expect(find.text('3 × 12'), findsOneWidget);
+    await tester.tap(find.text('Gestisci'));
+    expect(managed, isTrue);
+  });
+
   testWidgets('ExercisePrescriptionScopeSelector toggles scope', (
     tester,
   ) async {
