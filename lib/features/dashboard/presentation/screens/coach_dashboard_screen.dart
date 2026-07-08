@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_empty_placeholder.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_no_plan_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_stale_plans_section.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_summary_footer.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_surface_card.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_today_section.dart';
 
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
@@ -110,7 +112,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           child: Container(color: cs.outline, height: 1),
         ),
       ),
-      drawer: _DashboardDrawer(theme: theme, cs: cs),
+      drawer: const DashboardDrawer(),
       body: RefreshIndicator(
         onRefresh: _loadStats,
         child: SingleChildScrollView(
@@ -161,7 +163,13 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           },
                         ),
                         const SizedBox(height: 12),
-                        ..._buildTodayRows(context, theme, cs, l10n, snap),
+                        DashboardTodaySection(
+                          theme: theme,
+                          colorScheme: cs,
+                          l10n: l10n,
+                          snapshot: snap,
+                          loading: _loading,
+                        ),
                       ],
                     ),
                   ),
@@ -176,12 +184,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           title: l10n.dashboardSectionAttention,
                         ),
                         const SizedBox(height: 12),
-                        ..._buildAttentionSection(
-                          context,
-                          theme,
-                          cs,
-                          l10n,
-                          snap,
+                        DashboardAttentionSection(
+                          theme: theme,
+                          colorScheme: cs,
+                          l10n: l10n,
                         ),
                       ],
                     ),
@@ -197,7 +203,12 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           title: l10n.dashboardSectionCustomersNoPlan,
                         ),
                         const SizedBox(height: 12),
-                        ..._buildNoPlanRows(context, theme, cs, l10n, snap),
+                        DashboardNoPlanSection(
+                          theme: theme,
+                          colorScheme: cs,
+                          l10n: l10n,
+                          snapshot: snap,
+                        ),
                       ],
                     ),
                   ),
@@ -212,582 +223,27 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           title: l10n.dashboardSectionStalePlans,
                         ),
                         const SizedBox(height: 12),
-                        ..._buildStaleRows(context, theme, cs, l10n, snap),
+                        DashboardStalePlansSection(
+                          theme: theme,
+                          colorScheme: cs,
+                          l10n: l10n,
+                          snapshot: snap,
+                        ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
                 ],
-                DashboardSurfaceCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.trending_up,
-                            size: 20,
-                            color: StitchM3Theme.accent,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            l10n.dashboardWeeklyProgress,
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        (_loading && snap == null)
-                            ? '–'
-                            : '${snap?.weeklyUpdates ?? 0}',
-                        style: theme.textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: cs.onSurface,
-                        ),
-                      ),
-                      Text(
-                        l10n.dashboardPlansUpdatedThisWeek,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _StatCard(
-                        theme: theme,
-                        cs: cs,
-                        value: (_loading && snap == null)
-                            ? '–'
-                            : '${snap?.clientCount ?? 0}',
-                        label: l10n.dashboardTotalClients,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _StatCard(
-                        theme: theme,
-                        cs: cs,
-                        value: (_loading && snap == null)
-                            ? '–'
-                            : '${snap?.activePrograms ?? 0}',
-                        label: l10n.dashboardActivePrograms,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          navigateTo(context, '/customers/new');
-                        },
-                        icon: const Icon(Icons.person_add, size: 20),
-                        label: Text(l10n.customersAddCustomer),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: StitchM3Theme.accent,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              StitchM3Theme.radiusLg,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          context.push('/workouts/builder');
-                        },
-                        icon: const Icon(Icons.fitness_center, size: 20),
-                        label: Text(l10n.dashboardCreateProgram),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: StitchM3Theme.accent,
-                          side: const BorderSide(color: StitchM3Theme.accent),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              StitchM3Theme.radiusLg,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                DashboardSummaryFooter(
+                  theme: theme,
+                  colorScheme: cs,
+                  l10n: l10n,
+                  snapshot: snap,
+                  loading: _loading,
                 ),
               ],
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildTodayRows(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-    DashboardSnapshot snap,
-  ) {
-    if (_loading && snap.todayItems.isEmpty && !snap.hasError) {
-      return [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 12),
-          child: Center(child: CircularProgressIndicator()),
-        ),
-      ];
-    }
-    final items = snap.todayItems.take(kDashboardSectionRowLimit).toList();
-    if (items.isEmpty) {
-      return [
-        DashboardEmptyPlaceholder(
-          message: l10n.dashboardNoScheduleToday,
-          icon: Icons.event_available_outlined,
-        ),
-      ];
-    }
-    final localeName = l10n.localeName;
-    return items.map((item) {
-      final dateLabel = DateFormat(
-        'dd MMM',
-        localeName,
-      ).format(item.date).toUpperCase();
-      final weekdayLabel = DateFormat(
-        'EEE',
-        localeName,
-      ).format(item.date).toUpperCase();
-      final programLabel = item.programName.trim().isEmpty
-          ? l10n.dashboardUntitledWorkout
-          : item.programName;
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: _ScheduleCard(
-          theme: theme,
-          cs: cs,
-          time: dateLabel,
-          period: weekdayLabel,
-          clientName: item.clientName,
-          programName: programLabel,
-          onTap: () {
-            HapticFeedback.mediumImpact();
-            navigateTo(
-              context,
-              scheduleSessionDetailPath(
-                customerId: item.customerId,
-                planId: item.planId,
-                weekIndex: item.weekIndex,
-                dayIndex: item.dayIndex,
-                date: item.date,
-              ),
-            );
-          },
-        ),
-      );
-    }).toList();
-  }
-
-  List<Widget> _buildAttentionSection(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-    DashboardSnapshot snap,
-  ) {
-    return [
-      DashboardEmptyPlaceholder(
-        message: l10n.dashboardNoPending,
-        icon: Icons.cloud_done_outlined,
-      ),
-      const SizedBox(height: 8),
-      DashboardSurfaceCard(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              l10n.dashboardBackupHint,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextButton(
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                context.push('/settings');
-              },
-              child: Text(l10n.dashboardOpenBackupSettings),
-            ),
-          ],
-        ),
-      ),
-    ];
-  }
-
-  List<Widget> _buildNoPlanRows(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-    DashboardSnapshot snap,
-  ) {
-    if (snap.customersWithoutPlan.isEmpty) {
-      return [
-        DashboardEmptyPlaceholder(
-          message: l10n.dashboardNoCustomersWithoutPlan,
-          icon: Icons.people_outline,
-        ),
-      ];
-    }
-    return snap.customersWithoutPlan.map((c) {
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Material(
-          color: cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, '/customers/${c.customerId}');
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.person_outline, color: cs.primary),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      c.name,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: cs.onSurface,
-                      ),
-                    ),
-                  ),
-                  Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-
-  List<Widget> _buildStaleRows(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme cs,
-    AppLocalizations l10n,
-    DashboardSnapshot snap,
-  ) {
-    if (snap.stalePlans.isEmpty) {
-      return [
-        DashboardEmptyPlaceholder(
-          message: l10n.dashboardNoStalePlans(kStalePlanDays),
-          icon: Icons.history_toggle_off_outlined,
-        ),
-      ];
-    }
-    final localeName = l10n.localeName;
-    return snap.stalePlans.map((item) {
-      final updated = DateFormat.yMMMd(localeName).format(item.updatedAt);
-      final programLabel = item.programName.trim().isEmpty
-          ? l10n.dashboardUntitledWorkout
-          : item.programName;
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Material(
-          color: cs.surfaceContainerHighest,
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            onTap: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, '/customers/${item.customerId}/workouts');
-            },
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.edit_calendar_outlined, color: cs.secondary),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.clientName,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: cs.onSurface,
-                          ),
-                        ),
-                        Text(
-                          programLabel,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                        Text(
-                          updated,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.chevron_right, color: cs.onSurfaceVariant),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
-    }).toList();
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  const _StatCard({
-    required this.theme,
-    required this.cs,
-    required this.value,
-    required this.label,
-  });
-
-  final ThemeData theme;
-  final ColorScheme cs;
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            value,
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: cs.onSurface,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: cs.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ScheduleCard extends StatelessWidget {
-  const _ScheduleCard({
-    required this.theme,
-    required this.cs,
-    required this.time,
-    required this.period,
-    required this.clientName,
-    required this.programName,
-    required this.onTap,
-  });
-
-  final ThemeData theme;
-  final ColorScheme cs;
-  final String time;
-  final String period;
-  final String clientName;
-  final String programName;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: cs.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-            border: Border.all(color: cs.outline.withValues(alpha: 0.5)),
-          ),
-          child: Row(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    time,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSurface,
-                    ),
-                  ),
-                  Text(
-                    period,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      clientName,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      programName,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 24),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DashboardDrawer extends StatelessWidget {
-  const _DashboardDrawer({required this.theme, required this.cs});
-
-  final ThemeData theme;
-  final ColorScheme cs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          children: [
-            ListTile(
-              leading: const Icon(Icons.dashboard_outlined),
-              title: Text(AppLocalizations.of(context).dashboardTitle),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.go('/dashboard');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.calendar_month_outlined),
-              title: Text(AppLocalizations.of(context).calendarTitle),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/dashboard/calendar');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.people_outline),
-              title: Text(AppLocalizations.of(context).customersTitle),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.go('/customers');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.fitness_center),
-              title: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/workouts/builder');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.bookmark_outline),
-              title: Text(
-                AppLocalizations.of(context).workoutTemplatesDrawerLabel,
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/workouts/templates');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.library_books_outlined),
-              title: Text(AppLocalizations.of(context).exerciseLibraryTitle),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/exercise-library');
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.person_outline),
-              title: Text(AppLocalizations.of(context).headerProfile),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/profile');
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.settings_outlined),
-              title: Text(AppLocalizations.of(context).settingsTitle),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) context.push('/settings');
-              },
-            ),
-          ],
         ),
       ),
     );
