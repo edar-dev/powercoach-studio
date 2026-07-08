@@ -941,6 +941,25 @@
   "coachStatsActiveClients": "Clienti attivi",
   "coachStatsPeriod7d": "Ultimi 7 giorni",
   "coachStatsPeriod30d": "Ultimi 30 giorni",
+  "coachStatsChartTitle": "Sessioni completate per giorno",
+  "coachStatsChartEmpty": "Nessuna sessione completata in questo periodo.",
+  "coachStatsChartDaySummary": "{date}: {count} completate",
+  "@coachStatsChartDaySummary": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "coachStatsExportCsv": "Esporta CSV",
+  "coachStatsExportCsvSubject": "Statistiche PowerCoach",
+  "workoutDiaryFilterDate": "Intervallo date",
+  "workoutDiaryFilterDateAll": "Sempre",
+  "workoutDiaryFilterStatusAll": "Tutti gli stati",
+  "workoutDiaryDetailTitle": "Dettaglio sessione",
+  "workoutDiaryEntryNotFound": "Sessione non trovata o non più disponibile.",
+  "workoutDiaryOpenPlan": "Apri piano workout",
+  "workoutDiaryOpenSession": "Apri in calendario",
+  "workoutDiaryNoExercisesLogged": "Nessun esercizio registrato per questa sessione.",
   "sessionLogTitle": "Registra sessione",
   "sessionLogNotesHint": "Note sessione (opzionale)",
   "sessionLogSave": "Salva sessione",

@@ -9,10 +9,12 @@ class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidg
     super.key,
     required this.title,
     this.onBack,
+    this.actions,
   });
 
   final String title;
   final VoidCallback? onBack;
+  final List<Widget>? actions;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -47,6 +49,7 @@ class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidg
         ),
       ),
       centerTitle: false,
+      actions: actions,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: cs.outline, height: 1),

@@ -2203,6 +2203,50 @@ class AppLocalizationsIt extends AppLocalizations {
   String get coachStatsPeriod30d => 'Ultimi 30 giorni';
 
   @override
+  String get coachStatsChartTitle => 'Sessioni completate per giorno';
+
+  @override
+  String get coachStatsChartEmpty =>
+      'Nessuna sessione completata in questo periodo.';
+
+  @override
+  String coachStatsChartDaySummary(String date, int count) {
+    return '$date: $count completate';
+  }
+
+  @override
+  String get coachStatsExportCsv => 'Esporta CSV';
+
+  @override
+  String get coachStatsExportCsvSubject => 'Statistiche PowerCoach';
+
+  @override
+  String get workoutDiaryFilterDate => 'Intervallo date';
+
+  @override
+  String get workoutDiaryFilterDateAll => 'Sempre';
+
+  @override
+  String get workoutDiaryFilterStatusAll => 'Tutti gli stati';
+
+  @override
+  String get workoutDiaryDetailTitle => 'Dettaglio sessione';
+
+  @override
+  String get workoutDiaryEntryNotFound =>
+      'Sessione non trovata o non più disponibile.';
+
+  @override
+  String get workoutDiaryOpenPlan => 'Apri piano workout';
+
+  @override
+  String get workoutDiaryOpenSession => 'Apri in calendario';
+
+  @override
+  String get workoutDiaryNoExercisesLogged =>
+      'Nessun esercizio registrato per questa sessione.';
+
+  @override
   String get sessionLogTitle => 'Registra sessione';
 
   @override

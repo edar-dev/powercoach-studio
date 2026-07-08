@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../domain/session_execution_service.dart';
+import '../../domain/workout_diary_filter.dart';
 
 /// Chronological list of logged training sessions across clients.
 class WorkoutDiaryScreen extends StatefulWidget {
@@ -25,11 +28,21 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   List<SessionExecutionEntry> _entries = const [];
   List<Customer> _customers = const [];
   String? _filterCustomerId;
+  DiaryDateRange _dateRange = DiaryDateRange.all;
+  DiaryStatusFilter _statusFilter = DiaryStatusFilter.all;
 
   @override
   void initState() {
     super.initState();
-    _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final customerId =
+          GoRouterState.of(context).uri.queryParameters['customerId'];
+      if (customerId != null && customerId.isNotEmpty) {
+        setState(() => _filterCustomerId = customerId);
+      }
+      _load();
+    });
   }
 
   Future<void> _load() async {
@@ -59,12 +72,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     return customerId;
   }
 
-  List<SessionExecutionEntry> get _visibleEntries {
-    if (_filterCustomerId == null) return _entries;
-    return _entries
-        .where((e) => e.customerId == _filterCustomerId)
-        .toList();
-  }
+  List<SessionExecutionEntry> get _visibleEntries => filterDiaryEntries(
+        _entries,
+        customerId: _filterCustomerId,
+        dateRange: _dateRange,
+        statusFilter: _statusFilter,
+      );
 
   Future<void> _showCustomerFilter(AppLocalizations l10n) async {
     final selected = await showModalBottomSheet<String?>(
@@ -98,59 +111,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     });
   }
 
-  Future<void> _showEntryDetail(
-    BuildContext context,
-    SessionExecutionEntry entry,
-    AppLocalizations l10n,
-  ) async {
-    final execution = entry.execution;
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                '${entry.planName} · W${execution.weekIndex + 1} D${execution.dayIndex + 1}',
-                style: Theme.of(ctx).textTheme.titleMedium,
-              ),
-              if (execution.notes.trim().isNotEmpty) ...[
-                const SizedBox(height: 8),
-                Text(execution.notes),
-              ],
-              if (execution.exercises.isNotEmpty) ...[
-                const SizedBox(height: 12),
-                Text(
-                  l10n.sessionLogExercisesLabel,
-                  style: Theme.of(ctx).textTheme.titleSmall,
-                ),
-                const SizedBox(height: 8),
-                ...execution.exercises.map(
-                  (e) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      e.completed
-                          ? Icons.check_circle_outline
-                          : Icons.radio_button_unchecked,
-                    ),
-                    title: Text(e.name),
-                    subtitle: e.sets.isEmpty
-                        ? null
-                        : Text(
-                            e.sets
-                                .map((s) => '${s.reps} ${s.load}'.trim())
-                                .join(' · '),
-                          ),
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ),
+  void _openEntry(SessionExecutionEntry entry) {
+    HapticFeedback.selectionClick();
+    context.push(
+      workoutDiaryEntryPath(
+        planId: entry.planId,
+        sessionKey: entry.execution.sessionKey,
       ),
     );
   }
@@ -177,72 +143,143 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : visible.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  l10n.workoutDiaryEmpty,
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyLarge?.copyWith(
-                    color: cs.onSurfaceVariant,
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        l10n.workoutDiaryFilterDate,
+                        style: theme.textTheme.labelLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      SegmentedButton<DiaryDateRange>(
+                        segments: [
+                          ButtonSegment(
+                            value: DiaryDateRange.last7,
+                            label: Text(l10n.coachStatsPeriod7d),
+                          ),
+                          ButtonSegment(
+                            value: DiaryDateRange.last30,
+                            label: Text(l10n.coachStatsPeriod30d),
+                          ),
+                          ButtonSegment(
+                            value: DiaryDateRange.all,
+                            label: Text(l10n.workoutDiaryFilterDateAll),
+                          ),
+                        ],
+                        selected: {_dateRange},
+                        onSelectionChanged: (values) {
+                          if (values.isEmpty) return;
+                          setState(() => _dateRange = values.first);
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      Wrap(
+                        spacing: 8,
+                        children: [
+                          FilterChip(
+                            label: Text(l10n.workoutDiaryFilterStatusAll),
+                            selected: _statusFilter == DiaryStatusFilter.all,
+                            onSelected: (_) => setState(
+                              () => _statusFilter = DiaryStatusFilter.all,
+                            ),
+                          ),
+                          FilterChip(
+                            label: Text(l10n.sessionCompleted),
+                            selected:
+                                _statusFilter == DiaryStatusFilter.completed,
+                            onSelected: (_) => setState(
+                              () => _statusFilter = DiaryStatusFilter.completed,
+                            ),
+                          ),
+                          FilterChip(
+                            label: Text(l10n.sessionSkipped),
+                            selected:
+                                _statusFilter == DiaryStatusFilter.skipped,
+                            onSelected: (_) => setState(
+                              () => _statusFilter = DiaryStatusFilter.skipped,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: _load,
-              child: ListView.separated(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                itemCount: visible.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 8),
-                itemBuilder: (context, index) {
-                  final entry = visible[index];
-                  final execution = entry.execution;
-                  final date = execution.completedAt ?? execution.sessionDate;
-                  final completedCount = execution.exercises
-                      .where((e) => e.completed)
-                      .length;
-                  final totalExercises = execution.exercises.isEmpty
-                      ? null
-                      : execution.exercises.length;
-                  final isSkipped =
-                      execution.status == PlanSessionStatus.skipped;
+                Expanded(
+                  child: visible.isEmpty
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32),
+                            child: Text(
+                              l10n.workoutDiaryEmpty,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: cs.onSurfaceVariant,
+                              ),
+                            ),
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: _load,
+                          child: ListView.separated(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+                            itemCount: visible.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 8),
+                            itemBuilder: (context, index) {
+                              final entry = visible[index];
+                              final execution = entry.execution;
+                              final date =
+                                  execution.completedAt ?? execution.sessionDate;
+                              final completedCount = execution.exercises
+                                  .where((e) => e.completed)
+                                  .length;
+                              final totalExercises = execution.exercises.isEmpty
+                                  ? null
+                                  : execution.exercises.length;
+                              final isSkipped =
+                                  execution.status == PlanSessionStatus.skipped;
 
-                  return Card(
-                    elevation: 0,
-                    color: cs.surfaceContainerHighest,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    ),
-                    child: ListTile(
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                        _showEntryDetail(context, entry, l10n);
-                      },
-                      title: Text(
-                        '${dateFormat.format(date)} · ${_customerName(entry.customerId)}',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                              return Card(
+                                elevation: 0,
+                                color: cs.surfaceContainerHighest,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(StitchM3Theme.radiusLg),
+                                ),
+                                child: ListTile(
+                                  onTap: () => _openEntry(entry),
+                                  title: Text(
+                                    '${dateFormat.format(date)} · ${_customerName(entry.customerId)}',
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    isSkipped
+                                        ? '${entry.planName} · ${l10n.sessionSkipped}'
+                                        : totalExercises == null
+                                        ? entry.planName
+                                        : '${entry.planName} · $completedCount/$totalExercises',
+                                  ),
+                                  trailing: Icon(
+                                    isSkipped
+                                        ? Icons.remove_circle_outline
+                                        : Icons.check_circle_outline,
+                                    color: isSkipped
+                                        ? cs.outline
+                                        : StitchM3Theme.success,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                      subtitle: Text(
-                        isSkipped
-                            ? '${entry.planName} · ${l10n.sessionSkipped}'
-                            : totalExercises == null
-                            ? entry.planName
-                            : '${entry.planName} · $completedCount/$totalExercises',
-                      ),
-                      trailing: Icon(
-                        isSkipped
-                            ? Icons.remove_circle_outline
-                            : Icons.check_circle_outline,
-                        color: isSkipped ? cs.outline : StitchM3Theme.success,
-                      ),
-                    ),
-                  );
-                },
-              ),
+                ),
+              ],
             ),
     );
   }

@@ -4084,6 +4084,84 @@ abstract class AppLocalizations {
   /// **'Last 30 days'**
   String get coachStatsPeriod30d;
 
+  /// No description provided for @coachStatsChartTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed sessions by day'**
+  String get coachStatsChartTitle;
+
+  /// No description provided for @coachStatsChartEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No completed sessions in this period.'**
+  String get coachStatsChartEmpty;
+
+  /// No description provided for @coachStatsChartDaySummary.
+  ///
+  /// In en, this message translates to:
+  /// **'{date}: {count} completed'**
+  String coachStatsChartDaySummary(String date, int count);
+
+  /// No description provided for @coachStatsExportCsv.
+  ///
+  /// In en, this message translates to:
+  /// **'Export CSV'**
+  String get coachStatsExportCsv;
+
+  /// No description provided for @coachStatsExportCsvSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach coach stats'**
+  String get coachStatsExportCsvSubject;
+
+  /// No description provided for @workoutDiaryFilterDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date range'**
+  String get workoutDiaryFilterDate;
+
+  /// No description provided for @workoutDiaryFilterDateAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All time'**
+  String get workoutDiaryFilterDateAll;
+
+  /// No description provided for @workoutDiaryFilterStatusAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All statuses'**
+  String get workoutDiaryFilterStatusAll;
+
+  /// No description provided for @workoutDiaryDetailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session detail'**
+  String get workoutDiaryDetailTitle;
+
+  /// No description provided for @workoutDiaryEntryNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Session not found or no longer available.'**
+  String get workoutDiaryEntryNotFound;
+
+  /// No description provided for @workoutDiaryOpenPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Open workout plan'**
+  String get workoutDiaryOpenPlan;
+
+  /// No description provided for @workoutDiaryOpenSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Open in schedule'**
+  String get workoutDiaryOpenSession;
+
+  /// No description provided for @workoutDiaryNoExercisesLogged.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises logged for this session.'**
+  String get workoutDiaryNoExercisesLogged;
+
   /// No description provided for @sessionLogTitle.
   ///
   /// In en, this message translates to:

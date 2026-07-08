@@ -71,5 +71,34 @@ void main() {
     expect(snapshot.skippedSessions, 1);
     expect(snapshot.adherenceRate, closeTo(2 / 3, 0.001));
     expect(snapshot.activeClients, 2);
+    expect(snapshot.dailyCompleted, hasLength(7));
+    final june14 = snapshot.dailyCompleted.firstWhere(
+      (point) => point.date == DateTime(2026, 6, 14),
+    );
+    expect(june14.completedCount, 1);
+  });
+
+  test('computeCoachStats builds daily completed buckets', () {
+    final snapshot = CoachStatsLoader.computeCoachStats(
+      entries: [
+        entry(
+          customerId: 'c1',
+          status: PlanSessionStatus.completed,
+          sessionDate: DateTime(2026, 6, 14),
+        ),
+        entry(
+          customerId: 'c1',
+          status: PlanSessionStatus.completed,
+          sessionDate: DateTime(2026, 6, 14),
+        ),
+      ],
+      periodDays: 7,
+      now: now,
+    );
+
+    final targetDay = snapshot.dailyCompleted.firstWhere(
+      (point) => point.date == DateTime(2026, 6, 14),
+    );
+    expect(targetDay.completedCount, 2);
   });
 }

@@ -2180,6 +2180,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get coachStatsPeriod30d => 'Last 30 days';
 
   @override
+  String get coachStatsChartTitle => 'Completed sessions by day';
+
+  @override
+  String get coachStatsChartEmpty => 'No completed sessions in this period.';
+
+  @override
+  String coachStatsChartDaySummary(String date, int count) {
+    return '$date: $count completed';
+  }
+
+  @override
+  String get coachStatsExportCsv => 'Export CSV';
+
+  @override
+  String get coachStatsExportCsvSubject => 'PowerCoach coach stats';
+
+  @override
+  String get workoutDiaryFilterDate => 'Date range';
+
+  @override
+  String get workoutDiaryFilterDateAll => 'All time';
+
+  @override
+  String get workoutDiaryFilterStatusAll => 'All statuses';
+
+  @override
+  String get workoutDiaryDetailTitle => 'Session detail';
+
+  @override
+  String get workoutDiaryEntryNotFound =>
+      'Session not found or no longer available.';
+
+  @override
+  String get workoutDiaryOpenPlan => 'Open workout plan';
+
+  @override
+  String get workoutDiaryOpenSession => 'Open in schedule';
+
+  @override
+  String get workoutDiaryNoExercisesLogged =>
+      'No exercises logged for this session.';
+
+  @override
   String get sessionLogTitle => 'Log session';
 
   @override
