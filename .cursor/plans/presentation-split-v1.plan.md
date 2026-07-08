@@ -6,14 +6,14 @@ todos:
     content: "Confermare ordine split: mobility builder → customer workouts → templates → exercise library → exercise_add_sheet"
     status: completed
   - id: split-mobility-builder
-    content: "Estrarre da workout_builder_mobility_screen.dart: MobilityBuilderController + sheet handlers (1208 righe rimanenti)"
+    content: "Estrarre da workout_builder_mobility_screen.dart: MobilityBuilderController + sheet handlers (1112 righe rimanenti)"
     status: in_progress
   - id: split-customer-workouts
-    content: "Estrarre da customer_workouts_screen.dart (1108 righe): plan list, session panel, actions bar"
-    status: pending
+    content: "Estrarre da customer_workouts_screen.dart (413 righe): list, session handler, dialogs — PR #62–63"
+    status: completed
   - id: split-plan-templates
-    content: "Estrarre da workout_plan_templates_screen.dart (1071 righe): filter bar, template card, duplicate flow"
-    status: pending
+    content: "Estrarre da workout_plan_templates_screen.dart (401 righe): list, tile, preview, assign dialogs"
+    status: completed
   - id: split-exercise-library
     content: "Estrarre da exercise_library_screen.dart (~937 righe): import flow, list sections, pin/recent"
     status: pending
