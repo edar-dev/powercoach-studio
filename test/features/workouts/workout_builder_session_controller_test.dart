@@ -131,5 +131,24 @@ void main() {
       expect(exercises.last.id, 'e-copy');
       expect(exercises.last.name, source.name);
     });
+
+    test('setDayScheduledWeekday updates the selected day', () {
+      final controller = WorkoutBuilderSessionController(
+        routine: routineWithTwoDays(),
+      );
+      addTearDown(controller.dispose);
+
+      final updated = controller.setDayScheduledWeekday(
+        weekIndex: 0,
+        dayIndex: 0,
+        weekday: DateTime.monday,
+      );
+
+      expect(updated, isTrue);
+      expect(
+        controller.routine.weeks.single.days.first.scheduledWeekday,
+        DateTime.monday,
+      );
+    });
   });
 }
