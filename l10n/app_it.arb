@@ -714,6 +714,22 @@
   "dashboardSectionAttention": "Richiede attenzione",
   "dashboardSectionStalePlans": "Programmi da aggiornare",
   "dashboardSectionCustomersNoPlan": "Clienti senza programma",
+  "dashboardCoachToolsTitle": "Strumenti coach",
+  "dashboardDiaryAction": "Diario allenamenti",
+  "dashboardStatsAction": "Statistiche coach",
+  "dashboardDiarySubtitle": "{count} sessioni (30 gg)",
+  "@dashboardDiarySubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dashboardStatsSubtitle": "{percent}% aderenza (7 gg)",
+  "@dashboardStatsSubtitle": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "customerOpenDiary": "Vedi diario",
   "dashboardNoPending": "Al momento non c'è nulla che richieda attenzione.",
   "dashboardBackupHint": "I dati restano su questo dispositivo. Esporta un backup da Impostazioni prima di reinstallare o cambiare dispositivo.",
   "dashboardOpenBackupSettings": "Apri backup",

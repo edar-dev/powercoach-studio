@@ -1720,6 +1720,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardSectionCustomersNoPlan => 'Clients without a program';
 
   @override
+  String get dashboardCoachToolsTitle => 'Coach tools';
+
+  @override
+  String get dashboardDiaryAction => 'Workout diary';
+
+  @override
+  String get dashboardStatsAction => 'Coach stats';
+
+  @override
+  String dashboardDiarySubtitle(int count) {
+    return '$count sessions (30d)';
+  }
+
+  @override
+  String dashboardStatsSubtitle(int percent) {
+    return '$percent% adherence (7d)';
+  }
+
+  @override
+  String get customerOpenDiary => 'Open diary';
+
+  @override
   String get dashboardNoPending => 'No items need your attention right now.';
 
   @override

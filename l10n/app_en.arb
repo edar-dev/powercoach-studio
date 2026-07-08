@@ -714,6 +714,22 @@
   "dashboardSectionAttention": "Needs attention",
   "dashboardSectionStalePlans": "Plans to refresh",
   "dashboardSectionCustomersNoPlan": "Clients without a program",
+  "dashboardCoachToolsTitle": "Coach tools",
+  "dashboardDiaryAction": "Workout diary",
+  "dashboardStatsAction": "Coach stats",
+  "dashboardDiarySubtitle": "{count} sessions (30d)",
+  "@dashboardDiarySubtitle": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dashboardStatsSubtitle": "{percent}% adherence (7d)",
+  "@dashboardStatsSubtitle": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "customerOpenDiary": "Open diary",
   "dashboardNoPending": "No items need your attention right now.",
   "dashboardBackupHint": "Your data stays on this device. Export a backup from Settings before reinstalling or switching devices.",
   "dashboardOpenBackupSettings": "Open backup settings",

@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_no_plan_section.dart';
@@ -174,6 +175,12 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
+                ],
+                if (snap != null) ...[
+                  DashboardCoachToolsSection(),
+                  const SizedBox(height: 24),
+                ],
+                if (snap != null && !snap.hasError) ...[
                   Semantics(
                     container: true,
                     label: l10n.dashboardSemanticAttentionList,

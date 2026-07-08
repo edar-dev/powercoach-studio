@@ -203,6 +203,18 @@ class CustomerDetailOverviewTab extends StatelessWidget {
                 ? () => _exportProgress(context, l10n)
                 : null,
           ),
+          const SizedBox(height: 12),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: OutlinedButton.icon(
+              onPressed: () => navigateTo(
+                context,
+                workoutDiaryPath(customerId: customerId),
+              ),
+              icon: const Icon(Icons.menu_book_outlined, size: 18),
+              label: Text(l10n.customerOpenDiary),
+            ),
+          ),
           const SizedBox(height: 24),
           CustomerDetailWorkoutPlansSection(
             customerId: customerId,

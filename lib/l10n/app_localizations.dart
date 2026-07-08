@@ -3256,6 +3256,42 @@ abstract class AppLocalizations {
   /// **'Clients without a program'**
   String get dashboardSectionCustomersNoPlan;
 
+  /// No description provided for @dashboardCoachToolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach tools'**
+  String get dashboardCoachToolsTitle;
+
+  /// No description provided for @dashboardDiaryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout diary'**
+  String get dashboardDiaryAction;
+
+  /// No description provided for @dashboardStatsAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach stats'**
+  String get dashboardStatsAction;
+
+  /// No description provided for @dashboardDiarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sessions (30d)'**
+  String dashboardDiarySubtitle(int count);
+
+  /// No description provided for @dashboardStatsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% adherence (7d)'**
+  String dashboardStatsSubtitle(int percent);
+
+  /// No description provided for @customerOpenDiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open diary'**
+  String get customerOpenDiary;
+
   /// No description provided for @dashboardNoPending.
   ///
   /// In en, this message translates to:
