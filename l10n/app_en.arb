@@ -1087,5 +1087,54 @@
   },
   "backupImportGroupPreferences": "Profile and preferences",
   "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
-  "backupImportTypeConfirmHint": "IMPORT"
+  "backupImportTypeConfirmHint": "IMPORT",
+  "releaseNotesTitle": "What's new",
+  "releaseNotesInstalledVersion": "Installed version: {version}",
+  "@releaseNotesInstalledVersion": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "releaseNotesSettingsSubtitle": "Version {version}",
+  "@releaseNotesSettingsSubtitle": {
+    "placeholders": {
+      "version": { "type": "String" }
+    }
+  },
+  "releaseNotesHighlightsLabel": "Highlights",
+  "releaseNotesCurrentVersionBadge": "Current",
+  "releaseNotesV1071": "Coach hub: Diary and Stats cards on the dashboard; overflow menu on the full schedule",
+  "releaseNotesV1072": "From customer profile: open diary filtered by customer",
+  "releaseNotesV1073": "CSV progress export (adherence, PRs, measurements) from customer overview",
+  "releaseNotesV1074": "Dedicated superset panel in workout builder (compact preview + editor)",
+  "releaseNotesV1075": "Richer session log: reps and load per set in the session sheet",
+  "releaseNotesV1061": "Backup: selective restore by category + export metadata (export date, entity counts)",
+  "releaseNotesV1062": "Workout diary v2: date/status filters, navigable session detail",
+  "releaseNotesV1063": "Coach stats: daily adherence chart + KPI CSV export",
+  "releaseNotesV1064": "Presentation-split builder improvements (exercise sheet, training tab)",
+  "releaseNotesV1051": "Session execution model (completed / skipped / planned) persisted locally",
+  "releaseNotesV1052": "Workout diary and coach stats (MVP)",
+  "releaseNotesV1053": "Customer progress panel: 30-day adherence, recent PRs, 4-week strip",
+  "releaseNotesV1054": "Session reminders linked to plan calendar",
+  "releaseNotesV1055": "Customer follow-up based on real execution data",
+  "releaseNotesV1041": "Customer overview with real measurement metrics (sparkline, 30-day trend)",
+  "releaseNotesV1042": "Exercise picker: recents and favorites in library",
+  "releaseNotesV1043": "Calendar session detail with real plan data",
+  "releaseNotesV1044": "Single-occurrence session override (reschedule without changing the plan)",
+  "releaseNotesV1045": "Plan lifecycle (draft, active, completed, archived)",
+  "releaseNotesV1031": "Business data local-only (Drift); Supabase for authentication only",
+  "releaseNotesV1032": "Removed obsolete cloud sync UX; tier 2/3 backfill tests",
+  "releaseNotesV1033": "Local prefs and coach profile repositories",
+  "releaseNotesV1034": "Modular offline store migration",
+  "releaseNotesV1021": "Workout plan template library",
+  "releaseNotesV1022": "Plan editor autosave + unsaved exit guard",
+  "releaseNotesV1023": "Plan export PDF / JSON / Excel",
+  "releaseNotesV1024": "Hevy integration (export to calendar / library)",
+  "releaseNotesV1011": "Today dashboard and session schedule",
+  "releaseNotesV1012": "Customer management, measurements, exercise records",
+  "releaseNotesV1013": "Workout builder (weeks/days/exercises, basic supersets)",
+  "releaseNotesV1014": "Coach calendar and plan assignment",
+  "releaseNotesV1015": "Local notifications and reminders",
+  "releaseNotesV1016": "End-to-end IT/EN localization",
+  "releaseNotesV1017": "Account JSON backup export/import"
 }
