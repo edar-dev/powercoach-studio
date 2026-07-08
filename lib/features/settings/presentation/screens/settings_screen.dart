@@ -1,26 +1,13 @@
-import 'dart:convert';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
-import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../../../../core/backup/backup_path_reader.dart';
-import '../../../../core/backup/user_data_backup_codec.dart';
-import '../../../../core/backup/user_data_backup_service.dart';
-import '../../../../core/notifications/calendar_reminder_scheduler.dart';
-import '../../../../core/notifications/notification_scheduler_service.dart';
-import '../../../../core/notifications/reminder_store.dart';
-import '../../../../core/storage/offline_local_store.dart';
-import '../../data/user_preferences_repository.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
-import '../../../integrations/hevy/presentation/hevy_settings_section.dart';
+import '../../../../core/notifications/calendar_reminder_scheduler.dart';
+import '../../data/user_preferences_repository.dart';
+import '../settings_backup_handler.dart';
+import '../settings_notification_actions.dart';
+import '../settings_sign_out.dart';
+import '../widgets/settings_screen_content.dart';
 
 /// Simplified App Settings – Stitch screen ID 8ab8a84172594c1c9911b5762e2a7257.
 /// Personal info, Subscription, Notifications, Language, Sign out.
@@ -40,6 +27,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int _calendarReminderLeadHours = CalendarReminderScheduler.defaultLeadHours;
   bool _loadingPrefs = true;
 
+  SettingsBackupHandler get _backupHandler => SettingsBackupHandler(
+        context: context,
+        onPreferencesReloaded: _loadPreferences,
+      );
+
   @override
   void initState() {
     super.initState();
@@ -47,308 +39,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _loadPreferences() async {
-    var prefs = await _preferences.loadAll();
-    var enabled = prefs.notificationsEnabled;
-    final calendarEnabled = prefs.calendarRemindersEnabled;
-    final leadHours = prefs.calendarReminderLeadHours;
-
-    if (!kIsWeb &&
-        NotificationSchedulerService.instance.supportsLocalNotifications) {
-      await NotificationSchedulerService.instance.ensureInitialized();
-      await NotificationSchedulerService.instance.downgradePreferenceIfOsDenied();
-      enabled = await _preferences.getNotificationsEnabled();
-      await NotificationSchedulerService.instance
-          .syncWithNotificationPreference();
-    }
-
+    final snapshot = await loadSettingsNotificationPreferences(_preferences);
     if (!mounted) return;
     setState(() {
-      _notificationsEnabled = enabled;
-      _calendarRemindersEnabled = calendarEnabled;
-      _calendarReminderLeadHours = leadHours;
+      _notificationsEnabled = snapshot.notificationsEnabled;
+      _calendarRemindersEnabled = snapshot.calendarRemindersEnabled;
+      _calendarReminderLeadHours = snapshot.calendarReminderLeadHours;
       _loadingPrefs = false;
     });
-  }
-
-  Future<void> _onCalendarRemindersToggle(bool value) async {
-    final l10n = AppLocalizations.of(context);
-    if (kIsWeb) {
-      showAppSnackBar(context, content: Text(l10n.reminderWebNotSupported));
-      return;
-    }
-    if (value && !_notificationsEnabled) {
-      showAppSnackBar(
-        context,
-        content: Text(l10n.settingsNotificationsDescription),
-      );
-      return;
-    }
-    await CalendarReminderScheduler.instance.setEnabled(value);
-    if (!mounted) return;
-    setState(() => _calendarRemindersEnabled = value);
-  }
-
-  Future<void> _pickCalendarLeadHours(AppLocalizations l10n) async {
-    const options = [12, 24, 48];
-    final selected = await showModalBottomSheet<int>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: options
-              .map(
-                (hours) => ListTile(
-                  title: Text(l10n.settingsCalendarReminderLeadHours(hours)),
-                  trailing: _calendarReminderLeadHours == hours
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.of(ctx).pop(hours),
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
-    if (selected == null || !mounted) return;
-    await CalendarReminderScheduler.instance.setLeadHours(selected);
-    if (!mounted) return;
-    setState(() => _calendarReminderLeadHours = selected);
-  }
-
-  Future<void> _onNotificationsToggle(bool value) async {
-    final l10n = AppLocalizations.of(context);
-    if (kIsWeb) {
-      showAppSnackBar(context, content: Text(l10n.reminderWebNotSupported));
-      return;
-    }
-
-    if (value) {
-      await NotificationSchedulerService.instance.ensureInitialized();
-      final granted =
-          await NotificationSchedulerService.instance.requestOsPermission();
-      if (!granted) {
-        if (!mounted) return;
-        showAppSnackBar(
-          context,
-          content: Text(l10n.settingsNotificationPermissionDenied),
-        );
-        return;
-      }
-      await _preferences.setNotificationsEnabled(true);
-      if (!mounted) return;
-      setState(() => _notificationsEnabled = true);
-      await NotificationSchedulerService.instance
-          .syncWithNotificationPreference();
-    } else {
-      await _preferences.setNotificationsEnabled(false);
-      if (!mounted) return;
-      setState(() => _notificationsEnabled = false);
-      await NotificationSchedulerService.instance.cancelAllScheduled();
-    }
-  }
-
-  Future<void> _showLanguagePicker(AppLocalizations l10n) async {
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) {
-        final currentCode = AppLocaleController.instance.locale.languageCode;
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  title: Text(l10n.settingsLanguageItalian),
-                  trailing: currentCode == 'it'
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.of(ctx).pop('it'),
-                ),
-                ListTile(
-                  title: Text(l10n.settingsLanguageEnglish),
-                  trailing: currentCode == 'en'
-                      ? const Icon(Icons.check)
-                      : null,
-                  onTap: () => Navigator.of(ctx).pop('en'),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-    if (selected == null || !mounted) return;
-    await AppLocaleController.instance.setLocale(Locale(selected));
-    if (!mounted) return;
-    showAppSnackBar(context, content: Text(l10n.settingsLanguageSaved));
-  }
-
-  void _signOut() async {
-    if (!kIsWeb &&
-        NotificationSchedulerService.instance.supportsLocalNotifications) {
-      await NotificationSchedulerService.instance.cancelAllScheduled();
-      await ReminderStore.instance.clear();
-    }
-    final uid = SupabaseBootstrap.currentUser?.id;
-    if (uid != null) {
-      await OfflineLocalStore.instance.wipeForUser(uid);
-    }
-    await Supabase.instance.client.auth.signOut();
-    if (mounted) context.go('/');
-  }
-
-  String _backupImportErrorMessage(AppLocalizations l10n, Object error) {
-    if (error is UserBackupImportException) {
-      switch (error.message) {
-        case 'wrong_account':
-          return l10n.settingsBackupErrorWrongAccount;
-        case 'unsupported_schema':
-          return l10n.settingsBackupErrorUnsupportedSchema;
-        default:
-          return l10n.settingsBackupErrorInvalidFile;
-      }
-    }
-    return l10n.settingsBackupErrorGeneric;
-  }
-
-  Future<void> _exportBackup(AppLocalizations l10n) async {
-    final uid = Supabase.instance.client.auth.currentUser?.id;
-    if (uid == null || uid.isEmpty) {
-      showAppSnackBar(context, content: Text(l10n.settingsBackupErrorNotSignedIn));
-      return;
-    }
-    try {
-      final json =
-          await UserDataBackupService.instance.buildExportJsonPretty(uid);
-      final name =
-          'powercoach-user-backup-${DateTime.now().toUtc().toIso8601String().split('T').first}.json';
-      await Share.share(
-        json,
-        subject: name,
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
-      );
-      if (!mounted) return;
-      showAppSnackBar(context, content: Text(l10n.settingsBackupExportSuccess));
-    } catch (_) {
-      if (!mounted) return;
-      showAppSnackBar(context, content: Text(l10n.settingsBackupErrorGeneric));
-    }
-  }
-
-  Future<void> _importBackup(AppLocalizations l10n) async {
-    final uid = Supabase.instance.client.auth.currentUser?.id;
-    if (uid == null || uid.isEmpty) {
-      showAppSnackBar(context, content: Text(l10n.settingsBackupErrorNotSignedIn));
-      return;
-    }
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['json'],
-      withData: true,
-    );
-    if (result == null || result.files.isEmpty || !mounted) return;
-    final file = result.files.single;
-    late final String content;
-    try {
-      if (file.bytes != null) {
-        content = utf8.decode(file.bytes!);
-      } else if (file.path != null) {
-        content = await readBackupPathUtf8(file.path!);
-      } else {
-        if (!mounted) return;
-        showAppSnackBar(context, content: Text(l10n.settingsBackupErrorInvalidFile));
-        return;
-      }
-    } catch (_) {
-      if (!mounted) return;
-      showAppSnackBar(context, content: Text(l10n.settingsBackupErrorInvalidFile));
-      return;
-    }
-
-    if (!mounted) return;
-
-    ParsedUserBackup parsed;
-    try {
-      parsed = parseUserBackupJson(content, uid);
-    } catch (e) {
-      if (!mounted) return;
-      showAppSnackBar(
-        context,
-        content: Text(_backupImportErrorMessage(l10n, e)),
-      );
-      return;
-    }
-
-    if (!mounted) return;
-    final counts = UserDataBackupService.instance.previewCounts(parsed);
-    final decision = await showDialog<_BackupImportDecision>(
-      context: context,
-      builder: (ctx) => _BackupImportPreviewDialog(
-        l10n: l10n,
-        counts: counts,
-      ),
-    );
-    if (decision == null || !mounted) return;
-
-    if (decision.replaceAll) {
-      final typed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) {
-          final controller = TextEditingController();
-          return AlertDialog(
-            title: Text(l10n.backupImportPreviewTitle),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(l10n.backupImportTypeConfirm),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    hintText: l10n.backupImportTypeConfirmHint,
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: Text(l10n.exerciseLibraryCancel),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(ctx).pop(
-                  controller.text.trim().toUpperCase() ==
-                      l10n.backupImportTypeConfirmHint,
-                ),
-                child: Text(l10n.backupImportConfirm),
-              ),
-            ],
-          );
-        },
-      );
-      if (typed != true || !mounted) return;
-    }
-
-    try {
-      if (decision.replaceAll) {
-        await UserDataBackupService.instance.restoreParsed(parsed, uid);
-      } else {
-        await UserDataBackupService.instance.mergeRestore(parsed, uid);
-      }
-      await _loadPreferences();
-      if (!mounted) return;
-      showAppSnackBar(context, content: Text(l10n.settingsBackupImportSuccess));
-    } catch (e) {
-      if (!mounted) return;
-      showAppSnackBar(
-        context,
-        content: Text(_backupImportErrorMessage(l10n, e)),
-      );
-    }
   }
 
   @override
@@ -362,187 +60,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: StitchSecondaryAppBar(title: l10n.settingsTitle),
       body: _loadingPrefs
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              children: [
-                ListTile(
-                  title: Text(l10n.settingsPersonalInfo),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/settings/personal-info'),
-                ),
-                ListTile(
-                  title: Text(l10n.settingsSubscription),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => context.push('/settings/subscription'),
-                ),
-                SwitchListTile(
-                  title: Text(l10n.settingsNotifications),
-                  subtitle: Text(
-                    l10n.settingsNotificationsDescription,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  value: _notificationsEnabled,
-                  onChanged: kIsWeb ? null : _onNotificationsToggle,
-                ),
-                SwitchListTile(
-                  title: Text(l10n.settingsCalendarRemindersTitle),
-                  subtitle: Text(
-                    l10n.settingsCalendarRemindersSubtitle,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  value: _calendarRemindersEnabled,
-                  onChanged: kIsWeb || !_notificationsEnabled
-                      ? null
-                      : _onCalendarRemindersToggle,
-                ),
-                if (_calendarRemindersEnabled)
-                  ListTile(
-                    title: Text(l10n.settingsCalendarReminderLead),
-                    subtitle: Text(
-                      l10n.settingsCalendarReminderLeadHours(
-                        _calendarReminderLeadHours,
-                      ),
-                    ),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: kIsWeb ? null : () => _pickCalendarLeadHours(l10n),
-                  ),
-                const Divider(height: 32),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    l10n.settingsBackupSectionTitle,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.settingsBackupSectionSubtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.backup_outlined),
-                  title: Text(l10n.settingsBackupExport),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _exportBackup(l10n),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.restore_outlined),
-                  title: Text(l10n.settingsBackupImport),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _importBackup(l10n),
-                ),
-                const Divider(height: 32),
-                const HevySettingsSection(),
-                const SizedBox(height: 24),
-                const Divider(height: 32),
-                ListTile(
-                  title: Text(l10n.settingsLanguage),
-                  subtitle: Text(
-                    l10n.settingsLanguageDescription,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _showLanguagePicker(l10n),
-                ),
-                const Divider(height: 32),
-                ListTile(
-                  title: Text(
-                    l10n.profileSignOut,
-                    style: TextStyle(
-                      color: colorScheme.error,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  onTap: _signOut,
-                ),
-              ],
-            ),
-    );
-  }
-}
-
-class _BackupImportDecision {
-  const _BackupImportDecision({required this.replaceAll});
-
-  final bool replaceAll;
-}
-
-class _BackupImportPreviewDialog extends StatefulWidget {
-  const _BackupImportPreviewDialog({
-    required this.l10n,
-    required this.counts,
-  });
-
-  final AppLocalizations l10n;
-  final BackupPreviewCounts counts;
-
-  @override
-  State<_BackupImportPreviewDialog> createState() =>
-      _BackupImportPreviewDialogState();
-}
-
-class _BackupImportPreviewDialogState extends State<_BackupImportPreviewDialog> {
-  var _replaceAll = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = widget.l10n;
-    final counts = widget.counts;
-
-    return AlertDialog(
-      title: Text(l10n.backupImportPreviewTitle),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            l10n.backupImportCounts(
-              counts.customers,
-              counts.plans,
-              counts.executions,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SegmentedButton<bool>(
-            segments: [
-              ButtonSegment<bool>(
-                value: false,
-                label: Text(l10n.backupImportMerge),
+          : SettingsScreenContent(
+              l10n: l10n,
+              theme: theme,
+              colorScheme: colorScheme,
+              notificationsEnabled: _notificationsEnabled,
+              calendarRemindersEnabled: _calendarRemindersEnabled,
+              calendarReminderLeadHours: _calendarReminderLeadHours,
+              onNotificationsToggle: (value) => toggleSettingsNotifications(
+                context: context,
+                l10n: l10n,
+                preferences: _preferences,
+                value: value,
+                onChanged: (enabled) =>
+                    setState(() => _notificationsEnabled = enabled),
               ),
-              ButtonSegment<bool>(
-                value: true,
-                label: Text(l10n.backupImportReplaceAll),
+              onCalendarRemindersToggle: (value) =>
+                  toggleSettingsCalendarReminders(
+                    context: context,
+                    l10n: l10n,
+                    notificationsEnabled: _notificationsEnabled,
+                    value: value,
+                    onChanged: (enabled) =>
+                        setState(() => _calendarRemindersEnabled = enabled),
+                  ),
+              onPickCalendarLeadHours: () => showSettingsCalendarLeadHoursPicker(
+                context: context,
+                l10n: l10n,
+                currentLeadHours: _calendarReminderLeadHours,
+                onSelected: (hours) =>
+                    setState(() => _calendarReminderLeadHours = hours),
               ),
-            ],
-            selected: {_replaceAll},
-            onSelectionChanged: (selection) {
-              setState(() => _replaceAll = selection.first);
-            },
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(l10n.exerciseLibraryCancel),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(
-            context,
-          ).pop(_BackupImportDecision(replaceAll: _replaceAll)),
-          child: Text(l10n.backupImportConfirm),
-        ),
-      ],
+              onExportBackup: () => _backupHandler.exportBackup(l10n),
+              onImportBackup: () => _backupHandler.importBackup(l10n),
+              onLanguagePicker: () => showSettingsLanguagePicker(
+                context: context,
+                l10n: l10n,
+              ),
+              onSignOut: () => performSettingsSignOut(context),
+            ),
     );
   }
 }
