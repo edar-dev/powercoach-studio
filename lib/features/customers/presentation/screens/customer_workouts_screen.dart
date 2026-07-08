@@ -9,12 +9,12 @@ import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
-import '../../../workouts/domain/plan_session_status_service.dart';
-import '../../../workouts/domain/plan_session_override_service.dart';
-import '../../../workouts/domain/session_execution_service.dart';
-import '../../../workouts/domain/workout_follow_up_factory.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
+import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/presentation/workout_plan_display_helpers.dart';
+import '../../../workouts/presentation/widgets/workout_follow_up_dialog.dart';
+import '../../../workouts/presentation/widgets/workout_plan_name_prompt_dialog.dart';
+import '../customer_workout_plan_session_handler.dart';
 import '../widgets/customer_workout_plan_list.dart';
 import '../widgets/customer_workout_plan_list_tile.dart';
 
@@ -31,11 +31,8 @@ class CustomerWorkoutsScreen extends StatefulWidget {
 
 class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
-  final PlanSessionStatusService _sessionStatusService =
-      PlanSessionStatusService();
-  final PlanSessionOverrideService _sessionOverrideService =
-      PlanSessionOverrideService();
   final SessionExecutionService _executionService = SessionExecutionService();
+  late final CustomerWorkoutPlanSessionHandler _sessionHandler;
   List<WorkoutPlanApiModel> _plans = [];
   bool _loading = true;
   String? _error;
@@ -53,6 +50,7 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   @override
   void initState() {
     super.initState();
+    _sessionHandler = CustomerWorkoutPlanSessionHandler();
     _loadPlans();
   }
 
@@ -69,104 +67,12 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   }
 
   Future<void> _showSessionActions(PlanCalendarEvent event) async {
-    final l10n = AppLocalizations.of(context);
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.check_circle_outline),
-              title: Text(l10n.sessionCompleted),
-              onTap: () => Navigator.of(ctx).pop('status_completed'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.remove_circle_outline),
-              title: Text(l10n.sessionSkipped),
-              onTap: () => Navigator.of(ctx).pop('status_skipped'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restart_alt),
-              title: Text(l10n.sessionMarkPlanned),
-              onTap: () => Navigator.of(ctx).pop('status_planned'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.event_busy_outlined),
-              title: Text(l10n.sessionSkipDate),
-              onTap: () => Navigator.of(ctx).pop('override_skip'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.event_repeat_outlined),
-              title: Text(l10n.sessionReschedule),
-              onTap: () => Navigator.of(ctx).pop('override_move'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restart_alt),
-              title: Text(l10n.sessionOverrideClear),
-              onTap: () => Navigator.of(ctx).pop('override_clear'),
-            ),
-          ],
-        ),
-      ),
+    final shouldReload = await _sessionHandler.handleSessionLongPress(
+      context,
+      event,
     );
-    if (selected == null || !mounted) return;
-    final originalDay = event.originalDay ?? event.day;
-    try {
-      if (selected.startsWith('status_')) {
-        final status = switch (selected) {
-          'status_completed' => PlanSessionStatus.completed,
-          'status_skipped' => PlanSessionStatus.skipped,
-          _ => PlanSessionStatus.planned,
-        };
-        await _sessionStatusService.setSessionStatus(
-          planId: event.planId,
-          weekIndex: event.weekIndex,
-          dayIndex: event.dayIndex,
-          status: status,
-        );
-      } else if (selected == 'override_skip') {
-        await _sessionOverrideService.skipSessionOccurrence(
-          planId: event.planId,
-          weekIndex: event.weekIndex,
-          dayIndex: event.dayIndex,
-          originalDay: originalDay,
-        );
-      } else if (selected == 'override_move') {
-        final picked = await showDatePicker(
-          context: context,
-          initialDate: event.day,
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100, 12, 31),
-        );
-        if (picked == null || !mounted) return;
-        await _sessionOverrideService.moveSessionOccurrence(
-          planId: event.planId,
-          weekIndex: event.weekIndex,
-          dayIndex: event.dayIndex,
-          originalDay: originalDay,
-          movedToDate: picked,
-        );
-      } else if (selected == 'override_clear') {
-        await _sessionOverrideService.clearSessionOccurrenceOverride(
-          planId: event.planId,
-          weekIndex: event.weekIndex,
-          dayIndex: event.dayIndex,
-          originalDay: originalDay,
-        );
-      }
-      if (!mounted) return;
+    if (shouldReload && mounted) {
       await _loadPlans();
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.calendarUpdateError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
     }
   }
 
@@ -337,39 +243,13 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
 
   Future<void> _savePlanAsTemplate(WorkoutPlanApiModel plan) async {
     final l10n = AppLocalizations.of(context);
-    final controller = TextEditingController(text: plan.name);
-    String? name;
-    try {
-      name = await showDialog<String>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.workoutTemplatesSaveAsTemplateTitle),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: l10n.workoutTemplatesNameHint,
-            ),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.customerCancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                final s = controller.text.trim();
-                if (s.isEmpty) return;
-                Navigator.of(ctx).pop(s);
-              },
-              child: Text(l10n.workoutTemplatesSaveAsTemplate),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      controller.dispose();
-    }
+    final name = await showWorkoutPlanNamePromptDialog(
+      context,
+      title: l10n.workoutTemplatesSaveAsTemplateTitle,
+      nameLabel: l10n.workoutTemplatesNameHint,
+      confirmLabel: l10n.workoutTemplatesSaveAsTemplate,
+      initialName: plan.name,
+    );
     if (name == null || name.isEmpty || !mounted) return;
     try {
       await _planRepo.createTemplateFromPlan(
@@ -397,7 +277,11 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
-    final draft = await _showFollowUpDialog(plan);
+    final draft = await showWorkoutFollowUpDialog(
+      context,
+      plan: plan,
+      executionService: _executionService,
+    );
     if (draft == null || !mounted) return;
     try {
       await _planRepo.createFollowUpFromPlan(
@@ -432,39 +316,13 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
 
   Future<void> _duplicatePlan(WorkoutPlanApiModel plan) async {
     final l10n = AppLocalizations.of(context);
-    final controller = TextEditingController(text: '${plan.name} (2)');
-    String? name;
-    try {
-      name = await showDialog<String>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.workoutDuplicateTitle),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: l10n.workoutDuplicateNameHint,
-            ),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(),
-              child: Text(l10n.customerCancel),
-            ),
-            FilledButton(
-              onPressed: () {
-                final s = controller.text.trim();
-                if (s.isEmpty) return;
-                Navigator.of(ctx).pop(s);
-              },
-              child: Text(l10n.workoutDuplicateAction),
-            ),
-          ],
-        ),
-      );
-    } finally {
-      controller.dispose();
-    }
+    final name = await showWorkoutPlanNamePromptDialog(
+      context,
+      title: l10n.workoutDuplicateTitle,
+      nameLabel: l10n.workoutDuplicateNameHint,
+      confirmLabel: l10n.workoutDuplicateAction,
+      initialName: '${plan.name} (2)',
+    );
     if (name == null || name.isEmpty || !mounted) return;
     try {
       await _planRepo.duplicateToCustomer(
@@ -491,130 +349,6 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
       );
-    }
-  }
-
-  Future<({String name, DateTime? startDate, bool applyExecutedLoads})?>
-  _showFollowUpDialog(
-    WorkoutPlanApiModel plan,
-  ) async {
-    final l10n = AppLocalizations.of(context);
-    final executions = await _executionService.listForPlan(plan.id);
-    if (!mounted) return null;
-    final completedCount = countCompletedExecutions(executions);
-    final controller = TextEditingController(
-      text: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
-    );
-    DateTime? selectedStartDate;
-    var applyExecutedLoads = completedCount > 0;
-    try {
-      if (!mounted) return null;
-      return await showDialog<({
-        String name,
-        DateTime? startDate,
-        bool applyExecutedLoads,
-      })>(
-        context: context,
-        builder: (ctx) => StatefulBuilder(
-          builder: (ctx, setDialogState) => AlertDialog(
-            title: Text(l10n.workoutFollowUpTitle),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    labelText: l10n.workoutFollowUpNameHint,
-                  ),
-                  autofocus: true,
-                ),
-                const SizedBox(height: 16),
-                ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: const Icon(Icons.calendar_today_outlined),
-                  title: Text(
-                    selectedStartDate != null
-                        ? MaterialLocalizations.of(
-                            ctx,
-                          ).formatFullDate(selectedStartDate!)
-                        : l10n.workoutFollowUpStartDateOptional,
-                  ),
-                  trailing: selectedStartDate != null
-                      ? IconButton(
-                          icon: const Icon(Icons.close),
-                          tooltip: l10n.workoutFollowUpStartDateClear,
-                          onPressed: () =>
-                              setDialogState(() => selectedStartDate = null),
-                        )
-                      : null,
-                  onTap: () async {
-                    final now = DateTime.now();
-                    final initial =
-                        selectedStartDate ??
-                        DateTime(now.year, now.month, now.day);
-                    final picked = await showDatePicker(
-                      context: ctx,
-                      initialDate: initial,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(now.year + 10, 12, 31),
-                    );
-                    if (picked == null) return;
-                    setDialogState(() {
-                      selectedStartDate = DateTime(
-                        picked.year,
-                        picked.month,
-                        picked.day,
-                      );
-                    });
-                  },
-                ),
-                if (completedCount > 0)
-                  CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    value: applyExecutedLoads,
-                    onChanged: (v) => setDialogState(
-                      () => applyExecutedLoads = v ?? false,
-                    ),
-                    title: Text(l10n.workoutFollowUpFromExecution),
-                    subtitle: Text(
-                      l10n.workoutFollowUpFromExecutionHint(completedCount),
-                    ),
-                    controlAffinity: ListTileControlAffinity.leading,
-                  )
-                else
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Text(
-                      l10n.workoutFollowUpNoExecutionData,
-                      style: Theme.of(ctx).textTheme.bodySmall,
-                    ),
-                  ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(l10n.customerCancel),
-              ),
-              FilledButton(
-                onPressed: () {
-                  final name = controller.text.trim();
-                  if (name.isEmpty) return;
-                  Navigator.of(ctx).pop((
-                    name: name,
-                    startDate: selectedStartDate,
-                    applyExecutedLoads:
-                        completedCount > 0 && applyExecutedLoads,
-                  ));
-                },
-                child: Text(l10n.workoutFollowUpCreateAction),
-              ),
-            ],
-          ),
-        ),
-      );
-    } finally {
-      controller.dispose();
     }
   }
 

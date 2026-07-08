@@ -7,6 +7,7 @@ import '../../../workouts/domain/session_execution.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/domain/plan_session_override_service.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/presentation/widgets/plan_session_actions_sheet.dart';
 import '../../../workouts/presentation/widgets/session_log_sheet.dart';
 import '../../domain/plan_calendar_event.dart';
 import '../../domain/session_detail_loader.dart';
@@ -79,47 +80,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
 
   Future<void> _showSessionActions(PlanCalendarEvent event) async {
     final l10n = AppLocalizations.of(context);
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.check_circle_outline),
-              title: Text(l10n.sessionCompleted),
-              onTap: () => Navigator.of(ctx).pop('status_completed'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.remove_circle_outline),
-              title: Text(l10n.sessionSkipped),
-              onTap: () => Navigator.of(ctx).pop('status_skipped'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restart_alt),
-              title: Text(l10n.sessionMarkPlanned),
-              onTap: () => Navigator.of(ctx).pop('status_planned'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.event_busy_outlined),
-              title: Text(l10n.sessionSkipDate),
-              onTap: () => Navigator.of(ctx).pop('override_skip'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.event_repeat_outlined),
-              title: Text(l10n.sessionReschedule),
-              onTap: () => Navigator.of(ctx).pop('override_move'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.restart_alt),
-              title: Text(l10n.sessionOverrideClear),
-              onTap: () => Navigator.of(ctx).pop('override_clear'),
-            ),
-          ],
-        ),
-      ),
-    );
+    final selected = await showPlanSessionActionsSheet(context);
     if (selected == null || !mounted) return;
     final originalDay = event.originalDay ?? event.day;
     try {
