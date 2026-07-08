@@ -1,6 +1,8 @@
 ---
 name: presentation-split-followups
-overview: "Follow-up al presentation-split-v1: import handler exercise library, riuso set rows editor, riduzione ulteriore mobility screen."
+overview: "Follow-up al presentation-split-v1: import handler, set rows editor, mobility trim. Chiuso — v1 formalmente completato 2026-07-08."
+status: closed
+closedAt: "2026-07-08"
 todos:
   - id: exercise-library-import-handler
     content: "Estrarre import Hevy/file/default in handler + service (404 righe screen)"
@@ -39,4 +41,5 @@ Completare i tre follow-up emersi dopo presentation-split-v1, senza cambiare UX.
 
 ## Residuo opzionale
 
-- Mobility screen ancora >400 righe: candidati futuri load/save state applicator nel coordinator
+- Mobility screen ancora >400 righe al momento del merge → risolto in v2 (#69)
+- Prossimi candidati: [`presentation-split-v3.plan.md`](presentation-split-v3.plan.md)
