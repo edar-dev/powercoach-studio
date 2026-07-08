@@ -15,8 +15,8 @@ todos:
     content: "Estrarre da workout_plan_templates_screen.dart (401 righe): list, tile, preview, assign dialogs"
     status: completed
   - id: split-exercise-library
-    content: "Estrarre da exercise_library_screen.dart (~937 righe): import flow, list sections, pin/recent"
-    status: pending
+    content: "Estrarre da exercise_library_screen.dart (635 righe): tab view, list tile, tree helpers, import sheet"
+    status: completed
   - id: split-exercise-add-sheet
     content: "Estrarre da exercise_add_sheet.dart (~925 righe): search panel, selection state, confirm actions"
     status: pending
