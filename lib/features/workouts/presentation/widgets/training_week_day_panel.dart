@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../data/workout_routine_model.dart';
-import '../../domain/day_scheduled_weekday.dart';
+import 'training_day_selector_row.dart';
+import 'training_scheduled_weekday_picker.dart';
+import 'training_week_selector_row.dart';
 
 /// Horizontal week/day planner used by the workout builder training tab.
 class TrainingWeekDayPanel extends StatelessWidget {
@@ -90,204 +91,42 @@ class TrainingWeekDayPanel extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _SectionLabel(text: l10n.workoutBuilderWeeksLabel, theme: theme, cs: cs),
-        const SizedBox(height: 8),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: [
-                    for (var i = 0; i < weeks.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 8),
-                      _PlannerChip(
-                        label: weeks[i].name,
-                        selected: i == weekIndex,
-                        onTap: () => onSelectWeek(i),
-                      ),
-                    ],
-                    const SizedBox(width: 8),
-                    _PlannerAddChip(
-                      label: l10n.workoutBuilderNewWeek,
-                      onTap: () => _showAddWeekMenuSheet(
-                        context,
-                        l10n,
-                        weekIndex,
-                        onNewWeek: onNewWeek,
-                        onCloneWeek: onCloneWeek,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            IconButton(
-              tooltip: l10n.workoutBuilderWeekMenuTooltip,
-              icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
-              onPressed: () => _showPlannerMenuSheet(
-                context,
-                actions: [
-                  (
-                    icon: Icons.edit_outlined,
-                    label: l10n.workoutBuilderRenameWeekMenu,
-                    onTap: () => onEditWeek(weekIndex),
-                    destructive: false,
-                  ),
-                  (
-                    icon: Icons.delete_outline,
-                    label: l10n.workoutBuilderDeleteWeekMenu,
-                    onTap: () => onDeleteWeek(weekIndex),
-                    destructive: true,
-                  ),
-                ],
-              ),
-            ),
-          ],
+        TrainingWeekSelectorRow(
+          theme: theme,
+          colorScheme: cs,
+          l10n: l10n,
+          weeks: weeks,
+          weekIndex: weekIndex,
+          onSelectWeek: onSelectWeek,
+          onNewWeek: onNewWeek,
+          onCloneWeek: onCloneWeek,
+          onDeleteWeek: onDeleteWeek,
+          onEditWeek: onEditWeek,
         ),
         if (days.isNotEmpty) ...[
           const SizedBox(height: 16),
-          _SectionLabel(text: l10n.workoutBuilderDaysLabel, theme: theme, cs: cs),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      for (var i = 0; i < days.length; i++) ...[
-                        if (i > 0) const SizedBox(width: 8),
-                        _SwipeableDayChip(
-                          dayId: days[i].id,
-                          label: days[i].name,
-                          selected: i == dayIndex,
-                          dismissible: days.length > 1,
-                          onTap: () => onSelectDay(i),
-                          onDismiss: () => onDeleteDay(weekIndex, i),
-                          confirmDismiss: () => _confirmDeleteDay(
-                            context,
-                            l10n,
-                            days[i].name,
-                          ),
-                        ),
-                      ],
-                      const SizedBox(width: 8),
-                      _PlannerAddChip(
-                        label: l10n.workoutBuilderAddDayChip,
-                        onTap: () => onAddDay(weekIndex),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (day != null)
-                IconButton(
-                  tooltip: l10n.workoutBuilderDayMenuTooltip,
-                  icon: Icon(Icons.more_vert, color: cs.onSurfaceVariant),
-                  onPressed: () => _showPlannerMenuSheet(
-                    context,
-                    actions: [
-                      (
-                        icon: Icons.edit_outlined,
-                        label: l10n.workoutBuilderRenameDayTitle,
-                        onTap: () => onEditDay(weekIndex, dayIndex),
-                        destructive: false,
-                      ),
-                      if (days.length > 1)
-                        (
-                          icon: Icons.delete_outline,
-                          label: l10n.workoutBuilderDeleteDayMenu,
-                          onTap: () => onDeleteDay(weekIndex, dayIndex),
-                          destructive: true,
-                        ),
-                    ],
-                  ),
-                ),
-            ],
+          TrainingDaySelectorRow(
+            theme: theme,
+            colorScheme: cs,
+            l10n: l10n,
+            weekIndex: weekIndex,
+            dayIndex: dayIndex,
+            days: days,
+            onSelectDay: onSelectDay,
+            onAddDay: onAddDay,
+            onEditDay: onEditDay,
+            onDeleteDay: onDeleteDay,
           ),
-          if (days.length > 1) ...[
-            const SizedBox(height: 6),
-            Text(
-              l10n.workoutBuilderSwipeDayHint,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: cs.onSurfaceVariant,
-                fontStyle: FontStyle.italic,
-              ),
-            ),
-          ],
           if (day != null) ...[
             const SizedBox(height: 10),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.workoutBuilderCalendarWeekdayLabel,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-                Tooltip(
-                  message: l10n.workoutBuilderCalendarWeekdayHint,
-                  child: Icon(
-                    Icons.info_outline,
-                    size: 16,
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 6),
-            Wrap(
-              spacing: 6,
-              runSpacing: 6,
-              children: [
-                for (final entry in kItalianWeekdayShortLabels.entries)
-                  Tooltip(
-                    message: kItalianWeekdayFullLabels[entry.key] ?? entry.value,
-                    child: FilterChip(
-                      label: Text(entry.value),
-                      selected: effectiveScheduledWeekday(
-                            day: day,
-                            dayIndex: dayIndex,
-                          ) ==
-                          entry.key,
-                      onSelected: (_) => onUpdateScheduledWeekday(
-                        weekIndex,
-                        dayIndex,
-                        entry.key,
-                      ),
-                      showCheckmark: false,
-                      visualDensity: VisualDensity.compact,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      labelStyle: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: effectiveScheduledWeekday(
-                                  day: day,
-                                  dayIndex: dayIndex,
-                                ) ==
-                                entry.key
-                            ? Colors.white
-                            : cs.onSurface,
-                      ),
-                      selectedColor: StitchM3Theme.accent,
-                      backgroundColor: cs.surfaceContainerHighest,
-                      side: BorderSide(
-                        color: effectiveScheduledWeekday(
-                                  day: day,
-                                  dayIndex: dayIndex,
-                                ) ==
-                                entry.key
-                            ? StitchM3Theme.accent
-                            : cs.outline.withValues(alpha: 0.35),
-                      ),
-                    ),
-                  ),
-              ],
+            TrainingScheduledWeekdayPicker(
+              theme: theme,
+              colorScheme: cs,
+              l10n: l10n,
+              day: day,
+              dayIndex: dayIndex,
+              weekIndex: weekIndex,
+              onUpdateScheduledWeekday: onUpdateScheduledWeekday,
             ),
           ],
         ],
@@ -353,210 +192,6 @@ class TrainingWeekDayPanel extends StatelessWidget {
           ),
         ],
       ],
-    );
-  }
-}
-
-class _SectionLabel extends StatelessWidget {
-  const _SectionLabel({required this.text, required this.theme, required this.cs});
-
-  final String text;
-  final ThemeData theme;
-  final ColorScheme cs;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text.toUpperCase(),
-      style: theme.textTheme.labelSmall?.copyWith(
-        color: cs.onSurfaceVariant,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.8,
-      ),
-    );
-  }
-}
-
-Future<bool> _confirmDeleteDay(
-  BuildContext context,
-  AppLocalizations l10n,
-  String dayName,
-) {
-  return showAppConfirmDialog(
-    context: context,
-    title: l10n.workoutBuilderDeleteDayTitle,
-    message: '${l10n.workoutBuilderDeleteDayMessage}\n\n$dayName',
-    confirmLabel: l10n.customerDelete,
-    cancelLabel: l10n.customerCancel,
-    destructive: true,
-  );
-}
-
-void showTrainingPlannerMenuSheet(
-  BuildContext context, {
-  required List<({IconData icon, String label, VoidCallback onTap, bool destructive})>
-  actions,
-}) => _showPlannerMenuSheet(context, actions: actions);
-
-void _showAddWeekMenuSheet(
-  BuildContext context,
-  AppLocalizations l10n,
-  int weekIndex, {
-  required VoidCallback onNewWeek,
-  required void Function(int) onCloneWeek,
-}) {
-  _showPlannerMenuSheet(
-    context,
-    actions: [
-      (
-        icon: Icons.add,
-        label: l10n.workoutBuilderNewWeek,
-        onTap: onNewWeek,
-        destructive: false,
-      ),
-      (
-        icon: Icons.copy,
-        label: l10n.workoutBuilderDuplicateWeek,
-        onTap: () => onCloneWeek(weekIndex),
-        destructive: false,
-      ),
-    ],
-  );
-}
-
-void _showPlannerMenuSheet(
-  BuildContext context, {
-  required List<({IconData icon, String label, VoidCallback onTap, bool destructive})>
-  actions,
-}) {
-  showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    builder: (ctx) => SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: actions
-            .map(
-              (a) => ListTile(
-                leading: Icon(
-                  a.icon,
-                  color: a.destructive ? StitchM3Theme.danger : null,
-                ),
-                title: Text(
-                  a.label,
-                  style: a.destructive
-                      ? const TextStyle(color: StitchM3Theme.danger)
-                      : null,
-                ),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  a.onTap();
-                },
-              ),
-            )
-            .toList(),
-      ),
-    ),
-  );
-}
-
-class _PlannerChip extends StatelessWidget {
-  const _PlannerChip({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: (_) => onTap(),
-      showCheckmark: false,
-      labelStyle: TextStyle(
-        fontWeight: FontWeight.w600,
-        color: selected ? Colors.white : cs.onSurface,
-      ),
-      selectedColor: StitchM3Theme.accent,
-      backgroundColor: cs.surfaceContainerHighest,
-      side: BorderSide(
-        color: selected ? StitchM3Theme.accent : cs.outline.withValues(alpha: 0.4),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-    );
-  }
-}
-
-class _SwipeableDayChip extends StatelessWidget {
-  const _SwipeableDayChip({
-    required this.dayId,
-    required this.label,
-    required this.selected,
-    required this.dismissible,
-    required this.onTap,
-    required this.onDismiss,
-    required this.confirmDismiss,
-  });
-
-  final String dayId;
-  final String label;
-  final bool selected;
-  final bool dismissible;
-  final VoidCallback onTap;
-  final VoidCallback onDismiss;
-  final Future<bool> Function() confirmDismiss;
-
-  @override
-  Widget build(BuildContext context) {
-    final chip = _PlannerChip(label: label, selected: selected, onTap: onTap);
-    if (!dismissible) return chip;
-
-    return Dismissible(
-      key: ValueKey('day_$dayId'),
-      direction: DismissDirection.up,
-      confirmDismiss: (_) => confirmDismiss(),
-      onDismissed: (_) => onDismiss(),
-      background: Container(
-        alignment: Alignment.bottomCenter,
-        padding: const EdgeInsets.only(bottom: 4),
-        decoration: BoxDecoration(
-          color: StitchM3Theme.danger.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(999),
-        ),
-        child: Icon(Icons.delete_outline, color: StitchM3Theme.danger, size: 20),
-      ),
-      child: chip,
-    );
-  }
-}
-
-class _PlannerAddChip extends StatelessWidget {
-  const _PlannerAddChip({required this.label, required this.onTap});
-
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return ActionChip(
-      avatar: Icon(Icons.add, size: 16, color: StitchM3Theme.accent),
-      label: Text(
-        label,
-        style: TextStyle(
-          color: StitchM3Theme.accent,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      onPressed: onTap,
-      backgroundColor: cs.surfaceContainerHighest,
-      side: BorderSide(color: StitchM3Theme.accent.withValues(alpha: 0.4)),
     );
   }
 }
