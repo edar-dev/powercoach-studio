@@ -34,6 +34,20 @@ String customerPath(String customerId) => '/customers/$customerId';
 String customerWorkoutsPath(String customerId) =>
     '/customers/$customerId/workouts';
 
+String workoutDiaryPath({String? customerId}) {
+  if (customerId == null || customerId.isEmpty) return '/workouts/diary';
+  return Uri(
+    path: '/workouts/diary',
+    queryParameters: {'customerId': customerId},
+  ).toString();
+}
+
+String workoutDiaryEntryPath({
+  required String planId,
+  required String sessionKey,
+}) =>
+    '/workouts/diary/$planId/$sessionKey';
+
 String scheduleSessionDetailPath({
   required String customerId,
   required String planId,

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../../domain/coach_stats_loader.dart';
+import '../widgets/coach_stats_adherence_chart.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Coach-facing adherence and activity KPIs.
@@ -41,6 +45,42 @@ class _CoachStatsScreenState extends State<CoachStatsScreen> {
     _load();
   }
 
+  Future<void> _exportCsv(AppLocalizations l10n) async {
+    final snapshot = _snapshot;
+    if (snapshot == null) return;
+
+    final buffer = StringBuffer()
+      ..writeln('period,${_periodDays}d')
+      ..writeln(
+        'adherence,${snapshot.adherenceRate?.toStringAsFixed(3) ?? ''}',
+      )
+      ..writeln('completed,${snapshot.completedSessions}')
+      ..writeln('skipped,${snapshot.skippedSessions}')
+      ..writeln('active_clients,${snapshot.activeClients}')
+      ..writeln('date,completed_count');
+
+    final dateFormat = DateFormat('yyyy-MM-dd');
+    for (final point in snapshot.dailyCompleted) {
+      buffer.writeln(
+        '${dateFormat.format(point.date)},${point.completedCount}',
+      );
+    }
+
+    await Share.share(
+      buffer.toString(),
+      subject: l10n.coachStatsExportCsvSubject,
+      sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+    );
+  }
+
+  void _onDaySelected(CoachStatsDailyPoint point, AppLocalizations l10n) {
+    final dateLabel = DateFormat.yMMMd(l10n.localeName).format(point.date);
+    showAppSnackBar(
+      context,
+      content: Text(l10n.coachStatsChartDaySummary(dateLabel, point.completedCount)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -50,7 +90,17 @@ class _CoachStatsScreenState extends State<CoachStatsScreen> {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: StitchSecondaryAppBar(title: l10n.coachStatsTitle),
+      appBar: StitchSecondaryAppBar(
+        title: l10n.coachStatsTitle,
+        actions: [
+          if (snapshot != null)
+            IconButton(
+              tooltip: l10n.coachStatsExportCsv,
+              icon: const Icon(Icons.ios_share_outlined),
+              onPressed: () => _exportCsv(l10n),
+            ),
+        ],
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -111,6 +161,12 @@ class _CoachStatsScreenState extends State<CoachStatsScreen> {
                       label: l10n.coachStatsActiveClients,
                       value: '${snapshot.activeClients}',
                       icon: Icons.people_outline,
+                    ),
+                    const SizedBox(height: 16),
+                    CoachStatsAdherenceChart(
+                      points: snapshot.dailyCompleted,
+                      l10n: l10n,
+                      onDaySelected: (point) => _onDaySelected(point, l10n),
                     ),
                   ],
                 ],

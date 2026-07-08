@@ -24,6 +24,7 @@ import 'package:powercoach_studio/features/workouts/presentation/screens/coach_s
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_variant.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
+import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_entry_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_plan_templates_screen.dart';
 
 List<RouteBase> buildAppRoutes() {
@@ -249,6 +250,16 @@ List<RouteBase> buildAppRoutes() {
           path: 'diary',
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const WorkoutDiaryScreen(),
+          routes: [
+            GoRoute(
+              path: ':planId/:sessionKey',
+              parentNavigatorKey: appRootNavigatorKey,
+              builder: (context, state) => WorkoutDiaryEntryScreen(
+                planId: state.pathParameters['planId'] ?? '',
+                sessionKey: state.pathParameters['sessionKey'] ?? '',
+              ),
+            ),
+          ],
         ),
         GoRoute(
           path: 'stats',

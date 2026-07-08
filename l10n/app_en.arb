@@ -941,6 +941,25 @@
   "coachStatsActiveClients": "Active clients",
   "coachStatsPeriod7d": "Last 7 days",
   "coachStatsPeriod30d": "Last 30 days",
+  "coachStatsChartTitle": "Completed sessions by day",
+  "coachStatsChartEmpty": "No completed sessions in this period.",
+  "coachStatsChartDaySummary": "{date}: {count} completed",
+  "@coachStatsChartDaySummary": {
+    "placeholders": {
+      "date": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+  "coachStatsExportCsv": "Export CSV",
+  "coachStatsExportCsvSubject": "PowerCoach coach stats",
+  "workoutDiaryFilterDate": "Date range",
+  "workoutDiaryFilterDateAll": "All time",
+  "workoutDiaryFilterStatusAll": "All statuses",
+  "workoutDiaryDetailTitle": "Session detail",
+  "workoutDiaryEntryNotFound": "Session not found or no longer available.",
+  "workoutDiaryOpenPlan": "Open workout plan",
+  "workoutDiaryOpenSession": "Open in schedule",
+  "workoutDiaryNoExercisesLogged": "No exercises logged for this session.",
   "sessionLogTitle": "Log session",
   "sessionLogNotesHint": "Session notes (optional)",
   "sessionLogSave": "Save session",
