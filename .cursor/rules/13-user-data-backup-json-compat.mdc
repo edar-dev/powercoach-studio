@@ -6,7 +6,9 @@ globs: lib/core/backup/**/*.dart,**/user_data_backup*.dart,l10n/*.arb
 
 # User data backup JSON — backward compatibility
 
-Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, plus `preferences`, `localUserProfile`, `entities`, `pendingOperations`, `syncMeta`. Each `entities[]` row mirrors offline storage (`type`, `scopeId`, `payload`, …), including new types such as `customerNote`, without bumping `schemaVersion` when only additive.
+Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, plus optional `exportedAt`, `appVersion`, `entityCounts`, `preferences`, `localUserProfile`, `entities`, `pendingOperations`, `syncMeta`. Each `entities[]` row mirrors offline storage (`type`, `scopeId`, `payload`, …), including new types such as `customerNote`, without bumping `schemaVersion` when only additive.
+
+`entityCounts` keys (all optional integers): `customers`, `customerRecords`, `workoutPlans`, `exerciseLibrary`, `reminders`.
 
 ## When changing the backup format
 

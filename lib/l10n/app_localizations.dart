@@ -4264,6 +4264,54 @@ abstract class AppLocalizations {
   /// **'{customers} clients · {plans} plans · {executions} session logs'**
   String backupImportCounts(int customers, int plans, int executions);
 
+  /// No description provided for @backupImportMetadata.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup from {date} · app {version}'**
+  String backupImportMetadata(String date, String version);
+
+  /// No description provided for @backupImportSelectGroups.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what to import'**
+  String get backupImportSelectGroups;
+
+  /// No description provided for @backupImportPartialReplaceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Deselected groups stay unchanged on this device.'**
+  String get backupImportPartialReplaceHint;
+
+  /// No description provided for @backupImportGroupCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Clients and related data ({count})'**
+  String backupImportGroupCustomers(int count);
+
+  /// No description provided for @backupImportGroupPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout plans ({count})'**
+  String backupImportGroupPlans(int count);
+
+  /// No description provided for @backupImportGroupExerciseLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise library ({count})'**
+  String backupImportGroupExerciseLibrary(int count);
+
+  /// No description provided for @backupImportGroupReminders.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminders ({count})'**
+  String backupImportGroupReminders(int count);
+
+  /// No description provided for @backupImportGroupPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile and preferences'**
+  String get backupImportGroupPreferences;
+
   /// No description provided for @backupImportTypeConfirm.
   ///
   /// In en, this message translates to:

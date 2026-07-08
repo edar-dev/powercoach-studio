@@ -132,6 +132,43 @@ class OfflineLocalStore {
         );
   }
 
+  /// Inserts or updates an entity row for an explicit [userId] (backup restore).
+  Future<void> upsertEntityForUser(
+    String userId,
+    Map<String, dynamic> rawEntity,
+  ) async {
+    if (userId.isEmpty) return;
+    final body = Map<String, dynamic>.from(rawEntity)..remove('userId');
+    final entity = OfflineEntity.fromJson(body);
+    final db = await _ensureDb();
+    await db.into(db.localEntities).insertOnConflictUpdate(
+          LocalEntitiesCompanion.insert(
+            userId: userId,
+            type: entity.type.index,
+            id: entity.id,
+            scopeId: entity.scopeId,
+            payloadJson: jsonEncode(entity.payload),
+            updatedAt: entity.updatedAt,
+            deleted: Value(entity.deleted),
+            localOnly: Value(entity.localOnly),
+          ),
+        );
+  }
+
+  /// Deletes offline entity rows for [userId] limited to [types].
+  Future<void> deleteEntitiesForUserByTypes(
+    String userId,
+    Set<OfflineEntityType> types,
+  ) async {
+    if (userId.isEmpty || types.isEmpty) return;
+    final db = await _ensureDb();
+    final indices = types.map((t) => t.index).toList();
+    await (db.delete(db.localEntities)..where(
+          (t) => t.userId.equals(userId) & t.type.isIn(indices),
+        ))
+        .go();
+  }
+
   Future<void> markDeleted(OfflineEntityType type, String entityId) async {
     final current = await readEntityById(type, entityId);
     if (current == null) return;

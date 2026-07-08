@@ -26,6 +26,9 @@ class ParsedUserBackup {
     required this.profileJson,
     required this.notificationsEnabled,
     required this.reminders,
+    this.exportedAt,
+    this.appVersion,
+    this.entityCounts,
   });
 
   final List<Map<String, dynamic>> entities;
@@ -36,6 +39,11 @@ class ParsedUserBackup {
 
   /// Optional reminder rows (Feature 02). Maps are validated on restore.
   final List<Map<String, dynamic>> reminders;
+
+  /// Optional export metadata (ignored by older builds on import).
+  final String? exportedAt;
+  final String? appVersion;
+  final Map<String, int>? entityCounts;
 }
 
 /// Validates and parses user backup JSON. Unknown top-level keys are ignored.
@@ -101,7 +109,25 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
     profileJson: profileJson,
     notificationsEnabled: notificationsEnabled,
     reminders: reminders,
+    exportedAt: root['exportedAt']?.toString(),
+    appVersion: root['appVersion']?.toString(),
+    entityCounts: _parseEntityCounts(root['entityCounts']),
   );
+}
+
+Map<String, int>? _parseEntityCounts(dynamic raw) {
+  if (raw is! Map) return null;
+  final out = <String, int>{};
+  for (final entry in raw.entries) {
+    final key = entry.key.toString();
+    final value = entry.value;
+    if (value is int) {
+      out[key] = value;
+    } else if (value is num) {
+      out[key] = value.toInt();
+    }
+  }
+  return out.isEmpty ? null : out;
 }
 
 List<Map<String, dynamic>> _parseEntityList(dynamic raw) {
@@ -162,27 +188,53 @@ List<Map<String, dynamic>> _parseRemindersList(dynamic raw) {
 class BackupPreviewCounts {
   const BackupPreviewCounts({
     required this.customers,
+    required this.customerRecords,
     required this.plans,
     required this.executions,
+    required this.exerciseLibrary,
     required this.reminders,
   });
 
   final int customers;
+  final int customerRecords;
   final int plans;
   final int executions;
+  final int exerciseLibrary;
   final int reminders;
+
+  int get customersGroupTotal => customers + customerRecords;
 }
 
 /// Summarizes backup contents for import preview.
 BackupPreviewCounts previewCountsFromBackup(ParsedUserBackup parsed) {
+  return entityCountsFromBackupEntities(
+    parsed.entities,
+    reminders: parsed.reminders.length,
+  );
+}
+
+/// Counts for import preview and export envelope metadata.
+BackupPreviewCounts entityCountsFromBackupEntities(
+  List<Map<String, dynamic>> entities, {
+  required int reminders,
+}) {
   var customers = 0;
+  var customerRecords = 0;
   var plans = 0;
   var executions = 0;
+  var exerciseLibrary = 0;
 
-  for (final entity in parsed.entities) {
+  for (final entity in entities) {
     final type = entity['type']?.toString();
     if (type == OfflineEntityType.customer.name) {
       customers++;
+    } else if (type == OfflineEntityType.measurement.name ||
+        type == OfflineEntityType.exerciseRecord.name ||
+        type == OfflineEntityType.customerNote.name) {
+      customerRecords++;
+    }
+    if (type == OfflineEntityType.customExercise.name) {
+      exerciseLibrary++;
     }
     if (type == OfflineEntityType.workoutPlan.name ||
         entity.containsKey('planData')) {
@@ -193,10 +245,22 @@ BackupPreviewCounts previewCountsFromBackup(ParsedUserBackup parsed) {
 
   return BackupPreviewCounts(
     customers: customers,
+    customerRecords: customerRecords,
     plans: plans,
     executions: executions,
-    reminders: parsed.reminders.length,
+    exerciseLibrary: exerciseLibrary,
+    reminders: reminders,
   );
+}
+
+Map<String, int> entityCountsMapFromPreview(BackupPreviewCounts counts) {
+  return <String, int>{
+    'customers': counts.customers,
+    'customerRecords': counts.customerRecords,
+    'workoutPlans': counts.plans,
+    'exerciseLibrary': counts.exerciseLibrary,
+    'reminders': counts.reminders,
+  };
 }
 
 int _countSessionExecutionsInEntity(Map<String, dynamic> entity) {

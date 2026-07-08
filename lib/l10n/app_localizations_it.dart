@@ -2307,6 +2307,41 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String backupImportMetadata(String date, String version) {
+    return 'Backup del $date · app $version';
+  }
+
+  @override
+  String get backupImportSelectGroups => 'Scegli cosa importare';
+
+  @override
+  String get backupImportPartialReplaceHint =>
+      'I gruppi deselezionati restano invariati su questo dispositivo.';
+
+  @override
+  String backupImportGroupCustomers(int count) {
+    return 'Clienti e dati correlati ($count)';
+  }
+
+  @override
+  String backupImportGroupPlans(int count) {
+    return 'Piani workout ($count)';
+  }
+
+  @override
+  String backupImportGroupExerciseLibrary(int count) {
+    return 'Libreria esercizi ($count)';
+  }
+
+  @override
+  String backupImportGroupReminders(int count) {
+    return 'Promemoria ($count)';
+  }
+
+  @override
+  String get backupImportGroupPreferences => 'Profilo e preferenze';
+
+  @override
   String get backupImportTypeConfirm =>
       'Digita IMPORT per confermare la sostituzione di tutti i dati';
 
