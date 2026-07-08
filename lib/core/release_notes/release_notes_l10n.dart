@@ -1,0 +1,42 @@
+import '../../l10n/app_localizations.dart';
+
+/// Resolves a catalog highlight key to a localized string.
+String releaseNoteHighlight(AppLocalizations l10n, String key) {
+  return switch (key) {
+    'v107_1' => l10n.releaseNotesV1071,
+    'v107_2' => l10n.releaseNotesV1072,
+    'v107_3' => l10n.releaseNotesV1073,
+    'v107_4' => l10n.releaseNotesV1074,
+    'v107_5' => l10n.releaseNotesV1075,
+    'v106_1' => l10n.releaseNotesV1061,
+    'v106_2' => l10n.releaseNotesV1062,
+    'v106_3' => l10n.releaseNotesV1063,
+    'v106_4' => l10n.releaseNotesV1064,
+    'v105_1' => l10n.releaseNotesV1051,
+    'v105_2' => l10n.releaseNotesV1052,
+    'v105_3' => l10n.releaseNotesV1053,
+    'v105_4' => l10n.releaseNotesV1054,
+    'v105_5' => l10n.releaseNotesV1055,
+    'v104_1' => l10n.releaseNotesV1041,
+    'v104_2' => l10n.releaseNotesV1042,
+    'v104_3' => l10n.releaseNotesV1043,
+    'v104_4' => l10n.releaseNotesV1044,
+    'v104_5' => l10n.releaseNotesV1045,
+    'v103_1' => l10n.releaseNotesV1031,
+    'v103_2' => l10n.releaseNotesV1032,
+    'v103_3' => l10n.releaseNotesV1033,
+    'v103_4' => l10n.releaseNotesV1034,
+    'v102_1' => l10n.releaseNotesV1021,
+    'v102_2' => l10n.releaseNotesV1022,
+    'v102_3' => l10n.releaseNotesV1023,
+    'v102_4' => l10n.releaseNotesV1024,
+    'v101_1' => l10n.releaseNotesV1011,
+    'v101_2' => l10n.releaseNotesV1012,
+    'v101_3' => l10n.releaseNotesV1013,
+    'v101_4' => l10n.releaseNotesV1014,
+    'v101_5' => l10n.releaseNotesV1015,
+    'v101_6' => l10n.releaseNotesV1016,
+    'v101_7' => l10n.releaseNotesV1017,
+    _ => key,
+  };
+}

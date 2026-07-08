@@ -4521,6 +4521,240 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'IMPORT'**
   String get backupImportTypeConfirmHint;
+
+  /// No description provided for @releaseNotesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s new'**
+  String get releaseNotesTitle;
+
+  /// No description provided for @releaseNotesInstalledVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed version: {version}'**
+  String releaseNotesInstalledVersion(String version);
+
+  /// No description provided for @releaseNotesSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version}'**
+  String releaseNotesSettingsSubtitle(String version);
+
+  /// No description provided for @releaseNotesHighlightsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get releaseNotesHighlightsLabel;
+
+  /// No description provided for @releaseNotesCurrentVersionBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Current'**
+  String get releaseNotesCurrentVersionBadge;
+
+  /// No description provided for @releaseNotesV1071.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach hub: Diary and Stats cards on the dashboard; overflow menu on the full schedule'**
+  String get releaseNotesV1071;
+
+  /// No description provided for @releaseNotesV1072.
+  ///
+  /// In en, this message translates to:
+  /// **'From customer profile: open diary filtered by customer'**
+  String get releaseNotesV1072;
+
+  /// No description provided for @releaseNotesV1073.
+  ///
+  /// In en, this message translates to:
+  /// **'CSV progress export (adherence, PRs, measurements) from customer overview'**
+  String get releaseNotesV1073;
+
+  /// No description provided for @releaseNotesV1074.
+  ///
+  /// In en, this message translates to:
+  /// **'Dedicated superset panel in workout builder (compact preview + editor)'**
+  String get releaseNotesV1074;
+
+  /// No description provided for @releaseNotesV1075.
+  ///
+  /// In en, this message translates to:
+  /// **'Richer session log: reps and load per set in the session sheet'**
+  String get releaseNotesV1075;
+
+  /// No description provided for @releaseNotesV1061.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup: selective restore by category + export metadata (export date, entity counts)'**
+  String get releaseNotesV1061;
+
+  /// No description provided for @releaseNotesV1062.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout diary v2: date/status filters, navigable session detail'**
+  String get releaseNotesV1062;
+
+  /// No description provided for @releaseNotesV1063.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach stats: daily adherence chart + KPI CSV export'**
+  String get releaseNotesV1063;
+
+  /// No description provided for @releaseNotesV1064.
+  ///
+  /// In en, this message translates to:
+  /// **'Presentation-split builder improvements (exercise sheet, training tab)'**
+  String get releaseNotesV1064;
+
+  /// No description provided for @releaseNotesV1051.
+  ///
+  /// In en, this message translates to:
+  /// **'Session execution model (completed / skipped / planned) persisted locally'**
+  String get releaseNotesV1051;
+
+  /// No description provided for @releaseNotesV1052.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout diary and coach stats (MVP)'**
+  String get releaseNotesV1052;
+
+  /// No description provided for @releaseNotesV1053.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer progress panel: 30-day adherence, recent PRs, 4-week strip'**
+  String get releaseNotesV1053;
+
+  /// No description provided for @releaseNotesV1054.
+  ///
+  /// In en, this message translates to:
+  /// **'Session reminders linked to plan calendar'**
+  String get releaseNotesV1054;
+
+  /// No description provided for @releaseNotesV1055.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer follow-up based on real execution data'**
+  String get releaseNotesV1055;
+
+  /// No description provided for @releaseNotesV1041.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer overview with real measurement metrics (sparkline, 30-day trend)'**
+  String get releaseNotesV1041;
+
+  /// No description provided for @releaseNotesV1042.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise picker: recents and favorites in library'**
+  String get releaseNotesV1042;
+
+  /// No description provided for @releaseNotesV1043.
+  ///
+  /// In en, this message translates to:
+  /// **'Calendar session detail with real plan data'**
+  String get releaseNotesV1043;
+
+  /// No description provided for @releaseNotesV1044.
+  ///
+  /// In en, this message translates to:
+  /// **'Single-occurrence session override (reschedule without changing the plan)'**
+  String get releaseNotesV1044;
+
+  /// No description provided for @releaseNotesV1045.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan lifecycle (draft, active, completed, archived)'**
+  String get releaseNotesV1045;
+
+  /// No description provided for @releaseNotesV1031.
+  ///
+  /// In en, this message translates to:
+  /// **'Business data local-only (Drift); Supabase for authentication only'**
+  String get releaseNotesV1031;
+
+  /// No description provided for @releaseNotesV1032.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed obsolete cloud sync UX; tier 2/3 backfill tests'**
+  String get releaseNotesV1032;
+
+  /// No description provided for @releaseNotesV1033.
+  ///
+  /// In en, this message translates to:
+  /// **'Local prefs and coach profile repositories'**
+  String get releaseNotesV1033;
+
+  /// No description provided for @releaseNotesV1034.
+  ///
+  /// In en, this message translates to:
+  /// **'Modular offline store migration'**
+  String get releaseNotesV1034;
+
+  /// No description provided for @releaseNotesV1021.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout plan template library'**
+  String get releaseNotesV1021;
+
+  /// No description provided for @releaseNotesV1022.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan editor autosave + unsaved exit guard'**
+  String get releaseNotesV1022;
+
+  /// No description provided for @releaseNotesV1023.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan export PDF / JSON / Excel'**
+  String get releaseNotesV1023;
+
+  /// No description provided for @releaseNotesV1024.
+  ///
+  /// In en, this message translates to:
+  /// **'Hevy integration (export to calendar / library)'**
+  String get releaseNotesV1024;
+
+  /// No description provided for @releaseNotesV1011.
+  ///
+  /// In en, this message translates to:
+  /// **'Today dashboard and session schedule'**
+  String get releaseNotesV1011;
+
+  /// No description provided for @releaseNotesV1012.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer management, measurements, exercise records'**
+  String get releaseNotesV1012;
+
+  /// No description provided for @releaseNotesV1013.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout builder (weeks/days/exercises, basic supersets)'**
+  String get releaseNotesV1013;
+
+  /// No description provided for @releaseNotesV1014.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach calendar and plan assignment'**
+  String get releaseNotesV1014;
+
+  /// No description provided for @releaseNotesV1015.
+  ///
+  /// In en, this message translates to:
+  /// **'Local notifications and reminders'**
+  String get releaseNotesV1015;
+
+  /// No description provided for @releaseNotesV1016.
+  ///
+  /// In en, this message translates to:
+  /// **'End-to-end IT/EN localization'**
+  String get releaseNotesV1016;
+
+  /// No description provided for @releaseNotesV1017.
+  ///
+  /// In en, this message translates to:
+  /// **'Account JSON backup export/import'**
+  String get releaseNotesV1017;
 }
 
 class _AppLocalizationsDelegate

@@ -2459,4 +2459,148 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupImportTypeConfirmHint => 'IMPORT';
+
+  @override
+  String get releaseNotesTitle => 'Novità';
+
+  @override
+  String releaseNotesInstalledVersion(String version) {
+    return 'Versione installata: $version';
+  }
+
+  @override
+  String releaseNotesSettingsSubtitle(String version) {
+    return 'Versione $version';
+  }
+
+  @override
+  String get releaseNotesHighlightsLabel => 'In evidenza';
+
+  @override
+  String get releaseNotesCurrentVersionBadge => 'Corrente';
+
+  @override
+  String get releaseNotesV1071 =>
+      'Hub coach: card Diario e Statistiche dalla dashboard; menu su agenda completa';
+
+  @override
+  String get releaseNotesV1072 =>
+      'Da scheda cliente: apri diario filtrato per cliente';
+
+  @override
+  String get releaseNotesV1073 =>
+      'Export CSV riepilogo progresso (aderenza, PR, misure) da overview cliente';
+
+  @override
+  String get releaseNotesV1074 =>
+      'Pannello superset dedicato nel workout builder (anteprima compatta + editor)';
+
+  @override
+  String get releaseNotesV1075 =>
+      'Session log arricchito: reps e carico per serie nel foglio sessione';
+
+  @override
+  String get releaseNotesV1061 =>
+      'Backup: restore selettivo per categorie + metadata export (data export, conteggi entità)';
+
+  @override
+  String get releaseNotesV1062 =>
+      'Diario workout v2: filtri data/stato, dettaglio sessione navigabile';
+
+  @override
+  String get releaseNotesV1063 =>
+      'Statistiche coach: grafico aderenza giornaliera + export CSV KPI';
+
+  @override
+  String get releaseNotesV1064 =>
+      'Miglioramenti presentation-split builder (sheet esercizi, tab training)';
+
+  @override
+  String get releaseNotesV1051 =>
+      'Modello esecuzione sessione (completata / saltata / pianificata) persistito in locale';
+
+  @override
+  String get releaseNotesV1052 => 'Diario workout e statistiche coach (MVP)';
+
+  @override
+  String get releaseNotesV1053 =>
+      'Pannello progresso cliente: aderenza 30 giorni, PR recenti, strip 4 settimane';
+
+  @override
+  String get releaseNotesV1054 =>
+      'Promemoria sessioni collegati al calendario piani';
+
+  @override
+  String get releaseNotesV1055 =>
+      'Follow-up cliente basato su dati di esecuzione reali';
+
+  @override
+  String get releaseNotesV1041 =>
+      'Overview cliente con metriche reali da misure (sparkline, trend 30 gg)';
+
+  @override
+  String get releaseNotesV1042 =>
+      'Picker esercizi: recenti e preferiti in libreria';
+
+  @override
+  String get releaseNotesV1043 =>
+      'Dettaglio sessione calendario con dati piano reali';
+
+  @override
+  String get releaseNotesV1044 =>
+      'Override per singola occorrenza sessione (ripianifica senza mutare il piano)';
+
+  @override
+  String get releaseNotesV1045 =>
+      'Ciclo di vita piano (bozza, attivo, completato, archiviato)';
+
+  @override
+  String get releaseNotesV1031 =>
+      'Dati business solo locali (Drift); Supabase solo autenticazione';
+
+  @override
+  String get releaseNotesV1032 =>
+      'Rimozione UX sync cloud obsoleta; test backfill tier 2/3';
+
+  @override
+  String get releaseNotesV1033 => 'Repository prefs e profilo coach locali';
+
+  @override
+  String get releaseNotesV1034 => 'Migrazione offline store modulare';
+
+  @override
+  String get releaseNotesV1021 => 'Libreria template piani workout';
+
+  @override
+  String get releaseNotesV1022 =>
+      'Autosave editor piano + guard uscita con modifiche non salvate';
+
+  @override
+  String get releaseNotesV1023 => 'Export piano PDF / JSON / Excel';
+
+  @override
+  String get releaseNotesV1024 =>
+      'Integrazione Hevy (export verso calendario / libreria)';
+
+  @override
+  String get releaseNotesV1011 => 'Dashboard \"Oggi\" e agenda sessioni';
+
+  @override
+  String get releaseNotesV1012 => 'Gestione clienti, misure, record esercizi';
+
+  @override
+  String get releaseNotesV1013 =>
+      'Workout builder (settimane/giorni/esercizi, superset base)';
+
+  @override
+  String get releaseNotesV1014 => 'Calendario coach e assegnazione piani';
+
+  @override
+  String get releaseNotesV1015 => 'Notifiche locali e promemoria';
+
+  @override
+  String get releaseNotesV1016 => 'Localizzazione IT/EN end-to-end';
+
+  @override
+  String get releaseNotesV1017 => 'Backup export/import JSON account';
 }

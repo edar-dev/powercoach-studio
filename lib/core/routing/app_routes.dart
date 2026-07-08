@@ -18,6 +18,7 @@ import 'package:powercoach_studio/features/dashboard/presentation/screens/schedu
 import 'package:powercoach_studio/features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'package:powercoach_studio/features/landing/presentation/screens/landing_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/personal_info_screen.dart';
+import 'package:powercoach_studio/features/settings/presentation/screens/release_notes_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
@@ -85,6 +86,11 @@ List<RouteBase> buildAppRoutes() {
           path: 'subscription',
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const SubscriptionScreen(),
+        ),
+        GoRoute(
+          path: 'release-notes',
+          parentNavigatorKey: appRootNavigatorKey,
+          builder: (context, state) => const ReleaseNotesScreen(),
         ),
       ],
     ),
