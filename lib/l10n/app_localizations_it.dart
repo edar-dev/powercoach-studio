@@ -2336,6 +2336,16 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get customerProgressExport => 'Esporta progresso';
+
+  @override
+  String get customerProgressExportSuccess => 'Progresso esportato';
+
+  @override
+  String get customerProgressExportFailed =>
+      'Esportazione progresso non riuscita';
+
+  @override
   String get settingsCalendarRemindersTitle => 'Promemoria sessioni';
 
   @override

@@ -2311,6 +2311,15 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get customerProgressExport => 'Export progress';
+
+  @override
+  String get customerProgressExportSuccess => 'Progress exported';
+
+  @override
+  String get customerProgressExportFailed => 'Progress export failed';
+
+  @override
   String get settingsCalendarRemindersTitle => 'Session reminders';
 
   @override

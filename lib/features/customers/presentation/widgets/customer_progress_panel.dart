@@ -9,10 +9,12 @@ class CustomerProgressPanel extends StatelessWidget {
     super.key,
     required this.snapshot,
     required this.loading,
+    this.onExport,
   });
 
   final CustomerProgressSnapshot snapshot;
   final bool loading;
+  final VoidCallback? onExport;
 
   static const double _weekDotSize = 24;
   static const double _weekDotGap = 12;
@@ -45,18 +47,17 @@ class CustomerProgressPanel extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.customerProgressTitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                l10n.customerProgressNoData,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _PanelHeader(
+              title: l10n.customerProgressTitle,
+              exportTooltip: l10n.customerProgressExport,
+              onExport: onExport,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              l10n.customerProgressNoData,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: cs.onSurfaceVariant,
                 ),
@@ -78,11 +79,10 @@ class CustomerProgressPanel extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              l10n.customerProgressTitle,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+            _PanelHeader(
+              title: l10n.customerProgressTitle,
+              exportTooltip: l10n.customerProgressExport,
+              onExport: onExport,
             ),
             const SizedBox(height: 20),
             Row(
@@ -182,6 +182,42 @@ class CustomerProgressPanel extends StatelessWidget {
     final weeksAgo = total - 1 - index;
     if (weeksAgo == 0) return l10n.customerProgressThisWeek;
     return l10n.customerProgressWeeksAgo(weeksAgo);
+  }
+}
+
+class _PanelHeader extends StatelessWidget {
+  const _PanelHeader({
+    required this.title,
+    required this.exportTooltip,
+    this.onExport,
+  });
+
+  final String title;
+  final String exportTooltip;
+  final VoidCallback? onExport;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            title,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+        if (onExport != null)
+          IconButton(
+            tooltip: exportTooltip,
+            icon: const Icon(Icons.ios_share_outlined),
+            onPressed: onExport,
+          ),
+      ],
+    );
   }
 }
 
