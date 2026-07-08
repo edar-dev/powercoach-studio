@@ -20,8 +20,8 @@ todos:
     content: "training_week_day_panel.dart 562 → 197 righe"
     status: completed
   - id: split-settings
-    content: "settings_screen.dart (548) — preference groups / backup section"
-    status: pending
+    content: "settings_screen.dart 548 → 103 righe"
+    status: completed
   - id: split-customer-detail
     content: "customer_detail_screen.dart (494) — tab bodies già parziali, ridurre orchestrazione"
     status: pending
