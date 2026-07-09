@@ -3,11 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../data/local_coach_profile_repository.dart';
-import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../settings/presentation/settings_sign_out.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_card.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
@@ -143,12 +142,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _signOut() async {
-    final uid = SupabaseBootstrap.currentUser?.id;
-    if (uid != null) {
-      await OfflineLocalStore.instance.wipeForUser(uid);
-    }
-    await Supabase.instance.client.auth.signOut();
-    if (mounted) context.go('/');
+    await requestSignOut(context);
   }
 
   @override

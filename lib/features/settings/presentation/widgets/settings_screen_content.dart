@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/constants/app_info.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../backup_onboarding_dialog.dart';
 import '../../../integrations/hevy/presentation/hevy_settings_section.dart';
 
 /// Main settings list body (personal info, notifications, backup, language).
@@ -111,7 +112,9 @@ class SettingsScreenContent extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.settingsBackupSectionSubtitle,
+          kIsWeb
+              ? l10n.settingsBackupSectionSubtitleWeb
+              : l10n.settingsBackupSectionSubtitle,
           style: theme.textTheme.bodySmall?.copyWith(
             color: colorScheme.onSurfaceVariant,
           ),
@@ -142,6 +145,35 @@ class SettingsScreenContent extends StatelessWidget {
           ),
           trailing: const Icon(Icons.chevron_right),
           onTap: onLanguagePicker,
+        ),
+        const Divider(height: 32),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            l10n.settingsLegalSectionTitle,
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: colorScheme.primary,
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        ListTile(
+          leading: const Icon(Icons.privacy_tip_outlined),
+          title: Text(l10n.settingsLegalPrivacy),
+          trailing: const Icon(Icons.open_in_new, size: 18),
+          onTap: openPrivacyPolicy,
+        ),
+        ListTile(
+          leading: const Icon(Icons.description_outlined),
+          title: Text(l10n.settingsLegalTerms),
+          trailing: const Icon(Icons.open_in_new, size: 18),
+          onTap: openTermsOfService,
+        ),
+        ListTile(
+          leading: const Icon(Icons.person_off_outlined),
+          title: Text(l10n.settingsLegalAccountDeletion),
+          trailing: const Icon(Icons.open_in_new, size: 18),
+          onTap: openAccountDeletionInfo,
         ),
         const Divider(height: 32),
         ListTile(

@@ -97,7 +97,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 context: context,
                 l10n: l10n,
               ),
-              onSignOut: () => performSettingsSignOut(context),
+              onSignOut: () => performSettingsSignOut(
+                context,
+                onPreferencesReloaded: _loadPreferences,
+              ),
             ),
     );
   }
