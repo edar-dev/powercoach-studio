@@ -170,7 +170,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
           },
         ),
         title: Text(
-          'Add New Client',
+          l10n.customersNewCustomer,
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             color: colorScheme.onSurface,
@@ -344,7 +344,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'By adding a client, they will receive a welcome email automatically.',
+                  l10n.customerCreationLocalDataHint,
                   style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
                   textAlign: TextAlign.center,
                 ),

@@ -351,7 +351,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsBackupImportConfirmMessage =>
-      'Elimina tutti i dati offline per il tuo account su questo dispositivo e li sostituisce con il file di backup. I dati sul server restano invariati fino alla sincronizzazione. Il file deve appartenere all’account con cui hai effettuato l’accesso.';
+      'Elimina tutti i dati offline per il tuo account su questo dispositivo e li sostituisce con il file di backup. Gli altri dispositivi non vengono aggiornati automaticamente. Il file deve appartenere all’account con cui hai effettuato l’accesso.';
 
   @override
   String get settingsBackupImportConfirmReplace => 'Sostituisci dati locali';
@@ -380,7 +380,63 @@ class AppLocalizationsIt extends AppLocalizations {
       'Questo formato di backup non è supportato da questa versione dell’app.';
 
   @override
+  String get settingsBackupSectionSubtitleWeb =>
+      'I dati del coach sono salvati in questo browser. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo.';
+
+  @override
   String get settingsBackupErrorInvalidFile => 'File di backup non valido.';
+
+  @override
+  String get settingsLegalSectionTitle => 'Legale e privacy';
+
+  @override
+  String get settingsLegalPrivacy => 'Informativa privacy';
+
+  @override
+  String get settingsLegalTerms => 'Termini di servizio';
+
+  @override
+  String get settingsLegalAccountDeletion => 'Cancellazione account';
+
+  @override
+  String get signOutConfirmTitle => 'Uscire e rimuovere i dati locali?';
+
+  @override
+  String get signOutConfirmMessage =>
+      'Uscendo elimini clienti, piani workout e impostazioni salvati su questo dispositivo per il tuo account. Esporta un backup prima se vuoi conservarne una copia.';
+
+  @override
+  String get signOutConfirmCancel => 'Annulla';
+
+  @override
+  String get signOutConfirmExportFirst => 'Esporta backup';
+
+  @override
+  String get signOutConfirmProceed => 'Esci comunque';
+
+  @override
+  String get backupOnboardingTitle => 'Proteggi i tuoi dati da coach';
+
+  @override
+  String get backupOnboardingMessage =>
+      'PowerCoach Studio salva clienti e piani workout su questo dispositivo. Se cancelli i dati del browser o esci, le informazioni vengono rimosse salvo backup.';
+
+  @override
+  String get backupOnboardingWebHint =>
+      'Consigliamo di esportare un backup JSON da Impostazioni dopo la prima sessione e quando fai modifiche importanti.';
+
+  @override
+  String get backupOnboardingOpenSettings => 'Apri impostazioni';
+
+  @override
+  String get backupOnboardingExportNow => 'Esporta backup ora';
+
+  @override
+  String get backupOnboardingGotIt => 'Ho capito';
+
+  @override
+  String get customerCreationLocalDataHint =>
+      'I dati del cliente sono salvati localmente su questo dispositivo. Non viene inviata alcuna email di benvenuto.';
 
   @override
   String get customersTitle => 'Clienti';

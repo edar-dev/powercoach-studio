@@ -353,7 +353,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsBackupImportConfirmMessage =>
-      'This deletes all offline data for your account on this device and replaces it with the backup file. Server data is unchanged until sync. The file must belong to this signed-in account.';
+      'This deletes all offline data for your account on this device and replaces it with the backup file. Other devices are not updated automatically. The file must belong to this signed-in account.';
 
   @override
   String get settingsBackupImportConfirmReplace => 'Replace local data';
@@ -380,7 +380,63 @@ class AppLocalizationsEn extends AppLocalizations {
       'This backup format is not supported by this app version.';
 
   @override
+  String get settingsBackupSectionSubtitleWeb =>
+      'Your coach data is stored in this browser. Export a JSON backup regularly so you can restore it or move to another device.';
+
+  @override
   String get settingsBackupErrorInvalidFile => 'Invalid backup file.';
+
+  @override
+  String get settingsLegalSectionTitle => 'Legal & privacy';
+
+  @override
+  String get settingsLegalPrivacy => 'Privacy policy';
+
+  @override
+  String get settingsLegalTerms => 'Terms of service';
+
+  @override
+  String get settingsLegalAccountDeletion => 'Account deletion';
+
+  @override
+  String get signOutConfirmTitle => 'Sign out and remove local data?';
+
+  @override
+  String get signOutConfirmMessage =>
+      'Signing out deletes all clients, workout plans, and settings stored on this device for your account. Export a backup first if you want to keep a copy.';
+
+  @override
+  String get signOutConfirmCancel => 'Cancel';
+
+  @override
+  String get signOutConfirmExportFirst => 'Export backup';
+
+  @override
+  String get signOutConfirmProceed => 'Sign out anyway';
+
+  @override
+  String get backupOnboardingTitle => 'Protect your coach data';
+
+  @override
+  String get backupOnboardingMessage =>
+      'PowerCoach Studio stores your clients and workout plans on this device. If you clear browser data or sign out, that information is removed unless you have a backup file.';
+
+  @override
+  String get backupOnboardingWebHint =>
+      'We recommend exporting a JSON backup from Settings after your first session and whenever you make important changes.';
+
+  @override
+  String get backupOnboardingOpenSettings => 'Open settings';
+
+  @override
+  String get backupOnboardingExportNow => 'Export backup now';
+
+  @override
+  String get backupOnboardingGotIt => 'Got it';
+
+  @override
+  String get customerCreationLocalDataHint =>
+      'Client data is saved locally on this device. No welcome email is sent.';
 
   @override
   String get customersTitle => 'Customers';

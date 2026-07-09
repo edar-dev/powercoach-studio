@@ -749,7 +749,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupImportConfirmMessage.
   ///
   /// In en, this message translates to:
-  /// **'This deletes all offline data for your account on this device and replaces it with the backup file. Server data is unchanged until sync. The file must belong to this signed-in account.'**
+  /// **'This deletes all offline data for your account on this device and replaces it with the backup file. Other devices are not updated automatically. The file must belong to this signed-in account.'**
   String get settingsBackupImportConfirmMessage;
 
   /// No description provided for @settingsBackupImportConfirmReplace.
@@ -794,11 +794,113 @@ abstract class AppLocalizations {
   /// **'This backup format is not supported by this app version.'**
   String get settingsBackupErrorUnsupportedSchema;
 
+  /// No description provided for @settingsBackupSectionSubtitleWeb.
+  ///
+  /// In en, this message translates to:
+  /// **'Your coach data is stored in this browser. Export a JSON backup regularly so you can restore it or move to another device.'**
+  String get settingsBackupSectionSubtitleWeb;
+
   /// No description provided for @settingsBackupErrorInvalidFile.
   ///
   /// In en, this message translates to:
   /// **'Invalid backup file.'**
   String get settingsBackupErrorInvalidFile;
+
+  /// No description provided for @settingsLegalSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Legal & privacy'**
+  String get settingsLegalSectionTitle;
+
+  /// No description provided for @settingsLegalPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get settingsLegalPrivacy;
+
+  /// No description provided for @settingsLegalTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get settingsLegalTerms;
+
+  /// No description provided for @settingsLegalAccountDeletion.
+  ///
+  /// In en, this message translates to:
+  /// **'Account deletion'**
+  String get settingsLegalAccountDeletion;
+
+  /// No description provided for @signOutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out and remove local data?'**
+  String get signOutConfirmTitle;
+
+  /// No description provided for @signOutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing out deletes all clients, workout plans, and settings stored on this device for your account. Export a backup first if you want to keep a copy.'**
+  String get signOutConfirmMessage;
+
+  /// No description provided for @signOutConfirmCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get signOutConfirmCancel;
+
+  /// No description provided for @signOutConfirmExportFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup'**
+  String get signOutConfirmExportFirst;
+
+  /// No description provided for @signOutConfirmProceed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out anyway'**
+  String get signOutConfirmProceed;
+
+  /// No description provided for @backupOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect your coach data'**
+  String get backupOnboardingTitle;
+
+  /// No description provided for @backupOnboardingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio stores your clients and workout plans on this device. If you clear browser data or sign out, that information is removed unless you have a backup file.'**
+  String get backupOnboardingMessage;
+
+  /// No description provided for @backupOnboardingWebHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We recommend exporting a JSON backup from Settings after your first session and whenever you make important changes.'**
+  String get backupOnboardingWebHint;
+
+  /// No description provided for @backupOnboardingOpenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open settings'**
+  String get backupOnboardingOpenSettings;
+
+  /// No description provided for @backupOnboardingExportNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Export backup now'**
+  String get backupOnboardingExportNow;
+
+  /// No description provided for @backupOnboardingGotIt.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get backupOnboardingGotIt;
+
+  /// No description provided for @customerCreationLocalDataHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Client data is saved locally on this device. No welcome email is sent.'**
+  String get customerCreationLocalDataHint;
 
   /// No description provided for @customersTitle.
   ///

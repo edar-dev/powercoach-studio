@@ -7,6 +7,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
+import '../../../settings/presentation/backup_onboarding_prompt.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
@@ -33,6 +34,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   final DashboardSnapshotLoader _loader = DashboardSnapshotLoader();
   DashboardSnapshot? _snapshot;
   bool _loading = true;
+  bool _backupOnboardingScheduled = false;
 
   @override
   void initState() {
@@ -61,6 +63,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       _snapshot = snap;
       _loading = false;
     });
+    if (!_backupOnboardingScheduled && widget.loadSnapshot == null) {
+      _backupOnboardingScheduled = true;
+      await maybeShowBackupOnboardingIfNeeded(context);
+    }
   }
 
   @override

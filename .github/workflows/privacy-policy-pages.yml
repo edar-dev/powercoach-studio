@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "docs/privacy-policy/**"
+      - "docs/terms-of-service/**"
+      - "docs/account-deletion/**"
       - ".github/workflows/privacy-policy-pages.yml"
   workflow_dispatch:
 
