@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
@@ -87,7 +87,7 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
           TextButton.icon(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              context.push('/customers');
+              navigateTo(context, '/customers');
             },
             icon: const Icon(Icons.people_outline, size: 20),
             label: Text(l10n.customersTitle),
@@ -97,7 +97,7 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
             child: TextButton.icon(
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                context.push('/profile');
+                navigateTo(context, '/profile');
               },
               icon: const Icon(Icons.person_outline, size: 20),
               label: Text(l10n.headerProfile),
@@ -107,7 +107,7 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
           TextButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              context.push('/login');
+              navigateTo(context, '/login');
             },
             child: Text(l10n.headerLogin),
           ),
@@ -117,7 +117,7 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
             child: FilledButton(
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                context.push('/register');
+                navigateTo(context, '/register');
               },
               style: FilledButton.styleFrom(
                 shape: RoundedRectangleBorder(

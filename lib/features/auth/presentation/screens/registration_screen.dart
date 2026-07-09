@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -264,7 +265,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         TextButton(
                           onPressed: () {
                             HapticFeedback.mediumImpact();
-                            context.push('/login');
+                            navigateTo(context, '/login');
                           },
                           child: Text(l10n.registrationLoginLink),
                         ),

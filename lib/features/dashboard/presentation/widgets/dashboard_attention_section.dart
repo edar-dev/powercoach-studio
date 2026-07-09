@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
+
+import '../../../../core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'dashboard_empty_placeholder.dart';
@@ -43,7 +44,7 @@ class DashboardAttentionSection extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.push('/settings');
+                  navigateTo(context, '/settings');
                 },
                 child: Text(l10n.dashboardOpenBackupSettings),
               ),

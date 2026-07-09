@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Navigation drawer for the coach dashboard shell.
@@ -43,7 +44,7 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/workouts/builder');
+                if (context.mounted) navigateTo(context, '/workouts/builder');
               },
             ),
             ListTile(
@@ -53,7 +54,7 @@ class DashboardDrawer extends StatelessWidget {
               ),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/workouts/templates');
+                if (context.mounted) navigateTo(context, '/workouts/templates');
               },
             ),
             ListTile(
@@ -61,7 +62,7 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).exerciseLibraryTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/exercise-library');
+                if (context.mounted) navigateTo(context, '/exercise-library');
               },
             ),
             const Divider(),
@@ -70,7 +71,7 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).headerProfile),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/profile');
+                if (context.mounted) navigateTo(context, '/profile');
               },
             ),
             ListTile(
@@ -78,7 +79,7 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).settingsTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/settings');
+                if (context.mounted) navigateTo(context, '/settings');
               },
             ),
           ],
