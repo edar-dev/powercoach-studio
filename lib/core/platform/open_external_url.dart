@@ -1,8 +1,2 @@
-import 'package:flutter/foundation.dart';
-import 'package:web/web.dart' as web;
-
-/// Opens [url] in a new browser tab on web.
-void openExternalUrl(String url) {
-  if (!kIsWeb) return;
-  web.window.open(url, '_blank');
-}
+export 'open_external_url_stub.dart'
+    if (dart.library.html) 'open_external_url_web.dart';
