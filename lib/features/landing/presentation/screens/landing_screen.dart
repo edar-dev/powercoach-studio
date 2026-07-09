@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../widgets/landing_cta_section.dart';
 import '../widgets/landing_features_section.dart';
@@ -104,9 +104,9 @@ class _LandingScreenState extends State<LandingScreen> {
               onPrimary: () {
                 HapticFeedback.mediumImpact();
                 if (isLoggedIn) {
-                  context.push('/profile');
+                  navigateTo(context, '/profile');
                 } else {
-                  context.push('/register');
+                  navigateTo(context, '/register');
                 }
               },
               onSecondary: () {
@@ -144,9 +144,9 @@ class _LandingScreenState extends State<LandingScreen> {
                 onCta: () {
                   HapticFeedback.mediumImpact();
                   if (isLoggedIn) {
-                    context.push('/profile');
+                    navigateTo(context, '/profile');
                   } else {
-                    context.push('/login');
+                    navigateTo(context, '/login');
                   }
                 },
               ),

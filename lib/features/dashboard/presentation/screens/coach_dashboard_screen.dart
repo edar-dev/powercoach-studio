@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
@@ -104,7 +105,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             icon: const Icon(Icons.person_outline),
             onPressed: () {
               HapticFeedback.mediumImpact();
-              context.push('/profile');
+              navigateTo(context, '/profile');
             },
           ),
         ],

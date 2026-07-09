@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -120,7 +119,7 @@ class DashboardSummaryFooter extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.push('/workouts/builder');
+                  navigateTo(context, '/workouts/builder');
                 },
                 icon: const Icon(Icons.fitness_center, size: 20),
                 label: Text(l10n.dashboardCreateProgram),

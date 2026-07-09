@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_bottom_nav.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
@@ -82,7 +82,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           },
           onOpenTemplates: () {
             HapticFeedback.mediumImpact();
-            context.push('/workouts/templates');
+            navigateTo(context, '/workouts/templates');
           },
           onImportJson: onImportJson,
           onExport: onExport,

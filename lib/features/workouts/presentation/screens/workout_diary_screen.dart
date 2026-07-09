@@ -113,7 +113,8 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
 
   void _openEntry(SessionExecutionEntry entry) {
     HapticFeedback.selectionClick();
-    context.push(
+    navigateTo(
+      context,
       workoutDiaryEntryPath(
         planId: entry.planId,
         sessionKey: entry.execution.sessionKey,

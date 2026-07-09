@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -219,7 +220,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: TextButton(
                               onPressed: () {
                                 HapticFeedback.mediumImpact();
-                                context.push('/forgot-password');
+                                navigateTo(context, '/forgot-password');
                               },
                               child: Text(l10n.loginForgotPassword),
                             ),
@@ -255,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               TextButton(
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
-                                  context.push('/register');
+                                  navigateTo(context, '/register');
                                 },
                                 child: Text(l10n.loginRegisterLink),
                               ),

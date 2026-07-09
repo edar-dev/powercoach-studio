@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
@@ -255,9 +256,7 @@ class _WorkoutPlanTemplatesScreenState
       path: '/workouts/editor/${template.id}',
       queryParameters: const {'customerId': kWorkoutPlanTemplateScopeId},
     );
-    context.push(uri.toString()).then((_) {
-      if (mounted) _load();
-    });
+    navigateTo(context, uri.toString());
   }
 
   void _openNewTemplate() {
@@ -266,9 +265,7 @@ class _WorkoutPlanTemplatesScreenState
       path: '/workouts/editor',
       queryParameters: const {'customerId': kWorkoutPlanTemplateScopeId},
     );
-    context.push(uri.toString()).then((_) {
-      if (mounted) _load();
-    });
+    navigateTo(context, uri.toString());
   }
 
   Widget _buildTemplateTile(
