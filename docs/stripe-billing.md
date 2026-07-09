@@ -11,6 +11,17 @@ PowerCoach Studio web subscriptions use **Stripe Checkout** + **Customer Portal*
 | **Trial** | None | — |
 | **Grace** | 7 days after cancel | `pro_until` keeps Pro gates open |
 
+## Deployed endpoints (gym-blog / `owtkzvphhapjdfibmebl`)
+
+| Function | URL |
+|----------|-----|
+| get-entitlement | `https://owtkzvphhapjdfibmebl.supabase.co/functions/v1/get-entitlement` |
+| create-checkout-session | `https://owtkzvphhapjdfibmebl.supabase.co/functions/v1/create-checkout-session` |
+| create-portal-session | `https://owtkzvphhapjdfibmebl.supabase.co/functions/v1/create-portal-session` |
+| stripe-webhook | `https://owtkzvphhapjdfibmebl.supabase.co/functions/v1/stripe-webhook` |
+
+Confirm this matches your production `SUPABASE_URL` in Vercel/GitHub secrets before wiring the Flutter client.
+
 ## Prerequisites
 
 1. [Stripe account](https://dashboard.stripe.com) (test mode first)

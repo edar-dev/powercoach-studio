@@ -1,5 +1,5 @@
 # Supabase local / deploy config (billing Edge Functions).
-project_id = "your-project-ref"
+project_id = "owtkzvphhapjdfibmebl"
 
 [api]
 enabled = true
