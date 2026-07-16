@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -51,6 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
+
+      await EntitlementRepository.instance.refresh();
 
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);

@@ -87,6 +87,26 @@
   "subscriptionPlanPro": "Pro",
   "subscriptionUpgrade": "Upgrade",
   "subscriptionManage": "Manage subscription",
+  "subscriptionUpgradeMonthly": "Pro — €12/month",
+  "subscriptionUpgradeYearly": "Pro — €99/year",
+  "subscriptionCheckoutSuccess": "Subscription updated. Thank you!",
+  "subscriptionCheckoutError": "Could not start checkout. Please try again.",
+  "subscriptionPortalError": "Could not open the subscription portal.",
+  "subscriptionWebOnlyHint": "Pro upgrade is available on the web app.",
+  "paywallTitle": "Pro feature",
+  "paywallMessageCustomers": "The Free plan includes up to {maxCustomers} active clients. Upgrade to Pro for unlimited clients.",
+  "@paywallMessageCustomers": {
+    "placeholders": {
+      "maxCustomers": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallMessageExport": "Client progress CSV export is included in PowerCoach Pro.",
+  "paywallMessageHevy": "Hevy integration is included in PowerCoach Pro.",
+  "paywallMessageWorkoutExport": "Workout PDF and Excel export is included in PowerCoach Pro.",
+  "paywallUpgradeCta": "Upgrade to Pro",
+  "paywallNotNow": "Not now",
   "settingsNotificationsDescription": "Local reminders for sessions and clients",
   "settingsNotificationPermissionDenied": "Notifications are disabled. Enable them in system settings to turn this on.",
   "reminderWebNotSupported": "Reminders are not supported in the web version of the app.",

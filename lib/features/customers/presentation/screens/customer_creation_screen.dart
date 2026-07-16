@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -70,27 +71,36 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     final colorScheme = theme.colorScheme;
 
     setState(() => _saving = true);
-    final customer = Customer(
-      id: '',
-      userId: user.id,
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
-      phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-      dateOfBirth: null,
-      heightCm: double.tryParse(_heightController.text.trim()),
-      weightKg: double.tryParse(_weightController.text.trim()),
-      notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-      goals: _goalsController.text.trim().isEmpty ? null : _goalsController.text.trim(),
-      pdfHeader: null,
-      useCustomPdfHeader: false,
-      isFavorite: false,
-      isArchived: false,
-      lastPlanUpdateDate: null,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
     try {
+      final existing = await _repo.getAll();
+      final activeCount = existing.where((c) => !c.isArchived).length;
+      if (!await PlanGate.canAddCustomer(activeCount)) {
+        if (!mounted) return;
+        setState(() => _saving = false);
+        await PlanGate.requirePro(context, feature: PaywallFeature.customers);
+        return;
+      }
+
+      final customer = Customer(
+        id: '',
+        userId: user.id,
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
+        phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
+        dateOfBirth: null,
+        heightCm: double.tryParse(_heightController.text.trim()),
+        weightKg: double.tryParse(_weightController.text.trim()),
+        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        goals: _goalsController.text.trim().isEmpty ? null : _goalsController.text.trim(),
+        pdfHeader: null,
+        useCustomPdfHeader: false,
+        isFavorite: false,
+        isArchived: false,
+        lastPlanUpdateDate: null,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
       final created = await _repo.create(customer);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

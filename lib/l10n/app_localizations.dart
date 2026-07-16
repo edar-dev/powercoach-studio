@@ -620,6 +620,84 @@ abstract class AppLocalizations {
   /// **'Manage subscription'**
   String get subscriptionManage;
 
+  /// No description provided for @subscriptionUpgradeMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro — €12/month'**
+  String get subscriptionUpgradeMonthly;
+
+  /// No description provided for @subscriptionUpgradeYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro — €99/year'**
+  String get subscriptionUpgradeYearly;
+
+  /// No description provided for @subscriptionCheckoutSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription updated. Thank you!'**
+  String get subscriptionCheckoutSuccess;
+
+  /// No description provided for @subscriptionCheckoutError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not start checkout. Please try again.'**
+  String get subscriptionCheckoutError;
+
+  /// No description provided for @subscriptionPortalError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open the subscription portal.'**
+  String get subscriptionPortalError;
+
+  /// No description provided for @subscriptionWebOnlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro upgrade is available on the web app.'**
+  String get subscriptionWebOnlyHint;
+
+  /// No description provided for @paywallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro feature'**
+  String get paywallTitle;
+
+  /// No description provided for @paywallMessageCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'The Free plan includes up to {maxCustomers} active clients. Upgrade to Pro for unlimited clients.'**
+  String paywallMessageCustomers(int maxCustomers);
+
+  /// No description provided for @paywallMessageExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Client progress CSV export is included in PowerCoach Pro.'**
+  String get paywallMessageExport;
+
+  /// No description provided for @paywallMessageHevy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hevy integration is included in PowerCoach Pro.'**
+  String get paywallMessageHevy;
+
+  /// No description provided for @paywallMessageWorkoutExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout PDF and Excel export is included in PowerCoach Pro.'**
+  String get paywallMessageWorkoutExport;
+
+  /// No description provided for @paywallUpgradeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get paywallUpgradeCta;
+
+  /// No description provided for @paywallNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get paywallNotNow;
+
   /// No description provided for @settingsNotificationsDescription.
   ///
   /// In en, this message translates to:

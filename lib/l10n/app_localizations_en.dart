@@ -280,6 +280,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionManage => 'Manage subscription';
 
   @override
+  String get subscriptionUpgradeMonthly => 'Pro — €12/month';
+
+  @override
+  String get subscriptionUpgradeYearly => 'Pro — €99/year';
+
+  @override
+  String get subscriptionCheckoutSuccess => 'Subscription updated. Thank you!';
+
+  @override
+  String get subscriptionCheckoutError =>
+      'Could not start checkout. Please try again.';
+
+  @override
+  String get subscriptionPortalError =>
+      'Could not open the subscription portal.';
+
+  @override
+  String get subscriptionWebOnlyHint =>
+      'Pro upgrade is available on the web app.';
+
+  @override
+  String get paywallTitle => 'Pro feature';
+
+  @override
+  String paywallMessageCustomers(int maxCustomers) {
+    return 'The Free plan includes up to $maxCustomers active clients. Upgrade to Pro for unlimited clients.';
+  }
+
+  @override
+  String get paywallMessageExport =>
+      'Client progress CSV export is included in PowerCoach Pro.';
+
+  @override
+  String get paywallMessageHevy =>
+      'Hevy integration is included in PowerCoach Pro.';
+
+  @override
+  String get paywallMessageWorkoutExport =>
+      'Workout PDF and Excel export is included in PowerCoach Pro.';
+
+  @override
+  String get paywallUpgradeCta => 'Upgrade to Pro';
+
+  @override
+  String get paywallNotNow => 'Not now';
+
+  @override
   String get settingsNotificationsDescription =>
       'Local reminders for sessions and clients';
 

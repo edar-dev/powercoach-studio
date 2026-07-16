@@ -87,6 +87,26 @@
   "subscriptionPlanPro": "Pro",
   "subscriptionUpgrade": "Passa a Pro",
   "subscriptionManage": "Gestisci abbonamento",
+  "subscriptionUpgradeMonthly": "Pro — 12 €/mese",
+  "subscriptionUpgradeYearly": "Pro — 99 €/anno",
+  "subscriptionCheckoutSuccess": "Abbonamento aggiornato. Grazie!",
+  "subscriptionCheckoutError": "Impossibile avviare il pagamento. Riprova.",
+  "subscriptionPortalError": "Impossibile aprire il portale abbonamento.",
+  "subscriptionWebOnlyHint": "L'upgrade Pro è disponibile sulla versione web.",
+  "paywallTitle": "Funzione Pro",
+  "paywallMessageCustomers": "Il piano Gratuito include fino a {maxCustomers} clienti attivi. Passa a Pro per clienti illimitati.",
+  "@paywallMessageCustomers": {
+    "placeholders": {
+      "maxCustomers": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallMessageExport": "L'export CSV del progresso cliente è incluso in PowerCoach Pro.",
+  "paywallMessageHevy": "L'integrazione Hevy è inclusa in PowerCoach Pro.",
+  "paywallMessageWorkoutExport": "L'export PDF ed Excel degli allenamenti è incluso in PowerCoach Pro.",
+  "paywallUpgradeCta": "Passa a Pro",
+  "paywallNotNow": "Non ora",
   "settingsNotificationsDescription": "Promemoria locali per sessioni e clienti",
   "settingsNotificationPermissionDenied": "Le notifiche sono disattivate. Abilitale nelle impostazioni di sistema per attivare questa opzione.",
   "reminderWebNotSupported": "I promemoria non sono supportati nella versione web dell'app.",

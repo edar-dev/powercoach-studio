@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
+import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels_l10n.dart';
 import 'package:powercoach_studio/core/pdf/pdf_plan_metadata.dart';
@@ -75,6 +76,11 @@ class WorkoutBuilderExportActions {
     required WorkoutPdfLayout layout,
     required bool includeMobility,
   }) async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.workoutExport)) {
+      return;
+    }
+    if (!context.mounted) return;
+
     final l10n = AppLocalizations.of(context);
     final labels = l10n.toPdfExportLabels();
     final resolved = namedRoutine(routine);
@@ -194,6 +200,11 @@ class WorkoutBuilderExportActions {
   }
 
   Future<void> exportExcel(WorkoutRoutine routine) async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.workoutExport)) {
+      return;
+    }
+    if (!context.mounted) return;
+
     final l10n = AppLocalizations.of(context);
     try {
       final artifact = await exportWorkoutRoutineToExcel(namedRoutine(routine));
@@ -224,6 +235,11 @@ class WorkoutBuilderExportActions {
     required int selectedWeekIndex,
     required int selectedDayIndex,
   }) async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.hevy)) {
+      return;
+    }
+    if (!context.mounted) return;
+
     final l10n = AppLocalizations.of(context);
     final hasKey = await HevySettingsStore.instance.hasApiKey();
     if (!hasKey) {
