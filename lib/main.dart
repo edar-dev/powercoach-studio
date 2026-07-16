@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
@@ -115,6 +116,9 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
       if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
         await SupabaseBootstrap.ensureInitialized();
         _logStartupStep('Supabase init completed', _bootstrapWatch);
+        if (SupabaseBootstrap.currentUser != null) {
+          unawaited(EntitlementRepository.instance.refresh());
+        }
       } else {
         SupabaseBootstrap.markAuthReadyWithoutSupabase();
         _logStartupStep(

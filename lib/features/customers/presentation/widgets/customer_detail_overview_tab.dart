@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
@@ -238,6 +239,11 @@ class CustomerDetailOverviewTab extends StatelessWidget {
     BuildContext context,
     AppLocalizations l10n,
   ) async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.exportProgress)) {
+      return;
+    }
+    if (!context.mounted) return;
+
     final snapshot = progressSnapshot;
     if (snapshot == null) return;
 

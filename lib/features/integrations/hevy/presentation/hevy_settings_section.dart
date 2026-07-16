@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../data/hevy_api_client.dart';
 import '../data/hevy_api_models.dart';
@@ -43,6 +44,11 @@ class _HevySettingsSectionState extends State<HevySettingsSection> {
   }
 
   Future<void> _saveKey() async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.hevy)) {
+      return;
+    }
+    if (!mounted) return;
+
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
