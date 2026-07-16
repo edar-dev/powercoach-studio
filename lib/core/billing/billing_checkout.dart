@@ -18,18 +18,43 @@ abstract final class BillingCheckout {
     BillingInterval interval = BillingInterval.monthly,
   }) async {
     await SupabaseBootstrap.ensureInitialized();
-    final response = await Supabase.instance.client.functions.invoke(
-      'create-checkout-session',
-      body: <String, String>{
-        'billingInterval': interval.name,
-        'successUrl': '$_returnBase?checkout=success',
-        'cancelUrl': '$_returnBase?checkout=cancel',
-      },
-    );
+    final response = await _invoke('create-checkout-session', <String, String>{
+      'billingInterval': interval.name,
+      'successUrl': '$_returnBase?checkout=success',
+      'cancelUrl': '$_returnBase?checkout=cancel',
+    });
 
+    final url = _readUrl(response);
+    openExternalUrl(url);
+    return url;
+  }
+
+  static Future<String> openCustomerPortal() async {
+    await SupabaseBootstrap.ensureInitialized();
+    final response = await _invoke('create-portal-session', <String, String>{
+      'returnUrl': _returnBase,
+    });
+
+    final url = _readUrl(response);
+    openExternalUrl(url);
+    return url;
+  }
+
+  static Future<FunctionResponse> _invoke(
+    String name,
+    Map<String, String> body,
+  ) async {
+    try {
+      return await Supabase.instance.client.functions.invoke(name, body: body);
+    } on FunctionException catch (e) {
+      throw BillingCheckoutException(_messageFromFunctionException(e));
+    }
+  }
+
+  static String _readUrl(FunctionResponse response) {
     final data = response.data;
     if (data is! Map<String, dynamic>) {
-      throw BillingCheckoutException('Unexpected checkout response');
+      throw BillingCheckoutException('Unexpected billing response');
     }
 
     final error = data['error']?.toString();
@@ -42,36 +67,18 @@ abstract final class BillingCheckout {
       throw BillingCheckoutException('Missing checkout URL');
     }
 
-    openExternalUrl(url);
     return url;
   }
 
-  static Future<String> openCustomerPortal() async {
-    await SupabaseBootstrap.ensureInitialized();
-    final response = await Supabase.instance.client.functions.invoke(
-      'create-portal-session',
-      body: <String, String>{
-        'returnUrl': _returnBase,
-      },
-    );
-
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-      throw BillingCheckoutException('Unexpected portal response');
+  static String _messageFromFunctionException(FunctionException e) {
+    final details = e.details;
+    if (details is Map && details['error'] != null) {
+      return details['error'].toString();
     }
-
-    final error = data['error']?.toString();
-    if (error != null && error.isNotEmpty) {
-      throw BillingCheckoutException(error);
+    if (details is String && details.isNotEmpty) {
+      return details;
     }
-
-    final url = data['url']?.toString();
-    if (url == null || url.isEmpty) {
-      throw BillingCheckoutException('Missing portal URL');
-    }
-
-    openExternalUrl(url);
-    return url;
+    return e.reasonPhrase ?? 'Billing request failed (${e.status})';
   }
 }
 

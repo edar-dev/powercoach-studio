@@ -52,8 +52,8 @@ Most catalog items are already created. **Supabase Edge Function secrets** must 
 |--------|--------|
 | `STRIPE_SECRET_KEY` | `sk_test_...` from [API keys](https://dashboard.stripe.com/acct_1TrIHj2Ls7JojLJZ/apikeys) |
 | `STRIPE_WEBHOOK_SECRET` | `whsec_...` from [Webhooks → signing secret](https://dashboard.stripe.com/test/webhooks/we_1Ts5Iv2Ls7JojLJZ4h6iroAU) |
-| `STRIPE_PRICE_ID_MONTHLY` | `price_1TrOOs2Ls7JojLJZijEv3TUK` — **exact name** (not `MONTLY`) |
-| `STRIPE_PRICE_ID_YEARLY` | `price_1TrOOr2Ls7JojLJZok7d6j7l` |
+| `STRIPE_PRICE_ID_MONTHLY` | `price_1TrOOs2Ls7JojLJZijEv3TUK` — no trailing `.` or spaces |
+| `STRIPE_PRICE_ID_YEARLY` | `price_1TrOOr2Ls7JojLJZok7d6j7l` — no trailing `.` or spaces |
 
 Re-run for a new Stripe account or live mode:
 

@@ -49,3 +49,12 @@ export function corsHeaders(origin: string | null): HeadersInit {
       'authorization, x-client-info, apikey, content-type',
   };
 }
+
+/** Reads Edge Function secrets, trimming whitespace and trailing dots from copy-paste. */
+export function readBillingEnv(name: string): string {
+  const raw = Deno.env.get(name);
+  if (!raw) throw new Error(`Missing ${name}`);
+  const value = raw.trim().replace(/\.+$/, '');
+  if (!value) throw new Error(`Missing ${name}`);
+  return value;
+}

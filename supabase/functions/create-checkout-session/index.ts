@@ -1,5 +1,5 @@
 import Stripe from 'npm:stripe@17.7.0';
-import { corsHeaders } from '../_shared/billing.ts';
+import { corsHeaders, readBillingEnv } from '../_shared/billing.ts';
 import { createAdminClient, createUserClient } from '../_shared/supabase_admin.ts';
 
 type CheckoutBody = {
@@ -14,14 +14,10 @@ function resolvePriceId(body: CheckoutBody): string {
 
   const interval = body.billingInterval ?? 'monthly';
   if (interval === 'yearly') {
-    const yearly = Deno.env.get('STRIPE_PRICE_ID_YEARLY');
-    if (!yearly) throw new Error('Missing STRIPE_PRICE_ID_YEARLY');
-    return yearly;
+    return readBillingEnv('STRIPE_PRICE_ID_YEARLY');
   }
 
-  const monthly = Deno.env.get('STRIPE_PRICE_ID_MONTHLY');
-  if (!monthly) throw new Error('Missing STRIPE_PRICE_ID_MONTHLY');
-  return monthly;
+  return readBillingEnv('STRIPE_PRICE_ID_MONTHLY');
 }
 
 Deno.serve(async (req) => {
@@ -64,8 +60,7 @@ Deno.serve(async (req) => {
       });
     }
 
-    const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY');
-    if (!stripeSecret) throw new Error('Missing STRIPE_SECRET_KEY');
+    const stripeSecret = readBillingEnv('STRIPE_SECRET_KEY');
 
     const stripe = new Stripe(stripeSecret, {
       apiVersion: '2024-11-20.acacia',
