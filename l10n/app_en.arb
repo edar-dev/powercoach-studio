@@ -148,6 +148,90 @@
   "subscriptionCompareWorkoutExport": "Workout PDF/Excel export",
   "subscriptionCompareNotIncluded": "—",
   "subscriptionPromoHint": "Have a promo code? You can enter it on the Stripe checkout page.",
+  "subscriptionBillingDetailsTitle": "Billing",
+  "subscriptionBillingCycleLabel": "Billing cycle",
+  "subscriptionBillingAmountLabel": "Amount",
+  "subscriptionBillingRenewalLabel": "Renewal",
+  "subscriptionBillingIntervalMonthly": "Monthly",
+  "subscriptionBillingIntervalYearly": "Yearly",
+  "subscriptionBillingPriceMonthly": "{amount}/month",
+  "@subscriptionBillingPriceMonthly": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionBillingPriceYearly": "{amount}/year",
+  "@subscriptionBillingPriceYearly": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionProActionsTitle": "Manage subscription",
+  "subscriptionProActionPaymentMethod": "Update payment method",
+  "subscriptionProActionSwitchYearly": "Switch to yearly plan",
+  "subscriptionProActionSwitchYearlyHint": "Save about €45/year compared to monthly.",
+  "subscriptionProActionSwitchMonthly": "Switch to monthly plan",
+  "subscriptionProActionInvoices": "View invoices",
+  "subscriptionProActionCancel": "Cancel subscription",
+  "billingAlertPastDue": "Your Pro subscription payment failed.",
+  "billingAlertUpdatePayment": "Update payment",
+  "billingAlertGraceEnding": "Pro access ends in {days} days.",
+  "@billingAlertGraceEnding": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "billingAlertManageSubscription": "Manage subscription",
+  "paywallMessageCustomersAtLimit": "You reached the limit of {current}/{max} active clients. Upgrade to Pro to add more.",
+  "@paywallMessageCustomersAtLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallMessageCustomersNearLimit": "You have {current}/{max} active clients. Pro gives you unlimited clients.",
+  "@paywallMessageCustomersNearLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "customerListUpgradeAtLimit": "Limit reached ({current}/{max} clients). Upgrade to Pro to add more.",
+  "@customerListUpgradeAtLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "customerListUpgradeNearLimit": "You're close to the Free limit ({current}/{max} clients). Upgrade to Pro.",
+  "@customerListUpgradeNearLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "paywallTitle": "Pro feature",
   "paywallMessageCustomers": "The Free plan includes up to {maxCustomers} active clients. Upgrade to Pro for unlimited clients.",
   "@paywallMessageCustomers": {

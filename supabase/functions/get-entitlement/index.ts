@@ -5,14 +5,6 @@ import {
 } from '../_shared/billing.ts';
 import { createAdminClient, createUserClient } from '../_shared/supabase_admin.ts';
 
-type EntitlementResponse = {
-  plan: 'free' | 'pro';
-  subscriptionPlan: 'free' | 'pro';
-  status: string;
-  currentPeriodEnd: string | null;
-  proUntil: string | null;
-};
-
 async function loadOrCreateEntitlement(
   userId: string,
 ): Promise<BillingEntitlementRow> {
@@ -36,6 +28,17 @@ async function loadOrCreateEntitlement(
   return inserted as BillingEntitlementRow;
 }
 
+type EntitlementResponse = {
+  plan: 'free' | 'pro';
+  subscriptionPlan: 'free' | 'pro';
+  status: string;
+  currentPeriodEnd: string | null;
+  proUntil: string | null;
+  billingInterval: 'monthly' | 'yearly' | null;
+  priceAmountCents: number | null;
+  currency: string | null;
+};
+
 function toResponse(row: BillingEntitlementRow): EntitlementResponse {
   return {
     plan: effectivePlan(row),
@@ -43,6 +46,9 @@ function toResponse(row: BillingEntitlementRow): EntitlementResponse {
     status: row.status,
     currentPeriodEnd: row.current_period_end,
     proUntil: row.pro_until,
+    billingInterval: row.billing_interval,
+    priceAmountCents: row.price_amount_cents,
+    currency: row.currency,
   };
 }
 

@@ -8,6 +8,7 @@ import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../../settings/presentation/backup_onboarding_prompt.dart';
+import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
@@ -129,6 +130,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const BillingAlertBanner(),
               if (_loading && snap == null)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 48),

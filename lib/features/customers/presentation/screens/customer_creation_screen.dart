@@ -77,7 +77,11 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
       if (!await PlanGate.canAddCustomer(activeCount)) {
         if (!mounted) return;
         setState(() => _saving = false);
-        await PlanGate.requirePro(context, feature: PaywallFeature.customers);
+        await PlanGate.requirePro(
+          context,
+          feature: PaywallFeature.customers,
+          activeCustomerCount: activeCount,
+        );
         return;
       }
 

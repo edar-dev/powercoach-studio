@@ -135,7 +135,10 @@ Returns effective plan for gating:
   "subscriptionPlan": "free",
   "status": "none",
   "currentPeriodEnd": null,
-  "proUntil": null
+  "proUntil": null,
+  "billingInterval": null,
+  "priceAmountCents": null,
+  "currency": "eur"
 }
 ```
 
@@ -163,9 +166,12 @@ Body:
 
 ```json
 {
-  "returnUrl": "https://powercoach-studio.vercel.app/settings/subscription"
+  "returnUrl": "https://powercoach-studio.vercel.app/settings/subscription",
+  "flow": "payment_method"
 }
 ```
+
+Optional `flow`: `payment_method`, `subscription_update`, `subscription_cancel` (opens Stripe Customer Portal on the matching screen). Omit for the default portal home (invoices, etc.).
 
 Response: `{ "url": "https://billing.stripe.com/..." }`
 

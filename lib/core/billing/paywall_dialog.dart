@@ -14,10 +14,14 @@ enum PaywallFeature {
 Future<void> showPaywallDialog(
   BuildContext context, {
   required PaywallFeature feature,
+  int? activeCustomerCount,
 }) {
   final l10n = AppLocalizations.of(context);
   final message = switch (feature) {
-    PaywallFeature.customers => l10n.paywallMessageCustomers(PlanLimits.maxActiveCustomers),
+    PaywallFeature.customers => _customersMessage(
+        l10n,
+        activeCustomerCount: activeCustomerCount,
+      ),
     PaywallFeature.exportProgress => l10n.paywallMessageExport,
     PaywallFeature.hevy => l10n.paywallMessageHevy,
     PaywallFeature.workoutExport => l10n.paywallMessageWorkoutExport,
@@ -45,4 +49,18 @@ Future<void> showPaywallDialog(
       );
     },
   );
+}
+
+String _customersMessage(
+  AppLocalizations l10n, {
+  int? activeCustomerCount,
+}) {
+  final max = PlanLimits.maxActiveCustomers;
+  if (activeCustomerCount != null && activeCustomerCount >= max) {
+    return l10n.paywallMessageCustomersAtLimit(activeCustomerCount, max);
+  }
+  if (activeCustomerCount != null && activeCustomerCount >= max - 1) {
+    return l10n.paywallMessageCustomersNearLimit(activeCustomerCount, max);
+  }
+  return l10n.paywallMessageCustomers(max);
 }

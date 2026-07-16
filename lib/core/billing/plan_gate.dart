@@ -30,10 +30,15 @@ abstract final class PlanGate {
   static Future<bool> requirePro(
     BuildContext context, {
     required PaywallFeature feature,
+    int? activeCustomerCount,
   }) async {
     if (await isPro()) return true;
     if (!context.mounted) return false;
-    await showPaywallDialog(context, feature: feature);
+    await showPaywallDialog(
+      context,
+      feature: feature,
+      activeCustomerCount: activeCustomerCount,
+    );
     return false;
   }
 }

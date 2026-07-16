@@ -800,6 +800,144 @@ abstract class AppLocalizations {
   /// **'Have a promo code? You can enter it on the Stripe checkout page.'**
   String get subscriptionPromoHint;
 
+  /// No description provided for @subscriptionBillingDetailsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing'**
+  String get subscriptionBillingDetailsTitle;
+
+  /// No description provided for @subscriptionBillingCycleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Billing cycle'**
+  String get subscriptionBillingCycleLabel;
+
+  /// No description provided for @subscriptionBillingAmountLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get subscriptionBillingAmountLabel;
+
+  /// No description provided for @subscriptionBillingRenewalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewal'**
+  String get subscriptionBillingRenewalLabel;
+
+  /// No description provided for @subscriptionBillingIntervalMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly'**
+  String get subscriptionBillingIntervalMonthly;
+
+  /// No description provided for @subscriptionBillingIntervalYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get subscriptionBillingIntervalYearly;
+
+  /// No description provided for @subscriptionBillingPriceMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount}/month'**
+  String subscriptionBillingPriceMonthly(String amount);
+
+  /// No description provided for @subscriptionBillingPriceYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount}/year'**
+  String subscriptionBillingPriceYearly(String amount);
+
+  /// No description provided for @subscriptionProActionsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get subscriptionProActionsTitle;
+
+  /// No description provided for @subscriptionProActionPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Update payment method'**
+  String get subscriptionProActionPaymentMethod;
+
+  /// No description provided for @subscriptionProActionSwitchYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to yearly plan'**
+  String get subscriptionProActionSwitchYearly;
+
+  /// No description provided for @subscriptionProActionSwitchYearlyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save about €45/year compared to monthly.'**
+  String get subscriptionProActionSwitchYearlyHint;
+
+  /// No description provided for @subscriptionProActionSwitchMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch to monthly plan'**
+  String get subscriptionProActionSwitchMonthly;
+
+  /// No description provided for @subscriptionProActionInvoices.
+  ///
+  /// In en, this message translates to:
+  /// **'View invoices'**
+  String get subscriptionProActionInvoices;
+
+  /// No description provided for @subscriptionProActionCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel subscription'**
+  String get subscriptionProActionCancel;
+
+  /// No description provided for @billingAlertPastDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Pro subscription payment failed.'**
+  String get billingAlertPastDue;
+
+  /// No description provided for @billingAlertUpdatePayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Update payment'**
+  String get billingAlertUpdatePayment;
+
+  /// No description provided for @billingAlertGraceEnding.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro access ends in {days} days.'**
+  String billingAlertGraceEnding(int days);
+
+  /// No description provided for @billingAlertManageSubscription.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get billingAlertManageSubscription;
+
+  /// No description provided for @paywallMessageCustomersAtLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached the limit of {current}/{max} active clients. Upgrade to Pro to add more.'**
+  String paywallMessageCustomersAtLimit(int current, int max);
+
+  /// No description provided for @paywallMessageCustomersNearLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You have {current}/{max} active clients. Pro gives you unlimited clients.'**
+  String paywallMessageCustomersNearLimit(int current, int max);
+
+  /// No description provided for @customerListUpgradeAtLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'Limit reached ({current}/{max} clients). Upgrade to Pro to add more.'**
+  String customerListUpgradeAtLimit(int current, int max);
+
+  /// No description provided for @customerListUpgradeNearLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re close to the Free limit ({current}/{max} clients). Upgrade to Pro.'**
+  String customerListUpgradeNearLimit(int current, int max);
+
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:

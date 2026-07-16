@@ -8,6 +8,7 @@ import 'package:powercoach_studio/l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
 import '../customer_list_contacts_import.dart';
+import '../widgets/customer_list_upgrade_banner.dart';
 import '../widgets/customer_list_app_bar.dart';
 import '../widgets/customer_list_empty_body.dart';
 import '../widgets/customer_list_error_body.dart';
@@ -72,10 +73,17 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final activeCount = _customers.where((c) => !c.isArchived).length;
+
     return Scaffold(
       backgroundColor: colorScheme.surfaceContainerHighest,
       appBar: CustomerListAppBar(title: l10n.customersTitle),
-      body: RefreshIndicator(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CustomerListUpgradeBanner(activeCustomerCount: activeCount),
+          Expanded(
+            child: RefreshIndicator(
         onRefresh: _load,
         child: _loading
             ? const Center(child: CircularProgressIndicator())
@@ -104,6 +112,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 onFilterChipSelected: (i) =>
                     setState(() => _filterChipIndex = i),
               ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: _error == null
           ? FloatingActionButton.extended(
