@@ -6,7 +6,9 @@ import 'package:powercoach_studio/core/billing/billing_checkout.dart';
 import 'package:powercoach_studio/core/billing/entitlement_models.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/billing/plan_usage.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_billing_details_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_plan_compare_card.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_pro_actions_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_status_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_usage_card.dart';
 
@@ -134,7 +136,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     }
   }
 
-  Future<void> _openPortal() async {
+  Future<void> _openPortal([PortalFlow flow = PortalFlow.defaultFlow]) async {
     if (!kIsWeb) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context).subscriptionWebOnlyHint)),
@@ -145,7 +147,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final l10n = AppLocalizations.of(context);
     setState(() => _busy = true);
     try {
-      await BillingCheckout.openCustomerPortal();
+      await BillingCheckout.openCustomerPortal(flow: flow);
     } on BillingCheckoutException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -203,6 +205,16 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                     ],
                     const SizedBox(height: 16),
                     const SubscriptionPlanCompareCard(),
+                    if (isPro) ...[
+                      const SizedBox(height: 16),
+                      SubscriptionBillingDetailsCard(entitlement: entitlement),
+                      const SizedBox(height: 16),
+                      SubscriptionProActionsCard(
+                        entitlement: entitlement,
+                        busy: _busy,
+                        onPortalOpened: _openPortal,
+                      ),
+                    ],
                     const SizedBox(height: 16),
                     if (!isPro) ...[
                       FilledButton(
@@ -222,11 +234,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           color: cs.onSurfaceVariant,
                         ),
                       ),
-                    ] else
+                    ] else ...[
                       OutlinedButton(
-                        onPressed: _busy ? null : _openPortal,
+                        onPressed: _busy ? null : () => _openPortal(),
                         child: Text(l10n.subscriptionManage),
                       ),
+                    ],
                   ],
                 ),
               ),

@@ -32,6 +32,13 @@ async function upsertFromSubscription(
   const admin = createAdminClient();
   const status = mapStripeStatus(subscription.status);
   const isPro = status === 'active' || status === 'trialing';
+  const price = subscription.items.data[0]?.price;
+  const recurringInterval = price?.recurring?.interval;
+  const billingInterval = recurringInterval === 'year'
+    ? 'yearly'
+    : recurringInterval === 'month'
+    ? 'monthly'
+    : null;
 
   const payload: Record<string, unknown> = {
     user_id: userId,
@@ -42,6 +49,9 @@ async function upsertFromSubscription(
       ? new Date(subscription.current_period_end * 1000).toISOString()
       : null,
     pro_until: null,
+    billing_interval: billingInterval,
+    price_amount_cents: price?.unit_amount ?? null,
+    currency: price?.currency ?? 'eur',
     updated_at: new Date().toISOString(),
   };
 

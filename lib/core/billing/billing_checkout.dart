@@ -5,6 +5,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'entitlement_models.dart';
 
+enum PortalFlow {
+  defaultFlow('default'),
+  paymentMethod('payment_method'),
+  subscriptionUpdate('subscription_update'),
+  subscriptionCancel('subscription_cancel');
+
+  const PortalFlow(this.apiValue);
+
+  final String apiValue;
+}
+
 /// Stripe Checkout / Customer Portal via Supabase Edge Functions (web redirect).
 abstract final class BillingCheckout {
   static String get _returnBase {
@@ -29,11 +40,15 @@ abstract final class BillingCheckout {
     return url;
   }
 
-  static Future<String> openCustomerPortal() async {
+  static Future<String> openCustomerPortal({
+    PortalFlow flow = PortalFlow.defaultFlow,
+  }) async {
     await SupabaseBootstrap.ensureInitialized();
-    final response = await _invoke('create-portal-session', <String, String>{
+    final body = <String, String>{
       'returnUrl': _returnBase,
-    });
+      if (flow != PortalFlow.defaultFlow) 'flow': flow.apiValue,
+    };
+    final response = await _invoke('create-portal-session', body);
 
     final url = _readUrl(response);
     openExternalUrl(url);

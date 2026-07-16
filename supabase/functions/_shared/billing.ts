@@ -16,6 +16,9 @@ export type BillingEntitlementRow = {
   status: BillingStatus;
   current_period_end: string | null;
   pro_until: string | null;
+  billing_interval: 'monthly' | 'yearly' | null;
+  price_amount_cents: number | null;
+  currency: string;
   updated_at: string;
 };
 

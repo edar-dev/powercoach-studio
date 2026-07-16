@@ -1,10 +1,41 @@
 import Stripe from 'npm:stripe@17.7.0';
-import { corsHeaders } from '../_shared/billing.ts';
+import { corsHeaders, readBillingEnv } from '../_shared/billing.ts';
 import { createAdminClient, createUserClient } from '../_shared/supabase_admin.ts';
+
+type PortalFlow =
+  | 'default'
+  | 'payment_method'
+  | 'subscription_update'
+  | 'subscription_cancel';
 
 type PortalBody = {
   returnUrl: string;
+  flow?: PortalFlow;
 };
+
+function buildFlowData(
+  flow: PortalFlow | undefined,
+  subscriptionId: string | null,
+): Stripe.BillingPortal.SessionCreateParams.FlowData | undefined {
+  switch (flow) {
+    case 'payment_method':
+      return { type: 'payment_method_update' };
+    case 'subscription_cancel':
+      if (!subscriptionId) return undefined;
+      return {
+        type: 'subscription_cancel',
+        subscription_cancel: { subscription: subscriptionId },
+      };
+    case 'subscription_update':
+      if (!subscriptionId) return undefined;
+      return {
+        type: 'subscription_update',
+        subscription_update: { subscription: subscriptionId },
+      };
+    default:
+      return undefined;
+  }
+}
 
 Deno.serve(async (req) => {
   const origin = req.headers.get('Origin');
@@ -49,7 +80,7 @@ Deno.serve(async (req) => {
     const admin = createAdminClient();
     const { data: entitlement, error: loadError } = await admin
       .from('billing_entitlements')
-      .select('stripe_customer_id')
+      .select('stripe_customer_id, stripe_subscription_id')
       .eq('user_id', userData.user.id)
       .maybeSingle();
 
@@ -66,16 +97,17 @@ Deno.serve(async (req) => {
       );
     }
 
-    const stripeSecret = Deno.env.get('STRIPE_SECRET_KEY');
-    if (!stripeSecret) throw new Error('Missing STRIPE_SECRET_KEY');
-
-    const stripe = new Stripe(stripeSecret, {
+    const stripe = new Stripe(readBillingEnv('STRIPE_SECRET_KEY'), {
       apiVersion: '2024-11-20.acacia',
     });
+
+    const subscriptionId = entitlement?.stripe_subscription_id as string | null;
+    const flowData = buildFlowData(body.flow, subscriptionId);
 
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
       return_url: body.returnUrl,
+      ...(flowData ? { flow_data: flowData } : {}),
     });
 
     return new Response(JSON.stringify({ url: session.url }), {

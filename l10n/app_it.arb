@@ -148,6 +148,90 @@
   "subscriptionCompareWorkoutExport": "Export PDF/Excel allenamenti",
   "subscriptionCompareNotIncluded": "—",
   "subscriptionPromoHint": "Hai un codice promo? Potrai inserirlo nel checkout Stripe.",
+  "subscriptionBillingDetailsTitle": "Fatturazione",
+  "subscriptionBillingCycleLabel": "Ciclo",
+  "subscriptionBillingAmountLabel": "Importo",
+  "subscriptionBillingRenewalLabel": "Rinnovo",
+  "subscriptionBillingIntervalMonthly": "Mensile",
+  "subscriptionBillingIntervalYearly": "Annuale",
+  "subscriptionBillingPriceMonthly": "{amount}/mese",
+  "@subscriptionBillingPriceMonthly": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionBillingPriceYearly": "{amount}/anno",
+  "@subscriptionBillingPriceYearly": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionProActionsTitle": "Gestisci abbonamento",
+  "subscriptionProActionPaymentMethod": "Aggiorna metodo di pagamento",
+  "subscriptionProActionSwitchYearly": "Passa al piano annuale",
+  "subscriptionProActionSwitchYearlyHint": "Risparmia circa 45 €/anno rispetto al mensile.",
+  "subscriptionProActionSwitchMonthly": "Passa al piano mensile",
+  "subscriptionProActionInvoices": "Visualizza fatture",
+  "subscriptionProActionCancel": "Cancella abbonamento",
+  "billingAlertPastDue": "Il pagamento dell'abbonamento Pro non è andato a buon fine.",
+  "billingAlertUpdatePayment": "Aggiorna il pagamento",
+  "billingAlertGraceEnding": "L'accesso Pro termina tra {days} giorni.",
+  "@billingAlertGraceEnding": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "billingAlertManageSubscription": "Gestisci abbonamento",
+  "paywallMessageCustomersAtLimit": "Hai raggiunto il limite di {current}/{max} clienti attivi. Passa a Pro per aggiungerne altri.",
+  "@paywallMessageCustomersAtLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "paywallMessageCustomersNearLimit": "Hai {current}/{max} clienti attivi. Con Pro puoi gestirne quanti ne vuoi.",
+  "@paywallMessageCustomersNearLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "customerListUpgradeAtLimit": "Limite raggiunto ({current}/{max} clienti). Passa a Pro per aggiungerne altri.",
+  "@customerListUpgradeAtLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "customerListUpgradeNearLimit": "Stai per raggiungere il limite Free ({current}/{max} clienti). Passa a Pro.",
+  "@customerListUpgradeNearLimit": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
   "paywallTitle": "Funzione Pro",
   "paywallMessageCustomers": "Il piano Gratuito include fino a {maxCustomers} clienti attivi. Passa a Pro per clienti illimitati.",
   "@paywallMessageCustomers": {

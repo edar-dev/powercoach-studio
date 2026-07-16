@@ -17,6 +17,9 @@ class Entitlement {
     required this.status,
     this.currentPeriodEnd,
     this.proUntil,
+    this.billingInterval,
+    this.priceAmountCents,
+    this.currency,
   });
 
   final BillingPlan plan;
@@ -24,6 +27,9 @@ class Entitlement {
   final BillingStatus status;
   final DateTime? currentPeriodEnd;
   final DateTime? proUntil;
+  final BillingInterval? billingInterval;
+  final int? priceAmountCents;
+  final String? currency;
 
   bool get isPro => plan == BillingPlan.pro;
 
@@ -34,6 +40,9 @@ class Entitlement {
       status: _parseStatus(json['status']),
       currentPeriodEnd: _parseDate(json['currentPeriodEnd']),
       proUntil: _parseDate(json['proUntil']),
+      billingInterval: _parseInterval(json['billingInterval']),
+      priceAmountCents: _parseInt(json['priceAmountCents']),
+      currency: json['currency']?.toString(),
     );
   }
 
@@ -49,6 +58,20 @@ class Entitlement {
       'canceled' => BillingStatus.canceled,
       _ => BillingStatus.none,
     };
+  }
+
+  static BillingInterval? _parseInterval(Object? value) {
+    return switch (value?.toString()) {
+      'yearly' => BillingInterval.yearly,
+      'monthly' => BillingInterval.monthly,
+      _ => null,
+    };
+  }
+
+  static int? _parseInt(Object? value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    return int.tryParse(value.toString());
   }
 
   static DateTime? _parseDate(Object? value) {

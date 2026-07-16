@@ -385,6 +385,92 @@ class AppLocalizationsIt extends AppLocalizations {
       'Hai un codice promo? Potrai inserirlo nel checkout Stripe.';
 
   @override
+  String get subscriptionBillingDetailsTitle => 'Fatturazione';
+
+  @override
+  String get subscriptionBillingCycleLabel => 'Ciclo';
+
+  @override
+  String get subscriptionBillingAmountLabel => 'Importo';
+
+  @override
+  String get subscriptionBillingRenewalLabel => 'Rinnovo';
+
+  @override
+  String get subscriptionBillingIntervalMonthly => 'Mensile';
+
+  @override
+  String get subscriptionBillingIntervalYearly => 'Annuale';
+
+  @override
+  String subscriptionBillingPriceMonthly(String amount) {
+    return '$amount/mese';
+  }
+
+  @override
+  String subscriptionBillingPriceYearly(String amount) {
+    return '$amount/anno';
+  }
+
+  @override
+  String get subscriptionProActionsTitle => 'Gestisci abbonamento';
+
+  @override
+  String get subscriptionProActionPaymentMethod =>
+      'Aggiorna metodo di pagamento';
+
+  @override
+  String get subscriptionProActionSwitchYearly => 'Passa al piano annuale';
+
+  @override
+  String get subscriptionProActionSwitchYearlyHint =>
+      'Risparmia circa 45 €/anno rispetto al mensile.';
+
+  @override
+  String get subscriptionProActionSwitchMonthly => 'Passa al piano mensile';
+
+  @override
+  String get subscriptionProActionInvoices => 'Visualizza fatture';
+
+  @override
+  String get subscriptionProActionCancel => 'Cancella abbonamento';
+
+  @override
+  String get billingAlertPastDue =>
+      'Il pagamento dell\'abbonamento Pro non è andato a buon fine.';
+
+  @override
+  String get billingAlertUpdatePayment => 'Aggiorna il pagamento';
+
+  @override
+  String billingAlertGraceEnding(int days) {
+    return 'L\'accesso Pro termina tra $days giorni.';
+  }
+
+  @override
+  String get billingAlertManageSubscription => 'Gestisci abbonamento';
+
+  @override
+  String paywallMessageCustomersAtLimit(int current, int max) {
+    return 'Hai raggiunto il limite di $current/$max clienti attivi. Passa a Pro per aggiungerne altri.';
+  }
+
+  @override
+  String paywallMessageCustomersNearLimit(int current, int max) {
+    return 'Hai $current/$max clienti attivi. Con Pro puoi gestirne quanti ne vuoi.';
+  }
+
+  @override
+  String customerListUpgradeAtLimit(int current, int max) {
+    return 'Limite raggiunto ($current/$max clienti). Passa a Pro per aggiungerne altri.';
+  }
+
+  @override
+  String customerListUpgradeNearLimit(int current, int max) {
+    return 'Stai per raggiungere il limite Free ($current/$max clienti). Passa a Pro.';
+  }
+
+  @override
   String get paywallTitle => 'Funzione Pro';
 
   @override
