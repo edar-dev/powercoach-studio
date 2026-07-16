@@ -155,6 +155,8 @@ Body:
 
 Response: `{ "url": "https://checkout.stripe.com/..." }`
 
+Promotion codes are enabled on Checkout (`allow_promotion_codes: true`). Users can enter beta or campaign coupons on the Stripe page.
+
 ### `POST /functions/v1/create-portal-session`
 
 Body:

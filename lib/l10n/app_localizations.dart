@@ -656,6 +656,150 @@ abstract class AppLocalizations {
   /// **'Pro upgrade is available on the web app.'**
   String get subscriptionWebOnlyHint;
 
+  /// No description provided for @subscriptionStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get subscriptionStatusActive;
+
+  /// No description provided for @subscriptionStatusTrialing.
+  ///
+  /// In en, this message translates to:
+  /// **'Trialing'**
+  String get subscriptionStatusTrialing;
+
+  /// No description provided for @subscriptionStatusPastDue.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment past due'**
+  String get subscriptionStatusPastDue;
+
+  /// No description provided for @subscriptionStatusPastDueDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Update your payment method in the subscription portal to avoid service interruption.'**
+  String get subscriptionStatusPastDueDetail;
+
+  /// No description provided for @subscriptionStatusGrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Canceling'**
+  String get subscriptionStatusGrace;
+
+  /// No description provided for @subscriptionStatusGraceUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro access until {date}.'**
+  String subscriptionStatusGraceUntil(String date);
+
+  /// No description provided for @subscriptionStatusRenewsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Next renewal: {date}.'**
+  String subscriptionStatusRenewsOn(String date);
+
+  /// No description provided for @subscriptionStatusExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get subscriptionStatusExpired;
+
+  /// No description provided for @subscriptionStatusExpiredDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Pro subscription is no longer active.'**
+  String get subscriptionStatusExpiredDetail;
+
+  /// No description provided for @subscriptionStatusFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get subscriptionStatusFree;
+
+  /// No description provided for @subscriptionStatusFreeDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro for unlimited clients and advanced exports.'**
+  String get subscriptionStatusFreeDetail;
+
+  /// No description provided for @subscriptionUsageTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free plan usage'**
+  String get subscriptionUsageTitle;
+
+  /// No description provided for @subscriptionUsageCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {max} active clients'**
+  String subscriptionUsageCustomers(int current, int max);
+
+  /// No description provided for @subscriptionUsageNearLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You are close to the Free plan client limit.'**
+  String get subscriptionUsageNearLimit;
+
+  /// No description provided for @subscriptionUsageAtLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'You reached the active client limit. Upgrade to Pro to add more.'**
+  String get subscriptionUsageAtLimit;
+
+  /// No description provided for @subscriptionCompareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s included'**
+  String get subscriptionCompareTitle;
+
+  /// No description provided for @subscriptionCompareFeatureColumn.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature'**
+  String get subscriptionCompareFeatureColumn;
+
+  /// No description provided for @subscriptionCompareCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active clients'**
+  String get subscriptionCompareCustomers;
+
+  /// No description provided for @subscriptionCompareCustomersFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {max}'**
+  String subscriptionCompareCustomersFree(int max);
+
+  /// No description provided for @subscriptionCompareProgressExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress CSV export'**
+  String get subscriptionCompareProgressExport;
+
+  /// No description provided for @subscriptionCompareHevy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hevy integration'**
+  String get subscriptionCompareHevy;
+
+  /// No description provided for @subscriptionCompareWorkoutExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout PDF/Excel export'**
+  String get subscriptionCompareWorkoutExport;
+
+  /// No description provided for @subscriptionCompareNotIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get subscriptionCompareNotIncluded;
+
+  /// No description provided for @subscriptionPromoHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Have a promo code? You can enter it on the Stripe checkout page.'**
+  String get subscriptionPromoHint;
+
   /// No description provided for @paywallTitle.
   ///
   /// In en, this message translates to:

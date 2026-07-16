@@ -5,8 +5,11 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/billing_checkout.dart';
 import 'package:powercoach_studio/core/billing/entitlement_models.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
+import 'package:powercoach_studio/core/billing/plan_usage.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_plan_compare_card.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_status_card.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_usage_card.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
@@ -21,14 +24,16 @@ class SubscriptionScreen extends StatefulWidget {
 class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _isLoading = true;
   bool _busy = false;
-  BillingPlan _plan = BillingPlan.free;
   bool _checkoutHandled = false;
+  Entitlement? _entitlement;
+  int _activeCustomerCount = 0;
+  final PlanUsage _planUsage = PlanUsage();
 
   @override
   void initState() {
     super.initState();
     EntitlementRepository.instance.entitlement.addListener(_onEntitlementChanged);
-    _loadPlan();
+    _load();
   }
 
   @override
@@ -40,26 +45,32 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void _onEntitlementChanged() {
     final value = EntitlementRepository.instance.cached;
     if (value == null || !mounted) return;
-    setState(() => _plan = value.plan);
+    setState(() => _entitlement = value);
   }
 
-  Future<void> _loadPlan() async {
+  Future<void> _load() async {
     final user = SupabaseBootstrap.currentUser;
     if (user == null) {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          _plan = BillingPlan.free;
+          _entitlement = null;
+          _activeCustomerCount = 0;
         });
       }
       return;
     }
 
-    final entitlement = await EntitlementRepository.instance.refresh();
+    final results = await Future.wait([
+      EntitlementRepository.instance.refresh(),
+      _planUsage.countActiveCustomers(),
+    ]);
+
     if (!mounted) return;
     setState(() {
       _isLoading = false;
-      _plan = entitlement?.plan ?? BillingPlan.free;
+      _entitlement = results[0] as Entitlement?;
+      _activeCustomerCount = results[1] as int;
     });
   }
 
@@ -76,7 +87,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   Future<void> _handleCheckoutReturn(String checkout) async {
     final l10n = AppLocalizations.of(context);
     if (checkout == 'success') {
-      await EntitlementRepository.instance.refresh();
+      await _load();
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -88,7 +99,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   String _planLabel(AppLocalizations l10n) {
-    return _plan == BillingPlan.pro
+    final plan = _entitlement?.plan ?? BillingPlan.free;
+    return plan == BillingPlan.pro
         ? l10n.subscriptionPlanPro
         : l10n.subscriptionPlanFree;
   }
@@ -156,65 +168,67 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final isPro = _plan == BillingPlan.pro;
+    final entitlement = _entitlement ??
+        const Entitlement(
+          plan: BillingPlan.free,
+          subscriptionPlan: BillingPlan.free,
+          status: BillingStatus.none,
+        );
+    final isPro = entitlement.isPro;
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
       appBar: StitchSecondaryAppBar(title: l10n.settingsSubscriptionTitle),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Card(
-                    elevation: 0,
-                    color: cs.surface,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                      side: BorderSide(color: cs.outline),
+          : RefreshIndicator(
+              onRefresh: _load,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SubscriptionStatusCard(
+                      entitlement: entitlement,
+                      planLabel: _planLabel(l10n),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.subscriptionCurrentPlan,
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: cs.onSurfaceVariant,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            _planLabel(l10n),
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: cs.onSurface,
-                            ),
-                          ),
-                        ],
+                    if (!isPro) ...[
+                      const SizedBox(height: 16),
+                      SubscriptionUsageCard(
+                        activeCustomerCount: _activeCustomerCount,
+                        nearLimit: _planUsage.isNearCustomerLimit(_activeCustomerCount),
+                        atLimit: _planUsage.isAtCustomerLimit(_activeCustomerCount),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (!isPro) ...[
-                    FilledButton(
-                      onPressed: _busy ? null : () => _startCheckout(BillingInterval.monthly),
-                      child: Text(l10n.subscriptionUpgradeMonthly),
-                    ),
-                    const SizedBox(height: 8),
-                    OutlinedButton(
-                      onPressed: _busy ? null : () => _startCheckout(BillingInterval.yearly),
-                      child: Text(l10n.subscriptionUpgradeYearly),
-                    ),
-                  ] else
-                    OutlinedButton(
-                      onPressed: _busy ? null : _openPortal,
-                      child: Text(l10n.subscriptionManage),
-                    ),
-                ],
+                    ],
+                    const SizedBox(height: 16),
+                    const SubscriptionPlanCompareCard(),
+                    const SizedBox(height: 16),
+                    if (!isPro) ...[
+                      FilledButton(
+                        onPressed: _busy ? null : () => _startCheckout(BillingInterval.monthly),
+                        child: Text(l10n.subscriptionUpgradeMonthly),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton(
+                        onPressed: _busy ? null : () => _startCheckout(BillingInterval.yearly),
+                        child: Text(l10n.subscriptionUpgradeYearly),
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.subscriptionPromoHint,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: cs.onSurfaceVariant,
+                        ),
+                      ),
+                    ] else
+                      OutlinedButton(
+                        onPressed: _busy ? null : _openPortal,
+                        child: Text(l10n.subscriptionManage),
+                      ),
+                  ],
+                ),
               ),
             ),
     );

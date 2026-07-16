@@ -93,6 +93,61 @@
   "subscriptionCheckoutError": "Impossibile avviare il pagamento. Riprova.",
   "subscriptionPortalError": "Impossibile aprire il portale abbonamento.",
   "subscriptionWebOnlyHint": "L'upgrade Pro è disponibile sulla versione web.",
+  "subscriptionStatusActive": "Attivo",
+  "subscriptionStatusTrialing": "In prova",
+  "subscriptionStatusPastDue": "Pagamento in sospeso",
+  "subscriptionStatusPastDueDetail": "Aggiorna il metodo di pagamento dal portale abbonamento per evitare l'interruzione del servizio.",
+  "subscriptionStatusGrace": "In cancellazione",
+  "subscriptionStatusGraceUntil": "Accesso Pro fino al {date}.",
+  "@subscriptionStatusGraceUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionStatusRenewsOn": "Prossimo rinnovo: {date}.",
+  "@subscriptionStatusRenewsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionStatusExpired": "Scaduto",
+  "subscriptionStatusExpiredDetail": "Il tuo abbonamento Pro non è più attivo.",
+  "subscriptionStatusFree": "Gratuito",
+  "subscriptionStatusFreeDetail": "Passa a Pro per sbloccare clienti illimitati ed export avanzati.",
+  "subscriptionUsageTitle": "Utilizzo piano Gratuito",
+  "subscriptionUsageCustomers": "{current} / {max} clienti attivi",
+  "@subscriptionUsageCustomers": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionUsageNearLimit": "Stai per raggiungere il limite del piano Gratuito.",
+  "subscriptionUsageAtLimit": "Hai raggiunto il limite di clienti attivi. Passa a Pro per aggiungerne altri.",
+  "subscriptionCompareTitle": "Cosa include ogni piano",
+  "subscriptionCompareFeatureColumn": "Funzione",
+  "subscriptionCompareCustomers": "Clienti attivi",
+  "subscriptionCompareCustomersFree": "Fino a {max}",
+  "@subscriptionCompareCustomersFree": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionCompareProgressExport": "Export CSV progressi",
+  "subscriptionCompareHevy": "Integrazione Hevy",
+  "subscriptionCompareWorkoutExport": "Export PDF/Excel allenamenti",
+  "subscriptionCompareNotIncluded": "—",
+  "subscriptionPromoHint": "Hai un codice promo? Potrai inserirlo nel checkout Stripe.",
   "paywallTitle": "Funzione Pro",
   "paywallMessageCustomers": "Il piano Gratuito include fino a {maxCustomers} clienti attivi. Passa a Pro per clienti illimitati.",
   "@paywallMessageCustomers": {

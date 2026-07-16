@@ -93,6 +93,61 @@
   "subscriptionCheckoutError": "Could not start checkout. Please try again.",
   "subscriptionPortalError": "Could not open the subscription portal.",
   "subscriptionWebOnlyHint": "Pro upgrade is available on the web app.",
+  "subscriptionStatusActive": "Active",
+  "subscriptionStatusTrialing": "Trialing",
+  "subscriptionStatusPastDue": "Payment past due",
+  "subscriptionStatusPastDueDetail": "Update your payment method in the subscription portal to avoid service interruption.",
+  "subscriptionStatusGrace": "Canceling",
+  "subscriptionStatusGraceUntil": "Pro access until {date}.",
+  "@subscriptionStatusGraceUntil": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionStatusRenewsOn": "Next renewal: {date}.",
+  "@subscriptionStatusRenewsOn": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "subscriptionStatusExpired": "Expired",
+  "subscriptionStatusExpiredDetail": "Your Pro subscription is no longer active.",
+  "subscriptionStatusFree": "Free",
+  "subscriptionStatusFreeDetail": "Upgrade to Pro for unlimited clients and advanced exports.",
+  "subscriptionUsageTitle": "Free plan usage",
+  "subscriptionUsageCustomers": "{current} / {max} active clients",
+  "@subscriptionUsageCustomers": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionUsageNearLimit": "You are close to the Free plan client limit.",
+  "subscriptionUsageAtLimit": "You reached the active client limit. Upgrade to Pro to add more.",
+  "subscriptionCompareTitle": "What's included",
+  "subscriptionCompareFeatureColumn": "Feature",
+  "subscriptionCompareCustomers": "Active clients",
+  "subscriptionCompareCustomersFree": "Up to {max}",
+  "@subscriptionCompareCustomersFree": {
+    "placeholders": {
+      "max": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionCompareProgressExport": "Progress CSV export",
+  "subscriptionCompareHevy": "Hevy integration",
+  "subscriptionCompareWorkoutExport": "Workout PDF/Excel export",
+  "subscriptionCompareNotIncluded": "—",
+  "subscriptionPromoHint": "Have a promo code? You can enter it on the Stripe checkout page.",
   "paywallTitle": "Pro feature",
   "paywallMessageCustomers": "The Free plan includes up to {maxCustomers} active clients. Upgrade to Pro for unlimited clients.",
   "@paywallMessageCustomers": {

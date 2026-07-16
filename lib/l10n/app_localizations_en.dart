@@ -301,6 +301,92 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pro upgrade is available on the web app.';
 
   @override
+  String get subscriptionStatusActive => 'Active';
+
+  @override
+  String get subscriptionStatusTrialing => 'Trialing';
+
+  @override
+  String get subscriptionStatusPastDue => 'Payment past due';
+
+  @override
+  String get subscriptionStatusPastDueDetail =>
+      'Update your payment method in the subscription portal to avoid service interruption.';
+
+  @override
+  String get subscriptionStatusGrace => 'Canceling';
+
+  @override
+  String subscriptionStatusGraceUntil(String date) {
+    return 'Pro access until $date.';
+  }
+
+  @override
+  String subscriptionStatusRenewsOn(String date) {
+    return 'Next renewal: $date.';
+  }
+
+  @override
+  String get subscriptionStatusExpired => 'Expired';
+
+  @override
+  String get subscriptionStatusExpiredDetail =>
+      'Your Pro subscription is no longer active.';
+
+  @override
+  String get subscriptionStatusFree => 'Free';
+
+  @override
+  String get subscriptionStatusFreeDetail =>
+      'Upgrade to Pro for unlimited clients and advanced exports.';
+
+  @override
+  String get subscriptionUsageTitle => 'Free plan usage';
+
+  @override
+  String subscriptionUsageCustomers(int current, int max) {
+    return '$current / $max active clients';
+  }
+
+  @override
+  String get subscriptionUsageNearLimit =>
+      'You are close to the Free plan client limit.';
+
+  @override
+  String get subscriptionUsageAtLimit =>
+      'You reached the active client limit. Upgrade to Pro to add more.';
+
+  @override
+  String get subscriptionCompareTitle => 'What\'s included';
+
+  @override
+  String get subscriptionCompareFeatureColumn => 'Feature';
+
+  @override
+  String get subscriptionCompareCustomers => 'Active clients';
+
+  @override
+  String subscriptionCompareCustomersFree(int max) {
+    return 'Up to $max';
+  }
+
+  @override
+  String get subscriptionCompareProgressExport => 'Progress CSV export';
+
+  @override
+  String get subscriptionCompareHevy => 'Hevy integration';
+
+  @override
+  String get subscriptionCompareWorkoutExport => 'Workout PDF/Excel export';
+
+  @override
+  String get subscriptionCompareNotIncluded => '—';
+
+  @override
+  String get subscriptionPromoHint =>
+      'Have a promo code? You can enter it on the Stripe checkout page.';
+
+  @override
   String get paywallTitle => 'Pro feature';
 
   @override
