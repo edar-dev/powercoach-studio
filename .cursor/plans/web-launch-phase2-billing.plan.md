@@ -7,7 +7,7 @@ todos:
     status: completed
   - id: stripe-supabase-setup
     content: "Stripe Dashboard (Product Pro, Price mensile/annuale) + Supabase project (tabella entitlements, Edge Functions, secrets webhook)"
-    status: pending
+    status: in_progress
   - id: entitlement-backend
     content: "Migration billing_entitlements + RLS + Edge Functions checkout/portal/webhook/get-entitlement"
     status: in_progress

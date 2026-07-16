@@ -28,20 +28,46 @@ Confirm this matches your production `SUPABASE_URL` in Vercel/GitHub secrets bef
 2. Supabase project used for PowerCoach **auth** (same as `SUPABASE_URL` in `.env`)
 3. [Supabase CLI](https://supabase.com/docs/guides/cli) installed locally
 
+## Stripe resources (test mode — configured 2026-07-09)
+
+| Resource | ID | Dashboard |
+|----------|-----|-----------|
+| Product **PowerCoach Studio Pro** | `prod_Ur6bQo6Vqyz1Gt` | [Product](https://dashboard.stripe.com/test/products/prod_Ur6bQo6Vqyz1Gt) |
+| Price **Pro Monthly €12** | `price_1TrOOs2Ls7JojLJZijEv3TUK` | lookup: `powercoach_pro_monthly` |
+| Price **Pro Yearly €99** | `price_1TrOOr2Ls7JojLJZok7d6j7l` | lookup: `powercoach_pro_yearly` |
+| Coupon **Beta Coach 100%** | `1jfkaPgV` | [Coupons](https://dashboard.stripe.com/test/coupons/1jfkaPgV) |
+
+Account: `acct_1TrIHj2Ls7JojLJZ` (test mode).
+
+| Integration | ID |
+|-------------|-----|
+| Webhook → Supabase | `we_1Ts5Iv2Ls7JojLJZ4h6iroAU` |
+| Customer Portal (default) | `bpc_1Ts5Jx2Ls7JojLJZkBb4JZb9` |
+
 ## Stripe Dashboard setup
 
-1. **Product:** PowerCoach Studio Pro
-2. **Prices:**
-   - Monthly recurring **€12** → copy `price_...` → `STRIPE_PRICE_ID_MONTHLY`
-   - Yearly recurring **€99** → copy `price_...` → `STRIPE_PRICE_ID_YEARLY`
-3. **Customer Portal:** enable cancel / update payment method
-4. **Webhook** (test + live):
-   - URL: `https://<project-ref>.supabase.co/functions/v1/stripe-webhook`
-   - Events:
-     - `checkout.session.completed`
-     - `customer.subscription.updated`
-     - `customer.subscription.deleted`
-     - `invoice.payment_failed`
+Most catalog items are already created. **Supabase Edge Function secrets** must be set in the [Dashboard → Edge Functions → Secrets](https://supabase.com/dashboard/project/owtkzvphhapjdfibmebl/settings/functions) (the Cursor Supabase MCP token cannot write secrets):
+
+| Secret | Value |
+|--------|--------|
+| `STRIPE_SECRET_KEY` | `sk_test_...` from [API keys](https://dashboard.stripe.com/acct_1TrIHj2Ls7JojLJZ/apikeys) |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` from [Webhooks → signing secret](https://dashboard.stripe.com/test/webhooks/we_1Ts5Iv2Ls7JojLJZ4h6iroAU) |
+| `STRIPE_PRICE_ID_MONTHLY` | `price_1TrOOs2Ls7JojLJZijEv3TUK` — **exact name** (not `MONTLY`) |
+| `STRIPE_PRICE_ID_YEARLY` | `price_1TrOOr2Ls7JojLJZok7d6j7l` |
+
+Re-run for a new Stripe account or live mode:
+
+```bash
+STRIPE_SECRET_KEY=sk_test_... bash scripts/configure-stripe-billing.sh
+```
+
+Or manually (if webhook/portal already exist):
+
+1. **Product / prices** — use IDs above (`STRIPE_PRICE_ID_MONTHLY` / `YEARLY`).
+2. **Customer Portal** — [Billing → Customer portal](https://dashboard.stripe.com/test/settings/billing/portal): enable cancel (at period end), payment method update, invoice history.
+3. **Webhook** (test, then repeat for live):
+   - URL: `https://owtkzvphhapjdfibmebl.supabase.co/functions/v1/stripe-webhook`
+   - Events: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`
    - Signing secret → `STRIPE_WEBHOOK_SECRET`
 
 ## Supabase setup
@@ -172,4 +198,4 @@ on conflict (user_id) do update
   set plan = 'pro', status = 'active', pro_until = null, updated_at = now();
 ```
 
-Or issue a 100% Stripe coupon for early adopters.
+Or issue coupon **`Beta Coach 100%`** (`1jfkaPgV`) at checkout for early adopters.
