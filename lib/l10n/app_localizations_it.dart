@@ -299,6 +299,92 @@ class AppLocalizationsIt extends AppLocalizations {
       'L\'upgrade Pro è disponibile sulla versione web.';
 
   @override
+  String get subscriptionStatusActive => 'Attivo';
+
+  @override
+  String get subscriptionStatusTrialing => 'In prova';
+
+  @override
+  String get subscriptionStatusPastDue => 'Pagamento in sospeso';
+
+  @override
+  String get subscriptionStatusPastDueDetail =>
+      'Aggiorna il metodo di pagamento dal portale abbonamento per evitare l\'interruzione del servizio.';
+
+  @override
+  String get subscriptionStatusGrace => 'In cancellazione';
+
+  @override
+  String subscriptionStatusGraceUntil(String date) {
+    return 'Accesso Pro fino al $date.';
+  }
+
+  @override
+  String subscriptionStatusRenewsOn(String date) {
+    return 'Prossimo rinnovo: $date.';
+  }
+
+  @override
+  String get subscriptionStatusExpired => 'Scaduto';
+
+  @override
+  String get subscriptionStatusExpiredDetail =>
+      'Il tuo abbonamento Pro non è più attivo.';
+
+  @override
+  String get subscriptionStatusFree => 'Gratuito';
+
+  @override
+  String get subscriptionStatusFreeDetail =>
+      'Passa a Pro per sbloccare clienti illimitati ed export avanzati.';
+
+  @override
+  String get subscriptionUsageTitle => 'Utilizzo piano Gratuito';
+
+  @override
+  String subscriptionUsageCustomers(int current, int max) {
+    return '$current / $max clienti attivi';
+  }
+
+  @override
+  String get subscriptionUsageNearLimit =>
+      'Stai per raggiungere il limite del piano Gratuito.';
+
+  @override
+  String get subscriptionUsageAtLimit =>
+      'Hai raggiunto il limite di clienti attivi. Passa a Pro per aggiungerne altri.';
+
+  @override
+  String get subscriptionCompareTitle => 'Cosa include ogni piano';
+
+  @override
+  String get subscriptionCompareFeatureColumn => 'Funzione';
+
+  @override
+  String get subscriptionCompareCustomers => 'Clienti attivi';
+
+  @override
+  String subscriptionCompareCustomersFree(int max) {
+    return 'Fino a $max';
+  }
+
+  @override
+  String get subscriptionCompareProgressExport => 'Export CSV progressi';
+
+  @override
+  String get subscriptionCompareHevy => 'Integrazione Hevy';
+
+  @override
+  String get subscriptionCompareWorkoutExport => 'Export PDF/Excel allenamenti';
+
+  @override
+  String get subscriptionCompareNotIncluded => '—';
+
+  @override
+  String get subscriptionPromoHint =>
+      'Hai un codice promo? Potrai inserirlo nel checkout Stripe.';
+
+  @override
   String get paywallTitle => 'Funzione Pro';
 
   @override
