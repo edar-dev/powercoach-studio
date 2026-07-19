@@ -16,7 +16,7 @@ Every **important full-page feature** must have its own **top-level GoRouter pat
 ## Rules
 
 1. **Register** the screen in `lib/core/routing/app_routes.dart` as a top-level `GoRoute` (use `parentNavigatorKey: appRootNavigatorKey` when it should cover the shell).
-2. **Add a constant** in `lib/core/routing/app_paths.dart` and navigate with `context.go(AppPaths.x)` / `context.push(AppPaths.x)` — avoid hard-coded path strings in features.
+2. **Add a constant** in `lib/core/routing/app_paths.dart` and navigate with `navigateToSubscription()` (or `navigateTo(AppPaths.x)`) — avoid hard-coded path strings in features. Do **not** use `context.push` for top-level routes on web; it leaves the old URL in the address bar.
 3. **Protect** authenticated routes in `lib/core/routing/route_redirect.dart` (`isProtectedAppPath`).
 4. **Legacy paths:** if a screen moved from a nested path, keep a **redirect** from the old URL (preserve query strings) for bookmarks and external links.
 5. **Docs & integrations:** update Stripe return URLs, README, and design index when the canonical path changes.

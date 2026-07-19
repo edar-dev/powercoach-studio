@@ -6,6 +6,7 @@ import 'package:powercoach_studio/core/billing/billing_promo.dart';
 import 'package:powercoach_studio/core/billing/entitlement_models.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/billing/plan_usage.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_billing_details_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_plan_compare_card.dart';
@@ -201,7 +202,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
-      appBar: StitchSecondaryAppBar(title: l10n.settingsSubscriptionTitle),
+      appBar: StitchSecondaryAppBar(
+        title: l10n.settingsSubscriptionTitle,
+        onBack: () => navigateBackFromSubscription(context),
+      ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(

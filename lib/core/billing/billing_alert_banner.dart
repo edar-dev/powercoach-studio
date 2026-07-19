@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/billing/billing_alert_presentation.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
-import 'package:powercoach_studio/core/routing/app_paths.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -33,7 +32,7 @@ class BillingAlertBanner extends StatelessWidget {
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             child: InkWell(
               borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-              onTap: () => context.push(AppPaths.subscription),
+              onTap: () => navigateToSubscription(context),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(

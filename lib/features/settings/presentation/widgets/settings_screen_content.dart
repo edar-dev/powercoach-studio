@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/constants/app_info.dart';
-import 'package:powercoach_studio/core/routing/app_paths.dart';
+import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../backup_onboarding_dialog.dart';
@@ -54,7 +54,7 @@ class SettingsScreenContent extends StatelessWidget {
         ListTile(
           title: Text(l10n.settingsSubscription),
           trailing: const Icon(Icons.chevron_right),
-          onTap: () => context.push(AppPaths.subscription),
+          onTap: () => navigateToSubscription(context),
         ),
         ListTile(
           leading: const Icon(Icons.new_releases_outlined),
