@@ -23,6 +23,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     this.onMetadataChanged,
     this.planCompleted = false,
     this.planArchived = false,
+    this.readOnly = false,
     this.onMarkCompleted,
   });
 
@@ -39,6 +40,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
   final VoidCallback? onMetadataChanged;
   final bool planCompleted;
   final bool planArchived;
+  final bool readOnly;
   final VoidCallback? onMarkCompleted;
 
   @override
@@ -72,7 +74,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
             ),
           ),
           trailing: const Icon(Icons.chevron_right),
-          onTap: onPickStartDate,
+          onTap: readOnly ? null : onPickStartDate,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
           ),
@@ -90,6 +92,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
           const SizedBox(height: 8),
           TextField(
             controller: initialWeekController,
+            readOnly: readOnly,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             decoration: InputDecoration(
@@ -126,7 +129,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
               ),
             ),
             trailing: const Icon(Icons.chevron_right),
-            onTap: onPickEndDate,
+            onTap: readOnly ? null : onPickEndDate,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             ),
@@ -185,6 +188,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
           const SizedBox(height: 8),
           TextField(
             controller: phaseController,
+            readOnly: readOnly,
             decoration: InputDecoration(
               hintText: l10n.workoutPlanPhaseHint,
               filled: true,
@@ -207,6 +211,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
           const SizedBox(height: 8),
           TextField(
             controller: tagsController,
+            readOnly: readOnly,
             decoration: InputDecoration(
               hintText: l10n.workoutPlanTagsHint,
               filled: true,
@@ -229,6 +234,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
           const SizedBox(height: 8),
           TextField(
             controller: notesController,
+            readOnly: readOnly,
             minLines: 3,
             maxLines: 5,
             decoration: InputDecoration(

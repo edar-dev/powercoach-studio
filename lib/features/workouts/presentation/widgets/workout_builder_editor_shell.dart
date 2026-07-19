@@ -33,6 +33,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.onExport,
     required this.onSave,
     this.showFirstSaveBanner = false,
+    this.showSandboxBanner = false,
+    this.showReadOnlyBanner = false,
+    this.sandboxBanner,
+    this.readOnlyBanner,
   });
 
   final bool canPop;
@@ -56,6 +60,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final void Function(String value) onExport;
   final VoidCallback onSave;
   final bool showFirstSaveBanner;
+  final bool showSandboxBanner;
+  final bool showReadOnlyBanner;
+  final Widget? sandboxBanner;
+  final Widget? readOnlyBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +104,14 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
+                  if (showSandboxBanner && sandboxBanner != null) sandboxBanner!,
+                  if (showReadOnlyBanner && readOnlyBanner != null) readOnlyBanner!,
                   if (showFirstSaveBanner)
                     WorkoutBuilderFirstSaveBanner(onSave: onSave),
                   WorkoutRoutineNameBar(
                     controller: routineNameController,
                     l10n: l10n,
+                    readOnly: showReadOnlyBanner,
                   ),
                   TabBar(
                     controller: sectionTabController,

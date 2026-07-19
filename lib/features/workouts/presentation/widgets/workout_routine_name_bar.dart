@@ -7,10 +7,12 @@ class WorkoutRoutineNameBar extends StatelessWidget {
     super.key,
     required this.controller,
     required this.l10n,
+    this.readOnly = false,
   });
 
   final TextEditingController controller;
   final AppLocalizations l10n;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +22,8 @@ class WorkoutRoutineNameBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: TextField(
         controller: controller,
+        readOnly: readOnly,
+        enableInteractiveSelection: !readOnly,
         style: theme.textTheme.titleMedium?.copyWith(
           fontWeight: FontWeight.w700,
           color: cs.onSurface,

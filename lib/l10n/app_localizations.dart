@@ -3208,6 +3208,132 @@ abstract class AppLocalizations {
   /// **'Save now'**
   String get workoutBuilderSaveNowAction;
 
+  /// No description provided for @customerNewWorkoutSheetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New workout plan'**
+  String get customerNewWorkoutSheetTitle;
+
+  /// No description provided for @customerNewWorkoutBlank.
+  ///
+  /// In en, this message translates to:
+  /// **'Blank plan'**
+  String get customerNewWorkoutBlank;
+
+  /// No description provided for @customerNewWorkoutBlankHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Start from scratch in the builder'**
+  String get customerNewWorkoutBlankHint;
+
+  /// No description provided for @customerNewWorkoutFromTemplate.
+  ///
+  /// In en, this message translates to:
+  /// **'From template library'**
+  String get customerNewWorkoutFromTemplate;
+
+  /// No description provided for @customerNewWorkoutFromTemplateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Use a saved template'**
+  String get customerNewWorkoutFromTemplateHint;
+
+  /// No description provided for @customerNewWorkoutDuplicateExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate existing plan'**
+  String get customerNewWorkoutDuplicateExisting;
+
+  /// No description provided for @customerNewWorkoutDuplicateExistingHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy one of this client\'s plans'**
+  String get customerNewWorkoutDuplicateExistingHint;
+
+  /// No description provided for @customerNewWorkoutNoPlansToDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans to duplicate for this client.'**
+  String get customerNewWorkoutNoPlansToDuplicate;
+
+  /// No description provided for @customerNewWorkoutDuplicatePickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan to duplicate'**
+  String get customerNewWorkoutDuplicatePickTitle;
+
+  /// No description provided for @customerTabWorkouts.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get customerTabWorkouts;
+
+  /// No description provided for @dashboardWorkoutBuilderDraft.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft builder'**
+  String get dashboardWorkoutBuilderDraft;
+
+  /// No description provided for @workoutBuilderSandboxBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Local draft — not assigned to a client'**
+  String get workoutBuilderSandboxBanner;
+
+  /// No description provided for @workoutBuilderSandboxBannerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to a client to use it in their program.'**
+  String get workoutBuilderSandboxBannerHint;
+
+  /// No description provided for @workoutBuilderAssignToCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign to client'**
+  String get workoutBuilderAssignToCustomer;
+
+  /// No description provided for @workoutBuilderAssignDraftSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan assigned to client.'**
+  String get workoutBuilderAssignDraftSuccess;
+
+  /// No description provided for @workoutBuilderLogSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Log session'**
+  String get workoutBuilderLogSession;
+
+  /// No description provided for @workoutBuilderLogSessionSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Session logged.'**
+  String get workoutBuilderLogSessionSuccess;
+
+  /// No description provided for @workoutBuilderCloneDayToTarget.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate to…'**
+  String get workoutBuilderCloneDayToTarget;
+
+  /// No description provided for @workoutBuilderCloneDayTargetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate day to'**
+  String get workoutBuilderCloneDayTargetTitle;
+
+  /// No description provided for @workoutBuilderReadOnlyBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Read-only — duplicate the plan to edit it.'**
+  String get workoutBuilderReadOnlyBanner;
+
+  /// No description provided for @planScheduleEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Set start date'**
+  String get planScheduleEmptyHint;
+
   /// No description provided for @workoutBuilderEmptyDayCta.
   ///
   /// In en, this message translates to:

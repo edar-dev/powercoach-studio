@@ -9,6 +9,8 @@ import '../data/workout_draft_store.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/day_scheduled_weekday.dart';
+import '../domain/workout_routine_plan_encoder.dart';
+import 'widgets/assign_template_customer_dialog.dart';
 import 'workout_builder_editor_exit.dart';
 import 'workout_builder_load_helpers.dart';
 import 'workout_builder_session_controller.dart';
@@ -291,6 +293,90 @@ class WorkoutBuilderRoutineCoordinator {
         context: context,
         editorMode: editorMode,
         customerId: customerId,
+      );
+    }
+  }
+
+  Future<void> assignDraftToCustomer({
+    required BuildContext context,
+    required WorkoutEditorSession session,
+    required int selectedWeekIndex,
+    required int selectedDayIndex,
+  }) async {
+    final l10n = AppLocalizations.of(context);
+    List<Customer> customers;
+    try {
+      final all = await customerRepo.getAll();
+      customers = all.where((c) => !c.isArchived).toList()
+        ..sort((a, b) => a.name.compareTo(b.name));
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutTemplatesCustomersLoadError),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+    if (!context.mounted) return;
+    if (customers.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.dashboardNoCustomersWithoutPlan),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final chosen = await showAssignTemplateCustomerDialog(
+      context,
+      customers: customers,
+    );
+    if (chosen == null || !context.mounted) return;
+
+    final name = session.planName.trim();
+    final routine = session.routine.copyWith(
+      name: name.isEmpty ? session.routine.name : name,
+    );
+    try {
+      final created = await planRepo.create(
+        customerId: chosen.id,
+        name: routine.name,
+        planDataJson: encodeWorkoutRoutinePlanData(routine),
+        pdfHeader: chosen.pdfHeader,
+        useCustomPdfHeader: chosen.useCustomPdfHeader,
+        initialWeekNumber: session.initialWeekNumber,
+        phase: session.phase,
+        tags: session.tags,
+        notes: session.notes,
+      );
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutBuilderAssignDraftSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+      navigateReplace(
+        context,
+        customerWorkoutEditorPath(
+          chosen.id,
+          planId: created.id,
+          weekIndex: selectedWeekIndex,
+          dayIndex: selectedDayIndex,
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutExportError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
       );
     }
   }

@@ -43,12 +43,20 @@ class _WorkoutPlanTemplatesScreenState
   String? _error;
   String _searchQuery = '';
   TemplateSort _sort = TemplateSort.updatedDesc;
+  String? _preselectedCustomerId;
 
   List<WorkoutPlanApiModel> get _visibleTemplates => applyTemplateListQuery(
     templates: _templates,
     searchQuery: _searchQuery,
     sort: _sort,
   );
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _preselectedCustomerId ??=
+        GoRouterState.of(context).uri.queryParameters['customerId'];
+  }
 
   @override
   void initState() {
@@ -116,11 +124,32 @@ class _WorkoutPlanTemplatesScreenState
       return;
     }
 
-    final chosen = await showAssignTemplateCustomerDialog(
-      context,
-      customers: customers,
-    );
+    Customer? chosen;
+    final preselectedId = _preselectedCustomerId?.trim();
+    if (preselectedId != null && preselectedId.isNotEmpty) {
+      try {
+        chosen = await _customerRepo.getById(preselectedId);
+      } catch (e, st) {
+        await Sentry.captureException(e, stackTrace: st);
+      }
+      if (chosen == null || chosen.isArchived) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.workoutTemplatesCustomersLoadError),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+    } else {
+      chosen = await showAssignTemplateCustomerDialog(
+        context,
+        customers: customers,
+      );
+    }
     if (chosen == null || !mounted) return;
+    final assignedCustomer = chosen;
 
     final startDateChoice = await showAssignTemplateStartDateDialog(context);
     if (startDateChoice == null || startDateChoice.cancelled || !mounted) {
@@ -130,7 +159,7 @@ class _WorkoutPlanTemplatesScreenState
     try {
       final created = await _planRepo.duplicateToCustomer(
         sourcePlanId: template.id,
-        customerId: chosen.id,
+        customerId: assignedCustomer.id,
         name: template.name,
       );
       if (startDateChoice.startDate != null) {
@@ -140,6 +169,8 @@ class _WorkoutPlanTemplatesScreenState
         );
       }
       if (!mounted) return;
+      final createdPlanId = created.id;
+      final customerId = assignedCustomer.id;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.workoutTemplatesAssignedSnack),
@@ -151,7 +182,7 @@ class _WorkoutPlanTemplatesScreenState
             onPressed: () {
               navigateTo(
                 context,
-                customerWorkoutEditorPath(chosen.id, planId: created.id),
+                customerWorkoutEditorPath(customerId, planId: createdPlanId),
               );
             },
           ),

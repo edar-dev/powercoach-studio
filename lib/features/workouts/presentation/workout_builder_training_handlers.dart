@@ -16,15 +16,18 @@ class WorkoutBuilderTrainingHandlers {
     required this.context,
     required this.session,
     this.customerId,
+    this.readOnly = false,
   });
 
   final BuildContext context;
   final WorkoutBuilderSessionController session;
   final String? customerId;
+  final bool readOnly;
 
   WorkoutRoutine get _routine => session.routine;
 
   void addWeek() {
+    if (readOnly) return;
     final l10n = AppLocalizations.of(context);
     final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
     final next = _routine.weeks.length + 1;
@@ -37,6 +40,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   Future<void> cloneWeek(int weekIndex) async {
+    if (readOnly) return;
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final source = _routine.weeks[weekIndex];
     final l10n = AppLocalizations.of(context);
@@ -47,6 +51,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void cloneWeekWithName(int weekIndex, String name) {
+    if (readOnly) return;
     final newId = 'w_${DateTime.now().millisecondsSinceEpoch}';
     session.cloneWeek(
       weekIndex: weekIndex,
@@ -56,10 +61,12 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void deleteWeek(int weekIndex) {
+    if (readOnly) return;
     session.deleteWeek(weekIndex);
   }
 
   Future<void> confirmDeleteWeek(int weekIndex) async {
+    if (readOnly) return;
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final l10n = AppLocalizations.of(context);
     final confirmed = await showAppConfirmDialog(
@@ -74,18 +81,22 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void renameDay(int weekIndex, int dayIndex, String newName) {
+    if (readOnly) return;
     session.renameDay(weekIndex, dayIndex, newName);
   }
 
   void renameWeek(int weekIndex, String newName) {
+    if (readOnly) return;
     session.renameWeek(weekIndex, newName);
   }
 
   void deleteDay(int weekIndex, int dayIndex) {
+    if (readOnly) return;
     session.deleteDay(weekIndex, dayIndex);
   }
 
   void addDayToWeek(int weekIndex) {
+    if (readOnly) return;
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     final l10n = AppLocalizations.of(context);
     final week = _routine.weeks[weekIndex];
@@ -98,6 +109,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
+    if (readOnly) return;
     session.setDayScheduledWeekday(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -106,6 +118,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void addExerciseToDay(int weekIndex, int dayIndex) {
+    if (readOnly) return;
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
       return;
@@ -140,6 +153,7 @@ class WorkoutBuilderTrainingHandlers {
     int dayIndex,
     String supersetGroupId,
   ) {
+    if (readOnly) return;
     WorkoutSupersetActions.showAddExerciseToSupersetDialog(
       context: context,
       theme: Theme.of(context),
@@ -154,6 +168,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void removeExercise(int weekIndex, int dayIndex, String exerciseId) {
+    if (readOnly) return;
     final day =
         weekIndex >= 0 &&
             weekIndex < _routine.weeks.length &&
@@ -196,6 +211,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void duplicateExercise(int weekIndex, int dayIndex, Exercise exercise) {
+    if (readOnly) return;
     final newId = 'e_${DateTime.now().millisecondsSinceEpoch}';
     session.duplicateExercise(
       weekIndex: weekIndex,
@@ -211,6 +227,7 @@ class WorkoutBuilderTrainingHandlers {
     String exerciseId, {
     required bool up,
   }) {
+    if (readOnly) return;
     session.moveExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -225,6 +242,7 @@ class WorkoutBuilderTrainingHandlers {
     String exerciseId, {
     required bool up,
   }) {
+    if (readOnly) return;
     session.moveExerciseWithinSuperset(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -246,6 +264,7 @@ class WorkoutBuilderTrainingHandlers {
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
   }) {
+    if (readOnly) return;
     session.updateExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -262,6 +281,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void addSetToExercise(int weekIndex, int dayIndex, String exerciseId) {
+    if (readOnly) return;
     session.addSetToExercise(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -280,6 +300,7 @@ class WorkoutBuilderTrainingHandlers {
     String? rpe,
     String? note,
   }) {
+    if (readOnly) return;
     session.updateExerciseSet(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -299,6 +320,7 @@ class WorkoutBuilderTrainingHandlers {
     String exerciseId,
     int setIndex,
   ) {
+    if (readOnly) return;
     session.removeExerciseSet(
       weekIndex: weekIndex,
       dayIndex: dayIndex,
@@ -313,6 +335,7 @@ class WorkoutBuilderTrainingHandlers {
     String exerciseId,
     String supersetGroupId,
   ) {
+    if (readOnly) return;
     final updated = WorkoutSupersetActions.assignToSuperset(
       routine: _routine,
       weekIndex: weekIndex,
@@ -325,6 +348,7 @@ class WorkoutBuilderTrainingHandlers {
   }
 
   void removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
+    if (readOnly) return;
     final updated = WorkoutSupersetActions.removeFromSuperset(
       routine: _routine,
       weekIndex: weekIndex,
@@ -333,5 +357,61 @@ class WorkoutBuilderTrainingHandlers {
     );
     if (updated == null) return;
     session.setRoutine(updated);
+  }
+
+  Future<void> cloneDayToTarget(int weekIndex, int dayIndex) async {
+    if (readOnly) return;
+    final l10n = AppLocalizations.of(context);
+    final targets = <({int weekIndex, int dayIndex, String label})>[];
+    for (var wi = 0; wi < _routine.weeks.length; wi++) {
+      final week = _routine.weeks[wi];
+      for (var di = 0; di < week.days.length; di++) {
+        if (wi == weekIndex && di == dayIndex) continue;
+        targets.add((
+          weekIndex: wi,
+          dayIndex: di,
+          label: '${week.name} · ${week.days[di].name}',
+        ));
+      }
+    }
+    if (targets.isEmpty || !context.mounted) return;
+
+    final selected = await showDialog<({int weekIndex, int dayIndex})>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.workoutBuilderCloneDayTargetTitle),
+        content: SizedBox(
+          width: double.maxFinite,
+          height: 320,
+          child: ListView.separated(
+            itemCount: targets.length,
+            separatorBuilder: (_, __) => const Divider(height: 1),
+            itemBuilder: (context, index) {
+              final target = targets[index];
+              return ListTile(
+                title: Text(target.label),
+                onTap: () => Navigator.of(ctx).pop((
+                  weekIndex: target.weekIndex,
+                  dayIndex: target.dayIndex,
+                )),
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.customerCancel),
+          ),
+        ],
+      ),
+    );
+    if (selected == null || !context.mounted) return;
+    session.cloneDayToTarget(
+      sourceWeekIndex: weekIndex,
+      sourceDayIndex: dayIndex,
+      targetWeekIndex: selected.weekIndex,
+      targetDayIndex: selected.dayIndex,
+    );
   }
 }

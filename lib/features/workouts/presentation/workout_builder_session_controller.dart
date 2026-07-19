@@ -158,6 +158,27 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     return true;
   }
 
+  bool cloneDayToTarget({
+    required int sourceWeekIndex,
+    required int sourceDayIndex,
+    required int targetWeekIndex,
+    required int targetDayIndex,
+  }) {
+    final updated = cloneDayToTargetInRoutine(
+      routine: _routine,
+      sourceWeekIndex: sourceWeekIndex,
+      sourceDayIndex: sourceDayIndex,
+      targetWeekIndex: targetWeekIndex,
+      targetDayIndex: targetDayIndex,
+    );
+    if (updated == null) return false;
+    _routine = updated;
+    _selectedWeekIndex = _clampWeek(targetWeekIndex);
+    _selectedDayIndex = _clampDay(_selectedWeekIndex, targetDayIndex);
+    notifyListeners();
+    return true;
+  }
+
   bool addExerciseToDay({
     required int weekIndex,
     required int dayIndex,

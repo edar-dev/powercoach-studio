@@ -34,6 +34,39 @@ void main() {
     );
   }
 
+  testWidgets('empty schedule shows tappable hint', (tester) async {
+    var tapped = false;
+    final plan = WorkoutPlanApiModel(
+      id: 'p-empty',
+      customerId: 'c1',
+      userId: 'u1',
+      name: 'No dates',
+      planData: jsonEncode(WorkoutRoutine.empty().toJson()),
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('it'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: PlanScheduleStrip(
+            plan: plan,
+            localeName: 'it',
+            onEmptyTap: () => tapped = true,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    expect(find.text('Imposta data di inizio'), findsOneWidget);
+    await tester.tap(find.text('Imposta data di inizio'));
+    expect(tapped, isTrue);
+  });
+
   testWidgets('tapping and long-pressing chip triggers callbacks', (
     tester,
   ) async {

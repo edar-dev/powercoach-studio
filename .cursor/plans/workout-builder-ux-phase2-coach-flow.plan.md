@@ -4,31 +4,31 @@ overview: "Fase 2 — Flusso coach: scelta nuovo piano, sandbox chiara, tab Work
 todos:
   - id: wb06-new-plan-picker
     content: "WB-06 — CustomerWorkoutsScreen FAB + overview assign: sheet Vuoto / Da template / Duplica piano esistente"
-    status: pending
+    status: completed
   - id: wb07-sandbox-label
     content: "WB-07 — Standalone builder: banner 'Bozza locale', rename drawer copy, CTA 'Assegna a cliente' (picker cliente → duplicate/import)"
-    status: pending
+    status: completed
   - id: wb08-customer-workout-tab
     content: "WB-08 — CustomerDetailScreen: tab Workout con CustomerWorkoutsScreen body embedded o route nested /customers/:id/workouts as tab"
-    status: pending
+    status: completed
   - id: wb09-session-log-builder
     content: "WB-09 — TrainingWeekDayPanel header o Dettagli: azione 'Registra sessione' → showSessionLogSheet per week/day corrente"
-    status: pending
+    status: completed
   - id: wb10-duplicate-day-week
     content: "WB-10 — Duplica struttura giorno → altro giorno; duplica settimana intera (menu settimana + confirm dialog)"
-    status: pending
+    status: completed
   - id: wb11-readonly-archived
     content: "WB-11 — WorkoutBuilderMobilityScreen: se plan archived/completed → banner + disable FAB/mutations (view-only export ok)"
-    status: pending
+    status: completed
   - id: wb12-schedule-strip-hint
     content: "WB-12 — PlanScheduleStrip: se events empty → testo + tap apre Dettagli o date picker"
-    status: pending
+    status: completed
   - id: wb21-e2e-journey-test
     content: "WB-21 — Widget/integration test: customer → new plan → save → loadedPlanId → optional schedule marker"
-    status: pending
+    status: completed
   - id: wb-phase2-qa
     content: "flutter analyze + test + QA checklist responsive pass"
-    status: pending
+    status: completed
 isProject: false
 ---
 

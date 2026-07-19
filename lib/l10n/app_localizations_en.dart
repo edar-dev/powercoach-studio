@@ -1718,6 +1718,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderSaveNowAction => 'Save now';
 
   @override
+  String get customerNewWorkoutSheetTitle => 'New workout plan';
+
+  @override
+  String get customerNewWorkoutBlank => 'Blank plan';
+
+  @override
+  String get customerNewWorkoutBlankHint => 'Start from scratch in the builder';
+
+  @override
+  String get customerNewWorkoutFromTemplate => 'From template library';
+
+  @override
+  String get customerNewWorkoutFromTemplateHint => 'Use a saved template';
+
+  @override
+  String get customerNewWorkoutDuplicateExisting => 'Duplicate existing plan';
+
+  @override
+  String get customerNewWorkoutDuplicateExistingHint =>
+      'Copy one of this client\'s plans';
+
+  @override
+  String get customerNewWorkoutNoPlansToDuplicate =>
+      'No plans to duplicate for this client.';
+
+  @override
+  String get customerNewWorkoutDuplicatePickTitle =>
+      'Choose a plan to duplicate';
+
+  @override
+  String get customerTabWorkouts => 'Workout';
+
+  @override
+  String get dashboardWorkoutBuilderDraft => 'Draft builder';
+
+  @override
+  String get workoutBuilderSandboxBanner =>
+      'Local draft — not assigned to a client';
+
+  @override
+  String get workoutBuilderSandboxBannerHint =>
+      'Assign to a client to use it in their program.';
+
+  @override
+  String get workoutBuilderAssignToCustomer => 'Assign to client';
+
+  @override
+  String get workoutBuilderAssignDraftSuccess => 'Plan assigned to client.';
+
+  @override
+  String get workoutBuilderLogSession => 'Log session';
+
+  @override
+  String get workoutBuilderLogSessionSuccess => 'Session logged.';
+
+  @override
+  String get workoutBuilderCloneDayToTarget => 'Duplicate to…';
+
+  @override
+  String get workoutBuilderCloneDayTargetTitle => 'Duplicate day to';
+
+  @override
+  String get workoutBuilderReadOnlyBanner =>
+      'Read-only — duplicate the plan to edit it.';
+
+  @override
+  String get planScheduleEmptyHint => 'Set start date';
+
+  @override
   String get workoutBuilderEmptyDayCta => 'Add exercise';
 
   @override

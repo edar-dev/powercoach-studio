@@ -19,6 +19,7 @@ class TrainingDaySelectorRow extends StatelessWidget {
     required this.onAddDay,
     required this.onEditDay,
     required this.onDeleteDay,
+    this.onCloneDayToTarget,
   });
 
   final ThemeData theme;
@@ -31,6 +32,7 @@ class TrainingDaySelectorRow extends StatelessWidget {
   final void Function(int) onAddDay;
   final void Function(int weekIndex, int dayIndex) onEditDay;
   final void Function(int, int) onDeleteDay;
+  final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +90,13 @@ class TrainingDaySelectorRow extends StatelessWidget {
                     onTap: () => onEditDay(weekIndex, dayIndex),
                     destructive: false,
                   ),
+                  if (onCloneDayToTarget != null)
+                    (
+                      icon: Icons.copy_outlined,
+                      label: l10n.workoutBuilderCloneDayToTarget,
+                      onTap: () => onCloneDayToTarget!(weekIndex, dayIndex),
+                      destructive: false,
+                    ),
                   if (days.length > 1)
                     (
                       icon: Icons.delete_outline,
