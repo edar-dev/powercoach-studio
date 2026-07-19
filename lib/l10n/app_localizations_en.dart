@@ -298,7 +298,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionWebOnlyHint =>
-      'Pro upgrade is available on the web app.';
+      'Stripe subscription management is available on the web app only.';
 
   @override
   String get subscriptionStatusActive => 'Active';
@@ -338,7 +338,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionStatusFreeDetail =>
-      'Upgrade to Pro for unlimited clients and advanced exports.';
+      'Request an invite code or enter one you received to unlock Pro.';
 
   @override
   String get subscriptionUsageTitle => 'Free plan usage';
@@ -383,8 +383,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionCompareNotIncluded => '—';
 
   @override
-  String get subscriptionPromoHint =>
-      'Have a promo code? You can enter it on the Stripe checkout page.';
+  String get subscriptionPromoHint => 'Have an invite code? Enter it below.';
+
+  @override
+  String get subscriptionPromoCardTitle => 'Get Pro with an invite';
+
+  @override
+  String get subscriptionPromoCardSubtitle =>
+      'During early access, Pro is free with an invite code.';
+
+  @override
+  String get subscriptionPromoCodeLabel => 'Invite code';
+
+  @override
+  String get subscriptionPromoCodeHint => 'e.g. POWERCOACH-2026';
+
+  @override
+  String get subscriptionPromoCodeEmpty => 'Enter an invite code.';
+
+  @override
+  String get subscriptionPromoRedeemButton => 'Activate Pro';
+
+  @override
+  String get subscriptionPromoRedeemSuccess => 'Pro activated. Enjoy!';
+
+  @override
+  String get subscriptionPromoRedeemError =>
+      'Could not activate the code. Try again.';
+
+  @override
+  String get subscriptionPromoAlreadyPro => 'You already have Pro access.';
+
+  @override
+  String get subscriptionPromoProActiveHint =>
+      'Your Pro access is active via invite code.';
+
+  @override
+  String get subscriptionStatusPromoActive => 'Pro (invite)';
+
+  @override
+  String get subscriptionStatusPromoActiveDetail =>
+      'Pro access activated with an invite code.';
+
+  @override
+  String get subscriptionCouponRequestIntro =>
+      'Don\'t have a code? You can request Pro access.';
+
+  @override
+  String get subscriptionCouponRequestButton => 'Request invite code';
+
+  @override
+  String get subscriptionCouponRequestMessageLabel => 'Message (optional)';
+
+  @override
+  String get subscriptionCouponRequestMessageHint =>
+      'e.g. how many clients you coach, how you use the app…';
+
+  @override
+  String get subscriptionCouponRequestSubmit => 'Send request';
+
+  @override
+  String get subscriptionCouponRequestSuccess =>
+      'Request sent. We\'ll reply by email.';
+
+  @override
+  String get subscriptionCouponRequestError =>
+      'Could not send the request. Try again.';
+
+  @override
+  String get subscriptionCouponRequestPending =>
+      'You already have a pending request. We\'ll reply by email.';
 
   @override
   String get subscriptionBillingDetailsTitle => 'Billing';

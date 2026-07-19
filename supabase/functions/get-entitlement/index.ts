@@ -37,9 +37,14 @@ type EntitlementResponse = {
   billingInterval: 'monthly' | 'yearly' | null;
   priceAmountCents: number | null;
   currency: string | null;
+  entitlementSource: 'none' | 'stripe' | 'promo' | 'manual';
+  hasPendingCouponRequest: boolean;
 };
 
-function toResponse(row: BillingEntitlementRow): EntitlementResponse {
+function toResponse(
+  row: BillingEntitlementRow,
+  hasPendingCouponRequest: boolean,
+): EntitlementResponse {
   return {
     plan: effectivePlan(row),
     subscriptionPlan: row.plan,
@@ -49,6 +54,8 @@ function toResponse(row: BillingEntitlementRow): EntitlementResponse {
     billingInterval: row.billing_interval,
     priceAmountCents: row.price_amount_cents,
     currency: row.currency,
+    entitlementSource: row.entitlement_source ?? 'none',
+    hasPendingCouponRequest,
   };
 }
 
@@ -85,10 +92,22 @@ Deno.serve(async (req) => {
     }
 
     const row = await loadOrCreateEntitlement(userData.user.id);
-    return new Response(JSON.stringify(toResponse(row)), {
-      status: 200,
-      headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' },
-    });
+
+    const admin = createAdminClient();
+    const { data: pendingRequest } = await admin
+      .from('coupon_requests')
+      .select('id')
+      .eq('user_id', userData.user.id)
+      .eq('status', 'pending')
+      .maybeSingle();
+
+    return new Response(
+      JSON.stringify(toResponse(row, Boolean(pendingRequest))),
+      {
+        status: 200,
+        headers: { ...corsHeaders(origin), 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return new Response(JSON.stringify({ error: message }), {

@@ -47,6 +47,21 @@ void main() {
       expect(viewModel.detail, isNotNull);
     });
 
+    test('promo pro shows invite status', () async {
+      final l10n = await loadL10n();
+      final entitlement = Entitlement(
+        plan: BillingPlan.pro,
+        subscriptionPlan: BillingPlan.pro,
+        status: BillingStatus.active,
+        entitlementSource: EntitlementSource.promo,
+      );
+
+      final viewModel = EntitlementPresentation.viewModel(l10n, entitlement);
+
+      expect(viewModel.chipLabel, l10n.subscriptionStatusPromoActive);
+      expect(viewModel.detail, l10n.subscriptionStatusPromoActiveDetail);
+    });
+
     test('past due uses warning status', () async {
       final l10n = await loadL10n();
       final entitlement = Entitlement(

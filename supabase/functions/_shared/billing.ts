@@ -19,6 +19,8 @@ export type BillingEntitlementRow = {
   billing_interval: 'monthly' | 'yearly' | null;
   price_amount_cents: number | null;
   currency: string;
+  entitlement_source: 'none' | 'stripe' | 'promo' | 'manual';
+  promo_code_id: string | null;
   updated_at: string;
 };
 

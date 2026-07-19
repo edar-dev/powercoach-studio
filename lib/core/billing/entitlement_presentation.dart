@@ -40,6 +40,16 @@ abstract final class EntitlementPresentation {
       );
     }
 
+    if (entitlement.isPro &&
+        entitlement.entitlementSource == EntitlementSource.promo &&
+        entitlement.status == BillingStatus.active) {
+      return SubscriptionStatusViewModel(
+        chipLabel: l10n.subscriptionStatusPromoActive,
+        chipTone: SubscriptionStatusTone.positive,
+        detail: l10n.subscriptionStatusPromoActiveDetail,
+      );
+    }
+
     if (entitlement.isPro && entitlement.status == BillingStatus.active) {
       return SubscriptionStatusViewModel(
         chipLabel: l10n.subscriptionStatusActive,

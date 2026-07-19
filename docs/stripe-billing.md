@@ -1,6 +1,8 @@
 # Stripe billing (web launch Phase 2)
 
-PowerCoach Studio web subscriptions use **Stripe Checkout** + **Customer Portal**. Entitlements are stored in Supabase (`billing_entitlements`); coach data stays local (Drift/IndexedDB).
+> **Early access (2026-07):** New Pro sign-ups use **invite codes**, not Stripe checkout. See [`docs/invite-pro-codes.md`](invite-pro-codes.md). Stripe remains for existing subscribers and future paid launch.
+
+PowerCoach Studio web subscriptions use **Stripe Checkout** + **Customer Portal** when billing is enabled. Entitlements are stored in Supabase (`billing_entitlements`); coach data stays local (Drift/IndexedDB).
 
 ## Product rules (confirmed)
 

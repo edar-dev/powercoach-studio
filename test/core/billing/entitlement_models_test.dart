@@ -17,6 +17,19 @@ void main() {
       expect(entitlement.proUntil, isNotNull);
     });
 
+    test('parses entitlement source and pending coupon flag', () {
+      final entitlement = Entitlement.fromJson(<String, dynamic>{
+        'plan': 'free',
+        'subscriptionPlan': 'free',
+        'status': 'none',
+        'entitlementSource': 'promo',
+        'hasPendingCouponRequest': true,
+      });
+
+      expect(entitlement.entitlementSource, EntitlementSource.promo);
+      expect(entitlement.hasPendingCouponRequest, isTrue);
+    });
+
     test('defaults missing fields to free', () {
       final entitlement = Entitlement.fromJson(<String, dynamic>{});
 

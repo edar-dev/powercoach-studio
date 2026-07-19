@@ -296,7 +296,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get subscriptionWebOnlyHint =>
-      'L\'upgrade Pro è disponibile sulla versione web.';
+      'La gestione abbonamento Stripe è disponibile solo sulla versione web.';
 
   @override
   String get subscriptionStatusActive => 'Attivo';
@@ -336,7 +336,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get subscriptionStatusFreeDetail =>
-      'Passa a Pro per sbloccare clienti illimitati ed export avanzati.';
+      'Richiedi un codice invito o inserisci quello che hai ricevuto per sbloccare Pro.';
 
   @override
   String get subscriptionUsageTitle => 'Utilizzo piano Gratuito';
@@ -382,7 +382,76 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get subscriptionPromoHint =>
-      'Hai un codice promo? Potrai inserirlo nel checkout Stripe.';
+      'Hai un codice invito? Inseriscilo qui sotto.';
+
+  @override
+  String get subscriptionPromoCardTitle => 'Accedi a Pro con invito';
+
+  @override
+  String get subscriptionPromoCardSubtitle =>
+      'Durante l\'accesso anticipato Pro è gratuito con un codice invito.';
+
+  @override
+  String get subscriptionPromoCodeLabel => 'Codice invito';
+
+  @override
+  String get subscriptionPromoCodeHint => 'Es. POWERCOACH-2026';
+
+  @override
+  String get subscriptionPromoCodeEmpty => 'Inserisci un codice invito.';
+
+  @override
+  String get subscriptionPromoRedeemButton => 'Attiva Pro';
+
+  @override
+  String get subscriptionPromoRedeemSuccess => 'Pro attivato. Buon lavoro!';
+
+  @override
+  String get subscriptionPromoRedeemError =>
+      'Impossibile attivare il codice. Riprova.';
+
+  @override
+  String get subscriptionPromoAlreadyPro => 'Hai già accesso Pro.';
+
+  @override
+  String get subscriptionPromoProActiveHint =>
+      'Il tuo accesso Pro è attivo tramite codice invito.';
+
+  @override
+  String get subscriptionStatusPromoActive => 'Pro (invito)';
+
+  @override
+  String get subscriptionStatusPromoActiveDetail =>
+      'Accesso Pro attivato con codice invito.';
+
+  @override
+  String get subscriptionCouponRequestIntro =>
+      'Non hai un codice? Puoi richiedere l\'accesso Pro.';
+
+  @override
+  String get subscriptionCouponRequestButton => 'Richiedi codice invito';
+
+  @override
+  String get subscriptionCouponRequestMessageLabel => 'Messaggio (facoltativo)';
+
+  @override
+  String get subscriptionCouponRequestMessageHint =>
+      'Es. quanti clienti gestisci, come usi l\'app…';
+
+  @override
+  String get subscriptionCouponRequestSubmit => 'Invia richiesta';
+
+  @override
+  String get subscriptionCouponRequestSuccess =>
+      'Richiesta inviata. Ti contatteremo via email.';
+
+  @override
+  String get subscriptionCouponRequestError =>
+      'Impossibile inviare la richiesta. Riprova.';
+
+  @override
+  String get subscriptionCouponRequestPending =>
+      'Hai già una richiesta in attesa. Ti risponderemo via email.';
 
   @override
   String get subscriptionBillingDetailsTitle => 'Fatturazione';
