@@ -7,6 +7,8 @@ import '../workout_builder_session_controller.dart';
 import '../workout_builder_training_handlers.dart';
 import '../workout_editor_controller.dart';
 import 'workout_builder_editor_shell.dart';
+import 'workout_builder_readonly_banner.dart';
+import 'workout_builder_sandbox_banner.dart';
 import 'workout_mobility_tab.dart';
 import 'workout_plan_details_tab.dart';
 import 'workout_training_tab.dart';
@@ -33,6 +35,9 @@ class WorkoutBuilderScreenTabs {
     required this.showBottomNav,
     required this.planCompleted,
     required this.planArchived,
+    required this.readOnly,
+    this.onLogSession,
+    this.onCloneDayToTarget,
     required this.onInitialWeekChanged,
     required this.onCurrentWeekChanged,
     required this.onMetadataChanged,
@@ -44,6 +49,7 @@ class WorkoutBuilderScreenTabs {
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
+    this.onAssignDraftToCustomer,
   });
 
   final BuildContext context;
@@ -65,6 +71,9 @@ class WorkoutBuilderScreenTabs {
   final bool showBottomNav;
   final bool planCompleted;
   final bool planArchived;
+  final bool readOnly;
+  final VoidCallback? onLogSession;
+  final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final ValueChanged<String> onInitialWeekChanged;
   final ValueChanged<int> onCurrentWeekChanged;
   final VoidCallback onMetadataChanged;
@@ -76,6 +85,7 @@ class WorkoutBuilderScreenTabs {
   final Future<void> Function() onImportJson;
   final void Function(String value) onExport;
   final Future<bool> Function() onSave;
+  final VoidCallback? onAssignDraftToCustomer;
 
   WorkoutRoutine get _routine => builderSession.routine;
 
@@ -94,6 +104,7 @@ class WorkoutBuilderScreenTabs {
       onMetadataChanged: onMetadataChanged,
       planCompleted: planCompleted,
       planArchived: planArchived,
+      readOnly: readOnly,
       onMarkCompleted: onMarkCompleted,
     );
   }
@@ -148,6 +159,9 @@ class WorkoutBuilderScreenTabs {
       onSelectWeek: (i) => builderSession.selectWeek(i, resetDay: true),
       onSelectDay: (i) => builderSession.selectDay(i),
       onUpdateScheduledWeekday: trainingHandlers.setDayScheduledWeekday,
+      onLogSession: onLogSession,
+      onCloneDayToTarget: trainingHandlers.cloneDayToTarget,
+      readOnly: readOnly,
     );
   }
 
@@ -157,6 +171,7 @@ class WorkoutBuilderScreenTabs {
     required bool showManualSaveButton,
     Widget? saveStatusIndicator,
     bool showFirstSaveBanner = false,
+    bool showSandboxBanner = false,
   }) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
@@ -180,8 +195,16 @@ class WorkoutBuilderScreenTabs {
       onOpenTemplates: () {},
       onImportJson: onImportJson,
       onExport: onExport,
-      onSave: onSave,
-      showFirstSaveBanner: showFirstSaveBanner,
+      onSave: readOnly ? () async => true : onSave,
+      showFirstSaveBanner: showFirstSaveBanner && !readOnly,
+      showSandboxBanner: showSandboxBanner,
+      showReadOnlyBanner: readOnly,
+      sandboxBanner: showSandboxBanner && onAssignDraftToCustomer != null
+          ? WorkoutBuilderSandboxBanner(
+              onAssignToCustomer: onAssignDraftToCustomer!,
+            )
+          : null,
+      readOnlyBanner: readOnly ? const WorkoutBuilderReadOnlyBanner() : null,
     );
   }
 }

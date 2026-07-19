@@ -1734,6 +1734,75 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderSaveNowAction => 'Salva ora';
 
   @override
+  String get customerNewWorkoutSheetTitle => 'Nuova scheda';
+
+  @override
+  String get customerNewWorkoutBlank => 'Scheda vuota';
+
+  @override
+  String get customerNewWorkoutBlankHint => 'Parti da zero nel builder';
+
+  @override
+  String get customerNewWorkoutFromTemplate => 'Da template libreria';
+
+  @override
+  String get customerNewWorkoutFromTemplateHint => 'Usa un modello salvato';
+
+  @override
+  String get customerNewWorkoutDuplicateExisting => 'Duplica piano esistente';
+
+  @override
+  String get customerNewWorkoutDuplicateExistingHint =>
+      'Copia una scheda di questo cliente';
+
+  @override
+  String get customerNewWorkoutNoPlansToDuplicate =>
+      'Nessuna scheda da duplicare per questo cliente.';
+
+  @override
+  String get customerNewWorkoutDuplicatePickTitle =>
+      'Scegli la scheda da duplicare';
+
+  @override
+  String get customerTabWorkouts => 'Workout';
+
+  @override
+  String get dashboardWorkoutBuilderDraft => 'Builder bozza';
+
+  @override
+  String get workoutBuilderSandboxBanner =>
+      'Bozza locale — non assegnata a un cliente';
+
+  @override
+  String get workoutBuilderSandboxBannerHint =>
+      'Salva su un cliente per usarla nel programma.';
+
+  @override
+  String get workoutBuilderAssignToCustomer => 'Assegna a cliente';
+
+  @override
+  String get workoutBuilderAssignDraftSuccess => 'Scheda assegnata al cliente.';
+
+  @override
+  String get workoutBuilderLogSession => 'Registra sessione';
+
+  @override
+  String get workoutBuilderLogSessionSuccess => 'Sessione registrata.';
+
+  @override
+  String get workoutBuilderCloneDayToTarget => 'Duplica su…';
+
+  @override
+  String get workoutBuilderCloneDayTargetTitle => 'Duplica giorno su';
+
+  @override
+  String get workoutBuilderReadOnlyBanner =>
+      'Solo lettura — duplica la scheda per modificarla.';
+
+  @override
+  String get planScheduleEmptyHint => 'Imposta data di inizio';
+
+  @override
   String get workoutBuilderEmptyDayCta => 'Aggiungi esercizio';
 
   @override

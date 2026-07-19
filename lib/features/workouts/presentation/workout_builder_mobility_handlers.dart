@@ -11,12 +11,15 @@ class WorkoutBuilderMobilityHandlers {
   WorkoutBuilderMobilityHandlers({
     required this.context,
     required this.mobilityController,
+    this.readOnly = false,
   });
 
   final BuildContext context;
   final MobilityBuilderController mobilityController;
+  final bool readOnly;
 
   void addMobilityItem() {
+    if (readOnly) return;
     final sectionId = mobilityController.selectedSectionId;
     if (sectionId == null) return;
     final theme = Theme.of(context);
@@ -44,14 +47,17 @@ class WorkoutBuilderMobilityHandlers {
   }
 
   void removeMobilityItem(String id) {
+    if (readOnly) return;
     mobilityController.removeItem(id);
   }
 
   void reorderMobility(int oldIndex, int newIndex) {
+    if (readOnly) return;
     mobilityController.reorderItems(oldIndex, newIndex);
   }
 
   void addMobilitySection() {
+    if (readOnly) return;
     final l10n = AppLocalizations.of(context);
     mobilityController.addSection(
       name: l10n.workoutBuilderSectionNumbered(
@@ -61,6 +67,7 @@ class WorkoutBuilderMobilityHandlers {
   }
 
   void editMobilitySection(int index) {
+    if (readOnly) return;
     final sections = mobilityController.sections;
     if (index < 0 || index >= sections.length) return;
     final section = sections[index];
@@ -80,6 +87,7 @@ class WorkoutBuilderMobilityHandlers {
   }
 
   void deleteMobilitySection(int index) {
+    if (readOnly) return;
     mobilityController.deleteSection(index);
   }
 
@@ -89,6 +97,7 @@ class WorkoutBuilderMobilityHandlers {
     String subtitle, {
     String shortTitle = '',
   }) {
+    if (readOnly) return;
     mobilityController.updateItem(
       itemId: id,
       title: title,
