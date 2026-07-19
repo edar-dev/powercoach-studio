@@ -2,6 +2,30 @@
 
 Indice dei piani attivi per miglioramenti architetturali, tech debt, test e agent tooling.
 
+## Plan attivi prodotto (workout builder UX)
+
+Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-analysis.md)
+
+| Fase | Plan | Backlog ID | PR stimati |
+|------|------|------------|------------|
+| **Roadmap** | [workout-builder-ux-roadmap](workout-builder-ux-roadmap.plan.md) | WB-01 … WB-22 | — |
+| **1** | [workout-builder-ux-phase1-trust](workout-builder-ux-phase1-trust.plan.md) | WB-01 … WB-05 | 2–3 |
+| **2** | [workout-builder-ux-phase2-coach-flow](workout-builder-ux-phase2-coach-flow.plan.md) | WB-06 … WB-12, WB-21 | 4–5 |
+| **3** | [workout-builder-ux-phase3-advanced](workout-builder-ux-phase3-advanced.plan.md) | WB-13 … WB-22 | 5+ |
+
+```mermaid
+flowchart LR
+  WB[workout-builder-ux-roadmap]
+  P1[phase1-trust]
+  P2[phase2-coach-flow]
+  P3[phase3-advanced]
+  WB --> P1 --> P2 --> P3
+```
+
+**Esecuzione:** completare fase 1 (minimo WB-01) prima della fase 2.
+
+---
+
 ## Ordine di esecuzione consigliato
 
 ```mermaid
