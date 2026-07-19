@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 
 import '../../l10n/app_localizations.dart';
 import 'plan_limits.dart';
@@ -41,7 +42,7 @@ Future<void> showPaywallDialog(
           FilledButton(
             onPressed: () {
               Navigator.of(dialogContext).pop();
-              context.push('/settings/subscription');
+              context.push(AppPaths.subscription);
             },
             child: Text(l10n.paywallUpgradeCta),
           ),

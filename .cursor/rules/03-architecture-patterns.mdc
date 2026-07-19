@@ -24,7 +24,8 @@ Shared widgets used across features belong in `lib/core/ui/widgets/`.
 
 Routes are declared in `lib/core/routing/app_routes.dart` via `buildAppRoutes()`. Router setup lives in `lib/app.dart` (`configureAppRouter`).
 
-- Navigate imperatively: `context.go('/customers')` or `context.push('/customers/new')`.
+- **Dedicated paths:** important features get a top-level URL; see `.cursor/rules/15-dedicated-routes.mdc` and `lib/core/routing/app_paths.dart`.
+- Navigate imperatively: `context.go(AppPaths.subscription)` or `context.push('/customers/new')`.
 - Pass params via path (`':id'`) or query string (`state.uri.queryParameters`).
 - **Protected routes** require an authenticated Supabase user. When adding a new protected path prefix, update `resolveAppRouteRedirect` in `lib/core/routing/route_redirect.dart`.
 

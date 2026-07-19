@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 
 bool isProtectedAppPath(String path) {
   return path.startsWith('/customers') ||
@@ -7,6 +8,7 @@ bool isProtectedAppPath(String path) {
       path.startsWith('/workouts') ||
       path == '/profile' ||
       path.startsWith('/settings') ||
+      path == AppPaths.subscription ||
       path == '/exercise-library';
 }
 

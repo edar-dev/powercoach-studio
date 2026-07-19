@@ -1,0 +1,45 @@
+---
+description: Dedicated URL paths for important screens and features
+alwaysApply: true
+---
+
+# Dedicated Routes
+
+Every **important full-page feature** must have its own **top-level GoRouter path**, not only a nested child under a parent hub (e.g. settings or dashboard).
+
+## Why
+
+- Shareable URLs and deep links (`/subscription`, not `/settings/subscription`)
+- Paywalls, banners, and external redirects (Stripe, docs) stay stable
+- Auth guards and analytics map cleanly to one path per feature
+
+## Rules
+
+1. **Register** the screen in `lib/core/routing/app_routes.dart` as a top-level `GoRoute` (use `parentNavigatorKey: appRootNavigatorKey` when it should cover the shell).
+2. **Add a constant** in `lib/core/routing/app_paths.dart` and navigate with `context.go(AppPaths.x)` / `context.push(AppPaths.x)` — avoid hard-coded path strings in features.
+3. **Protect** authenticated routes in `lib/core/routing/route_redirect.dart` (`isProtectedAppPath`).
+4. **Legacy paths:** if a screen moved from a nested path, keep a **redirect** from the old URL (preserve query strings) for bookmarks and external links.
+5. **Docs & integrations:** update Stripe return URLs, README, and design index when the canonical path changes.
+
+## Canonical paths (reference)
+
+| Feature | Path | Constant |
+|---------|------|----------|
+| Subscription / billing | `/subscription` | `AppPaths.subscription` |
+| Customers list | `/customers` | — |
+| Customer detail | `/customers/:id` | — |
+| Dashboard | `/dashboard` | — |
+| Exercise library | `/exercise-library` | — |
+| Workout builder | `/workouts/builder` | — |
+| Settings hub | `/settings` | — |
+| Personal info | `/settings/personal-info` | nested OK (settings sub-screen) |
+| Release notes | `/settings/release-notes` | nested OK (settings sub-screen) |
+
+**Important product surfaces** (subscription, paywall targets, primary feature hubs) use **top-level** paths. Secondary settings sub-pages may stay under `/settings/…` if they are not linked from paywalls or marketing.
+
+## Checklist for new screens
+
+- [ ] Top-level route in `app_routes.dart`
+- [ ] Constant in `app_paths.dart` if linked from multiple features
+- [ ] Entry in `route_redirect.dart` when auth-required
+- [ ] No raw `'/my-feature'` strings in widgets — use `AppPaths`

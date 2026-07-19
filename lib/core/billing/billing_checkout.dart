@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/platform/open_external_url.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'entitlement_models.dart';
@@ -20,9 +21,9 @@ enum PortalFlow {
 abstract final class BillingCheckout {
   static String get _returnBase {
     if (kIsWeb) {
-      return '${Uri.base.origin}/settings/subscription';
+      return '${Uri.base.origin}${AppPaths.subscription}';
     }
-    return 'https://powercoach-studio.vercel.app/settings/subscription';
+    return 'https://powercoach-studio.vercel.app${AppPaths.subscription}';
   }
 
   static Future<String> startCheckout({
