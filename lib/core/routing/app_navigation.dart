@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 
 /// Declarative navigation that always updates the browser URL on web.
 ///
@@ -32,6 +33,34 @@ void navigateBack(BuildContext context, {required String fallback}) {
     return;
   }
   context.go(fallback);
+}
+
+/// Opens subscription with a dedicated URL (`/subscription`) on web.
+///
+/// Top-level routes must use [navigateTo] — [navigatePush] keeps the old URL in
+/// the address bar when leaving `/settings` or other hubs.
+void navigateToSubscription(BuildContext context) {
+  final current = GoRouterState.of(context).uri.toString();
+  if (current == AppPaths.subscription ||
+      current.startsWith('${AppPaths.subscription}?')) {
+    navigateTo(context, AppPaths.subscription);
+    return;
+  }
+  navigateTo(
+    context,
+    Uri(
+      path: AppPaths.subscription,
+      queryParameters: {'from': current},
+    ).toString(),
+  );
+}
+
+void navigateBackFromSubscription(BuildContext context) {
+  final from = GoRouterState.of(context).uri.queryParameters['from'];
+  navigateBack(
+    context,
+    fallback: (from != null && from.isNotEmpty) ? from : '/settings',
+  );
 }
 
 String customerPath(String customerId) => '/customers/$customerId';
