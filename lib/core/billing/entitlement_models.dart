@@ -10,6 +10,8 @@ enum BillingStatus {
 
 enum BillingInterval { monthly, yearly }
 
+enum EntitlementSource { none, stripe, promo, manual }
+
 class Entitlement {
   const Entitlement({
     required this.plan,
@@ -20,6 +22,8 @@ class Entitlement {
     this.billingInterval,
     this.priceAmountCents,
     this.currency,
+    this.entitlementSource = EntitlementSource.none,
+    this.hasPendingCouponRequest = false,
   });
 
   final BillingPlan plan;
@@ -30,8 +34,12 @@ class Entitlement {
   final BillingInterval? billingInterval;
   final int? priceAmountCents;
   final String? currency;
+  final EntitlementSource entitlementSource;
+  final bool hasPendingCouponRequest;
 
   bool get isPro => plan == BillingPlan.pro;
+
+  bool get isStripeBilling => entitlementSource == EntitlementSource.stripe;
 
   factory Entitlement.fromJson(Map<String, dynamic> json) {
     return Entitlement(
@@ -43,7 +51,18 @@ class Entitlement {
       billingInterval: _parseInterval(json['billingInterval']),
       priceAmountCents: _parseInt(json['priceAmountCents']),
       currency: json['currency']?.toString(),
+      entitlementSource: _parseSource(json['entitlementSource']),
+      hasPendingCouponRequest: json['hasPendingCouponRequest'] == true,
     );
+  }
+
+  static EntitlementSource _parseSource(Object? value) {
+    return switch (value?.toString()) {
+      'stripe' => EntitlementSource.stripe,
+      'promo' => EntitlementSource.promo,
+      'manual' => EntitlementSource.manual,
+      _ => EntitlementSource.none,
+    };
   }
 
   static BillingPlan _parsePlan(Object? value) {

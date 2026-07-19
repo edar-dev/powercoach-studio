@@ -653,7 +653,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionWebOnlyHint.
   ///
   /// In en, this message translates to:
-  /// **'Pro upgrade is available on the web app.'**
+  /// **'Stripe subscription management is available on the web app only.'**
   String get subscriptionWebOnlyHint;
 
   /// No description provided for @subscriptionStatusActive.
@@ -719,7 +719,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionStatusFreeDetail.
   ///
   /// In en, this message translates to:
-  /// **'Upgrade to Pro for unlimited clients and advanced exports.'**
+  /// **'Request an invite code or enter one you received to unlock Pro.'**
   String get subscriptionStatusFreeDetail;
 
   /// No description provided for @subscriptionUsageTitle.
@@ -797,8 +797,128 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionPromoHint.
   ///
   /// In en, this message translates to:
-  /// **'Have a promo code? You can enter it on the Stripe checkout page.'**
+  /// **'Have an invite code? Enter it below.'**
   String get subscriptionPromoHint;
+
+  /// No description provided for @subscriptionPromoCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Pro with an invite'**
+  String get subscriptionPromoCardTitle;
+
+  /// No description provided for @subscriptionPromoCardSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'During early access, Pro is free with an invite code.'**
+  String get subscriptionPromoCardSubtitle;
+
+  /// No description provided for @subscriptionPromoCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite code'**
+  String get subscriptionPromoCodeLabel;
+
+  /// No description provided for @subscriptionPromoCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. POWERCOACH-2026'**
+  String get subscriptionPromoCodeHint;
+
+  /// No description provided for @subscriptionPromoCodeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter an invite code.'**
+  String get subscriptionPromoCodeEmpty;
+
+  /// No description provided for @subscriptionPromoRedeemButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Pro'**
+  String get subscriptionPromoRedeemButton;
+
+  /// No description provided for @subscriptionPromoRedeemSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro activated. Enjoy!'**
+  String get subscriptionPromoRedeemSuccess;
+
+  /// No description provided for @subscriptionPromoRedeemError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not activate the code. Try again.'**
+  String get subscriptionPromoRedeemError;
+
+  /// No description provided for @subscriptionPromoAlreadyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have Pro access.'**
+  String get subscriptionPromoAlreadyPro;
+
+  /// No description provided for @subscriptionPromoProActiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Pro access is active via invite code.'**
+  String get subscriptionPromoProActiveHint;
+
+  /// No description provided for @subscriptionStatusPromoActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro (invite)'**
+  String get subscriptionStatusPromoActive;
+
+  /// No description provided for @subscriptionStatusPromoActiveDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro access activated with an invite code.'**
+  String get subscriptionStatusPromoActiveDetail;
+
+  /// No description provided for @subscriptionCouponRequestIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have a code? You can request Pro access.'**
+  String get subscriptionCouponRequestIntro;
+
+  /// No description provided for @subscriptionCouponRequestButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Request invite code'**
+  String get subscriptionCouponRequestButton;
+
+  /// No description provided for @subscriptionCouponRequestMessageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Message (optional)'**
+  String get subscriptionCouponRequestMessageLabel;
+
+  /// No description provided for @subscriptionCouponRequestMessageHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. how many clients you coach, how you use the app…'**
+  String get subscriptionCouponRequestMessageHint;
+
+  /// No description provided for @subscriptionCouponRequestSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Send request'**
+  String get subscriptionCouponRequestSubmit;
+
+  /// No description provided for @subscriptionCouponRequestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. We\'ll reply by email.'**
+  String get subscriptionCouponRequestSuccess;
+
+  /// No description provided for @subscriptionCouponRequestError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send the request. Try again.'**
+  String get subscriptionCouponRequestError;
+
+  /// No description provided for @subscriptionCouponRequestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a pending request. We\'ll reply by email.'**
+  String get subscriptionCouponRequestPending;
 
   /// No description provided for @subscriptionBillingDetailsTitle.
   ///

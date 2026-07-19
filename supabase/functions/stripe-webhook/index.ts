@@ -52,6 +52,7 @@ async function upsertFromSubscription(
     billing_interval: billingInterval,
     price_amount_cents: price?.unit_amount ?? null,
     currency: price?.currency ?? 'eur',
+    entitlement_source: 'stripe',
     updated_at: new Date().toISOString(),
   };
 
