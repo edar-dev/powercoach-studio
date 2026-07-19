@@ -2,6 +2,8 @@
 
 Use this checklist for PRs that touch the workout builder UI, state flow, import/export, or exercise picker.
 
+Product context and UX backlog: [workout-builder-ux-analysis.md](./workout-builder-ux-analysis.md) · Implementation plans: [`.cursor/plans/workout-builder-ux-roadmap.plan.md`](../.cursor/plans/workout-builder-ux-roadmap.plan.md).
+
 ## Required Automated Checks
 
 - `flutter analyze`
