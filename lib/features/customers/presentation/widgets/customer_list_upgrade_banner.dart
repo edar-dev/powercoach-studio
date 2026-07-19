@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/billing/plan_limits.dart';
 import 'package:powercoach_studio/core/billing/plan_usage.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -47,7 +48,7 @@ class CustomerListUpgradeBanner extends StatelessWidget {
             borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
             child: InkWell(
               borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-              onTap: () => context.push('/settings/subscription'),
+              onTap: () => context.push(AppPaths.subscription),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(

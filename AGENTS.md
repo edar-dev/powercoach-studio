@@ -30,6 +30,7 @@
 
 ## Flutter Guardrails
 - Follow existing feature-based structure under `lib/features/*`.
+- **Routing:** important screens use dedicated top-level paths; constants in `lib/core/routing/app_paths.dart` (see `.cursor/rules/15-dedicated-routes.mdc`).
 - Keep business logic outside widgets when complexity grows.
 - Reuse theme tokens and shared UI components before adding new styles.
 - Avoid introducing new dependencies unless clearly justified.

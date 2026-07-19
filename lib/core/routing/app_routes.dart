@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';
@@ -74,6 +75,11 @@ List<RouteBase> buildAppRoutes() {
       builder: (context, state) => const ProfileScreen(),
     ),
     GoRoute(
+      path: AppPaths.subscription,
+      parentNavigatorKey: appRootNavigatorKey,
+      builder: (context, state) => const SubscriptionScreen(),
+    ),
+    GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsScreen(),
       routes: [
@@ -85,7 +91,12 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'subscription',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const SubscriptionScreen(),
+          redirect: (context, state) {
+            final query = state.uri.query;
+            return query.isEmpty
+                ? AppPaths.subscription
+                : '${AppPaths.subscription}?$query';
+          },
         ),
         GoRoute(
           path: 'release-notes',

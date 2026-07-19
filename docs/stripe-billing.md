@@ -153,8 +153,8 @@ Body:
 ```json
 {
   "billingInterval": "monthly",
-  "successUrl": "https://powercoach-studio.vercel.app/settings/subscription?checkout=success",
-  "cancelUrl": "https://powercoach-studio.vercel.app/settings/subscription?checkout=cancel"
+  "successUrl": "https://powercoach-studio.vercel.app/subscription?checkout=success",
+  "cancelUrl": "https://powercoach-studio.vercel.app/subscription?checkout=cancel"
 }
 ```
 
@@ -168,7 +168,7 @@ Body:
 
 ```json
 {
-  "returnUrl": "https://powercoach-studio.vercel.app/settings/subscription",
+  "returnUrl": "https://powercoach-studio.vercel.app/subscription",
   "flow": "payment_method"
 }
 ```

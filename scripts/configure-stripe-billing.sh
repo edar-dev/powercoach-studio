@@ -13,7 +13,7 @@ set -euo pipefail
 STRIPE_SECRET_KEY="${STRIPE_SECRET_KEY:?Export STRIPE_SECRET_KEY (sk_test_... or sk_live_...)}"
 PROJECT_REF="${SUPABASE_PROJECT_REF:-owtkzvphhapjdfibmebl}"
 WEBHOOK_URL="https://${PROJECT_REF}.supabase.co/functions/v1/stripe-webhook"
-RETURN_URL="${BILLING_RETURN_URL:-https://powercoach-studio.vercel.app/settings/subscription}"
+RETURN_URL="${BILLING_RETURN_URL:-https://powercoach-studio.vercel.app/subscription}"
 
 # Created in Stripe test mode (2026-07-09). Override if you recreate products/prices.
 STRIPE_PRICE_ID_MONTHLY="${STRIPE_PRICE_ID_MONTHLY:-price_1TrOOs2Ls7JojLJZijEv3TUK}"

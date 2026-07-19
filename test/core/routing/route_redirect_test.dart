@@ -28,6 +28,7 @@ void main() {
     expect(isProtectedAppPath('/workouts/builder/multiset'), isTrue);
     expect(isProtectedAppPath('/settings'), isTrue);
     expect(isProtectedAppPath('/settings/personal-info'), isTrue);
+    expect(isProtectedAppPath('/subscription'), isTrue);
     expect(isProtectedAppPath('/settings/subscription'), isTrue);
     expect(isProtectedAppPath('/profile'), isTrue);
     expect(isProtectedAppPath('/dashboard/calendar'), isTrue);
