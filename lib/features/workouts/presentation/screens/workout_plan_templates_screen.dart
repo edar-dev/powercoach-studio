@@ -145,6 +145,16 @@ class _WorkoutPlanTemplatesScreenState
           content: Text(l10n.workoutTemplatesAssignedSnack),
           behavior: SnackBarBehavior.floating,
           backgroundColor: StitchM3Theme.accent,
+          action: SnackBarAction(
+            label: l10n.workoutTemplateOpenPlanAction,
+            textColor: Colors.white,
+            onPressed: () {
+              navigateTo(
+                context,
+                customerWorkoutEditorPath(chosen.id, planId: created.id),
+              );
+            },
+          ),
         ),
       );
     } catch (e, st) {

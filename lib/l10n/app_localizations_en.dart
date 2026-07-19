@@ -1711,6 +1711,29 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get workoutBuilderSaveToPersistHint =>
+      'Save the plan to link it to this client. Until then, changes stay in memory only.';
+
+  @override
+  String get workoutBuilderSaveNowAction => 'Save now';
+
+  @override
+  String get workoutBuilderEmptyDayCta => 'Add exercise';
+
+  @override
+  String get workoutActionFailed => 'Action failed. Please try again.';
+
+  @override
+  String get workoutPlansLoadError =>
+      'Could not load this client\'s workout plans.';
+
+  @override
+  String get workoutDiaryLoadError => 'Could not load the workout diary.';
+
+  @override
+  String get workoutTemplateOpenPlanAction => 'Open plan';
+
+  @override
   String get measurementsEmpty => 'No measurements yet';
 
   @override

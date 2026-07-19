@@ -3196,6 +3196,48 @@ abstract class AppLocalizations {
   /// **'{count, plural, =0{No exercises} =1{1 exercise} other{{count} exercises}}'**
   String workoutBuilderExerciseCount(int count);
 
+  /// No description provided for @workoutBuilderSaveToPersistHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Save the plan to link it to this client. Until then, changes stay in memory only.'**
+  String get workoutBuilderSaveToPersistHint;
+
+  /// No description provided for @workoutBuilderSaveNowAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Save now'**
+  String get workoutBuilderSaveNowAction;
+
+  /// No description provided for @workoutBuilderEmptyDayCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise'**
+  String get workoutBuilderEmptyDayCta;
+
+  /// No description provided for @workoutActionFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Action failed. Please try again.'**
+  String get workoutActionFailed;
+
+  /// No description provided for @workoutPlansLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load this client\'s workout plans.'**
+  String get workoutPlansLoadError;
+
+  /// No description provided for @workoutDiaryLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the workout diary.'**
+  String get workoutDiaryLoadError;
+
+  /// No description provided for @workoutTemplateOpenPlanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open plan'**
+  String get workoutTemplateOpenPlanAction;
+
   /// No description provided for @measurementsEmpty.
   ///
   /// In en, this message translates to:

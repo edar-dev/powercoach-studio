@@ -6,9 +6,13 @@ import 'package:powercoach_studio/features/workouts/presentation/widgets/workout
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 class _ShellHarness extends StatefulWidget {
-  const _ShellHarness({required this.showsMobilityTab});
+  const _ShellHarness({
+    required this.showsMobilityTab,
+    this.showFirstSaveBanner = false,
+  });
 
   final bool showsMobilityTab;
+  final bool showFirstSaveBanner;
 
   @override
   State<_ShellHarness> createState() => _ShellHarnessState();
@@ -42,6 +46,7 @@ class _ShellHarnessState extends State<_ShellHarness>
       canPop: true,
       saving: false,
       showManualSaveButton: true,
+      showFirstSaveBanner: widget.showFirstSaveBanner,
       saveStatusIndicator: null,
       editorMode: false,
       loading: false,
@@ -109,5 +114,26 @@ void main() {
     expect(find.text('Allenamento'), findsOneWidget);
     expect(find.text('Mobility'), findsNothing);
     expect(find.text('Dettagli'), findsOneWidget);
+  });
+
+  testWidgets('WorkoutBuilderEditorShell shows first-save banner when enabled', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(
+        const _ShellHarness(
+          showsMobilityTab: true,
+          showFirstSaveBanner: true,
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Salva ora'), findsOneWidget);
+    expect(
+      find.textContaining('Salva la scheda per associarla al cliente'),
+      findsOneWidget,
+    );
   });
 }

@@ -1727,6 +1727,30 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get workoutBuilderSaveToPersistHint =>
+      'Salva la scheda per associarla al cliente. Fino ad allora le modifiche restano solo in memoria.';
+
+  @override
+  String get workoutBuilderSaveNowAction => 'Salva ora';
+
+  @override
+  String get workoutBuilderEmptyDayCta => 'Aggiungi esercizio';
+
+  @override
+  String get workoutActionFailed => 'Operazione non riuscita. Riprova.';
+
+  @override
+  String get workoutPlansLoadError =>
+      'Impossibile caricare le schede del cliente.';
+
+  @override
+  String get workoutDiaryLoadError =>
+      'Impossibile caricare il diario allenamenti.';
+
+  @override
+  String get workoutTemplateOpenPlanAction => 'Apri piano';
+
+  @override
   String get measurementsEmpty => 'Nessuna misura ancora';
 
   @override

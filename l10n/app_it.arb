@@ -727,6 +727,13 @@
       "count": { "type": "int" }
     }
   },
+  "workoutBuilderSaveToPersistHint": "Salva la scheda per associarla al cliente. Fino ad allora le modifiche restano solo in memoria.",
+  "workoutBuilderSaveNowAction": "Salva ora",
+  "workoutBuilderEmptyDayCta": "Aggiungi esercizio",
+  "workoutActionFailed": "Operazione non riuscita. Riprova.",
+  "workoutPlansLoadError": "Impossibile caricare le schede del cliente.",
+  "workoutDiaryLoadError": "Impossibile caricare il diario allenamenti.",
+  "workoutTemplateOpenPlanAction": "Apri piano",
   "measurementsEmpty": "Nessuna misura ancora",
   "measurementsEmptyHint": "Aggiungi una misura per tracciare 1RM, composizione corporea e circonferenze.",
   "measurementAdd": "Aggiungi misura",
