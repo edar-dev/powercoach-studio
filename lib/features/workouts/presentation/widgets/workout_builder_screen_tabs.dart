@@ -156,6 +156,7 @@ class WorkoutBuilderScreenTabs {
     required bool saving,
     required bool showManualSaveButton,
     Widget? saveStatusIndicator,
+    bool showFirstSaveBanner = false,
   }) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
@@ -180,6 +181,7 @@ class WorkoutBuilderScreenTabs {
       onImportJson: onImportJson,
       onExport: onExport,
       onSave: onSave,
+      showFirstSaveBanner: showFirstSaveBanner,
     );
   }
 }

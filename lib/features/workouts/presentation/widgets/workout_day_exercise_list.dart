@@ -88,13 +88,29 @@ class WorkoutDayExerciseList extends StatelessWidget {
         itemBuilder: (context, index) {
           if (day.exercises.isEmpty) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24),
-              child: Text(
-                l10n.workoutBuilderExerciseCount(0),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.fitness_center_outlined,
+                    size: 40,
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.workoutBuilderExerciseCount(0),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () => onAddExercise(weekIndex, dayIndex),
+                    icon: const Icon(Icons.add, size: 20),
+                    label: Text(l10n.workoutBuilderEmptyDayCta),
+                  ),
+                ],
               ),
             );
           }

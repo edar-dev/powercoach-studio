@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'package:powercoach_studio/features/customers/presentation/customer_workout_follow_up.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
-import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_plan_display_helpers.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -31,38 +29,12 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
     BuildContext context,
     WorkoutPlanApiModel plan,
   ) async {
-    final l10n = AppLocalizations.of(context);
-    final planRepo = WorkoutPlanRepository();
-    try {
-      final routine = planDataToRoutine(plan.planData);
-      final numWeeks = routine.weeks.isEmpty ? 1 : routine.weeks.length;
-      final newStartingWeek = plan.initialWeekNumber + numWeeks;
-      final emptyPlanData = jsonEncode(WorkoutRoutine.empty().toJson());
-      await planRepo.create(
-        customerId: customerId,
-        name: l10n.workoutNewPlanName,
-        planDataJson: emptyPlanData,
-        initialWeekNumber: newStartingWeek,
-      );
-      if (!context.mounted) return;
-      onPlansChanged();
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutDuplicatedMessage),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
+    await createCustomerWorkoutFollowUp(
+      context,
+      customerId: customerId,
+      plan: plan,
+      onSuccess: onPlansChanged,
+    );
   }
 
   Future<void> _deletePlan(

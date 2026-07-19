@@ -4,28 +4,28 @@ overview: "Fase 1 — Fiducia e coerenza: primo save/autosave, follow-up unifica
 todos:
   - id: wb01-first-save-banner
     content: "WB-01a — Banner persistente in editor finché loadedPlanId==null ('Salva per associare al cliente')"
-    status: pending
+    status: completed
   - id: wb01-autosave-on-create
     content: "WB-01b — Opzione create-on-first-autosave in WorkoutEditorController (debounce → saveRoutine crea planId)"
-    status: pending
+    status: completed
   - id: wb01-tests
     content: "WB-01c — Test workout_editor_controller: autosave blocked vs allowed; widget smoke banner"
-    status: pending
+    status: completed
   - id: wb02-follow-up-unify
     content: "WB-02 — customer_detail_workout_plans_section: sostituire _createFollowUp con showWorkoutFollowUpDialog + createFollowUpFromPlan (allineare a customer_workouts_screen)"
-    status: pending
+    status: completed
   - id: wb03-template-open-plan
     content: "WB-03 — WorkoutPlanTemplatesScreen._assignToCustomer: snackbar action 'Apri piano' → customerWorkoutEditorPath(customerId, planId)"
-    status: pending
+    status: completed
   - id: wb04-empty-day-cta
     content: "WB-04 — WorkoutDayExerciseList: empty branch con FilledButton onAddExercise + l10n workoutBuilderEmptyDayCta"
-    status: pending
+    status: completed
   - id: wb05-silent-errors
     content: "WB-05 — Snackbar errori su archive/unarchive/complete (CustomerWorkoutsScreen), load overview piani, load diary"
-    status: pending
+    status: completed
   - id: wb-phase1-qa
     content: "flutter analyze + test/features/workouts + docs/workout-builder-qa-checklist.md smoke"
-    status: pending
+    status: completed
 isProject: false
 ---
 

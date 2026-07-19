@@ -12,8 +12,8 @@ import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/presentation/workout_plan_display_helpers.dart';
-import '../../../workouts/presentation/widgets/workout_follow_up_dialog.dart';
 import '../../../workouts/presentation/widgets/workout_plan_name_prompt_dialog.dart';
+import '../customer_workout_follow_up.dart';
 import '../customer_workout_plan_session_handler.dart';
 import '../widgets/customer_workout_plan_list.dart';
 import '../widgets/customer_workout_plan_list_tile.dart';
@@ -277,41 +277,17 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
-    final draft = await showWorkoutFollowUpDialog(
+    await createCustomerWorkoutFollowUp(
       context,
+      customerId: widget.customerId,
       plan: plan,
+      planRepo: _planRepo,
       executionService: _executionService,
+      onSuccess: () async {
+        if (!mounted) return;
+        await _loadPlans();
+      },
     );
-    if (draft == null || !mounted) return;
-    try {
-      await _planRepo.createFollowUpFromPlan(
-        sourcePlanId: plan.id,
-        name: draft.name,
-        newStartDate: draft.startDate,
-        applyExecutedLoads: draft.applyExecutedLoads,
-      );
-      if (!mounted) return;
-      await _loadPlans();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context).workoutFollowUpCreatedMessage,
-          ),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
   }
 
   Future<void> _duplicatePlan(WorkoutPlanApiModel plan) async {
@@ -387,28 +363,58 @@ class _CustomerWorkoutsScreenState extends State<CustomerWorkoutsScreen> {
   }
 
   Future<void> _archivePlan(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
     try {
       await _planRepo.archivePlan(plan.id);
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutActionFailed),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   Future<void> _unarchivePlan(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
     try {
       await _planRepo.unarchivePlan(plan.id);
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutActionFailed),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   Future<void> _markPlanCompleted(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
     try {
       await _planRepo.markPlanCompleted(plan.id);
       if (!mounted) return;
       await _loadPlans();
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutActionFailed),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 }

@@ -384,6 +384,8 @@ class _WorkoutBuilderMobilityScreenState
                 onRetry: _routineActions.saveRoutine,
               )
             : null,
+        showFirstSaveBanner:
+            !_loading && _editorController.loadedPlanId == null,
       ),
     );
   }

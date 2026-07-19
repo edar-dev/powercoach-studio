@@ -427,10 +427,36 @@ void main() {
       expect(autosaveCalls, 1);
     });
 
-    test('autosave is not scheduled for new plans without id', () async {
+    test('autosave is scheduled for new plans without id', () async {
       var autosaveCalls = 0;
-      controller.markLoaded(session: session());
-      controller.notifyContentChanged(
+      final newPlanController = WorkoutEditorController(
+        getPlanById: (planId) async => plans[planId],
+        createPlan:
+            ({
+              required customerId,
+              required name,
+              required planDataJson,
+              pdfHeader,
+              useCustomPdfHeader = false,
+              initialWeekNumber = 1,
+              phase,
+              tags,
+              notes,
+            }) async {
+              createCalls.add({
+                'customerId': customerId,
+                'name': name,
+                'planDataJson': planDataJson,
+              });
+              final created = plan(id: 'plan-new', name: name);
+              plans[created.id] = created;
+              return created;
+            },
+        autosaveDelay: const Duration(milliseconds: 30),
+      );
+      addTearDown(newPlanController.dispose);
+      newPlanController.markLoaded(session: session());
+      newPlanController.notifyContentChanged(
         session: session(planName: 'Draft'),
         editorMode: true,
         loading: false,
@@ -439,10 +465,10 @@ void main() {
         },
       );
 
-      await Future<void>.delayed(const Duration(milliseconds: 20));
+      await Future<void>.delayed(const Duration(milliseconds: 45));
 
-      expect(controller.isDirty, isTrue);
-      expect(autosaveCalls, 0);
+      expect(newPlanController.isDirty, isTrue);
+      expect(autosaveCalls, 1);
     });
 
     test('save failure leaves unsaved state', () async {

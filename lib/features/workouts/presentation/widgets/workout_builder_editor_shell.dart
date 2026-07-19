@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_bottom_nav.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_lazy_tab.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_routine_name_bar.dart';
@@ -31,6 +32,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
+    this.showFirstSaveBanner = false,
   });
 
   final bool canPop;
@@ -53,6 +55,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final VoidCallback onImportJson;
   final void Function(String value) onExport;
   final VoidCallback onSave;
+  final bool showFirstSaveBanner;
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +96,8 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
+                  if (showFirstSaveBanner)
+                    WorkoutBuilderFirstSaveBanner(onSave: onSave),
                   WorkoutRoutineNameBar(
                     controller: routineNameController,
                     l10n: l10n,

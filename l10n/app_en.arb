@@ -727,6 +727,13 @@
       "count": { "type": "int" }
     }
   },
+  "workoutBuilderSaveToPersistHint": "Save the plan to link it to this client. Until then, changes stay in memory only.",
+  "workoutBuilderSaveNowAction": "Save now",
+  "workoutBuilderEmptyDayCta": "Add exercise",
+  "workoutActionFailed": "Action failed. Please try again.",
+  "workoutPlansLoadError": "Could not load this client's workout plans.",
+  "workoutDiaryLoadError": "Could not load the workout diary.",
+  "workoutTemplateOpenPlanAction": "Open plan",
   "measurementsEmpty": "No measurements yet",
   "measurementsEmptyHint": "Add a measurement to track 1RM, body composition, and circumferences.",
   "measurementAdd": "Add measurement",

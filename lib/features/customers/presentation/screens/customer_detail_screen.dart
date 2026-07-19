@@ -89,7 +89,16 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
         _loadProgress();
       }
     } catch (_) {
-      if (mounted) setState(() => _workoutPlansLoading = false);
+      if (!mounted) return;
+      setState(() => _workoutPlansLoading = false);
+      final l10n = AppLocalizations.of(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.workoutPlansLoadError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
     }
   }
 

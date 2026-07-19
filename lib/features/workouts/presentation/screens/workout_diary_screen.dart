@@ -25,6 +25,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   final CustomerRepository _customerRepo = CustomerRepository();
 
   bool _loading = true;
+  String? _loadError;
   List<SessionExecutionEntry> _entries = const [];
   List<Customer> _customers = const [];
   String? _filterCustomerId;
@@ -46,7 +47,10 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _loadError = null;
+    });
     try {
       final entries = await _executionService.listAll();
       final customers = await _customerRepo.getAll();
@@ -55,12 +59,14 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
         _entries = entries;
         _customers = customers;
         _loading = false;
+        _loadError = null;
       });
     } catch (_) {
       if (!mounted) return;
       setState(() {
         _entries = const [];
         _loading = false;
+        _loadError = AppLocalizations.of(context).workoutDiaryLoadError;
       });
     }
   }
@@ -144,6 +150,31 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
+          : _loadError != null
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.error_outline, size: 48, color: cs.error),
+                    const SizedBox(height: 16),
+                    Text(
+                      _loadError!,
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    FilledButton(
+                      onPressed: _load,
+                      child: Text(l10n.customersRetry),
+                    ),
+                  ],
+                ),
+              ),
+            )
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

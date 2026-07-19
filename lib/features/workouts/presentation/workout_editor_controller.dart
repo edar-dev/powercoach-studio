@@ -328,7 +328,7 @@ class WorkoutEditorController extends ChangeNotifier {
     Future<void> Function()? onAutosave,
   }) {
     _autosaveTimer?.cancel();
-    if (!editorMode || loadedPlanId == null || !isDirty || onAutosave == null) {
+    if (!editorMode || !isDirty || onAutosave == null) {
       return;
     }
     _autosaveTimer = Timer(autosaveDelay, () {
