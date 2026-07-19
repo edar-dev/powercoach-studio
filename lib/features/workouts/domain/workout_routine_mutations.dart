@@ -169,3 +169,60 @@ WorkoutRoutine? setDayScheduledWeekdayInRoutine({
   newWeeks[weekIndex] = week.copyWith(days: newDays);
   return routine.copyWith(weeks: newWeeks);
 }
+
+Exercise cloneExerciseForDayCopy(Exercise exercise, String idSuffix) {
+  return exercise.copyWith(
+    id: '${exercise.id}_$idSuffix',
+    setDetails: exercise.setDetails
+        ?.map(
+          (s) => ExerciseSet(
+            line: s.line,
+            sets: s.sets,
+            reps: s.reps,
+            rpe: s.rpe,
+            note: s.note,
+          ),
+        )
+        .toList(),
+  );
+}
+
+/// Replaces [targetDayIndex] exercises with a deep copy of [sourceDayIndex].
+WorkoutRoutine? cloneDayToTargetInRoutine({
+  required WorkoutRoutine routine,
+  required int sourceWeekIndex,
+  required int sourceDayIndex,
+  required int targetWeekIndex,
+  required int targetDayIndex,
+}) {
+  if (sourceWeekIndex < 0 || sourceWeekIndex >= routine.weeks.length) {
+    return null;
+  }
+  if (targetWeekIndex < 0 || targetWeekIndex >= routine.weeks.length) {
+    return null;
+  }
+  final sourceWeek = routine.weeks[sourceWeekIndex];
+  final targetWeek = routine.weeks[targetWeekIndex];
+  if (sourceDayIndex < 0 || sourceDayIndex >= sourceWeek.days.length) {
+    return null;
+  }
+  if (targetDayIndex < 0 || targetDayIndex >= targetWeek.days.length) {
+    return null;
+  }
+  if (sourceWeekIndex == targetWeekIndex && sourceDayIndex == targetDayIndex) {
+    return null;
+  }
+
+  final sourceDay = sourceWeek.days[sourceDayIndex];
+  final targetDay = targetWeek.days[targetDayIndex];
+  final idSuffix = 'd${DateTime.now().millisecondsSinceEpoch}';
+  final copiedExercises = sourceDay.exercises
+      .map((e) => cloneExerciseForDayCopy(e, idSuffix))
+      .toList();
+
+  final newTargetDays = List<Day>.from(targetWeek.days);
+  newTargetDays[targetDayIndex] = targetDay.copyWith(exercises: copiedExercises);
+  final newWeeks = List<Week>.from(routine.weeks);
+  newWeeks[targetWeekIndex] = targetWeek.copyWith(days: newTargetDays);
+  return routine.copyWith(weeks: newWeeks);
+}

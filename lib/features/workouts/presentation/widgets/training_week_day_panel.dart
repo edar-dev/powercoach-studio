@@ -27,6 +27,8 @@ class TrainingWeekDayPanel extends StatelessWidget {
     required this.onDeleteDay,
     required this.onUpdateScheduledWeekday,
     this.onAddExercise,
+    this.onLogSession,
+    this.onCloneDayToTarget,
     required this.exerciseListBuilder,
   });
 
@@ -47,6 +49,8 @@ class TrainingWeekDayPanel extends StatelessWidget {
   final void Function(int weekIndex, int dayIndex, int weekday)
       onUpdateScheduledWeekday;
   final void Function(int weekIndex, int dayIndex)? onAddExercise;
+  final VoidCallback? onLogSession;
+  final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
   exerciseListBuilder;
 
@@ -116,17 +120,32 @@ class TrainingWeekDayPanel extends StatelessWidget {
             onAddDay: onAddDay,
             onEditDay: onEditDay,
             onDeleteDay: onDeleteDay,
+            onCloneDayToTarget: onCloneDayToTarget,
           ),
           if (day != null) ...[
             const SizedBox(height: 10),
-            TrainingScheduledWeekdayPicker(
-              theme: theme,
-              colorScheme: cs,
-              l10n: l10n,
-              day: day,
-              dayIndex: dayIndex,
-              weekIndex: weekIndex,
-              onUpdateScheduledWeekday: onUpdateScheduledWeekday,
+            Row(
+              children: [
+                Expanded(
+                  child: TrainingScheduledWeekdayPicker(
+                    theme: theme,
+                    colorScheme: cs,
+                    l10n: l10n,
+                    day: day,
+                    dayIndex: dayIndex,
+                    weekIndex: weekIndex,
+                    onUpdateScheduledWeekday: onUpdateScheduledWeekday,
+                  ),
+                ),
+                if (onLogSession != null) ...[
+                  const SizedBox(width: 8),
+                  IconButton(
+                    tooltip: l10n.workoutBuilderLogSession,
+                    icon: Icon(Icons.check_circle_outline, color: cs.primary),
+                    onPressed: onLogSession,
+                  ),
+                ],
+              ],
             ),
           ],
         ],

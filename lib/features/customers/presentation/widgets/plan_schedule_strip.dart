@@ -13,12 +13,14 @@ class PlanScheduleStrip extends StatelessWidget {
     required this.localeName,
     this.onSessionTap,
     this.onSessionLongPress,
+    this.onEmptyTap,
   });
 
   final WorkoutPlanApiModel plan;
   final String localeName;
   final void Function(PlanCalendarEvent event)? onSessionTap;
   final Future<void> Function(PlanCalendarEvent event)? onSessionLongPress;
+  final VoidCallback? onEmptyTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,40 @@ class PlanScheduleStrip extends StatelessWidget {
       limit: 4,
     );
     if (events.isEmpty) {
-      return const SizedBox.shrink();
+      if (onEmptyTap == null) {
+        return const SizedBox.shrink();
+      }
+      return InkWell(
+        onTap: onEmptyTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            children: [
+              Icon(
+                Icons.event_outlined,
+                size: 18,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.planScheduleEmptyHint,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.chevron_right,
+                size: 18,
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     return Column(

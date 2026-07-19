@@ -41,7 +41,9 @@ class DashboardDrawer extends StatelessWidget {
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center),
-              title: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
+              title: Text(AppLocalizations.of(context).dashboardWorkoutBuilderDraft),
+              subtitle: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
+              isThreeLine: true,
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) navigateTo(context, '/workouts/builder');

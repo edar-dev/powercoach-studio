@@ -20,6 +20,8 @@ import '../widgets/customer_detail_error_body.dart';
 import '../widgets/customer_detail_measurements_tab.dart';
 import '../widgets/customer_detail_overview_tab.dart';
 import '../widgets/customer_detail_records_tab.dart';
+import '../widgets/customer_new_workout_sheet.dart';
+import '../widgets/customer_workout_plans_body.dart';
 
 /// Customer Detail Page – Stitch screen ID 7a7f3b47bfa1435381554959ca9b72e7.
 class CustomerDetailScreen extends StatefulWidget {
@@ -57,7 +59,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
     SupabaseBootstrap.refreshTick.addListener(_onAuthRefresh);
     _load();
   }
@@ -254,11 +256,20 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
               progressLoading: _progressLoading,
               workoutPlans: _workoutPlans,
               workoutPlansLoading: _workoutPlansLoading,
-              onAssignWorkout: ({String? planId}) => openCustomerWorkoutEditor(
-                context: context,
-                customerId: widget.customerId,
-                planId: planId,
-              ),
+              onAssignWorkout: ({String? planId}) {
+                if (planId != null) {
+                  openCustomerWorkoutEditor(
+                    context: context,
+                    customerId: widget.customerId,
+                    planId: planId,
+                  );
+                  return;
+                }
+                showCustomerNewWorkoutSheet(
+                  context,
+                  customerId: widget.customerId,
+                );
+              },
               onOpenMeasurementHistory: () => openCustomerMeasurementHistory(
                 context: context,
                 customerId: widget.customerId,
@@ -282,6 +293,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
               loading: _recordsLoading,
               recordRepo: _recordRepo,
               onReload: _loadRecords,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: CustomerWorkoutPlansBody(
+                customerId: widget.customerId,
+                embeddedInTab: true,
+                onPlansChanged: _loadWorkoutPlans,
+              ),
             ),
           ],
         ),

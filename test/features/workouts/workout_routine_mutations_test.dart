@@ -153,4 +153,57 @@ void main() {
       );
     });
   });
+
+  group('cloneDayToTargetInRoutine', () {
+    test('copies source day exercises to target day with new ids', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(
+                id: 'd1',
+                name: 'Push',
+                exercises: [
+                  Exercise(id: 'e1', name: 'Bench', sets: '3', reps: '8', rpe: ''),
+                ],
+              ),
+              Day(id: 'd2', name: 'Pull', exercises: []),
+            ],
+          ),
+        ],
+      );
+
+      final updated = cloneDayToTargetInRoutine(
+        routine: routine,
+        sourceWeekIndex: 0,
+        sourceDayIndex: 0,
+        targetWeekIndex: 0,
+        targetDayIndex: 1,
+      );
+
+      expect(updated, isNotNull);
+      expect(updated!.weeks.single.days[1].exercises, hasLength(1));
+      expect(updated.weeks.single.days[1].exercises.single.name, 'Bench');
+      expect(updated.weeks.single.days[1].exercises.single.id, isNot('e1'));
+      expect(updated.weeks.single.days[0].exercises.single.id, 'e1');
+    });
+
+    test('returns null when source and target are the same', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        weeks: WorkoutRoutine.defaultWeeks(),
+      );
+      expect(
+        cloneDayToTargetInRoutine(
+          routine: routine,
+          sourceWeekIndex: 0,
+          sourceDayIndex: 0,
+          targetWeekIndex: 0,
+          targetDayIndex: 0,
+        ),
+        isNull,
+      );
+    });
+  });
 }

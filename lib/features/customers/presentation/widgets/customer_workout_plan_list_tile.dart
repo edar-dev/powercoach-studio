@@ -18,6 +18,7 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
     required this.localeName,
     this.onSessionTap,
     this.onSessionLongPress,
+    this.onScheduleEmptyTap,
     this.onTap,
     this.onCreateFollowUp,
     this.onDuplicate,
@@ -34,6 +35,7 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
   final String localeName;
   final void Function(PlanCalendarEvent event)? onSessionTap;
   final Future<void> Function(PlanCalendarEvent event)? onSessionLongPress;
+  final VoidCallback? onScheduleEmptyTap;
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
   final VoidCallback? onDuplicate;
@@ -88,6 +90,7 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
                       localeName: localeName,
                       onSessionTap: onSessionTap,
                       onSessionLongPress: onSessionLongPress,
+                      onEmptyTap: onScheduleEmptyTap ?? onTap,
                     ),
                   ],
                 ),

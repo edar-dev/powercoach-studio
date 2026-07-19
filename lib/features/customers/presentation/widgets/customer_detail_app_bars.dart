@@ -110,6 +110,7 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
                 Tab(text: l10n.customerDetailOverview),
                 Tab(text: l10n.customerDetailMeasurements),
                 Tab(text: l10n.customerDetailRecords),
+                Tab(text: l10n.customerTabWorkouts),
               ],
             ),
             Container(color: colorScheme.outline, height: 1),

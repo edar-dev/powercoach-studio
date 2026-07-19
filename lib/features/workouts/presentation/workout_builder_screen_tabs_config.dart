@@ -30,6 +30,9 @@ class WorkoutBuilderScreenTabsConfig {
     required this.showsMobilityTab,
     required this.planCompleted,
     required this.planArchived,
+    required this.readOnly,
+    required this.onLogSession,
+    required this.onAssignDraftToCustomer,
     required this.actions,
     required this.onInitialWeekNumberChanged,
     required this.onMetadataChanged,
@@ -54,6 +57,9 @@ class WorkoutBuilderScreenTabsConfig {
   final bool showsMobilityTab;
   final bool planCompleted;
   final bool planArchived;
+  final bool readOnly;
+  final VoidCallback? onLogSession;
+  final VoidCallback? onAssignDraftToCustomer;
   final WorkoutBuilderScreenRoutineActions actions;
   final ValueChanged<int> onInitialWeekNumberChanged;
   final VoidCallback onMetadataChanged;
@@ -81,6 +87,9 @@ class WorkoutBuilderScreenTabsConfig {
       showBottomNav: !editorMode,
       planCompleted: planCompleted,
       planArchived: planArchived,
+      readOnly: readOnly,
+      onLogSession: onLogSession,
+      onAssignDraftToCustomer: onAssignDraftToCustomer,
       onInitialWeekChanged: (value) {
         final v = int.tryParse(value);
         if (v != null && v >= 1) {

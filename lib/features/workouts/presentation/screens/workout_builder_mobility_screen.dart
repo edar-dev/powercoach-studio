@@ -1,11 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
+import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../data/workout_draft_store.dart';
 import '../../data/workout_plan_repository.dart';
+import '../../data/workout_routine_model.dart';
+import '../../domain/plan_session_status_service.dart';
+import '../../domain/session_execution_service.dart';
 import '../mobility_builder_controller.dart';
 import '../workout_builder_export_actions.dart';
 import '../workout_builder_mobility_handlers.dart';
@@ -18,6 +24,7 @@ import '../workout_builder_training_handlers.dart';
 import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
+import '../widgets/session_log_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 
 /// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
@@ -51,6 +58,8 @@ class _WorkoutBuilderMobilityScreenState
   final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
+  final _statusService = PlanSessionStatusService();
+  final _executionService = SessionExecutionService();
   final WorkoutDraftStore _draftStore = const SharedPrefsWorkoutDraftStore();
   late final WorkoutBuilderSessionController _builderSession;
   late final MobilityBuilderController _mobilityController;
@@ -74,17 +83,21 @@ class _WorkoutBuilderMobilityScreenState
 
   bool get _showsMobilityTab => widget.variant.showsMobilityTab;
 
+  bool get _readOnly => _planArchived || _planCompleted;
+
   WorkoutBuilderTrainingHandlers get _trainingHandlers =>
       WorkoutBuilderTrainingHandlers(
         context: context,
         session: _builderSession,
         customerId: widget.customerId,
+        readOnly: _readOnly,
       );
 
   WorkoutBuilderMobilityHandlers get _mobilityHandlers =>
       WorkoutBuilderMobilityHandlers(
         context: context,
         mobilityController: _mobilityController,
+        readOnly: _readOnly,
       );
 
   WorkoutBuilderExportActions get _exportActions => WorkoutBuilderExportActions(
@@ -145,6 +158,9 @@ class _WorkoutBuilderMobilityScreenState
         showsMobilityTab: _showsMobilityTab,
         planCompleted: _planCompleted,
         planArchived: _planArchived,
+        readOnly: _readOnly,
+        onLogSession: _canLogSession ? _logCurrentSession : null,
+        onAssignDraftToCustomer: !widget.editorMode ? _assignDraftToCustomer : null,
         actions: _routineActions,
         onInitialWeekNumberChanged: (value) =>
             setState(() => _initialWeekNumber = value),
@@ -167,6 +183,83 @@ class _WorkoutBuilderMobilityScreenState
         initialWeekNumber: _initialWeekNumber,
       ),
     );
+  }
+
+  bool get _canLogSession =>
+      widget.editorMode &&
+      widget.customerId != null &&
+      _editorController.loadedPlanId != null &&
+      !_readOnly &&
+      !_loading;
+
+  Future<void> _assignDraftToCustomer() {
+    return _routineCoordinator.assignDraftToCustomer(
+      context: context,
+      session: _routineCoordinator.editorSession(
+        initialWeekNumber: _initialWeekNumber,
+      ),
+      selectedWeekIndex: _selectedWeekIndex,
+      selectedDayIndex: _selectedDayIndex,
+    );
+  }
+
+  Future<void> _logCurrentSession() async {
+    final planId = _editorController.loadedPlanId;
+    final customerId = widget.customerId;
+    if (planId == null || customerId == null || _readOnly) return;
+
+    final weekIndex = _selectedWeekIndex;
+    final dayIndex = _selectedDayIndex;
+    final routine = _builderSession.routine;
+    if (weekIndex < 0 ||
+        weekIndex >= routine.weeks.length ||
+        dayIndex < 0 ||
+        dayIndex >= routine.weeks[weekIndex].days.length) {
+      return;
+    }
+
+    final day = routine.weeks[weekIndex].days[dayIndex];
+    final sessionKey = WorkoutRoutine.sessionKey(weekIndex, dayIndex);
+    final existing = await _executionService.get(
+      planId: planId,
+      sessionKey: sessionKey,
+    );
+    if (!mounted) return;
+
+    final logResult = await showSessionLogSheet(
+      context: context,
+      plannedExercises: day.exercises,
+      initialExercises: existing?.exercises,
+      initialNotes: existing?.notes ?? '',
+    );
+    if (logResult == null || !mounted) return;
+
+    try {
+      await _statusService.setSessionStatus(
+        planId: planId,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        status: PlanSessionStatus.completed,
+        exercises: logResult.exercises,
+        notes: logResult.notes,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).workoutBuilderLogSessionSuccess),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context).calendarUpdateError),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        ),
+      );
+    }
   }
 
   @override
@@ -201,7 +294,11 @@ class _WorkoutBuilderMobilityScreenState
     _phaseController.addListener(_onMetadataEdited);
     _tagsController.addListener(_onMetadataEdited);
     _notesController.addListener(_onMetadataEdited);
-    _loadRoutine();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        unawaited(_loadRoutine());
+      }
+    });
   }
 
   @override
@@ -215,7 +312,11 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _readDeepLinkSelection() {
-    final query = GoRouterState.of(context).uri.queryParameters;
+    final router = GoRouter.maybeOf(context);
+    if (router == null) {
+      return;
+    }
+    final query = router.state.uri.queryParameters;
     _pendingSelectedWeekIndex = int.tryParse(query['week'] ?? '');
     _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
   }
@@ -229,7 +330,7 @@ class _WorkoutBuilderMobilityScreenState
   }
 
   void _scheduleEditorContentChanged() {
-    if (!widget.editorMode || _loading) {
+    if (!widget.editorMode || _loading || _readOnly) {
       return;
     }
     _editorController.scheduleContentChanged(
@@ -320,6 +421,9 @@ class _WorkoutBuilderMobilityScreenState
       planId: application.loadedPlanId,
       loadedInitialWeekNumber: application.initialWeekNumber,
     );
+    if (_readOnly) {
+      _editorController.suspendTracking();
+    }
   }
 
   void _onBuilderControllersChanged() {
@@ -361,6 +465,7 @@ class _WorkoutBuilderMobilityScreenState
         saving: _saving,
         showManualSaveButton: true,
         saveStatusIndicator: null,
+        showSandboxBanner: true,
       );
     }
 
@@ -369,10 +474,11 @@ class _WorkoutBuilderMobilityScreenState
       builder: (context, _) => tabs.buildEditorShell(
         canPop: !_editorController.isDirty,
         saving: _editorController.saving,
-        showManualSaveButton: _editorController.shouldShowManualSaveButton(
-          loading: _loading,
-          editorMode: widget.editorMode,
-        ),
+        showManualSaveButton: !_readOnly &&
+            _editorController.shouldShowManualSaveButton(
+              loading: _loading,
+              editorMode: widget.editorMode,
+            ),
         saveStatusIndicator: !_loading
             ? WorkoutEditorSaveStatusIndicator(
                 saveState: _editorController.saveState,
