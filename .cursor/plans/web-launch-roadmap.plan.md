@@ -7,10 +7,10 @@ todos:
     status: completed
   - id: phase2-billing
     content: "Phase 2 — Stripe + paywall Free/Pro (web-launch-phase2-billing.plan.md)"
-    status: pending
+    status: completed
   - id: phase3-beta-launch
     content: "Phase 3 — landing pricing, beta coach, cross-browser polish, PWA copy"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -21,8 +21,8 @@ Canale: **https://powercoach-studio.vercel.app** (web only; Android/iOS futuro).
 | Fase | Piano | Stato |
 |------|-------|--------|
 | **1 — Trust & legal** | Merged in [#89](https://github.com/edar-dev/powercoach-studio/pull/89) | ✅ Done |
-| **2 — Billing & paywall** | [web-launch-phase2-billing.plan.md](web-launch-phase2-billing.plan.md) | 📋 Plan ready |
-| **3 — Beta & GTM** | (da definire dopo Phase 2) | ⏳ Pending |
+| **2 — Billing & paywall** | [web-launch-phase2-billing.plan.md](web-launch-phase2-billing.plan.md) | ✅ Done (#90–#95) |
+| **3 — Beta & GTM** | [web-launch-phase3-beta-launch.plan.md](web-launch-phase3-beta-launch.plan.md) | ✅ Done |
 
 ## Modello commerciale
 

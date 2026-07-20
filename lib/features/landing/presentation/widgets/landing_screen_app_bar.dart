@@ -10,9 +10,11 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
   const LandingScreenAppBar({
     super.key,
     required this.isLoggedIn,
+    this.onScrollToPricing,
   });
 
   final bool isLoggedIn;
+  final VoidCallback? onScrollToPricing;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
@@ -83,6 +85,11 @@ class LandingScreenAppBar extends StatelessWidget implements PreferredSizeWidget
         ),
       ),
       actions: [
+        if (onScrollToPricing != null)
+          TextButton(
+            onPressed: onScrollToPricing,
+            child: Text(l10n.landingNavPricing),
+          ),
         if (isLoggedIn) ...[
           TextButton.icon(
             onPressed: () {

@@ -254,6 +254,246 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get landingCtaSectionButtonLoggedIn;
 
+  /// No description provided for @landingNavPricing.
+  ///
+  /// In en, this message translates to:
+  /// **'Pricing'**
+  String get landingNavPricing;
+
+  /// No description provided for @landingBetaBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Early access — coach beta'**
+  String get landingBetaBadge;
+
+  /// No description provided for @landingCtaStartFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Start free'**
+  String get landingCtaStartFree;
+
+  /// No description provided for @landingCtaSeePricing.
+  ///
+  /// In en, this message translates to:
+  /// **'See pricing'**
+  String get landingCtaSeePricing;
+
+  /// No description provided for @landingPricingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get landingPricingLabel;
+
+  /// No description provided for @landingPricingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the plan that fits you'**
+  String get landingPricingTitle;
+
+  /// No description provided for @landingPricingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start free with up to 5 clients. Upgrade to Pro as you grow.'**
+  String get landingPricingSubtitle;
+
+  /// No description provided for @landingPricingFreeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get landingPricingFreeTitle;
+
+  /// No description provided for @landingPricingFreePrice.
+  ///
+  /// In en, this message translates to:
+  /// **'€0'**
+  String get landingPricingFreePrice;
+
+  /// No description provided for @landingPricingFreePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'forever'**
+  String get landingPricingFreePeriod;
+
+  /// No description provided for @landingPricingFreeCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Create free account'**
+  String get landingPricingFreeCta;
+
+  /// No description provided for @landingPricingProTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro'**
+  String get landingPricingProTitle;
+
+  /// No description provided for @landingPricingProPriceMonthly.
+  ///
+  /// In en, this message translates to:
+  /// **'€12/month'**
+  String get landingPricingProPriceMonthly;
+
+  /// No description provided for @landingPricingProPriceYearly.
+  ///
+  /// In en, this message translates to:
+  /// **'€99/year'**
+  String get landingPricingProPriceYearly;
+
+  /// No description provided for @landingPricingProCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to Pro'**
+  String get landingPricingProCta;
+
+  /// No description provided for @landingPricingProCtaLoggedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage subscription'**
+  String get landingPricingProCtaLoggedIn;
+
+  /// No description provided for @landingPricingBetaNote.
+  ///
+  /// In en, this message translates to:
+  /// **'During the closed beta you can activate Pro for free with an invite code after signing up.'**
+  String get landingPricingBetaNote;
+
+  /// No description provided for @landingPricingFeatureCustomersFree.
+  ///
+  /// In en, this message translates to:
+  /// **'Up to {max} active clients'**
+  String landingPricingFeatureCustomersFree(int max);
+
+  /// No description provided for @landingPricingFeatureCustomersPro.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited clients'**
+  String get landingPricingFeatureCustomersPro;
+
+  /// No description provided for @landingPricingFeatureBuilder.
+  ///
+  /// In en, this message translates to:
+  /// **'Full workout builder'**
+  String get landingPricingFeatureBuilder;
+
+  /// No description provided for @landingPricingFeatureExportPro.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF, Excel & CSV export'**
+  String get landingPricingFeatureExportPro;
+
+  /// No description provided for @landingPricingFeatureHevy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hevy integration'**
+  String get landingPricingFeatureHevy;
+
+  /// No description provided for @landingFaqLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'FAQ'**
+  String get landingFaqLabel;
+
+  /// No description provided for @landingFaqTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequently asked questions'**
+  String get landingFaqTitle;
+
+  /// No description provided for @landingFaqLocalDataQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Where is my data stored?'**
+  String get landingFaqLocalDataQ;
+
+  /// No description provided for @landingFaqLocalDataA.
+  ///
+  /// In en, this message translates to:
+  /// **'On your device or browser (local-first). No automatic cloud sync — use JSON backup to move between devices.'**
+  String get landingFaqLocalDataA;
+
+  /// No description provided for @landingFaqFreeProQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s the difference between Free and Pro?'**
+  String get landingFaqFreeProQ;
+
+  /// No description provided for @landingFaqFreeProA.
+  ///
+  /// In en, this message translates to:
+  /// **'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.'**
+  String get landingFaqFreeProA;
+
+  /// No description provided for @landingFaqBetaQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How do I join the beta?'**
+  String get landingFaqBetaQ;
+
+  /// No description provided for @landingFaqBetaA.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up for free, then open Subscription to request an invite code or redeem the one you receive.'**
+  String get landingFaqBetaA;
+
+  /// No description provided for @landingFaqBrowserQ.
+  ///
+  /// In en, this message translates to:
+  /// **'What if I clear browser data?'**
+  String get landingFaqBrowserQ;
+
+  /// No description provided for @landingFaqBrowserA.
+  ///
+  /// In en, this message translates to:
+  /// **'Local data may be lost. Export a JSON backup from Settings before clearing cache or cookies.'**
+  String get landingFaqBrowserA;
+
+  /// No description provided for @landingFaqBillingQ.
+  ///
+  /// In en, this message translates to:
+  /// **'How does billing work?'**
+  String get landingFaqBillingQ;
+
+  /// No description provided for @landingFaqBillingA.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro is activated via Stripe on the web. Manage renewal and invoices from the Subscription screen.'**
+  String get landingFaqBillingA;
+
+  /// No description provided for @landingPwaTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Use PowerCoach like an app'**
+  String get landingPwaTitle;
+
+  /// No description provided for @landingPwaMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'On Chrome/Edge: browser menu → Install app. On iPhone: Share → Add to Home Screen.'**
+  String get landingPwaMessage;
+
+  /// No description provided for @landingFooterCopyright.
+  ///
+  /// In en, this message translates to:
+  /// **'© {year} PowerCoach Studio'**
+  String landingFooterCopyright(int year);
+
+  /// No description provided for @landingFooterPrivacy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy'**
+  String get landingFooterPrivacy;
+
+  /// No description provided for @landingFooterTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms'**
+  String get landingFooterTerms;
+
+  /// No description provided for @subscriptionCheckoutCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Checkout cancelled.'**
+  String get subscriptionCheckoutCancel;
+
   /// No description provided for @headerLogin.
   ///
   /// In en, this message translates to:

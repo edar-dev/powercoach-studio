@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/billing_checkout.dart';
 import 'package:powercoach_studio/core/billing/billing_promo.dart';
@@ -12,6 +15,7 @@ import 'package:powercoach_studio/features/settings/presentation/widgets/subscri
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_plan_compare_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_pro_actions_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_promo_card.dart';
+import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_upgrade_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_status_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_usage_card.dart';
 
@@ -37,6 +41,34 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     super.initState();
     EntitlementRepository.instance.entitlement.addListener(_onEntitlementChanged);
     _load();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _handleCheckoutQuery();
+    });
+  }
+
+  void _handleCheckoutQuery() {
+    if (!mounted) return;
+    final checkout = GoRouterState.of(context).uri.queryParameters['checkout'];
+    if (checkout == null || checkout.isEmpty) return;
+
+    final l10n = AppLocalizations.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+    if (checkout == 'success') {
+      unawaited(_load());
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.subscriptionCheckoutSuccess),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } else if (checkout == 'cancel') {
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.subscriptionCheckoutCancel),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
   }
 
   @override
@@ -118,6 +150,35 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.subscriptionPromoRedeemError)),
+      );
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _startCheckout(BillingInterval interval) async {
+    if (!kIsWeb) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).subscriptionWebOnlyHint)),
+      );
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context);
+    setState(() => _busy = true);
+    try {
+      await BillingCheckout.startCheckout(interval: interval);
+    } on BillingCheckoutException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.subscriptionCheckoutError)),
+      );
+      debugPrint('Checkout error: ${e.message}');
+    } catch (e, stack) {
+      debugPrint('Checkout error: $e\n$stack');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.subscriptionCheckoutError)),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -254,6 +315,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         ),
                       ),
                     ] else ...[
+                      const SizedBox(height: 16),
+                      SubscriptionUpgradeCard(
+                        busy: _busy,
+                        onCheckoutStarted: _startCheckout,
+                      ),
                       const SizedBox(height: 16),
                       SubscriptionPromoCard(
                         busy: _busy,

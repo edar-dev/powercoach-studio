@@ -7,25 +7,25 @@ todos:
     status: completed
   - id: stripe-supabase-setup
     content: "Stripe Dashboard (Product Pro, Price mensile/annuale) + Supabase project (tabella entitlements, Edge Functions, secrets webhook)"
-    status: in_progress
+    status: completed
   - id: entitlement-backend
     content: "Migration billing_entitlements + RLS + Edge Functions checkout/portal/webhook/get-entitlement"
-    status: in_progress
+    status: completed
   - id: entitlement-client
     content: "EntitlementService/Repository — fetch server, cache locale subscriptionPlan, refresh post-login e post-checkout"
-    status: pending
+    status: completed
   - id: subscription-ui
     content: "Wire subscription_screen: Upgrade → Checkout, Manage → Customer Portal, stati loading/error/success"
-    status: pending
+    status: completed
   - id: plan-gates
     content: "PlanGate helper + paywall dialog; gate clienti, export CSV, Hevy (e opz. PDF/Excel)"
-    status: pending
+    status: completed
   - id: landing-pricing
     content: "Sezione pricing/FAQ su landing + CTA coerente con tier (PR separato opzionale)"
-    status: pending
+    status: completed
   - id: tests-docs-env
     content: "Test PlanGate + subscription widget; docs/stripe-billing.md; env STRIPE_*; eccezione regola auth-only documentata"
-    status: pending
+    status: completed
 isProject: false
 ---
 

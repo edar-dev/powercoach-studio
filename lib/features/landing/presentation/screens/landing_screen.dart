@@ -3,18 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../widgets/landing_cta_section.dart';
+import '../widgets/landing_faq_section.dart';
 import '../widgets/landing_features_section.dart';
+import '../widgets/landing_footer_section.dart';
 import '../widgets/landing_hero_section.dart';
 import '../widgets/landing_how_it_works_section.dart';
+import '../widgets/landing_pricing_section.dart';
+import '../widgets/landing_pwa_hint_section.dart';
 import '../widgets/landing_screen_app_bar.dart';
 
-/// Landing page matching Stitch prototype: navbar, hero (chip, title, CTAs),
-/// features, how it works, CTA section.
+/// Landing page: hero, features, pricing, FAQ, beta/PWA hints, legal footer.
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
@@ -24,6 +28,7 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   final GlobalKey _featuresKey = GlobalKey();
+  final GlobalKey _pricingKey = GlobalKey();
   StreamSubscription<dynamic>? _authSubscription;
   int _deferredSectionsStage = 0;
   bool _isLoggedIn = false;
@@ -39,7 +44,7 @@ class _LandingScreenState extends State<LandingScreen> {
   }
 
   Future<void> _revealDeferredSections() async {
-    for (var stage = 1; stage <= 3; stage++) {
+    for (var stage = 1; stage <= 6; stage++) {
       if (!mounted) return;
       await Future<void>.delayed(const Duration(milliseconds: 16));
       if (!mounted) return;
@@ -73,6 +78,35 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
+  void _scrollTo(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      alignment: 0.08,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _navigateStartFree() {
+    HapticFeedback.mediumImpact();
+    if (_isLoggedIn) {
+      navigateTo(context, '/customers');
+    } else {
+      navigateTo(context, '/register');
+    }
+  }
+
+  void _navigateUpgradePro() {
+    HapticFeedback.mediumImpact();
+    if (_isLoggedIn) {
+      navigateTo(context, AppPaths.subscription);
+    } else {
+      navigateTo(context, '/register');
+    }
+  }
+
   @override
   void dispose() {
     _authSubscription?.cancel();
@@ -88,19 +122,25 @@ class _LandingScreenState extends State<LandingScreen> {
 
     return Scaffold(
       backgroundColor: cs.surface,
-      appBar: LandingScreenAppBar(isLoggedIn: isLoggedIn),
+      appBar: LandingScreenAppBar(
+        isLoggedIn: isLoggedIn,
+        onScrollToPricing: () {
+          HapticFeedback.mediumImpact();
+          _scrollTo(_pricingKey);
+        },
+      ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: LandingHeroSection(
-              heroBadge: l10n.landingHeroBadge,
+              heroBadge: l10n.landingBetaBadge,
               titlePrefix: l10n.landingTitlePrefix,
               titleSuffix: l10n.landingTitleSuffix,
               subtitle: l10n.landingSubtitle,
               ctaPrimary: isLoggedIn
                   ? l10n.landingCtaSectionButtonLoggedIn
-                  : l10n.landingCtaPrimary,
-              ctaSecondary: l10n.landingCtaSecondary,
+                  : l10n.landingCtaStartFree,
+              ctaSecondary: l10n.landingCtaSeePricing,
               onPrimary: () {
                 HapticFeedback.mediumImpact();
                 if (isLoggedIn) {
@@ -111,14 +151,7 @@ class _LandingScreenState extends State<LandingScreen> {
               },
               onSecondary: () {
                 HapticFeedback.mediumImpact();
-                final ctx = _featuresKey.currentContext;
-                if (ctx != null) {
-                  Scrollable.ensureVisible(
-                    ctx,
-                    alignment: 0.2,
-                    duration: const Duration(milliseconds: 500),
-                  );
-                }
+                _scrollTo(_pricingKey);
               },
             ),
           ),
@@ -133,20 +166,33 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
           if (_deferredSectionsStage >= 3)
             SliverToBoxAdapter(
+              key: _pricingKey,
+              child: LandingPricingSection(
+                l10n: l10n,
+                isLoggedIn: isLoggedIn,
+                onStartFree: _navigateStartFree,
+                onUpgradePro: _navigateUpgradePro,
+              ),
+            ),
+          if (_deferredSectionsStage >= 4)
+            SliverToBoxAdapter(
+              child: LandingFaqSection(l10n: l10n),
+            ),
+          if (_deferredSectionsStage >= 5)
+            SliverToBoxAdapter(
               child: LandingCtaSection(
                 title: l10n.landingCtaSectionTitle,
                 subtext: isLoggedIn
                     ? l10n.landingCtaSectionSubtextLoggedIn
-                    : l10n.landingCtaSectionSubtext,
+                    : l10n.landingPricingSubtitle,
                 buttonLabel: isLoggedIn
-                    ? l10n.landingCtaSectionButtonLoggedIn
-                    : l10n.landingCtaSectionButton,
+                    ? l10n.landingPricingProCtaLoggedIn
+                    : l10n.landingCtaStartFree,
                 onCta: () {
-                  HapticFeedback.mediumImpact();
                   if (isLoggedIn) {
-                    navigateTo(context, '/profile');
+                    navigateTo(context, AppPaths.subscription);
                   } else {
-                    navigateTo(context, '/login');
+                    _navigateStartFree();
                   }
                 },
               ),
@@ -155,6 +201,10 @@ class _LandingScreenState extends State<LandingScreen> {
             const SliverToBoxAdapter(
               child: SizedBox(height: 24),
             ),
+          if (_deferredSectionsStage >= 6) ...[
+            SliverToBoxAdapter(child: LandingPwaHintSection(l10n: l10n)),
+            SliverToBoxAdapter(child: LandingFooterSection(l10n: l10n)),
+          ],
           const SliverToBoxAdapter(child: SizedBox(height: 48)),
         ],
       ),
