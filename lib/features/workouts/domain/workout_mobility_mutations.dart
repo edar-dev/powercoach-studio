@@ -16,6 +16,20 @@ WorkoutRoutine removeMobilityItemFromRoutine({
   );
 }
 
+WorkoutRoutine insertMobilityItemAtIndexInRoutine({
+  required WorkoutRoutine routine,
+  required MobilityItem item,
+  required int indexInSection,
+}) {
+  final sectionItems =
+      routine.mobilityItems.where((e) => e.sectionId == item.sectionId).toList();
+  final others =
+      routine.mobilityItems.where((e) => e.sectionId != item.sectionId).toList();
+  final clampedIndex = indexInSection.clamp(0, sectionItems.length);
+  sectionItems.insert(clampedIndex, item);
+  return routine.copyWith(mobilityItems: [...others, ...sectionItems]);
+}
+
 WorkoutRoutine reorderMobilityItemsInSection({
   required WorkoutRoutine routine,
   required String sectionId,

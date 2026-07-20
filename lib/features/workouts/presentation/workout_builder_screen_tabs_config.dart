@@ -37,6 +37,11 @@ class WorkoutBuilderScreenTabsConfig {
     required this.onInitialWeekNumberChanged,
     required this.onMetadataChanged,
     required this.onMarkCompleted,
+    this.loadedPlanId,
+    this.showOnboardingCard = false,
+    this.onDismissOnboarding,
+    this.onIncludesMobilityTabChanged,
+    this.onSyncMobilityTabVisibility,
   });
 
   final BuildContext context;
@@ -64,6 +69,11 @@ class WorkoutBuilderScreenTabsConfig {
   final ValueChanged<int> onInitialWeekNumberChanged;
   final VoidCallback onMetadataChanged;
   final VoidCallback? onMarkCompleted;
+  final String? loadedPlanId;
+  final bool showOnboardingCard;
+  final VoidCallback? onDismissOnboarding;
+  final ValueChanged<bool>? onIncludesMobilityTabChanged;
+  final VoidCallback? onSyncMobilityTabVisibility;
 
   WorkoutBuilderScreenTabs build() {
     return WorkoutBuilderScreenTabs(
@@ -110,6 +120,11 @@ class WorkoutBuilderScreenTabsConfig {
       onImportJson: actions.importJsonFromFile,
       onExport: actions.handleExportMenu,
       onSave: () => actions.saveRoutine(),
+      loadedPlanId: loadedPlanId ?? editorController.loadedPlanId,
+      showOnboardingCard: showOnboardingCard,
+      onDismissOnboarding: onDismissOnboarding,
+      onIncludesMobilityTabChanged: onIncludesMobilityTabChanged,
+      onSyncMobilityTabVisibility: onSyncMobilityTabVisibility,
     );
   }
 }

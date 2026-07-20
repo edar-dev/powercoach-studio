@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../settings/data/user_preferences_repository.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/workout_exercise_mutations.dart';
@@ -25,6 +26,29 @@ class WorkoutBuilderTrainingHandlers {
   final bool readOnly;
 
   WorkoutRoutine get _routine => session.routine;
+
+  void _showUndoSnackBar(String message, VoidCallback onUndo) {
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: l10n.workoutBuilderUndo,
+          onPressed: onUndo,
+        ),
+      ),
+    );
+  }
+
+  Future<bool> _resolveCompactAddMode() async {
+    final pref =
+        await UserPreferencesRepository.instance.getWorkoutBuilderCompactAdd();
+    if (!context.mounted) return false;
+    return resolveWorkoutBuilderCompactAdd(context, preferenceOverride: pref);
+  }
 
   void addWeek() {
     if (readOnly) return;
@@ -62,7 +86,15 @@ class WorkoutBuilderTrainingHandlers {
 
   void deleteWeek(int weekIndex) {
     if (readOnly) return;
-    session.deleteWeek(weekIndex);
+    if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
+    final removedWeek = _routine.weeks[weekIndex];
+    if (!session.deleteWeek(weekIndex)) return;
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context);
+    _showUndoSnackBar(l10n.workoutBuilderWeekRemoved, () {
+      session.insertWeekAtIndex(weekIndex: weekIndex, week: removedWeek);
+      session.selectWeek(weekIndex);
+    });
   }
 
   Future<void> confirmDeleteWeek(int weekIndex) async {
@@ -117,7 +149,7 @@ class WorkoutBuilderTrainingHandlers {
     );
   }
 
-  void addExerciseToDay(int weekIndex, int dayIndex) {
+  Future<void> addExerciseToDay(int weekIndex, int dayIndex) async {
     if (readOnly) return;
     if (weekIndex < 0 || weekIndex >= _routine.weeks.length) return;
     if (dayIndex < 0 || dayIndex >= _routine.weeks[weekIndex].days.length) {
@@ -126,7 +158,9 @@ class WorkoutBuilderTrainingHandlers {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    showAddExerciseDialog(context, theme, cs, (
+    final compact = await _resolveCompactAddMode();
+    if (!context.mounted) return;
+    await showAddExerciseDialog(context, theme, cs, (
       name,
       note,
       details, [
@@ -145,7 +179,7 @@ class WorkoutBuilderTrainingHandlers {
           customExerciseId: customExerciseId,
         ),
       );
-    }, customerId: customerId);
+    }, customerId: customerId, compact: compact);
   }
 
   void addExerciseToSuperset(
@@ -192,22 +226,13 @@ class WorkoutBuilderTrainingHandlers {
     }
     if (removedExercise == null || !context.mounted) return;
     final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.workoutBuilderExerciseRemoved),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: l10n.workoutBuilderUndo,
-          onPressed: () {
-            session.addExerciseToDay(
-              weekIndex: weekIndex,
-              dayIndex: dayIndex,
-              exercise: removedExercise!,
-            );
-          },
-        ),
-      ),
-    );
+    _showUndoSnackBar(l10n.workoutBuilderExerciseRemoved, () {
+      session.addExerciseToDay(
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        exercise: removedExercise!,
+      );
+    });
   }
 
   void duplicateExercise(int weekIndex, int dayIndex, Exercise exercise) {
@@ -349,6 +374,21 @@ class WorkoutBuilderTrainingHandlers {
 
   void removeFromSuperset(int weekIndex, int dayIndex, String exerciseId) {
     if (readOnly) return;
+    final day =
+        weekIndex >= 0 &&
+            weekIndex < _routine.weeks.length &&
+            dayIndex >= 0 &&
+            dayIndex < _routine.weeks[weekIndex].days.length
+        ? _routine.weeks[weekIndex].days[dayIndex]
+        : null;
+    Exercise? exercise;
+    for (final candidate in day?.exercises ?? const <Exercise>[]) {
+      if (candidate.id == exerciseId) {
+        exercise = candidate;
+        break;
+      }
+    }
+    final previousGroupId = exercise?.supersetGroupId;
     final updated = WorkoutSupersetActions.removeFromSuperset(
       routine: _routine,
       weekIndex: weekIndex,
@@ -357,6 +397,18 @@ class WorkoutBuilderTrainingHandlers {
     );
     if (updated == null) return;
     session.setRoutine(updated);
+    if (previousGroupId == null || previousGroupId.isEmpty || !context.mounted) {
+      return;
+    }
+    final l10n = AppLocalizations.of(context);
+    _showUndoSnackBar(l10n.workoutBuilderSupersetUnlinked, () {
+      assignToSuperset(
+        weekIndex,
+        dayIndex,
+        exerciseId,
+        previousGroupId,
+      );
+    });
   }
 
   Future<void> cloneDayToTarget(int weekIndex, int dayIndex) async {

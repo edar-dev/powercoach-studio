@@ -39,25 +39,20 @@ class _WorkoutDiaryEntryScreenState extends State<WorkoutDiaryEntryScreen> {
   Future<void> _load() async {
     setState(() => _loading = true);
     try {
-      final entries = await _executionService.listAll();
-      SessionExecutionEntry? match;
-      for (final entry in entries) {
-        if (entry.planId == widget.planId &&
-            entry.execution.sessionKey == widget.sessionKey) {
-          match = entry;
-          break;
-        }
-      }
-      var customerName = match?.customerId ?? '';
-      if (match != null) {
-        final customer = await _customerRepo.getById(match.customerId);
+      final entry = await _executionService.getEntry(
+        planId: widget.planId,
+        sessionKey: widget.sessionKey,
+      );
+      var customerName = entry?.customerId ?? '';
+      if (entry != null) {
+        final customer = await _customerRepo.getById(entry.customerId);
         if (customer != null && customer.name.trim().isNotEmpty) {
           customerName = customer.name;
         }
       }
       if (!mounted) return;
       setState(() {
-        _entry = match;
+        _entry = entry;
         _customerName = customerName;
         _loading = false;
       });

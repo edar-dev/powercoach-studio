@@ -5,7 +5,6 @@ import '../data/workout_routine_model.dart';
 import 'mobility_builder_controller.dart';
 import 'widgets/mobility_add_sheet.dart';
 import 'widgets/mobility_section_editor_sheet.dart';
-
 /// Mobility-tab UI actions for the workout builder.
 class WorkoutBuilderMobilityHandlers {
   WorkoutBuilderMobilityHandlers({
@@ -17,6 +16,22 @@ class WorkoutBuilderMobilityHandlers {
   final BuildContext context;
   final MobilityBuilderController mobilityController;
   final bool readOnly;
+
+  void _showUndoSnackBar(String message, VoidCallback onUndo) {
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+        action: SnackBarAction(
+          label: l10n.workoutBuilderUndo,
+          onPressed: onUndo,
+        ),
+      ),
+    );
+  }
 
   void addMobilityItem() {
     if (readOnly) return;
@@ -48,7 +63,29 @@ class WorkoutBuilderMobilityHandlers {
 
   void removeMobilityItem(String id) {
     if (readOnly) return;
+    final items = mobilityController.routine.mobilityItems;
+    MobilityItem? removed;
+    for (final item in items) {
+      if (item.id == id) {
+        removed = item;
+        break;
+      }
+    }
+    if (removed == null) return;
+    final sectionItems =
+        items.where((e) => e.sectionId == removed!.sectionId).toList();
+    final indexInSection = sectionItems.indexWhere((e) => e.id == id);
     mobilityController.removeItem(id);
+    if (!context.mounted) return;
+    final l10n = AppLocalizations.of(context);
+    final snapshot = removed;
+    final restoreIndex = indexInSection < 0 ? 0 : indexInSection;
+    _showUndoSnackBar(l10n.workoutBuilderMobilityItemRemoved, () {
+      mobilityController.insertItemAt(
+        item: snapshot,
+        indexInSection: restoreIndex,
+      );
+    });
   }
 
   void reorderMobility(int oldIndex, int newIndex) {

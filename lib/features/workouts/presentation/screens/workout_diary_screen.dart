@@ -12,6 +12,8 @@ import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../domain/session_execution_service.dart';
 import '../../domain/workout_diary_filter.dart';
 
+const _diaryPageSize = 50;
+
 /// Chronological list of logged training sessions across clients.
 class WorkoutDiaryScreen extends StatefulWidget {
   const WorkoutDiaryScreen({super.key});
@@ -23,43 +25,85 @@ class WorkoutDiaryScreen extends StatefulWidget {
 class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   final SessionExecutionService _executionService = SessionExecutionService();
   final CustomerRepository _customerRepo = CustomerRepository();
+  final ScrollController _scrollController = ScrollController();
 
   bool _loading = true;
+  bool _loadingMore = false;
+  bool _hasMore = false;
   String? _loadError;
   List<SessionExecutionEntry> _entries = const [];
   List<Customer> _customers = const [];
   String? _filterCustomerId;
+  String? _filterPlanId;
+  String? _filterSessionKey;
   DiaryDateRange _dateRange = DiaryDateRange.all;
   DiaryStatusFilter _statusFilter = DiaryStatusFilter.all;
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
-      final customerId =
-          GoRouterState.of(context).uri.queryParameters['customerId'];
+      final params = GoRouterState.of(context).uri.queryParameters;
+      final customerId = params['customerId'];
       if (customerId != null && customerId.isNotEmpty) {
-        setState(() => _filterCustomerId = customerId);
+        _filterCustomerId = customerId;
       }
-      _load();
+      final planId = params['planId'];
+      if (planId != null && planId.isNotEmpty) {
+        _filterPlanId = planId;
+      }
+      final sessionKey = params['sessionKey'];
+      if (sessionKey != null && sessionKey.isNotEmpty) {
+        _filterSessionKey = sessionKey;
+      }
+      _load(reset: true);
     });
   }
 
-  Future<void> _load() async {
-    setState(() {
-      _loading = true;
-      _loadError = null;
-    });
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_hasMore || _loadingMore || _loading) return;
+    if (_scrollController.position.pixels <
+        _scrollController.position.maxScrollExtent - 200) {
+      return;
+    }
+    _loadMore();
+  }
+
+  Future<void> _load({required bool reset}) async {
+    if (reset) {
+      setState(() {
+        _loading = true;
+        _loadError = null;
+        _entries = const [];
+        _hasMore = false;
+      });
+    }
     try {
-      final entries = await _executionService.listAll();
+      final page = await _executionService.listEntries(
+        planId: _filterPlanId,
+        customerId: _filterCustomerId,
+        sessionKey: _filterSessionKey,
+        limit: _diaryPageSize,
+        offset: 0,
+      );
       final customers = await _customerRepo.getAll();
       if (!mounted) return;
       setState(() {
-        _entries = entries;
+        _entries = page.entries;
         _customers = customers;
         _loading = false;
         _loadError = null;
+        _hasMore = page.hasMore;
       });
     } catch (_) {
       if (!mounted) return;
@@ -68,6 +112,29 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
         _loading = false;
         _loadError = AppLocalizations.of(context).workoutDiaryLoadError;
       });
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (!_hasMore || _loadingMore) return;
+    setState(() => _loadingMore = true);
+    try {
+      final page = await _executionService.listEntries(
+        planId: _filterPlanId,
+        customerId: _filterCustomerId,
+        sessionKey: _filterSessionKey,
+        limit: _diaryPageSize,
+        offset: _entries.length,
+      );
+      if (!mounted) return;
+      setState(() {
+        _entries = [..._entries, ...page.entries];
+        _hasMore = page.hasMore;
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loadingMore = false);
     }
   }
 
@@ -81,6 +148,8 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   List<SessionExecutionEntry> get _visibleEntries => filterDiaryEntries(
         _entries,
         customerId: _filterCustomerId,
+        planId: _filterPlanId,
+        sessionKey: _filterSessionKey,
         dateRange: _dateRange,
         statusFilter: _statusFilter,
       );
@@ -112,9 +181,8 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       ),
     );
     if (!mounted || selected == null) return;
-    setState(() {
-      _filterCustomerId = selected.isEmpty ? null : selected;
-    });
+    setState(() => _filterCustomerId = selected.isEmpty ? null : selected);
+    await _load(reset: true);
   }
 
   void _openEntry(SessionExecutionEntry entry) {
@@ -135,6 +203,8 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     final cs = theme.colorScheme;
     final dateFormat = DateFormat.yMMMd(Localizations.localeOf(context).toString());
     final visible = _visibleEntries;
+    final hasSessionFilter =
+        _filterSessionKey != null && _filterSessionKey!.isNotEmpty;
 
     return Scaffold(
       backgroundColor: cs.surface,
@@ -168,7 +238,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     ),
                     const SizedBox(height: 24),
                     FilledButton(
-                      onPressed: _load,
+                      onPressed: () => _load(reset: true),
                       child: Text(l10n.customersRetry),
                     ),
                   ],
@@ -178,6 +248,26 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
           : Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (hasSessionFilter)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+                    child: Material(
+                      color: cs.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(12),
+                      child: ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.filter_alt_outlined),
+                        title: Text(l10n.workoutDiarySessionFilterActive),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.close),
+                          onPressed: () {
+                            setState(() => _filterSessionKey = null);
+                            _load(reset: true);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
                   child: Column(
@@ -256,12 +346,21 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                           ),
                         )
                       : RefreshIndicator(
-                          onRefresh: _load,
+                          onRefresh: () => _load(reset: true),
                           child: ListView.separated(
+                            controller: _scrollController,
                             padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                            itemCount: visible.length,
+                            itemCount: visible.length + (_loadingMore ? 1 : 0),
                             separatorBuilder: (_, __) => const SizedBox(height: 8),
                             itemBuilder: (context, index) {
+                              if (index >= visible.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 16),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
                               final entry = visible[index];
                               final execution = entry.execution;
                               final date =

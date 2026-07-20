@@ -106,6 +106,21 @@ class MobilityBuilderController extends ChangeNotifier {
     return true;
   }
 
+  bool insertItemAt({
+    required MobilityItem item,
+    required int indexInSection,
+  }) {
+    _session.setRoutine(
+      insertMobilityItemAtIndexInRoutine(
+        routine: routine,
+        item: item,
+        indexInSection: indexInSection,
+      ),
+    );
+    notifyListeners();
+    return true;
+  }
+
   bool reorderItems(int oldIndex, int newIndex) {
     final sectionId = selectedSectionId;
     if (sectionId == null) return false;

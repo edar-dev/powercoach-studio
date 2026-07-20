@@ -2,6 +2,19 @@ import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
 
+const int kDefaultExerciseSetCount = 3;
+const String kDefaultExerciseReps = '10';
+
+List<ExerciseSet> defaultExerciseSetDetails({
+  int setCount = kDefaultExerciseSetCount,
+  String reps = kDefaultExerciseReps,
+}) {
+  return List.generate(
+    setCount,
+    (_) => ExerciseSet(sets: '1', reps: reps),
+  );
+}
+
 typedef DayExercisesUpdater = List<Exercise> Function(List<Exercise> exercises);
 
 WorkoutRoutine? updateDayExercisesInRoutine({

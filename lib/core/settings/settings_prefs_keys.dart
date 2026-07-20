@@ -23,4 +23,11 @@ abstract final class SettingsPrefsKeys {
 
   /// Hours before a session when the calendar reminder fires (default 24).
   static const calendarReminderLeadHours = 'settings_calendar_reminder_lead_hours';
+
+  /// When true, always use compact exercise-add sheet; when false, use width-based auto.
+  static const workoutBuilderCompactAdd = 'workout_builder_compact_add_v1';
+
+  /// Default for new plans: include mobility tab in workout builder.
+  static const workoutBuilderIncludeMobilityDefault =
+      'workout_builder_include_mobility_default_v1';
 }

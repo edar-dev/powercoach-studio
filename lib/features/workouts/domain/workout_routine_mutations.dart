@@ -81,6 +81,18 @@ WorkoutRoutine? deleteWeekFromRoutine({
   );
 }
 
+/// Re-inserts [week] at [weekIndex] (for undo after delete week).
+WorkoutRoutine? insertWeekAtIndexInRoutine({
+  required WorkoutRoutine routine,
+  required int weekIndex,
+  required Week week,
+}) {
+  if (weekIndex < 0 || weekIndex > routine.weeks.length) return null;
+  final weeks = List<Week>.from(routine.weeks);
+  weeks.insert(weekIndex, week);
+  return routine.copyWith(weeks: weeks);
+}
+
 WorkoutRoutine? renameWeekInRoutine({
   required WorkoutRoutine routine,
   required int weekIndex,

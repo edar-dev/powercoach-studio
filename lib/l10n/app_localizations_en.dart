@@ -1658,6 +1658,60 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderUndo => 'Undo';
 
   @override
+  String get workoutBuilderWeekRemoved => 'Week removed';
+
+  @override
+  String get workoutBuilderSupersetUnlinked => 'Removed from superset';
+
+  @override
+  String get workoutBuilderMobilityItemRemoved => 'Mobility item removed';
+
+  @override
+  String get workoutBuilderOnboardingTitle =>
+      'Getting started with the workout builder';
+
+  @override
+  String get workoutBuilderOnboardingStep1 =>
+      'Pick a week and day in the Training tab.';
+
+  @override
+  String get workoutBuilderOnboardingStep2 =>
+      'Add exercises from your library or create new ones.';
+
+  @override
+  String get workoutBuilderOnboardingStep3 =>
+      'Set start/end dates in Details so sessions appear on the calendar.';
+
+  @override
+  String get workoutBuilderOnboardingDismiss => 'Got it';
+
+  @override
+  String get workoutBuilderCompactAddSearchHint => 'Search exercises…';
+
+  @override
+  String get workoutBuilderCompactAddRecent => 'Recent & pinned';
+
+  @override
+  String get workoutBuilderCompactAddEmpty => 'No exercises match your search.';
+
+  @override
+  String get workoutBuilderCompactAddFullEditor => 'Edit prescription';
+
+  @override
+  String get workoutBuilderIncludeMobilityTab => 'Include mobility tab';
+
+  @override
+  String get workoutBuilderIncludeMobilityTabHint =>
+      'Show the mobility section alongside training and details.';
+
+  @override
+  String get workoutBuilderDayHistory => 'History';
+
+  @override
+  String get workoutDiarySessionFilterActive =>
+      'Showing sessions for this plan day';
+
+  @override
   String get workoutBuilderNavLibrary => 'Library';
 
   @override

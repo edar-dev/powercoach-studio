@@ -104,6 +104,20 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     return true;
   }
 
+  bool insertWeekAtIndex({required int weekIndex, required Week week}) {
+    final updated = insertWeekAtIndexInRoutine(
+      routine: _routine,
+      weekIndex: weekIndex,
+      week: week,
+    );
+    if (updated == null) return false;
+    _routine = updated;
+    _selectedWeekIndex = _clampWeek(weekIndex);
+    _selectedDayIndex = _clampDay(_selectedWeekIndex, _selectedDayIndex);
+    notifyListeners();
+    return true;
+  }
+
   bool renameWeek(int weekIndex, String newName) {
     return _replace(
       renameWeekInRoutine(

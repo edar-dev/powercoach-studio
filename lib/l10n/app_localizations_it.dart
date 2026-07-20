@@ -1673,6 +1673,60 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderUndo => 'Annulla';
 
   @override
+  String get workoutBuilderWeekRemoved => 'Settimana rimossa';
+
+  @override
+  String get workoutBuilderSupersetUnlinked => 'Rimosso dal superset';
+
+  @override
+  String get workoutBuilderMobilityItemRemoved => 'Elemento mobilità rimosso';
+
+  @override
+  String get workoutBuilderOnboardingTitle => 'Primi passi nel workout builder';
+
+  @override
+  String get workoutBuilderOnboardingStep1 =>
+      'Scegli settimana e giorno nella tab Allenamento.';
+
+  @override
+  String get workoutBuilderOnboardingStep2 =>
+      'Aggiungi esercizi dalla libreria o creane di nuovi.';
+
+  @override
+  String get workoutBuilderOnboardingStep3 =>
+      'Imposta date inizio/fine in Dettagli per il calendario.';
+
+  @override
+  String get workoutBuilderOnboardingDismiss => 'Ho capito';
+
+  @override
+  String get workoutBuilderCompactAddSearchHint => 'Cerca esercizi…';
+
+  @override
+  String get workoutBuilderCompactAddRecent => 'Recenti e pin';
+
+  @override
+  String get workoutBuilderCompactAddEmpty =>
+      'Nessun esercizio corrisponde alla ricerca.';
+
+  @override
+  String get workoutBuilderCompactAddFullEditor => 'Modifica prescrizione';
+
+  @override
+  String get workoutBuilderIncludeMobilityTab => 'Includi tab Mobilità';
+
+  @override
+  String get workoutBuilderIncludeMobilityTabHint =>
+      'Mostra la sezione mobilità insieme ad allenamento e dettagli.';
+
+  @override
+  String get workoutBuilderDayHistory => 'Storico';
+
+  @override
+  String get workoutDiarySessionFilterActive =>
+      'Sessioni per questo giorno del piano';
+
+  @override
   String get workoutBuilderNavLibrary => 'Libreria';
 
   @override

@@ -35,16 +35,60 @@ class SessionExecutionService {
   Future<List<SessionExecution>> listForPlan(String planId) =>
       _repository.listSessionExecutionsForPlan(planId);
 
-  /// All executions across plans, newest first.
-  Future<List<SessionExecutionEntry>> listAll({
+  /// Paginated diary entries across plans, newest first.
+  Future<SessionExecutionListPage> listEntries({
+    String? planId,
+    String? customerId,
+    String? sessionKey,
+    int limit = 50,
+    int offset = 0,
     List<WorkoutPlanApiModel>? plans,
   }) async {
-    final allPlans = plans ?? await _repository.getAll();
+    final allEntries = await _collectEntries(
+      planId: planId,
+      customerId: customerId,
+      sessionKey: sessionKey,
+      plans: plans,
+    );
+    final slice = allEntries.skip(offset).take(limit).toList();
+    return SessionExecutionListPage(
+      entries: slice,
+      totalCount: allEntries.length,
+      offset: offset,
+      limit: limit,
+      hasMore: offset + slice.length < allEntries.length,
+    );
+  }
+
+  Future<List<SessionExecutionEntry>> _collectEntries({
+    String? planId,
+    String? customerId,
+    String? sessionKey,
+    List<WorkoutPlanApiModel>? plans,
+  }) async {
+    Iterable<WorkoutPlanApiModel> scopedPlans;
+    if (plans != null) {
+      scopedPlans = plans;
+    } else if (planId != null && planId.isNotEmpty) {
+      final plan = await _repository.getById(planId);
+      scopedPlans = plan == null ? const [] : [plan];
+    } else {
+      scopedPlans = await _repository.getAll();
+    }
+    if (customerId != null && customerId.isNotEmpty) {
+      scopedPlans = scopedPlans.where((p) => p.customerId == customerId);
+    }
+
     final entries = <SessionExecutionEntry>[];
-    for (final plan in allPlans) {
+    for (final plan in scopedPlans) {
       final executions = await listForPlan(plan.id);
       for (final execution in executions) {
         if (execution.status == PlanSessionStatus.planned) continue;
+        if (sessionKey != null &&
+            sessionKey.isNotEmpty &&
+            execution.sessionKey != sessionKey) {
+          continue;
+        }
         entries.add(
           SessionExecutionEntry(
             planId: plan.id,
@@ -61,6 +105,32 @@ class SessionExecutionService {
       return bDate.compareTo(aDate);
     });
     return entries;
+  }
+
+  /// Resolves a single diary entry without scanning all plans.
+  Future<SessionExecutionEntry?> getEntry({
+    required String planId,
+    required String sessionKey,
+  }) async {
+    final plan = await _repository.getById(planId);
+    if (plan == null) return null;
+    final execution = await get(planId: planId, sessionKey: sessionKey);
+    if (execution == null || execution.status == PlanSessionStatus.planned) {
+      return null;
+    }
+    return SessionExecutionEntry(
+      planId: plan.id,
+      customerId: plan.customerId,
+      planName: plan.name,
+      execution: execution,
+    );
+  }
+
+  /// All executions across plans, newest first.
+  Future<List<SessionExecutionEntry>> listAll({
+    List<WorkoutPlanApiModel>? plans,
+  }) async {
+    return _collectEntries(plans: plans);
   }
 
   Future<SessionExecution> upsertStatusStub({
@@ -136,4 +206,20 @@ class SessionExecutionEntry {
   final String customerId;
   final String planName;
   final SessionExecution execution;
+}
+
+class SessionExecutionListPage {
+  const SessionExecutionListPage({
+    required this.entries,
+    required this.totalCount,
+    required this.offset,
+    required this.limit,
+    required this.hasMore,
+  });
+
+  final List<SessionExecutionEntry> entries;
+  final int totalCount;
+  final int offset;
+  final int limit;
+  final bool hasMore;
 }

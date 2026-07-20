@@ -99,6 +99,25 @@ void main() {
       expect(updated.weeks.single.id, withTwo.weeks.first.id);
     });
 
+    test('insertWeekAtIndexInRoutine restores week for undo', () {
+      final withTwo = addWeekToRoutine(
+        routine: routine,
+        weekId: 'w2',
+        weekName: 'Week 2',
+        firstDayId: 'w2_d1',
+        firstDayName: 'Day 1',
+      );
+      final removed = withTwo.weeks[1];
+      final afterDelete = deleteWeekFromRoutine(routine: withTwo, weekIndex: 1)!;
+      final restored = insertWeekAtIndexInRoutine(
+        routine: afterDelete,
+        weekIndex: 1,
+        week: removed,
+      );
+      expect(restored!.weeks, hasLength(2));
+      expect(restored.weeks[1].id, 'w2');
+    });
+
     test('deleteDayFromRoutine keeps at least one day', () {
       final week = routine.weeks.single;
       expect(

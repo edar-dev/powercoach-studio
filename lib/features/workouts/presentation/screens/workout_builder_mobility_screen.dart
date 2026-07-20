@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/settings/workout_builder_onboarding_store.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
 import '../../../dashboard/domain/plan_calendar_event.dart';
@@ -76,12 +78,15 @@ class _WorkoutBuilderMobilityScreenState
   int? _pendingSelectedWeekIndex;
   int? _pendingSelectedDayIndex;
   bool _didReadDeepLinkSelection = false;
+  bool _showOnboardingCard = false;
   late final TabController _sectionTabController;
 
   int get _selectedWeekIndex => _builderSession.selectedWeekIndex;
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
 
-  bool get _showsMobilityTab => widget.variant.showsMobilityTab;
+  bool get _showsMobilityTab =>
+      widget.variant.showsMobilityTab &&
+      _builderSession.routine.includesMobilityTab;
 
   bool get _readOnly => _planArchived || _planCompleted;
 
@@ -171,6 +176,11 @@ class _WorkoutBuilderMobilityScreenState
                 !_planArchived
             ? _routineActions.markPlanCompletedFromEditor
             : null,
+        loadedPlanId: _editorController.loadedPlanId,
+        showOnboardingCard: _showOnboardingCard,
+        onDismissOnboarding: _dismissOnboarding,
+        onIncludesMobilityTabChanged: _readOnly ? null : _onIncludesMobilityTabChanged,
+        onSyncMobilityTabVisibility: _syncTabControllerLength,
       );
 
   bool get _isDirty => widget.editorMode ? _editorController.isDirty : false;
@@ -296,9 +306,49 @@ class _WorkoutBuilderMobilityScreenState
     _notesController.addListener(_onMetadataEdited);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
+        unawaited(_loadOnboardingState());
         unawaited(_loadRoutine());
       }
     });
+  }
+
+  Future<void> _loadOnboardingState() async {
+    final user = SupabaseBootstrap.currentUser;
+    if (user == null) return;
+    final dismissed =
+        await WorkoutBuilderOnboardingStore.instance.isDismissed(user.id);
+    if (!mounted) return;
+    setState(() => _showOnboardingCard = !dismissed);
+  }
+
+  void _dismissOnboarding() {
+    final user = SupabaseBootstrap.currentUser;
+    if (user != null) {
+      unawaited(WorkoutBuilderOnboardingStore.instance.markDismissed(user.id));
+    }
+    setState(() => _showOnboardingCard = false);
+  }
+
+  void _syncTabControllerLength() {
+    final length = _showsMobilityTab ? 3 : 2;
+    if (_sectionTabController.length == length) return;
+    final previousIndex = _sectionTabController.index;
+    _sectionTabController.dispose();
+    _sectionTabController = TabController(
+      length: length,
+      vsync: this,
+      initialIndex: previousIndex.clamp(0, length - 1),
+    );
+  }
+
+  void _onIncludesMobilityTabChanged(bool value) {
+    _builderSession.setRoutine(
+      _builderSession.routine.copyWith(includesMobilityTab: value),
+    );
+    _syncTabControllerLength();
+    if (!value && _sectionTabController.index == 1) {
+      _sectionTabController.index = 0;
+    }
   }
 
   @override
@@ -319,6 +369,13 @@ class _WorkoutBuilderMobilityScreenState
     final query = router.state.uri.queryParameters;
     _pendingSelectedWeekIndex = int.tryParse(query['week'] ?? '');
     _pendingSelectedDayIndex = int.tryParse(query['day'] ?? '');
+    final mobilityParam = query['mobility'];
+    if (mobilityParam == '0' || mobilityParam == 'false') {
+      _builderSession.setRoutine(
+        _builderSession.routine.copyWith(includesMobilityTab: false),
+      );
+      _syncTabControllerLength();
+    }
   }
 
   void _captureStandaloneSnapshot() {
