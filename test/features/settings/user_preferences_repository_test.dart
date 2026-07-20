@@ -63,6 +63,23 @@ void main() {
       expect(snapshot.notificationsEnabled, isFalse);
       expect(snapshot.calendarRemindersEnabled, isTrue);
       expect(snapshot.calendarReminderLeadHours, 12);
+      expect(snapshot.workoutBuilderCompactAdd, isNull);
+      expect(snapshot.workoutBuilderIncludeMobilityDefault, isTrue);
+    });
+  });
+
+  group('workout builder prefs', () {
+    test('compact add tri-state', () async {
+      expect(await repository.getWorkoutBuilderCompactAdd(), isNull);
+      await repository.setWorkoutBuilderCompactAdd(true);
+      expect(await repository.getWorkoutBuilderCompactAdd(), isTrue);
+      await repository.setWorkoutBuilderCompactAdd(null);
+      expect(await repository.getWorkoutBuilderCompactAdd(), isNull);
+    });
+
+    test('include mobility default persists', () async {
+      await repository.setWorkoutBuilderIncludeMobilityDefault(false);
+      expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isFalse);
     });
   });
 }

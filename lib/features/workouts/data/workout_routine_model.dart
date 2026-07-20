@@ -40,6 +40,7 @@ class WorkoutRoutine {
     this.startDate,
     this.endDate,
     this.currentWeek,
+    this.includesMobilityTab = true,
     this.sessionCompletionByKey = const {},
     this.sessionSkippedByKey = const {},
     this.sessionOverrides = const {},
@@ -50,6 +51,9 @@ class WorkoutRoutine {
   final List<MobilitySection> mobilitySections;
   final List<MobilityItem> mobilityItems;
   final List<Week> weeks;
+
+  /// When false, the builder hides the mobility tab (training + details only).
+  final bool includesMobilityTab;
 
   /// Calendar start of the plan; persisted in planData. Null for legacy JSON.
   final DateTime? startDate;
@@ -102,6 +106,7 @@ class WorkoutRoutine {
     DateTime? startDate,
     DateTime? endDate,
     int? currentWeek,
+    bool? includesMobilityTab,
     Map<String, bool>? sessionCompletionByKey,
     Map<String, bool>? sessionSkippedByKey,
     Map<String, SessionOverride>? sessionOverrides,
@@ -114,6 +119,7 @@ class WorkoutRoutine {
     startDate: startDate ?? this.startDate,
     endDate: endDate ?? this.endDate,
     currentWeek: currentWeek ?? this.currentWeek,
+    includesMobilityTab: includesMobilityTab ?? this.includesMobilityTab,
     sessionCompletionByKey:
         sessionCompletionByKey ?? this.sessionCompletionByKey,
     sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,

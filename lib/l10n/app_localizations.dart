@@ -3112,6 +3112,102 @@ abstract class AppLocalizations {
   /// **'Undo'**
   String get workoutBuilderUndo;
 
+  /// No description provided for @workoutBuilderWeekRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Week removed'**
+  String get workoutBuilderWeekRemoved;
+
+  /// No description provided for @workoutBuilderSupersetUnlinked.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed from superset'**
+  String get workoutBuilderSupersetUnlinked;
+
+  /// No description provided for @workoutBuilderMobilityItemRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Mobility item removed'**
+  String get workoutBuilderMobilityItemRemoved;
+
+  /// No description provided for @workoutBuilderOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Getting started with the workout builder'**
+  String get workoutBuilderOnboardingTitle;
+
+  /// No description provided for @workoutBuilderOnboardingStep1.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a week and day in the Training tab.'**
+  String get workoutBuilderOnboardingStep1;
+
+  /// No description provided for @workoutBuilderOnboardingStep2.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercises from your library or create new ones.'**
+  String get workoutBuilderOnboardingStep2;
+
+  /// No description provided for @workoutBuilderOnboardingStep3.
+  ///
+  /// In en, this message translates to:
+  /// **'Set start/end dates in Details so sessions appear on the calendar.'**
+  String get workoutBuilderOnboardingStep3;
+
+  /// No description provided for @workoutBuilderOnboardingDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get workoutBuilderOnboardingDismiss;
+
+  /// No description provided for @workoutBuilderCompactAddSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exercises…'**
+  String get workoutBuilderCompactAddSearchHint;
+
+  /// No description provided for @workoutBuilderCompactAddRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent & pinned'**
+  String get workoutBuilderCompactAddRecent;
+
+  /// No description provided for @workoutBuilderCompactAddEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises match your search.'**
+  String get workoutBuilderCompactAddEmpty;
+
+  /// No description provided for @workoutBuilderCompactAddFullEditor.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit prescription'**
+  String get workoutBuilderCompactAddFullEditor;
+
+  /// No description provided for @workoutBuilderIncludeMobilityTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Include mobility tab'**
+  String get workoutBuilderIncludeMobilityTab;
+
+  /// No description provided for @workoutBuilderIncludeMobilityTabHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the mobility section alongside training and details.'**
+  String get workoutBuilderIncludeMobilityTabHint;
+
+  /// No description provided for @workoutBuilderDayHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get workoutBuilderDayHistory;
+
+  /// No description provided for @workoutDiarySessionFilterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing sessions for this plan day'**
+  String get workoutDiarySessionFilterActive;
+
   /// No description provided for @workoutBuilderNavLibrary.
   ///
   /// In en, this message translates to:

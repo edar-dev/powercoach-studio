@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../data/workout_routine_model.dart';
 import 'training_day_selector_row.dart';
 import 'training_scheduled_weekday_picker.dart';
 import 'training_week_selector_row.dart';
+import 'training_week_vertical_list.dart';
 
 /// Horizontal week/day planner used by the workout builder training tab.
 class TrainingWeekDayPanel extends StatelessWidget {
@@ -29,6 +32,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
     this.onAddExercise,
     this.onLogSession,
     this.onCloneDayToTarget,
+    this.planId,
     required this.exerciseListBuilder,
   });
 
@@ -51,8 +55,9 @@ class TrainingWeekDayPanel extends StatelessWidget {
   final void Function(int weekIndex, int dayIndex)? onAddExercise;
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
+  final String? planId;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
-  exerciseListBuilder;
+      exerciseListBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +75,9 @@ class TrainingWeekDayPanel extends StatelessWidget {
               Text(
                 l10n.workoutBuilderNoWeeksYet,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodyLarge?.copyWith(color: cs.onSurfaceVariant),
+                style: theme.textTheme.bodyLarge?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 20),
               FilledButton.icon(
@@ -87,10 +94,56 @@ class TrainingWeekDayPanel extends StatelessWidget {
     final weekIndex = selectedWeekIndex.clamp(0, weeks.length - 1);
     final week = weeks[weekIndex];
     final days = week.days;
-    final dayIndex = days.isEmpty
-        ? 0
-        : selectedDayIndex.clamp(0, days.length - 1);
+    final dayIndex =
+        days.isEmpty ? 0 : selectedDayIndex.clamp(0, days.length - 1);
     final day = days.isEmpty ? null : days[dayIndex];
+
+    if (Breakpoints.isDesktop(context)) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            width: 220,
+            child: TrainingWeekVerticalList(
+              theme: theme,
+              colorScheme: cs,
+              l10n: l10n,
+              weeks: weeks,
+              weekIndex: weekIndex,
+              onSelectWeek: onSelectWeek,
+              onNewWeek: onNewWeek,
+              onCloneWeek: onCloneWeek,
+              onDeleteWeek: onDeleteWeek,
+              onEditWeek: onEditWeek,
+            ),
+          ),
+          VerticalDivider(width: 1, color: cs.outlineVariant),
+          Expanded(
+            child: _DayEditorPane(
+              theme: theme,
+              cs: cs,
+              l10n: l10n,
+              weeks: weeks,
+              weekIndex: weekIndex,
+              dayIndex: dayIndex,
+              day: day,
+              days: days,
+              showWeekSelector: false,
+              onSelectDay: onSelectDay,
+              onAddDay: onAddDay,
+              onEditDay: onEditDay,
+              onDeleteDay: onDeleteDay,
+              onCloneDayToTarget: onCloneDayToTarget,
+              onUpdateScheduledWeekday: onUpdateScheduledWeekday,
+              onAddExercise: onAddExercise,
+              onLogSession: onLogSession,
+              planId: planId,
+              exerciseListBuilder: exerciseListBuilder,
+            ),
+          ),
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -107,8 +160,86 @@ class TrainingWeekDayPanel extends StatelessWidget {
           onDeleteWeek: onDeleteWeek,
           onEditWeek: onEditWeek,
         ),
+        Expanded(
+          child: _DayEditorPane(
+            theme: theme,
+            cs: cs,
+            l10n: l10n,
+            weeks: weeks,
+            weekIndex: weekIndex,
+            dayIndex: dayIndex,
+            day: day,
+            days: days,
+            showWeekSelector: true,
+            onSelectDay: onSelectDay,
+            onAddDay: onAddDay,
+            onEditDay: onEditDay,
+            onDeleteDay: onDeleteDay,
+            onCloneDayToTarget: onCloneDayToTarget,
+            onUpdateScheduledWeekday: onUpdateScheduledWeekday,
+            onAddExercise: onAddExercise,
+            onLogSession: onLogSession,
+            planId: planId,
+            exerciseListBuilder: exerciseListBuilder,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DayEditorPane extends StatelessWidget {
+  const _DayEditorPane({
+    required this.theme,
+    required this.cs,
+    required this.l10n,
+    required this.weeks,
+    required this.weekIndex,
+    required this.dayIndex,
+    required this.day,
+    required this.days,
+    required this.showWeekSelector,
+    required this.onSelectDay,
+    required this.onAddDay,
+    required this.onEditDay,
+    required this.onDeleteDay,
+    required this.onCloneDayToTarget,
+    required this.onUpdateScheduledWeekday,
+    required this.onAddExercise,
+    required this.onLogSession,
+    required this.planId,
+    required this.exerciseListBuilder,
+  });
+
+  final ThemeData theme;
+  final ColorScheme cs;
+  final AppLocalizations l10n;
+  final List<Week> weeks;
+  final int weekIndex;
+  final int dayIndex;
+  final Day? day;
+  final List<Day> days;
+  final bool showWeekSelector;
+  final void Function(int) onSelectDay;
+  final void Function(int) onAddDay;
+  final void Function(int weekIndex, int dayIndex) onEditDay;
+  final void Function(int, int) onDeleteDay;
+  final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
+  final void Function(int weekIndex, int dayIndex, int weekday)
+      onUpdateScheduledWeekday;
+  final void Function(int weekIndex, int dayIndex)? onAddExercise;
+  final VoidCallback? onLogSession;
+  final String? planId;
+  final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
+      exerciseListBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (showWeekSelector) const SizedBox(height: 16),
         if (days.isNotEmpty) ...[
-          const SizedBox(height: 16),
           TrainingDaySelectorRow(
             theme: theme,
             colorScheme: cs,
@@ -131,7 +262,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
                     theme: theme,
                     colorScheme: cs,
                     l10n: l10n,
-                    day: day,
+                    day: day!,
                     dayIndex: dayIndex,
                     weekIndex: weekIndex,
                     onUpdateScheduledWeekday: onUpdateScheduledWeekday,
@@ -145,6 +276,25 @@ class TrainingWeekDayPanel extends StatelessWidget {
                     onPressed: onLogSession,
                   ),
                 ],
+                if (planId != null && planId!.isNotEmpty) ...[
+                  const SizedBox(width: 4),
+                  TextButton.icon(
+                    onPressed: () {
+                      navigateTo(
+                        context,
+                        workoutDiaryPath(
+                          planId: planId,
+                          sessionKey: WorkoutRoutine.sessionKey(
+                            weekIndex,
+                            dayIndex,
+                          ),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.history, size: 18),
+                    label: Text(l10n.workoutBuilderDayHistory),
+                  ),
+                ],
               ],
             ),
           ],
@@ -152,7 +302,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
         const SizedBox(height: 12),
         if (day != null) ...[
           Text(
-            l10n.workoutBuilderExerciseCount(day.exercises.length),
+            l10n.workoutBuilderExerciseCount(day!.exercises.length),
             style: theme.textTheme.labelMedium?.copyWith(
               color: cs.onSurfaceVariant,
               fontWeight: FontWeight.w600,
@@ -165,7 +315,12 @@ class TrainingWeekDayPanel extends StatelessWidget {
                 alignment: Alignment.bottomRight,
                 children: [
                   Positioned.fill(
-                    child: exerciseListBuilder(context, weekIndex, dayIndex, day),
+                    child: exerciseListBuilder(
+                      context,
+                      weekIndex,
+                      dayIndex,
+                      day!,
+                    ),
                   ),
                   if (onAddExercise != null)
                     Padding(

@@ -7,6 +7,7 @@ import '../workout_builder_session_controller.dart';
 import '../workout_builder_training_handlers.dart';
 import '../workout_editor_controller.dart';
 import 'workout_builder_editor_shell.dart';
+import 'workout_builder_onboarding_card.dart';
 import 'workout_builder_readonly_banner.dart';
 import 'workout_builder_sandbox_banner.dart';
 import 'workout_mobility_tab.dart';
@@ -50,6 +51,11 @@ class WorkoutBuilderScreenTabs {
     required this.onExport,
     required this.onSave,
     this.onAssignDraftToCustomer,
+    this.loadedPlanId,
+    this.showOnboardingCard = false,
+    this.onDismissOnboarding,
+    this.onIncludesMobilityTabChanged,
+    this.onSyncMobilityTabVisibility,
   });
 
   final BuildContext context;
@@ -86,6 +92,11 @@ class WorkoutBuilderScreenTabs {
   final void Function(String value) onExport;
   final Future<bool> Function() onSave;
   final VoidCallback? onAssignDraftToCustomer;
+  final String? loadedPlanId;
+  final bool showOnboardingCard;
+  final VoidCallback? onDismissOnboarding;
+  final ValueChanged<bool>? onIncludesMobilityTabChanged;
+  final VoidCallback? onSyncMobilityTabVisibility;
 
   WorkoutRoutine get _routine => builderSession.routine;
 
@@ -106,6 +117,7 @@ class WorkoutBuilderScreenTabs {
       planArchived: planArchived,
       readOnly: readOnly,
       onMarkCompleted: onMarkCompleted,
+      onIncludesMobilityTabChanged: onIncludesMobilityTabChanged,
     );
   }
 
@@ -162,6 +174,7 @@ class WorkoutBuilderScreenTabs {
       onLogSession: onLogSession,
       onCloneDayToTarget: trainingHandlers.cloneDayToTarget,
       readOnly: readOnly,
+      planId: loadedPlanId,
     );
   }
 
@@ -205,6 +218,9 @@ class WorkoutBuilderScreenTabs {
             )
           : null,
       readOnlyBanner: readOnly ? const WorkoutBuilderReadOnlyBanner() : null,
+      onboardingCard: showOnboardingCard && onDismissOnboarding != null
+          ? WorkoutBuilderOnboardingCard(onDismiss: onDismissOnboarding!)
+          : null,
     );
   }
 }

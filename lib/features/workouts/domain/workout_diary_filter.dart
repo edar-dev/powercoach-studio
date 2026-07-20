@@ -16,6 +16,8 @@ enum DiaryStatusFilter {
 List<SessionExecutionEntry> filterDiaryEntries(
   List<SessionExecutionEntry> entries, {
   String? customerId,
+  String? planId,
+  String? sessionKey,
   DiaryDateRange dateRange = DiaryDateRange.all,
   DiaryStatusFilter statusFilter = DiaryStatusFilter.all,
   DateTime? now,
@@ -35,10 +37,22 @@ List<SessionExecutionEntry> filterDiaryEntries(
   return [
     for (final entry in entries)
       if (_matchesCustomer(entry, customerId) &&
+          _matchesPlan(entry, planId) &&
+          _matchesSessionKey(entry, sessionKey) &&
           _matchesDate(entry, from, today) &&
           _matchesStatus(entry, statusFilter))
         entry,
   ];
+}
+
+bool _matchesPlan(SessionExecutionEntry entry, String? planId) {
+  if (planId == null || planId.isEmpty) return true;
+  return entry.planId == planId;
+}
+
+bool _matchesSessionKey(SessionExecutionEntry entry, String? sessionKey) {
+  if (sessionKey == null || sessionKey.isEmpty) return true;
+  return entry.execution.sessionKey == sessionKey;
 }
 
 bool _matchesCustomer(SessionExecutionEntry entry, String? customerId) {

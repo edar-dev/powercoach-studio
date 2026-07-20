@@ -25,6 +25,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     this.planArchived = false,
     this.readOnly = false,
     this.onMarkCompleted,
+    this.onIncludesMobilityTabChanged,
   });
 
   final WorkoutRoutine routine;
@@ -42,6 +43,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
   final bool planArchived;
   final bool readOnly;
   final VoidCallback? onMarkCompleted;
+  final ValueChanged<bool>? onIncludesMobilityTabChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +54,16 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
       children: [
+        if (onIncludesMobilityTabChanged != null) ...[
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(l10n.workoutBuilderIncludeMobilityTab),
+            subtitle: Text(l10n.workoutBuilderIncludeMobilityTabHint),
+            value: routine.includesMobilityTab,
+            onChanged: readOnly ? null : onIncludesMobilityTabChanged,
+          ),
+          const SizedBox(height: 16),
+        ],
         Text(
           l10n.workoutRoutineStartDate,
           style: theme.textTheme.labelSmall?.copyWith(

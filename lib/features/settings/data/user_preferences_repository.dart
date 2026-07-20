@@ -12,12 +12,20 @@ class UserPreferences {
     required this.notificationsEnabled,
     required this.calendarRemindersEnabled,
     required this.calendarReminderLeadHours,
+    this.workoutBuilderCompactAdd,
+    this.workoutBuilderIncludeMobilityDefault = true,
   });
 
   final String localeCode;
   final bool notificationsEnabled;
   final bool calendarRemindersEnabled;
   final int calendarReminderLeadHours;
+
+  /// When non-null, overrides auto compact-add detection in the workout builder.
+  final bool? workoutBuilderCompactAdd;
+
+  /// Default mobility tab visibility for newly created workout plans.
+  final bool workoutBuilderIncludeMobilityDefault;
 }
 
 /// Reads and writes settings-scoped SharedPreferences keys.
@@ -71,12 +79,48 @@ class UserPreferencesRepository {
     await prefs.setInt(SettingsPrefsKeys.calendarReminderLeadHours, hours);
   }
 
+  Future<bool?> getWorkoutBuilderCompactAdd() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (!prefs.containsKey(SettingsPrefsKeys.workoutBuilderCompactAdd)) {
+      return null;
+    }
+    return prefs.getBool(SettingsPrefsKeys.workoutBuilderCompactAdd);
+  }
+
+  Future<void> setWorkoutBuilderCompactAdd(bool? enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (enabled == null) {
+      await prefs.remove(SettingsPrefsKeys.workoutBuilderCompactAdd);
+      return;
+    }
+    await prefs.setBool(SettingsPrefsKeys.workoutBuilderCompactAdd, enabled);
+  }
+
+  Future<bool> getWorkoutBuilderIncludeMobilityDefault({
+    bool defaultValue = true,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault) ??
+        defaultValue;
+  }
+
+  Future<void> setWorkoutBuilderIncludeMobilityDefault(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(
+      SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault,
+      enabled,
+    );
+  }
+
   Future<UserPreferences> loadAll() async {
     return UserPreferences(
       localeCode: await getLocaleCode(),
       notificationsEnabled: await getNotificationsEnabled(),
       calendarRemindersEnabled: await getCalendarRemindersEnabled(),
       calendarReminderLeadHours: await getCalendarReminderLeadHours(),
+      workoutBuilderCompactAdd: await getWorkoutBuilderCompactAdd(),
+      workoutBuilderIncludeMobilityDefault:
+          await getWorkoutBuilderIncludeMobilityDefault(),
     );
   }
 }

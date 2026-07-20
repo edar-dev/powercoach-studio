@@ -37,6 +37,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     this.showReadOnlyBanner = false,
     this.sandboxBanner,
     this.readOnlyBanner,
+    this.onboardingCard,
   });
 
   final bool canPop;
@@ -64,6 +65,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final bool showReadOnlyBanner;
   final Widget? sandboxBanner;
   final Widget? readOnlyBanner;
+  final Widget? onboardingCard;
 
   @override
   Widget build(BuildContext context) {
@@ -106,6 +108,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
                 children: [
                   if (showSandboxBanner && sandboxBanner != null) sandboxBanner!,
                   if (showReadOnlyBanner && readOnlyBanner != null) readOnlyBanner!,
+                  if (onboardingCard != null) onboardingCard!,
                   if (showFirstSaveBanner)
                     WorkoutBuilderFirstSaveBanner(onSave: onSave),
                   WorkoutRoutineNameBar(

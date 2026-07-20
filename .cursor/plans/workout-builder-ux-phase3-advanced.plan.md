@@ -4,31 +4,31 @@ overview: "Fase 3 — Esperienza avanzata: undo esteso, onboarding, layout deskt
 todos:
   - id: wb13-extended-undo
     content: "WB-13 — Snackbar undo per delete week, unlink superset, delete mobility item (pattern removeExercise)"
-    status: pending
+    status: completed
   - id: wb14-onboarding
     content: "WB-14 — First-run checklist 3 step in builder (SharedPreferences flag) + l10n dismiss"
-    status: pending
+    status: completed
   - id: wb15-desktop-two-pane
     content: "WB-15 — TrainingWeekDayPanel: Breakpoints.isDesktop → week list fixed + day editor scroll"
-    status: pending
+    status: completed
   - id: wb16-gym-compact-add
     content: "WB-16 — Modalità compatta add exercise: sheet ridotto, recenti+pin, 1 tap add con serie default"
-    status: pending
+    status: completed
   - id: wb17-new-plan-wizard
     content: "WB-17 — Wizard opzionale post WB-06: nome → settimane → giorni/settimana → preset split"
     status: pending
   - id: wb18-builder-variants
     content: "WB-18 — Rimuovere route orfane multiset/superset OPPURE menu Impostazioni builder 'Includi mobilità'"
-    status: pending
+    status: completed
   - id: wb19-pdf-preview
     content: "WB-19 — Anteprima PDF in editor prima di export (web: iframe/pdf viewer)"
     status: pending
   - id: wb20-training-history-link
     content: "WB-20 — Da header giorno: link storico esecuzioni diario filtrato plan+session"
-    status: pending
+    status: completed
   - id: wb22-diary-pagination
     content: "WB-22 — WorkoutDiaryScreen: load by plan/customer paginato vs listAll()"
-    status: pending
+    status: completed
   - id: wb-phase3-qa
     content: "QA checklist + test regressione su mobile 390px e desktop 1200px"
     status: pending
