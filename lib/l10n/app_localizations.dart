@@ -3358,6 +3358,168 @@ abstract class AppLocalizations {
   /// **'Choose a plan to duplicate'**
   String get customerNewWorkoutDuplicatePickTitle;
 
+  /// No description provided for @customerNewWorkoutGuided.
+  ///
+  /// In en, this message translates to:
+  /// **'Guided setup'**
+  String get customerNewWorkoutGuided;
+
+  /// No description provided for @customerNewWorkoutGuidedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Name, weeks, days, and a preset split'**
+  String get customerNewWorkoutGuidedHint;
+
+  /// No description provided for @workoutNewPlanWizardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Guided plan setup'**
+  String get workoutNewPlanWizardTitle;
+
+  /// No description provided for @workoutNewPlanWizardBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get workoutNewPlanWizardBack;
+
+  /// No description provided for @workoutNewPlanWizardNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get workoutNewPlanWizardNext;
+
+  /// No description provided for @workoutNewPlanWizardCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create plan'**
+  String get workoutNewPlanWizardCreate;
+
+  /// No description provided for @workoutNewPlanWizardNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name for the plan.'**
+  String get workoutNewPlanWizardNameRequired;
+
+  /// No description provided for @workoutNewPlanWizardNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan name'**
+  String get workoutNewPlanWizardNameLabel;
+
+  /// No description provided for @workoutNewPlanWizardStepNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What should this plan be called?'**
+  String get workoutNewPlanWizardStepNameTitle;
+
+  /// No description provided for @workoutNewPlanWizardStepNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Summer hypertrophy, Pre-comp, Mesocycle 1…'**
+  String get workoutNewPlanWizardStepNameHint;
+
+  /// No description provided for @workoutNewPlanWizardStepWeeksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many weeks?'**
+  String get workoutNewPlanWizardStepWeeksTitle;
+
+  /// No description provided for @workoutNewPlanWizardStepWeeksHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add or remove weeks later in the builder.'**
+  String get workoutNewPlanWizardStepWeeksHint;
+
+  /// No description provided for @workoutNewPlanWizardStepDaysTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How many days per week?'**
+  String get workoutNewPlanWizardStepDaysTitle;
+
+  /// No description provided for @workoutNewPlanWizardStepDaysHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose how many training slots you want each week.'**
+  String get workoutNewPlanWizardStepDaysHint;
+
+  /// No description provided for @workoutNewPlanWizardStepPresetTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Which split template?'**
+  String get workoutNewPlanWizardStepPresetTitle;
+
+  /// No description provided for @workoutNewPlanWizardStepPresetHint.
+  ///
+  /// In en, this message translates to:
+  /// **'We create empty named days you can rename anytime.'**
+  String get workoutNewPlanWizardStepPresetHint;
+
+  /// No description provided for @workoutNewPlanWizardPresetFullBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Full body'**
+  String get workoutNewPlanWizardPresetFullBody;
+
+  /// No description provided for @workoutNewPlanWizardPresetFullBodyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Day A/B/C… full-body sessions'**
+  String get workoutNewPlanWizardPresetFullBodyHint;
+
+  /// No description provided for @workoutNewPlanWizardPresetUpperLower.
+  ///
+  /// In en, this message translates to:
+  /// **'Upper / Lower'**
+  String get workoutNewPlanWizardPresetUpperLower;
+
+  /// No description provided for @workoutNewPlanWizardPresetUpperLowerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Alternate upper and lower days'**
+  String get workoutNewPlanWizardPresetUpperLowerHint;
+
+  /// No description provided for @workoutNewPlanWizardPresetPpl.
+  ///
+  /// In en, this message translates to:
+  /// **'Push / Pull / Legs'**
+  String get workoutNewPlanWizardPresetPpl;
+
+  /// No description provided for @workoutNewPlanWizardPresetPplHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Push, pull, and legs rotation'**
+  String get workoutNewPlanWizardPresetPplHint;
+
+  /// No description provided for @workoutPdfPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF preview'**
+  String get workoutPdfPreviewTitle;
+
+  /// No description provided for @workoutPdfPreviewMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your PDF is ready. Open a preview in a new tab or download it.'**
+  String get workoutPdfPreviewMessage;
+
+  /// No description provided for @workoutPdfPreviewOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open preview'**
+  String get workoutPdfPreviewOpen;
+
+  /// No description provided for @workoutPdfPreviewDownload.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get workoutPdfPreviewDownload;
+
+  /// No description provided for @workoutPdfPreviewOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF preview opened in a new tab.'**
+  String get workoutPdfPreviewOpened;
+
   /// No description provided for @customerTabWorkouts.
   ///
   /// In en, this message translates to:

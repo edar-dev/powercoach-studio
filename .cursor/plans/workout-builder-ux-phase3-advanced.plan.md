@@ -16,13 +16,13 @@ todos:
     status: completed
   - id: wb17-new-plan-wizard
     content: "WB-17 — Wizard opzionale post WB-06: nome → settimane → giorni/settimana → preset split"
-    status: pending
+    status: completed
   - id: wb18-builder-variants
     content: "WB-18 — Rimuovere route orfane multiset/superset OPPURE menu Impostazioni builder 'Includi mobilità'"
     status: completed
   - id: wb19-pdf-preview
     content: "WB-19 — Anteprima PDF in editor prima di export (web: iframe/pdf viewer)"
-    status: pending
+    status: completed
   - id: wb20-training-history-link
     content: "WB-20 — Da header giorno: link storico esecuzioni diario filtrato plan+session"
     status: completed
@@ -31,7 +31,7 @@ todos:
     status: completed
   - id: wb-phase3-qa
     content: "QA checklist + test regressione su mobile 390px e desktop 1200px"
-    status: pending
+    status: completed
 isProject: false
 ---
 

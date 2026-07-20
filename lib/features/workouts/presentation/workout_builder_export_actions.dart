@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
@@ -11,6 +12,7 @@ import 'package:powercoach_studio/core/pdf/pdf_plan_metadata.dart';
 import 'package:powercoach_studio/features/auth/data/local_coach_profile_repository.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
+import 'package:powercoach_studio/core/ui/widgets/pdf_export_preview_dialog.dart';
 import 'package:powercoach_studio/features/customers/data/customer_repository.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/integrations/hevy/data/hevy_settings_store.dart';
@@ -102,6 +104,43 @@ class WorkoutBuilderExportActions {
         includeMobility: includeMobility,
       );
       if (!context.mounted) return;
+      hidePdfExportProgressDialog(context);
+
+      if (kIsWeb) {
+        final previewResult = await showPdfExportPreviewDialog(
+          context,
+          artifact: artifact,
+          title: l10n.workoutPdfPreviewTitle,
+          message: l10n.workoutPdfPreviewMessage,
+          openPreviewLabel: l10n.workoutPdfPreviewOpen,
+          downloadLabel: l10n.workoutPdfPreviewDownload,
+          cancelLabel: l10n.customerCancel,
+        );
+        if (!context.mounted) return;
+        switch (previewResult) {
+          case PdfExportPreviewResult.cancelled:
+            return;
+          case PdfExportPreviewResult.previewOpened:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.workoutPdfPreviewOpened),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: StitchM3Theme.accent,
+              ),
+            );
+            return;
+          case PdfExportPreviewResult.downloaded:
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(l10n.workoutExportSuccess),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: StitchM3Theme.accent,
+              ),
+            );
+            return;
+        }
+      }
+
       await downloadExportArtifact(artifact);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

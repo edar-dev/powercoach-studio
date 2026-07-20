@@ -4,13 +4,13 @@ overview: "Roadmap UX workout builder — fiducia (fase 1), flusso coach (fase 2
 todos:
   - id: phase1-trust
     content: "Eseguire workout-builder-ux-phase1-trust.plan.md (WB-01 … WB-05)"
-    status: pending
+    status: completed
   - id: phase2-coach-flow
     content: "Eseguire workout-builder-ux-phase2-coach-flow.plan.md (WB-06 … WB-12, WB-21)"
-    status: pending
+    status: completed
   - id: phase3-advanced
     content: "Eseguire workout-builder-ux-phase3-advanced.plan.md (WB-13 … WB-22)"
-    status: pending
+    status: completed
 isProject: false
 ---
 
