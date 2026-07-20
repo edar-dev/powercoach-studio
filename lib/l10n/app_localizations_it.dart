@@ -1818,6 +1818,98 @@ class AppLocalizationsIt extends AppLocalizations {
       'Scegli la scheda da duplicare';
 
   @override
+  String get customerNewWorkoutGuided => 'Guida guidata';
+
+  @override
+  String get customerNewWorkoutGuidedHint =>
+      'Nome, settimane, giorni e split preimpostato';
+
+  @override
+  String get workoutNewPlanWizardTitle => 'Crea scheda guidata';
+
+  @override
+  String get workoutNewPlanWizardBack => 'Indietro';
+
+  @override
+  String get workoutNewPlanWizardNext => 'Avanti';
+
+  @override
+  String get workoutNewPlanWizardCreate => 'Crea scheda';
+
+  @override
+  String get workoutNewPlanWizardNameRequired =>
+      'Inserisci un nome per la scheda.';
+
+  @override
+  String get workoutNewPlanWizardNameLabel => 'Nome scheda';
+
+  @override
+  String get workoutNewPlanWizardStepNameTitle => 'Come si chiama la scheda?';
+
+  @override
+  String get workoutNewPlanWizardStepNameHint =>
+      'Es. Ipertrofia estate, Pre-gara, Mesociclo 1…';
+
+  @override
+  String get workoutNewPlanWizardStepWeeksTitle => 'Quante settimane?';
+
+  @override
+  String get workoutNewPlanWizardStepWeeksHint =>
+      'Puoi aggiungerne o rimuoverne anche dopo nel builder.';
+
+  @override
+  String get workoutNewPlanWizardStepDaysTitle => 'Quanti giorni a settimana?';
+
+  @override
+  String get workoutNewPlanWizardStepDaysHint =>
+      'Scegli quanti slot allenamento vuoi per ogni settimana.';
+
+  @override
+  String get workoutNewPlanWizardStepPresetTitle => 'Che tipo di split?';
+
+  @override
+  String get workoutNewPlanWizardStepPresetHint =>
+      'Generiamo giorni vuoti con nomi suggeriti; potrai rinominarli.';
+
+  @override
+  String get workoutNewPlanWizardPresetFullBody => 'Full body';
+
+  @override
+  String get workoutNewPlanWizardPresetFullBodyHint =>
+      'Giorni A/B/C… tutto il corpo';
+
+  @override
+  String get workoutNewPlanWizardPresetUpperLower => 'Upper / Lower';
+
+  @override
+  String get workoutNewPlanWizardPresetUpperLowerHint =>
+      'Alternanza parte alta e bassa';
+
+  @override
+  String get workoutNewPlanWizardPresetPpl => 'Push / Pull / Legs';
+
+  @override
+  String get workoutNewPlanWizardPresetPplHint =>
+      'Ciclo spinta, trazione, gambe';
+
+  @override
+  String get workoutPdfPreviewTitle => 'Anteprima PDF';
+
+  @override
+  String get workoutPdfPreviewMessage =>
+      'Il PDF è pronto. Apri l\'anteprima in una nuova scheda o scaricalo.';
+
+  @override
+  String get workoutPdfPreviewOpen => 'Apri anteprima';
+
+  @override
+  String get workoutPdfPreviewDownload => 'Scarica';
+
+  @override
+  String get workoutPdfPreviewOpened =>
+      'Anteprima PDF aperta in una nuova scheda.';
+
+  @override
   String get customerTabWorkouts => 'Workout';
 
   @override
