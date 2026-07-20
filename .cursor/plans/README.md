@@ -2,9 +2,36 @@
 
 Indice dei piani attivi per miglioramenti architetturali, tech debt, test e agent tooling.
 
-## Plan attivi prodotto (workout builder UX)
+## Workout builder UX (completata)
 
 Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-analysis.md)
+
+| Fase | Plan | Backlog ID |
+|------|------|------------|
+| **Roadmap** | [workout-builder-ux-roadmap](workout-builder-ux-roadmap.plan.md) | WB-01 … WB-22 |
+| **1** | [workout-builder-ux-phase1-trust](workout-builder-ux-phase1-trust.plan.md) | WB-01 … WB-05 |
+| **2** | [workout-builder-ux-phase2-coach-flow](workout-builder-ux-phase2-coach-flow.plan.md) | WB-06 … WB-12, WB-21 |
+| **3** | [workout-builder-ux-phase3-advanced](workout-builder-ux-phase3-advanced.plan.md) | WB-13 … WB-22 |
+
+## Web launch
+
+| Fase | Plan | Stato |
+|------|------|-------|
+| **1** | Trust/legal (#89) | ✅ |
+| **2** | [web-launch-phase2-billing](web-launch-phase2-billing.plan.md) | ✅ |
+| **3** | [web-launch-phase3-beta-launch](web-launch-phase3-beta-launch.plan.md) | 🚧 branch `feat/web-launch-phase3-landing` |
+
+```mermaid
+flowchart LR
+  WL1[web launch phase 1]
+  WL2[phase 2 billing]
+  WL3[phase 3 beta GTM]
+  WL1 --> WL2 --> WL3
+```
+
+---
+
+## Plan attivi prodotto (workout builder UX) — storico dettaglio
 
 | Fase | Plan | Backlog ID | PR stimati |
 |------|------|------------|------------|
@@ -22,7 +49,7 @@ flowchart LR
   WB --> P1 --> P2 --> P3
 ```
 
-**Esecuzione:** completare fase 1 (minimo WB-01) prima della fase 2.
+**Stato:** roadmap workout builder completata (PR #99–#103).
 
 ---
 

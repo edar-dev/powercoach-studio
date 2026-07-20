@@ -90,6 +90,139 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingCtaSectionButtonLoggedIn => 'Profile';
 
   @override
+  String get landingNavPricing => 'Pricing';
+
+  @override
+  String get landingBetaBadge => 'Early access — coach beta';
+
+  @override
+  String get landingCtaStartFree => 'Start free';
+
+  @override
+  String get landingCtaSeePricing => 'See pricing';
+
+  @override
+  String get landingPricingLabel => 'Plans';
+
+  @override
+  String get landingPricingTitle => 'Choose the plan that fits you';
+
+  @override
+  String get landingPricingSubtitle =>
+      'Start free with up to 5 clients. Upgrade to Pro as you grow.';
+
+  @override
+  String get landingPricingFreeTitle => 'Free';
+
+  @override
+  String get landingPricingFreePrice => '€0';
+
+  @override
+  String get landingPricingFreePeriod => 'forever';
+
+  @override
+  String get landingPricingFreeCta => 'Create free account';
+
+  @override
+  String get landingPricingProTitle => 'Pro';
+
+  @override
+  String get landingPricingProPriceMonthly => '€12/month';
+
+  @override
+  String get landingPricingProPriceYearly => '€99/year';
+
+  @override
+  String get landingPricingProCta => 'Upgrade to Pro';
+
+  @override
+  String get landingPricingProCtaLoggedIn => 'Manage subscription';
+
+  @override
+  String get landingPricingBetaNote =>
+      'During the closed beta you can activate Pro for free with an invite code after signing up.';
+
+  @override
+  String landingPricingFeatureCustomersFree(int max) {
+    return 'Up to $max active clients';
+  }
+
+  @override
+  String get landingPricingFeatureCustomersPro => 'Unlimited clients';
+
+  @override
+  String get landingPricingFeatureBuilder => 'Full workout builder';
+
+  @override
+  String get landingPricingFeatureExportPro => 'PDF, Excel & CSV export';
+
+  @override
+  String get landingPricingFeatureHevy => 'Hevy integration';
+
+  @override
+  String get landingFaqLabel => 'FAQ';
+
+  @override
+  String get landingFaqTitle => 'Frequently asked questions';
+
+  @override
+  String get landingFaqLocalDataQ => 'Where is my data stored?';
+
+  @override
+  String get landingFaqLocalDataA =>
+      'On your device or browser (local-first). No automatic cloud sync — use JSON backup to move between devices.';
+
+  @override
+  String get landingFaqFreeProQ =>
+      'What\'s the difference between Free and Pro?';
+
+  @override
+  String get landingFaqFreeProA =>
+      'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.';
+
+  @override
+  String get landingFaqBetaQ => 'How do I join the beta?';
+
+  @override
+  String get landingFaqBetaA =>
+      'Sign up for free, then open Subscription to request an invite code or redeem the one you receive.';
+
+  @override
+  String get landingFaqBrowserQ => 'What if I clear browser data?';
+
+  @override
+  String get landingFaqBrowserA =>
+      'Local data may be lost. Export a JSON backup from Settings before clearing cache or cookies.';
+
+  @override
+  String get landingFaqBillingQ => 'How does billing work?';
+
+  @override
+  String get landingFaqBillingA =>
+      'Pro is activated via Stripe on the web. Manage renewal and invoices from the Subscription screen.';
+
+  @override
+  String get landingPwaTitle => 'Use PowerCoach like an app';
+
+  @override
+  String get landingPwaMessage =>
+      'On Chrome/Edge: browser menu → Install app. On iPhone: Share → Add to Home Screen.';
+
+  @override
+  String landingFooterCopyright(int year) {
+    return '© $year PowerCoach Studio';
+  }
+
+  @override
+  String get landingFooterPrivacy => 'Privacy';
+
+  @override
+  String get landingFooterTerms => 'Terms';
+
+  @override
+  String get subscriptionCheckoutCancel => 'Checkout cancelled.';
+
+  @override
   String get headerLogin => 'Login';
 
   @override
