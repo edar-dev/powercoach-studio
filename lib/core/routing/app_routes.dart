@@ -4,6 +4,7 @@ import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/profile_screen.dart';
+import 'package:powercoach_studio/features/auth/presentation/screens/registration_check_email_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/registration_screen.dart';
 import 'package:powercoach_studio/features/customers/presentation/screens/customer_creation_screen.dart';
 import 'package:powercoach_studio/features/customers/presentation/screens/customer_detail_screen.dart';
@@ -42,6 +43,15 @@ List<RouteBase> buildAppRoutes() {
     GoRoute(
       path: '/register',
       builder: (context, state) => const RegistrationScreen(),
+      routes: [
+        GoRoute(
+          path: 'check-email',
+          builder: (context, state) {
+            final email = state.uri.queryParameters['email']?.trim() ?? '';
+            return RegistrationCheckEmailScreen(email: email);
+          },
+        ),
+      ],
     ),
     GoRoute(
       path: '/login',

@@ -542,6 +542,66 @@ abstract class AppLocalizations {
   /// **'Check your email to confirm your account.'**
   String get registrationSuccessMessage;
 
+  /// No description provided for @registrationSuccessReady.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created. Signing you in…'**
+  String get registrationSuccessReady;
+
+  /// No description provided for @registrationCheckEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get registrationCheckEmailTitle;
+
+  /// No description provided for @registrationCheckEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a confirmation link to {email}. Open the link, then sign in.'**
+  String registrationCheckEmailBody(String email);
+
+  /// No description provided for @registrationCheckEmailSpamHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Can\'t find it? Check your spam folder too.'**
+  String get registrationCheckEmailSpamHint;
+
+  /// No description provided for @registrationResendEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend confirmation email'**
+  String get registrationResendEmail;
+
+  /// No description provided for @registrationResendEmailSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirmation email sent again.'**
+  String get registrationResendEmailSuccess;
+
+  /// No description provided for @registrationResendEmailError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not resend the email. Try again in a few minutes.'**
+  String get registrationResendEmailError;
+
+  /// No description provided for @registrationGoToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to sign in'**
+  String get registrationGoToLogin;
+
+  /// No description provided for @registrationErrorAlreadyRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'An account with this email already exists. Try signing in.'**
+  String get registrationErrorAlreadyRegistered;
+
+  /// No description provided for @registrationErrorPasswordWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a stronger password.'**
+  String get registrationErrorPasswordWeak;
+
   /// No description provided for @registrationErrorInvalidEmail.
   ///
   /// In en, this message translates to:

@@ -1,6 +1,17 @@
 # Supabase local / deploy config (billing Edge Functions).
 project_id = "owtkzvphhapjdfibmebl"
 
+[auth]
+site_url = "https://powercoach-studio.vercel.app"
+additional_redirect_urls = [
+  "https://powercoach-studio.vercel.app/**",
+  "http://localhost:**",
+  "http://127.0.0.1:**",
+]
+
+[storage.vector]
+enabled = false
+
 [api]
 enabled = true
 

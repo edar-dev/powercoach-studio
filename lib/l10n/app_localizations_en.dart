@@ -248,6 +248,41 @@ class AppLocalizationsEn extends AppLocalizations {
       'Check your email to confirm your account.';
 
   @override
+  String get registrationSuccessReady => 'Account created. Signing you in…';
+
+  @override
+  String get registrationCheckEmailTitle => 'Check your email';
+
+  @override
+  String registrationCheckEmailBody(String email) {
+    return 'We sent a confirmation link to $email. Open the link, then sign in.';
+  }
+
+  @override
+  String get registrationCheckEmailSpamHint =>
+      'Can\'t find it? Check your spam folder too.';
+
+  @override
+  String get registrationResendEmail => 'Resend confirmation email';
+
+  @override
+  String get registrationResendEmailSuccess => 'Confirmation email sent again.';
+
+  @override
+  String get registrationResendEmailError =>
+      'Could not resend the email. Try again in a few minutes.';
+
+  @override
+  String get registrationGoToLogin => 'Go to sign in';
+
+  @override
+  String get registrationErrorAlreadyRegistered =>
+      'An account with this email already exists. Try signing in.';
+
+  @override
+  String get registrationErrorPasswordWeak => 'Choose a stronger password.';
+
+  @override
   String get registrationErrorInvalidEmail => 'Please enter a valid email.';
 
   @override
