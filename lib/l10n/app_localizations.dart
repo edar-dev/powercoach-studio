@@ -638,11 +638,23 @@ abstract class AppLocalizations {
   /// **'Log in'**
   String get registrationLoginLink;
 
+  /// No description provided for @registrationHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your account'**
+  String get registrationHeadline;
+
   /// No description provided for @loginTitle.
   ///
   /// In en, this message translates to:
   /// **'Log in'**
   String get loginTitle;
+
+  /// No description provided for @loginHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back!'**
+  String get loginHeadline;
 
   /// No description provided for @loginEmail.
   ///

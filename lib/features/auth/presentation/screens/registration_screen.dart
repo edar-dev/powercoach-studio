@@ -10,6 +10,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
+import '../widgets/auth_form_card.dart';
 import '../../utils/auth_error_message.dart';
 
 /// Simplified Registration Page – matches Stitch prototype.
@@ -120,143 +122,100 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: StitchM3Theme.bgSecondary,
-      appBar: AppBar(
-        backgroundColor: StitchM3Theme.bg,
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        shadowColor: Colors.black26,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.registrationTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: StitchM3Theme.textPrimary,
-          ),
-        ),
-        centerTitle: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: StitchM3Theme.border, height: 1),
-        ),
-      ),
+      backgroundColor: cs.surfaceContainerHighest,
+      appBar: StitchSecondaryAppBar(title: l10n.registrationTitle),
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: StitchM3Theme.authCardMaxWidth,
-              ),
-              decoration: BoxDecoration(
-                color: StitchM3Theme.bg,
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: StitchM3Theme.border),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
+          child: AuthFormCard(
+            headline: l10n.registrationHeadline,
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.registrationEmail,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    ),
+                    validator: (value) {
+                      final t = value?.trim() ?? '';
+                      if (t.isEmpty) {
+                        return l10n.registrationErrorInvalidEmail;
+                      }
+                      if (!_emailRegex.hasMatch(t)) {
+                        return l10n.registrationErrorInvalidEmail;
+                      }
+                      return null;
+                    },
                   ),
-                ],
-              ),
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: l10n.registrationEmail,
-                      ),
-                      validator: (value) {
-                        final t = value?.trim() ?? '';
-                        if (t.isEmpty) {
-                          return l10n.registrationErrorInvalidEmail;
-                        }
-                        if (!_emailRegex.hasMatch(t)) {
-                          return l10n.registrationErrorInvalidEmail;
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: StitchM3Theme.formFieldSpacing),
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      textInputAction: TextInputAction.next,
-                      decoration: InputDecoration(
-                        labelText: l10n.registrationPassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(
-                              () => _obscurePassword = !_obscurePassword,
-                            );
-                          },
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.registrationPassword,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          color: cs.onSurfaceVariant,
                         ),
+                        onPressed: () {
+                          setState(() => _obscurePassword = !_obscurePassword);
+                        },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return l10n.registrationErrorPasswordEmpty;
-                        }
-                        return null;
-                      },
                     ),
-                    const SizedBox(height: StitchM3Theme.formFieldSpacing),
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      obscureText: _obscureConfirm,
-                      textInputAction: TextInputAction.done,
-                      decoration: InputDecoration(
-                        labelText: l10n.registrationConfirmPassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirm
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                          ),
-                          onPressed: () {
-                            setState(() => _obscureConfirm = !_obscureConfirm);
-                          },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return l10n.registrationErrorPasswordEmpty;
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _confirmPasswordController,
+                    obscureText: _obscureConfirm,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      labelText: l10n.registrationConfirmPassword,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureConfirm ? Icons.visibility_off : Icons.visibility,
+                          color: cs.onSurfaceVariant,
                         ),
+                        onPressed: () {
+                          setState(() => _obscureConfirm = !_obscureConfirm);
+                        },
                       ),
-                      validator: (value) {
-                        if (value != _passwordController.text) {
-                          return l10n.registrationErrorPasswordMismatch;
-                        }
-                        return null;
-                      },
-                      onFieldSubmitted: (_) => _submit(),
                     ),
-                    const SizedBox(height: 32),
-                    FilledButton(
+                    validator: (value) {
+                      if (value != _passwordController.text) {
+                        return l10n.registrationErrorPasswordMismatch;
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) => _submit(),
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    height: StitchM3Theme.inputHeight,
+                    child: FilledButton(
                       onPressed: _isLoading ? null : _submit,
                       style: FilledButton.styleFrom(
-                        backgroundColor: StitchM3Theme.accent,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(0, StitchM3Theme.inputHeight),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            StitchM3Theme.radiusMd,
-                          ),
+                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
                         ),
                       ),
                       child: _isLoading
@@ -267,28 +226,28 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             )
                           : Text(l10n.registrationSubmit),
                     ),
-                    const SizedBox(height: 24),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          l10n.registrationAlreadyHaveAccount,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: StitchM3Theme.textMuted,
-                          ),
+                  ),
+                  const SizedBox(height: 24),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        l10n.registrationAlreadyHaveAccount,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: cs.onSurfaceVariant,
                         ),
-                        TextButton(
-                          onPressed: () {
-                            HapticFeedback.mediumImpact();
-                            navigateTo(context, '/login');
-                          },
-                          child: Text(l10n.registrationLoginLink),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          navigateTo(context, '/login');
+                        },
+                        child: Text(l10n.registrationLoginLink),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
