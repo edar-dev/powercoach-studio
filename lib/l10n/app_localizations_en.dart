@@ -302,7 +302,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationLoginLink => 'Log in';
 
   @override
+  String get registrationHeadline => 'Create your account';
+
+  @override
   String get loginTitle => 'Log in';
+
+  @override
+  String get loginHeadline => 'Welcome back!';
 
   @override
   String get loginEmail => 'Email';

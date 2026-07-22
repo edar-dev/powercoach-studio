@@ -300,7 +300,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get registrationLoginLink => 'Accedi';
 
   @override
+  String get registrationHeadline => 'Crea il tuo account';
+
+  @override
   String get loginTitle => 'Accedi';
+
+  @override
+  String get loginHeadline => 'Bentornato!';
 
   @override
   String get loginEmail => 'Email';
