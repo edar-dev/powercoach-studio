@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import 'package:powercoach_studio/core/auth/auth_redirect_urls.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../utils/auth_error_message.dart';
 
 /// Simplified Registration Page – matches Stitch prototype.
 /// Uses Supabase Auth for sign up.
@@ -47,33 +50,46 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await Supabase.instance.client.auth.signUp(
-        email: _emailController.text.trim(),
+      final email = _emailController.text.trim();
+      final response = await Supabase.instance.client.auth.signUp(
+        email: email,
         password: _passwordController.text,
+        emailRedirectTo: AuthRedirectUrls.emailConfirmation,
       );
 
+      if (!mounted) return;
+      final l10n = AppLocalizations.of(context);
+      final colorScheme = Theme.of(context).colorScheme;
+
+      if (response.session != null) {
+        await EntitlementRepository.instance.refresh();
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              l10n.registrationSuccessReady,
+              style: TextStyle(color: colorScheme.onPrimaryContainer),
+            ),
+            backgroundColor: colorScheme.primaryContainer,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        context.go('/dashboard');
+        return;
+      }
+
+      context.go(
+        '/register/check-email?email=${Uri.encodeComponent(email)}',
+      );
+    } on AuthException catch (e) {
+      await Sentry.captureException(e);
       if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       final colorScheme = Theme.of(context).colorScheme;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.registrationSuccessMessage,
-            style: TextStyle(color: colorScheme.onPrimaryContainer),
-          ),
-          backgroundColor: colorScheme.primaryContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      context.pop();
-    } on AuthException catch (e) {
-      await Sentry.captureException(e);
-      if (!mounted) return;
-      final colorScheme = Theme.of(context).colorScheme;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.message,
+            registrationErrorMessage(e, l10n),
             style: TextStyle(color: colorScheme.onErrorContainer),
           ),
           backgroundColor: colorScheme.errorContainer,

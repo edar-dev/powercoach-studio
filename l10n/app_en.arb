@@ -84,6 +84,23 @@
   "registrationConfirmPassword": "Confirm password",
   "registrationSubmit": "Sign up",
   "registrationSuccessMessage": "Check your email to confirm your account.",
+  "registrationSuccessReady": "Account created. Signing you in…",
+  "registrationCheckEmailTitle": "Check your email",
+  "registrationCheckEmailBody": "We sent a confirmation link to {email}. Open the link, then sign in.",
+  "@registrationCheckEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "registrationCheckEmailSpamHint": "Can't find it? Check your spam folder too.",
+  "registrationResendEmail": "Resend confirmation email",
+  "registrationResendEmailSuccess": "Confirmation email sent again.",
+  "registrationResendEmailError": "Could not resend the email. Try again in a few minutes.",
+  "registrationGoToLogin": "Go to sign in",
+  "registrationErrorAlreadyRegistered": "An account with this email already exists. Try signing in.",
+  "registrationErrorPasswordWeak": "Choose a stronger password.",
   "registrationErrorInvalidEmail": "Please enter a valid email.",
   "registrationErrorPasswordMismatch": "Passwords do not match.",
   "registrationErrorPasswordEmpty": "Please enter a password.",

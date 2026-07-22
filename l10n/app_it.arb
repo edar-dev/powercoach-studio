@@ -84,6 +84,23 @@
   "registrationConfirmPassword": "Conferma password",
   "registrationSubmit": "Registrati",
   "registrationSuccessMessage": "Controlla la tua email per confermare l'account.",
+  "registrationSuccessReady": "Account creato. Accesso in corso…",
+  "registrationCheckEmailTitle": "Controlla la tua email",
+  "registrationCheckEmailBody": "Abbiamo inviato un link di conferma a {email}. Clicca il link, poi accedi.",
+  "@registrationCheckEmailBody": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "registrationCheckEmailSpamHint": "Non trovi l'email? Controlla anche la cartella spam.",
+  "registrationResendEmail": "Reinvia email di conferma",
+  "registrationResendEmailSuccess": "Email inviata di nuovo.",
+  "registrationResendEmailError": "Impossibile reinviare l'email. Riprova tra qualche minuto.",
+  "registrationGoToLogin": "Vai al login",
+  "registrationErrorAlreadyRegistered": "Esiste già un account con questa email. Prova ad accedere.",
+  "registrationErrorPasswordWeak": "Scegli una password più sicura.",
   "registrationErrorInvalidEmail": "Inserisci un'email valida.",
   "registrationErrorPasswordMismatch": "Le password non coincidono.",
   "registrationErrorPasswordEmpty": "Inserisci una password.",

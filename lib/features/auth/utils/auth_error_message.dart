@@ -31,3 +31,20 @@ String authErrorMessage(AuthException e, AppLocalizations l10n) {
   }
   return e.message.isNotEmpty ? e.message : l10n.loginErrorGeneric;
 }
+
+/// Maps Supabase [AuthException] during sign-up to localized copy.
+String registrationErrorMessage(AuthException e, AppLocalizations l10n) {
+  final msg = e.message.toLowerCase();
+
+  if (msg.contains('already registered') ||
+      msg.contains('user already registered') ||
+      msg.contains('email address is already registered')) {
+    return l10n.registrationErrorAlreadyRegistered;
+  }
+
+  if (msg.contains('password') && msg.contains('weak')) {
+    return l10n.registrationErrorPasswordWeak;
+  }
+
+  return authErrorMessage(e, l10n);
+}
