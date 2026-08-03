@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 class WorkoutRoutineNameBar extends StatelessWidget {
@@ -19,13 +18,13 @@ class WorkoutRoutineNameBar extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
       child: TextField(
         controller: controller,
         readOnly: readOnly,
         enableInteractiveSelection: !readOnly,
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
           color: cs.onSurface,
         ),
         maxLines: 1,
@@ -34,12 +33,10 @@ class WorkoutRoutineNameBar extends StatelessWidget {
           isDense: true,
           border: InputBorder.none,
           hintText: l10n.workoutBuilderRoutineNameHint,
-          hintStyle: theme.textTheme.titleMedium?.copyWith(
+          hintStyle: theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.w500,
-            color: cs.onSurfaceVariant,
+            color: cs.onSurface.withValues(alpha: 0.72),
           ),
-          prefixIcon: Icon(Icons.fitness_center, color: StitchM3Theme.accent),
-          prefixIconConstraints: const BoxConstraints(minWidth: 40),
         ),
       ),
     );

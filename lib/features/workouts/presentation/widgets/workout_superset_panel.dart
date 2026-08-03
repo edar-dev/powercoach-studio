@@ -40,49 +40,67 @@ class WorkoutSupersetPanel extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          InkWell(
-            onTap: () => onExpandedChanged(!expanded),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 14, 4, 14),
-              child: Row(
-                children: [
-                  Icon(Icons.link, size: 18, color: StitchM3Theme.accent),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          l10n.workoutBuilderSuperSetHeading,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            color: StitchM3Theme.accent,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        if (prescriptionSummary != null &&
-                            prescriptionSummary!.trim().isNotEmpty) ...[
-                          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(12, 6, 4, 6),
+            child: Row(
+              children: [
+                Icon(Icons.link, size: 18, color: StitchM3Theme.accent),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => onExpandedChanged(!expanded),
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            prescriptionSummary!,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant,
+                            l10n.workoutBuilderSuperSetHeading,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: StitchM3Theme.accent,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                          if (prescriptionSummary != null &&
+                              prescriptionSummary!.trim().isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              prescriptionSummary!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.72,
+                                ),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
-                  Icon(
+                ),
+                IconButton(
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  padding: EdgeInsets.zero,
+                  tooltip: expanded
+                      ? MaterialLocalizations.of(context).expandedIconTapHint
+                      : MaterialLocalizations.of(context).collapsedIconTapHint,
+                  icon: Icon(
                     expanded ? Icons.expand_less : Icons.chevron_right,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  if (onOpenEditor != null)
-                    TextButton(
-                      onPressed: onOpenEditor,
-                      child: Text(l10n.builderSupersetManage),
-                    ),
-                ],
-              ),
+                  onPressed: () => onExpandedChanged(!expanded),
+                ),
+                if (onOpenEditor != null)
+                  TextButton(
+                    onPressed: onOpenEditor,
+                    child: Text(l10n.builderSupersetManage),
+                  ),
+              ],
             ),
           ),
           if (expanded)

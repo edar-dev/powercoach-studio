@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../data/workout_routine_model.dart';
 import 'training_session_toolbar.dart';
@@ -26,10 +25,10 @@ class TrainingWeekDayPanel extends StatelessWidget {
     required this.onEditDay,
     required this.onDeleteDay,
     required this.onUpdateScheduledWeekday,
-    this.onAddExercise,
     this.onLogSession,
     this.onCloneDayToTarget,
     this.planId,
+    this.editorMode = false,
     required this.exerciseListBuilder,
   });
 
@@ -49,10 +48,10 @@ class TrainingWeekDayPanel extends StatelessWidget {
   final void Function(int, int) onDeleteDay;
   final void Function(int weekIndex, int dayIndex, int weekday)
       onUpdateScheduledWeekday;
-  final void Function(int weekIndex, int dayIndex)? onAddExercise;
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final String? planId;
+  final bool editorMode;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
       exerciseListBuilder;
 
@@ -73,7 +72,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
                 l10n.workoutBuilderNoWeeksYet,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: cs.onSurfaceVariant,
+                  color: cs.onSurface.withValues(alpha: 0.72),
                 ),
               ),
               const SizedBox(height: 20),
@@ -125,10 +124,11 @@ class TrainingWeekDayPanel extends StatelessWidget {
             weekIndex: weekIndex,
             dayIndex: dayIndex,
             day: day,
+            dayCount: days.length,
             onAddDay: onAddDay,
-            onAddExercise: onAddExercise,
             onLogSession: onLogSession,
             planId: planId,
+            editorMode: editorMode,
             exerciseListBuilder: exerciseListBuilder,
           ),
         ),
@@ -164,10 +164,11 @@ class _SessionSheetBody extends StatelessWidget {
     required this.weekIndex,
     required this.dayIndex,
     required this.day,
+    required this.dayCount,
     required this.onAddDay,
-    required this.onAddExercise,
     required this.onLogSession,
     required this.planId,
+    required this.editorMode,
     required this.exerciseListBuilder,
   });
 
@@ -177,10 +178,11 @@ class _SessionSheetBody extends StatelessWidget {
   final int weekIndex;
   final int dayIndex;
   final Day? day;
+  final int dayCount;
   final void Function(int) onAddDay;
-  final void Function(int weekIndex, int dayIndex)? onAddExercise;
   final VoidCallback? onLogSession;
   final String? planId;
+  final bool editorMode;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
       exerciseListBuilder;
 
@@ -197,7 +199,8 @@ class _SessionSheetBody extends StatelessWidget {
                 l10n.workoutBuilderNoDaysInWeek,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cs.onSurfaceVariant,
+                  color: cs.onSurface.withValues(alpha: 0.72),
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 16),
@@ -212,88 +215,75 @@ class _SessionSheetBody extends StatelessWidget {
       );
     }
 
-    final hasExercises = day!.exercises.isNotEmpty;
+    final showSessionActions = editorMode;
+    final secondaryStyle = theme.textTheme.bodyMedium?.copyWith(
+      color: cs.onSurface.withValues(alpha: 0.8),
+      fontWeight: FontWeight.w500,
+    );
 
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          day!.name,
-                          style: theme.textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: cs.onSurface,
-                          ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (dayCount > 1) ...[
+                      Text(
+                        day!.name,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: cs.onSurface,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n.workoutBuilderExerciseCount(day!.exercises.length),
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: cs.onSurfaceVariant,
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                    ],
+                    Text(
+                      l10n.workoutBuilderExerciseCount(day!.exercises.length),
+                      style: secondaryStyle,
+                    ),
+                  ],
+                ),
+              ),
+              if (showSessionActions && onLogSession != null)
+                TextButton.icon(
+                  onPressed: onLogSession,
+                  icon: const Icon(Icons.check_circle_outline, size: 18),
+                  label: Text(l10n.workoutBuilderLogSession),
+                ),
+              if (showSessionActions && planId != null && planId!.isNotEmpty)
+                TextButton.icon(
+                  onPressed: () {
+                    navigateTo(
+                      context,
+                      workoutDiaryPath(
+                        planId: planId,
+                        sessionKey: WorkoutRoutine.sessionKey(
+                          weekIndex,
+                          dayIndex,
                         ),
-                      ],
-                    ),
-                  ),
-                  if (onLogSession != null)
-                    TextButton.icon(
-                      onPressed: onLogSession,
-                      icon: const Icon(Icons.check_circle_outline, size: 18),
-                      label: Text(l10n.workoutBuilderLogSession),
-                    ),
-                  if (planId != null && planId!.isNotEmpty)
-                    TextButton.icon(
-                      onPressed: () {
-                        navigateTo(
-                          context,
-                          workoutDiaryPath(
-                            planId: planId,
-                            sessionKey: WorkoutRoutine.sessionKey(
-                              weekIndex,
-                              dayIndex,
-                            ),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.history, size: 18),
-                      label: Text(l10n.workoutBuilderDayHistory),
-                    ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: exerciseListBuilder(
-                context,
-                weekIndex,
-                dayIndex,
-                day!,
-              ),
-            ),
-          ],
-        ),
-        if (onAddExercise != null && hasExercises)
-          Positioned(
-            right: 16,
-            bottom: 16,
-            child: FloatingActionButton.extended(
-              heroTag: 'workout_builder_add_exercise',
-              onPressed: () => onAddExercise!(weekIndex, dayIndex),
-              backgroundColor: StitchM3Theme.accent,
-              foregroundColor: Colors.white,
-              icon: const Icon(Icons.add),
-              label: Text(l10n.workoutBuilderAddExercise),
-            ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.history, size: 18),
+                  label: Text(l10n.workoutBuilderDayHistory),
+                ),
+            ],
           ),
+        ),
+        Expanded(
+          child: exerciseListBuilder(
+            context,
+            weekIndex,
+            dayIndex,
+            day!,
+          ),
+        ),
       ],
     );
   }
