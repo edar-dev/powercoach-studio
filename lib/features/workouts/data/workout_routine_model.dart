@@ -381,7 +381,7 @@ class Exercise {
   List<ExerciseSet> get effectiveSetDetails =>
       (setDetails != null && setDetails!.isNotEmpty)
       ? setDetails!
-      : [ExerciseSet(reps: reps, rpe: rpe, note: note)];
+      : [ExerciseSet(sets: sets, reps: reps, rpe: rpe, note: note)];
 
   Exercise copyWith({
     String? id,

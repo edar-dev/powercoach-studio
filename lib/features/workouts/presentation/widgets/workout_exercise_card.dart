@@ -4,13 +4,9 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../data/workout_routine_model.dart';
-import 'workout_expandable_card.dart';
 import 'workout_training_helpers.dart';
 
-/// Single exercise row/card in the workout training tab.
-///
-/// Collapsed by default (name + sets summary). Expanded shows set rows, note,
-/// and add-set CTA. Full edit (shortName / scope) stays in the menu sheet.
+/// Flat typographic exercise row for the session sheet.
 class WorkoutExerciseCard extends StatelessWidget {
   const WorkoutExerciseCard({
     super.key,
@@ -103,13 +99,29 @@ class WorkoutExerciseCard extends StatelessWidget {
     );
   }
 
+  String _prescriptionLabel(AppLocalizations l10n) {
+    final details = exercise.effectiveSetDetails;
+    final texts = details
+        .map((s) => s.displayText.trim())
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (texts.isEmpty) {
+      return l10n.workoutBuilderPrescriptionPlaceholder;
+    }
+    // Bare set count without reps (e.g. "1") is not a useful prescription.
+    if (texts.length == 1 && RegExp(r'^\d+$').hasMatch(texts.first)) {
+      return l10n.workoutBuilderPrescriptionPlaceholder;
+    }
+    return texts.join(' · ');
+  }
+
   @override
   Widget build(BuildContext context) {
     final details = exercise.effectiveSetDetails;
     final l10n = AppLocalizations.of(context);
-    final setsSummary = details.length > 1
-        ? details.map((s) => s.displayText).join(' · ')
-        : details.first.displayText;
+    final prescription = _prescriptionLabel(l10n);
+    final isPlaceholder =
+        prescription == l10n.workoutBuilderPrescriptionPlaceholder;
     final hasMenu =
         onEdit != null ||
         onDuplicate != null ||
@@ -119,204 +131,246 @@ class WorkoutExerciseCard extends StatelessWidget {
         onAssignToSuperset != null ||
         onRemoveFromSuperset != null;
 
-    return WorkoutExpandableCard(
-      expanded: expanded,
-      onExpandedChanged: onExpandedChanged,
-      summary: setsSummary,
-      title: Row(
-        children: [
-          Expanded(
-            child: Text(
-              exercise.name,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface,
-              ),
-            ),
-          ),
-          if (linked)
-            Icon(
-              Icons.link,
-              size: 16,
-              color: StitchM3Theme.accent,
-            ),
-        ],
-      ),
-      trailing: hasMenu
-          ? PopupMenuButton<String>(
-              icon: Icon(
-                Icons.more_vert,
-                size: 20,
-                color: colorScheme.onSurfaceVariant,
-              ),
-              padding: EdgeInsets.zero,
-              tooltip: l10n.workoutBuilderExerciseMenuTooltip,
-              onSelected: (value) {
-                if (value == 'edit') {
-                  _openEditDialog(context);
-                } else if (value == 'duplicate') {
-                  onDuplicate?.call();
-                } else if (value == 'up') {
-                  onMoveUp?.call();
-                } else if (value == 'down') {
-                  onMoveDown?.call();
-                } else if (value == 'delete') {
-                  onRemove?.call();
-                } else if (value == 'new') {
-                  onAssignToSuperset!(
-                    'ss_${DateTime.now().millisecondsSinceEpoch}',
-                  );
-                } else if (value.startsWith('group:')) {
-                  onAssignToSuperset!(value.substring(6));
-                } else if (value == 'remove_ss') {
-                  onRemoveFromSuperset?.call();
-                }
-              },
-              itemBuilder: (ctx) {
-                final menuL10n = AppLocalizations.of(ctx);
-                return [
-                  if (onEdit != null)
-                    PopupMenuItem(
-                      value: 'edit',
-                      child: Text(menuL10n.workoutBuilderEditExercise),
-                    ),
-                  if (onMoveUp != null)
-                    PopupMenuItem(
-                      value: 'up',
-                      child: Text(menuL10n.workoutBuilderMoveUp),
-                    ),
-                  if (onMoveDown != null)
-                    PopupMenuItem(
-                      value: 'down',
-                      child: Text(menuL10n.workoutBuilderMoveDown),
-                    ),
-                  if (onDuplicate != null)
-                    PopupMenuItem(
-                      value: 'duplicate',
-                      child: Text(
-                        menuL10n.workoutBuilderDuplicateExercise,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        InkWell(
+          onTap: () => onExpandedChanged(!expanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 14),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              exercise.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+                          if (linked) ...[
+                            const SizedBox(width: 6),
+                            Icon(
+                              Icons.link,
+                              size: 16,
+                              color: StitchM3Theme.accent,
+                            ),
+                          ],
+                        ],
                       ),
-                    ),
-                  if (onAssignToSuperset != null)
-                    PopupMenuItem(
-                      value: 'new',
-                      child: Text(menuL10n.workoutBuilderNewSuperset),
-                    ),
-                  ...supersetOptions.map(
-                    (o) => PopupMenuItem(
-                      value: 'group:${o.id}',
-                      child: Text(
-                        o.label,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ),
-                  if (onRemoveFromSuperset != null)
-                    PopupMenuItem(
-                      value: 'remove_ss',
-                      child: Text(
-                        menuL10n.workoutBuilderRemoveFromSuperset,
-                        style: const TextStyle(
-                          color: StitchM3Theme.danger,
+                      const SizedBox(height: 4),
+                      Text(
+                        prescription,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontStyle:
+                              isPlaceholder ? FontStyle.italic : FontStyle.normal,
                         ),
                       ),
-                    ),
-                  if (onRemove != null)
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(
-                        menuL10n.workoutBuilderDeleteExercise,
-                        style: const TextStyle(
-                          color: StitchM3Theme.danger,
-                        ),
-                      ),
-                    ),
-                ];
-              },
-            )
-          : null,
-      expandedChild: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          ...details.asMap().entries.map((entry) {
-            final i = entry.key;
-            final s = entry.value;
-            return Padding(
-              padding: EdgeInsets.only(
-                top: i == 0 ? 0 : 4,
-                bottom: i < details.length - 1 ? 4 : 0,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: WorkoutSetRepCell(
-                      theme: theme,
-                      colorScheme: colorScheme,
-                      label: l10n.workoutBuilderSetsLabel,
-                      value: s.displayText,
-                    ),
+                    ],
                   ),
-                  if (onUpdateSet != null)
-                    IconButton(
-                      icon: const Icon(Icons.edit_outlined, size: 18),
-                      onPressed: () => showEditSetDialog(
-                        context,
-                        theme,
-                        colorScheme,
-                        s.sets,
-                        s.reps,
-                        s.rpe,
-                        s.note,
-                        (sets, reps, load, note) =>
-                            onUpdateSet!(i, sets, reps, load, note),
-                      ),
-                    ),
-                  if (onRemoveSet != null && details.length > 1)
-                    IconButton(
-                      icon: const Icon(Icons.remove_circle_outline, size: 18),
-                      color: StitchM3Theme.danger,
-                      onPressed: () => onRemoveSet!(i),
-                    ),
-                ],
-              ),
-            );
-          }),
-          if (onAddSet != null) ...[
-            const SizedBox(height: 4),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: TextButton.icon(
-                onPressed: onAddSet,
-                icon: Icon(
-                  Icons.add,
-                  size: 16,
-                  color: StitchM3Theme.accent,
                 ),
-                label: Text(l10n.workoutBuilderAddSet),
-              ),
-            ),
-          ],
-          const SizedBox(height: 4),
-          Text(
-            exercise.note.isNotEmpty
-                ? exercise.note
-                : l10n.workoutBuilderNotePlaceholder,
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: exercise.note.isNotEmpty
-                  ? colorScheme.onSurface
-                  : colorScheme.onSurfaceVariant,
-              fontStyle: exercise.note.isEmpty ? FontStyle.italic : null,
+                Icon(
+                  expanded ? Icons.expand_less : Icons.chevron_right,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                if (hasMenu)
+                  PopupMenuButton<String>(
+                    icon: Icon(
+                      Icons.more_vert,
+                      size: 20,
+                      color: colorScheme.onSurfaceVariant,
+                    ),
+                    padding: EdgeInsets.zero,
+                    tooltip: l10n.workoutBuilderExerciseMenuTooltip,
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        _openEditDialog(context);
+                      } else if (value == 'duplicate') {
+                        onDuplicate?.call();
+                      } else if (value == 'up') {
+                        onMoveUp?.call();
+                      } else if (value == 'down') {
+                        onMoveDown?.call();
+                      } else if (value == 'delete') {
+                        onRemove?.call();
+                      } else if (value == 'new') {
+                        onAssignToSuperset!(
+                          'ss_${DateTime.now().millisecondsSinceEpoch}',
+                        );
+                      } else if (value.startsWith('group:')) {
+                        onAssignToSuperset!(value.substring(6));
+                      } else if (value == 'remove_ss') {
+                        onRemoveFromSuperset?.call();
+                      }
+                    },
+                    itemBuilder: (ctx) {
+                      final menuL10n = AppLocalizations.of(ctx);
+                      return [
+                        if (onEdit != null)
+                          PopupMenuItem(
+                            value: 'edit',
+                            child: Text(menuL10n.workoutBuilderEditExercise),
+                          ),
+                        if (onMoveUp != null)
+                          PopupMenuItem(
+                            value: 'up',
+                            child: Text(menuL10n.workoutBuilderMoveUp),
+                          ),
+                        if (onMoveDown != null)
+                          PopupMenuItem(
+                            value: 'down',
+                            child: Text(menuL10n.workoutBuilderMoveDown),
+                          ),
+                        if (onDuplicate != null)
+                          PopupMenuItem(
+                            value: 'duplicate',
+                            child: Text(
+                              menuL10n.workoutBuilderDuplicateExercise,
+                            ),
+                          ),
+                        if (onAssignToSuperset != null)
+                          PopupMenuItem(
+                            value: 'new',
+                            child: Text(menuL10n.workoutBuilderNewSuperset),
+                          ),
+                        ...supersetOptions.map(
+                          (o) => PopupMenuItem(
+                            value: 'group:${o.id}',
+                            child: Text(
+                              o.label,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        if (onRemoveFromSuperset != null)
+                          PopupMenuItem(
+                            value: 'remove_ss',
+                            child: Text(
+                              menuL10n.workoutBuilderRemoveFromSuperset,
+                              style: const TextStyle(
+                                color: StitchM3Theme.danger,
+                              ),
+                            ),
+                          ),
+                        if (onRemove != null)
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              menuL10n.workoutBuilderDeleteExercise,
+                              style: const TextStyle(
+                                color: StitchM3Theme.danger,
+                              ),
+                            ),
+                          ),
+                      ];
+                    },
+                  ),
+              ],
             ),
           ),
-        ],
-      ),
+        ),
+        if (expanded)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ...details.asMap().entries.map((entry) {
+                  final i = entry.key;
+                  final s = entry.value;
+                  final setLabel = s.displayText.trim().isEmpty
+                      ? l10n.workoutBuilderPrescriptionPlaceholder
+                      : s.displayText;
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: i < details.length - 1 ? 6 : 0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            setLabel,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurface,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        if (onUpdateSet != null)
+                          IconButton(
+                            icon: const Icon(Icons.edit_outlined, size: 18),
+                            onPressed: () => showEditSetDialog(
+                              context,
+                              theme,
+                              colorScheme,
+                              s.sets,
+                              s.reps,
+                              s.rpe,
+                              s.note,
+                              (sets, reps, load, note) =>
+                                  onUpdateSet!(i, sets, reps, load, note),
+                            ),
+                          ),
+                        if (onRemoveSet != null && details.length > 1)
+                          IconButton(
+                            icon: const Icon(
+                              Icons.remove_circle_outline,
+                              size: 18,
+                            ),
+                            color: StitchM3Theme.danger,
+                            onPressed: () => onRemoveSet!(i),
+                          ),
+                      ],
+                    ),
+                  );
+                }),
+                if (onAddSet != null)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: TextButton.icon(
+                      onPressed: onAddSet,
+                      icon: Icon(
+                        Icons.add,
+                        size: 16,
+                        color: StitchM3Theme.accent,
+                      ),
+                      label: Text(l10n.workoutBuilderAddSet),
+                    ),
+                  ),
+                Text(
+                  exercise.note.isNotEmpty
+                      ? exercise.note
+                      : l10n.workoutBuilderNotePlaceholder,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: exercise.note.isNotEmpty
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurfaceVariant,
+                    fontStyle:
+                        exercise.note.isEmpty ? FontStyle.italic : null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        Divider(
+          height: 1,
+          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+        ),
+      ],
     );
   }
 }
 
-/// Set/rep summary cell inside an exercise card.
+/// Set/rep summary cell (kept for any remaining callers).
 class WorkoutSetRepCell extends StatelessWidget {
   const WorkoutSetRepCell({
     super.key,
@@ -344,21 +398,11 @@ class WorkoutSetRepCell extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 4),
-        Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-            border: Border.all(color: colorScheme.outline),
-          ),
-          child: Center(
-            child: Text(
-              value,
-              style: theme.textTheme.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-              ),
-            ),
+        Text(
+          value,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: colorScheme.onSurface,
           ),
         ),
       ],

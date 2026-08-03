@@ -1714,6 +1714,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderAddSet => 'Aggiungi serie';
 
   @override
+  String get workoutBuilderPrescriptionPlaceholder => 'Aggiungi serie';
+
+  @override
   String get workoutBuilderAddExerciseTitle => 'Aggiungi esercizio';
 
   @override

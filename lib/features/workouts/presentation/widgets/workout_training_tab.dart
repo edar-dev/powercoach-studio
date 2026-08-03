@@ -108,7 +108,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(12, embeddedInTab ? 8 : 24, 12, 8),
+      padding: EdgeInsets.fromLTRB(0, embeddedInTab ? 0 : 8, 0, 0),
       child: TrainingWeekDayPanel(
         theme: theme,
         cs: cs,

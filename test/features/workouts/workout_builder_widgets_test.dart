@@ -125,12 +125,11 @@ void main() {
         ),
       );
 
-      // Multi-week plans start with a collapsed planner card.
-      await tester.tap(find.byIcon(Icons.expand_more).first);
+      // Session-sheet toolbar: open week menu, pick Week 2, then Day B.
+      await tester.tap(find.text('Week 1'));
       await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Week 2'));
-      await tester.pump();
+      await tester.tap(find.widgetWithText(CheckedPopupMenuItem<String>, 'Week 2'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Day B'));
       await tester.pump();
 
