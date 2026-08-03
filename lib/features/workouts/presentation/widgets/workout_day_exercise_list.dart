@@ -21,7 +21,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
     required this.weekIndex,
     required this.dayIndex,
     required this.day,
-    required this.onAddExercise,
+    this.onAddExercise,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
     required this.onMoveExercise,
@@ -41,7 +41,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
   final int weekIndex;
   final int dayIndex;
   final Day day;
-  final void Function(int, int) onAddExercise;
+  final void Function(int, int)? onAddExercise;
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
   final void Function(int, int, String, {required bool up}) onMoveExercise;
@@ -110,38 +110,46 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final dayIndex = widget.dayIndex;
     final l10n = AppLocalizations.of(context);
     final partition = partitionExercisesBySuperset(day.exercises);
-    final itemCount = partition.length + (day.exercises.isEmpty ? 1 : 0);
+    final showTrailingAdd =
+        day.exercises.isNotEmpty && widget.onAddExercise != null;
+    final itemCount = day.exercises.isEmpty
+        ? 1
+        : partition.length + (showTrailingAdd ? 1 : 0);
+
     return RepaintBoundary(
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
         itemCount: itemCount,
         itemBuilder: (context, index) {
           if (day.exercises.isEmpty) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
               child: Column(
                 children: [
                   Icon(
                     Icons.fitness_center_outlined,
                     size: 40,
-                    color: colorScheme.onSurfaceVariant,
+                    color: colorScheme.onSurface.withValues(alpha: 0.72),
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.workoutBuilderExerciseCount(0),
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
+                  const SizedBox(height: 20),
+                  if (widget.onAddExercise != null)
+                    FilledButton.icon(
+                      onPressed: () =>
+                          widget.onAddExercise!(weekIndex, dayIndex),
+                      icon: const Icon(Icons.add, size: 20),
+                      label: Text(l10n.workoutBuilderEmptyDayCta),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  FilledButton.icon(
-                    onPressed: () =>
-                        widget.onAddExercise(weekIndex, dayIndex),
-                    icon: const Icon(Icons.add, size: 20),
-                    label: Text(l10n.workoutBuilderEmptyDayCta),
-                  ),
                 ],
+              ),
+            );
+          }
+          if (showTrailingAdd && index == partition.length) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 8, bottom: 24),
+              child: OutlinedButton.icon(
+                onPressed: () => widget.onAddExercise!(weekIndex, dayIndex),
+                icon: const Icon(Icons.add, size: 18),
+                label: Text(l10n.workoutBuilderAddExercise),
               ),
             );
           }
@@ -171,7 +179,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
               onExpandedChanged: (value) {
                 _setExpandedSuperset(value ? groupId : null);
               },
-              onAddExercise: () => widget.onAddExercise(weekIndex, dayIndex),
+              onAddExercise: () => widget.onAddExercise?.call(weekIndex, dayIndex),
               onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
               onRemoveExercise: widget.onRemoveExercise,
               onMoveExerciseWithinSuperset: widget.onMoveExerciseWithinSuperset,

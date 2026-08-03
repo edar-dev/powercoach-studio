@@ -174,6 +174,7 @@ class WorkoutBuilderScreenTabs {
       onLogSession: onLogSession,
       onCloneDayToTarget: trainingHandlers.cloneDayToTarget,
       readOnly: readOnly,
+      editorMode: editorMode,
       planId: loadedPlanId,
     );
   }

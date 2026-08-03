@@ -42,6 +42,7 @@ class WorkoutTrainingTab extends StatelessWidget {
     this.onLogSession,
     this.onCloneDayToTarget,
     this.readOnly = false,
+    this.editorMode = false,
     this.planId,
   });
 
@@ -103,6 +104,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final bool readOnly;
+  final bool editorMode;
   final String? planId;
 
   @override
@@ -139,10 +141,10 @@ class WorkoutTrainingTab extends StatelessWidget {
         },
         onDeleteDay: onDeleteDay,
         onUpdateScheduledWeekday: onUpdateScheduledWeekday,
-        onAddExercise: readOnly ? null : onAddExercise,
         onLogSession: onLogSession,
         onCloneDayToTarget: readOnly ? null : onCloneDayToTarget,
         planId: planId,
+        editorMode: editorMode,
         exerciseListBuilder: (context, weekIndex, dayIndex, day) {
           return WorkoutDayExerciseList(
             theme: theme,
@@ -151,7 +153,7 @@ class WorkoutTrainingTab extends StatelessWidget {
             weekIndex: weekIndex,
             dayIndex: dayIndex,
             day: day,
-            onAddExercise: onAddExercise,
+            onAddExercise: readOnly ? null : onAddExercise,
             onDuplicateExercise: onDuplicateExercise,
             onRemoveExercise: onRemoveExercise,
             onMoveExercise: onMoveExercise,

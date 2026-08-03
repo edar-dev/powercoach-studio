@@ -131,21 +131,16 @@ class WorkoutMobilityTab extends StatelessWidget {
             itemCount: itemsForSelectedSection.length,
             itemBuilder: (context, index) {
               final item = itemsForSelectedSection[index];
-              return Padding(
+              return MobilityItemCard(
                 key: ValueKey(item.id),
-                padding: EdgeInsets.only(
-                  bottom: index < itemsForSelectedSection.length - 1 ? 8 : 0,
-                ),
-                child: MobilityItemCard(
-                  theme: theme,
-                  colorScheme: colorScheme,
-                  index: index,
-                  title: item.title,
-                  subtitle: item.subtitle,
-                  shortTitle: item.shortTitle,
-                  onEdit: (t, s, short) => onUpdateItem(item.id, t, s, short),
-                  onDelete: () => onDeleteItem(item.id),
-                ),
+                theme: theme,
+                colorScheme: colorScheme,
+                index: index,
+                title: item.title,
+                subtitle: item.subtitle,
+                shortTitle: item.shortTitle,
+                onEdit: (t, s, short) => onUpdateItem(item.id, t, s, short),
+                onDelete: () => onDeleteItem(item.id),
               );
             },
           ),
