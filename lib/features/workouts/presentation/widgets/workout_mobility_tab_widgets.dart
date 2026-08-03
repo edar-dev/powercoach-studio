@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'workout_expandable_card.dart';
 
 class MobilitySectionChip extends StatelessWidget {
   const MobilitySectionChip({
@@ -24,67 +25,71 @@ class MobilitySectionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(999),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                label,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: selected ? cs.onSurface : cs.onSurfaceVariant,
+    final l10n = AppLocalizations.of(context);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(999),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+                child: Text(
+                  label,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: selected ? cs.onSurface : cs.onSurfaceVariant,
+                  ),
                 ),
               ),
-              if (selected) ...[
-                const SizedBox(width: 6),
-                InkWell(
-                  onTap: onEdit,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Icon(
-                      Icons.edit,
-                      size: 18,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
+            ),
+            if (selected)
+              PopupMenuButton<String>(
+                icon: Icon(
+                  Icons.more_horiz,
+                  size: 18,
+                  color: cs.onSurfaceVariant,
                 ),
-                if (onDelete != null) ...[
-                  const SizedBox(width: 4),
-                  InkWell(
-                    onTap: onDelete,
-                    borderRadius: BorderRadius.circular(999),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4),
-                      child: Icon(
-                        Icons.delete_outline,
-                        size: 18,
-                        color: StitchM3Theme.danger,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    onEdit();
+                  } else if (value == 'delete') {
+                    onDelete?.call();
+                  }
+                },
+                itemBuilder: (ctx) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Text(l10n.workoutBuilderEditExercise),
+                  ),
+                  if (onDelete != null)
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text(
+                        l10n.workoutBuilderDeleteExercise,
+                        style: const TextStyle(color: StitchM3Theme.danger),
                       ),
                     ),
-                  ),
                 ],
-              ],
-            ],
-          ),
-          const SizedBox(height: 8),
-          Container(
-            height: 2,
-            width: 60,
-            color: selected ? StitchM3Theme.accent : Colors.transparent,
-          ),
-        ],
-      ),
+              ),
+          ],
+        ),
+        Container(
+          height: 2,
+          width: 60,
+          color: selected ? StitchM3Theme.accent : Colors.transparent,
+        ),
+      ],
     );
   }
 }
 
-class MobilityItemCard extends StatelessWidget {
+class MobilityItemCard extends StatefulWidget {
   const MobilityItemCard({
     super.key,
     required this.theme,
@@ -107,81 +112,120 @@ class MobilityItemCard extends StatelessWidget {
   final VoidCallback? onDelete;
 
   @override
+  State<MobilityItemCard> createState() => _MobilityItemCardState();
+}
+
+class _MobilityItemCardState extends State<MobilityItemCard> {
+  bool _expanded = false;
+
+  @override
   Widget build(BuildContext context) {
-    final cs = colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        border: Border.all(color: cs.outline),
+    final theme = widget.theme;
+    final cs = widget.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final summary = widget.subtitle.trim().isNotEmpty
+        ? widget.subtitle
+        : (widget.shortTitle.trim().isNotEmpty ? widget.shortTitle : null);
+
+    return WorkoutExpandableCard(
+      expanded: _expanded,
+      onExpandedChanged: (value) => setState(() => _expanded = value),
+      summary: _expanded ? null : summary,
+      leading: ReorderableDragStartListener(
+        index: widget.index,
+        child: Icon(
+          Icons.drag_indicator,
+          size: 20,
+          color: cs.onSurfaceVariant,
+        ),
       ),
-      child: Row(
+      title: Text(
+        widget.title,
+        style: theme.textTheme.titleSmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: cs.onSurface,
+        ),
+      ),
+      trailing: PopupMenuButton<String>(
+        icon: Icon(Icons.more_vert, size: 20, color: cs.onSurfaceVariant),
+        padding: EdgeInsets.zero,
+        onSelected: (value) {
+          if (value == 'edit' && widget.onEdit != null) {
+            showEditMobilityItemDialog(
+              context,
+              widget.title,
+              widget.subtitle,
+              widget.shortTitle,
+              widget.onEdit!,
+            );
+          } else if (value == 'delete') {
+            widget.onDelete?.call();
+          }
+        },
+        itemBuilder: (ctx) {
+          final menuL10n = AppLocalizations.of(ctx);
+          return [
+            if (widget.onEdit != null)
+              PopupMenuItem(
+                value: 'edit',
+                child: Text(menuL10n.workoutBuilderEditExercise),
+              ),
+            PopupMenuItem(
+              value: 'delete',
+              child: Text(
+                menuL10n.workoutBuilderDeleteExercise,
+                style: const TextStyle(color: StitchM3Theme.danger),
+              ),
+            ),
+          ];
+        },
+      ),
+      expandedChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ReorderableDragStartListener(
-            index: index,
-            child: Icon(
-              Icons.drag_indicator,
-              size: 20,
-              color: cs.onSurfaceVariant,
+          if (widget.shortTitle.trim().isNotEmpty)
+            Text(
+              widget.shortTitle,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: cs.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
-                  ),
-                ),
-              ],
+          if (widget.subtitle.trim().isNotEmpty) ...[
+            if (widget.shortTitle.trim().isNotEmpty) const SizedBox(height: 6),
+            Text(
+              widget.subtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: cs.onSurface,
+              ),
             ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, size: 20, color: cs.onSurfaceVariant),
-            padding: EdgeInsets.zero,
-            onSelected: (value) {
-              if (value == 'edit' && onEdit != null) {
-                showEditMobilityItemDialog(
+          ],
+          if (widget.subtitle.trim().isEmpty &&
+              widget.shortTitle.trim().isEmpty)
+            Text(
+              l10n.workoutBuilderNotePlaceholder,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          if (widget.onEdit != null) ...[
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                onPressed: () => showEditMobilityItemDialog(
                   context,
-                  title,
-                  subtitle,
-                  shortTitle,
-                  onEdit!,
-                );
-              } else if (value == 'delete') {
-                onDelete?.call();
-              }
-            },
-            itemBuilder: (ctx) {
-              final l10n = AppLocalizations.of(ctx);
-              return [
-                if (onEdit != null)
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Text(l10n.workoutBuilderEditExercise),
-                  ),
-                PopupMenuItem(
-                  value: 'delete',
-                  child: Text(
-                    l10n.workoutBuilderDeleteExercise,
-                    style: const TextStyle(color: StitchM3Theme.danger),
-                  ),
+                  widget.title,
+                  widget.subtitle,
+                  widget.shortTitle,
+                  widget.onEdit!,
                 ),
-              ];
-            },
-          ),
+                icon: const Icon(Icons.edit_outlined, size: 16),
+                label: Text(l10n.workoutBuilderEditExercise),
+              ),
+            ),
+          ],
         ],
       ),
     );

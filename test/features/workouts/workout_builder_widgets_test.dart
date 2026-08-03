@@ -125,6 +125,10 @@ void main() {
         ),
       );
 
+      // Multi-week plans start with a collapsed planner card.
+      await tester.tap(find.byIcon(Icons.expand_more).first);
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('Week 2'));
       await tester.pump();
       await tester.tap(find.text('Day B'));

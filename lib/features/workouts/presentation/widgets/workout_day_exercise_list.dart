@@ -9,7 +9,10 @@ import 'workout_superset_block.dart';
 import 'workout_training_helpers.dart';
 
 /// Scrollable exercise list for a single training day.
-class WorkoutDayExerciseList extends StatelessWidget {
+///
+/// Keeps a single expanded exercise id in local state so cards stay collapsed
+/// by default and only one detail panel is open at a time.
+class WorkoutDayExerciseList extends StatefulWidget {
   const WorkoutDayExerciseList({
     super.key,
     required this.theme,
@@ -77,7 +80,34 @@ class WorkoutDayExerciseList extends StatelessWidget {
   final void Function(int, int, String) onAddExerciseToSuperset;
 
   @override
+  State<WorkoutDayExerciseList> createState() => _WorkoutDayExerciseListState();
+}
+
+class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
+  String? _expandedExerciseId;
+  String? _expandedSupersetId;
+
+  void _setExpandedExercise(String? id) {
+    setState(() {
+      _expandedExerciseId = id;
+      if (id != null) _expandedSupersetId = null;
+    });
+  }
+
+  void _setExpandedSuperset(String? id) {
+    setState(() {
+      _expandedSupersetId = id;
+      if (id != null) _expandedExerciseId = null;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final theme = widget.theme;
+    final colorScheme = widget.colorScheme;
+    final day = widget.day;
+    final weekIndex = widget.weekIndex;
+    final dayIndex = widget.dayIndex;
     final l10n = AppLocalizations.of(context);
     final partition = partitionExercisesBySuperset(day.exercises);
     final itemCount = partition.length + (day.exercises.isEmpty ? 1 : 0);
@@ -106,7 +136,8 @@ class WorkoutDayExerciseList extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   FilledButton.icon(
-                    onPressed: () => onAddExercise(weekIndex, dayIndex),
+                    onPressed: () =>
+                        widget.onAddExercise(weekIndex, dayIndex),
                     icon: const Icon(Icons.add, size: 20),
                     label: Text(l10n.workoutBuilderEmptyDayCta),
                   ),
@@ -122,26 +153,30 @@ class WorkoutDayExerciseList extends StatelessWidget {
             );
           }
           final exercises = entry as List<Exercise>;
+          final groupId =
+              exercises.isNotEmpty && exercises.first.supersetGroupId != null
+              ? exercises.first.supersetGroupId!
+              : null;
           return Padding(
             padding: const EdgeInsets.only(bottom: 10),
             child: WorkoutSupersetBlock(
               theme: theme,
               colorScheme: colorScheme,
-              session: session,
+              session: widget.session,
               weekIndex: weekIndex,
               dayIndex: dayIndex,
               exercises: exercises,
-              supersetGroupId:
-                  exercises.isNotEmpty &&
-                      exercises.first.supersetGroupId != null
-                  ? exercises.first.supersetGroupId!
-                  : null,
-              onAddExercise: () => onAddExercise(weekIndex, dayIndex),
-              onAddExerciseToSuperset: onAddExerciseToSuperset,
-              onRemoveExercise: onRemoveExercise,
-              onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
-              onRemoveFromSuperset: onRemoveFromSuperset,
-              onUpdateExercise: onUpdateExercise,
+              supersetGroupId: groupId,
+              expanded: groupId != null && groupId == _expandedSupersetId,
+              onExpandedChanged: (value) {
+                _setExpandedSuperset(value ? groupId : null);
+              },
+              onAddExercise: () => widget.onAddExercise(weekIndex, dayIndex),
+              onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
+              onRemoveExercise: widget.onRemoveExercise,
+              onMoveExerciseWithinSuperset: widget.onMoveExerciseWithinSuperset,
+              onRemoveFromSuperset: widget.onRemoveFromSuperset,
+              onUpdateExercise: widget.onUpdateExercise,
             ),
           );
         },
@@ -149,17 +184,30 @@ class WorkoutDayExerciseList extends StatelessWidget {
     );
   }
 
-  Widget _buildExerciseCard(BuildContext context, {required Exercise exercise}) {
+  Widget _buildExerciseCard(
+    BuildContext context, {
+    required Exercise exercise,
+  }) {
     final ex = exercise;
+    final weekIndex = widget.weekIndex;
+    final dayIndex = widget.dayIndex;
+    final day = widget.day;
     return WorkoutExerciseCard(
-      theme: theme,
-      colorScheme: colorScheme,
+      key: ValueKey(ex.id),
+      theme: widget.theme,
+      colorScheme: widget.colorScheme,
       exercise: ex,
-      compact: true,
-      onDuplicate: () => onDuplicateExercise(weekIndex, dayIndex, ex),
-      onRemove: () => onRemoveExercise(weekIndex, dayIndex, ex.id),
-      onMoveUp: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
-      onMoveDown: () => onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
+      expanded: _expandedExerciseId == ex.id,
+      onExpandedChanged: (value) {
+        _setExpandedExercise(value ? ex.id : null);
+      },
+      onDuplicate: () =>
+          widget.onDuplicateExercise(weekIndex, dayIndex, ex),
+      onRemove: () => widget.onRemoveExercise(weekIndex, dayIndex, ex.id),
+      onMoveUp: () =>
+          widget.onMoveExercise(weekIndex, dayIndex, ex.id, up: true),
+      onMoveDown: () =>
+          widget.onMoveExercise(weekIndex, dayIndex, ex.id, up: false),
       onEdit:
           (
             name,
@@ -170,7 +218,7 @@ class WorkoutDayExerciseList extends StatelessWidget {
             setDetails,
             shortName,
             prescriptionScope,
-          }) => onUpdateExercise(
+          }) => widget.onUpdateExercise(
             weekIndex,
             dayIndex,
             ex.id,
@@ -183,26 +231,28 @@ class WorkoutDayExerciseList extends StatelessWidget {
             shortName: shortName,
             prescriptionScope: prescriptionScope,
           ),
-      onAddSet: () => onAddSetToExercise(weekIndex, dayIndex, ex.id),
-      onUpdateSet: (setIndex, sets, reps, load, note) => onUpdateExerciseSet(
-        weekIndex,
-        dayIndex,
-        ex.id,
-        setIndex,
-        sets: sets,
-        reps: reps,
-        rpe: load,
-        note: note,
-      ),
+      onAddSet: () =>
+          widget.onAddSetToExercise(weekIndex, dayIndex, ex.id),
+      onUpdateSet: (setIndex, sets, reps, load, note) =>
+          widget.onUpdateExerciseSet(
+            weekIndex,
+            dayIndex,
+            ex.id,
+            setIndex,
+            sets: sets,
+            reps: reps,
+            rpe: load,
+            note: note,
+          ),
       onRemoveSet: (setIndex) =>
-          onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
+          widget.onRemoveExerciseSet(weekIndex, dayIndex, ex.id, setIndex),
       supersetOptions: getSupersetGroupOptions(
         day,
       ).where((o) => o.id != ex.supersetGroupId).toList(),
       onAssignToSuperset: (groupId) =>
-          onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
+          widget.onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
       onRemoveFromSuperset: ex.supersetGroupId != null
-          ? () => onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
+          ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
           : null,
     );
   }

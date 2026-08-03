@@ -1324,6 +1324,24 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutPlanNotesHint => 'Note interne per questo piano';
 
   @override
+  String get workoutBuilderDetailsOptionsSection => 'Opzioni';
+
+  @override
+  String get workoutBuilderDetailsDatesSection => 'Date e settimana';
+
+  @override
+  String get workoutBuilderDetailsMetadataSection => 'Metadati';
+
+  @override
+  String get workoutBuilderAddSheetExerciseSection => 'Esercizio';
+
+  @override
+  String get workoutBuilderAddSheetSetsSection => 'Serie';
+
+  @override
+  String get workoutBuilderAddSheetNotesSection => 'Note';
+
+  @override
   String get workoutCreateNewFromThis => 'Crea nuovo workout da questo';
 
   @override
