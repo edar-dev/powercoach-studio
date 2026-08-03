@@ -18,10 +18,17 @@ void showEditSetDialog(
   final loadController = TextEditingController(text: initialLoad);
   final noteController = TextEditingController(text: initialNote);
   final l10n = AppLocalizations.of(context);
+  const denseDecoration = InputDecoration(
+    isDense: true,
+    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+  );
   showAppBottomSheet<void>(
     context: context,
     title: l10n.workoutBuilderEditSetTitle,
+    wrapContent: true,
+    maxHeightFraction: 0.55,
     bodyBuilder: (sheetContext) => Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
@@ -29,7 +36,7 @@ void showEditSetDialog(
             Expanded(
               child: TextField(
                 controller: setsController,
-                decoration: InputDecoration(
+                decoration: denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderSetLabel,
                   hintText: '1',
                 ),
@@ -41,7 +48,7 @@ void showEditSetDialog(
             Expanded(
               child: TextField(
                 controller: repsController,
-                decoration: InputDecoration(
+                decoration: denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderRepsLabel,
                   hintText: '3',
                 ),
@@ -53,7 +60,7 @@ void showEditSetDialog(
               flex: 2,
               child: TextField(
                 controller: loadController,
-                decoration: InputDecoration(
+                decoration: denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderLoadLabel,
                   hintText: '75kg',
                 ),
@@ -65,7 +72,9 @@ void showEditSetDialog(
         const SizedBox(height: 12),
         TextField(
           controller: noteController,
-          decoration: InputDecoration(labelText: l10n.workoutBuilderNoteLabel),
+          decoration: denseDecoration.copyWith(
+            labelText: l10n.workoutBuilderNoteLabel,
+          ),
           maxLines: 2,
         ),
       ],
