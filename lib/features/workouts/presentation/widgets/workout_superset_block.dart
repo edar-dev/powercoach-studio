@@ -7,7 +7,7 @@ import 'workout_superset_actions.dart';
 import 'workout_superset_panel.dart';
 import 'workout_training_helpers.dart';
 
-/// Superset group block in the workout training tab (compact preview + editor sheet).
+/// Superset group block in the workout training tab (expandable preview + editor sheet).
 class WorkoutSupersetBlock extends StatelessWidget {
   const WorkoutSupersetBlock({
     super.key,
@@ -18,6 +18,8 @@ class WorkoutSupersetBlock extends StatelessWidget {
     required this.dayIndex,
     required this.exercises,
     this.supersetGroupId,
+    required this.expanded,
+    required this.onExpandedChanged,
     required this.onAddExercise,
     required this.onAddExerciseToSuperset,
     required this.onRemoveExercise,
@@ -33,6 +35,8 @@ class WorkoutSupersetBlock extends StatelessWidget {
   final int dayIndex;
   final List<Exercise> exercises;
   final String? supersetGroupId;
+  final bool expanded;
+  final ValueChanged<bool> onExpandedChanged;
   final VoidCallback onAddExercise;
   final void Function(int, int, String) onAddExerciseToSuperset;
   final void Function(int, int, String) onRemoveExercise;
@@ -78,12 +82,19 @@ class WorkoutSupersetBlock extends StatelessWidget {
     final lead = exercises.isNotEmpty ? exercises.first : null;
     final prescriptionSummary =
         lead != null ? supersetPrescriptionSummary(lead) : null;
+    final namesSummary = exercises.map((e) => e.name).join(' · ');
 
     return WorkoutSupersetPanel(
       theme: theme,
       colorScheme: colorScheme,
-      prescriptionSummary: prescriptionSummary,
-      onOpenEditor: supersetGroupId != null ? () => _openEditor(buildContext) : null,
+      expanded: expanded,
+      onExpandedChanged: onExpandedChanged,
+      prescriptionSummary: (prescriptionSummary != null &&
+              prescriptionSummary.trim().isNotEmpty)
+          ? prescriptionSummary
+          : namesSummary,
+      onOpenEditor:
+          supersetGroupId != null ? () => _openEditor(buildContext) : null,
       onAddExercise: supersetGroupId != null
           ? () => onAddExerciseToSuperset(weekIndex, dayIndex, supersetGroupId!)
           : onAddExercise,
@@ -107,6 +118,20 @@ class WorkoutSupersetBlock extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (exercise.note.trim().isNotEmpty) ...[
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      exercise.note,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),

@@ -2456,6 +2456,42 @@ abstract class AppLocalizations {
   /// **'Internal notes for this plan'**
   String get workoutPlanNotesHint;
 
+  /// No description provided for @workoutBuilderDetailsOptionsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Options'**
+  String get workoutBuilderDetailsOptionsSection;
+
+  /// No description provided for @workoutBuilderDetailsDatesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Dates and week'**
+  String get workoutBuilderDetailsDatesSection;
+
+  /// No description provided for @workoutBuilderDetailsMetadataSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata'**
+  String get workoutBuilderDetailsMetadataSection;
+
+  /// No description provided for @workoutBuilderAddSheetExerciseSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise'**
+  String get workoutBuilderAddSheetExerciseSection;
+
+  /// No description provided for @workoutBuilderAddSheetSetsSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets'**
+  String get workoutBuilderAddSheetSetsSection;
+
+  /// No description provided for @workoutBuilderAddSheetNotesSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get workoutBuilderAddSheetNotesSection;
+
   /// No description provided for @workoutCreateNewFromThis.
   ///
   /// In en, this message translates to:

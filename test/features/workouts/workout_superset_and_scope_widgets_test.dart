@@ -31,6 +31,8 @@ void main() {
             return WorkoutSupersetPanel(
               theme: theme,
               colorScheme: theme.colorScheme,
+              expanded: true,
+              onExpandedChanged: (_) {},
               onAddExercise: () => added = true,
               children: const [Text('Squat')],
             );
@@ -57,6 +59,8 @@ void main() {
             return WorkoutSupersetPanel(
               theme: theme,
               colorScheme: theme.colorScheme,
+              expanded: true,
+              onExpandedChanged: (_) {},
               prescriptionSummary: '3 × 12',
               onOpenEditor: () => managed = true,
               onAddExercise: () {},

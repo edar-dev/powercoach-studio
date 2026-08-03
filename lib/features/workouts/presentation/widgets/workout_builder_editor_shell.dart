@@ -111,10 +111,13 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
                   if (onboardingCard != null) onboardingCard!,
                   if (showFirstSaveBanner)
                     WorkoutBuilderFirstSaveBanner(onSave: onSave),
-                  WorkoutRoutineNameBar(
-                    controller: routineNameController,
-                    l10n: l10n,
-                    readOnly: showReadOnlyBanner,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+                    child: WorkoutRoutineNameBar(
+                      controller: routineNameController,
+                      l10n: l10n,
+                      readOnly: showReadOnlyBanner,
+                    ),
                   ),
                   TabBar(
                     controller: sectionTabController,
