@@ -30,6 +30,7 @@ void showEditExerciseDialog(
     ExercisePrescriptionScope prescriptionScope,
   })?
   onSaveWithSets,
+  bool focusNote = false,
 }) {
   final nameController = TextEditingController(text: initialName);
   final noteController = TextEditingController(text: initialNote);
@@ -113,7 +114,7 @@ void showEditExerciseDialog(
                   vertical: 10,
                 ),
               ),
-              autofocus: false,
+              autofocus: !focusNote,
             ),
             const SizedBox(height: 8),
             TextField(
@@ -126,7 +127,8 @@ void showEditExerciseDialog(
                   vertical: 10,
                 ),
               ),
-              maxLines: 1,
+              autofocus: focusNote,
+              maxLines: 2,
             ),
             const SizedBox(height: 8),
             TextField(

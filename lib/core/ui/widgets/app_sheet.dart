@@ -19,6 +19,9 @@ Future<T?> showAppBottomSheet<T>({
   bool isDismissible = true,
   bool enableDrag = true,
   bool fullScreen = false,
+  /// When true, the sheet sizes to its content instead of filling [maxHeightFraction].
+  bool wrapContent = false,
+  double maxHeightFraction = 0.88,
 }) {
   final cs = Theme.of(context).colorScheme;
 
@@ -35,7 +38,8 @@ Future<T?> showAppBottomSheet<T>({
     builder: (sheetContext) {
       final bottomInset = MediaQuery.viewInsetsOf(sheetContext).bottom;
       final height = MediaQuery.sizeOf(sheetContext).height;
-      final maxHeight = fullScreen ? height * 0.96 : height * 0.88;
+      final maxHeight =
+          fullScreen ? height * 0.96 : height * maxHeightFraction;
 
       return ConstrainedBox(
         constraints: BoxConstraints(maxHeight: maxHeight),
@@ -46,6 +50,7 @@ Future<T?> showAppBottomSheet<T>({
             trailing: trailing,
             primaryActionLabel: primaryActionLabel,
             onPrimaryAction: onPrimaryAction,
+            wrapContent: wrapContent,
             child: bodyBuilder(sheetContext),
           ),
         ),
@@ -96,6 +101,7 @@ class _AppSheetScaffold extends StatelessWidget {
     this.trailing,
     this.primaryActionLabel,
     this.onPrimaryAction,
+    this.wrapContent = false,
   });
 
   final String title;
@@ -103,22 +109,36 @@ class _AppSheetScaffold extends StatelessWidget {
   final Widget? trailing;
   final String? primaryActionLabel;
   final VoidCallback? onPrimaryAction;
+  final bool wrapContent;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final titleStyle = wrapContent
+        ? theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)
+        : theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700);
+
+    final body = ScrollConfiguration(
+      behavior: const _NoGlowScrollBehavior(),
+      child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: EdgeInsets.fromLTRB(16, wrapContent ? 12 : 16, 16, 16),
+        child: child,
+      ),
+    );
 
     return Column(
+      mainAxisSize: wrapContent ? MainAxisSize.min : MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 8, 8),
+          padding: EdgeInsets.fromLTRB(16, wrapContent ? 8 : 12, 8, 8),
           child: Row(
             children: [
               Expanded(
                 child: Text(
                   title,
-                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                  style: titleStyle,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
@@ -133,16 +153,7 @@ class _AppSheetScaffold extends StatelessWidget {
           ),
         ),
         Container(height: 1, color: cs.outline),
-        Expanded(
-          child: ScrollConfiguration(
-            behavior: const _NoGlowScrollBehavior(),
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-              child: child,
-            ),
-          ),
-        ),
+        if (wrapContent) body else Expanded(child: body),
         if (primaryActionLabel != null && onPrimaryAction != null)
           SafeArea(
             top: false,

@@ -64,7 +64,7 @@ class WorkoutExerciseCard extends StatelessWidget {
   final void Function(String groupId)? onAssignToSuperset;
   final VoidCallback? onRemoveFromSuperset;
 
-  void _openEditDialog(BuildContext context) {
+  void _openEditDialog(BuildContext context, {bool focusNote = false}) {
     if (onEdit == null) return;
     showEditExerciseDialog(
       context,
@@ -79,6 +79,7 @@ class WorkoutExerciseCard extends StatelessWidget {
       initialShortName: exercise.shortName,
       initialScope: exercise.prescriptionScope,
       initialSetDetails: exercise.effectiveSetDetails,
+      focusNote: focusNote,
       onSaveWithSets:
           (
             name,
@@ -98,6 +99,9 @@ class WorkoutExerciseCard extends StatelessWidget {
           ),
     );
   }
+
+  bool get _hasAnySetNote =>
+      exercise.effectiveSetDetails.any((s) => s.note.trim().isNotEmpty);
 
   String _prescriptionLabel(AppLocalizations l10n) {
     final details = exercise.effectiveSetDetails;
@@ -172,23 +176,24 @@ class WorkoutExerciseCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Flexible(
-                child: Text(
-                  prescription,
-                  textAlign: TextAlign.end,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: isPlaceholder
-                        ? secondaryColor
-                        : colorScheme.onSurface,
-                    fontStyle:
-                        isPlaceholder ? FontStyle.italic : FontStyle.normal,
-                    fontWeight:
-                        isPlaceholder ? FontWeight.w500 : FontWeight.w400,
+              if (!expanded)
+                Flexible(
+                  child: Text(
+                    prescription,
+                    textAlign: TextAlign.end,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: isPlaceholder
+                          ? secondaryColor
+                          : colorScheme.onSurface,
+                      fontStyle:
+                          isPlaceholder ? FontStyle.italic : FontStyle.normal,
+                      fontWeight:
+                          isPlaceholder ? FontWeight.w500 : FontWeight.w400,
+                    ),
                   ),
                 ),
-              ),
               IconButton(
                 constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
                 padding: EdgeInsets.zero,
@@ -313,22 +318,49 @@ class WorkoutExerciseCard extends StatelessWidget {
                   final setLabel = s.displayText.trim().isEmpty
                       ? l10n.workoutBuilderPrescriptionPlaceholder
                       : s.displayText;
+                  final setNote = s.note.trim();
                   return Padding(
-                    padding: EdgeInsets.only(bottom: i < details.length - 1 ? 6 : 0),
+                    padding: EdgeInsets.only(
+                      bottom: i < details.length - 1 ? 8 : 0,
+                    ),
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: Text(
-                            setLabel,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                setLabel,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurface,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              if (setNote.isNotEmpty) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  setNote,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: secondaryColor,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
                         ),
                         if (onUpdateSet != null)
                           IconButton(
-                            icon: const Icon(Icons.edit_outlined, size: 18),
+                            constraints: const BoxConstraints(
+                              minWidth: 48,
+                              minHeight: 48,
+                            ),
+                            padding: EdgeInsets.zero,
+                            tooltip: l10n.workoutBuilderEditSetTitle,
+                            icon: const Icon(Icons.edit_outlined, size: 20),
                             onPressed: () => showEditSetDialog(
                               context,
                               theme,
@@ -343,9 +375,17 @@ class WorkoutExerciseCard extends StatelessWidget {
                           ),
                         if (onRemoveSet != null && details.length > 1)
                           IconButton(
+                            constraints: const BoxConstraints(
+                              minWidth: 48,
+                              minHeight: 48,
+                            ),
+                            padding: EdgeInsets.zero,
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).deleteButtonTooltip,
                             icon: const Icon(
                               Icons.remove_circle_outline,
-                              size: 18,
+                              size: 20,
                             ),
                             color: StitchM3Theme.danger,
                             onPressed: () => onRemoveSet!(i),
@@ -367,22 +407,34 @@ class WorkoutExerciseCard extends StatelessWidget {
                       label: Text(l10n.workoutBuilderAddSet),
                     ),
                   ),
-                Text(
-                  exercise.note.isNotEmpty
-                      ? exercise.note
-                      : l10n.workoutBuilderNotePlaceholder,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: exercise.note.isNotEmpty
-                        ? colorScheme.onSurface
-                        : secondaryColor,
-                    fontStyle:
-                        exercise.note.isEmpty ? FontStyle.italic : null,
-                    fontWeight:
-                        exercise.note.isEmpty ? FontWeight.w500 : null,
+                if (exercise.note.trim().isNotEmpty || !_hasAnySetNote)
+                  InkWell(
+                    onTap: onEdit != null
+                        ? () => _openEditDialog(context, focusNote: true)
+                        : null,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        exercise.note.trim().isNotEmpty
+                            ? exercise.note
+                            : l10n.workoutBuilderNotePlaceholder,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: exercise.note.trim().isNotEmpty
+                              ? colorScheme.onSurface
+                              : secondaryColor,
+                          fontStyle: exercise.note.trim().isEmpty
+                              ? FontStyle.italic
+                              : null,
+                          fontWeight: exercise.note.trim().isEmpty
+                              ? FontWeight.w500
+                              : null,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
               ],
             ),
           ),

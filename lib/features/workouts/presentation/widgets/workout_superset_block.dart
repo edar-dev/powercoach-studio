@@ -100,41 +100,51 @@ class WorkoutSupersetBlock extends StatelessWidget {
           : onAddExercise,
       children: [
         ...exercises.map(
-          (exercise) => Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.fitness_center,
-                  size: 16,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    exercise.name,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+          (exercise) {
+            final exerciseNote = exercise.note.trim();
+            final setNotes = exercise.effectiveSetDetails
+                .map((s) => s.note.trim())
+                .where((n) => n.isNotEmpty)
+                .toList();
+            final notePreview = exerciseNote.isNotEmpty
+                ? exerciseNote
+                : setNotes.join(' · ');
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 6),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.fitness_center,
+                    size: 16,
+                    color: colorScheme.onSurfaceVariant,
                   ),
-                ),
-                if (exercise.note.trim().isNotEmpty) ...[
                   const SizedBox(width: 8),
-                  Flexible(
+                  Expanded(
                     child: Text(
-                      exercise.note,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.end,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurfaceVariant,
+                      exercise.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                  if (notePreview.isNotEmpty) ...[
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        notePreview,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.end,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ],
     );

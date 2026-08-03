@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
+import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../data/workout_routine_model.dart';
 import 'training_session_toolbar.dart';
@@ -251,13 +252,27 @@ class _SessionSheetBody extends StatelessWidget {
                 ),
               ),
               if (showSessionActions && onLogSession != null)
-                TextButton.icon(
+                IconButton(
+                  tooltip: l10n.workoutBuilderLogSession,
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  padding: EdgeInsets.zero,
                   onPressed: onLogSession,
-                  icon: const Icon(Icons.check_circle_outline, size: 18),
-                  label: Text(l10n.workoutBuilderLogSession),
+                  icon: Icon(
+                    Icons.check_circle_outline,
+                    color: StitchM3Theme.accent,
+                  ),
                 ),
               if (showSessionActions && planId != null && planId!.isNotEmpty)
-                TextButton.icon(
+                IconButton(
+                  tooltip: l10n.workoutBuilderDayHistory,
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  padding: EdgeInsets.zero,
                   onPressed: () {
                     navigateTo(
                       context,
@@ -270,8 +285,10 @@ class _SessionSheetBody extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: const Icon(Icons.history, size: 18),
-                  label: Text(l10n.workoutBuilderDayHistory),
+                  icon: Icon(
+                    Icons.history,
+                    color: cs.onSurface.withValues(alpha: 0.8),
+                  ),
                 ),
             ],
           ),
