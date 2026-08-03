@@ -730,6 +730,7 @@
   "workoutBuilderSectionHeading": "Sezione",
   "workoutBuilderAddExercise": "Aggiungi esercizio",
   "workoutBuilderAddSet": "Aggiungi serie",
+  "workoutBuilderPrescriptionPlaceholder": "Aggiungi serie",
   "workoutBuilderAddExerciseTitle": "Aggiungi esercizio",
   "workoutBuilderEditExerciseTitle": "Modifica esercizio",
   "workoutBuilderExerciseLabel": "Esercizio",

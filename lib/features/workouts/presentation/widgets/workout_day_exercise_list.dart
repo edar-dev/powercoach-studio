@@ -113,7 +113,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final itemCount = partition.length + (day.exercises.isEmpty ? 1 : 0);
     return RepaintBoundary(
       child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 96, right: 4),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 96),
         itemCount: itemCount,
         itemBuilder: (context, index) {
           if (day.exercises.isEmpty) {

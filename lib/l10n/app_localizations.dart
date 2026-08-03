@@ -3172,6 +3172,12 @@ abstract class AppLocalizations {
   /// **'Add set'**
   String get workoutBuilderAddSet;
 
+  /// No description provided for @workoutBuilderPrescriptionPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add sets'**
+  String get workoutBuilderPrescriptionPlaceholder;
+
   /// No description provided for @workoutBuilderAddExerciseTitle.
   ///
   /// In en, this message translates to:
