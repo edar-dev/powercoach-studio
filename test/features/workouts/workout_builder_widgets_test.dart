@@ -126,9 +126,9 @@ void main() {
       );
 
       // Session-sheet toolbar: open week menu, pick Week 2, then Day B.
-      await tester.tap(find.text('Week 1'));
+      await tester.tap(find.text('Settimana 1'));
       await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(CheckedPopupMenuItem<String>, 'Week 2'));
+      await tester.tap(find.widgetWithText(CheckedPopupMenuItem<String>, 'Settimana 2'));
       await tester.pumpAndSettle();
       await tester.ensureVisible(find.text('Day B'));
       await tester.tap(find.text('Day B'));

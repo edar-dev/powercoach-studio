@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/workout_plan_template_scope.dart';
+import '../../../../l10n/app_localizations.dart';
 import 'mobility_builder_controller.dart';
 import 'workout_builder_mobility_handlers.dart';
 import 'workout_builder_screen_routine_actions.dart';
@@ -42,6 +43,7 @@ class WorkoutBuilderScreenTabsConfig {
     this.onDismissOnboarding,
     this.onIncludesMobilityTabChanged,
     this.onSyncMobilityTabVisibility,
+    this.editorCustomerName,
   });
 
   final BuildContext context;
@@ -74,8 +76,14 @@ class WorkoutBuilderScreenTabsConfig {
   final VoidCallback? onDismissOnboarding;
   final ValueChanged<bool>? onIncludesMobilityTabChanged;
   final VoidCallback? onSyncMobilityTabVisibility;
+  final String? editorCustomerName;
 
   WorkoutBuilderScreenTabs build() {
+    final l10n = AppLocalizations.of(context);
+    final customer = editorCustomerName?.trim();
+    final titleHint = (customer != null && customer.isNotEmpty)
+        ? l10n.workoutBuilderRoutineTitleFromCustomer(customer)
+        : null;
     return WorkoutBuilderScreenTabs(
       context: context,
       builderSession: builderSession,
@@ -125,6 +133,7 @@ class WorkoutBuilderScreenTabsConfig {
       onDismissOnboarding: onDismissOnboarding,
       onIncludesMobilityTabChanged: onIncludesMobilityTabChanged,
       onSyncMobilityTabVisibility: onSyncMobilityTabVisibility,
+      routineTitleHint: titleHint,
     );
   }
 }

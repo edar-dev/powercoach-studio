@@ -54,6 +54,26 @@ class TrainingSessionToolbar extends StatelessWidget {
     return DateFormat.E(Localizations.localeOf(context).toString()).format(date);
   }
 
+  /// Normalize legacy ALL-CAPS week/day labels to current l10n casing.
+  String _displaySectionName(String raw) {
+    final trimmed = raw.trim();
+    final week = RegExp(
+      r'^(SETTIMANA|WEEK)\s+(\d+)$',
+      caseSensitive: false,
+    ).firstMatch(trimmed);
+    if (week != null) {
+      return l10n.workoutBuilderWeekNumbered(int.parse(week.group(2)!));
+    }
+    final day = RegExp(
+      r'^(GIORNO|DAY)\s+(\d+)$',
+      caseSensitive: false,
+    ).firstMatch(trimmed);
+    if (day != null) {
+      return l10n.workoutBuilderDayNumbered(int.parse(day.group(2)!));
+    }
+    return raw;
+  }
+
   @override
   Widget build(BuildContext context) {
     final week = weeks[weekIndex];
@@ -82,6 +102,7 @@ class TrainingSessionToolbar extends StatelessWidget {
               l10n: l10n,
               weeks: weeks,
               weekIndex: weekIndex,
+              displayWeekName: _displaySectionName,
               onSelectWeek: onSelectWeek,
               onNewWeek: onNewWeek,
               onCloneWeek: onCloneWeek,
@@ -97,7 +118,7 @@ class TrainingSessionToolbar extends StatelessWidget {
                     for (var i = 0; i < days.length; i++) ...[
                       if (i > 0) const SizedBox(width: 6),
                       _DayChip(
-                        label: days[i].name,
+                        label: _displaySectionName(days[i].name),
                         selected: i == dayIndex,
                         onTap: () => onSelectDay(i),
                       ),
@@ -183,6 +204,7 @@ class _WeekMenuButton extends StatelessWidget {
     required this.l10n,
     required this.weeks,
     required this.weekIndex,
+    required this.displayWeekName,
     required this.onSelectWeek,
     required this.onNewWeek,
     required this.onCloneWeek,
@@ -195,6 +217,7 @@ class _WeekMenuButton extends StatelessWidget {
   final AppLocalizations l10n;
   final List<Week> weeks;
   final int weekIndex;
+  final String Function(String raw) displayWeekName;
   final void Function(int) onSelectWeek;
   final VoidCallback onNewWeek;
   final void Function(int) onCloneWeek;
@@ -223,7 +246,7 @@ class _WeekMenuButton extends StatelessWidget {
           CheckedPopupMenuItem<String>(
             value: 'week:$i',
             checked: i == weekIndex,
-            child: Text(weeks[i].name),
+            child: Text(displayWeekName(weeks[i].name)),
           ),
         const PopupMenuDivider(),
         PopupMenuItem(
@@ -248,7 +271,7 @@ class _WeekMenuButton extends StatelessWidget {
           ),
       ],
       child: _SessionChip(
-        label: weeks[weekIndex].name,
+        label: displayWeekName(weeks[weekIndex].name),
         outlined: true,
         accent: true,
         trailing: Icon(

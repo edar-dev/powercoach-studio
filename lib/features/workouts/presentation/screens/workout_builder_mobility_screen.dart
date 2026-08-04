@@ -181,6 +181,7 @@ class _WorkoutBuilderMobilityScreenState
         onDismissOnboarding: _dismissOnboarding,
         onIncludesMobilityTabChanged: _readOnly ? null : _onIncludesMobilityTabChanged,
         onSyncMobilityTabVisibility: _syncTabControllerLength,
+        editorCustomerName: _editorCustomer?.name,
       );
 
   bool get _isDirty => widget.editorMode ? _editorController.isDirty : false;
