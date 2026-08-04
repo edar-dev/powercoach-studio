@@ -130,6 +130,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.widgetWithText(CheckedPopupMenuItem<String>, 'Week 2'));
       await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Day B'));
       await tester.tap(find.text('Day B'));
       await tester.pump();
 

@@ -16,6 +16,7 @@ class WorkoutExerciseCard extends StatelessWidget {
     required this.expanded,
     required this.onExpandedChanged,
     this.linked = false,
+    this.showBottomDivider = true,
     this.onDuplicate,
     this.onRemove,
     this.onMoveUp,
@@ -35,6 +36,7 @@ class WorkoutExerciseCard extends StatelessWidget {
   final bool expanded;
   final ValueChanged<bool> onExpandedChanged;
   final bool linked;
+  final bool showBottomDivider;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -140,7 +142,7 @@ class WorkoutExerciseCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -171,32 +173,38 @@ class WorkoutExerciseCard extends StatelessWidget {
                             color: StitchM3Theme.accent,
                           ),
                         ],
+                        if (!expanded) ...[
+                          const SizedBox(width: 12),
+                          ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 160),
+                            child: Text(
+                              prescription,
+                              textAlign: TextAlign.end,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: isPlaceholder
+                                    ? secondaryColor
+                                    : colorScheme.onSurface,
+                                fontStyle: isPlaceholder
+                                    ? FontStyle.italic
+                                    : FontStyle.normal,
+                                fontWeight: isPlaceholder
+                                    ? FontWeight.w500
+                                    : FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),
                 ),
               ),
-              if (!expanded)
-                Flexible(
-                  child: Text(
-                    prescription,
-                    textAlign: TextAlign.end,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isPlaceholder
-                          ? secondaryColor
-                          : colorScheme.onSurface,
-                      fontStyle:
-                          isPlaceholder ? FontStyle.italic : FontStyle.normal,
-                      fontWeight:
-                          isPlaceholder ? FontWeight.w500 : FontWeight.w400,
-                    ),
-                  ),
-                ),
               IconButton(
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+                constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
                 padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
                 tooltip: expanded
                     ? MaterialLocalizations.of(context).expandedIconTapHint
                     : MaterialLocalizations.of(context).collapsedIconTapHint,
@@ -210,14 +218,14 @@ class WorkoutExerciseCard extends StatelessWidget {
                 PopupMenuButton<String>(
                   icon: Icon(
                     Icons.more_vert,
-                    size: 24,
+                    size: 22,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  iconSize: 24,
+                  iconSize: 22,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
-                    minWidth: 48,
-                    minHeight: 48,
+                    minWidth: 44,
+                    minHeight: 44,
                   ),
                   tooltip: l10n.workoutBuilderExerciseMenuTooltip,
                   onSelected: (value) {
@@ -438,10 +446,11 @@ class WorkoutExerciseCard extends StatelessWidget {
               ],
             ),
           ),
-        Divider(
-          height: 1,
-          color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-        ),
+        if (showBottomDivider)
+          Divider(
+            height: 1,
+            color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+          ),
       ],
     );
   }
