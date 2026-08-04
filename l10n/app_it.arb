@@ -692,6 +692,7 @@
   "workoutBuilderDayMenuTooltip": "Azioni sul giorno selezionato",
   "workoutBuilderExerciseMenuTooltip": "Azioni sull'esercizio",
   "workoutBuilderEditSectionTitle": "Modifica sezione",
+  "workoutBuilderDeleteSection": "Elimina sezione",
   "workoutBuilderSectionNameLabel": "Nome sezione",
   "workoutBuilderDeleteWeekTitle": "Eliminare la settimana?",
   "workoutBuilderDeleteWeekMessage": "Verranno rimossi questa settimana, tutti i giorni e gli esercizi. Operazione irreversibile.",
@@ -701,8 +702,8 @@
   "workoutBuilderWeekNameLabel": "Nome settimana",
   "workoutBuilderDuplicateWeekTitle": "Duplica settimana",
   "workoutBuilderDuplicateWeekHint": "Nome della nuova settimana",
-  "workoutBuilderEditMobilityExerciseTitle": "Modifica esercizio mobility",
-  "workoutBuilderAddMobilityExerciseTitle": "Aggiungi esercizio mobility",
+  "workoutBuilderEditMobilityExerciseTitle": "Modifica esercizio mobilità",
+  "workoutBuilderAddMobilityExerciseTitle": "Aggiungi esercizio mobilità",
   "workoutBuilderWeekNumbered": "Settimana {n}",
   "@workoutBuilderWeekNumbered": {
     "placeholders": {
@@ -725,7 +726,7 @@
   "workoutBuilderNameCopySuffix": " (copia)",
   "workoutBuilderRoutineNameLabel": "NOME ROUTINE",
   "workoutBuilderRoutineNameHint": "Aggiungi titolo routine",
-  "workoutBuilderMobilityRoutineTitle": "Routine mobility",
+  "workoutBuilderMobilityRoutineTitle": "Routine di mobilità",
   "workoutBuilderAddShort": "Aggiungi",
   "workoutBuilderSectionHeading": "Sezione",
   "workoutBuilderAddExercise": "Aggiungi esercizio",

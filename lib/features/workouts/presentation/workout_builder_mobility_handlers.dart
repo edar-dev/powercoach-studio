@@ -5,6 +5,7 @@ import '../data/workout_routine_model.dart';
 import 'mobility_builder_controller.dart';
 import 'widgets/mobility_add_sheet.dart';
 import 'widgets/mobility_section_editor_sheet.dart';
+import 'widgets/workout_mobility_tab_widgets.dart';
 /// Mobility-tab UI actions for the workout builder.
 class WorkoutBuilderMobilityHandlers {
   WorkoutBuilderMobilityHandlers({
@@ -95,12 +96,7 @@ class WorkoutBuilderMobilityHandlers {
 
   void addMobilitySection() {
     if (readOnly) return;
-    final l10n = AppLocalizations.of(context);
-    mobilityController.addSection(
-      name: l10n.workoutBuilderSectionNumbered(
-        mobilityController.sections.length + 1,
-      ),
-    );
+    mobilityController.addSection(name: '');
   }
 
   void editMobilitySection(int index) {
@@ -108,15 +104,28 @@ class WorkoutBuilderMobilityHandlers {
     final sections = mobilityController.sections;
     if (index < 0 || index >= sections.length) return;
     final section = sections[index];
+    final l10n = AppLocalizations.of(context);
+    final displayName = mobilitySectionDisplayName(
+      name: section.name,
+      index: index,
+      l10n: l10n,
+    );
     showEditMobilitySectionSheet(
       context,
-      initialName: section.name,
+      initialName: displayName,
       initialScheduleHint: section.scheduleHint,
       onSave: (newName, scheduleHint) {
-        if (newName.trim().isEmpty) return;
+        final trimmed = newName.trim();
+        if (trimmed.isEmpty) return;
+        // Keep unset convention: don't persist locale-specific defaults.
+        final defaultLabel = l10n.workoutBuilderSectionNumbered(index + 1);
+        final persisted =
+            trimmed == defaultLabel || isUnsetMobilitySectionName(trimmed)
+                ? ''
+                : trimmed;
         mobilityController.updateSection(
           sectionId: section.id,
-          name: newName,
+          name: persisted,
           scheduleHint: scheduleHint,
         );
       },

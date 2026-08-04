@@ -91,7 +91,7 @@ class WorkoutRoutine {
     final n = DateTime.now();
     return WorkoutRoutine(
       name: '',
-      mobilitySections: [const MobilitySection(id: 'sec_1', name: 'Section 1')],
+      mobilitySections: [const MobilitySection(id: 'sec_1', name: '')],
       mobilityItems: [],
       weeks: [],
       startDate: DateTime(n.year, n.month, n.day),

@@ -46,32 +46,17 @@ class WorkoutMobilityTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final hasItems = itemsForSelectedSection.isNotEmpty;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                l10n.workoutBuilderMobilityRoutineTitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              TextButton.icon(
-                onPressed: onAddItem,
-                icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                label: Text(
-                  l10n.workoutBuilderAddShort,
-                  style: TextStyle(
-                    color: StitchM3Theme.accent,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+          child: Text(
+            l10n.workoutBuilderMobilityRoutineTitle,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
         ),
         Padding(
@@ -83,7 +68,11 @@ class WorkoutMobilityTab extends StatelessWidget {
                 for (var i = 0; i < sections.length; i++) ...[
                   if (i > 0) const SizedBox(width: 8),
                   MobilitySectionChip(
-                    label: sections[i].name,
+                    label: mobilitySectionDisplayName(
+                      name: sections[i].name,
+                      index: i,
+                      l10n: l10n,
+                    ),
                     selected:
                         selectedSectionIndex.clamp(0, sections.length - 1) == i,
                     onTap: () => onSelectSection(i),
@@ -123,36 +112,61 @@ class WorkoutMobilityTab extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: ReorderableListView.builder(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            buildDefaultDragHandles: false,
-            // ignore: deprecated_member_use
-            onReorder: onReorderItems,
-            itemCount: itemsForSelectedSection.length,
-            itemBuilder: (context, index) {
-              final item = itemsForSelectedSection[index];
-              return MobilityItemCard(
-                key: ValueKey(item.id),
-                theme: theme,
-                colorScheme: colorScheme,
-                index: index,
-                title: item.title,
-                subtitle: item.subtitle,
-                shortTitle: item.shortTitle,
-                onEdit: (t, s, short) => onUpdateItem(item.id, t, s, short),
-                onDelete: () => onDeleteItem(item.id),
-              );
-            },
-          ),
+          child: hasItems
+              ? ReorderableListView.builder(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  buildDefaultDragHandles: false,
+                  // ignore: deprecated_member_use
+                  onReorder: onReorderItems,
+                  itemCount: itemsForSelectedSection.length,
+                  itemBuilder: (context, index) {
+                    final item = itemsForSelectedSection[index];
+                    return MobilityItemCard(
+                      key: ValueKey(item.id),
+                      theme: theme,
+                      colorScheme: colorScheme,
+                      index: index,
+                      title: item.title,
+                      subtitle: item.subtitle,
+                      shortTitle: item.shortTitle,
+                      onEdit: (t, s, short) =>
+                          onUpdateItem(item.id, t, s, short),
+                      onDelete: () => onDeleteItem(item.id),
+                    );
+                  },
+                )
+              : Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.self_improvement_outlined,
+                          size: 40,
+                          color: colorScheme.onSurface.withValues(alpha: 0.72),
+                        ),
+                        const SizedBox(height: 20),
+                        FilledButton.icon(
+                          onPressed: sections.isNotEmpty ? onAddItem : null,
+                          icon: const Icon(Icons.add, size: 20),
+                          label: Text(l10n.workoutBuilderEmptyDayCta),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: MobilityDashedButton(
-            icon: Icons.add,
-            label: l10n.workoutBuilderAddExercise,
-            onPressed: sections.isNotEmpty ? onAddItem : null,
+        if (hasItems)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: MobilityDashedButton(
+              icon: Icons.add,
+              label: l10n.workoutBuilderAddExercise,
+              onPressed: sections.isNotEmpty ? onAddItem : null,
+            ),
           ),
-        ),
       ],
     );
   }

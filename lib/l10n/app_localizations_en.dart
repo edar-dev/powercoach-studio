@@ -1624,6 +1624,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderEditSectionTitle => 'Edit section';
 
   @override
+  String get workoutBuilderDeleteSection => 'Delete section';
+
+  @override
   String get workoutBuilderSectionNameLabel => 'Section name';
 
   @override
