@@ -117,33 +117,44 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                 hintStyle: _titleStyle(theme, cs, hint: true),
               ),
             )
-          : Align(
-              alignment: Alignment.centerLeft,
-              child: InkWell(
-                onTap: _startEditing,
-                borderRadius: BorderRadius.circular(6),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          hint,
-                          style: _titleStyle(theme, cs, hint: true),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+          : LayoutBuilder(
+              builder: (context, constraints) {
+                const iconGap = 6.0;
+                const iconSize = 16.0;
+                final maxLabelWidth =
+                    (constraints.maxWidth - iconGap - iconSize)
+                        .clamp(0.0, double.infinity);
+                return Align(
+                  alignment: Alignment.centerLeft,
+                  child: InkWell(
+                    onTap: _startEditing,
+                    borderRadius: BorderRadius.circular(6),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: maxLabelWidth),
+                            child: Text(
+                              hint,
+                              style: _titleStyle(theme, cs, hint: true),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: iconGap),
+                          Icon(
+                            Icons.edit_outlined,
+                            size: iconSize,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ],
                       ),
-                      const SizedBox(width: 6),
-                      Icon(
-                        Icons.edit_outlined,
-                        size: 16,
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
     );
   }

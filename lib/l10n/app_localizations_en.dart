@@ -1910,7 +1910,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String workoutBuilderRoutineTitleFromCustomer(String name) {
-    return 'Plan · $name';
+    return 'Add title · $name';
   }
 
   @override

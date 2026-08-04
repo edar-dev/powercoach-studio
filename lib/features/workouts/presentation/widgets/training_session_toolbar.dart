@@ -93,7 +93,7 @@ class TrainingSessionToolbar extends StatelessWidget {
             ),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+        padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
         child: Row(
           children: [
             _WeekMenuButton(

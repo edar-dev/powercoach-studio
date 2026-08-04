@@ -1925,7 +1925,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String workoutBuilderRoutineTitleFromCustomer(String name) {
-    return 'Scheda · $name';
+    return 'Aggiungi titolo · $name';
   }
 
   @override
