@@ -1660,12 +1660,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String workoutBuilderWeekNumbered(int n) {
-    return 'WEEK $n';
+    return 'Week $n';
   }
 
   @override
   String workoutBuilderDayNumbered(int n) {
-    return 'DAY $n';
+    return 'Day $n';
   }
 
   @override
@@ -1904,6 +1904,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderSessionActionsTooltip => 'Session actions';
+
+  @override
+  String get workoutBuilderSessionMenuLabel => 'Session';
+
+  @override
+  String workoutBuilderRoutineTitleFromCustomer(String name) {
+    return 'Plan · $name';
+  }
 
   @override
   String get workoutDiarySessionFilterActive =>

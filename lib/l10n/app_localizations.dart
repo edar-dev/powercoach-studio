@@ -3103,13 +3103,13 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderWeekNumbered.
   ///
   /// In en, this message translates to:
-  /// **'WEEK {n}'**
+  /// **'Week {n}'**
   String workoutBuilderWeekNumbered(int n);
 
   /// No description provided for @workoutBuilderDayNumbered.
   ///
   /// In en, this message translates to:
-  /// **'DAY {n}'**
+  /// **'Day {n}'**
   String workoutBuilderDayNumbered(int n);
 
   /// No description provided for @workoutBuilderSectionNumbered.
@@ -3561,6 +3561,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Session actions'**
   String get workoutBuilderSessionActionsTooltip;
+
+  /// No description provided for @workoutBuilderSessionMenuLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Session'**
+  String get workoutBuilderSessionMenuLabel;
+
+  /// No description provided for @workoutBuilderRoutineTitleFromCustomer.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan · {name}'**
+  String workoutBuilderRoutineTitleFromCustomer(String name);
 
   /// No description provided for @workoutDiarySessionFilterActive.
   ///

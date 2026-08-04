@@ -142,7 +142,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {

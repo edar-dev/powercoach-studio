@@ -56,6 +56,7 @@ class WorkoutBuilderScreenTabs {
     this.onDismissOnboarding,
     this.onIncludesMobilityTabChanged,
     this.onSyncMobilityTabVisibility,
+    this.routineTitleHint,
   });
 
   final BuildContext context;
@@ -97,6 +98,7 @@ class WorkoutBuilderScreenTabs {
   final VoidCallback? onDismissOnboarding;
   final ValueChanged<bool>? onIncludesMobilityTabChanged;
   final VoidCallback? onSyncMobilityTabVisibility;
+  final String? routineTitleHint;
 
   WorkoutRoutine get _routine => builderSession.routine;
 
@@ -213,6 +215,7 @@ class WorkoutBuilderScreenTabs {
       showFirstSaveBanner: showFirstSaveBanner && !readOnly,
       showSandboxBanner: showSandboxBanner,
       showReadOnlyBanner: readOnly,
+      routineTitleHint: routineTitleHint,
       sandboxBanner: showSandboxBanner && onAssignDraftToCustomer != null
           ? WorkoutBuilderSandboxBanner(
               onAssignToCustomer: onAssignDraftToCustomer!,

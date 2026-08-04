@@ -9,11 +9,15 @@ class WorkoutRoutineNameBar extends StatefulWidget {
     required this.controller,
     required this.l10n,
     this.readOnly = false,
+    this.emptyHint,
   });
 
   final TextEditingController controller;
   final AppLocalizations l10n;
   final bool readOnly;
+
+  /// Softer placeholder when the routine has no title yet (e.g. customer name).
+  final String? emptyHint;
 
   @override
   State<WorkoutRoutineNameBar> createState() => _WorkoutRoutineNameBarState();
@@ -60,6 +64,12 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
 
   bool get _hasTitle => widget.controller.text.trim().isNotEmpty;
 
+  String get _hintText {
+    final custom = widget.emptyHint?.trim();
+    if (custom != null && custom.isNotEmpty) return custom;
+    return widget.l10n.workoutBuilderRoutineNameHint;
+  }
+
   void _startEditing() {
     if (widget.readOnly) return;
     setState(() => _editing = true);
@@ -85,6 +95,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final showField = widget.readOnly || _editing || _hasTitle;
+    final hint = _hintText;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(16, showField ? 4 : 0, 16, 0),
@@ -102,7 +113,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(vertical: 6),
                 border: InputBorder.none,
-                hintText: widget.l10n.workoutBuilderRoutineNameHint,
+                hintText: hint,
                 hintStyle: _titleStyle(theme, cs, hint: true),
               ),
             )
@@ -114,14 +125,17 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        widget.l10n.workoutBuilderRoutineNameHint,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: cs.onSurface.withValues(alpha: 0.64),
-                          fontStyle: FontStyle.italic,
+                      Expanded(
+                        child: Text(
+                          hint,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color: cs.onSurface.withValues(alpha: 0.64),
+                            fontStyle: FontStyle.italic,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       const SizedBox(width: 6),

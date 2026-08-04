@@ -246,15 +246,6 @@ class _SessionSheetBody extends StatelessWidget {
               if (sessionMenuItems.isNotEmpty)
                 PopupMenuButton<String>(
                   tooltip: l10n.workoutBuilderSessionActionsTooltip,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 44,
-                    minHeight: 44,
-                  ),
-                  icon: Icon(
-                    Icons.event_available_outlined,
-                    color: cs.onSurface.withValues(alpha: 0.72),
-                  ),
                   onSelected: (value) {
                     if (value == 'log') {
                       onLogSession?.call();
@@ -272,6 +263,30 @@ class _SessionSheetBody extends StatelessWidget {
                     }
                   },
                   itemBuilder: (_) => sessionMenuItems,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.event_available_outlined,
+                          size: 18,
+                          color: cs.onSurface.withValues(alpha: 0.72),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          l10n.workoutBuilderSessionMenuLabel,
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: cs.onSurface.withValues(alpha: 0.72),
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
             ],
           ),

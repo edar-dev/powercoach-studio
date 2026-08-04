@@ -39,6 +39,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     this.sandboxBanner,
     this.readOnlyBanner,
     this.onboardingCard,
+    this.routineTitleHint,
   });
 
   final bool canPop;
@@ -67,6 +68,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final Widget? sandboxBanner;
   final Widget? readOnlyBanner;
   final Widget? onboardingCard;
+  final String? routineTitleHint;
 
   Widget _constrainedSessionColumn({
     required BuildContext context,
@@ -145,6 +147,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
                             controller: routineNameController,
                             l10n: l10n,
                             readOnly: showReadOnlyBanner,
+                            emptyHint: routineTitleHint,
                           ),
                           TabBar(
                             controller: sectionTabController,

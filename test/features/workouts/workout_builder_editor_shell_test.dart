@@ -99,7 +99,7 @@ void main() {
 
     expect(find.text('Programma test'), findsOneWidget);
     expect(find.text('Allenamento'), findsOneWidget);
-    expect(find.text('Mobility'), findsOneWidget);
+    expect(find.text('Mobilità'), findsOneWidget);
     expect(find.text('Dettagli'), findsOneWidget);
     expect(find.text('Training tab body'), findsOneWidget);
   });
@@ -112,7 +112,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Allenamento'), findsOneWidget);
-    expect(find.text('Mobility'), findsNothing);
+    expect(find.text('Mobilità'), findsNothing);
     expect(find.text('Dettagli'), findsOneWidget);
   });
 

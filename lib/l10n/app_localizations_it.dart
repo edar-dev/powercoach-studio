@@ -1673,12 +1673,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String workoutBuilderWeekNumbered(int n) {
-    return 'SETTIMANA $n';
+    return 'Settimana $n';
   }
 
   @override
   String workoutBuilderDayNumbered(int n) {
-    return 'GIORNO $n';
+    return 'Giorno $n';
   }
 
   @override
@@ -1835,7 +1835,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderTabTraining => 'Allenamento';
 
   @override
-  String get workoutBuilderTabMobility => 'Mobility';
+  String get workoutBuilderTabMobility => 'Mobilità';
 
   @override
   String get workoutBuilderTabDetails => 'Dettagli';
@@ -1919,6 +1919,14 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderSessionActionsTooltip => 'Azioni sessione';
+
+  @override
+  String get workoutBuilderSessionMenuLabel => 'Sessione';
+
+  @override
+  String workoutBuilderRoutineTitleFromCustomer(String name) {
+    return 'Scheda · $name';
+  }
 
   @override
   String get workoutDiarySessionFilterActive =>

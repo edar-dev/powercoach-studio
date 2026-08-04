@@ -703,13 +703,13 @@
   "workoutBuilderDuplicateWeekHint": "Nome della nuova settimana",
   "workoutBuilderEditMobilityExerciseTitle": "Modifica esercizio mobility",
   "workoutBuilderAddMobilityExerciseTitle": "Aggiungi esercizio mobility",
-  "workoutBuilderWeekNumbered": "SETTIMANA {n}",
+  "workoutBuilderWeekNumbered": "Settimana {n}",
   "@workoutBuilderWeekNumbered": {
     "placeholders": {
       "n": { "type": "int" }
     }
   },
-  "workoutBuilderDayNumbered": "GIORNO {n}",
+  "workoutBuilderDayNumbered": "Giorno {n}",
   "@workoutBuilderDayNumbered": {
     "placeholders": {
       "n": { "type": "int" }
@@ -773,7 +773,7 @@
   "workoutBuilderNewSuperset": "Nuovo superset",
   "workoutBuilderRemoveFromSuperset": "Rimuovi dal superset",
   "workoutBuilderTabTraining": "Allenamento",
-  "workoutBuilderTabMobility": "Mobility",
+  "workoutBuilderTabMobility": "Mobilità",
   "workoutBuilderTabDetails": "Dettagli",
   "workoutBuilderNotePlaceholder": "Aggiungi nota…",
   "workoutBuilderMoreActions": "Altre azioni",
@@ -800,6 +800,13 @@
   "workoutBuilderIncludeMobilityTabHint": "Mostra la sezione mobilità insieme ad allenamento e dettagli.",
   "workoutBuilderDayHistory": "Storico",
   "workoutBuilderSessionActionsTooltip": "Azioni sessione",
+  "workoutBuilderSessionMenuLabel": "Sessione",
+  "workoutBuilderRoutineTitleFromCustomer": "Scheda · {name}",
+  "@workoutBuilderRoutineTitleFromCustomer": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "workoutDiarySessionFilterActive": "Sessioni per questo giorno del piano",
   "workoutBuilderNavLibrary": "Libreria",
   "workoutBuilderNavBuilder": "Builder",

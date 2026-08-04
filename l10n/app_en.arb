@@ -703,13 +703,13 @@
   "workoutBuilderDuplicateWeekHint": "Name for the new week",
   "workoutBuilderEditMobilityExerciseTitle": "Edit mobility exercise",
   "workoutBuilderAddMobilityExerciseTitle": "Add mobility exercise",
-  "workoutBuilderWeekNumbered": "WEEK {n}",
+  "workoutBuilderWeekNumbered": "Week {n}",
   "@workoutBuilderWeekNumbered": {
     "placeholders": {
       "n": { "type": "int" }
     }
   },
-  "workoutBuilderDayNumbered": "DAY {n}",
+  "workoutBuilderDayNumbered": "Day {n}",
   "@workoutBuilderDayNumbered": {
     "placeholders": {
       "n": { "type": "int" }
@@ -800,6 +800,13 @@
   "workoutBuilderIncludeMobilityTabHint": "Show the mobility section alongside training and details.",
   "workoutBuilderDayHistory": "History",
   "workoutBuilderSessionActionsTooltip": "Session actions",
+  "workoutBuilderSessionMenuLabel": "Session",
+  "workoutBuilderRoutineTitleFromCustomer": "Plan · {name}",
+  "@workoutBuilderRoutineTitleFromCustomer": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
   "workoutDiarySessionFilterActive": "Showing sessions for this plan day",
   "workoutBuilderNavLibrary": "Library",
   "workoutBuilderNavBuilder": "Builder",
