@@ -84,9 +84,9 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     required bool hint,
   }) {
     return theme.textTheme.titleSmall?.copyWith(
-      fontWeight: hint ? FontWeight.w500 : FontWeight.w600,
-      color: hint ? cs.onSurface.withValues(alpha: 0.64) : cs.onSurface,
-      fontStyle: hint ? FontStyle.italic : FontStyle.normal,
+      fontWeight: FontWeight.w600,
+      color: hint ? cs.onSurfaceVariant : cs.onSurface,
+      fontStyle: FontStyle.normal,
     );
   }
 
@@ -129,11 +129,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                       Expanded(
                         child: Text(
                           hint,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: cs.onSurface.withValues(alpha: 0.64),
-                            fontStyle: FontStyle.italic,
-                          ),
+                          style: _titleStyle(theme, cs, hint: true),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -142,7 +138,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                       Icon(
                         Icons.edit_outlined,
                         size: 16,
-                        color: cs.onSurface.withValues(alpha: 0.64),
+                        color: cs.onSurfaceVariant,
                       ),
                     ],
                   ),

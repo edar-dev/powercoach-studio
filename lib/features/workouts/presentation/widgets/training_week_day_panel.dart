@@ -263,28 +263,31 @@ class _SessionSheetBody extends StatelessWidget {
                     }
                   },
                   itemBuilder: (_) => sessionMenuItems,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 6,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.event_available_outlined,
-                          size: 18,
-                          color: cs.onSurface.withValues(alpha: 0.72),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 48),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.event_available_outlined,
+                              size: 18,
+                              color: cs.onSurface.withValues(alpha: 0.72),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              l10n.workoutBuilderSessionMenuLabel,
+                              style: theme.textTheme.labelLarge?.copyWith(
+                                color: cs.onSurface.withValues(alpha: 0.72),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 6),
-                        Text(
-                          l10n.workoutBuilderSessionMenuLabel,
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            color: cs.onSurface.withValues(alpha: 0.72),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),

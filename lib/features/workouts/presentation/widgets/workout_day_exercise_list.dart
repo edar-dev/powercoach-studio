@@ -114,7 +114,8 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         day.exercises.isNotEmpty && widget.onAddExercise != null;
 
     if (day.exercises.isEmpty) {
-      return Center(
+      return Align(
+        alignment: Alignment.topCenter,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
           child: Column(
@@ -142,7 +143,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
