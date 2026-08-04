@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_bottom_nav.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
@@ -67,6 +68,28 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final Widget? readOnlyBanner;
   final Widget? onboardingCard;
 
+  Widget _constrainedSessionColumn({
+    required BuildContext context,
+    required Widget child,
+  }) {
+    if (!Breakpoints.isDesktop(context)) return child;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = constraints.maxWidth > AppBreakpoints.sessionSheetMaxWidth
+            ? AppBreakpoints.sessionSheetMaxWidth
+            : constraints.maxWidth;
+        return Align(
+          alignment: Alignment.topCenter,
+          child: SizedBox(
+            width: width,
+            height: constraints.maxHeight,
+            child: child,
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -107,53 +130,61 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
             : Column(
                 children: [
                   if (showSandboxBanner && sandboxBanner != null) sandboxBanner!,
-                  if (showReadOnlyBanner && readOnlyBanner != null) readOnlyBanner!,
+                  if (showReadOnlyBanner && readOnlyBanner != null)
+                    readOnlyBanner!,
                   if (onboardingCard != null) onboardingCard!,
                   if (showFirstSaveBanner)
                     WorkoutBuilderFirstSaveBanner(onSave: onSave),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
-                    child: WorkoutRoutineNameBar(
-                      controller: routineNameController,
-                      l10n: l10n,
-                      readOnly: showReadOnlyBanner,
-                    ),
-                  ),
-                  TabBar(
-                    controller: sectionTabController,
-                    labelColor: StitchM3Theme.accent,
-                    unselectedLabelColor: cs.onSurfaceVariant,
-                    indicatorColor: StitchM3Theme.accent,
-                    tabs: [
-                      Tab(text: l10n.workoutBuilderTabTraining),
-                      if (showsMobilityTab)
-                        Tab(text: l10n.workoutBuilderTabMobility),
-                      Tab(text: l10n.workoutBuilderTabDetails),
-                    ],
-                  ),
                   Expanded(
-                    child: TabBarView(
-                      controller: sectionTabController,
-                      children: [
-                        WorkoutLazyTab(
-                          tabController: sectionTabController,
-                          tabIndex: 0,
-                          builder: (_) =>
-                              RepaintBoundary(child: trainingTab),
-                        ),
-                        if (showsMobilityTab)
-                          WorkoutLazyTab(
-                            tabController: sectionTabController,
-                            tabIndex: 1,
-                            builder: (_) =>
-                                RepaintBoundary(child: mobilityTab),
+                    child: _constrainedSessionColumn(
+                      context: context,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          WorkoutRoutineNameBar(
+                            controller: routineNameController,
+                            l10n: l10n,
+                            readOnly: showReadOnlyBanner,
                           ),
-                        WorkoutLazyTab(
-                          tabController: sectionTabController,
-                          tabIndex: showsMobilityTab ? 2 : 1,
-                          builder: (_) => detailsTab,
-                        ),
-                      ],
+                          TabBar(
+                            controller: sectionTabController,
+                            labelColor: StitchM3Theme.accent,
+                            unselectedLabelColor: cs.onSurfaceVariant,
+                            indicatorColor: StitchM3Theme.accent,
+                            tabs: [
+                              Tab(text: l10n.workoutBuilderTabTraining),
+                              if (showsMobilityTab)
+                                Tab(text: l10n.workoutBuilderTabMobility),
+                              Tab(text: l10n.workoutBuilderTabDetails),
+                            ],
+                          ),
+                          Expanded(
+                            child: TabBarView(
+                              controller: sectionTabController,
+                              children: [
+                                WorkoutLazyTab(
+                                  tabController: sectionTabController,
+                                  tabIndex: 0,
+                                  builder: (_) =>
+                                      RepaintBoundary(child: trainingTab),
+                                ),
+                                if (showsMobilityTab)
+                                  WorkoutLazyTab(
+                                    tabController: sectionTabController,
+                                    tabIndex: 1,
+                                    builder: (_) =>
+                                        RepaintBoundary(child: mobilityTab),
+                                  ),
+                                WorkoutLazyTab(
+                                  tabController: sectionTabController,
+                                  tabIndex: showsMobilityTab ? 2 : 1,
+                                  builder: (_) => detailsTab,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   if (showBottomNav)

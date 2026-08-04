@@ -68,6 +68,14 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     });
   }
 
+  TextStyle? _titleStyle(ThemeData theme, ColorScheme cs, {required bool hint}) {
+    return theme.textTheme.titleSmall?.copyWith(
+      fontWeight: hint ? FontWeight.w500 : FontWeight.w600,
+      color: hint ? cs.onSurface.withValues(alpha: 0.72) : cs.onSurface,
+      fontStyle: hint ? FontStyle.italic : FontStyle.normal,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -75,17 +83,14 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     final showField = widget.readOnly || _editing || _hasTitle;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
       child: showField
           ? TextField(
               controller: widget.controller,
               focusNode: _focusNode,
               readOnly: widget.readOnly,
               enableInteractiveSelection: !widget.readOnly,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: cs.onSurface,
-              ),
+              style: _titleStyle(theme, cs, hint: false),
               maxLines: 1,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _focusNode.unfocus(),
@@ -94,10 +99,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                 contentPadding: const EdgeInsets.symmetric(vertical: 6),
                 border: InputBorder.none,
                 hintText: widget.l10n.workoutBuilderRoutineNameHint,
-                hintStyle: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  color: cs.onSurface.withValues(alpha: 0.72),
-                ),
+                hintStyle: _titleStyle(theme, cs, hint: true),
               ),
             )
           : InkWell(
@@ -105,13 +107,20 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
               borderRadius: BorderRadius.circular(6),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Text(
-                  widget.l10n.workoutBuilderRoutineNameHint,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: cs.onSurface.withValues(alpha: 0.72),
-                    fontStyle: FontStyle.italic,
-                  ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.l10n.workoutBuilderRoutineNameHint,
+                        style: _titleStyle(theme, cs, hint: true),
+                      ),
+                    ),
+                    Icon(
+                      Icons.edit_outlined,
+                      size: 18,
+                      color: cs.onSurface.withValues(alpha: 0.72),
+                    ),
+                  ],
                 ),
               ),
             ),

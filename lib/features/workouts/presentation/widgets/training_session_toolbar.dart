@@ -73,7 +73,7 @@ class TrainingSessionToolbar extends StatelessWidget {
             ),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(8, 8, 4, 8),
+        padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
         child: Row(
           children: [
             _WeekMenuButton(
@@ -322,6 +322,8 @@ class _DayChip extends StatelessWidget {
               : null,
           child: Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelLarge?.copyWith(
               color: selected
                   ? Colors.white

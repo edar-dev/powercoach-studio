@@ -112,82 +112,97 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final partition = partitionExercisesBySuperset(day.exercises);
     final showTrailingAdd =
         day.exercises.isNotEmpty && widget.onAddExercise != null;
-    final itemCount = day.exercises.isEmpty
-        ? 1
-        : partition.length + (showTrailingAdd ? 1 : 0);
+
+    if (day.exercises.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 24, 16, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.fitness_center_outlined,
+                size: 40,
+                color: colorScheme.onSurface.withValues(alpha: 0.72),
+              ),
+              const SizedBox(height: 20),
+              if (widget.onAddExercise != null)
+                FilledButton.icon(
+                  onPressed: () => widget.onAddExercise!(weekIndex, dayIndex),
+                  icon: const Icon(Icons.add, size: 20),
+                  label: Text(l10n.workoutBuilderEmptyDayCta),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
 
     return RepaintBoundary(
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-        itemCount: itemCount,
-        itemBuilder: (context, index) {
-          if (day.exercises.isEmpty) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.fitness_center_outlined,
-                    size: 40,
-                    color: colorScheme.onSurface.withValues(alpha: 0.72),
-                  ),
-                  const SizedBox(height: 20),
-                  if (widget.onAddExercise != null)
-                    FilledButton.icon(
-                      onPressed: () =>
-                          widget.onAddExercise!(weekIndex, dayIndex),
-                      icon: const Icon(Icons.add, size: 20),
-                      label: Text(l10n.workoutBuilderEmptyDayCta),
+      child: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (showTrailingAdd && index == partition.length) {
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: OutlinedButton.icon(
+                        onPressed: () =>
+                            widget.onAddExercise!(weekIndex, dayIndex),
+                        icon: const Icon(Icons.add, size: 18),
+                        label: Text(l10n.workoutBuilderAddExercise),
+                      ),
+                    );
+                  }
+                  final entry = partition[index];
+                  final isLastPartition = index == partition.length - 1;
+                  final showDivider = !isLastPartition;
+                  if (entry is Exercise) {
+                    return _buildExerciseCard(
+                      context,
+                      exercise: entry,
+                      showBottomDivider: showDivider,
+                    );
+                  }
+                  final exercises = entry as List<Exercise>;
+                  final groupId = exercises.isNotEmpty &&
+                          exercises.first.supersetGroupId != null
+                      ? exercises.first.supersetGroupId!
+                      : null;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: WorkoutSupersetBlock(
+                      theme: theme,
+                      colorScheme: colorScheme,
+                      session: widget.session,
+                      weekIndex: weekIndex,
+                      dayIndex: dayIndex,
+                      exercises: exercises,
+                      supersetGroupId: groupId,
+                      expanded:
+                          groupId != null && groupId == _expandedSupersetId,
+                      onExpandedChanged: (value) {
+                        _setExpandedSuperset(value ? groupId : null);
+                      },
+                      onAddExercise: () =>
+                          widget.onAddExercise?.call(weekIndex, dayIndex),
+                      onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
+                      onRemoveExercise: widget.onRemoveExercise,
+                      onMoveExerciseWithinSuperset:
+                          widget.onMoveExerciseWithinSuperset,
+                      onRemoveFromSuperset: widget.onRemoveFromSuperset,
+                      onUpdateExercise: widget.onUpdateExercise,
                     ),
-                ],
+                  );
+                },
+                childCount: partition.length + (showTrailingAdd ? 1 : 0),
               ),
-            );
-          }
-          if (showTrailingAdd && index == partition.length) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 8, bottom: 24),
-              child: OutlinedButton.icon(
-                onPressed: () => widget.onAddExercise!(weekIndex, dayIndex),
-                icon: const Icon(Icons.add, size: 18),
-                label: Text(l10n.workoutBuilderAddExercise),
-              ),
-            );
-          }
-          final entry = partition[index];
-          if (entry is Exercise) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _buildExerciseCard(context, exercise: entry),
-            );
-          }
-          final exercises = entry as List<Exercise>;
-          final groupId =
-              exercises.isNotEmpty && exercises.first.supersetGroupId != null
-              ? exercises.first.supersetGroupId!
-              : null;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: WorkoutSupersetBlock(
-              theme: theme,
-              colorScheme: colorScheme,
-              session: widget.session,
-              weekIndex: weekIndex,
-              dayIndex: dayIndex,
-              exercises: exercises,
-              supersetGroupId: groupId,
-              expanded: groupId != null && groupId == _expandedSupersetId,
-              onExpandedChanged: (value) {
-                _setExpandedSuperset(value ? groupId : null);
-              },
-              onAddExercise: () => widget.onAddExercise?.call(weekIndex, dayIndex),
-              onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
-              onRemoveExercise: widget.onRemoveExercise,
-              onMoveExerciseWithinSuperset: widget.onMoveExerciseWithinSuperset,
-              onRemoveFromSuperset: widget.onRemoveFromSuperset,
-              onUpdateExercise: widget.onUpdateExercise,
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -195,6 +210,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
   Widget _buildExerciseCard(
     BuildContext context, {
     required Exercise exercise,
+    required bool showBottomDivider,
   }) {
     final ex = exercise;
     final weekIndex = widget.weekIndex;
@@ -206,6 +222,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       colorScheme: widget.colorScheme,
       exercise: ex,
       expanded: _expandedExerciseId == ex.id,
+      showBottomDivider: showBottomDivider,
       onExpandedChanged: (value) {
         _setExpandedExercise(value ? ex.id : null);
       },

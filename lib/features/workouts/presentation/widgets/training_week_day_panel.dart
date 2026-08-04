@@ -136,24 +136,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
       ],
     );
 
-    if (!Breakpoints.isDesktop(context)) {
-      return sheet;
-    }
-
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width =
-            constraints.maxWidth > 840 ? 840.0 : constraints.maxWidth;
-        return Align(
-          alignment: Alignment.topCenter,
-          child: SizedBox(
-            width: width,
-            height: constraints.maxHeight,
-            child: sheet,
-          ),
-        );
-      },
-    );
+    return sheet;
   }
 }
 
@@ -221,14 +204,81 @@ class _SessionSheetBody extends StatelessWidget {
       color: cs.onSurface.withValues(alpha: 0.8),
       fontWeight: FontWeight.w500,
     );
+    final desktop = Breakpoints.isDesktop(context);
+
+    Widget? logAction;
+    if (showSessionActions && onLogSession != null) {
+      logAction = desktop
+          ? TextButton.icon(
+              onPressed: onLogSession,
+              icon: Icon(
+                Icons.check_circle_outline,
+                size: 18,
+                color: StitchM3Theme.accent,
+              ),
+              label: Text(l10n.workoutBuilderLogSession),
+              style: TextButton.styleFrom(
+                foregroundColor: StitchM3Theme.accent,
+                visualDensity: VisualDensity.compact,
+              ),
+            )
+          : IconButton(
+              tooltip: l10n.workoutBuilderLogSession,
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              padding: EdgeInsets.zero,
+              onPressed: onLogSession,
+              icon: Icon(
+                Icons.check_circle_outline,
+                color: StitchM3Theme.accent,
+              ),
+            );
+    }
+
+    Widget? historyAction;
+    if (showSessionActions && planId != null && planId!.isNotEmpty) {
+      void openHistory() {
+        navigateTo(
+          context,
+          workoutDiaryPath(
+            planId: planId,
+            sessionKey: WorkoutRoutine.sessionKey(weekIndex, dayIndex),
+          ),
+        );
+      }
+
+      historyAction = desktop
+          ? TextButton.icon(
+              onPressed: openHistory,
+              icon: Icon(
+                Icons.history,
+                size: 18,
+                color: cs.onSurface.withValues(alpha: 0.8),
+              ),
+              label: Text(l10n.workoutBuilderDayHistory),
+              style: TextButton.styleFrom(
+                foregroundColor: cs.onSurface.withValues(alpha: 0.8),
+                visualDensity: VisualDensity.compact,
+              ),
+            )
+          : IconButton(
+              tooltip: l10n.workoutBuilderDayHistory,
+              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+              padding: EdgeInsets.zero,
+              onPressed: openHistory,
+              icon: Icon(
+                Icons.history,
+                color: cs.onSurface.withValues(alpha: 0.8),
+              ),
+            );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Column(
@@ -251,45 +301,8 @@ class _SessionSheetBody extends StatelessWidget {
                   ],
                 ),
               ),
-              if (showSessionActions && onLogSession != null)
-                IconButton(
-                  tooltip: l10n.workoutBuilderLogSession,
-                  constraints: const BoxConstraints(
-                    minWidth: 48,
-                    minHeight: 48,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: onLogSession,
-                  icon: Icon(
-                    Icons.check_circle_outline,
-                    color: StitchM3Theme.accent,
-                  ),
-                ),
-              if (showSessionActions && planId != null && planId!.isNotEmpty)
-                IconButton(
-                  tooltip: l10n.workoutBuilderDayHistory,
-                  constraints: const BoxConstraints(
-                    minWidth: 48,
-                    minHeight: 48,
-                  ),
-                  padding: EdgeInsets.zero,
-                  onPressed: () {
-                    navigateTo(
-                      context,
-                      workoutDiaryPath(
-                        planId: planId,
-                        sessionKey: WorkoutRoutine.sessionKey(
-                          weekIndex,
-                          dayIndex,
-                        ),
-                      ),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.history,
-                    color: cs.onSurface.withValues(alpha: 0.8),
-                  ),
-                ),
+              if (logAction != null) logAction,
+              if (historyAction != null) historyAction,
             ],
           ),
         ),

@@ -12,6 +12,9 @@ class AppBreakpoints {
   /// Wide layout threshold for two-pane workout builder (900px).
   static const double desktop = 900;
 
+  /// Readable measure for session-sheet content on desktop.
+  static const double sessionSheetMaxWidth = 840;
+
   static bool isDesktop(BuildContext context) =>
       MediaQuery.sizeOf(context).width >= desktop;
 
