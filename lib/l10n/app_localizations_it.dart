@@ -1636,6 +1636,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderEditSectionTitle => 'Modifica sezione';
 
   @override
+  String get workoutBuilderDeleteSection => 'Elimina sezione';
+
+  @override
   String get workoutBuilderSectionNameLabel => 'Nome sezione';
 
   @override
@@ -1665,11 +1668,11 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderEditMobilityExerciseTitle =>
-      'Modifica esercizio mobility';
+      'Modifica esercizio mobilità';
 
   @override
   String get workoutBuilderAddMobilityExerciseTitle =>
-      'Aggiungi esercizio mobility';
+      'Aggiungi esercizio mobilità';
 
   @override
   String workoutBuilderWeekNumbered(int n) {
@@ -1699,7 +1702,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderRoutineNameHint => 'Aggiungi titolo routine';
 
   @override
-  String get workoutBuilderMobilityRoutineTitle => 'Routine mobility';
+  String get workoutBuilderMobilityRoutineTitle => 'Routine di mobilità';
 
   @override
   String get workoutBuilderAddShort => 'Aggiungi';

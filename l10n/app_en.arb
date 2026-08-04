@@ -692,6 +692,7 @@
   "workoutBuilderDayMenuTooltip": "Actions for the selected day",
   "workoutBuilderExerciseMenuTooltip": "Actions for this exercise",
   "workoutBuilderEditSectionTitle": "Edit section",
+  "workoutBuilderDeleteSection": "Delete section",
   "workoutBuilderSectionNameLabel": "Section name",
   "workoutBuilderDeleteWeekTitle": "Delete week?",
   "workoutBuilderDeleteWeekMessage": "Remove this week and all its days and exercises. This cannot be undone.",

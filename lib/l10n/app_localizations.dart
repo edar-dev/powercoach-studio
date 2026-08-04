@@ -3034,6 +3034,12 @@ abstract class AppLocalizations {
   /// **'Edit section'**
   String get workoutBuilderEditSectionTitle;
 
+  /// No description provided for @workoutBuilderDeleteSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete section'**
+  String get workoutBuilderDeleteSection;
+
   /// No description provided for @workoutBuilderSectionNameLabel.
   ///
   /// In en, this message translates to:

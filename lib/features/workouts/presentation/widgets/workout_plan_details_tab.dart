@@ -88,6 +88,9 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     );
   }
 
+  /// Persisted current week only — unset shows the dropdown hint (honest).
+  int? _displayCurrentWeek() => routine.currentWeek;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -95,8 +98,8 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final showOptions = onIncludesMobilityTabChanged != null ||
         planCompleted ||
-        planArchived ||
-        onMarkCompleted != null;
+        planArchived;
+    final displayCurrentWeek = _displayCurrentWeek();
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
@@ -137,14 +140,6 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
                         const Icon(Icons.check_circle_outline, size: 18),
                   ),
               ],
-            ),
-          ],
-          if (onMarkCompleted != null) ...[
-            const SizedBox(height: 12),
-            FilledButton.tonalIcon(
-              onPressed: onMarkCompleted,
-              icon: const Icon(Icons.flag_outlined),
-              label: Text(l10n.workoutPlanCompleteAction),
             ),
           ],
           _sectionDivider(cs),
@@ -224,8 +219,8 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
           _fieldLabel(theme, cs, l10n.workoutRoutineCurrentWeek),
           const SizedBox(height: 8),
           DropdownButtonFormField<int>(
-            key: ValueKey(routine.currentWeek),
-            initialValue: routine.currentWeek,
+            key: ValueKey('currentWeek-${routine.currentWeek}'),
+            initialValue: displayCurrentWeek,
             isExpanded: true,
             hint: Text(
               l10n.workoutRoutineCurrentWeekHint,
@@ -238,7 +233,7 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
                 i <=
                     math.max(
                       math.max(routine.weeks.length, 1),
-                      routine.currentWeek ?? 1,
+                      displayCurrentWeek ?? 1,
                     );
                 i++
               )
@@ -250,11 +245,21 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
                   ),
                 ),
             ],
-            onChanged: (value) {
-              if (value != null) {
-                onCurrentWeekChanged(value);
-              }
-            },
+            onChanged: readOnly
+                ? null
+                : (value) {
+                    if (value != null) {
+                      onCurrentWeekChanged(value);
+                    }
+                  },
+          ),
+        ],
+        if (onMarkCompleted != null) ...[
+          _sectionDivider(cs),
+          FilledButton.tonalIcon(
+            onPressed: onMarkCompleted,
+            icon: const Icon(Icons.flag_outlined),
+            label: Text(l10n.workoutPlanCompleteAction),
           ),
         ],
         if (editorMode) ...[

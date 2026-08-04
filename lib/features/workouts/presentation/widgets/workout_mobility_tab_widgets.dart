@@ -4,6 +4,29 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 
+/// True when [name] is empty or a legacy auto-numbered default
+/// (`Section 1`, `Sezione 2`, …).
+bool isUnsetMobilitySectionName(String name) {
+  final trimmed = name.trim();
+  if (trimmed.isEmpty) return true;
+  return RegExp(
+    r'^(section|sezione)\s+\d+$',
+    caseSensitive: false,
+  ).hasMatch(trimmed);
+}
+
+/// Localized chip/label for a mobility section; keeps persisted name unchanged.
+String mobilitySectionDisplayName({
+  required String name,
+  required int index,
+  required AppLocalizations l10n,
+}) {
+  if (isUnsetMobilitySectionName(name)) {
+    return l10n.workoutBuilderSectionNumbered(index + 1);
+  }
+  return name.trim();
+}
+
 class MobilitySectionChip extends StatelessWidget {
   const MobilitySectionChip({
     super.key,
@@ -67,13 +90,13 @@ class MobilitySectionChip extends StatelessWidget {
                   itemBuilder: (ctx) => [
                     PopupMenuItem(
                       value: 'edit',
-                      child: Text(l10n.workoutBuilderEditExercise),
+                      child: Text(l10n.workoutBuilderEditSectionTitle),
                     ),
                     if (onDelete != null)
                       PopupMenuItem(
                         value: 'delete',
                         child: Text(
-                          l10n.workoutBuilderDeleteExercise,
+                          l10n.workoutBuilderDeleteSection,
                           style: const TextStyle(color: StitchM3Theme.danger),
                         ),
                       ),
