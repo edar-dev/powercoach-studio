@@ -1575,7 +1575,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get workoutBuilderTitle => 'Workout Builder';
+  String get workoutBuilderTitle => 'Editor scheda';
 
   @override
   String get workoutBuilderPlanSaved => 'Piano salvato';
@@ -1916,6 +1916,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderDayHistory => 'Storico';
+
+  @override
+  String get workoutBuilderSessionActionsTooltip => 'Azioni sessione';
 
   @override
   String get workoutDiarySessionFilterActive =>

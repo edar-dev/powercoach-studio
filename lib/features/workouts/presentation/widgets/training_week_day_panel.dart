@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../data/workout_routine_model.dart';
 import 'training_session_toolbar.dart';
 
@@ -95,7 +93,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
         days.isEmpty ? 0 : selectedDayIndex.clamp(0, days.length - 1);
     final day = days.isEmpty ? null : days[dayIndex];
 
-    final sheet = Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         TrainingSessionToolbar(
@@ -135,8 +133,6 @@ class TrainingWeekDayPanel extends StatelessWidget {
         ),
       ],
     );
-
-    return sheet;
   }
 }
 
@@ -204,79 +200,25 @@ class _SessionSheetBody extends StatelessWidget {
       color: cs.onSurface.withValues(alpha: 0.8),
       fontWeight: FontWeight.w500,
     );
-    final desktop = Breakpoints.isDesktop(context);
 
-    Widget? logAction;
-    if (showSessionActions && onLogSession != null) {
-      logAction = desktop
-          ? TextButton.icon(
-              onPressed: onLogSession,
-              icon: Icon(
-                Icons.check_circle_outline,
-                size: 18,
-                color: StitchM3Theme.accent,
-              ),
-              label: Text(l10n.workoutBuilderLogSession),
-              style: TextButton.styleFrom(
-                foregroundColor: StitchM3Theme.accent,
-                visualDensity: VisualDensity.compact,
-              ),
-            )
-          : IconButton(
-              tooltip: l10n.workoutBuilderLogSession,
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              padding: EdgeInsets.zero,
-              onPressed: onLogSession,
-              icon: Icon(
-                Icons.check_circle_outline,
-                color: StitchM3Theme.accent,
-              ),
-            );
-    }
-
-    Widget? historyAction;
-    if (showSessionActions && planId != null && planId!.isNotEmpty) {
-      void openHistory() {
-        navigateTo(
-          context,
-          workoutDiaryPath(
-            planId: planId,
-            sessionKey: WorkoutRoutine.sessionKey(weekIndex, dayIndex),
-          ),
-        );
-      }
-
-      historyAction = desktop
-          ? TextButton.icon(
-              onPressed: openHistory,
-              icon: Icon(
-                Icons.history,
-                size: 18,
-                color: cs.onSurface.withValues(alpha: 0.8),
-              ),
-              label: Text(l10n.workoutBuilderDayHistory),
-              style: TextButton.styleFrom(
-                foregroundColor: cs.onSurface.withValues(alpha: 0.8),
-                visualDensity: VisualDensity.compact,
-              ),
-            )
-          : IconButton(
-              tooltip: l10n.workoutBuilderDayHistory,
-              constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-              padding: EdgeInsets.zero,
-              onPressed: openHistory,
-              icon: Icon(
-                Icons.history,
-                color: cs.onSurface.withValues(alpha: 0.8),
-              ),
-            );
-    }
+    final sessionMenuItems = <PopupMenuEntry<String>>[
+      if (showSessionActions && onLogSession != null)
+        PopupMenuItem(
+          value: 'log',
+          child: Text(l10n.workoutBuilderLogSession),
+        ),
+      if (showSessionActions && planId != null && planId!.isNotEmpty)
+        PopupMenuItem(
+          value: 'history',
+          child: Text(l10n.workoutBuilderDayHistory),
+        ),
+    ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -301,8 +243,36 @@ class _SessionSheetBody extends StatelessWidget {
                   ],
                 ),
               ),
-              if (logAction != null) logAction,
-              if (historyAction != null) historyAction,
+              if (sessionMenuItems.isNotEmpty)
+                PopupMenuButton<String>(
+                  tooltip: l10n.workoutBuilderSessionActionsTooltip,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 44,
+                    minHeight: 44,
+                  ),
+                  icon: Icon(
+                    Icons.event_available_outlined,
+                    color: cs.onSurface.withValues(alpha: 0.72),
+                  ),
+                  onSelected: (value) {
+                    if (value == 'log') {
+                      onLogSession?.call();
+                    } else if (value == 'history') {
+                      navigateTo(
+                        context,
+                        workoutDiaryPath(
+                          planId: planId,
+                          sessionKey: WorkoutRoutine.sessionKey(
+                            weekIndex,
+                            dayIndex,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                  itemBuilder: (_) => sessionMenuItems,
+                ),
             ],
           ),
         ),

@@ -182,16 +182,12 @@ class WorkoutExerciseCard extends StatelessWidget {
                               textAlign: TextAlign.end,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: isPlaceholder
-                                    ? secondaryColor
-                                    : colorScheme.onSurface,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: secondaryColor,
                                 fontStyle: isPlaceholder
                                     ? FontStyle.italic
                                     : FontStyle.normal,
-                                fontWeight: isPlaceholder
-                                    ? FontWeight.w500
-                                    : FontWeight.w400,
+                                fontWeight: FontWeight.w500,
                               ),
                             ),
                           ),

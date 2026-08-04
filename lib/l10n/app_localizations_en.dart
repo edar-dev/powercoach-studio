@@ -1903,6 +1903,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderDayHistory => 'History';
 
   @override
+  String get workoutBuilderSessionActionsTooltip => 'Session actions';
+
+  @override
   String get workoutDiarySessionFilterActive =>
       'Showing sessions for this plan day';
 

@@ -799,6 +799,7 @@
   "workoutBuilderIncludeMobilityTab": "Include mobility tab",
   "workoutBuilderIncludeMobilityTabHint": "Show the mobility section alongside training and details.",
   "workoutBuilderDayHistory": "History",
+  "workoutBuilderSessionActionsTooltip": "Session actions",
   "workoutDiarySessionFilterActive": "Showing sessions for this plan day",
   "workoutBuilderNavLibrary": "Library",
   "workoutBuilderNavBuilder": "Builder",

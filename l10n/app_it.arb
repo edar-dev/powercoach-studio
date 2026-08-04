@@ -673,7 +673,7 @@
       "percent": { "type": "String" }
     }
   },
-  "workoutBuilderTitle": "Workout Builder",
+  "workoutBuilderTitle": "Editor scheda",
   "workoutBuilderPlanSaved": "Piano salvato",
   "workoutBuilderRoutineSaved": "Routine salvata",
   "workoutEditorUnsavedTitle": "Modifiche non salvate",
@@ -799,6 +799,7 @@
   "workoutBuilderIncludeMobilityTab": "Includi tab Mobilità",
   "workoutBuilderIncludeMobilityTabHint": "Mostra la sezione mobilità insieme ad allenamento e dettagli.",
   "workoutBuilderDayHistory": "Storico",
+  "workoutBuilderSessionActionsTooltip": "Azioni sessione",
   "workoutDiarySessionFilterActive": "Sessioni per questo giorno del piano",
   "workoutBuilderNavLibrary": "Libreria",
   "workoutBuilderNavBuilder": "Builder",

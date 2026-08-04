@@ -68,10 +68,14 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     });
   }
 
-  TextStyle? _titleStyle(ThemeData theme, ColorScheme cs, {required bool hint}) {
+  TextStyle? _titleStyle(
+    ThemeData theme,
+    ColorScheme cs, {
+    required bool hint,
+  }) {
     return theme.textTheme.titleSmall?.copyWith(
       fontWeight: hint ? FontWeight.w500 : FontWeight.w600,
-      color: hint ? cs.onSurface.withValues(alpha: 0.72) : cs.onSurface,
+      color: hint ? cs.onSurface.withValues(alpha: 0.64) : cs.onSurface,
       fontStyle: hint ? FontStyle.italic : FontStyle.normal,
     );
   }
@@ -83,7 +87,7 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     final showField = widget.readOnly || _editing || _hasTitle;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+      padding: EdgeInsets.fromLTRB(16, showField ? 4 : 0, 16, 0),
       child: showField
           ? TextField(
               controller: widget.controller,
@@ -102,25 +106,32 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                 hintStyle: _titleStyle(theme, cs, hint: true),
               ),
             )
-          : InkWell(
-              onTap: _startEditing,
-              borderRadius: BorderRadius.circular(6),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
+          : Align(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: _startEditing,
+                borderRadius: BorderRadius.circular(6),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
                         widget.l10n.workoutBuilderRoutineNameHint,
-                        style: _titleStyle(theme, cs, hint: true),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: cs.onSurface.withValues(alpha: 0.64),
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                    ),
-                    Icon(
-                      Icons.edit_outlined,
-                      size: 18,
-                      color: cs.onSurface.withValues(alpha: 0.72),
-                    ),
-                  ],
+                      const SizedBox(width: 6),
+                      Icon(
+                        Icons.edit_outlined,
+                        size: 16,
+                        color: cs.onSurface.withValues(alpha: 0.64),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

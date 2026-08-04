@@ -3556,6 +3556,12 @@ abstract class AppLocalizations {
   /// **'History'**
   String get workoutBuilderDayHistory;
 
+  /// No description provided for @workoutBuilderSessionActionsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Session actions'**
+  String get workoutBuilderSessionActionsTooltip;
+
   /// No description provided for @workoutDiarySessionFilterActive.
   ///
   /// In en, this message translates to:
