@@ -801,7 +801,7 @@
   "workoutBuilderDayHistory": "Storico",
   "workoutBuilderSessionActionsTooltip": "Azioni sessione",
   "workoutBuilderSessionMenuLabel": "Sessione",
-  "workoutBuilderRoutineTitleFromCustomer": "Scheda · {name}",
+  "workoutBuilderRoutineTitleFromCustomer": "Aggiungi titolo · {name}",
   "@workoutBuilderRoutineTitleFromCustomer": {
     "placeholders": {
       "name": { "type": "String" }

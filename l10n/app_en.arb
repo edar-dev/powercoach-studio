@@ -801,7 +801,7 @@
   "workoutBuilderDayHistory": "History",
   "workoutBuilderSessionActionsTooltip": "Session actions",
   "workoutBuilderSessionMenuLabel": "Session",
-  "workoutBuilderRoutineTitleFromCustomer": "Plan · {name}",
+  "workoutBuilderRoutineTitleFromCustomer": "Add title · {name}",
   "@workoutBuilderRoutineTitleFromCustomer": {
     "placeholders": {
       "name": { "type": "String" }

@@ -218,7 +218,7 @@ class _SessionSheetBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+          padding: const EdgeInsets.fromLTRB(16, 6, 16, 2),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

@@ -3571,7 +3571,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderRoutineTitleFromCustomer.
   ///
   /// In en, this message translates to:
-  /// **'Plan · {name}'**
+  /// **'Add title · {name}'**
   String workoutBuilderRoutineTitleFromCustomer(String name);
 
   /// No description provided for @workoutDiarySessionFilterActive.
