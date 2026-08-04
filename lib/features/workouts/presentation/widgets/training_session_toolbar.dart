@@ -136,7 +136,9 @@ class TrainingSessionToolbar extends StatelessWidget {
             ),
             if (day != null)
               PopupMenuButton<int>(
-                tooltip: l10n.workoutBuilderCalendarWeekdayLabel,
+                tooltip: DateFormat.EEEE(
+                  Localizations.localeOf(context).toString(),
+                ).format(DateTime(2024, 1, weekday)),
                 onSelected: (value) =>
                     onUpdateScheduledWeekday(weekIndex, dayIndex, value),
                 itemBuilder: (ctx) => [
@@ -160,7 +162,7 @@ class TrainingSessionToolbar extends StatelessWidget {
               IconButton(
                 tooltip: l10n.workoutBuilderDayMenuTooltip,
                 icon: Icon(
-                  Icons.more_vert,
+                  Icons.more_horiz,
                   color: colorScheme.onSurfaceVariant,
                 ),
                 onPressed: () => showTrainingPlannerMenuSheet(

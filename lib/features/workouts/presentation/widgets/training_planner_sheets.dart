@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 
 typedef TrainingPlannerMenuAction = ({
   IconData icon,
@@ -10,21 +9,6 @@ typedef TrainingPlannerMenuAction = ({
   VoidCallback onTap,
   bool destructive,
 });
-
-Future<bool> confirmTrainingDeleteDay(
-  BuildContext context,
-  AppLocalizations l10n,
-  String dayName,
-) {
-  return showAppConfirmDialog(
-    context: context,
-    title: l10n.workoutBuilderDeleteDayTitle,
-    message: '${l10n.workoutBuilderDeleteDayMessage}\n\n$dayName',
-    confirmLabel: l10n.customerDelete,
-    cancelLabel: l10n.customerCancel,
-    destructive: true,
-  );
-}
 
 void showTrainingPlannerMenuSheet(
   BuildContext context, {
