@@ -125,24 +125,13 @@ class TrainingSessionToolbar extends StatelessWidget {
                       child: Text(_weekdayShort(ctx, d)),
                     ),
                 ],
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        _weekdayShort(context, weekday),
-                        style: theme.textTheme.labelLarge?.copyWith(
-                          color: StitchM3Theme.accent,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        size: 18,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ],
+                child: _SessionChip(
+                  label: _weekdayShort(context, weekday),
+                  outlined: true,
+                  trailing: Icon(
+                    Icons.arrow_drop_down,
+                    size: 18,
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),
@@ -258,25 +247,14 @@ class _WeekMenuButton extends StatelessWidget {
             ),
           ),
       ],
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        decoration: BoxDecoration(
-          color: StitchM3Theme.accent.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              weeks[weekIndex].name,
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: StitchM3Theme.accent,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(width: 2),
-            Icon(Icons.arrow_drop_down, color: StitchM3Theme.accent, size: 20),
-          ],
+      child: _SessionChip(
+        label: weeks[weekIndex].name,
+        outlined: true,
+        accent: true,
+        trailing: Icon(
+          Icons.arrow_drop_down,
+          color: StitchM3Theme.accent,
+          size: 20,
         ),
       ),
     );
@@ -298,42 +276,86 @@ class _DayChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     return Material(
-      color: selected
-          ? StitchM3Theme.accent
-          : outlined
-              ? Colors.transparent
-              : cs.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(999),
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(999),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: outlined
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(
-                    color: cs.outline.withValues(alpha: 0.7),
-                  ),
-                )
-              : null,
-          child: Text(
+        child: _SessionChip(
+          label: label,
+          selected: selected,
+          outlined: outlined,
+        ),
+      ),
+    );
+  }
+}
+
+/// Shared pill chrome for week / day / weekday controls.
+class _SessionChip extends StatelessWidget {
+  const _SessionChip({
+    required this.label,
+    this.selected = false,
+    this.outlined = false,
+    this.accent = false,
+    this.trailing,
+  });
+
+  final String label;
+  final bool selected;
+  final bool outlined;
+  final bool accent;
+  final Widget? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final Color foreground;
+    if (selected) {
+      foreground = Colors.white;
+    } else if (accent) {
+      foreground = StitchM3Theme.accent;
+    } else if (outlined) {
+      foreground = cs.onSurfaceVariant;
+    } else {
+      foreground = cs.onSurface;
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: selected
+            ? StitchM3Theme.accent
+            : outlined
+                ? Colors.transparent
+                : cs.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(999),
+        border: outlined
+            ? Border.all(
+                color: accent
+                    ? StitchM3Theme.accent.withValues(alpha: 0.55)
+                    : cs.outline.withValues(alpha: 0.7),
+              )
+            : null,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
             label,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.labelLarge?.copyWith(
-              color: selected
-                  ? Colors.white
-                  : outlined
-                      ? cs.onSurfaceVariant
-                      : cs.onSurface,
+              color: foreground,
               fontWeight: FontWeight.w600,
             ),
           ),
-        ),
+          if (trailing != null) ...[
+            const SizedBox(width: 2),
+            trailing!,
+          ],
+        ],
       ),
     );
   }

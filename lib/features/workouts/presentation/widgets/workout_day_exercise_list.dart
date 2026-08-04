@@ -142,13 +142,13 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       child: CustomScrollView(
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
                   if (showTrailingAdd && index == partition.length) {
                     return Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: const EdgeInsets.only(top: 4),
                       child: OutlinedButton.icon(
                         onPressed: () =>
                             widget.onAddExercise!(weekIndex, dayIndex),
