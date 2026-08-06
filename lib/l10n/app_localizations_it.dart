@@ -1750,6 +1750,10 @@ class AppLocalizationsIt extends AppLocalizations {
       'Inserisci un nome o seleziona un esercizio.';
 
   @override
+  String get workoutBuilderSelectLibraryExercise =>
+      'Seleziona un esercizio dalla libreria, oppure digita il nome esatto.';
+
+  @override
   String get workoutBuilderMultiSetBlockHeader => 'Serie (Set × Rip + Carico)';
 
   @override

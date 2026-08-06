@@ -3238,6 +3238,12 @@ abstract class AppLocalizations {
   /// **'Enter a name or select an exercise.'**
   String get workoutBuilderEnterNameOrSelect;
 
+  /// No description provided for @workoutBuilderSelectLibraryExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an exercise from the library, or type the exact name.'**
+  String get workoutBuilderSelectLibraryExercise;
+
   /// No description provided for @workoutBuilderMultiSetBlockHeader.
   ///
   /// In en, this message translates to:

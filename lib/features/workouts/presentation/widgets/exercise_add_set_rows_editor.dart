@@ -19,23 +19,16 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final canRemove = setControllers.length > 1;
     final denseDecoration = InputDecoration(
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.workoutBuilderMultiSetBlockHeader,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: cs.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 6),
         ...List.generate(setControllers.length, (i) {
           final c = setControllers[i];
           return Padding(
@@ -78,19 +71,23 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
                     keyboardType: TextInputType.text,
                   ),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete_outline,
-                    size: 22,
-                    color: setControllers.length > 1
-                        ? StitchM3Theme.danger
-                        : cs.onSurfaceVariant,
+                if (canRemove)
+                  IconButton(
+                    icon: const Icon(
+                      Icons.delete_outline,
+                      size: 22,
+                      color: StitchM3Theme.danger,
+                    ),
+                    onPressed: () => onRemoveSet(i),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
+                    ),
+                    style: IconButton.styleFrom(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
                   ),
-                  onPressed: setControllers.length > 1
-                      ? () => onRemoveSet(i)
-                      : null,
-                  style: IconButton.styleFrom(padding: const EdgeInsets.all(8)),
-                ),
               ],
             ),
           );

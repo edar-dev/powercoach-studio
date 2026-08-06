@@ -82,7 +82,7 @@ Future<void> showAddExerciseDialog(
   showAppBottomSheet<void>(
     context: context,
     title: l10n.workoutBuilderAddExerciseTitle,
-    fullScreen: true,
+    maxHeightFraction: 0.88,
     bodyBuilder: (sheetContext) => AddExerciseDialogContent(
       theme: theme,
       cs: cs,
