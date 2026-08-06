@@ -123,7 +123,6 @@ class TrainingWeekDayPanel extends StatelessWidget {
             weekIndex: weekIndex,
             dayIndex: dayIndex,
             day: day,
-            dayCount: days.length,
             onAddDay: onAddDay,
             onLogSession: onLogSession,
             planId: planId,
@@ -144,7 +143,6 @@ class _SessionSheetBody extends StatelessWidget {
     required this.weekIndex,
     required this.dayIndex,
     required this.day,
-    required this.dayCount,
     required this.onAddDay,
     required this.onLogSession,
     required this.planId,
@@ -158,7 +156,6 @@ class _SessionSheetBody extends StatelessWidget {
   final int weekIndex;
   final int dayIndex;
   final Day? day;
-  final int dayCount;
   final void Function(int) onAddDay;
   final VoidCallback? onLogSession;
   final String? planId;
@@ -223,24 +220,9 @@ class _SessionSheetBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (dayCount > 1) ...[
-                      Text(
-                        day!.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: cs.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                    ],
-                    Text(
-                      l10n.workoutBuilderExerciseCount(day!.exercises.length),
-                      style: secondaryStyle,
-                    ),
-                  ],
+                child: Text(
+                  l10n.workoutBuilderExerciseCount(day!.exercises.length),
+                  style: secondaryStyle,
                 ),
               ),
               if (sessionMenuItems.isNotEmpty)
