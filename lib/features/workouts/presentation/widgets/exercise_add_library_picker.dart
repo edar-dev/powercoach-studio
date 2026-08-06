@@ -17,6 +17,8 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
     required this.exerciseFilter,
     required this.isMounted,
     required this.onExerciseSelected,
+    this.onSearchTextChanged,
+    this.selectionErrorText,
     this.customerRecordPanel,
   });
 
@@ -29,6 +31,8 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
   final DebouncedExerciseAutocompleteFilter exerciseFilter;
   final bool Function() isMounted;
   final ValueChanged<CustomExerciseItem> onExerciseSelected;
+  final ValueChanged<String>? onSearchTextChanged;
+  final String? selectionErrorText;
   final Widget? customerRecordPanel;
 
   String _displayName(CustomExerciseItem exercise) {
@@ -38,19 +42,11 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.workoutBuilderExerciseLabel,
-          style: theme.textTheme.labelMedium?.copyWith(
-            color: cs.onSurfaceVariant,
-          ),
-        ),
-        const SizedBox(height: 6),
         if (recentExercises.isNotEmpty) ...[
           Wrap(
             spacing: 6,
@@ -83,20 +79,23 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
           },
           displayStringForOption: _displayName,
           onSelected: onExerciseSelected,
-          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) =>
-              TextFormField(
-                controller: controller,
-                focusNode: focusNode,
-                decoration: InputDecoration(
-                  hintText: l10n.recordSearchExerciseHint,
-                  border: const OutlineInputBorder(),
-                  isDense: true,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
-                  ),
+          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+            return TextFormField(
+              controller: controller,
+              focusNode: focusNode,
+              onChanged: onSearchTextChanged,
+              decoration: InputDecoration(
+                hintText: l10n.recordSearchExerciseHint,
+                errorText: selectionErrorText,
+                border: const OutlineInputBorder(),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
                 ),
               ),
+            );
+          },
           optionsViewBuilder: (context, onSelected, options) => Align(
             alignment: Alignment.topLeft,
             child: Material(

@@ -8,11 +8,15 @@ class ExerciseAddCreateNewFields extends StatelessWidget {
     required this.l10n,
     required this.nameController,
     required this.autofocusName,
+    this.nameErrorText,
+    this.onNameChanged,
   });
 
   final AppLocalizations l10n;
   final TextEditingController nameController;
   final bool autofocusName;
+  final String? nameErrorText;
+  final ValueChanged<String>? onNameChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +25,10 @@ class ExerciseAddCreateNewFields extends StatelessWidget {
       children: [
         TextField(
           controller: nameController,
+          onChanged: onNameChanged,
           decoration: InputDecoration(
             labelText: l10n.workoutBuilderNameLabel,
+            errorText: nameErrorText,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 12,

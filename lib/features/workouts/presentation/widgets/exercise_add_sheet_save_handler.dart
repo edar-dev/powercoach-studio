@@ -29,6 +29,52 @@ List<ExerciseSet> buildExerciseSetDetailsFromControllers(
   }).toList();
 }
 
+/// Resolves a library exercise when the user typed an unambiguous exact name
+/// (or display name) but did not tap a chip/option.
+CustomExerciseItem? resolveExactLibraryExerciseMatch({
+  required String query,
+  required Iterable<CustomExerciseItem> options,
+  String Function(CustomExerciseItem exercise)? displayName,
+}) {
+  final normalized = query.trim().toLowerCase();
+  if (normalized.isEmpty) return null;
+
+  final matches = <CustomExerciseItem>[];
+  for (final exercise in options) {
+    final nameMatch = exercise.name.trim().toLowerCase() == normalized;
+    final displayMatch = displayName != null &&
+        displayName(exercise).trim().toLowerCase() == normalized;
+    if (nameMatch || displayMatch) {
+      matches.add(exercise);
+    }
+  }
+  if (matches.length == 1) return matches.first;
+  return null;
+}
+
+/// Prefer the chip selection only while search text still matches it;
+/// otherwise fall back to an unambiguous exact typed name.
+CustomExerciseItem? resolveLibrarySelectionForSave({
+  required CustomExerciseItem? selectedExercise,
+  required String librarySearchText,
+  required Iterable<CustomExerciseItem> exerciseOptions,
+  String Function(CustomExerciseItem exercise)? libraryDisplayName,
+}) {
+  final query = librarySearchText.trim().toLowerCase();
+  final selectedStillMatches = selectedExercise != null &&
+      (query.isEmpty ||
+          selectedExercise.name.trim().toLowerCase() == query ||
+          (libraryDisplayName != null &&
+              libraryDisplayName(selectedExercise).trim().toLowerCase() ==
+                  query));
+  if (selectedStillMatches) return selectedExercise;
+  return resolveExactLibraryExerciseMatch(
+    query: librarySearchText,
+    options: exerciseOptions,
+    displayName: libraryDisplayName,
+  );
+}
+
 Future<void> createCustomExerciseAndSave({
   required BuildContext context,
   required ColorScheme colorScheme,
@@ -99,41 +145,73 @@ void handleExerciseAddSheetSave({
   ])
   onSaveWithSets,
   required VoidCallback onCancel,
+  String librarySearchText = '',
+  Iterable<CustomExerciseItem> exerciseOptions = const [],
+  String Function(CustomExerciseItem exercise)? libraryDisplayName,
+  ValueChanged<String>? onLibrarySelectionError,
+  ValueChanged<String>? onNameValidationError,
 }) {
   final note = noteController.text.trim();
   final details = buildExerciseSetDetailsFromControllers(setControllers);
   final normalizedDetails =
       details.isEmpty ? [const ExerciseSet()] : details;
+  final l10n = AppLocalizations.of(context);
 
-  if (fromLibrary && selectedExercise != null) {
-    unawaited(recentStore.recordUse(selectedExercise.id));
+  var resolvedSelection = fromLibrary
+      ? resolveLibrarySelectionForSave(
+          selectedExercise: selectedExercise,
+          librarySearchText: librarySearchText,
+          exerciseOptions: exerciseOptions,
+          libraryDisplayName: libraryDisplayName,
+        )
+      : selectedExercise;
+
+  if (fromLibrary && resolvedSelection != null) {
+    unawaited(recentStore.recordUse(resolvedSelection.id));
     onSaveWithSets(
-      selectedExercise.name,
+      resolvedSelection.name,
       note,
       normalizedDetails,
-      selectedExercise.id,
+      resolvedSelection.id,
     );
     onCancel();
     return;
   }
 
-  final name = (!apiConfigured || !fromLibrary)
-      ? nameController.text.trim()
-      : (selectedExercise?.name ?? '').trim();
-  if (name.isEmpty) {
-    ScaffoldMessenger.maybeOf(context)?.showSnackBar(
-      SnackBar(
-        content: Text(
-          AppLocalizations.of(context).workoutBuilderEnterNameOrSelect,
+  if (fromLibrary) {
+    final message = l10n.workoutBuilderSelectLibraryExercise;
+    if (onLibrarySelectionError != null) {
+      onLibrarySelectionError(message);
+    } else {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: colorScheme.errorContainer,
         ),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: colorScheme.errorContainer,
-      ),
-    );
+      );
+    }
     return;
   }
 
-  if (!fromLibrary && apiConfigured) {
+  final name = nameController.text.trim();
+  if (name.isEmpty) {
+    final message = l10n.workoutBuilderEnterNameOrSelect;
+    if (onNameValidationError != null) {
+      onNameValidationError(message);
+    } else {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(message),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: colorScheme.errorContainer,
+        ),
+      );
+    }
+    return;
+  }
+
+  if (apiConfigured) {
     unawaited(
       createCustomExerciseAndSave(
         context: context,
@@ -151,8 +229,6 @@ void handleExerciseAddSheetSave({
     return;
   }
 
-  if (!fromLibrary) {
-    onSaveWithSets(name, note, normalizedDetails, null);
-    onCancel();
-  }
+  onSaveWithSets(name, note, normalizedDetails, null);
+  onCancel();
 }

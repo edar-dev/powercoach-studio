@@ -7,6 +7,7 @@ import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/exercise_picker_index_helpers.dart';
 import 'exercise_add_create_new_fields.dart';
 import 'exercise_add_library_picker.dart';
 import 'exercise_add_load_percent_tools.dart';
@@ -64,6 +65,9 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   List<CustomerExerciseRecord> _recordsForExercise = [];
   bool _loadingRecords = false;
   final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
+  String _librarySearchText = '';
+  String? _librarySelectionError;
+  String? _nameValidationError;
 
   bool get _apiConfigured => true;
   bool get _hasCustomerContext =>
@@ -165,8 +169,33 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   }
 
   void _onExerciseSelected(CustomExerciseItem exercise) {
-    setState(() => _selectedExercise = exercise);
+    setState(() {
+      _selectedExercise = exercise;
+      _librarySearchText = exercisePickerDisplayName(
+        exercise,
+        _exerciseParentName,
+      );
+      _librarySelectionError = null;
+    });
     _loadRecordsForExercise(exercise.id);
+  }
+
+  void _onLibrarySearchTextChanged(String text) {
+    setState(() {
+      _librarySearchText = text;
+      _librarySelectionError = null;
+      final selected = _selectedExercise;
+      if (selected != null) {
+        final label = exercisePickerDisplayName(selected, _exerciseParentName)
+            .trim()
+            .toLowerCase();
+        final name = selected.name.trim().toLowerCase();
+        final query = text.trim().toLowerCase();
+        if (query != label && query != name) {
+          _selectedExercise = null;
+        }
+      }
+    });
   }
 
   void _addSetRow() {
@@ -192,6 +221,10 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   }
 
   void _doSave() {
+    setState(() {
+      _librarySelectionError = null;
+      _nameValidationError = null;
+    });
     handleExerciseAddSheetSave(
       context: context,
       colorScheme: widget.cs,
@@ -206,6 +239,14 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
       setSaving: (saving) => setState(() => _saving = saving),
       onSaveWithSets: widget.onSaveWithSets,
       onCancel: widget.onCancel,
+      librarySearchText: _librarySearchText,
+      exerciseOptions: _exerciseOptions,
+      libraryDisplayName: (exercise) =>
+          exercisePickerDisplayName(exercise, _exerciseParentName),
+      onLibrarySelectionError: (message) =>
+          setState(() => _librarySelectionError = message),
+      onNameValidationError: (message) =>
+          setState(() => _nameValidationError = message),
     );
   }
 
@@ -235,6 +276,10 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
             children: [
               if (_apiConfigured) ...[
                 SegmentedButton<bool>(
+                  style: SegmentedButton.styleFrom(
+                    selectedBackgroundColor: widget.cs.primary,
+                    selectedForegroundColor: widget.cs.onPrimary,
+                  ),
                   segments: [
                     ButtonSegment(
                       value: true,
@@ -250,7 +295,12 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
                   selected: {_fromLibrary},
                   onSelectionChanged: (s) => setState(() {
                     _fromLibrary = s.first;
-                    if (!_fromLibrary) _selectedExercise = null;
+                    if (!_fromLibrary) {
+                      _selectedExercise = null;
+                      _librarySelectionError = null;
+                    } else {
+                      _nameValidationError = null;
+                    }
                   }),
                 ),
                 const SizedBox(height: 12),
@@ -266,6 +316,8 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
                   exerciseFilter: _exerciseFilter,
                   isMounted: () => mounted,
                   onExerciseSelected: _onExerciseSelected,
+                  onSearchTextChanged: _onLibrarySearchTextChanged,
+                  selectionErrorText: _librarySelectionError,
                   customerRecordPanel:
                       _hasCustomerContext && _selectedExercise != null
                       ? ExerciseAddCustomerRecordPanel(
@@ -279,6 +331,12 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
                   l10n: l10n,
                   nameController: _nameController,
                   autofocusName: !_apiConfigured,
+                  nameErrorText: _nameValidationError,
+                  onNameChanged: (_) {
+                    if (_nameValidationError != null) {
+                      setState(() => _nameValidationError = null);
+                    }
+                  },
                 ),
             ],
           ),

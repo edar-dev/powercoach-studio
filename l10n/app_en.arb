@@ -741,6 +741,7 @@
   "workoutBuilderCreateNew": "Create new",
   "workoutBuilderCouldNotCreateExercise": "Could not create exercise. Try again or add without saving to library.",
   "workoutBuilderEnterNameOrSelect": "Enter a name or select an exercise.",
+  "workoutBuilderSelectLibraryExercise": "Select an exercise from the library, or type the exact name.",
   "workoutBuilderMultiSetBlockHeader": "Sets (Set × Reps + Load)",
   "workoutBuilderSetLabel": "Set",
   "workoutBuilderSetsLabel": "Sets",
