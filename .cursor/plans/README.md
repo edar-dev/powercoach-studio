@@ -13,6 +13,13 @@ Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-anal
 | **2** | [workout-builder-ux-phase2-coach-flow](workout-builder-ux-phase2-coach-flow.plan.md) | WB-06 … WB-12, WB-21 |
 | **3** | [workout-builder-ux-phase3-advanced](workout-builder-ux-phase3-advanced.plan.md) | WB-13 … WB-22 |
 
+### UI refresh / foglio sessione (completata)
+
+| Plan | Stato |
+|------|-------|
+| [workout_builder_ui_refresh](workout_builder_ui_refresh_6cf046aa.plan.md) | ✅ card-based minimal |
+| [session_sheet_builder_ui](session_sheet_builder_ui_eed9cec4.plan.md) | ✅ foglio sessione + toolbar |
+
 ## Web launch
 
 | Fase | Plan | Stato |
