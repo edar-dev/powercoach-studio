@@ -140,8 +140,15 @@ class WorkoutBuilderTrainingHandlers {
     );
   }
 
-  void setDayScheduledWeekday(int weekIndex, int dayIndex, int weekday) {
+  void setDayScheduledWeekday(int weekIndex, int dayIndex, int? weekday) {
     if (readOnly) return;
+    if (weekday == null) {
+      session.clearDayScheduledWeekday(
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+      );
+      return;
+    }
     session.setDayScheduledWeekday(
       weekIndex: weekIndex,
       dayIndex: dayIndex,

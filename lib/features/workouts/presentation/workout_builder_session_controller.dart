@@ -375,6 +375,19 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     );
   }
 
+  bool clearDayScheduledWeekday({
+    required int weekIndex,
+    required int dayIndex,
+  }) {
+    return _replace(
+      clearDayScheduledWeekdayInRoutine(
+        routine: _routine,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+      ),
+    );
+  }
+
   bool _replace(WorkoutRoutine? updated) {
     if (updated == null) return false;
     _routine = updated;

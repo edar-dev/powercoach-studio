@@ -150,5 +150,28 @@ void main() {
         DateTime.monday,
       );
     });
+
+    test('clearDayScheduledWeekday clears the selected day weekday', () {
+      final controller = WorkoutBuilderSessionController(
+        routine: routineWithTwoDays(),
+      );
+      addTearDown(controller.dispose);
+
+      controller.setDayScheduledWeekday(
+        weekIndex: 0,
+        dayIndex: 0,
+        weekday: DateTime.wednesday,
+      );
+      final cleared = controller.clearDayScheduledWeekday(
+        weekIndex: 0,
+        dayIndex: 0,
+      );
+
+      expect(cleared, isTrue);
+      expect(
+        controller.routine.weeks.single.days.first.scheduledWeekday,
+        isNull,
+      );
+    });
   });
 }

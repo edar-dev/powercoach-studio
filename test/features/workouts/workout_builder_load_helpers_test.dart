@@ -110,6 +110,54 @@ void main() {
       expect(snapshot.routine.name, 'Loaded plan');
       expect(snapshot.planCompleted, isFalse);
       expect(snapshot.planArchived, isFalse);
+      // Null weekdays survive load (no hydrate masking).
+      expect(
+        snapshot.routine.weeks.single.days[0].scheduledWeekday,
+        isNull,
+      );
+      expect(
+        snapshot.routine.weeks.single.days[1].scheduledWeekday,
+        isNull,
+      );
+    });
+
+    test('preserves explicit null and set scheduledWeekday on load', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        name: 'Flexible plan',
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(id: 'd1', name: 'Flexible', exercises: []),
+              Day(
+                id: 'd2',
+                name: 'Fixed',
+                exercises: [],
+                scheduledWeekday: DateTime.thursday,
+              ),
+            ],
+          ),
+        ],
+      );
+      final plan = WorkoutPlanApiModel(
+        id: 'plan-flex',
+        customerId: 'cust-1',
+        userId: 'user-1',
+        name: 'Plan flex',
+        initialWeekNumber: 1,
+        planData: encodeWorkoutRoutinePlanData(routine),
+        createdAt: DateTime(2024, 1, 1),
+        updatedAt: DateTime(2024, 1, 2),
+      );
+
+      final snapshot = buildEditorPlanSnapshot(plan);
+
+      expect(snapshot.routine.weeks.single.days[0].scheduledWeekday, isNull);
+      expect(
+        snapshot.routine.weeks.single.days[1].scheduledWeekday,
+        DateTime.thursday,
+      );
     });
   });
 }

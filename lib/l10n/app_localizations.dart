@@ -3640,6 +3640,18 @@ abstract class AppLocalizations {
   /// **'Weekday used for scheduling this day in calendar views.'**
   String get workoutBuilderCalendarWeekdayHint;
 
+  /// No description provided for @workoutBuilderScheduledWeekdayFlexible.
+  ///
+  /// In en, this message translates to:
+  /// **'Flexible'**
+  String get workoutBuilderScheduledWeekdayFlexible;
+
+  /// No description provided for @workoutBuilderScheduledWeekdayFlexibleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No fixed weekday — the athlete can train on any day.'**
+  String get workoutBuilderScheduledWeekdayFlexibleHint;
+
   /// No description provided for @workoutBuilderAddDayChip.
   ///
   /// In en, this message translates to:

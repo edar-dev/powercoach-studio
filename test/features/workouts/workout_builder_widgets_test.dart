@@ -8,7 +8,7 @@ import 'package:powercoach_studio/features/workouts/presentation/workout_editor_
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
-Widget _wrap(Widget child) {
+Widget _wrap(Widget child, {double width = 420}) {
   return MaterialApp(
     theme: StitchM3Theme.light,
     darkTheme: StitchM3Theme.dark,
@@ -16,7 +16,7 @@ Widget _wrap(Widget child) {
     locale: const Locale('it'),
     supportedLocales: const [Locale('it'), Locale('en')],
     localizationsDelegates: AppLocalizations.localizationsDelegates,
-    home: Scaffold(body: SizedBox(width: 420, height: 800, child: child)),
+    home: Scaffold(body: SizedBox(width: width, height: 800, child: child)),
   );
 }
 
@@ -99,6 +99,7 @@ void main() {
 
       await tester.pumpWidget(
         _wrap(
+          width: 720,
           Builder(
             builder: (context) {
               final theme = Theme.of(context);
@@ -137,6 +138,73 @@ void main() {
       expect(selectedWeek, 1);
       expect(selectedDay, 1);
       expect(find.text('Exercises'), findsOneWidget);
+    });
+
+    testWidgets('TrainingWeekDayPanel shows Libero when weekday is null', (
+      tester,
+    ) async {
+      Future<void> pumpPanel({required List<Week> weeks, int dayIndex = 0}) {
+        return tester.pumpWidget(
+          _wrap(
+            width: 720,
+            Builder(
+              builder: (context) {
+                final theme = Theme.of(context);
+                return TrainingWeekDayPanel(
+                  theme: theme,
+                  cs: theme.colorScheme,
+                  weeks: weeks,
+                  selectedWeekIndex: 0,
+                  selectedDayIndex: dayIndex,
+                  onSelectWeek: (_) {},
+                  onSelectDay: (_) {},
+                  onNewWeek: () {},
+                  onCloneWeek: (_) {},
+                  onDeleteWeek: (_) {},
+                  onEditWeek: (_) {},
+                  onAddDay: (_) {},
+                  onEditDay: (_, _) {},
+                  onDeleteDay: (_, _) {},
+                  onUpdateScheduledWeekday: (_, _, _) {},
+                  exerciseListBuilder: (_, _, _, _) => const Text('Exercises'),
+                );
+              },
+            ),
+          ),
+        );
+      }
+
+      await pumpPanel(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [Day(id: 'd1', name: 'Day A', exercises: [])],
+          ),
+        ],
+      );
+      expect(find.text('Libero'), findsOneWidget);
+
+      await pumpPanel(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(
+                id: 'd1',
+                name: 'Day A',
+                exercises: [],
+                scheduledWeekday: DateTime.wednesday,
+              ),
+            ],
+          ),
+        ],
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Libero'), findsNothing);
+      expect(find.text('mer'), findsOneWidget);
     });
 
     testWidgets('WorkoutPlanDetailsTab renders metadata and notifies changes', (

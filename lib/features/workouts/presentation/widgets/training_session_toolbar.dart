@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
-import '../../domain/day_scheduled_weekday.dart';
 import 'training_planner_sheets.dart';
 
 /// Compact sticky navigation for week, day, and scheduled weekday.
@@ -30,6 +29,9 @@ class TrainingSessionToolbar extends StatelessWidget {
     this.onCloneDayToTarget,
   });
 
+  /// Sentinel for PopupMenu (null values are treated as cancel by Flutter).
+  static const int _flexibleWeekdayMenuValue = 0;
+
   final ThemeData theme;
   final ColorScheme colorScheme;
   final AppLocalizations l10n;
@@ -45,7 +47,7 @@ class TrainingSessionToolbar extends StatelessWidget {
   final void Function(int) onAddDay;
   final void Function(int weekIndex, int dayIndex) onEditDay;
   final void Function(int, int) onDeleteDay;
-  final void Function(int weekIndex, int dayIndex, int weekday)
+  final void Function(int weekIndex, int dayIndex, int? weekday)
       onUpdateScheduledWeekday;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
 
@@ -79,9 +81,15 @@ class TrainingSessionToolbar extends StatelessWidget {
     final week = weeks[weekIndex];
     final days = week.days;
     final day = days.isEmpty ? null : days[dayIndex.clamp(0, days.length - 1)];
-    final weekday = day == null
-        ? DateTime.monday
-        : effectiveScheduledWeekday(day: day, dayIndex: dayIndex);
+    final scheduledWeekday = day?.scheduledWeekday;
+    final weekdayChipLabel = scheduledWeekday == null
+        ? l10n.workoutBuilderScheduledWeekdayFlexible
+        : _weekdayShort(context, scheduledWeekday);
+    final weekdayTooltip = scheduledWeekday == null
+        ? l10n.workoutBuilderScheduledWeekdayFlexibleHint
+        : DateFormat.EEEE(
+            Localizations.localeOf(context).toString(),
+          ).format(DateTime(2024, 1, scheduledWeekday));
 
     return Material(
       color: colorScheme.surface,
@@ -136,12 +144,17 @@ class TrainingSessionToolbar extends StatelessWidget {
             ),
             if (day != null)
               PopupMenuButton<int>(
-                tooltip: DateFormat.EEEE(
-                  Localizations.localeOf(context).toString(),
-                ).format(DateTime(2024, 1, weekday)),
-                onSelected: (value) =>
-                    onUpdateScheduledWeekday(weekIndex, dayIndex, value),
+                tooltip: weekdayTooltip,
+                onSelected: (value) => onUpdateScheduledWeekday(
+                  weekIndex,
+                  dayIndex,
+                  value == _flexibleWeekdayMenuValue ? null : value,
+                ),
                 itemBuilder: (ctx) => [
+                  PopupMenuItem<int>(
+                    value: _flexibleWeekdayMenuValue,
+                    child: Text(l10n.workoutBuilderScheduledWeekdayFlexible),
+                  ),
                   for (var d = DateTime.monday; d <= DateTime.sunday; d++)
                     PopupMenuItem<int>(
                       value: d,
@@ -149,7 +162,7 @@ class TrainingSessionToolbar extends StatelessWidget {
                     ),
                 ],
                 child: _SessionChip(
-                  label: _weekdayShort(context, weekday),
+                  label: weekdayChipLabel,
                   outlined: true,
                   trailing: Icon(
                     Icons.arrow_drop_down,

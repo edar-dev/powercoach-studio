@@ -171,6 +171,26 @@ void main() {
         DateTime.wednesday,
       );
     });
+
+    test('clearDayScheduledWeekdayInRoutine sets weekday to null', () {
+      final withWeekday = setDayScheduledWeekdayInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        weekday: DateTime.friday,
+      )!;
+      expect(
+        withWeekday.weeks.single.days.single.scheduledWeekday,
+        DateTime.friday,
+      );
+
+      final cleared = clearDayScheduledWeekdayInRoutine(
+        routine: withWeekday,
+        weekIndex: 0,
+        dayIndex: 0,
+      );
+      expect(cleared!.weeks.single.days.single.scheduledWeekday, isNull);
+    });
   });
 
   group('cloneDayToTargetInRoutine', () {
