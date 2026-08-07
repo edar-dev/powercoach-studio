@@ -818,6 +818,8 @@
   "workoutBuilderDaysLabel": "Giorni",
   "workoutBuilderCalendarWeekdayLabel": "Giorno calendario",
   "workoutBuilderCalendarWeekdayHint": "Giorno della settimana usato per pianificare questa sessione nel calendario.",
+  "workoutBuilderScheduledWeekdayFlexible": "Libero",
+  "workoutBuilderScheduledWeekdayFlexibleHint": "Nessun giorno fisso — l'atleta può allenarsi quando preferisce.",
   "workoutBuilderAddDayChip": "Giorno",
   "workoutBuilderNoDaysInWeek": "Nessun giorno in questa settimana.",
   "workoutBuilderDeleteDayTitle": "Eliminare il giorno?",

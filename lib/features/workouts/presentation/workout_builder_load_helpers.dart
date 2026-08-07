@@ -1,6 +1,5 @@
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_routine_model.dart';
-import '../domain/day_scheduled_weekday.dart';
 import '../domain/workout_plan_list_helpers.dart';
 import '../domain/workout_plan_query_helpers.dart';
 
@@ -75,7 +74,7 @@ WorkoutBuilderEditorPlanSnapshot buildEditorPlanSnapshot(
   int? pendingWeekIndex,
   int? pendingDayIndex,
 }) {
-  final routine = hydrateScheduledWeekdays(planDataToRoutine(plan.planData));
+  final routine = planDataToRoutine(plan.planData);
   final selection = resolveWorkoutBuilderDeepLinkSelection(
         routine,
         pendingWeekIndex: pendingWeekIndex,

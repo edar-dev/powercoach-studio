@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../customers/data/models/customer.dart' show Customer;
 import '../data/workout_routine_model.dart';
-import '../domain/day_scheduled_weekday.dart';
 import 'workout_builder_date_picker_helpers.dart';
 import 'workout_builder_export_actions.dart';
 import 'workout_builder_routine_coordinator.dart';
@@ -138,7 +137,7 @@ class WorkoutBuilderScreenRoutineActions {
     final imported = await exportActions.importJson();
     if (imported == null || !mounted()) return;
     setState(() {
-      builderSession.setRoutine(hydrateScheduledWeekdays(imported));
+      builderSession.setRoutine(imported);
       routineNameController.text = imported.name;
     });
   }

@@ -45,7 +45,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
   final void Function(int) onAddDay;
   final void Function(int weekIndex, int dayIndex) onEditDay;
   final void Function(int, int) onDeleteDay;
-  final void Function(int weekIndex, int dayIndex, int weekday)
+  final void Function(int weekIndex, int dayIndex, int? weekday)
       onUpdateScheduledWeekday;
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;

@@ -182,6 +182,23 @@ WorkoutRoutine? setDayScheduledWeekdayInRoutine({
   return routine.copyWith(weeks: newWeeks);
 }
 
+/// Clears [Day.scheduledWeekday] so the day is flexible (athlete-chosen).
+WorkoutRoutine? clearDayScheduledWeekdayInRoutine({
+  required WorkoutRoutine routine,
+  required int weekIndex,
+  required int dayIndex,
+}) {
+  if (weekIndex < 0 || weekIndex >= routine.weeks.length) return null;
+  final week = routine.weeks[weekIndex];
+  if (dayIndex < 0 || dayIndex >= week.days.length) return null;
+  final day = week.days[dayIndex];
+  final newDays = List<Day>.from(week.days);
+  newDays[dayIndex] = day.copyWith(clearScheduledWeekday: true);
+  final newWeeks = List<Week>.from(routine.weeks);
+  newWeeks[weekIndex] = week.copyWith(days: newDays);
+  return routine.copyWith(weeks: newWeeks);
+}
+
 Exercise cloneExerciseForDayCopy(Exercise exercise, String idSuffix) {
   return exercise.copyWith(
     id: '${exercise.id}_$idSuffix',

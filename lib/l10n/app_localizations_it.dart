@@ -1965,6 +1965,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Giorno della settimana usato per pianificare questa sessione nel calendario.';
 
   @override
+  String get workoutBuilderScheduledWeekdayFlexible => 'Libero';
+
+  @override
+  String get workoutBuilderScheduledWeekdayFlexibleHint =>
+      'Nessun giorno fisso — l\'atleta può allenarsi quando preferisce.';
+
+  @override
   String get workoutBuilderAddDayChip => 'Giorno';
 
   @override

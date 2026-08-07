@@ -818,6 +818,8 @@
   "workoutBuilderDaysLabel": "Days",
   "workoutBuilderCalendarWeekdayLabel": "Calendar weekday",
   "workoutBuilderCalendarWeekdayHint": "Weekday used for scheduling this day in calendar views.",
+  "workoutBuilderScheduledWeekdayFlexible": "Flexible",
+  "workoutBuilderScheduledWeekdayFlexibleHint": "No fixed weekday — the athlete can train on any day.",
   "workoutBuilderAddDayChip": "Day",
   "workoutBuilderNoDaysInWeek": "No days in this week yet.",
   "workoutBuilderDeleteDayTitle": "Delete day?",

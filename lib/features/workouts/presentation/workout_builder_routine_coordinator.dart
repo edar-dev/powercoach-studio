@@ -8,7 +8,6 @@ import '../../customers/data/models/customer.dart' show Customer;
 import '../data/workout_draft_store.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
-import '../domain/day_scheduled_weekday.dart';
 import '../domain/workout_routine_plan_encoder.dart';
 import 'widgets/assign_template_customer_dialog.dart';
 import 'workout_builder_editor_exit.dart';
@@ -70,7 +69,7 @@ class WorkoutBuilderRoutineCoordinator {
       );
 
   Future<WorkoutRoutine> loadStandaloneDraft() async {
-    return hydrateScheduledWeekdays(await draftStore.load());
+    return draftStore.load();
   }
 
   Future<WorkoutBuilderEditorLoadResult> loadEditorPlan({

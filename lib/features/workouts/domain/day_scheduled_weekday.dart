@@ -8,7 +8,10 @@ int effectiveScheduledWeekday({required Day day, required int dayIndex}) {
   return day.scheduledWeekday ?? inferredScheduledWeekday(dayIndex);
 }
 
-/// Fills missing [Day.scheduledWeekday] from slot index (import/legacy plans).
+/// Fills missing [Day.scheduledWeekday] from slot index.
+///
+/// Not used on normal editor/draft/import load — null means flexible weekday.
+/// Kept for optional one-off legacy migration or tests.
 WorkoutRoutine hydrateScheduledWeekdays(WorkoutRoutine routine) {
   final weeks = routine.weeks.map((week) {
     final days = week.days.asMap().entries.map((entry) {

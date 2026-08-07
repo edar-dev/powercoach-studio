@@ -99,7 +99,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   final void Function(int, int, String) onAddExerciseToSuperset;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
-  final void Function(int weekIndex, int dayIndex, int weekday)
+  final void Function(int weekIndex, int dayIndex, int? weekday)
   onUpdateScheduledWeekday;
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;

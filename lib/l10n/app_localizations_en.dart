@@ -1950,6 +1950,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Weekday used for scheduling this day in calendar views.';
 
   @override
+  String get workoutBuilderScheduledWeekdayFlexible => 'Flexible';
+
+  @override
+  String get workoutBuilderScheduledWeekdayFlexibleHint =>
+      'No fixed weekday — the athlete can train on any day.';
+
+  @override
   String get workoutBuilderAddDayChip => 'Day';
 
   @override
