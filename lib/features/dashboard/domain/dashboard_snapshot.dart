@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'dart:convert';
 
-import '../../../core/sync/offline_models.dart';
 import '../../customers/data/models/customer.dart';
 import '../../workouts/data/workout_plan_api_model.dart';
 import 'calendar_event_loader.dart';
@@ -66,24 +65,6 @@ class DashboardCustomerNoPlanItem {
   final String name;
 }
 
-/// Outbox row worth showing under "Attention".
-@immutable
-class DashboardPendingAttentionItem {
-  const DashboardPendingAttentionItem({
-    required this.operationId,
-    required this.status,
-    required this.entityType,
-    required this.path,
-    this.errorMessage,
-  });
-
-  final String operationId;
-  final PendingOperationStatus status;
-  final OfflineEntityType entityType;
-  final String path;
-  final String? errorMessage;
-}
-
 /// Immutable dashboard payload for the command center UI.
 @immutable
 class DashboardSnapshot {
@@ -95,8 +76,6 @@ class DashboardSnapshot {
     required this.todayItems,
     required this.stalePlans,
     required this.customersWithoutPlan,
-    required this.attentionPending,
-    required this.queuedSyncCount,
   });
 
   factory DashboardSnapshot.error(String message) => DashboardSnapshot(
@@ -107,8 +86,6 @@ class DashboardSnapshot {
     todayItems: const [],
     stalePlans: const [],
     customersWithoutPlan: const [],
-    attentionPending: const [],
-    queuedSyncCount: 0,
   );
 
   final String? errorMessage;
@@ -118,8 +95,6 @@ class DashboardSnapshot {
   final List<DashboardTodayItem> todayItems;
   final List<DashboardStalePlanItem> stalePlans;
   final List<DashboardCustomerNoPlanItem> customersWithoutPlan;
-  final List<DashboardPendingAttentionItem> attentionPending;
-  final int queuedSyncCount;
 
   bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
 }
@@ -141,7 +116,6 @@ class DashboardSnapshot {
 DashboardSnapshot buildDashboardSnapshot({
   required List<Customer> customers,
   required List<WorkoutPlanApiModel> plans,
-  required List<PendingOperation> pendingOperations,
   required DateTime now,
   required String unknownClientLabel,
   required String untitledWorkoutLabel,
@@ -232,35 +206,6 @@ DashboardSnapshot buildDashboardSnapshot({
   noPlan.sort((a, b) => a.name.compareTo(b.name));
   final customersWithoutPlan = noPlan.take(maxSectionRows).toList();
 
-  final attention = <DashboardPendingAttentionItem>[];
-  var queued = 0;
-  for (final op in pendingOperations) {
-    switch (op.status) {
-      case PendingOperationStatus.pending:
-      case PendingOperationStatus.syncing:
-        queued++;
-        break;
-      case PendingOperationStatus.failed:
-      case PendingOperationStatus.conflict:
-      case PendingOperationStatus.deadLetter:
-      case PendingOperationStatus.blockedAuth:
-        attention.add(
-          DashboardPendingAttentionItem(
-            operationId: op.id,
-            status: op.status,
-            entityType: op.entityType,
-            path: op.path,
-            errorMessage: op.errorMessage,
-          ),
-        );
-        break;
-      case PendingOperationStatus.completed:
-        break;
-    }
-  }
-  attention.sort((a, b) => a.path.compareTo(b.path));
-  final attentionPending = attention.take(maxSectionRows).toList();
-
   return DashboardSnapshot(
     clientCount: customers.length,
     activePrograms: plans.where((p) => !_isArchivedPlan(p)).length,
@@ -268,8 +213,6 @@ DashboardSnapshot buildDashboardSnapshot({
     todayItems: todayItems,
     stalePlans: stalePlans,
     customersWithoutPlan: customersWithoutPlan,
-    attentionPending: attentionPending,
-    queuedSyncCount: queued,
   );
 }
 

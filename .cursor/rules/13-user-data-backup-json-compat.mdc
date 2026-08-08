@@ -6,7 +6,14 @@ globs: lib/core/backup/**/*.dart,**/user_data_backup*.dart,l10n/*.arb
 
 # User data backup JSON — backward compatibility
 
-Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, plus optional `exportedAt`, `appVersion`, `entityCounts`, `preferences`, `localUserProfile`, `entities`, `pendingOperations`, `syncMeta`. Each `entities[]` row mirrors offline storage (`type`, `scopeId`, `payload`, …), including new types such as `customerNote`, without bumping `schemaVersion` when only additive.
+Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, plus optional `exportedAt`, `appVersion`, `entityCounts`, `preferences`, `localUserProfile`, `entities`, `reminders`. Each `entities[]` row mirrors offline storage (`type`, `scopeId`, `payload`, …), including new types such as `customerNote`, without bumping `schemaVersion` when only additive.
+
+**Writers no longer emit** `pendingOperations` or `syncMeta`. Readers still tolerate those keys when present in older files, but restore **ignores** them (does not reinsert into Drift).
+
+`preferences` keys (all optional except readers default notifications to true):
+`settings_notifications_enabled`, `app_locale_code`, `settings_calendar_reminders_enabled`, `settings_calendar_reminder_lead_hours`, `workout_builder_compact_add_v1`, `workout_builder_include_mobility_default_v1`.
+
+**Never export secrets** such as `hevy_api_key_v1` — Hevy keys stay device-local.
 
 `entityCounts` keys (all optional integers): `customers`, `customerRecords`, `workoutPlans`, `exerciseLibrary`, `reminders`.
 

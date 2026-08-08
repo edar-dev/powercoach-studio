@@ -22,7 +22,8 @@ abstract final class SettingsPrefsKeys {
   static const calendarRemindersEnabled = 'settings_calendar_reminders_enabled';
 
   /// Hours before a session when the calendar reminder fires (default 24).
-  static const calendarReminderLeadHours = 'settings_calendar_reminder_lead_hours';
+  static const calendarReminderLeadHours =
+      'settings_calendar_reminder_lead_hours';
 
   /// When true, always use compact exercise-add sheet; when false, use width-based auto.
   static const workoutBuilderCompactAdd = 'workout_builder_compact_add_v1';
@@ -30,4 +31,10 @@ abstract final class SettingsPrefsKeys {
   /// Default for new plans: include mobility tab in workout builder.
   static const workoutBuilderIncludeMobilityDefault =
       'workout_builder_include_mobility_default_v1';
+
+  /// ISO8601 timestamp of the last successful backup (file export or cloud upload).
+  static const lastSuccessfulBackupAt = 'backup_last_successful_at_v1';
+
+  /// ISO8601 timestamp until which the backup-age reminder stays snoozed.
+  static const backupReminderSnoozeUntil = 'backup_reminder_snooze_until_v1';
 }

@@ -1,4 +1,4 @@
-/// Customer measurement model aligned with GymBlog.API GET/POST/PUT response.
+/// Customer measurement model (local-first payload).
 /// 1RM (kg), skinfolds (mm), BIA, circumferences (cm).
 class CustomerMeasurement {
   const CustomerMeasurement({

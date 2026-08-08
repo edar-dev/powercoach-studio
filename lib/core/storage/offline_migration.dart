@@ -5,18 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../sync/offline_models.dart';
 import 'app_database.dart';
-import 'pending_operations_store.dart';
 
 /// One-shot migration from legacy SharedPreferences offline cache to Drift SQLite.
 class OfflineMigration {
-  OfflineMigration({required PendingOperationsStore pendingOps})
-      : _pendingOps = pendingOps;
-
   static const legacyEntitiesKey = 'offline_entities_v1';
   static const legacyPendingKey = 'offline_pending_ops_v1';
   static const migrationPrefsKey = 'offline_drift_sqlite_migrated_v1';
-
-  final PendingOperationsStore _pendingOps;
 
   Future<void> migrateFromSharedPreferencesIfNeeded({
     required AppDatabase db,
@@ -56,20 +50,8 @@ class OfflineMigration {
       });
     }
 
-    final pendingRaw = prefs.getString(legacyPendingKey);
-    if (pendingRaw != null && pendingRaw.isNotEmpty) {
-      final list = jsonDecode(pendingRaw) as List<dynamic>;
-      final legacyOps = <PendingOperation>[];
-      for (final item in list) {
-        if (item is! Map) continue;
-        legacyOps.add(PendingOperation.fromJson(item.cast<String, dynamic>()));
-      }
-      await _pendingOps.insertLegacyBatch(
-        db: db,
-        operations: legacyOps,
-        defaultUserId: uid,
-      );
-    }
+    // Legacy pending-ops outbox is no longer persisted (local-first, no remote
+    // replay); drop the stale SharedPreferences key without importing rows.
 
     await prefs.setBool(migrationPrefsKey, true);
     await prefs.remove(legacyEntitiesKey);

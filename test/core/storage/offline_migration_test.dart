@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/storage/app_database.dart';
 import 'package:powercoach_studio/core/storage/offline_migration.dart';
-import 'package:powercoach_studio/core/storage/pending_operations_store.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,7 +24,7 @@ void main() {
     return AppDatabase();
   }
 
-  test('migrates legacy entities and pending ops from SharedPreferences', () async {
+  test('migrates legacy entities and drops legacy pending ops key from SharedPreferences', () async {
     final now = DateTime(2026, 1, 10, 9);
     final entityJson = jsonEncode([
       {
@@ -65,11 +64,7 @@ void main() {
     });
 
     final db = openTestDatabase('migrate');
-    final pendingOps = PendingOperationsStore(
-      ensureDb: () async => db,
-      currentUserId: () => '',
-    );
-    final migration = OfflineMigration(pendingOps: pendingOps);
+    final migration = OfflineMigration();
 
     await migration.migrateFromSharedPreferencesIfNeeded(
       db: db,
@@ -79,11 +74,6 @@ void main() {
     final entityRows = await db.select(db.localEntities).get();
     expect(entityRows, hasLength(1));
     expect(entityRows.single.id, 'local_customer_99');
-
-    final pendingRows = await db.select(db.pendingOperations).get();
-    expect(pendingRows, hasLength(1));
-    expect(pendingRows.single.opUuid, 'op-legacy-1');
-    expect(pendingRows.single.userId, '__legacy__');
 
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getBool(OfflineMigration.migrationPrefsKey), isTrue);
@@ -108,11 +98,7 @@ void main() {
     });
 
     final db = openTestDatabase('skip');
-    final pendingOps = PendingOperationsStore(
-      ensureDb: () async => db,
-      currentUserId: () => '',
-    );
-    final migration = OfflineMigration(pendingOps: pendingOps);
+    final migration = OfflineMigration();
 
     await migration.migrateFromSharedPreferencesIfNeeded(
       db: db,

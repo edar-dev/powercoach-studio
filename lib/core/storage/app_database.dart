@@ -19,44 +19,27 @@ class LocalEntities extends Table {
   Set<Column> get primaryKey => {userId, type, id};
 }
 
-/// Outbox of mutations to replay when online.
-@DataClassName('PendingOpRow')
-class PendingOperations extends Table {
-  TextColumn get opUuid => text()();
-  TextColumn get userId => text()();
-  IntColumn get entityType => integer()();
-  TextColumn get entityId => text()();
-  TextColumn get scopeId => text()();
-  IntColumn get operationType => integer()();
-  TextColumn get path => text()();
-  TextColumn get payloadJson => text()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
-  DateTimeColumn get baseUpdatedAt => dateTime().nullable()();
-  IntColumn get retryCount => integer().withDefault(const Constant(0))();
-  IntColumn get status => integer()();
-  TextColumn get conflictRemoteJson => text().nullable()();
-  TextColumn get errorMessage => text().nullable()();
-
-  @override
-  Set<Column> get primaryKey => {opUuid};
-}
-
-/// Optional key/value per user (last sync markers, cursors).
-class SyncMetaEntries extends Table {
-  TextColumn get userId => text()();
-  TextColumn get metaKey => text()();
-  TextColumn get metaValue => text()();
-
-  @override
-  Set<Column> get primaryKey => {userId, metaKey};
-}
-
-@DriftDatabase(tables: [LocalEntities, PendingOperations, SyncMetaEntries])
+@DriftDatabase(tables: [LocalEntities])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor])
       : super(executor ?? createAppDatabaseExecutor());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  /// v1 shipped a `PendingOperations` outbox and `SyncMetaEntries` table for
+  /// remote sync replay. The app is local-first only (see `docs/sync-strategy.md`);
+  /// those tables were never read after Wave A and are dropped here.
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) async {
+          await m.createAll();
+        },
+        onUpgrade: (m, from, to) async {
+          if (from < 2) {
+            await customStatement('DROP TABLE IF EXISTS pending_operations;');
+            await customStatement('DROP TABLE IF EXISTS sync_meta_entries;');
+          }
+        },
+      );
 }

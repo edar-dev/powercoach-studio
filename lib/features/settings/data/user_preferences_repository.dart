@@ -123,4 +123,63 @@ class UserPreferencesRepository {
           await getWorkoutBuilderIncludeMobilityDefault(),
     );
   }
+
+  /// Map suitable for the backup JSON `preferences` object (no secrets).
+  Future<Map<String, dynamic>> exportForBackup() async {
+    final prefs = await loadAll();
+    final map = <String, dynamic>{
+      SettingsPrefsKeys.notificationsEnabled: prefs.notificationsEnabled,
+      SettingsPrefsKeys.appLocaleCode: prefs.localeCode,
+      SettingsPrefsKeys.calendarRemindersEnabled: prefs.calendarRemindersEnabled,
+      SettingsPrefsKeys.calendarReminderLeadHours:
+          prefs.calendarReminderLeadHours,
+      SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault:
+          prefs.workoutBuilderIncludeMobilityDefault,
+    };
+    if (prefs.workoutBuilderCompactAdd != null) {
+      map[SettingsPrefsKeys.workoutBuilderCompactAdd] =
+          prefs.workoutBuilderCompactAdd;
+    }
+    return map;
+  }
+
+  /// Applies backup preference keys. Missing keys keep current values.
+  Future<void> applyFromBackupMap(Map<String, dynamic> prefs) async {
+    final notifications = prefs[SettingsPrefsKeys.notificationsEnabled];
+    if (notifications is bool) {
+      await setNotificationsEnabled(notifications);
+    }
+
+    final locale = prefs[SettingsPrefsKeys.appLocaleCode]?.toString();
+    if (locale != null && locale.isNotEmpty) {
+      await setLocaleCode(locale);
+    }
+
+    final calendarEnabled = prefs[SettingsPrefsKeys.calendarRemindersEnabled];
+    if (calendarEnabled is bool) {
+      await setCalendarRemindersEnabled(calendarEnabled);
+    }
+
+    final leadHours = prefs[SettingsPrefsKeys.calendarReminderLeadHours];
+    if (leadHours is int) {
+      await setCalendarReminderLeadHours(leadHours);
+    } else if (leadHours is num) {
+      await setCalendarReminderLeadHours(leadHours.toInt());
+    }
+
+    if (prefs.containsKey(SettingsPrefsKeys.workoutBuilderCompactAdd)) {
+      final compact = prefs[SettingsPrefsKeys.workoutBuilderCompactAdd];
+      if (compact is bool) {
+        await setWorkoutBuilderCompactAdd(compact);
+      } else if (compact == null) {
+        await setWorkoutBuilderCompactAdd(null);
+      }
+    }
+
+    final mobility =
+        prefs[SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault];
+    if (mobility is bool) {
+      await setWorkoutBuilderIncludeMobilityDefault(mobility);
+    }
+  }
 }

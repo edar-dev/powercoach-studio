@@ -407,7 +407,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqLocalDataA.
   ///
   /// In en, this message translates to:
-  /// **'On your device or browser (local-first). No automatic cloud sync — use JSON backup to move between devices.'**
+  /// **'On your device or browser (local-first). No automatic sync — use a JSON backup or an optional cloud snapshot on your account to move between devices.'**
   String get landingFaqLocalDataA;
 
   /// No description provided for @landingFaqFreeProQ.
@@ -443,7 +443,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqBrowserA.
   ///
   /// In en, this message translates to:
-  /// **'Local data may be lost. Export a JSON backup from Settings before clearing cache or cookies.'**
+  /// **'Local data may be lost. Export a JSON backup (or save a cloud snapshot) from Settings before clearing cache or cookies.'**
   String get landingFaqBrowserA;
 
   /// No description provided for @landingFaqBillingQ.
@@ -1598,6 +1598,78 @@ abstract class AppLocalizations {
   /// **'Invalid backup file.'**
   String get settingsBackupErrorInvalidFile;
 
+  /// No description provided for @settingsCloudBackupSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud backup (optional)'**
+  String get settingsCloudBackupSectionTitle;
+
+  /// No description provided for @settingsCloudBackupSectionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Save or restore a manual snapshot on Supabase Storage, visible only to your account. This is not an automatic sync.'**
+  String get settingsCloudBackupSectionSubtitle;
+
+  /// No description provided for @settingsCloudBackupUpload.
+  ///
+  /// In en, this message translates to:
+  /// **'Save to cloud'**
+  String get settingsCloudBackupUpload;
+
+  /// No description provided for @settingsCloudBackupRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore from cloud'**
+  String get settingsCloudBackupRestore;
+
+  /// No description provided for @settingsCloudBackupHevyNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Hevy API key stays on this device only and is never included in backups, local or cloud.'**
+  String get settingsCloudBackupHevyNote;
+
+  /// No description provided for @settingsCloudBackupUploadSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup uploaded to the cloud.'**
+  String get settingsCloudBackupUploadSuccess;
+
+  /// No description provided for @settingsCloudBackupEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No cloud backups found for this account.'**
+  String get settingsCloudBackupEmpty;
+
+  /// No description provided for @settingsCloudBackupErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t complete the cloud operation. Try again.'**
+  String get settingsCloudBackupErrorGeneric;
+
+  /// No description provided for @settingsCloudBackupListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a backup to restore'**
+  String get settingsCloudBackupListTitle;
+
+  /// No description provided for @settingsCloudBackupListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No cloud backups available.'**
+  String get settingsCloudBackupListEmpty;
+
+  /// No description provided for @settingsCloudBackupDeleteTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this cloud backup'**
+  String get settingsCloudBackupDeleteTooltip;
+
+  /// No description provided for @settingsCloudBackupDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud backup deleted.'**
+  String get settingsCloudBackupDeleted;
+
   /// No description provided for @settingsLegalSectionTitle.
   ///
   /// In en, this message translates to:
@@ -1645,6 +1717,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Export backup'**
   String get signOutConfirmExportFirst;
+
+  /// No description provided for @signOutConfirmUploadCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload to cloud before signing out'**
+  String get signOutConfirmUploadCloud;
 
   /// No description provided for @signOutConfirmProceed.
   ///
@@ -4713,6 +4791,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open backup settings'**
   String get dashboardOpenBackupSettings;
+
+  /// No description provided for @dashboardBackupReminderMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your last backup is over 7 days old. Export or upload a recent copy for safety.'**
+  String get dashboardBackupReminderMessage;
+
+  /// No description provided for @dashboardBackupReminderCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Open backup settings'**
+  String get dashboardBackupReminderCta;
+
+  /// No description provided for @dashboardBackupReminderSnooze.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me in 3 days'**
+  String get dashboardBackupReminderSnooze;
 
   /// No description provided for @dashboardLoadError.
   ///

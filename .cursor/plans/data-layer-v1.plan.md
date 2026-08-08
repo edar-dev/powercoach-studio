@@ -21,10 +21,8 @@ todos:
     content: "Estrarre query/list helpers da workout_plan_repository.dart in workout_plan_query_helpers.dart"
     status: completed
   - id: settings-backup-repository
-    content: "Introduci UserPreferencesRepository per locale e notification prefs"
-    status: completed
     content: "Creare settings/data/user_preferences_repository.dart — wrapper su SharedPreferences stores"
-    status: pending
+    status: completed
   - id: auth-profile-repository
     content: "Creare auth/data/local_coach_profile_repository.dart — incapsula LocalUserProfileStore"
     status: completed

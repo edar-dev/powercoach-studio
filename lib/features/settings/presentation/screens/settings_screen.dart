@@ -28,9 +28,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _loadingPrefs = true;
 
   SettingsBackupHandler get _backupHandler => SettingsBackupHandler(
-        context: context,
-        onPreferencesReloaded: _loadPreferences,
-      );
+    context: context,
+    onPreferencesReloaded: _loadPreferences,
+  );
 
   @override
   void initState() {
@@ -84,19 +84,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onChanged: (enabled) =>
                         setState(() => _calendarRemindersEnabled = enabled),
                   ),
-              onPickCalendarLeadHours: () => showSettingsCalendarLeadHoursPicker(
-                context: context,
-                l10n: l10n,
-                currentLeadHours: _calendarReminderLeadHours,
-                onSelected: (hours) =>
-                    setState(() => _calendarReminderLeadHours = hours),
-              ),
+              onPickCalendarLeadHours: () =>
+                  showSettingsCalendarLeadHoursPicker(
+                    context: context,
+                    l10n: l10n,
+                    currentLeadHours: _calendarReminderLeadHours,
+                    onSelected: (hours) =>
+                        setState(() => _calendarReminderLeadHours = hours),
+                  ),
               onExportBackup: () => _backupHandler.exportBackup(l10n),
               onImportBackup: () => _backupHandler.importBackup(l10n),
-              onLanguagePicker: () => showSettingsLanguagePicker(
-                context: context,
-                l10n: l10n,
-              ),
+              onUploadCloudBackup: () => _backupHandler.uploadCloudBackup(l10n),
+              onRestoreCloudBackup: () =>
+                  _backupHandler.restoreFromCloudBackup(l10n),
+              onLanguagePicker: () =>
+                  showSettingsLanguagePicker(context: context, l10n: l10n),
               onSignOut: () => performSettingsSignOut(
                 context,
                 onPreferencesReloaded: _loadPreferences,

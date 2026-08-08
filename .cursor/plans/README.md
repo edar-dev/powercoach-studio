@@ -20,6 +20,12 @@ Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-anal
 | [workout_builder_ui_refresh](workout_builder_ui_refresh_6cf046aa.plan.md) | ✅ card-based minimal |
 | [session_sheet_builder_ui](session_sheet_builder_ui_eed9cec4.plan.md) | ✅ foglio sessione + toolbar |
 
+## Persistenza local-first (completata su branch)
+
+| Plan | Stato |
+|------|-------|
+| [local-first-persistence-v1](local-first-persistence-v1.plan.md) | ✅ Waves A–C su `feat/local-first-persistence` |
+
 ## Web launch
 
 | Fase | Plan | Stato |

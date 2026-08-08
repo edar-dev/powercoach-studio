@@ -9,6 +9,7 @@ import 'package:powercoach_studio/core/sync/offline_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import '../../support/fake_macos_notifications_platform.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ void main() {
       pendingOperations: const [],
       syncMeta: const [],
       profileJson: null,
-      notificationsEnabled: true,
+      preferences: const BackupPreferences(notificationsEnabled: true),
       reminders: const [],
     );
   }
@@ -157,5 +158,66 @@ void main() {
     expect(customers.map((e) => e.id), contains('keep-c'));
     expect(exercises.map((e) => e.id), contains('new-e'));
     expect(exercises.map((e) => e.id), isNot(contains('old-e')));
+  });
+
+  test('buildExportMap omits pendingOperations and syncMeta and includes prefs', () async {
+    SharedPreferences.setMockInitialValues(<String, Object>{
+      'settings_notifications_enabled': false,
+      'app_locale_code': 'en',
+      'settings_calendar_reminders_enabled': true,
+      'settings_calendar_reminder_lead_hours': 6,
+      'workout_builder_include_mobility_default_v1': false,
+    });
+    final map = await UserDataBackupService.instance.buildExportMap(uid);
+    expect(map.containsKey('pendingOperations'), isFalse);
+    expect(map.containsKey('syncMeta'), isFalse);
+    final prefs = map['preferences'] as Map<String, dynamic>;
+    expect(prefs['settings_notifications_enabled'], isFalse);
+    expect(prefs['app_locale_code'], 'en');
+    expect(prefs['settings_calendar_reminders_enabled'], isTrue);
+    expect(prefs['settings_calendar_reminder_lead_hours'], 6);
+    expect(prefs['workout_builder_include_mobility_default_v1'], isFalse);
+    expect(prefs.containsKey('hevy_api_key_v1'), isFalse);
+  });
+
+  test('restoreParsed ignores legacy pendingOperations in envelope', () async {
+    registerFakeMacOSNotificationsPlatform();
+    final parsed = ParsedUserBackup(
+      entities: [
+        customerEntity(
+          id: 'c1',
+          name: 'Legacy-safe',
+          updatedAt: DateTime.utc(2026, 1, 1),
+        ),
+      ],
+      pendingOperations: [
+        <String, dynamic>{
+          'id': 'should-ignore',
+          'userId': uid,
+          'entityType': OfflineEntityType.customer.name,
+          'entityId': 'c1',
+          'scopeId': 'c1',
+          'operationType': 'update',
+          'path': '/x',
+          'payload': <String, dynamic>{},
+          'createdAt': DateTime.utc(2026, 1, 1).toIso8601String(),
+          'updatedAt': DateTime.utc(2026, 1, 1).toIso8601String(),
+          'status': 0,
+        },
+      ],
+      syncMeta: [
+        <String, dynamic>{'metaKey': 'k', 'metaValue': 'v'},
+      ],
+      profileJson: null,
+      preferences: const BackupPreferences(notificationsEnabled: true),
+      reminders: const [],
+    );
+
+    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+
+    final customers = await OfflineLocalStore.instance.readEntities(
+      OfflineEntityType.customer,
+    );
+    expect(customers.map((e) => e.id), contains('c1'));
   });
 }
