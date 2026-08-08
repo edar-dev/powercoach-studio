@@ -93,6 +93,39 @@ void main() {
     expect(parsed.notificationsEnabled, isFalse);
   });
 
+  test('parse applies extended preference keys when present', () {
+    final jsonText = jsonEncode({
+      ...minimalEnvelope(),
+      'preferences': <String, dynamic>{
+        'settings_notifications_enabled': true,
+        'app_locale_code': 'en',
+        'settings_calendar_reminders_enabled': true,
+        'settings_calendar_reminder_lead_hours': 12,
+        'workout_builder_compact_add_v1': false,
+        'workout_builder_include_mobility_default_v1': false,
+      },
+    });
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.preferences.localeCode, 'en');
+    expect(parsed.preferences.calendarRemindersEnabled, isTrue);
+    expect(parsed.preferences.calendarReminderLeadHours, 12);
+    expect(parsed.preferences.hasWorkoutBuilderCompactAdd, isTrue);
+    expect(parsed.preferences.workoutBuilderCompactAdd, isFalse);
+    expect(parsed.preferences.workoutBuilderIncludeMobilityDefault, isFalse);
+  });
+
+  test('parse tolerates legacy pendingOperations and syncMeta without requiring them', () {
+    final withLegacy = jsonEncode(minimalEnvelope());
+    final withoutLegacy = jsonEncode(<String, dynamic>{
+      'schemaVersion': kUserBackupSchemaVersion,
+      'exportFormat': kUserBackupExportFormat,
+      'accountUserId': uid,
+      'entities': <Map<String, dynamic>>[],
+    });
+    expect(parseUserBackupJson(withLegacy, uid).pendingOperations, isEmpty);
+    expect(parseUserBackupJson(withoutLegacy, uid).syncMeta, isEmpty);
+  });
+
   test('parse keeps optional reminders list', () {
     final jsonText = jsonEncode({
       ...minimalEnvelope(),

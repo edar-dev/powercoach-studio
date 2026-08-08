@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powercoach_studio/core/sync/offline_models.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_dashboard_screen.dart';
@@ -53,26 +52,6 @@ String _routineJsonWithStart(DateTime startDate) {
   return jsonEncode(r.toJson());
 }
 
-PendingOperation _pending({
-  required String id,
-  required PendingOperationStatus status,
-}) {
-  final t = DateTime(2020, 1, 1);
-  return PendingOperation(
-    id: id,
-    userId: 'coach-1',
-    entityType: OfflineEntityType.workoutPlan,
-    entityId: 'e1',
-    scopeId: 'c1',
-    operationType: OfflineOperationType.update,
-    path: '/api/workouts/1',
-    payload: const <String, dynamic>{},
-    createdAt: t,
-    updatedAt: t,
-    status: status,
-  );
-}
-
 void main() {
   group('buildDashboardSnapshot', () {
     final now = DateTime(2025, 6, 15, 12);
@@ -81,7 +60,6 @@ void main() {
       final s = buildDashboardSnapshot(
         customers: const [],
         plans: const [],
-        pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
         untitledWorkoutLabel: 'Untitled',
@@ -92,8 +70,6 @@ void main() {
       expect(s.todayItems, isEmpty);
       expect(s.stalePlans, isEmpty);
       expect(s.customersWithoutPlan, isEmpty);
-      expect(s.attentionPending, isEmpty);
-      expect(s.queuedSyncCount, 0);
     });
 
     test('lists today plans matching calendar day', () {
@@ -108,7 +84,6 @@ void main() {
       final s = buildDashboardSnapshot(
         customers: [_customer(id: 'c1', name: 'Anna')],
         plans: [plan],
-        pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
         untitledWorkoutLabel: 'Untitled',
@@ -130,7 +105,6 @@ void main() {
       final s = buildDashboardSnapshot(
         customers: [_customer(id: 'c1', name: 'Bob')],
         plans: [plan],
-        pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
         untitledWorkoutLabel: 'Untitled',
@@ -155,31 +129,12 @@ void main() {
             planDataJson: _routineJsonWithStart(DateTime(2025, 6, 1)),
           ),
         ],
-        pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
         untitledWorkoutLabel: 'Untitled',
       );
       expect(s.customersWithoutPlan, hasLength(1));
       expect(s.customersWithoutPlan.single.customerId, 'c1');
-    });
-
-    test('attention pending lists failed and counts queued', () {
-      final s = buildDashboardSnapshot(
-        customers: const [],
-        plans: const [],
-        pendingOperations: [
-          _pending(id: 'a', status: PendingOperationStatus.failed),
-          _pending(id: 'b', status: PendingOperationStatus.pending),
-          _pending(id: 'c', status: PendingOperationStatus.syncing),
-        ],
-        now: now,
-        unknownClientLabel: '?',
-        untitledWorkoutLabel: 'Untitled',
-      );
-      expect(s.attentionPending, hasLength(1));
-      expect(s.attentionPending.single.operationId, 'a');
-      expect(s.queuedSyncCount, 2);
     });
   });
 
@@ -197,7 +152,6 @@ void main() {
             planDataJson: _routineJsonWithStart(DateTime(2025, 6, 15)),
           ),
         ],
-        pendingOperations: const [],
         now: now,
         unknownClientLabel: '?',
         untitledWorkoutLabel: 'Untitled',
@@ -217,21 +171,6 @@ void main() {
       expect(find.text('Needs attention'), findsOneWidget);
       expect(find.text('Clients without a program'), findsOneWidget);
       expect(find.text('Plans to refresh'), findsOneWidget);
-    });
-
-    testWidgets('shows load error banner when snapshot reports error', (tester) async {
-      await tester.pumpWidget(
-        MaterialApp(
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          locale: const Locale('en'),
-          home: CoachDashboardScreen(
-            loadSnapshot: (_) async => DashboardSnapshot.error('boom'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Could not load'), findsOneWidget);
     });
   });
 }

@@ -8,4 +8,6 @@ abstract final class AppPaths {
 
   /// Legacy nested path; kept for redirects and external bookmarks.
   static const subscriptionLegacy = '/settings/subscription';
+
+  static const settings = '/settings';
 }

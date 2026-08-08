@@ -6,6 +6,7 @@ import 'package:powercoach_studio/l10n/app_localizations.dart';
 void main() {
   testWidgets('sign out dialog can export backup or proceed', (tester) async {
     var exportCalled = false;
+    var uploadCloudCalled = false;
     bool? proceed;
 
     await tester.pumpWidget(
@@ -20,6 +21,9 @@ void main() {
                 context,
                 onExportBackup: () async {
                   exportCalled = true;
+                },
+                onUploadCloudBackup: () async {
+                  uploadCloudCalled = true;
                 },
               );
             },
@@ -37,6 +41,13 @@ void main() {
     await tester.tap(find.text('Export backup'));
     await tester.pumpAndSettle();
     expect(exportCalled, isTrue);
+    expect(proceed, isFalse);
+
+    await tester.tap(find.text('open'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Upload to cloud before signing out'));
+    await tester.pumpAndSettle();
+    expect(uploadCloudCalled, isTrue);
     expect(proceed, isFalse);
 
     await tester.tap(find.text('open'));

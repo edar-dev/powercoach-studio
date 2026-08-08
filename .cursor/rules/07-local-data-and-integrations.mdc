@@ -16,6 +16,7 @@ Business data is **local-first**. Use these entry points:
 | Feature `*Store` / `*Repository` classes | Feature-specific reads/writes |
 | `SharedPreferences` | Settings, drafts, exercise pins, Hevy API key |
 | `UserDataBackupService` | JSON backup export/import |
+| `CloudBackupRepository` | Optional Supabase Storage snapshots of the backup JSON (opt-in, not sync) |
 
 Always scope reads/writes by authenticated Supabase `userId`.
 
@@ -35,11 +36,19 @@ The only external REST integration is **Hevy** export:
 
 Handle errors at the presentation boundary; show user-facing messages from l10n.
 
+## Cloud backup snapshots (allowed, opt-in)
+
+`CloudBackupRepository` (`lib/core/backup/cloud_backup_repository.dart`) may upload/list/download/delete
+the same JSON envelope as `UserDataBackupService` to the private `user-backups` Supabase Storage bucket,
+scoped per user via RLS. This is a **manual snapshot**, not sync: no automatic upload, no merge, no
+conflict resolution. See `docs/sync-strategy.md` ("Cloud snapshots != sync").
+
 ## Do not add
 
 - GymBlog.API client or `GYMBLOG_API_URL` wiring
 - Remote sync replay without an approved plan (see `.cursor/plans/local-first-ux-v1.plan.md`)
 - Direct Supabase table CRUD for coach/client/workout data
+- Automatic/background cloud backup uploads (cloud snapshots stay explicit, user-triggered)
 
 ## Agent deny-list (do not reintroduce without approved plan)
 

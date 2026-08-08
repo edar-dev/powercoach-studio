@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../settings/settings_prefs_keys.dart';
 import '../sync/offline_models.dart';
 import '../../features/workouts/domain/session_execution.dart';
+
 /// Stable identifier for the JSON envelope (do not rename without a version bump).
 const kUserBackupExportFormat = 'powercoach_user_backup_v1';
 
@@ -17,6 +18,34 @@ class UserBackupImportException implements Exception {
   String toString() => message;
 }
 
+/// Preference keys restored from the backup `preferences` object.
+class BackupPreferences {
+  const BackupPreferences({
+    required this.notificationsEnabled,
+    this.localeCode,
+    this.calendarRemindersEnabled,
+    this.calendarReminderLeadHours,
+    this.workoutBuilderCompactAdd,
+    this.hasWorkoutBuilderCompactAdd = false,
+    this.workoutBuilderIncludeMobilityDefault,
+    this.raw = const {},
+  });
+
+  final bool notificationsEnabled;
+  final String? localeCode;
+  final bool? calendarRemindersEnabled;
+  final int? calendarReminderLeadHours;
+
+  /// When [hasWorkoutBuilderCompactAdd] is true, [workoutBuilderCompactAdd]
+  /// is applied (including `null` to clear the override).
+  final bool? workoutBuilderCompactAdd;
+  final bool hasWorkoutBuilderCompactAdd;
+  final bool? workoutBuilderIncludeMobilityDefault;
+
+  /// Full preferences map for repository apply helpers.
+  final Map<String, dynamic> raw;
+}
+
 /// Normalized payload ready to apply to local stores.
 class ParsedUserBackup {
   ParsedUserBackup({
@@ -24,7 +53,7 @@ class ParsedUserBackup {
     required this.pendingOperations,
     required this.syncMeta,
     required this.profileJson,
-    required this.notificationsEnabled,
+    required this.preferences,
     required this.reminders,
     this.exportedAt,
     this.appVersion,
@@ -32,10 +61,12 @@ class ParsedUserBackup {
   });
 
   final List<Map<String, dynamic>> entities;
+
+  /// Legacy rows still parsed for older backups; restore ignores them.
   final List<Map<String, dynamic>> pendingOperations;
   final List<Map<String, dynamic>> syncMeta;
   final Map<String, dynamic>? profileJson;
-  final bool notificationsEnabled;
+  final BackupPreferences preferences;
 
   /// Optional reminder rows (Feature 02). Maps are validated on restore.
   final List<Map<String, dynamic>> reminders;
@@ -44,6 +75,8 @@ class ParsedUserBackup {
   final String? exportedAt;
   final String? appVersion;
   final Map<String, int>? entityCounts;
+
+  bool get notificationsEnabled => preferences.notificationsEnabled;
 }
 
 /// Validates and parses user backup JSON. Unknown top-level keys are ignored.
@@ -85,14 +118,7 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
   final pending = _parsePendingList(root['pendingOperations']);
   final syncMeta = _parseSyncMetaList(root['syncMeta']);
   final reminders = _parseRemindersList(root['reminders']);
-
-  var notificationsEnabled = true;
-  final prefsRaw = root['preferences'];
-  if (prefsRaw is Map) {
-    final prefs = prefsRaw.cast<String, dynamic>();
-    final n = prefs[SettingsPrefsKeys.notificationsEnabled];
-    if (n is bool) notificationsEnabled = n;
-  }
+  final preferences = _parsePreferences(root['preferences']);
 
   Map<String, dynamic>? profileJson;
   final profileRaw = root['localUserProfile'];
@@ -107,11 +133,60 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
     pendingOperations: pending,
     syncMeta: syncMeta,
     profileJson: profileJson,
-    notificationsEnabled: notificationsEnabled,
+    preferences: preferences,
     reminders: reminders,
     exportedAt: root['exportedAt']?.toString(),
     appVersion: root['appVersion']?.toString(),
     entityCounts: _parseEntityCounts(root['entityCounts']),
+  );
+}
+
+BackupPreferences _parsePreferences(dynamic raw) {
+  if (raw is! Map) {
+    return const BackupPreferences(notificationsEnabled: true);
+  }
+  final prefs = raw.cast<String, dynamic>();
+  var notificationsEnabled = true;
+  final n = prefs[SettingsPrefsKeys.notificationsEnabled];
+  if (n is bool) notificationsEnabled = n;
+
+  final localeRaw = prefs[SettingsPrefsKeys.appLocaleCode]?.toString();
+  final localeCode =
+      (localeRaw != null && localeRaw.isNotEmpty) ? localeRaw : null;
+
+  bool? calendarRemindersEnabled;
+  final cal = prefs[SettingsPrefsKeys.calendarRemindersEnabled];
+  if (cal is bool) calendarRemindersEnabled = cal;
+
+  int? calendarReminderLeadHours;
+  final lead = prefs[SettingsPrefsKeys.calendarReminderLeadHours];
+  if (lead is int) {
+    calendarReminderLeadHours = lead;
+  } else if (lead is num) {
+    calendarReminderLeadHours = lead.toInt();
+  }
+
+  final hasCompact =
+      prefs.containsKey(SettingsPrefsKeys.workoutBuilderCompactAdd);
+  bool? compactAdd;
+  if (hasCompact) {
+    final c = prefs[SettingsPrefsKeys.workoutBuilderCompactAdd];
+    if (c is bool) compactAdd = c;
+  }
+
+  bool? mobilityDefault;
+  final mob = prefs[SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault];
+  if (mob is bool) mobilityDefault = mob;
+
+  return BackupPreferences(
+    notificationsEnabled: notificationsEnabled,
+    localeCode: localeCode,
+    calendarRemindersEnabled: calendarRemindersEnabled,
+    calendarReminderLeadHours: calendarReminderLeadHours,
+    workoutBuilderCompactAdd: compactAdd,
+    hasWorkoutBuilderCompactAdd: hasCompact,
+    workoutBuilderIncludeMobilityDefault: mobilityDefault,
+    raw: prefs,
   );
 }
 

@@ -7,6 +7,7 @@ import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 Future<bool> showSignOutConfirmationDialog(
   BuildContext context, {
   required Future<void> Function() onExportBackup,
+  required Future<void> Function() onUploadCloudBackup,
 }) async {
   final l10n = AppLocalizations.of(context);
   final theme = Theme.of(context);
@@ -31,6 +32,13 @@ Future<bool> showSignOutConfirmationDialog(
             await onExportBackup();
           },
           child: Text(l10n.signOutConfirmExportFirst),
+        ),
+        OutlinedButton(
+          onPressed: () async {
+            Navigator.of(dialogContext).pop(false);
+            await onUploadCloudBackup();
+          },
+          child: Text(l10n.signOutConfirmUploadCloud),
         ),
         FilledButton(
           style: FilledButton.styleFrom(

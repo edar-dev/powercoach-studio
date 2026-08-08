@@ -11,10 +11,12 @@ alwaysApply: false
 | Table | Purpose |
 |-------|---------|
 | `LocalEntities` | Local entity cache (JSON payload, keyed by `userId + type + id`) |
-| `PendingOperations` | Legacy outbox — internal only; no sync-issues UI |
-| `SyncMetaEntries` | Per-user key/value metadata |
 
 `AppDatabase` is obtained via `OfflineLocalStore` or constructed directly in tests.
+
+The legacy `PendingOperations` outbox and `SyncMetaEntries` key/value table were dropped in
+schema v2 (2026-08, Wave C of `local-first-persistence-v1`) — they were never read after backups
+stopped emitting them. Do not reintroduce them without an approved plan.
 
 ## Drift Rules
 
@@ -34,12 +36,6 @@ dart run build_runner build --delete-conflicting-outputs
 ```
 
 The generated file is `app_database.g.dart` — do not edit it manually.
-
-## PendingOperations (legacy)
-
-Status codes: `0` pending · `1` in-flight · `2` done · `3` conflict · `4` error.
-
-The app is local-only; operations are not replayed to a remote API. Pending ops are not surfaced in UI.
 
 ## Schema Migrations
 

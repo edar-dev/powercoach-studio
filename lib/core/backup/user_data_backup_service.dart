@@ -5,7 +5,6 @@ import '../notifications/notification_scheduler_service.dart';
 import '../notifications/reminder.dart';
 import '../notifications/reminder_store.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
-import '../settings/settings_prefs_keys.dart';
 import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../storage/offline_local_store.dart';
 import '../sync/offline_models.dart';
@@ -22,8 +21,8 @@ class UserDataBackupService {
     if (accountUserId.isEmpty) {
       throw StateError('accountUserId required');
     }
-    final notificationsEnabled =
-        await UserPreferencesRepository.instance.getNotificationsEnabled();
+    final preferences =
+        await UserPreferencesRepository.instance.exportForBackup();
     final profile =
         await LocalCoachProfileRepository.instance.getProfile(accountUserId);
     final store = OfflineLocalStore.instance;
@@ -42,13 +41,9 @@ class UserDataBackupService {
       'appVersion': kAppVersionLabel,
       'entityCounts': entityCountsMapFromPreview(counts),
       'accountUserId': accountUserId,
-      'preferences': <String, dynamic>{
-        SettingsPrefsKeys.notificationsEnabled: notificationsEnabled,
-      },
+      'preferences': preferences,
       'localUserProfile': profile.toJson(),
       'entities': entities,
-      'pendingOperations': await store.listPendingJsonForBackup(accountUserId),
-      'syncMeta': await store.listSyncMetaJsonForBackup(accountUserId),
       'reminders': reminders,
     };
   }
@@ -62,6 +57,8 @@ class UserDataBackupService {
   ///
   /// When [groups] is a strict subset of [kAllBackupEntityGroups], only the
   /// selected slices are replaced; other local data stays intact.
+  ///
+  /// Legacy `pendingOperations` / `syncMeta` in the envelope are ignored.
   Future<void> restoreParsed(
     ParsedUserBackup parsed,
     String accountUserId, {
@@ -79,8 +76,6 @@ class UserDataBackupService {
       await store.replaceUserOfflineFromBackup(
         userId: accountUserId,
         entities: parsed.entities,
-        pendingOperations: parsed.pendingOperations,
-        syncMeta: parsed.syncMeta,
       );
     } else {
       final entityTypes = entityTypesForBackupGroups(groups);
@@ -98,9 +93,13 @@ class UserDataBackupService {
           ? const LocalUserProfileData()
           : LocalUserProfileData.fromJson(parsed.profileJson!);
       await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
-      await UserPreferencesRepository.instance.setNotificationsEnabled(
-        parsed.notificationsEnabled,
-      );
+      await UserPreferencesRepository.instance
+          .applyFromBackupMap(parsed.preferences.raw);
+      if (parsed.preferences.raw.isEmpty) {
+        await UserPreferencesRepository.instance.setNotificationsEnabled(
+          parsed.notificationsEnabled,
+        );
+      }
     }
 
     if (groups.contains(BackupEntityGroup.reminders)) {
@@ -150,9 +149,13 @@ class UserDataBackupService {
     }
 
     if (groups.contains(BackupEntityGroup.preferences)) {
-      await UserPreferencesRepository.instance.setNotificationsEnabled(
-        parsed.notificationsEnabled,
-      );
+      await UserPreferencesRepository.instance
+          .applyFromBackupMap(parsed.preferences.raw);
+      if (parsed.preferences.raw.isEmpty) {
+        await UserPreferencesRepository.instance.setNotificationsEnabled(
+          parsed.notificationsEnabled,
+        );
+      }
     }
 
     if (groups.contains(BackupEntityGroup.reminders) &&

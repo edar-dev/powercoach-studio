@@ -23,6 +23,8 @@ class SettingsScreenContent extends StatelessWidget {
     required this.onPickCalendarLeadHours,
     required this.onExportBackup,
     required this.onImportBackup,
+    required this.onUploadCloudBackup,
+    required this.onRestoreCloudBackup,
     required this.onLanguagePicker,
     required this.onSignOut,
   });
@@ -38,6 +40,8 @@ class SettingsScreenContent extends StatelessWidget {
   final VoidCallback onPickCalendarLeadHours;
   final VoidCallback onExportBackup;
   final VoidCallback onImportBackup;
+  final VoidCallback onUploadCloudBackup;
+  final VoidCallback onRestoreCloudBackup;
   final VoidCallback onLanguagePicker;
   final VoidCallback onSignOut;
 
@@ -131,6 +135,38 @@ class SettingsScreenContent extends StatelessWidget {
           title: Text(l10n.settingsBackupImport),
           trailing: const Icon(Icons.chevron_right),
           onTap: onImportBackup,
+        ),
+        const SizedBox(height: 16),
+        Text(
+          l10n.settingsCloudBackupSectionTitle,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          l10n.settingsCloudBackupSectionSubtitle,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.cloud_upload_outlined),
+          title: Text(l10n.settingsCloudBackupUpload),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onUploadCloudBackup,
+        ),
+        ListTile(
+          leading: const Icon(Icons.cloud_download_outlined),
+          title: Text(l10n.settingsCloudBackupRestore),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: onRestoreCloudBackup,
+        ),
+        Text(
+          l10n.settingsCloudBackupHevyNote,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
         ),
         const Divider(height: 32),
         const HevySettingsSection(),

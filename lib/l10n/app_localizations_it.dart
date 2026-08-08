@@ -169,7 +169,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingFaqLocalDataA =>
-      'Sul tuo dispositivo o browser (local-first). Nessun sync cloud automatico: usa backup JSON per cambiare dispositivo.';
+      'Sul tuo dispositivo o browser (local-first). Nessun sync automatico: puoi esportare un backup JSON o salvare uno snapshot opzionale sul cloud account.';
 
   @override
   String get landingFaqFreeProQ => 'Qual è la differenza tra Gratuito e Pro?';
@@ -191,7 +191,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingFaqBrowserA =>
-      'I dati locali possono andare persi. Esporta un backup JSON da Impostazioni prima di pulire cache o cookie.';
+      'I dati locali possono andare persi. Esporta un backup JSON (o salva uno snapshot cloud) da Impostazioni prima di pulire cache o cookie.';
 
   @override
   String get landingFaqBillingQ => 'Come funziona il pagamento?';
@@ -849,6 +849,46 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsBackupErrorInvalidFile => 'File di backup non valido.';
 
   @override
+  String get settingsCloudBackupSectionTitle => 'Backup cloud (opzionale)';
+
+  @override
+  String get settingsCloudBackupSectionSubtitle =>
+      'Salva o ripristina uno snapshot manuale su Supabase Storage, visibile solo dal tuo account. Non è una sincronizzazione automatica.';
+
+  @override
+  String get settingsCloudBackupUpload => 'Salva in cloud';
+
+  @override
+  String get settingsCloudBackupRestore => 'Ripristina da cloud';
+
+  @override
+  String get settingsCloudBackupHevyNote =>
+      'La chiave API Hevy resta solo su questo dispositivo e non viene mai salvata nel backup, locale o cloud.';
+
+  @override
+  String get settingsCloudBackupUploadSuccess => 'Backup caricato su cloud.';
+
+  @override
+  String get settingsCloudBackupEmpty =>
+      'Nessun backup cloud trovato per questo account.';
+
+  @override
+  String get settingsCloudBackupErrorGeneric =>
+      'Impossibile completare l’operazione cloud. Riprova.';
+
+  @override
+  String get settingsCloudBackupListTitle => 'Scegli un backup da ripristinare';
+
+  @override
+  String get settingsCloudBackupListEmpty => 'Nessun backup cloud disponibile.';
+
+  @override
+  String get settingsCloudBackupDeleteTooltip => 'Elimina questo backup cloud';
+
+  @override
+  String get settingsCloudBackupDeleted => 'Backup cloud eliminato.';
+
+  @override
   String get settingsLegalSectionTitle => 'Legale e privacy';
 
   @override
@@ -872,6 +912,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get signOutConfirmExportFirst => 'Esporta backup';
+
+  @override
+  String get signOutConfirmUploadCloud => 'Carica in cloud prima di uscire';
 
   @override
   String get signOutConfirmProceed => 'Esci comunque';
@@ -2571,6 +2614,16 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dashboardOpenBackupSettings => 'Apri backup';
+
+  @override
+  String get dashboardBackupReminderMessage =>
+      'Ultimo backup di oltre 7 giorni fa. Esporta o carica una copia recente per sicurezza.';
+
+  @override
+  String get dashboardBackupReminderCta => 'Apri backup nelle impostazioni';
+
+  @override
+  String get dashboardBackupReminderSnooze => 'Ricordamelo tra 3 giorni';
 
   @override
   String get dashboardLoadError =>

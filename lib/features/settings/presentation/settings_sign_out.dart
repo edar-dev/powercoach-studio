@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/notifications/notification_scheduler_service.dart';
 import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/storage/offline_local_store.dart';
@@ -16,11 +17,13 @@ Future<void> executeSignOut(BuildContext context) async {
   if (!kIsWeb &&
       NotificationSchedulerService.instance.supportsLocalNotifications) {
     await NotificationSchedulerService.instance.cancelAllScheduled();
-    await ReminderStore.instance.clear();
   }
+  // Always clear reminder prefs so web sign-out matches Drift wipe.
+  await ReminderStore.instance.clear();
   final uid = SupabaseBootstrap.currentUser?.id;
   if (uid != null) {
     await OfflineLocalStore.instance.wipeForUser(uid);
+    await BackupActivityStore.instance.clearForUser(uid);
   }
   await Supabase.instance.client.auth.signOut();
   if (context.mounted) context.go('/');
@@ -40,6 +43,7 @@ Future<void> requestSignOut(
   final confirmed = await showSignOutConfirmationDialog(
     context,
     onExportBackup: () => backupHandler.exportBackup(l10n),
+    onUploadCloudBackup: () => backupHandler.uploadCloudBackup(l10n),
   );
   if (!context.mounted || !confirmed) return;
   await executeSignOut(context);
@@ -49,5 +53,4 @@ Future<void> requestSignOut(
 Future<void> performSettingsSignOut(
   BuildContext context, {
   Future<void> Function()? onPreferencesReloaded,
-}) =>
-    requestSignOut(context, onPreferencesReloaded: onPreferencesReloaded);
+}) => requestSignOut(context, onPreferencesReloaded: onPreferencesReloaded);

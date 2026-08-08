@@ -1,4 +1,4 @@
-/// DTO for GymBlog.API workout plan (GET response).
+/// Local workout plan DTO (Drift / repository layer).
 /// planData is JSON string; decode to WorkoutRoutine via WorkoutRoutine.fromJson(jsonDecode(planData)).
 class WorkoutPlanApiModel {
   const WorkoutPlanApiModel({

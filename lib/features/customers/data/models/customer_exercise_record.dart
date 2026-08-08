@@ -1,5 +1,5 @@
 /// Exercise record for a customer: custom exercise + value + unit + date.
-/// Aligned with GymBlog.API GET/POST/PUT response.
+/// Stored locally as an offline entity payload.
 class CustomerExerciseRecord {
   const CustomerExerciseRecord({
     required this.id,

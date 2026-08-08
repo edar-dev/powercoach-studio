@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/legal_urls.dart';
@@ -31,13 +32,15 @@ Future<void> showBackupOnboardingDialog(
                 color: cs.onSurfaceVariant,
               ),
             ),
-            const SizedBox(height: 16),
-            Text(
-              l10n.backupOnboardingWebHint,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: cs.onSurfaceVariant,
+            if (kIsWeb) ...[
+              const SizedBox(height: 16),
+              Text(
+                l10n.backupOnboardingWebHint,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),

@@ -4,34 +4,34 @@ overview: "Opzione A sync: rimuovere/nascondere la UX sync remoto, tenere backup
 todos:
   - id: product-signoff
     content: "Confermare opzione A — no replay remoto a breve; backup JSON come multi-device ufficiale"
-    status: pending
+    status: completed
   - id: remove-sync-settings-nav
     content: "Rimuovere SyncSettingsSection e route /sync-issues da settings e app_routes.dart"
-    status: pending
+    status: completed
   - id: deprecate-sync-screens
     content: "Eliminare o spostare sync_issues_screen.dart + sync_settings_section.dart (tenere codice core/sync solo se serve outbox interna)"
-    status: pending
+    status: completed
   - id: stop-pending-ops-writes
     content: "Valutare stop scrittura PendingOperations su save locale — o rinominare copy interno 'audit log'"
-    status: pending
+    status: completed
   - id: update-sync-strategy-doc
     content: "Aggiornare docs/sync-strategy.md — decisione A registrata, rimuovere opzione B o spostarla in appendix"
-    status: pending
+    status: completed
   - id: remove-skip-cache
     content: "Rimuovere param skipCache da CustomerRepository.getAll e call site in customer_list_screen.dart"
-    status: pending
+    status: completed
   - id: purge-dead-l10n
     content: "Rimuovere customersApiNotConfigured da app_en.arb / app_it.arb + rigenerare l10n"
-    status: pending
+    status: completed
   - id: fix-model-comments
     content: "Aggiornare commenti GymBlog in customer.dart, workout_routine_model.dart, pubspec.yaml (Dio → Hevy)"
-    status: pending
+    status: completed
   - id: hide-not-implemented-ctas
     content: "Nascondere o rimuovere showNotImplementedAlert in landing_screen.dart e subscription_screen.dart"
-    status: pending
+    status: completed
   - id: tests-and-analyze
     content: "Aggiornare test routing/settings; flutter analyze + flutter test test/"
-    status: pending
+    status: completed
 isProject: false
 ---
 

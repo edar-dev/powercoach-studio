@@ -6,23 +6,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../sync/offline_models.dart';
 import 'app_database.dart';
 import 'offline_migration.dart';
-import 'pending_operations_store.dart';
 
-/// Persistent offline cache and outbox backed by SQLite (Drift).
+/// Persistent offline cache backed by SQLite (Drift), entities only.
 class OfflineLocalStore {
   OfflineLocalStore._() {
-    _pendingOps = PendingOperationsStore(
-      ensureDb: _ensureDb,
-      currentUserId: _currentUserId,
-    );
-    _migration = OfflineMigration(pendingOps: _pendingOps);
+    _migration = OfflineMigration();
   }
 
   static final OfflineLocalStore instance = OfflineLocalStore._();
 
   AppDatabase? _db;
   bool _migrationChecked = false;
-  late final PendingOperationsStore _pendingOps;
   late final OfflineMigration _migration;
 
   String _currentUserId() {
@@ -231,41 +225,16 @@ class OfflineLocalStore {
     });
   }
 
-  Future<List<PendingOperation>> readPendingOperations() =>
-      _pendingOps.readAll();
-
-  Future<void> upsertPendingOperation(PendingOperation op) =>
-      _pendingOps.upsert(op);
-
-  Future<void> removePendingOperation(String opId) => _pendingOps.remove(opId);
-
-  Future<void> replaceTempIdsInPendingOps({
-    required OfflineEntityType type,
-    required String tempId,
-    required String serverId,
-  }) =>
-      _pendingOps.replaceTempIds(
-        type: type,
-        tempId: tempId,
-        serverId: serverId,
-      );
-
   /// Remove all local offline data (all users). Prefer [wipeForUser] on logout.
   Future<void> clear() async {
     final db = await _ensureDb();
     await db.delete(db.localEntities).go();
-    await _pendingOps.deleteAll();
-    await db.delete(db.syncMetaEntries).go();
     await _migration.clearMigrationFlag();
   }
 
   Future<void> _deleteUserOfflineData(AppDatabase db, String userId) async {
     if (userId.isEmpty) return;
     await (db.delete(db.localEntities)..where((t) => t.userId.equals(userId)))
-        .go();
-    await _pendingOps.deleteAllForUser(userId, db: db);
-    await (db.delete(db.syncMetaEntries)
-          ..where((t) => t.userId.equals(userId)))
         .go();
   }
 
@@ -288,35 +257,10 @@ class OfflineLocalStore {
         .toList();
   }
 
-  Future<List<Map<String, dynamic>>> listPendingJsonForBackup(
-    String userId,
-  ) =>
-      _pendingOps.listJsonForBackup(userId);
-
-  Future<List<Map<String, dynamic>>> listSyncMetaJsonForBackup(
-    String userId,
-  ) async {
-    if (userId.isEmpty) return [];
-    final db = await _ensureDb();
-    final rows = await (db.select(db.syncMetaEntries)
-          ..where((t) => t.userId.equals(userId)))
-        .get();
-    return rows
-        .map(
-          (r) => <String, dynamic>{
-            'metaKey': r.metaKey,
-            'metaValue': r.metaValue,
-          },
-        )
-        .toList();
-  }
-
-  /// Replaces all Drift offline rows for [userId] (entities, pending ops, sync meta).
+  /// Replaces all Drift entity rows for [userId] (backup restore, full replace).
   Future<void> replaceUserOfflineFromBackup({
     required String userId,
     required List<Map<String, dynamic>> entities,
-    required List<Map<String, dynamic>> pendingOperations,
-    required List<Map<String, dynamic>> syncMeta,
   }) async {
     if (userId.isEmpty) return;
     final db = await _ensureDb();
@@ -339,47 +283,6 @@ class OfflineLocalStore {
               mode: InsertMode.insertOrReplace,
             );
       }
-      await _pendingOps.restoreBatch(
-        userId: userId,
-        pendingOperations: pendingOperations,
-        db: db,
-      );
-      for (final raw in syncMeta) {
-        final key = raw['metaKey']?.toString() ?? '';
-        if (key.isEmpty) continue;
-        final value = raw['metaValue']?.toString() ?? '';
-        await db.into(db.syncMetaEntries).insertOnConflictUpdate(
-              SyncMetaEntriesCompanion.insert(
-                userId: userId,
-                metaKey: key,
-                metaValue: value,
-              ),
-            );
-      }
     });
-  }
-
-  Future<void> setSyncMeta(String key, String value) async {
-    final uid = _currentUserId();
-    if (uid.isEmpty) return;
-    final db = await _ensureDb();
-    await db.into(db.syncMetaEntries).insertOnConflictUpdate(
-          SyncMetaEntriesCompanion.insert(
-            userId: uid,
-            metaKey: key,
-            metaValue: value,
-          ),
-        );
-  }
-
-  Future<String?> getSyncMeta(String key) async {
-    final uid = _currentUserId();
-    if (uid.isEmpty) return null;
-    final db = await _ensureDb();
-    final row = await (db.select(db.syncMetaEntries)
-          ..where((t) => t.userId.equals(uid) & t.metaKey.equals(key))
-          ..limit(1))
-        .getSingleOrNull();
-    return row?.metaValue;
   }
 }
