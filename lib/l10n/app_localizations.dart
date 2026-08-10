@@ -407,8 +407,20 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqLocalDataA.
   ///
   /// In en, this message translates to:
-  /// **'On your device or browser (local-first). No automatic sync — use a JSON backup or an optional cloud snapshot on your account to move between devices.'**
+  /// **'On your device or browser (local-first) — your data stays yours. No automatic sync: use a JSON backup or an optional cloud snapshot on your account to move between devices.'**
   String get landingFaqLocalDataA;
+
+  /// No description provided for @landingFaqDeskGymQ.
+  ///
+  /// In en, this message translates to:
+  /// **'Can I plan on desktop and train at the gym?'**
+  String get landingFaqDeskGymQ;
+
+  /// No description provided for @landingFaqDeskGymA.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes. Build the program on desktop, then open the same account on your phone at the gym to log sets, RPE, and pain — no separate app, no sync setup to configure.'**
+  String get landingFaqDeskGymA;
 
   /// No description provided for @landingFaqFreeProQ.
   ///
@@ -1517,7 +1529,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Export or replace all local data for this account as a JSON file. Use this to move data between devices.'**
+  /// **'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices; your Hevy API key is never included.'**
   String get settingsBackupSectionSubtitle;
 
   /// No description provided for @settingsBackupExport.
@@ -1589,7 +1601,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitleWeb.
   ///
   /// In en, this message translates to:
-  /// **'Your coach data is stored in this browser. Export a JSON backup regularly so you can restore it or move to another device.'**
+  /// **'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device; your Hevy API key is never included.'**
   String get settingsBackupSectionSubtitleWeb;
 
   /// No description provided for @settingsBackupErrorInvalidFile.
@@ -1747,6 +1759,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We recommend exporting a JSON backup from Settings after your first session and whenever you make important changes.'**
   String get backupOnboardingWebHint;
+
+  /// No description provided for @backupOnboardingDeskGymHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan on desktop, then bring the same account to the gym on your phone — a backup lets you carry your data with you, without a cloud account.'**
+  String get backupOnboardingDeskGymHint;
 
   /// No description provided for @backupOnboardingOpenSettings.
   ///
@@ -4054,6 +4072,48 @@ abstract class AppLocalizations {
   /// **'Duplicate day to'**
   String get workoutBuilderCloneDayTargetTitle;
 
+  /// No description provided for @workoutBuilderDayCoachingNoteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Coaching note'**
+  String get workoutBuilderDayCoachingNoteTitle;
+
+  /// No description provided for @workoutBuilderDayCoachingNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note for this day'**
+  String get workoutBuilderDayCoachingNoteLabel;
+
+  /// No description provided for @workoutBuilderDayCoachingNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. focus, cues, warmup instructions'**
+  String get workoutBuilderDayCoachingNoteHint;
+
+  /// No description provided for @workoutBuilderProgressionIncreaseLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion: bump load to {value}'**
+  String workoutBuilderProgressionIncreaseLoad(String value);
+
+  /// No description provided for @workoutBuilderProgressionIncreaseLoadGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion: consider a small load bump'**
+  String get workoutBuilderProgressionIncreaseLoadGeneric;
+
+  /// No description provided for @workoutBuilderProgressionIncreaseReps.
+  ///
+  /// In en, this message translates to:
+  /// **'Suggestion: aim for {value} reps'**
+  String workoutBuilderProgressionIncreaseReps(String value);
+
+  /// No description provided for @workoutBuilderProgressionApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply'**
+  String get workoutBuilderProgressionApply;
+
   /// No description provided for @workoutBuilderReadOnlyBanner.
   ///
   /// In en, this message translates to:
@@ -5787,6 +5847,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide sets'**
   String get sessionLogCollapseSets;
+
+  /// No description provided for @sessionLogCheckInTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How did it go? (optional)'**
+  String get sessionLogCheckInTitle;
+
+  /// No description provided for @sessionLogRpeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Session RPE (1-10)'**
+  String get sessionLogRpeLabel;
+
+  /// No description provided for @sessionLogPainLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain level (0-10)'**
+  String get sessionLogPainLabel;
+
+  /// No description provided for @sessionLogPainLocationHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Where? (optional)'**
+  String get sessionLogPainLocationHint;
+
+  /// No description provided for @sessionLogRpeChipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'RPE {value}/10'**
+  String sessionLogRpeChipLabel(int value);
+
+  /// No description provided for @sessionLogPainChipLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain {value}/10'**
+  String sessionLogPainChipLabel(int value);
+
+  /// No description provided for @sessionLogPainChipLabelWithLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pain {value}/10 · {location}'**
+  String sessionLogPainChipLabelWithLocation(int value, String location);
 
   /// No description provided for @customerProgressTitle.
   ///

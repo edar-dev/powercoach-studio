@@ -32,6 +32,13 @@ Future<void> showBackupOnboardingDialog(
                 color: cs.onSurfaceVariant,
               ),
             ),
+            const SizedBox(height: 16),
+            Text(
+              l10n.backupOnboardingDeskGymHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
             if (kIsWeb) ...[
               const SizedBox(height: 16),
               Text(

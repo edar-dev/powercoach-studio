@@ -169,7 +169,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingFaqLocalDataA =>
-      'Sul tuo dispositivo o browser (local-first). Nessun sync automatico: puoi esportare un backup JSON o salvare uno snapshot opzionale sul cloud account.';
+      'Sul tuo dispositivo o browser (local-first) — i tuoi dati restano tuoi. Nessun sync automatico: puoi esportare un backup JSON o salvare uno snapshot opzionale sul cloud account.';
+
+  @override
+  String get landingFaqDeskGymQ =>
+      'Posso programmare da desktop e allenarmi in sala?';
+
+  @override
+  String get landingFaqDeskGymA =>
+      'Sì. Costruisci la scheda da desktop, poi apri lo stesso account dal telefono in sala per registrare serie, RPE e dolore — nessuna app separata, nessuna configurazione di sync.';
 
   @override
   String get landingFaqFreeProQ => 'Qual è la differenza tra Gratuito e Pro?';
@@ -800,7 +808,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitle =>
-      'Esporta o sostituisci tutti i dati locali di questo account come file JSON. Utile per spostare i dati tra dispositivi.';
+      'Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi; la tua chiave API Hevy non viene mai inclusa.';
 
   @override
   String get settingsBackupExport => 'Esporta backup';
@@ -843,7 +851,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitleWeb =>
-      'I dati del coach sono salvati in questo browser. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo.';
+      'I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo; la tua chiave API Hevy non viene mai inclusa.';
 
   @override
   String get settingsBackupErrorInvalidFile => 'File di backup non valido.';
@@ -929,6 +937,10 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get backupOnboardingWebHint =>
       'Consigliamo di esportare un backup JSON da Impostazioni dopo la prima sessione e quando fai modifiche importanti.';
+
+  @override
+  String get backupOnboardingDeskGymHint =>
+      'Programma da desktop, poi porta lo stesso account in sala dal telefono — un backup ti permette di portare con te i tuoi dati, senza un account cloud.';
 
   @override
   String get backupOnboardingOpenSettings => 'Apri impostazioni';
@@ -2205,6 +2217,33 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderCloneDayTargetTitle => 'Duplica giorno su';
 
   @override
+  String get workoutBuilderDayCoachingNoteTitle => 'Nota coaching';
+
+  @override
+  String get workoutBuilderDayCoachingNoteLabel => 'Nota per questo giorno';
+
+  @override
+  String get workoutBuilderDayCoachingNoteHint =>
+      'es. focus, cue, indicazioni riscaldamento';
+
+  @override
+  String workoutBuilderProgressionIncreaseLoad(String value) {
+    return 'Suggerimento: aumenta il carico a $value';
+  }
+
+  @override
+  String get workoutBuilderProgressionIncreaseLoadGeneric =>
+      'Suggerimento: valuta un piccolo aumento di carico';
+
+  @override
+  String workoutBuilderProgressionIncreaseReps(String value) {
+    return 'Suggerimento: punta a $value ripetizioni';
+  }
+
+  @override
+  String get workoutBuilderProgressionApply => 'Applica';
+
+  @override
   String get workoutBuilderReadOnlyBanner =>
       'Solo lettura — duplica la scheda per modificarla.';
 
@@ -3171,6 +3210,33 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sessionLogCollapseSets => 'Nascondi set';
+
+  @override
+  String get sessionLogCheckInTitle => 'Com\'è andata? (opzionale)';
+
+  @override
+  String get sessionLogRpeLabel => 'RPE sessione (1-10)';
+
+  @override
+  String get sessionLogPainLabel => 'Livello di dolore (0-10)';
+
+  @override
+  String get sessionLogPainLocationHint => 'Dove? (opzionale)';
+
+  @override
+  String sessionLogRpeChipLabel(int value) {
+    return 'RPE $value/10';
+  }
+
+  @override
+  String sessionLogPainChipLabel(int value) {
+    return 'Dolore $value/10';
+  }
+
+  @override
+  String sessionLogPainChipLabelWithLocation(int value, String location) {
+    return 'Dolore $value/10 · $location';
+  }
 
   @override
   String get customerProgressTitle => 'Progresso allenamento';
