@@ -11,6 +11,9 @@ class SessionExecution {
     this.completedAt,
     this.notes = '',
     this.exercises = const [],
+    this.sessionRpe,
+    this.painLevel,
+    this.painLocation,
   });
 
   final String sessionKey;
@@ -21,6 +24,16 @@ class SessionExecution {
   final DateTime? completedAt;
   final String notes;
   final List<ExecutedExercise> exercises;
+
+  /// Coach-reported difficulty of the actual session (1-10), distinct from
+  /// the prescriptive [ExerciseSet.rpe] shown in the plan.
+  final int? sessionRpe;
+
+  /// Reported pain level during/after the session (0-10).
+  final int? painLevel;
+
+  /// Optional free-text location for the reported pain (e.g. "left knee").
+  final String? painLocation;
 
   Map<String, dynamic> toJson() => {
     'sessionKey': sessionKey,
@@ -36,6 +49,10 @@ class SessionExecution {
     if (notes.trim().isNotEmpty) 'notes': notes.trim(),
     if (exercises.isNotEmpty)
       'exercises': exercises.map((e) => e.toJson()).toList(),
+    if (sessionRpe != null) 'sessionRpe': sessionRpe,
+    if (painLevel != null) 'painLevel': painLevel,
+    if (painLocation != null && painLocation!.trim().isNotEmpty)
+      'painLocation': painLocation!.trim(),
   };
 
   static SessionExecution fromJson(Map<String, dynamic> json) {
@@ -62,6 +79,9 @@ class SessionExecution {
               )
               .toList() ??
           const [],
+      sessionRpe: (json['sessionRpe'] as num?)?.toInt(),
+      painLevel: (json['painLevel'] as num?)?.toInt(),
+      painLocation: json['painLocation']?.toString(),
     );
   }
 
@@ -75,6 +95,12 @@ class SessionExecution {
     bool clearCompletedAt = false,
     String? notes,
     List<ExecutedExercise>? exercises,
+    int? sessionRpe,
+    bool clearSessionRpe = false,
+    int? painLevel,
+    bool clearPainLevel = false,
+    String? painLocation,
+    bool clearPainLocation = false,
   }) => SessionExecution(
     sessionKey: sessionKey ?? this.sessionKey,
     weekIndex: weekIndex ?? this.weekIndex,
@@ -84,6 +110,11 @@ class SessionExecution {
     completedAt: clearCompletedAt ? null : (completedAt ?? this.completedAt),
     notes: notes ?? this.notes,
     exercises: exercises ?? this.exercises,
+    sessionRpe: clearSessionRpe ? null : (sessionRpe ?? this.sessionRpe),
+    painLevel: clearPainLevel ? null : (painLevel ?? this.painLevel),
+    painLocation: clearPainLocation
+        ? null
+        : (painLocation ?? this.painLocation),
   );
 
   static String _statusToJson(PlanSessionStatus status) => switch (status) {

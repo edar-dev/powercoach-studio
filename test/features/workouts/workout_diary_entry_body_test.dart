@@ -46,4 +46,41 @@ void main() {
     expect(find.text('Bench press'), findsOneWidget);
     expect(find.textContaining('80kg'), findsOneWidget);
   });
+
+  testWidgets('WorkoutDiaryEntryBody shows session RPE and pain check-in', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            final l10n = AppLocalizations.of(context);
+            return Scaffold(
+              body: WorkoutDiaryEntryBody(
+                l10n: l10n,
+                execution: SessionExecution(
+                  sessionKey: '0-0',
+                  weekIndex: 0,
+                  dayIndex: 0,
+                  sessionDate: DateTime(2026, 6, 14),
+                  status: PlanSessionStatus.completed,
+                  sessionRpe: 8,
+                  painLevel: 3,
+                  painLocation: 'left knee',
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('RPE 8/10'), findsOneWidget);
+    expect(find.text('Pain 3/10 · left knee'), findsOneWidget);
+  });
 }

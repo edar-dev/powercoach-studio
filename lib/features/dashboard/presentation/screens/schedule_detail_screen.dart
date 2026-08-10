@@ -96,6 +96,9 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
 
         List<ExecutedExercise> exercises = const [];
         var notes = '';
+        int? sessionRpe;
+        int? painLevel;
+        String? painLocation;
         if (status == PlanSessionStatus.completed) {
           final plan = await _planRepo.getById(event.planId);
           if (!mounted) return;
@@ -120,10 +123,16 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
                 plannedExercises: day.exercises,
                 initialExercises: existing?.exercises,
                 initialNotes: existing?.notes ?? '',
+                initialSessionRpe: existing?.sessionRpe,
+                initialPainLevel: existing?.painLevel,
+                initialPainLocation: existing?.painLocation,
               );
               if (logResult == null || !mounted) return;
               exercises = logResult.exercises;
               notes = logResult.notes;
+              sessionRpe = logResult.sessionRpe;
+              painLevel = logResult.painLevel;
+              painLocation = logResult.painLocation;
             }
           }
         }
@@ -136,6 +145,9 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           sessionDate: event.day,
           exercises: exercises,
           notes: notes,
+          sessionRpe: sessionRpe,
+          painLevel: painLevel,
+          painLocation: painLocation,
         );
       } else if (selected == 'override_skip') {
         await _overrideService.skipSessionOccurrence(

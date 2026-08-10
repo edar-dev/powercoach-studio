@@ -22,6 +22,37 @@ class WorkoutDiaryEntryBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (execution.sessionRpe != null || execution.painLevel != null) ...[
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              if (execution.sessionRpe != null)
+                Chip(
+                  avatar: const Icon(Icons.speed, size: 16),
+                  label: Text(
+                    l10n.sessionLogRpeChipLabel(execution.sessionRpe!),
+                  ),
+                ),
+              if (execution.painLevel != null)
+                Chip(
+                  avatar: const Icon(
+                    Icons.health_and_safety_outlined,
+                    size: 16,
+                  ),
+                  label: Text(
+                    execution.painLocation?.trim().isNotEmpty ?? false
+                        ? l10n.sessionLogPainChipLabelWithLocation(
+                            execution.painLevel!,
+                            execution.painLocation!.trim(),
+                          )
+                        : l10n.sessionLogPainChipLabel(execution.painLevel!),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 16),
+        ],
         if (execution.notes.trim().isNotEmpty) ...[
           Text(execution.notes),
           const SizedBox(height: 16),
