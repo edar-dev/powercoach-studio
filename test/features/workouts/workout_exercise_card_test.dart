@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/exercise_progression_suggestions.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_exercise_card.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -142,6 +143,83 @@ void main() {
 
       expect(find.text('Brace hard'), findsOneWidget);
       expect(find.text('Aggiungi nota…'), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'shows progression suggestion chip and applies it on tap',
+    (tester) async {
+      var applied = false;
+      final exercise = Exercise(
+        id: 'ex1',
+        name: 'Squat',
+        sets: '3',
+        reps: '5',
+        rpe: '@8',
+        setDetails: [const ExerciseSet(sets: '3', reps: '5', rpe: '@8')],
+      );
+
+      await tester.pumpWidget(
+        _wrap(
+          Builder(
+            builder: (context) {
+              final theme = Theme.of(context);
+              return WorkoutExerciseCard(
+                theme: theme,
+                colorScheme: theme.colorScheme,
+                exercise: exercise,
+                expanded: true,
+                onExpandedChanged: (_) {},
+                progressionSuggestion: const ExerciseProgressionSuggestion(
+                  type: ProgressionSuggestionType.increaseLoad,
+                  suggestedLoad: '102.5kg',
+                ),
+                onApplyProgressionSuggestion: () => applied = true,
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.textContaining('102.5kg'), findsOneWidget);
+      await tester.tap(find.text('Applica'));
+      expect(applied, isTrue);
+    },
+  );
+
+  testWidgets(
+    'hides progression chip for maintain and insufficient-data suggestions',
+    (tester) async {
+      final exercise = Exercise(
+        id: 'ex1',
+        name: 'Squat',
+        sets: '3',
+        reps: '5',
+        rpe: '@8',
+        setDetails: [const ExerciseSet(sets: '3', reps: '5', rpe: '@8')],
+      );
+
+      await tester.pumpWidget(
+        _wrap(
+          Builder(
+            builder: (context) {
+              final theme = Theme.of(context);
+              return WorkoutExerciseCard(
+                theme: theme,
+                colorScheme: theme.colorScheme,
+                exercise: exercise,
+                expanded: true,
+                onExpandedChanged: (_) {},
+                progressionSuggestion: const ExerciseProgressionSuggestion(
+                  type: ProgressionSuggestionType.maintain,
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Applica'), findsNothing);
     },
   );
 }

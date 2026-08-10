@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
 import 'workout_exercise_card.dart';
@@ -217,6 +218,10 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final weekIndex = widget.weekIndex;
     final dayIndex = widget.dayIndex;
     final day = widget.day;
+    final suggestion = suggestExerciseProgression(
+      plannedExercise: ex,
+      executions: widget.session.routine.sessionExecutions.values.toList(),
+    );
     return WorkoutExerciseCard(
       key: ValueKey(ex.id),
       theme: widget.theme,
@@ -280,6 +285,32 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       onRemoveFromSuperset: ex.supersetGroupId != null
           ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
           : null,
+      progressionSuggestion: suggestion,
+      onApplyProgressionSuggestion: suggestion.isActionable
+          ? () => _applyProgressionSuggestion(suggestion, ex, weekIndex, dayIndex)
+          : null,
+    );
+  }
+
+  void _applyProgressionSuggestion(
+    ExerciseProgressionSuggestion suggestion,
+    Exercise ex,
+    int weekIndex,
+    int dayIndex,
+  ) {
+    final updatedSets = ex.effectiveSetDetails
+        .map(
+          (s) => s.copyWith(
+            reps: suggestion.suggestedReps,
+            rpe: suggestion.suggestedLoad,
+          ),
+        )
+        .toList();
+    widget.onUpdateExercise(
+      weekIndex,
+      dayIndex,
+      ex.id,
+      setDetails: updatedSets,
     );
   }
 }
