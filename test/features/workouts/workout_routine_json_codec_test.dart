@@ -36,6 +36,52 @@ void main() {
     );
   });
 
+  test('round-trip preserves day coaching note', () {
+    final routine = WorkoutRoutine.empty().copyWith(
+      weeks: [
+        const Week(
+          id: 'w1',
+          name: 'Week 1',
+          days: [
+            Day(
+              id: 'd1',
+              name: 'Day A',
+              exercises: [],
+              coachingNote: 'Keep tempo slow on eccentrics',
+            ),
+          ],
+        ),
+      ],
+    );
+    final jsonText = encodeWorkoutRoutineJson(routine);
+    final restored = decodeWorkoutRoutineJson(jsonText);
+
+    expect(
+      restored.weeks.single.days.single.coachingNote,
+      'Keep tempo slow on eccentrics',
+    );
+  });
+
+  test('decodes legacy day JSON without coachingNote as null', () {
+    final legacyDayJson = {
+      'id': 'd1',
+      'name': 'Day A',
+      'exercises': <Map<String, dynamic>>[],
+    };
+    final day = decodeDay(legacyDayJson);
+    expect(day.coachingNote, isNull);
+  });
+
+  test('encodeDay omits blank coaching note', () {
+    const day = Day(
+      id: 'd1',
+      name: 'Day A',
+      exercises: [],
+      coachingNote: '   ',
+    );
+    expect(encodeDay(day).containsKey('coachingNote'), isFalse);
+  });
+
   test('rejects unsupported schema version', () {
     final payload = {
       'schemaVersion': 99,

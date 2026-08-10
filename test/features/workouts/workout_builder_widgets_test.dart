@@ -207,6 +207,60 @@ void main() {
       expect(find.text('mer'), findsOneWidget);
     });
 
+    testWidgets(
+      'TrainingWeekDayPanel shows day coaching note and notifies tap',
+      (tester) async {
+        var tapped = false;
+        await tester.pumpWidget(
+          _wrap(
+            width: 720,
+            Builder(
+              builder: (context) {
+                final theme = Theme.of(context);
+                return TrainingWeekDayPanel(
+                  theme: theme,
+                  cs: theme.colorScheme,
+                  weeks: const [
+                    Week(
+                      id: 'w1',
+                      name: 'Week 1',
+                      days: [
+                        Day(
+                          id: 'd1',
+                          name: 'Day A',
+                          exercises: [],
+                          coachingNote: 'Focus on bracing',
+                        ),
+                      ],
+                    ),
+                  ],
+                  selectedWeekIndex: 0,
+                  selectedDayIndex: 0,
+                  onSelectWeek: (_) {},
+                  onSelectDay: (_) {},
+                  onNewWeek: () {},
+                  onCloneWeek: (_) {},
+                  onDeleteWeek: (_) {},
+                  onEditWeek: (_) {},
+                  onAddDay: (_) {},
+                  onEditDay: (_, _) {},
+                  onDeleteDay: (_, _) {},
+                  onUpdateScheduledWeekday: (_, _, _) {},
+                  onEditDayCoachingNote: (_, _) => tapped = true,
+                  exerciseListBuilder: (_, _, _, _) => const Text('Exercises'),
+                );
+              },
+            ),
+          ),
+        );
+
+        expect(find.text('Focus on bracing'), findsOneWidget);
+        await tester.tap(find.text('Focus on bracing'));
+        await tester.pump();
+        expect(tapped, isTrue);
+      },
+    );
+
     testWidgets('WorkoutPlanDetailsTab renders metadata and notifies changes', (
       tester,
     ) async {

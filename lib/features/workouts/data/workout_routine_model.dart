@@ -228,6 +228,7 @@ class Day {
     required this.name,
     required this.exercises,
     this.scheduledWeekday,
+    this.coachingNote,
   });
 
   final String id;
@@ -236,6 +237,10 @@ class Day {
 
   /// Optional ISO weekday: 1=Mon ... 7=Sun.
   final int? scheduledWeekday;
+
+  /// Optional free-text coaching note for this specific day (e.g. focus,
+  /// cues, warmup instructions). Shown read-only in follow-ups/PDF export.
+  final String? coachingNote;
 
   Map<String, dynamic> toJson() => encodeDay(this);
 
@@ -247,6 +252,8 @@ class Day {
     List<Exercise>? exercises,
     int? scheduledWeekday,
     bool clearScheduledWeekday = false,
+    String? coachingNote,
+    bool clearCoachingNote = false,
   }) => Day(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -254,6 +261,9 @@ class Day {
     scheduledWeekday: clearScheduledWeekday
         ? null
         : (scheduledWeekday ?? this.scheduledWeekday),
+    coachingNote: clearCoachingNote
+        ? null
+        : (coachingNote ?? this.coachingNote),
   );
 }
 

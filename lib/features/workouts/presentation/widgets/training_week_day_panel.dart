@@ -26,6 +26,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
     required this.onUpdateScheduledWeekday,
     this.onLogSession,
     this.onCloneDayToTarget,
+    this.onEditDayCoachingNote,
     this.planId,
     this.editorMode = false,
     required this.exerciseListBuilder,
@@ -49,6 +50,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
       onUpdateScheduledWeekday;
   final VoidCallback? onLogSession;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
+  final void Function(int weekIndex, int dayIndex)? onEditDayCoachingNote;
   final String? planId;
   final bool editorMode;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
@@ -114,6 +116,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
           onDeleteDay: onDeleteDay,
           onUpdateScheduledWeekday: onUpdateScheduledWeekday,
           onCloneDayToTarget: onCloneDayToTarget,
+          onEditDayCoachingNote: onEditDayCoachingNote,
         ),
         Expanded(
           child: _SessionSheetBody(
@@ -127,6 +130,7 @@ class TrainingWeekDayPanel extends StatelessWidget {
             onLogSession: onLogSession,
             planId: planId,
             editorMode: editorMode,
+            onEditDayCoachingNote: onEditDayCoachingNote,
             exerciseListBuilder: exerciseListBuilder,
           ),
         ),
@@ -147,6 +151,7 @@ class _SessionSheetBody extends StatelessWidget {
     required this.onLogSession,
     required this.planId,
     required this.editorMode,
+    this.onEditDayCoachingNote,
     required this.exerciseListBuilder,
   });
 
@@ -160,6 +165,7 @@ class _SessionSheetBody extends StatelessWidget {
   final VoidCallback? onLogSession;
   final String? planId;
   final bool editorMode;
+  final void Function(int weekIndex, int dayIndex)? onEditDayCoachingNote;
   final Widget Function(BuildContext context, int weekIndex, int dayIndex, Day day)
       exerciseListBuilder;
 
@@ -276,6 +282,42 @@ class _SessionSheetBody extends StatelessWidget {
             ],
           ),
         ),
+        if ((day!.coachingNote ?? '').trim().isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+            child: InkWell(
+              onTap: onEditDayCoachingNote == null
+                  ? null
+                  : () => onEditDayCoachingNote!(weekIndex, dayIndex),
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: cs.secondaryContainer.withValues(alpha: 0.4),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.sticky_note_2_outlined,
+                      size: 18,
+                      color: cs.onSecondaryContainer,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        day!.coachingNote!.trim(),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: cs.onSecondaryContainer,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         Expanded(
           child: exerciseListBuilder(
             context,

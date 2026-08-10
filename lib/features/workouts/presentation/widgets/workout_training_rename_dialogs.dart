@@ -34,6 +34,33 @@ void showRenameDayDialog(
   );
 }
 
+void showEditDayCoachingNoteDialog(
+  BuildContext context,
+  String initialNote,
+  void Function(String) onSave,
+) {
+  final l10n = AppLocalizations.of(context);
+  final controller = TextEditingController(text: initialNote);
+  showAppBottomSheet<void>(
+    context: context,
+    title: l10n.workoutBuilderDayCoachingNoteTitle,
+    bodyBuilder: (sheetContext) => TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: l10n.workoutBuilderDayCoachingNoteLabel,
+        hintText: l10n.workoutBuilderDayCoachingNoteHint,
+      ),
+      maxLines: 4,
+      autofocus: false,
+    ),
+    primaryActionLabel: l10n.customerSave,
+    onPrimaryAction: () {
+      onSave(controller.text);
+      Navigator.of(context).pop();
+    },
+  );
+}
+
 Future<String?> showDuplicateWeekDialog(
   BuildContext context,
   String defaultName,

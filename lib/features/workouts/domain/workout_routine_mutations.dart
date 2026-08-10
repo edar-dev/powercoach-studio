@@ -37,6 +37,7 @@ WorkoutRoutine? cloneWeekInRoutine({
               .map((e) => cloneExerciseForWeekCopy(e, newWeekId))
               .toList(),
           scheduledWeekday: day.scheduledWeekday,
+          coachingNote: day.coachingNote,
         ),
       )
       .toList();
@@ -121,6 +122,29 @@ WorkoutRoutine? renameDayInRoutine({
   final day = week.days[dayIndex];
   final newDays = List<Day>.from(week.days);
   newDays[dayIndex] = day.copyWith(name: trimmed);
+  final newWeeks = List<Week>.from(routine.weeks);
+  newWeeks[weekIndex] = week.copyWith(days: newDays);
+  return routine.copyWith(weeks: newWeeks);
+}
+
+/// Sets or clears the day's coaching note. Passing an empty/blank
+/// [coachingNote] clears it.
+WorkoutRoutine? setDayCoachingNoteInRoutine({
+  required WorkoutRoutine routine,
+  required int weekIndex,
+  required int dayIndex,
+  required String coachingNote,
+}) {
+  if (weekIndex < 0 || weekIndex >= routine.weeks.length) return null;
+  final week = routine.weeks[weekIndex];
+  if (dayIndex < 0 || dayIndex >= week.days.length) return null;
+  final day = week.days[dayIndex];
+  final trimmed = coachingNote.trim();
+  final newDays = List<Day>.from(week.days);
+  newDays[dayIndex] = day.copyWith(
+    coachingNote: trimmed.isEmpty ? null : trimmed,
+    clearCoachingNote: trimmed.isEmpty,
+  );
   final newWeeks = List<Week>.from(routine.weeks);
   newWeeks[weekIndex] = week.copyWith(days: newDays);
   return routine.copyWith(weeks: newWeeks);
