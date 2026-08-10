@@ -4,16 +4,16 @@ overview: "Wave 1 PR3 — Suggerimenti progressione rules-based da log locali; c
 todos:
   - id: domain-module
     content: "Nuovo exercise_progression_suggestions.dart — input piano + sessionExecutions"
-    status: pending
+    status: completed
   - id: rules-engine
     content: "Regole default: bump carico, maintain, +reps; graceful su carico non numerico"
-    status: pending
+    status: completed
   - id: builder-ui
     content: "Chip Apply su card esercizio builder e/o preview follow-up dialog"
-    status: pending
+    status: completed
   - id: tests
     content: "Matrice regole con fixture; widget chip; no regressione follow-up apply loads"
-    status: pending
+    status: completed
 isProject: false
 ---
 
