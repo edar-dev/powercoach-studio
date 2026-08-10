@@ -32,6 +32,52 @@ void main() {
     expect(restored.exercises.first.sets.first.load, '100');
   });
 
+  test('SessionExecution round-trips check-in fields', () {
+    final original = SessionExecution(
+      sessionKey: '1-2',
+      weekIndex: 1,
+      dayIndex: 2,
+      sessionDate: DateTime(2026, 6, 10),
+      status: PlanSessionStatus.completed,
+      sessionRpe: 8,
+      painLevel: 3,
+      painLocation: 'left knee',
+    );
+
+    final restored = SessionExecution.fromJson(original.toJson());
+    expect(restored.sessionRpe, 8);
+    expect(restored.painLevel, 3);
+    expect(restored.painLocation, 'left knee');
+  });
+
+  test('legacy SessionExecution JSON without check-in fields decodes as null', () {
+    final restored = SessionExecution.fromJson({
+      'sessionKey': '0-0',
+      'weekIndex': 0,
+      'dayIndex': 0,
+      'sessionDate': '2026-06-01',
+      'status': 'completed',
+    });
+    expect(restored.sessionRpe, isNull);
+    expect(restored.painLevel, isNull);
+    expect(restored.painLocation, isNull);
+  });
+
+  test('toJson omits blank pain location and null check-in fields', () {
+    final execution = SessionExecution(
+      sessionKey: '0-0',
+      weekIndex: 0,
+      dayIndex: 0,
+      sessionDate: DateTime(2026, 6, 1),
+      status: PlanSessionStatus.completed,
+      painLocation: '   ',
+    );
+    final json = execution.toJson();
+    expect(json.containsKey('sessionRpe'), isFalse);
+    expect(json.containsKey('painLevel'), isFalse);
+    expect(json.containsKey('painLocation'), isFalse);
+  });
+
   test('parseSessionExecutions ignores invalid entries', () {
     final parsed = parseSessionExecutions({
       '0-0': {

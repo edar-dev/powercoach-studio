@@ -117,6 +117,15 @@ class WorkoutBuilderTrainingHandlers {
     session.renameDay(weekIndex, dayIndex, newName);
   }
 
+  void setDayCoachingNote(int weekIndex, int dayIndex, String coachingNote) {
+    if (readOnly) return;
+    session.setDayCoachingNote(
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
+      coachingNote: coachingNote,
+    );
+  }
+
   void renameWeek(int weekIndex, String newName) {
     if (readOnly) return;
     session.renameWeek(weekIndex, newName);

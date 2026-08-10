@@ -219,6 +219,22 @@ class PdfDocumentTheme {
     );
   }
 
+  static pw.Widget dayCoachingNote(String text, {bool dense = false}) {
+    final safe = sanitizePdfText(text);
+    if (safe.isEmpty) return pw.SizedBox();
+    return pw.Padding(
+      padding: pw.EdgeInsets.only(bottom: dense ? 3 : 6),
+      child: pw.Text(
+        safe,
+        style: pw.TextStyle(
+          fontSize: dense ? denseDayFontSize - 0.5 : dayFontSize - 1,
+          fontStyle: pw.FontStyle.italic,
+          color: textMuted,
+        ),
+      ),
+    );
+  }
+
   static pw.Widget buildPageFooter(
     pw.Context context,
     PdfExportLabels labels,

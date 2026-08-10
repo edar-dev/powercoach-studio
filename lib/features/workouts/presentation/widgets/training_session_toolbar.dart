@@ -27,6 +27,7 @@ class TrainingSessionToolbar extends StatelessWidget {
     required this.onDeleteDay,
     required this.onUpdateScheduledWeekday,
     this.onCloneDayToTarget,
+    this.onEditDayCoachingNote,
   });
 
   /// Sentinel for PopupMenu (null values are treated as cancel by Flutter).
@@ -50,6 +51,7 @@ class TrainingSessionToolbar extends StatelessWidget {
   final void Function(int weekIndex, int dayIndex, int? weekday)
       onUpdateScheduledWeekday;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
+  final void Function(int weekIndex, int dayIndex)? onEditDayCoachingNote;
 
   String _weekdayShort(BuildContext context, int isoWeekday) {
     final date = DateTime(2024, 1, isoWeekday);
@@ -187,6 +189,14 @@ class TrainingSessionToolbar extends StatelessWidget {
                       onTap: () => onEditDay(weekIndex, dayIndex),
                       destructive: false,
                     ),
+                    if (onEditDayCoachingNote != null)
+                      (
+                        icon: Icons.sticky_note_2_outlined,
+                        label: l10n.workoutBuilderDayCoachingNoteTitle,
+                        onTap: () =>
+                            onEditDayCoachingNote!(weekIndex, dayIndex),
+                        destructive: false,
+                      ),
                     if (onCloneDayToTarget != null)
                       (
                         icon: Icons.copy_outlined,

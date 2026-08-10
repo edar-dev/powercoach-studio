@@ -233,6 +233,11 @@ List<pw.Widget> _canonicalProgrammingWidgets(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
             PdfDocumentTheme.dayTitle(dayTitle, dense: dense),
+            if ((day.coachingNote ?? '').trim().isNotEmpty)
+              PdfDocumentTheme.dayCoachingNote(
+                day.coachingNote!.trim(),
+                dense: dense,
+              ),
             pw.Table(
               border: pw.TableBorder.all(
                 color: PdfDocumentTheme.border,

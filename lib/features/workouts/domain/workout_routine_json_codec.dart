@@ -153,6 +153,8 @@ Map<String, dynamic> encodeDay(Day day) => {
   'name': day.name,
   'exercises': day.exercises.map(encodeExercise).toList(),
   if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
+  if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
+    'coachingNote': day.coachingNote!.trim(),
 };
 
 Day decodeDay(Map<String, dynamic> json) => Day(
@@ -163,6 +165,7 @@ Day decodeDay(Map<String, dynamic> json) => Day(
           .toList() ??
       [],
   scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
+  coachingNote: json['coachingNote'] as String?,
 );
 
 Map<String, dynamic> encodeWeek(Week week) => {

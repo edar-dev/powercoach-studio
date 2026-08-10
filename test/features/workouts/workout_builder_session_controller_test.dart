@@ -173,5 +173,35 @@ void main() {
         isNull,
       );
     });
+
+    test('setDayCoachingNote sets and clears the selected day note', () {
+      final controller = WorkoutBuilderSessionController(
+        routine: routineWithTwoDays(),
+      );
+      addTearDown(controller.dispose);
+
+      final updated = controller.setDayCoachingNote(
+        weekIndex: 0,
+        dayIndex: 0,
+        coachingNote: '  Focus on bracing  ',
+      );
+
+      expect(updated, isTrue);
+      expect(
+        controller.routine.weeks.single.days.first.coachingNote,
+        'Focus on bracing',
+      );
+
+      final cleared = controller.setDayCoachingNote(
+        weekIndex: 0,
+        dayIndex: 0,
+        coachingNote: '',
+      );
+      expect(cleared, isTrue);
+      expect(
+        controller.routine.weeks.single.days.first.coachingNote,
+        isNull,
+      );
+    });
   });
 }

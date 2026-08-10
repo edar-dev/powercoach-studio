@@ -52,4 +52,66 @@ void main() {
 
     expect(find.text('Log session'), findsNothing);
   });
+
+  testWidgets(
+    'SessionLogSheetBody captures optional RPE/pain check-in',
+    (tester) async {
+      SessionLogResult? result;
+
+      await tester.pumpWidget(
+        MaterialApp(
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Builder(
+              builder: (context) {
+                return FilledButton(
+                  onPressed: () async {
+                    result = await showSessionLogSheet(
+                      context: context,
+                      plannedExercises: const [
+                        Exercise(
+                          id: 'e1',
+                          name: 'Squat',
+                          sets: '3',
+                          reps: '5',
+                          rpe: '',
+                        ),
+                      ],
+                    );
+                  },
+                  child: const Text('Open'),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Open'));
+      await tester.pumpAndSettle();
+
+      // Pain location field is hidden until a non-zero pain level is picked.
+      expect(find.widgetWithText(TextField, 'Where? (optional)'), findsNothing);
+
+      await tester.tap(find.widgetWithText(ChoiceChip, '8').first);
+      await tester.pumpAndSettle();
+      await tester.tap(find.widgetWithText(ChoiceChip, '3').last);
+      await tester.pumpAndSettle();
+
+      expect(find.widgetWithText(TextField, 'Where? (optional)'), findsOneWidget);
+      await tester.enterText(
+        find.widgetWithText(TextField, 'Where? (optional)'),
+        'left knee',
+      );
+
+      await tester.tap(find.text('Save session'));
+      await tester.pumpAndSettle();
+
+      expect(result?.sessionRpe, 8);
+      expect(result?.painLevel, 3);
+      expect(result?.painLocation, 'left knee');
+    },
+  );
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/backup/backup_activity_store.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/settings/backup_onboarding_store.dart';
 
@@ -32,4 +33,7 @@ Future<void> maybeShowBackupOnboardingIfNeeded(
 
   if (!context.mounted) return;
   await BackupOnboardingStore.instance.markSeen(user.id);
+  // The onboarding dialog already nudged backup — avoid immediately
+  // re-nagging with the dashboard reminder banner on this same visit.
+  await BackupActivityStore.instance.snoozeReminder(user.id, days: 1);
 }

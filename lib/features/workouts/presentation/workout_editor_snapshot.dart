@@ -64,6 +64,8 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
         ..write(day.name)
         ..write(',')
         ..write(day.scheduledWeekday ?? '')
+        ..write(',')
+        ..write(day.coachingNote ?? '')
         ..write(')');
       for (final exercise in day.exercises) {
         buffer
@@ -164,6 +166,12 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
       ..write(execution.notes)
       ..write(',')
       ..write(execution.exercises.length)
+      ..write(',')
+      ..write(execution.sessionRpe ?? '')
+      ..write(',')
+      ..write(execution.painLevel ?? '')
+      ..write(',')
+      ..write(execution.painLocation ?? '')
       ..write(';');
   }
 

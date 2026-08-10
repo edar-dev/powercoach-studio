@@ -14,6 +14,7 @@ class LandingFaqSection extends StatelessWidget {
     final theme = Theme.of(context);
     final items = [
       _FaqItem(l10n.landingFaqLocalDataQ, l10n.landingFaqLocalDataA),
+      _FaqItem(l10n.landingFaqDeskGymQ, l10n.landingFaqDeskGymA),
       _FaqItem(l10n.landingFaqFreeProQ, l10n.landingFaqFreeProA),
       _FaqItem(l10n.landingFaqBetaQ, l10n.landingFaqBetaA),
       _FaqItem(l10n.landingFaqBrowserQ, l10n.landingFaqBrowserA),

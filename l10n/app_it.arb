@@ -56,7 +56,9 @@
   "landingFaqLabel": "FAQ",
   "landingFaqTitle": "Domande frequenti",
   "landingFaqLocalDataQ": "Dove sono salvati i dati?",
-  "landingFaqLocalDataA": "Sul tuo dispositivo o browser (local-first). Nessun sync automatico: puoi esportare un backup JSON o salvare uno snapshot opzionale sul cloud account.",
+  "landingFaqLocalDataA": "Sul tuo dispositivo o browser (local-first) — i tuoi dati restano tuoi. Nessun sync automatico: puoi esportare un backup JSON o salvare uno snapshot opzionale sul cloud account.",
+  "landingFaqDeskGymQ": "Posso programmare da desktop e allenarmi in sala?",
+  "landingFaqDeskGymA": "Sì. Costruisci la scheda da desktop, poi apri lo stesso account dal telefono in sala per registrare serie, RPE e dolore — nessuna app separata, nessuna configurazione di sync.",
   "landingFaqFreeProQ": "Qual è la differenza tra Gratuito e Pro?",
   "landingFaqFreeProA": "Gratuito include fino a 5 clienti e tutte le funzioni base del builder. Pro sblocca clienti illimitati, export avanzati e integrazione Hevy.",
   "landingFaqBetaQ": "Come accedo alla beta?",
@@ -359,7 +361,7 @@
   "settingsLanguageEnglish": "English",
   "settingsLanguageSaved": "Lingua aggiornata.",
   "settingsBackupSectionTitle": "Backup offline",
-  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali di questo account come file JSON. Utile per spostare i dati tra dispositivi.",
+  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi; la tua chiave API Hevy non viene mai inclusa.",
   "settingsBackupExport": "Esporta backup",
   "settingsBackupImport": "Importa backup",
   "settingsBackupImportConfirmTitle": "Sostituire i dati locali?",
@@ -371,7 +373,7 @@
   "settingsBackupErrorNotSignedIn": "Accedi per esportare o importare un backup.",
   "settingsBackupErrorWrongAccount": "Questo backup appartiene a un altro account.",
   "settingsBackupErrorUnsupportedSchema": "Questo formato di backup non è supportato da questa versione dell’app.",
-  "settingsBackupSectionSubtitleWeb": "I dati del coach sono salvati in questo browser. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo.",
+  "settingsBackupSectionSubtitleWeb": "I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo; la tua chiave API Hevy non viene mai inclusa.",
   "settingsBackupErrorInvalidFile": "File di backup non valido.",
   "settingsCloudBackupSectionTitle": "Backup cloud (opzionale)",
   "settingsCloudBackupSectionSubtitle": "Salva o ripristina uno snapshot manuale su Supabase Storage, visibile solo dal tuo account. Non è una sincronizzazione automatica.",
@@ -398,6 +400,7 @@
   "backupOnboardingTitle": "Proteggi i tuoi dati da coach",
   "backupOnboardingMessage": "PowerCoach Studio salva clienti e piani workout su questo dispositivo. Se cancelli i dati del browser o esci, le informazioni vengono rimosse salvo backup.",
   "backupOnboardingWebHint": "Consigliamo di esportare un backup JSON da Impostazioni dopo la prima sessione e quando fai modifiche importanti.",
+  "backupOnboardingDeskGymHint": "Programma da desktop, poi porta lo stesso account in sala dal telefono — un backup ti permette di portare con te i tuoi dati, senza un account cloud.",
   "backupOnboardingOpenSettings": "Apri impostazioni",
   "backupOnboardingExportNow": "Esporta backup ora",
   "backupOnboardingGotIt": "Ho capito",
@@ -892,6 +895,23 @@
   "workoutBuilderLogSessionSuccess": "Sessione registrata.",
   "workoutBuilderCloneDayToTarget": "Duplica su…",
   "workoutBuilderCloneDayTargetTitle": "Duplica giorno su",
+  "workoutBuilderDayCoachingNoteTitle": "Nota coaching",
+  "workoutBuilderDayCoachingNoteLabel": "Nota per questo giorno",
+  "workoutBuilderDayCoachingNoteHint": "es. focus, cue, indicazioni riscaldamento",
+  "workoutBuilderProgressionIncreaseLoad": "Suggerimento: aumenta il carico a {value}",
+  "@workoutBuilderProgressionIncreaseLoad": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "workoutBuilderProgressionIncreaseLoadGeneric": "Suggerimento: valuta un piccolo aumento di carico",
+  "workoutBuilderProgressionIncreaseReps": "Suggerimento: punta a {value} ripetizioni",
+  "@workoutBuilderProgressionIncreaseReps": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "workoutBuilderProgressionApply": "Applica",
   "workoutBuilderReadOnlyBanner": "Solo lettura — duplica la scheda per modificarla.",
   "planScheduleEmptyHint": "Imposta data di inizio",
   "workoutBuilderEmptyDayCta": "Aggiungi esercizio",
@@ -1367,6 +1387,29 @@
   },
   "sessionLogExpandSets": "Mostra set",
   "sessionLogCollapseSets": "Nascondi set",
+  "sessionLogCheckInTitle": "Com'è andata? (opzionale)",
+  "sessionLogRpeLabel": "RPE sessione (1-10)",
+  "sessionLogPainLabel": "Livello di dolore (0-10)",
+  "sessionLogPainLocationHint": "Dove? (opzionale)",
+  "sessionLogRpeChipLabel": "RPE {value}/10",
+  "@sessionLogRpeChipLabel": {
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+  "sessionLogPainChipLabel": "Dolore {value}/10",
+  "@sessionLogPainChipLabel": {
+    "placeholders": {
+      "value": { "type": "int" }
+    }
+  },
+  "sessionLogPainChipLabelWithLocation": "Dolore {value}/10 · {location}",
+  "@sessionLogPainChipLabelWithLocation": {
+    "placeholders": {
+      "value": { "type": "int" },
+      "location": { "type": "String" }
+    }
+  },
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",

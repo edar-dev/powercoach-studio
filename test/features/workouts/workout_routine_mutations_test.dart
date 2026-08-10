@@ -172,6 +172,27 @@ void main() {
       );
     });
 
+    test('setDayCoachingNoteInRoutine sets and clears the note', () {
+      final withNote = setDayCoachingNoteInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        coachingNote: '  Focus on bracing  ',
+      );
+      expect(
+        withNote!.weeks.single.days.single.coachingNote,
+        'Focus on bracing',
+      );
+
+      final cleared = setDayCoachingNoteInRoutine(
+        routine: withNote,
+        weekIndex: 0,
+        dayIndex: 0,
+        coachingNote: '   ',
+      );
+      expect(cleared!.weeks.single.days.single.coachingNote, isNull);
+    });
+
     test('clearDayScheduledWeekdayInRoutine sets weekday to null', () {
       final withWeekday = setDayScheduledWeekdayInRoutine(
         routine: routine,

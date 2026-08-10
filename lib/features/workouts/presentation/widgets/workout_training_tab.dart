@@ -23,6 +23,7 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
+    required this.onSetDayCoachingNote,
     required this.onDeleteDay,
     required this.onAddExercise,
     required this.onDuplicateExercise,
@@ -59,6 +60,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
+  final void Function(int, int, String) onSetDayCoachingNote;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int) onAddExercise;
   final void Function(int, int, Exercise) onDuplicateExercise;
@@ -143,6 +145,16 @@ class WorkoutTrainingTab extends StatelessWidget {
         onUpdateScheduledWeekday: onUpdateScheduledWeekday,
         onLogSession: onLogSession,
         onCloneDayToTarget: readOnly ? null : onCloneDayToTarget,
+        onEditDayCoachingNote: readOnly
+            ? null
+            : (weekIndex, dayIndex) {
+                final day = weeks[weekIndex].days[dayIndex];
+                showEditDayCoachingNoteDialog(
+                  context,
+                  day.coachingNote ?? '',
+                  (note) => onSetDayCoachingNote(weekIndex, dayIndex, note),
+                );
+              },
         planId: planId,
         editorMode: editorMode,
         exerciseListBuilder: (context, weekIndex, dayIndex, day) {

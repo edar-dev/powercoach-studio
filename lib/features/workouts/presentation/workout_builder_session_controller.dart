@@ -388,6 +388,21 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     );
   }
 
+  bool setDayCoachingNote({
+    required int weekIndex,
+    required int dayIndex,
+    required String coachingNote,
+  }) {
+    return _replace(
+      setDayCoachingNoteInRoutine(
+        routine: _routine,
+        weekIndex: weekIndex,
+        dayIndex: dayIndex,
+        coachingNote: coachingNote,
+      ),
+    );
+  }
+
   bool _replace(WorkoutRoutine? updated) {
     if (updated == null) return false;
     _routine = updated;

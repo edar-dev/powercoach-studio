@@ -2,6 +2,40 @@
 
 Indice dei piani attivi per miglioramenti architetturali, tech debt, test e agent tooling.
 
+## Identity roadmap v7 (attiva)
+
+Claim: **Professional programming. Your data stays yours.**
+
+Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595dc18.plan.md)
+
+| Onda | Plan | Feature | Stato |
+|------|------|---------|-------|
+| **Roadmap** | [feature-roadmap-v7](feature-roadmap-v7.plan.md) | Wave 1–3 | 🚧 Wave 1 in corso |
+| **1 PR1** | [feature-40-session-checkin](feature-40-session-checkin.plan.md) | RPE/pain post-sessione | pending |
+| **1 PR2** | [feature-41-day-coaching-note](feature-41-day-coaching-note.plan.md) | `Day.coachingNote` | pending |
+| **1 PR3** | [feature-42-progression-suggestions](feature-42-progression-suggestions.plan.md) | Progressione suggest-only | pending |
+| **1 PR4** | [feature-43-desk-gym-packaging](feature-43-desk-gym-packaging.plan.md) | Claim + desk→gym copy | pending |
+
+```mermaid
+flowchart LR
+  V7[feature-roadmap-v7]
+  F40[40 session check-in]
+  F41[41 day coaching note]
+  F42[42 progression suggestions]
+  F43[43 desk gym packaging]
+  W2[Wave 2 gym mode plan diff]
+  W3[Wave 3 density narrative]
+  V7 --> F40 --> F41 --> F42
+  V7 --> F43
+  F41 -.-> F43
+  F42 -.-> F43
+  V7 --> W2 --> W3
+```
+
+**Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42. Branch tipici: `feat/identity-wave1-*`.
+
+---
+
 ## Workout builder UX (completata)
 
 Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-analysis.md)
