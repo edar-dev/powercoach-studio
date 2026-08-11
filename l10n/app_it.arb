@@ -1410,6 +1410,14 @@
       "location": { "type": "String" }
     }
   },
+  "gymModeTitle": "Modalità sala",
+  "gymModeAction": "Apri modalità sala",
+  "gymModeEmptyToday": "Nessuna sessione in programma per oggi.",
+  "gymModeRunnerTitle": "Sessione",
+  "gymModeCoachingNoteLabel": "Nota coaching",
+  "gymModeSaveAndComplete": "Salva e completa",
+  "gymModeSaving": "Salvataggio…",
+  "gymModeLogSuccess": "Sessione salvata",
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",

@@ -3210,6 +3210,30 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get gymModeTitle => 'Gym mode';
+
+  @override
+  String get gymModeAction => 'Open gym mode';
+
+  @override
+  String get gymModeEmptyToday => 'No sessions scheduled for today.';
+
+  @override
+  String get gymModeRunnerTitle => 'Session';
+
+  @override
+  String get gymModeCoachingNoteLabel => 'Coaching note';
+
+  @override
+  String get gymModeSaveAndComplete => 'Save & complete';
+
+  @override
+  String get gymModeSaving => 'Saving…';
+
+  @override
+  String get gymModeLogSuccess => 'Session saved';
+
+  @override
   String get customerProgressTitle => 'Training progress';
 
   @override

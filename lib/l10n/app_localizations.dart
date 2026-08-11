@@ -5890,6 +5890,54 @@ abstract class AppLocalizations {
   /// **'Pain {value}/10 · {location}'**
   String sessionLogPainChipLabelWithLocation(int value, String location);
 
+  /// No description provided for @gymModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym mode'**
+  String get gymModeTitle;
+
+  /// No description provided for @gymModeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open gym mode'**
+  String get gymModeAction;
+
+  /// No description provided for @gymModeEmptyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions scheduled for today.'**
+  String get gymModeEmptyToday;
+
+  /// No description provided for @gymModeRunnerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session'**
+  String get gymModeRunnerTitle;
+
+  /// No description provided for @gymModeCoachingNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coaching note'**
+  String get gymModeCoachingNoteLabel;
+
+  /// No description provided for @gymModeSaveAndComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & complete'**
+  String get gymModeSaveAndComplete;
+
+  /// No description provided for @gymModeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get gymModeSaving;
+
+  /// No description provided for @gymModeLogSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Session saved'**
+  String get gymModeLogSuccess;
+
   /// No description provided for @customerProgressTitle.
   ///
   /// In en, this message translates to:

@@ -1410,6 +1410,14 @@
       "location": { "type": "String" }
     }
   },
+  "gymModeTitle": "Gym mode",
+  "gymModeAction": "Open gym mode",
+  "gymModeEmptyToday": "No sessions scheduled for today.",
+  "gymModeRunnerTitle": "Session",
+  "gymModeCoachingNoteLabel": "Coaching note",
+  "gymModeSaveAndComplete": "Save & complete",
+  "gymModeSaving": "Saving…",
+  "gymModeLogSuccess": "Session saved",
   "customerProgressTitle": "Training progress",
   "customerProgressAdherence": "Adherence (30 days)",
   "customerProgressLastSession": "Last session",

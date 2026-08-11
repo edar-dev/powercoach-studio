@@ -24,6 +24,8 @@ import 'package:powercoach_studio/features/settings/presentation/screens/release
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
+import 'package:powercoach_studio/features/workouts/presentation/screens/gym_mode_screen.dart';
+import 'package:powercoach_studio/features/workouts/presentation/screens/gym_session_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_variant.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
@@ -88,6 +90,18 @@ List<RouteBase> buildAppRoutes() {
       path: AppPaths.subscription,
       parentNavigatorKey: appRootNavigatorKey,
       builder: (context, state) => const SubscriptionScreen(),
+    ),
+    GoRoute(
+      path: AppPaths.gym,
+      parentNavigatorKey: appRootNavigatorKey,
+      builder: (context, state) => const GymModeScreen(),
+      routes: [
+        GoRoute(
+          path: 'session',
+          parentNavigatorKey: appRootNavigatorKey,
+          builder: (context, state) => const GymSessionScreen(),
+        ),
+      ],
     ),
     GoRoute(
       path: '/settings',

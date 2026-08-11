@@ -10,4 +10,7 @@ abstract final class AppPaths {
   static const subscriptionLegacy = '/settings/subscription';
 
   static const settings = '/settings';
+
+  /// Gym mode — full-page session runner for today's scheduled sessions.
+  static const gym = '/gym';
 }

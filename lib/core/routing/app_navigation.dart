@@ -113,6 +113,27 @@ String scheduleSessionDetailPath({
   ).toString();
 }
 
+/// Gym mode runner for a specific plan/week/day slot.
+String gymSessionPath({
+  required String customerId,
+  required String planId,
+  required int weekIndex,
+  required int dayIndex,
+  DateTime? date,
+}) {
+  return Uri(
+    path: '${AppPaths.gym}/session',
+    queryParameters: {
+      'customerId': customerId,
+      'planId': planId,
+      'week': '$weekIndex',
+      'day': '$dayIndex',
+      if (date != null)
+        'date': DateTime(date.year, date.month, date.day).toIso8601String(),
+    },
+  ).toString();
+}
+
 /// New plan editor for [customerId], or edit when [planId] is set.
 String customerWorkoutEditorPath(
   String customerId, {

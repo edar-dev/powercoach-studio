@@ -3239,6 +3239,30 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get gymModeTitle => 'Modalità sala';
+
+  @override
+  String get gymModeAction => 'Apri modalità sala';
+
+  @override
+  String get gymModeEmptyToday => 'Nessuna sessione in programma per oggi.';
+
+  @override
+  String get gymModeRunnerTitle => 'Sessione';
+
+  @override
+  String get gymModeCoachingNoteLabel => 'Nota coaching';
+
+  @override
+  String get gymModeSaveAndComplete => 'Salva e completa';
+
+  @override
+  String get gymModeSaving => 'Salvataggio…';
+
+  @override
+  String get gymModeLogSuccess => 'Sessione salvata';
+
+  @override
   String get customerProgressTitle => 'Progresso allenamento';
 
   @override
