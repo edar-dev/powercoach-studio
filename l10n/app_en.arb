@@ -1462,6 +1462,8 @@
   "gymModeSaveAndComplete": "Save & complete",
   "gymModeSaving": "Saving…",
   "gymModeLogSuccess": "Session saved",
+  "gymModeTimerStart": "Start",
+  "gymModeTimerReset": "Reset",
   "workoutPlanDiffTitle": "Plan comparison",
   "workoutPlanDiffPickPlanBTitle": "Choose a plan to compare",
   "workoutPlanDiffPlanALabel": "Plan A (current)",

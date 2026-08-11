@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_plan_api_model.dart';
 import '../../data/workout_plan_repository.dart';
+import '../../domain/density_block.dart';
 import '../../domain/workout_plan_list_helpers.dart';
 import '../../domain/workout_routine_diff.dart';
 import '../workout_plan_display_helpers.dart';
@@ -606,6 +607,17 @@ class _PlanDiffDayCard extends StatelessWidget {
                 ),
               ),
           ],
+          if (dayDiff.densityBlockDiffs.any((d) => d.hasChange)) ...[
+            const SizedBox(height: 8),
+            for (final densityDiff
+                in dayDiff.densityBlockDiffs.where((d) => d.hasChange))
+              _PlanDiffDensityRow(
+                l10n: l10n,
+                theme: theme,
+                colorScheme: colorScheme,
+                densityDiff: densityDiff,
+              ),
+          ],
           if (changedExercises.isNotEmpty) ...[
             const SizedBox(height: 8),
             for (final exerciseDiff in changedExercises)
@@ -617,6 +629,60 @@ class _PlanDiffDayCard extends StatelessWidget {
               ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _PlanDiffDensityRow extends StatelessWidget {
+  const _PlanDiffDensityRow({
+    required this.l10n,
+    required this.theme,
+    required this.colorScheme,
+    required this.densityDiff,
+  });
+
+  final AppLocalizations l10n;
+  final ThemeData theme;
+  final ColorScheme colorScheme;
+  final DensityBlockDiff densityDiff;
+
+  String _typeLabel(DensityBlockConfig config) => switch (config.type) {
+        DensityBlockType.circuit => l10n.densityBlockTypeCircuit,
+        DensityBlockType.emom => l10n.densityBlockTypeEmom,
+        DensityBlockType.superset => l10n.densityBlockTypeSuperset,
+      };
+
+  String _line(DensityBlockConfig config) {
+    final type = _typeLabel(config);
+    final detail = densityBlockExportDetail(config);
+    if (detail.isEmpty) return type;
+    return '$type · $detail';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final before = densityDiff.before;
+    final after = densityDiff.after;
+    final String text;
+    final Color color;
+    switch (densityDiff.kind) {
+      case WorkoutRoutineDiffKind.added:
+        text = '+ ${_line(after!)}';
+        color = colorScheme.primary;
+      case WorkoutRoutineDiffKind.removed:
+        text = '− ${_line(before!)}';
+        color = colorScheme.error;
+      default:
+        text =
+            '${before == null ? '—' : _line(before)} → ${after == null ? '—' : _line(after)}';
+        color = colorScheme.onSurfaceVariant;
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Text(
+        text,
+        style: theme.textTheme.bodySmall?.copyWith(color: color),
       ),
     );
   }

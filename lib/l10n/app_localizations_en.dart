@@ -3314,6 +3314,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get gymModeLogSuccess => 'Session saved';
 
   @override
+  String get gymModeTimerStart => 'Start';
+
+  @override
+  String get gymModeTimerReset => 'Reset';
+
+  @override
   String get workoutPlanDiffTitle => 'Plan comparison';
 
   @override

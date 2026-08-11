@@ -6082,6 +6082,18 @@ abstract class AppLocalizations {
   /// **'Session saved'**
   String get gymModeLogSuccess;
 
+  /// No description provided for @gymModeTimerStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get gymModeTimerStart;
+
+  /// No description provided for @gymModeTimerReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get gymModeTimerReset;
+
   /// No description provided for @workoutPlanDiffTitle.
   ///
   /// In en, this message translates to:

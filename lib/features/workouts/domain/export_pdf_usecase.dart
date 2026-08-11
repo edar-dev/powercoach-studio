@@ -13,26 +13,6 @@ import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
 import 'density_block.dart';
 
-String densityBlockExportLabel(
-  Day day,
-  List<Exercise> group,
-  PdfExportLabels labels,
-) {
-  if (group.isEmpty) return labels.superset;
-  final groupId = group.first.supersetGroupId;
-  if (groupId == null || groupId.isEmpty) return labels.superset;
-  final config = resolveDensityBlock(day, groupId);
-  if (config == null) return labels.superset;
-  final typeLabel = switch (config.type) {
-    DensityBlockType.circuit => labels.circuit,
-    DensityBlockType.emom => labels.emom,
-    DensityBlockType.superset => labels.superset,
-  };
-  final detail = densityBlockExportDetail(config);
-  if (detail.isEmpty) return typeLabel;
-  return '$typeLabel · $detail';
-}
-
 /// PDF programming layout: per-week sections vs dense progression columns.
 enum WorkoutPdfLayout {
   /// One section per week, then days.

@@ -5,6 +5,7 @@
 // not a "who did what" diff.
 
 import '../data/workout_routine_model.dart';
+import 'density_block.dart';
 
 /// Kind of structural change for a diffed node (week/day/exercise/set).
 enum WorkoutRoutineDiffKind { unchanged, added, removed, changed }
@@ -47,6 +48,23 @@ class ExerciseDiff {
       setDiffs.any((d) => d.hasChange);
 }
 
+/// Density-block diff keyed by `supersetGroupId` within a matched day.
+class DensityBlockDiff {
+  const DensityBlockDiff({
+    required this.groupId,
+    required this.kind,
+    this.before,
+    this.after,
+  });
+
+  final String groupId;
+  final WorkoutRoutineDiffKind kind;
+  final DensityBlockConfig? before;
+  final DensityBlockConfig? after;
+
+  bool get hasChange => kind != WorkoutRoutineDiffKind.unchanged;
+}
+
 /// Day-level diff within a matched week (by index).
 class DayDiff {
   const DayDiff({
@@ -58,6 +76,7 @@ class DayDiff {
     this.after,
     this.coachingNoteBefore,
     this.coachingNoteAfter,
+    this.densityBlockDiffs = const [],
     this.exerciseDiffs = const [],
   });
 
@@ -69,6 +88,7 @@ class DayDiff {
   final Day? after;
   final String? coachingNoteBefore;
   final String? coachingNoteAfter;
+  final List<DensityBlockDiff> densityBlockDiffs;
   final List<ExerciseDiff> exerciseDiffs;
 
   bool get coachingNoteChanged =>
@@ -77,6 +97,7 @@ class DayDiff {
   bool get hasChange =>
       kind != WorkoutRoutineDiffKind.unchanged ||
       coachingNoteChanged ||
+      densityBlockDiffs.any((d) => d.hasChange) ||
       exerciseDiffs.any((d) => d.hasChange);
 }
 
@@ -228,6 +249,7 @@ DayDiff _diffDay(int weekIndex, int dayIndex, Day? dayA, Day? dayB) {
       kind: WorkoutRoutineDiffKind.added,
       after: dayB,
       coachingNoteAfter: dayB.coachingNote,
+      densityBlockDiffs: _diffDensityBlocks(null, dayB.densityBlocks),
       exerciseDiffs: _matchExercises(const [], dayB.exercises),
     );
   }
@@ -239,15 +261,19 @@ DayDiff _diffDay(int weekIndex, int dayIndex, Day? dayA, Day? dayB) {
       kind: WorkoutRoutineDiffKind.removed,
       before: dayA,
       coachingNoteBefore: dayA.coachingNote,
+      densityBlockDiffs: _diffDensityBlocks(dayA.densityBlocks, null),
       exerciseDiffs: _matchExercises(dayA.exercises, const []),
     );
   }
 
   final exerciseDiffs = _matchExercises(dayA.exercises, dayB.exercises);
+  final densityBlockDiffs =
+      _diffDensityBlocks(dayA.densityBlocks, dayB.densityBlocks);
   final coachingNoteChanged =
       (dayA.coachingNote?.trim() ?? '') != (dayB.coachingNote?.trim() ?? '');
-  final kind =
-      exerciseDiffs.any((e) => e.hasChange) || coachingNoteChanged
+  final kind = exerciseDiffs.any((e) => e.hasChange) ||
+          coachingNoteChanged ||
+          densityBlockDiffs.any((d) => d.hasChange)
       ? WorkoutRoutineDiffKind.changed
       : WorkoutRoutineDiffKind.unchanged;
   return DayDiff(
@@ -259,8 +285,55 @@ DayDiff _diffDay(int weekIndex, int dayIndex, Day? dayA, Day? dayB) {
     after: dayB,
     coachingNoteBefore: dayA.coachingNote,
     coachingNoteAfter: dayB.coachingNote,
+    densityBlockDiffs: densityBlockDiffs,
     exerciseDiffs: exerciseDiffs,
   );
+}
+
+List<DensityBlockDiff> _diffDensityBlocks(
+  Map<String, DensityBlockConfig>? before,
+  Map<String, DensityBlockConfig>? after,
+) {
+  final beforeMap = before ?? const <String, DensityBlockConfig>{};
+  final afterMap = after ?? const <String, DensityBlockConfig>{};
+  final keys = {...beforeMap.keys, ...afterMap.keys}.toList()..sort();
+  final diffs = <DensityBlockDiff>[];
+  for (final key in keys) {
+    final a = beforeMap[key];
+    final b = afterMap[key];
+    if (a == null && b == null) continue;
+    if (a == null) {
+      diffs.add(
+        DensityBlockDiff(
+          groupId: key,
+          kind: WorkoutRoutineDiffKind.added,
+          after: b,
+        ),
+      );
+      continue;
+    }
+    if (b == null) {
+      diffs.add(
+        DensityBlockDiff(
+          groupId: key,
+          kind: WorkoutRoutineDiffKind.removed,
+          before: a,
+        ),
+      );
+      continue;
+    }
+    if (a != b) {
+      diffs.add(
+        DensityBlockDiff(
+          groupId: key,
+          kind: WorkoutRoutineDiffKind.changed,
+          before: a,
+          after: b,
+        ),
+      );
+    }
+  }
+  return diffs;
 }
 
 /// Matches exercises by id first, then by normalized name — mirrors the

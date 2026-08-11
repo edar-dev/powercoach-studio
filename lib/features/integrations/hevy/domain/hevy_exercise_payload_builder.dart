@@ -1,4 +1,5 @@
 import '../../../workouts/data/workout_routine_model.dart';
+import '../../../workouts/domain/density_block.dart';
 import 'hevy_prescription_parser.dart';
 
 /// Builds Hevy exercise JSON shared by routine and workout create payloads.
@@ -31,6 +32,8 @@ class HevyExercisePayloadBuilder {
         );
       } else if (partition is List<Exercise>) {
         final groupId = assignSupersetIds ? groupCounter++ : null;
+        final densityPrefix = densityBlockHevyNotePrefix(day, partition);
+        var isFirstInGroup = true;
         for (final e in partition) {
           final templateId = _templateId(e, exerciseNameToTemplateId);
           if (templateId == null) continue;
@@ -39,8 +42,10 @@ class HevyExercisePayloadBuilder {
               templateId: templateId,
               exercise: e,
               supersetId: groupId,
+              notesPrefix: isFirstInGroup ? densityPrefix : null,
             ),
           );
+          isFirstInGroup = false;
         }
       }
     }
@@ -51,6 +56,7 @@ class HevyExercisePayloadBuilder {
     required String templateId,
     required Exercise exercise,
     int? supersetId,
+    String? notesPrefix,
   }) {
     final parsedSets = _parser.parseExercise(exercise);
     final sets = parsedSets
@@ -67,6 +73,8 @@ class HevyExercisePayloadBuilder {
         .toList();
 
     final notes = <String>[
+      if (notesPrefix != null && notesPrefix.trim().isNotEmpty)
+        notesPrefix.trim(),
       if (exercise.note.trim().isNotEmpty) exercise.note.trim(),
       for (final d in exercise.effectiveSetDetails)
         if (d.displayText.trim().isNotEmpty) d.displayText.trim(),

@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/density_block.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_routine_diff.dart';
 
 WorkoutRoutine _routine({required List<Week> weeks}) => WorkoutRoutine(
@@ -237,6 +238,94 @@ void main() {
 
       expect(result.weekDiffs, hasLength(2));
       expect(result.weekDiffs[1].kind, WorkoutRoutineDiffKind.removed);
+    });
+
+    test('detects density block rounds changed', () {
+      final dayA = Day(
+        id: 'd1',
+        name: 'Day A',
+        exercises: const [],
+        densityBlocks: {
+          'ss_1': const DensityBlockConfig(
+            type: DensityBlockType.circuit,
+            rounds: 3,
+            restSeconds: 90,
+          ),
+        },
+      );
+      final dayB = Day(
+        id: 'd1',
+        name: 'Day A',
+        exercises: const [],
+        densityBlocks: {
+          'ss_1': const DensityBlockConfig(
+            type: DensityBlockType.circuit,
+            rounds: 4,
+            restSeconds: 90,
+          ),
+        },
+      );
+      final result = diffWorkoutRoutines(
+        planA: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayA])]),
+        planB: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayB])]),
+      );
+
+      final dayDiff = result.weekDiffs.single.dayDiffs.single;
+      expect(dayDiff.kind, WorkoutRoutineDiffKind.changed);
+      expect(dayDiff.densityBlockDiffs, hasLength(1));
+      final densityDiff = dayDiff.densityBlockDiffs.single;
+      expect(densityDiff.groupId, 'ss_1');
+      expect(densityDiff.kind, WorkoutRoutineDiffKind.changed);
+      expect(densityDiff.before?.rounds, 3);
+      expect(densityDiff.after?.rounds, 4);
+    });
+
+    test('detects density block added', () {
+      final dayA = const Day(id: 'd1', name: 'Day A', exercises: []);
+      final dayB = Day(
+        id: 'd1',
+        name: 'Day A',
+        exercises: const [],
+        densityBlocks: {
+          'ss_new': const DensityBlockConfig(
+            type: DensityBlockType.emom,
+            intervalSeconds: 60,
+          ),
+        },
+      );
+      final result = diffWorkoutRoutines(
+        planA: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayA])]),
+        planB: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayB])]),
+      );
+
+      final densityDiff =
+          result.weekDiffs.single.dayDiffs.single.densityBlockDiffs.single;
+      expect(densityDiff.kind, WorkoutRoutineDiffKind.added);
+      expect(densityDiff.after?.type, DensityBlockType.emom);
+    });
+
+    test('detects density block removed', () {
+      final dayA = Day(
+        id: 'd1',
+        name: 'Day A',
+        exercises: const [],
+        densityBlocks: {
+          'ss_old': const DensityBlockConfig(
+            type: DensityBlockType.circuit,
+            rounds: 3,
+          ),
+        },
+      );
+      final dayB = const Day(id: 'd1', name: 'Day A', exercises: []);
+      final result = diffWorkoutRoutines(
+        planA: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayA])]),
+        planB: _routine(weeks: [Week(id: 'w1', name: 'Week 1', days: [dayB])]),
+      );
+
+      final densityDiff =
+          result.weekDiffs.single.dayDiffs.single.densityBlockDiffs.single;
+      expect(densityDiff.kind, WorkoutRoutineDiffKind.removed);
+      expect(densityDiff.before?.rounds, 3);
     });
   });
 }

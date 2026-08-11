@@ -1,3 +1,4 @@
+import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/workout_routine_model.dart';
 
 /// Programming density for a linked exercise group (superset / circuit / EMOM).
@@ -155,6 +156,59 @@ String densityBlockExportDetail(DensityBlockConfig config) {
       }
       return parts.join(' · ');
   }
+}
+
+/// Locale-neutral type name for exports that cannot pass [PdfExportLabels]
+/// (e.g. Hevy notes).
+String densityBlockExportTypeName(DensityBlockType type) => switch (type) {
+      DensityBlockType.circuit => 'Circuit',
+      DensityBlockType.emom => 'EMOM',
+      DensityBlockType.superset => 'Superset',
+    };
+
+/// Combines a localized (or neutral) type label with [densityBlockExportDetail].
+String formatDensityBlockExportLine(
+  DensityBlockConfig config, {
+  required String typeLabel,
+}) {
+  final detail = densityBlockExportDetail(config);
+  if (detail.isEmpty) return typeLabel;
+  return '$typeLabel · $detail';
+}
+
+/// Shared PDF/Excel density header for a partitioned exercise group.
+String densityBlockExportLabel(
+  Day day,
+  List<Exercise> group,
+  PdfExportLabels labels,
+) {
+  if (group.isEmpty) return labels.superset;
+  final groupId = group.first.supersetGroupId;
+  if (groupId == null || groupId.isEmpty) return labels.superset;
+  final config = resolveDensityBlock(day, groupId);
+  if (config == null) return labels.superset;
+  final typeLabel = switch (config.type) {
+    DensityBlockType.circuit => labels.circuit,
+    DensityBlockType.emom => labels.emom,
+    DensityBlockType.superset => labels.superset,
+  };
+  return formatDensityBlockExportLine(config, typeLabel: typeLabel);
+}
+
+/// Short density line for Hevy first-exercise notes (locale-neutral).
+/// Empty for plain supersets — Hevy already has `superset_id`.
+String densityBlockHevyNotePrefix(Day day, List<Exercise> group) {
+  if (group.isEmpty) return '';
+  final groupId = group.first.supersetGroupId;
+  if (groupId == null || groupId.isEmpty) return '';
+  final config = resolveDensityBlock(day, groupId);
+  if (config == null || config.type == DensityBlockType.superset) {
+    return '';
+  }
+  return formatDensityBlockExportLine(
+    config,
+    typeLabel: densityBlockExportTypeName(config.type),
+  );
 }
 
 Map<String, DensityBlockConfig>? decodeDensityBlocks(dynamic raw) {

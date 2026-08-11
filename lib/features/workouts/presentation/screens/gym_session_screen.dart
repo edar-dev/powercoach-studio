@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -8,9 +10,11 @@ import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../dashboard/domain/session_detail_loader.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/density_block.dart';
 import '../../domain/plan_session_status_service.dart';
 import '../../domain/session_execution.dart';
 import '../../domain/session_execution_service.dart';
+import '../widgets/density_block_l10n.dart';
 import '../widgets/session_log_form_body.dart';
 
 /// Gym mode session runner — full-page (not a bottom sheet) so a coach can
@@ -156,6 +160,31 @@ class _GymSessionScreenState extends State<GymSessionScreen> {
     }
   }
 
+  List<_GymDensityGroup> _densityGroups(Day day) {
+    final groups = <_GymDensityGroup>[];
+    for (final item in partitionExercisesBySuperset(day.exercises)) {
+      if (item is! List<Exercise>) continue;
+      final group = item;
+      if (group.isEmpty) continue;
+      final groupId = group.first.supersetGroupId;
+      if (groupId == null || groupId.isEmpty) continue;
+      final config = resolveDensityBlock(day, groupId);
+      if (config == null) continue;
+      if (config.type != DensityBlockType.circuit &&
+          config.type != DensityBlockType.emom) {
+        continue;
+      }
+      groups.add(
+        _GymDensityGroup(
+          groupId: groupId,
+          config: config,
+          exerciseCount: group.length,
+        ),
+      );
+    }
+    return groups;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -247,6 +276,10 @@ class _GymSessionScreenState extends State<GymSessionScreen> {
                       ),
                     ),
                   ],
+                  for (final group in _densityGroups(day)) ...[
+                    const SizedBox(height: 12),
+                    _GymDensityBlockHeader(group: group),
+                  ],
                   const SizedBox(height: 24),
                   SessionLogFormBody(
                     plannedExercises: day.exercises,
@@ -265,6 +298,183 @@ class _GymSessionScreenState extends State<GymSessionScreen> {
                 ],
               ),
             ),
+    );
+  }
+}
+
+class _GymDensityGroup {
+  const _GymDensityGroup({
+    required this.groupId,
+    required this.config,
+    required this.exerciseCount,
+  });
+
+  final String groupId;
+  final DensityBlockConfig config;
+  final int exerciseCount;
+}
+
+/// Circuit/EMOM header with a simple rest/interval countdown.
+class _GymDensityBlockHeader extends StatefulWidget {
+  const _GymDensityBlockHeader({required this.group});
+
+  final _GymDensityGroup group;
+
+  @override
+  State<_GymDensityBlockHeader> createState() => _GymDensityBlockHeaderState();
+}
+
+class _GymDensityBlockHeaderState extends State<_GymDensityBlockHeader> {
+  Timer? _timer;
+  int? _remainingSeconds;
+
+  int? get _countdownSeconds {
+    final config = widget.group.config;
+    switch (config.type) {
+      case DensityBlockType.circuit:
+        return config.restSeconds;
+      case DensityBlockType.emom:
+        return config.intervalSeconds;
+      case DensityBlockType.superset:
+        return null;
+    }
+  }
+
+  bool get _canTime {
+    final seconds = _countdownSeconds;
+    return seconds != null && seconds > 0;
+  }
+
+  void _start() {
+    final total = _countdownSeconds;
+    if (total == null || total <= 0) return;
+    _timer?.cancel();
+    setState(() => _remainingSeconds = total);
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted) return;
+      final remaining = _remainingSeconds;
+      if (remaining == null || remaining <= 1) {
+        _timer?.cancel();
+        _timer = null;
+        setState(() => _remainingSeconds = 0);
+        return;
+      }
+      setState(() => _remainingSeconds = remaining - 1);
+    });
+  }
+
+  void _reset() {
+    _timer?.cancel();
+    _timer = null;
+    setState(() => _remainingSeconds = null);
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String _formatSeconds(int seconds) {
+    final m = seconds ~/ 60;
+    final s = seconds % 60;
+    if (m > 0) {
+      return '$m:${s.toString().padLeft(2, '0')}';
+    }
+    return '${s}s';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final config = widget.group.config;
+    final heading = switch (config.type) {
+      DensityBlockType.circuit => l10n.workoutBuilderCircuitHeading,
+      DensityBlockType.emom => l10n.workoutBuilderEmomHeading,
+      DensityBlockType.superset => l10n.workoutBuilderSuperSetHeading,
+    };
+    final subtitle = localizedDensityBlockSubtitle(l10n, config);
+    final remaining = _remainingSeconds;
+    final running = _timer != null;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: cs.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: cs.outline.withValues(alpha: 0.4)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                config.type == DensityBlockType.emom
+                    ? Icons.timer_outlined
+                    : Icons.loop,
+                size: 20,
+                color: cs.primary,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  heading,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+              Text(
+                '${widget.group.exerciseCount}',
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: cs.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+          if (subtitle.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            Text(
+              subtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+          ],
+          if (_canTime) ...[
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Text(
+                  remaining == null
+                      ? _formatSeconds(_countdownSeconds!)
+                      : _formatSeconds(remaining),
+                  style: theme.textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: remaining == 0 ? cs.error : cs.onSurface,
+                  ),
+                ),
+                const Spacer(),
+                IconButton.filledTonal(
+                  onPressed: running ? null : _start,
+                  icon: const Icon(Icons.play_arrow),
+                  tooltip: l10n.gymModeTimerStart,
+                ),
+                const SizedBox(width: 4),
+                IconButton.outlined(
+                  onPressed: remaining == null && !running ? null : _reset,
+                  icon: const Icon(Icons.refresh),
+                  tooltip: l10n.gymModeTimerReset,
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
     );
   }
 }
