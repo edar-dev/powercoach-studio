@@ -10,6 +10,8 @@ class PdfExportLabels {
     required this.colNotes,
     required this.mobilityFallback,
     required this.superset,
+    required this.circuit,
+    required this.emom,
     required this.dayNumber,
     required this.emptyValue,
     required this.footerDisclaimer,
@@ -44,6 +46,8 @@ class PdfExportLabels {
   final String colNotes;
   final String mobilityFallback;
   final String superset;
+  final String circuit;
+  final String emom;
   final String Function(int dayIndex) dayNumber;
   final String emptyValue;
   final String footerDisclaimer;

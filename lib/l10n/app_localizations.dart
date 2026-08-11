@@ -2342,6 +2342,18 @@ abstract class AppLocalizations {
   /// **'Superset'**
   String get pdfSuperset;
 
+  /// No description provided for @pdfCircuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Circuit'**
+  String get pdfCircuit;
+
+  /// No description provided for @pdfEmom.
+  ///
+  /// In en, this message translates to:
+  /// **'EMOM'**
+  String get pdfEmom;
+
   /// No description provided for @pdfDayNumber.
   ///
   /// In en, this message translates to:
@@ -3460,11 +3472,35 @@ abstract class AppLocalizations {
   /// **'SUPER SET'**
   String get workoutBuilderSuperSetHeading;
 
+  /// No description provided for @workoutBuilderCircuitHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'CIRCUIT'**
+  String get workoutBuilderCircuitHeading;
+
+  /// No description provided for @workoutBuilderEmomHeading.
+  ///
+  /// In en, this message translates to:
+  /// **'EMOM'**
+  String get workoutBuilderEmomHeading;
+
   /// No description provided for @builderSupersetPanelTitle.
   ///
   /// In en, this message translates to:
   /// **'Manage superset'**
   String get builderSupersetPanelTitle;
+
+  /// No description provided for @builderCircuitPanelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage circuit'**
+  String get builderCircuitPanelTitle;
+
+  /// No description provided for @builderEmomPanelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage EMOM'**
+  String get builderEmomPanelTitle;
 
   /// No description provided for @builderSupersetAddExercise.
   ///
@@ -3490,6 +3526,18 @@ abstract class AppLocalizations {
   /// **'Manage'**
   String get builderSupersetManage;
 
+  /// No description provided for @builderCircuitManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get builderCircuitManage;
+
+  /// No description provided for @builderEmomManage.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage'**
+  String get builderEmomManage;
+
   /// No description provided for @workoutBuilderDeleteDayMenu.
   ///
   /// In en, this message translates to:
@@ -3502,11 +3550,101 @@ abstract class AppLocalizations {
   /// **'New superset'**
   String get workoutBuilderNewSuperset;
 
+  /// No description provided for @workoutBuilderNewCircuit.
+  ///
+  /// In en, this message translates to:
+  /// **'New circuit'**
+  String get workoutBuilderNewCircuit;
+
+  /// No description provided for @workoutBuilderNewEmom.
+  ///
+  /// In en, this message translates to:
+  /// **'New EMOM'**
+  String get workoutBuilderNewEmom;
+
   /// No description provided for @workoutBuilderRemoveFromSuperset.
   ///
   /// In en, this message translates to:
   /// **'Remove from superset'**
   String get workoutBuilderRemoveFromSuperset;
+
+  /// No description provided for @densityRoundsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rounds'**
+  String get densityRoundsLabel;
+
+  /// No description provided for @densityRestSecondsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Rest (seconds)'**
+  String get densityRestSecondsLabel;
+
+  /// No description provided for @densityIntervalSecondsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Interval (seconds)'**
+  String get densityIntervalSecondsLabel;
+
+  /// No description provided for @densityDurationMinutesLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration (minutes)'**
+  String get densityDurationMinutesLabel;
+
+  /// No description provided for @densityBlockTypeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get densityBlockTypeLabel;
+
+  /// No description provided for @densityBlockTypeSuperset.
+  ///
+  /// In en, this message translates to:
+  /// **'Superset'**
+  String get densityBlockTypeSuperset;
+
+  /// No description provided for @densityBlockTypeCircuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Circuit'**
+  String get densityBlockTypeCircuit;
+
+  /// No description provided for @densityBlockTypeEmom.
+  ///
+  /// In en, this message translates to:
+  /// **'EMOM'**
+  String get densityBlockTypeEmom;
+
+  /// No description provided for @densityBlockSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save density'**
+  String get densityBlockSave;
+
+  /// No description provided for @densityCircuitRounds.
+  ///
+  /// In en, this message translates to:
+  /// **'{rounds} rounds'**
+  String densityCircuitRounds(int rounds);
+
+  /// No description provided for @densityCircuitRest.
+  ///
+  /// In en, this message translates to:
+  /// **'{seconds}s rest'**
+  String densityCircuitRest(int seconds);
+
+  /// No description provided for @densityEmomInterval.
+  ///
+  /// In en, this message translates to:
+  /// **'EMOM {seconds}s'**
+  String densityEmomInterval(int seconds);
+
+  /// No description provided for @densityEmomDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'{minutes} min'**
+  String densityEmomDuration(int minutes);
 
   /// No description provided for @workoutBuilderTabTraining.
   ///
@@ -6141,6 +6279,74 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Progress export failed'**
   String get customerProgressExportFailed;
+
+  /// No description provided for @customerProgressExportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio'**
+  String get customerProgressExportTitle;
+
+  /// No description provided for @customerProgressExportGeneratedOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Generated'**
+  String get customerProgressExportGeneratedOn;
+
+  /// No description provided for @customerProgressNarrativeSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Over the last 30 days, adherence was {adherence} ({completed} completed, {skipped} skipped).'**
+  String customerProgressNarrativeSummary(
+    String adherence,
+    int completed,
+    int skipped,
+  );
+
+  /// No description provided for @customerProgressNarrativeLastSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Last session: {when}.'**
+  String customerProgressNarrativeLastSession(String when);
+
+  /// No description provided for @customerProgressNarrativeRecentPr.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent PR: {name} — {value} {unit}.'**
+  String customerProgressNarrativeRecentPr(
+    String name,
+    String value,
+    String unit,
+  );
+
+  /// No description provided for @customerProgressExportWeeklyCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'completed'**
+  String get customerProgressExportWeeklyCompleted;
+
+  /// No description provided for @customerProgressExportWeeklyMissed.
+  ///
+  /// In en, this message translates to:
+  /// **'missed'**
+  String get customerProgressExportWeeklyMissed;
+
+  /// No description provided for @customerProgressExportWeeklyNoData.
+  ///
+  /// In en, this message translates to:
+  /// **'no data'**
+  String get customerProgressExportWeeklyNoData;
+
+  /// No description provided for @customerProgressExportDataSection.
+  ///
+  /// In en, this message translates to:
+  /// **'--- data ---'**
+  String get customerProgressExportDataSection;
+
+  /// No description provided for @customerProgressPrLine.
+  ///
+  /// In en, this message translates to:
+  /// **'· {name} {value} {unit}'**
+  String customerProgressPrLine(String name, String value, String unit);
 
   /// No description provided for @settingsCalendarRemindersTitle.
   ///

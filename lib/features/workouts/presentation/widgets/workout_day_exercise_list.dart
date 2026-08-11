@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
@@ -34,6 +35,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
+    this.onSetDensityBlock,
   });
 
   final ThemeData theme;
@@ -76,9 +78,11 @@ class WorkoutDayExerciseList extends StatefulWidget {
   })
   onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
-  final void Function(int, int, String, String) onAssignToSuperset;
+  final void Function(int, int, String, String, {DensityBlockConfig? densityConfig})
+  onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
+  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
 
   @override
   State<WorkoutDayExerciseList> createState() => _WorkoutDayExerciseListState();
@@ -174,6 +178,9 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           exercises.first.supersetGroupId != null
                       ? exercises.first.supersetGroupId!
                       : null;
+                  final densityConfig = groupId == null
+                      ? null
+                      : resolveDensityBlock(day, groupId);
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: WorkoutSupersetBlock(
@@ -184,6 +191,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                       dayIndex: dayIndex,
                       exercises: exercises,
                       supersetGroupId: groupId,
+                      densityConfig: densityConfig,
                       expanded:
                           groupId != null && groupId == _expandedSupersetId,
                       onExpandedChanged: (value) {
@@ -197,6 +205,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           widget.onMoveExerciseWithinSuperset,
                       onRemoveFromSuperset: widget.onRemoveFromSuperset,
                       onUpdateExercise: widget.onUpdateExercise,
+                      onSetDensityBlock: widget.onSetDensityBlock,
                     ),
                   );
                 },
@@ -280,8 +289,14 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       supersetOptions: getSupersetGroupOptions(
         day,
       ).where((o) => o.id != ex.supersetGroupId).toList(),
-      onAssignToSuperset: (groupId) =>
-          widget.onAssignToSuperset(weekIndex, dayIndex, ex.id, groupId),
+      onAssignToSuperset: (groupId, {densityConfig}) =>
+          widget.onAssignToSuperset(
+            weekIndex,
+            dayIndex,
+            ex.id,
+            groupId,
+            densityConfig: densityConfig,
+          ),
       onRemoveFromSuperset: ex.supersetGroupId != null
           ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
           : null,

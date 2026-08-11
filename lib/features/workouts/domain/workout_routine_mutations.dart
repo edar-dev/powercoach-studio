@@ -38,6 +38,7 @@ WorkoutRoutine? cloneWeekInRoutine({
               .toList(),
           scheduledWeekday: day.scheduledWeekday,
           coachingNote: day.coachingNote,
+          densityBlocks: day.densityBlocks,
         ),
       )
       .toList();
@@ -274,7 +275,12 @@ WorkoutRoutine? cloneDayToTargetInRoutine({
       .toList();
 
   final newTargetDays = List<Day>.from(targetWeek.days);
-  newTargetDays[targetDayIndex] = targetDay.copyWith(exercises: copiedExercises);
+  newTargetDays[targetDayIndex] = targetDay.copyWith(
+    exercises: copiedExercises,
+    densityBlocks: sourceDay.densityBlocks,
+    clearDensityBlocks: sourceDay.densityBlocks == null ||
+        sourceDay.densityBlocks!.isEmpty,
+  );
   final newWeeks = List<Week>.from(routine.weeks);
   newWeeks[targetWeekIndex] = targetWeek.copyWith(days: newTargetDays);
   return routine.copyWith(weeks: newWeeks);

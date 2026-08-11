@@ -15,6 +15,8 @@ PdfExportLabels _labels() {
     colNotes: 'Notes',
     mobilityFallback: 'Mobility',
     superset: 'Superset',
+    circuit: 'Circuit',
+    emom: 'EMOM',
     dayNumber: (d) => 'Day $d',
     emptyValue: '-',
     footerDisclaimer: 'Disclaimer',

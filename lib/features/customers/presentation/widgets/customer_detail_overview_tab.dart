@@ -6,6 +6,7 @@ import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer_exercise_record.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer_measurement.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_overview_metrics.dart';
+import 'package:powercoach_studio/features/customers/domain/customer_progress_export_labels_l10n.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_export_service.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_metrics.dart';
 import 'package:powercoach_studio/features/customers/presentation/customer_progress_export.dart';
@@ -262,6 +263,7 @@ class CustomerDetailOverviewTab extends StatelessWidget {
             bodyFatLabel: l10n.measurementBodyFat,
           ),
           exerciseRecords: exerciseRecords,
+          labels: l10n.toCustomerProgressExportLabels(),
         ),
       ),
     );

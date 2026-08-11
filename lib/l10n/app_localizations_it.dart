@@ -1250,6 +1250,12 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfSuperset => 'Superset';
 
   @override
+  String get pdfCircuit => 'Circuito';
+
+  @override
+  String get pdfEmom => 'EMOM';
+
+  @override
   String pdfDayNumber(int day) {
     return 'Giorno $day';
   }
@@ -1872,7 +1878,19 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderSuperSetHeading => 'SUPER SET';
 
   @override
+  String get workoutBuilderCircuitHeading => 'CIRCUITO';
+
+  @override
+  String get workoutBuilderEmomHeading => 'EMOM';
+
+  @override
   String get builderSupersetPanelTitle => 'Gestisci superset';
+
+  @override
+  String get builderCircuitPanelTitle => 'Gestisci circuito';
+
+  @override
+  String get builderEmomPanelTitle => 'Gestisci EMOM';
 
   @override
   String get builderSupersetAddExercise => 'Aggiungi esercizio al superset';
@@ -1888,13 +1906,72 @@ class AppLocalizationsIt extends AppLocalizations {
   String get builderSupersetManage => 'Gestisci';
 
   @override
+  String get builderCircuitManage => 'Gestisci';
+
+  @override
+  String get builderEmomManage => 'Gestisci';
+
+  @override
   String get workoutBuilderDeleteDayMenu => 'Elimina giorno';
 
   @override
   String get workoutBuilderNewSuperset => 'Nuovo superset';
 
   @override
+  String get workoutBuilderNewCircuit => 'Nuovo circuito';
+
+  @override
+  String get workoutBuilderNewEmom => 'Nuovo EMOM';
+
+  @override
   String get workoutBuilderRemoveFromSuperset => 'Rimuovi dal superset';
+
+  @override
+  String get densityRoundsLabel => 'Giri';
+
+  @override
+  String get densityRestSecondsLabel => 'Recupero (secondi)';
+
+  @override
+  String get densityIntervalSecondsLabel => 'Intervallo (secondi)';
+
+  @override
+  String get densityDurationMinutesLabel => 'Durata (minuti)';
+
+  @override
+  String get densityBlockTypeLabel => 'Tipo';
+
+  @override
+  String get densityBlockTypeSuperset => 'Superset';
+
+  @override
+  String get densityBlockTypeCircuit => 'Circuito';
+
+  @override
+  String get densityBlockTypeEmom => 'EMOM';
+
+  @override
+  String get densityBlockSave => 'Salva densità';
+
+  @override
+  String densityCircuitRounds(int rounds) {
+    return '$rounds giri';
+  }
+
+  @override
+  String densityCircuitRest(int seconds) {
+    return '${seconds}s recupero';
+  }
+
+  @override
+  String densityEmomInterval(int seconds) {
+    return 'EMOM ${seconds}s';
+  }
+
+  @override
+  String densityEmomDuration(int minutes) {
+    return '$minutes min';
+  }
 
   @override
   String get workoutBuilderTabTraining => 'Allenamento';
@@ -3383,6 +3460,52 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get customerProgressExportFailed =>
       'Esportazione progresso non riuscita';
+
+  @override
+  String get customerProgressExportTitle => 'PowerCoach Studio';
+
+  @override
+  String get customerProgressExportGeneratedOn => 'Generato';
+
+  @override
+  String customerProgressNarrativeSummary(
+    String adherence,
+    int completed,
+    int skipped,
+  ) {
+    return 'Negli ultimi 30 giorni l\'aderenza è stata del $adherence ($completed completate, $skipped saltate).';
+  }
+
+  @override
+  String customerProgressNarrativeLastSession(String when) {
+    return 'Ultima sessione: $when.';
+  }
+
+  @override
+  String customerProgressNarrativeRecentPr(
+    String name,
+    String value,
+    String unit,
+  ) {
+    return 'PR recente: $name — $value $unit.';
+  }
+
+  @override
+  String get customerProgressExportWeeklyCompleted => 'completata';
+
+  @override
+  String get customerProgressExportWeeklyMissed => 'mancata';
+
+  @override
+  String get customerProgressExportWeeklyNoData => 'nessun dato';
+
+  @override
+  String get customerProgressExportDataSection => '--- dati ---';
+
+  @override
+  String customerProgressPrLine(String name, String value, String unit) {
+    return '· $name $value $unit';
+  }
 
   @override
   String get settingsCalendarRemindersTitle => 'Promemoria sessioni';

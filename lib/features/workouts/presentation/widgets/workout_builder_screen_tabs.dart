@@ -171,6 +171,7 @@ class WorkoutBuilderScreenTabs {
       onAssignToSuperset: trainingHandlers.assignToSuperset,
       onRemoveFromSuperset: trainingHandlers.removeFromSuperset,
       onAddExerciseToSuperset: trainingHandlers.addExerciseToSuperset,
+      onSetDensityBlock: trainingHandlers.setDensityBlock,
       onSelectWeek: (i) => builderSession.selectWeek(i, resetDay: true),
       onSelectDay: (i) => builderSession.selectDay(i),
       onUpdateScheduledWeekday: trainingHandlers.setDayScheduledWeekday,
