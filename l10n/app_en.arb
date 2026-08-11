@@ -627,6 +627,7 @@
   "workoutPlanArchiveAction": "Archive",
   "workoutPlanUnarchiveAction": "Unarchive",
   "workoutPlanCompleteAction": "Mark completed",
+  "workoutPlanDiffCompareAction": "Compare with…",
   "workoutPlanStatusArchived": "Archived",
   "workoutPlanStatusCompleted": "Completed",
   "workoutPlanStatusActive": "Active",
@@ -1410,6 +1411,62 @@
       "location": { "type": "String" }
     }
   },
+  "gymModeTitle": "Gym mode",
+  "gymModeAction": "Open gym mode",
+  "gymModeEmptyToday": "No sessions scheduled for today.",
+  "gymModeRunnerTitle": "Session",
+  "gymModeCoachingNoteLabel": "Coaching note",
+  "gymModeSaveAndComplete": "Save & complete",
+  "gymModeSaving": "Saving…",
+  "gymModeLogSuccess": "Session saved",
+  "workoutPlanDiffTitle": "Plan comparison",
+  "workoutPlanDiffPickPlanBTitle": "Choose a plan to compare",
+  "workoutPlanDiffPlanALabel": "Plan A (current)",
+  "workoutPlanDiffPlanBLabel": "Plan B",
+  "workoutPlanDiffChangePlanB": "Change",
+  "workoutPlanDiffNoOtherPlans": "No other plans for this customer yet.",
+  "workoutPlanDiffEmpty": "No structural differences between these plans.",
+  "workoutPlanDiffLoadError": "Couldn't load these plans.",
+  "workoutPlanDiffSummaryDaysAdded": "{count} days added",
+  "@workoutPlanDiffSummaryDaysAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryDaysRemoved": "{count} days removed",
+  "@workoutPlanDiffSummaryDaysRemoved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryDaysChanged": "{count} days changed",
+  "@workoutPlanDiffSummaryDaysChanged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesAdded": "{count} exercises added",
+  "@workoutPlanDiffSummaryExercisesAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesRemoved": "{count} exercises removed",
+  "@workoutPlanDiffSummaryExercisesRemoved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesChanged": "{count} exercises changed",
+  "@workoutPlanDiffSummaryExercisesChanged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffBadgeAdded": "Added",
+  "workoutPlanDiffBadgeRemoved": "Removed",
+  "workoutPlanDiffBadgeChanged": "Changed",
+  "workoutPlanDiffCoachingNoteLabel": "Coaching note",
   "customerProgressTitle": "Training progress",
   "customerProgressAdherence": "Adherence (30 days)",
   "customerProgressLastSession": "Last session",

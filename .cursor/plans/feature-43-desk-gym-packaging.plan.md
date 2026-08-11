@@ -4,19 +4,19 @@ overview: "Wave 1 PR4 — Packaging claim + desk→gym: FAQ, landing, settings b
 todos:
   - id: landing-faq
     content: "Nuova FAQ desk→gym + raffinare landingFaqLocalData*"
-    status: pending
+    status: completed
   - id: settings-copy
     content: "Settings backup subtitle: claim + Hevy key excluded"
-    status: pending
+    status: completed
   - id: onboarding-line
     content: "Onboarding backup: una riga desk→gym"
-    status: pending
+    status: completed
   - id: no-nag-dup
     content: "Evitare doppio nag vs backup_reminder_banner"
-    status: pending
+    status: completed
   - id: tests
     content: "Smoke test stringhe landing/settings"
-    status: pending
+    status: completed
 isProject: false
 ---
 

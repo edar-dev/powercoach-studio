@@ -1457,6 +1457,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutPlanCompleteAction => 'Mark completed';
 
   @override
+  String get workoutPlanDiffCompareAction => 'Compare with…';
+
+  @override
   String get workoutPlanStatusArchived => 'Archived';
 
   @override
@@ -3208,6 +3211,98 @@ class AppLocalizationsEn extends AppLocalizations {
   String sessionLogPainChipLabelWithLocation(int value, String location) {
     return 'Pain $value/10 · $location';
   }
+
+  @override
+  String get gymModeTitle => 'Gym mode';
+
+  @override
+  String get gymModeAction => 'Open gym mode';
+
+  @override
+  String get gymModeEmptyToday => 'No sessions scheduled for today.';
+
+  @override
+  String get gymModeRunnerTitle => 'Session';
+
+  @override
+  String get gymModeCoachingNoteLabel => 'Coaching note';
+
+  @override
+  String get gymModeSaveAndComplete => 'Save & complete';
+
+  @override
+  String get gymModeSaving => 'Saving…';
+
+  @override
+  String get gymModeLogSuccess => 'Session saved';
+
+  @override
+  String get workoutPlanDiffTitle => 'Plan comparison';
+
+  @override
+  String get workoutPlanDiffPickPlanBTitle => 'Choose a plan to compare';
+
+  @override
+  String get workoutPlanDiffPlanALabel => 'Plan A (current)';
+
+  @override
+  String get workoutPlanDiffPlanBLabel => 'Plan B';
+
+  @override
+  String get workoutPlanDiffChangePlanB => 'Change';
+
+  @override
+  String get workoutPlanDiffNoOtherPlans =>
+      'No other plans for this customer yet.';
+
+  @override
+  String get workoutPlanDiffEmpty =>
+      'No structural differences between these plans.';
+
+  @override
+  String get workoutPlanDiffLoadError => 'Couldn\'t load these plans.';
+
+  @override
+  String workoutPlanDiffSummaryDaysAdded(int count) {
+    return '$count days added';
+  }
+
+  @override
+  String workoutPlanDiffSummaryDaysRemoved(int count) {
+    return '$count days removed';
+  }
+
+  @override
+  String workoutPlanDiffSummaryDaysChanged(int count) {
+    return '$count days changed';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesAdded(int count) {
+    return '$count exercises added';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesRemoved(int count) {
+    return '$count exercises removed';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesChanged(int count) {
+    return '$count exercises changed';
+  }
+
+  @override
+  String get workoutPlanDiffBadgeAdded => 'Added';
+
+  @override
+  String get workoutPlanDiffBadgeRemoved => 'Removed';
+
+  @override
+  String get workoutPlanDiffBadgeChanged => 'Changed';
+
+  @override
+  String get workoutPlanDiffCoachingNoteLabel => 'Coaching note';
 
   @override
   String get customerProgressTitle => 'Training progress';

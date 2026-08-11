@@ -10,11 +10,13 @@ Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595
 
 | Onda | Plan | Feature | Stato |
 |------|------|---------|-------|
-| **Roadmap** | [feature-roadmap-v7](feature-roadmap-v7.plan.md) | Wave 1–3 | 🚧 Wave 1 in corso |
-| **1 PR1** | [feature-40-session-checkin](feature-40-session-checkin.plan.md) | RPE/pain post-sessione | pending |
-| **1 PR2** | [feature-41-day-coaching-note](feature-41-day-coaching-note.plan.md) | `Day.coachingNote` | pending |
-| **1 PR3** | [feature-42-progression-suggestions](feature-42-progression-suggestions.plan.md) | Progressione suggest-only | pending |
-| **1 PR4** | [feature-43-desk-gym-packaging](feature-43-desk-gym-packaging.plan.md) | Claim + desk→gym copy | pending |
+| **Roadmap** | [feature-roadmap-v7](feature-roadmap-v7.plan.md) | Wave 1–3 | ✅ Wave 1 · ✅ Wave 2 |
+| **1 PR1** | [feature-40-session-checkin](feature-40-session-checkin.plan.md) | RPE/pain post-sessione | ✅ |
+| **1 PR2** | [feature-41-day-coaching-note](feature-41-day-coaching-note.plan.md) | `Day.coachingNote` | ✅ |
+| **1 PR3** | [feature-42-progression-suggestions](feature-42-progression-suggestions.plan.md) | Progressione suggest-only | ✅ |
+| **1 PR4** | [feature-43-desk-gym-packaging](feature-43-desk-gym-packaging.plan.md) | Claim + desk→gym copy | ✅ |
+| **2 PR1** | [feature-44-gym-mode](feature-44-gym-mode.plan.md) | Gym mode `/gym` | ✅ |
+| **2 PR2** | [feature-45-plan-diff](feature-45-plan-diff.plan.md) | Plan diff A/B in-memory | ✅ |
 
 ```mermaid
 flowchart LR
@@ -23,16 +25,19 @@ flowchart LR
   F41[41 day coaching note]
   F42[42 progression suggestions]
   F43[43 desk gym packaging]
-  W2[Wave 2 gym mode plan diff]
+  F44[44 gym mode]
+  F45[45 plan diff]
   W3[Wave 3 density narrative]
   V7 --> F40 --> F41 --> F42
   V7 --> F43
   F41 -.-> F43
   F42 -.-> F43
-  V7 --> W2 --> W3
+  V7 --> F44 --> F45 --> W3
 ```
 
-**Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42. Branch tipici: `feat/identity-wave1-*`.
+**Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42 — ✅ completata.
+
+**Wave 2:** [feature-44-gym-mode](feature-44-gym-mode.plan.md) → [feature-45-plan-diff](feature-45-plan-diff.plan.md) — ✅ su `feat/identity-wave2`.
 
 ---
 

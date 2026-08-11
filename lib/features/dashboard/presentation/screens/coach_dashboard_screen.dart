@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
@@ -182,6 +183,17 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           snapshot: snap,
                           loading: _loading,
                         ),
+                        if (snap.todayItems.isNotEmpty) ...[
+                          const SizedBox(height: 12),
+                          OutlinedButton.icon(
+                            onPressed: () {
+                              HapticFeedback.mediumImpact();
+                              navigateTo(context, AppPaths.gym);
+                            },
+                            icon: const Icon(Icons.fitness_center),
+                            label: Text(l10n.gymModeAction),
+                          ),
+                        ],
                       ],
                     ),
                   ),

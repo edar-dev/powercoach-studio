@@ -4,16 +4,16 @@ overview: "Wave 1 PR1 — Post-session check-in: sessionRpe, painLevel, painLoca
 todos:
   - id: model-codec
     content: "Estendere SessionExecution con sessionRpe/painLevel/painLocation; JSON additive + codec legacy"
-    status: pending
+    status: completed
   - id: log-sheet-ui
     content: "session_log_sheet — sezione RPE/pain dopo esercizi, prima note; opzionale su skip"
-    status: pending
+    status: completed
   - id: diary-display
     content: "Workout diary entry body — mostrare RPE/pain in read-only"
-    status: pending
+    status: completed
   - id: l10n-tests
     content: "l10n distinto da ExerciseSet.rpe; test codec round-trip + widget sheet"
-    status: pending
+    status: completed
 isProject: false
 ---
 

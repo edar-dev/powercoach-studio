@@ -2720,6 +2720,12 @@ abstract class AppLocalizations {
   /// **'Mark completed'**
   String get workoutPlanCompleteAction;
 
+  /// No description provided for @workoutPlanDiffCompareAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare with…'**
+  String get workoutPlanDiffCompareAction;
+
   /// No description provided for @workoutPlanStatusArchived.
   ///
   /// In en, this message translates to:
@@ -5889,6 +5895,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pain {value}/10 · {location}'**
   String sessionLogPainChipLabelWithLocation(int value, String location);
+
+  /// No description provided for @gymModeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym mode'**
+  String get gymModeTitle;
+
+  /// No description provided for @gymModeAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Open gym mode'**
+  String get gymModeAction;
+
+  /// No description provided for @gymModeEmptyToday.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions scheduled for today.'**
+  String get gymModeEmptyToday;
+
+  /// No description provided for @gymModeRunnerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session'**
+  String get gymModeRunnerTitle;
+
+  /// No description provided for @gymModeCoachingNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coaching note'**
+  String get gymModeCoachingNoteLabel;
+
+  /// No description provided for @gymModeSaveAndComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Save & complete'**
+  String get gymModeSaveAndComplete;
+
+  /// No description provided for @gymModeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving…'**
+  String get gymModeSaving;
+
+  /// No description provided for @gymModeLogSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Session saved'**
+  String get gymModeLogSuccess;
+
+  /// No description provided for @workoutPlanDiffTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan comparison'**
+  String get workoutPlanDiffTitle;
+
+  /// No description provided for @workoutPlanDiffPickPlanBTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan to compare'**
+  String get workoutPlanDiffPickPlanBTitle;
+
+  /// No description provided for @workoutPlanDiffPlanALabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan A (current)'**
+  String get workoutPlanDiffPlanALabel;
+
+  /// No description provided for @workoutPlanDiffPlanBLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan B'**
+  String get workoutPlanDiffPlanBLabel;
+
+  /// No description provided for @workoutPlanDiffChangePlanB.
+  ///
+  /// In en, this message translates to:
+  /// **'Change'**
+  String get workoutPlanDiffChangePlanB;
+
+  /// No description provided for @workoutPlanDiffNoOtherPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No other plans for this customer yet.'**
+  String get workoutPlanDiffNoOtherPlans;
+
+  /// No description provided for @workoutPlanDiffEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No structural differences between these plans.'**
+  String get workoutPlanDiffEmpty;
+
+  /// No description provided for @workoutPlanDiffLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load these plans.'**
+  String get workoutPlanDiffLoadError;
+
+  /// No description provided for @workoutPlanDiffSummaryDaysAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days added'**
+  String workoutPlanDiffSummaryDaysAdded(int count);
+
+  /// No description provided for @workoutPlanDiffSummaryDaysRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days removed'**
+  String workoutPlanDiffSummaryDaysRemoved(int count);
+
+  /// No description provided for @workoutPlanDiffSummaryDaysChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} days changed'**
+  String workoutPlanDiffSummaryDaysChanged(int count);
+
+  /// No description provided for @workoutPlanDiffSummaryExercisesAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises added'**
+  String workoutPlanDiffSummaryExercisesAdded(int count);
+
+  /// No description provided for @workoutPlanDiffSummaryExercisesRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises removed'**
+  String workoutPlanDiffSummaryExercisesRemoved(int count);
+
+  /// No description provided for @workoutPlanDiffSummaryExercisesChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises changed'**
+  String workoutPlanDiffSummaryExercisesChanged(int count);
+
+  /// No description provided for @workoutPlanDiffBadgeAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Added'**
+  String get workoutPlanDiffBadgeAdded;
+
+  /// No description provided for @workoutPlanDiffBadgeRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed'**
+  String get workoutPlanDiffBadgeRemoved;
+
+  /// No description provided for @workoutPlanDiffBadgeChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Changed'**
+  String get workoutPlanDiffBadgeChanged;
+
+  /// No description provided for @workoutPlanDiffCoachingNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coaching note'**
+  String get workoutPlanDiffCoachingNoteLabel;
 
   /// No description provided for @customerProgressTitle.
   ///

@@ -4,16 +4,16 @@ overview: "Wave 1 PR2 — Day.coachingNote: campo opzionale per nota coaching di
 todos:
   - id: model-codec
     content: "Aggiungere coachingNote su Day + workout_routine_json_codec; mutation + dirty snapshot"
-    status: pending
+    status: completed
   - id: builder-ui
     content: "Campo/expand in training_session_toolbar o day panel del builder"
-    status: pending
+    status: completed
   - id: export-readonly
     content: "Visibilità read-only + header day in PDF export se supportato"
-    status: pending
+    status: completed
   - id: tests
     content: "Test codec legacy, mutation, dirty, widget builder"
-    status: pending
+    status: completed
 isProject: false
 ---
 

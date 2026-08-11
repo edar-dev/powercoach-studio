@@ -15,6 +15,7 @@ class SessionLogExerciseSection extends StatelessWidget {
     required this.onCompletedChanged,
     required this.onSetChanged,
     required this.onAddSet,
+    this.compact = true,
   });
 
   final SessionLogExerciseDraft draft;
@@ -25,30 +26,39 @@ class SessionLogExerciseSection extends StatelessWidget {
   final void Function(int setIndex, SessionLogSetDraft set) onSetChanged;
   final VoidCallback onAddSet;
 
+  /// When false, renders larger (48dp+) touch targets for gym-mode use.
+  final bool compact;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Card(
       elevation: 0,
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: EdgeInsets.only(bottom: compact ? 8 : 12),
       child: Column(
         children: [
           ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: compact ? 4 : 12,
+              vertical: compact ? 0 : 4,
+            ),
             leading: Checkbox(
               value: draft.completed,
               onChanged: (value) => onCompletedChanged(value ?? false),
             ),
             title: Text(
               draft.name,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+              style:
+                  (compact
+                          ? theme.textTheme.titleSmall
+                          : theme.textTheme.titleMedium)
+                      ?.copyWith(fontWeight: FontWeight.w600),
             ),
             trailing: IconButton(
               tooltip:
                   expanded ? l10n.sessionLogCollapseSets : l10n.sessionLogExpandSets,
+              iconSize: compact ? 24 : 28,
               icon: Icon(expanded ? Icons.expand_less : Icons.expand_more),
               onPressed: () => onExpandedChanged(!expanded),
             ),
@@ -62,6 +72,7 @@ class SessionLogExerciseSection extends StatelessWidget {
                 load: draft.sets[i].load,
                 completed: draft.sets[i].completed,
                 l10n: l10n,
+                compact: compact,
                 onRepsChanged: (value) {
                   onSetChanged(
                     i,
