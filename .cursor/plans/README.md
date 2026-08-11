@@ -37,7 +37,7 @@ flowchart LR
 
 **Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42 — ✅ completata.
 
-**Wave 2 (in corso):** [feature-44-gym-mode](feature-44-gym-mode.plan.md) → [feature-45-plan-diff](feature-45-plan-diff.plan.md) su branch `feat/identity-wave2`.
+**Wave 2:** [feature-44-gym-mode](feature-44-gym-mode.plan.md) → [feature-45-plan-diff](feature-45-plan-diff.plan.md) — ✅ su `feat/identity-wave2`.
 
 ---
 
