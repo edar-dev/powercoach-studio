@@ -4,19 +4,19 @@ overview: "Wave 2 PR1 — Gym mode: full-screen session runner at `/gym`, today 
 todos:
   - id: route-path
     content: "AppPaths.gym + top-level GoRoute `/gym`; auth guard; entry from dashboard/settings shortcut"
-    status: pending
+    status: completed
   - id: today-list
     content: "GymModeScreen — lista sessioni oggi da DashboardSnapshot/CalendarEventLoader; card tap grandi"
-    status: pending
+    status: completed
   - id: session-runner
     content: "Runner full-screen per sessione selezionata — checklist esercizi, CTA Registra apre session_log_sheet"
-    status: pending
+    status: completed
   - id: reuse-log-path
     content: "Salvataggio via showSessionLogSheet + SessionExecutionService esistenti; nessun fork codec"
-    status: pending
+    status: completed
   - id: l10n-tests
     content: "l10n gymMode*; widget test today list + log CTA; route redirect test"
-    status: pending
+    status: completed
 isProject: false
 ---
 

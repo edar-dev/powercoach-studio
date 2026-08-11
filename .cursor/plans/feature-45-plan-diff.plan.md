@@ -4,19 +4,19 @@ overview: "Wave 2 PR2 — Confronto strutturale in-memory tra due WorkoutRoutine
 todos:
   - id: domain-diff
     content: "Nuovo workout_routine_diff.dart — diff days/exercises/sets/coachingNote; output typed changes"
-    status: pending
+    status: completed
   - id: picker-ui
     content: "Plan diff screen — picker routine A/B stesso customerId; solo piani locali OfflineLocalStore"
-    status: pending
+    status: completed
   - id: diff-view
     content: "Vista grouped: added/removed/modified per day ed exercise; set changes collapsed"
-    status: pending
+    status: completed
   - id: route-entry
     content: "Entry da builder o customer detail — top-level o nested path documentato; no persist diff"
-    status: pending
+    status: completed
   - id: tests
     content: "Unit test matrice diff (identical, rename, coachingNote, set reps/load); widget picker"
-    status: pending
+    status: completed
 isProject: false
 ---
 

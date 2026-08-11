@@ -16,10 +16,10 @@ todos:
     status: completed
   - id: wave2-gym-mode
     content: "Implementare feature-44-gym-mode.plan.md (PR1 Wave 2)"
-    status: pending
+    status: completed
   - id: wave2-plan-diff
     content: "Implementare feature-45-plan-diff.plan.md (PR2 Wave 2)"
-    status: pending
+    status: completed
 isProject: false
 ---
 
@@ -63,7 +63,7 @@ flowchart LR
     F42[42 Progression suggestions]
     F43[43 Desk to gym copy]
   end
-  subgraph wave2 [Wave 2 in progress]
+  subgraph wave2 [Wave 2 completed]
     F44[44 Gym mode UI]
     F45[45 Plan diff]
   end
