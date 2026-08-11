@@ -134,6 +134,22 @@ String gymSessionPath({
   ).toString();
 }
 
+/// Plan version comparison for [customerId]; [planIdB] omitted shows a picker.
+String planDiffPath({
+  required String customerId,
+  required String planIdA,
+  String? planIdB,
+}) {
+  return Uri(
+    path: AppPaths.planDiff,
+    queryParameters: {
+      'customerId': customerId,
+      'planIdA': planIdA,
+      if (planIdB != null && planIdB.isNotEmpty) 'planIdB': planIdB,
+    },
+  ).toString();
+}
+
 /// New plan editor for [customerId], or edit when [planId] is set.
 String customerWorkoutEditorPath(
   String customerId, {

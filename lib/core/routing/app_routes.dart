@@ -26,6 +26,7 @@ import 'package:powercoach_studio/features/settings/presentation/screens/subscri
 import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/gym_mode_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/gym_session_screen.dart';
+import 'package:powercoach_studio/features/workouts/presentation/screens/plan_diff_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_variant.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
@@ -102,6 +103,11 @@ List<RouteBase> buildAppRoutes() {
           builder: (context, state) => const GymSessionScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: AppPaths.planDiff,
+      parentNavigatorKey: appRootNavigatorKey,
+      builder: (context, state) => const PlanDiffScreen(),
     ),
     GoRoute(
       path: '/settings',

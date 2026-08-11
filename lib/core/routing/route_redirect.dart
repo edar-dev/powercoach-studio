@@ -10,7 +10,8 @@ bool isProtectedAppPath(String path) {
       path.startsWith('/settings') ||
       path == AppPaths.subscription ||
       path == '/exercise-library' ||
-      path.startsWith(AppPaths.gym);
+      path.startsWith(AppPaths.gym) ||
+      path.startsWith('/plans');
 }
 
 /// Returns a safe in-app path from a post-login redirect query parameter.

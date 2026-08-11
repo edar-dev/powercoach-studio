@@ -1466,6 +1466,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutPlanCompleteAction => 'Segna completato';
 
   @override
+  String get workoutPlanDiffCompareAction => 'Confronta con…';
+
+  @override
   String get workoutPlanStatusArchived => 'Archiviato';
 
   @override
@@ -3261,6 +3264,74 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get gymModeLogSuccess => 'Sessione salvata';
+
+  @override
+  String get workoutPlanDiffTitle => 'Confronto piani';
+
+  @override
+  String get workoutPlanDiffPickPlanBTitle => 'Scegli un piano da confrontare';
+
+  @override
+  String get workoutPlanDiffPlanALabel => 'Piano A (attuale)';
+
+  @override
+  String get workoutPlanDiffPlanBLabel => 'Piano B';
+
+  @override
+  String get workoutPlanDiffChangePlanB => 'Cambia';
+
+  @override
+  String get workoutPlanDiffNoOtherPlans =>
+      'Nessun altro piano per questo cliente.';
+
+  @override
+  String get workoutPlanDiffEmpty =>
+      'Nessuna differenza strutturale tra questi piani.';
+
+  @override
+  String get workoutPlanDiffLoadError => 'Impossibile caricare questi piani.';
+
+  @override
+  String workoutPlanDiffSummaryDaysAdded(int count) {
+    return '$count giorni aggiunti';
+  }
+
+  @override
+  String workoutPlanDiffSummaryDaysRemoved(int count) {
+    return '$count giorni rimossi';
+  }
+
+  @override
+  String workoutPlanDiffSummaryDaysChanged(int count) {
+    return '$count giorni modificati';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesAdded(int count) {
+    return '$count esercizi aggiunti';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesRemoved(int count) {
+    return '$count esercizi rimossi';
+  }
+
+  @override
+  String workoutPlanDiffSummaryExercisesChanged(int count) {
+    return '$count esercizi modificati';
+  }
+
+  @override
+  String get workoutPlanDiffBadgeAdded => 'Aggiunto';
+
+  @override
+  String get workoutPlanDiffBadgeRemoved => 'Rimosso';
+
+  @override
+  String get workoutPlanDiffBadgeChanged => 'Modificato';
+
+  @override
+  String get workoutPlanDiffCoachingNoteLabel => 'Nota coaching';
 
   @override
   String get customerProgressTitle => 'Progresso allenamento';

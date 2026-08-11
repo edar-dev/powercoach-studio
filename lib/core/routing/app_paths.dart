@@ -13,4 +13,7 @@ abstract final class AppPaths {
 
   /// Gym mode — full-page session runner for today's scheduled sessions.
   static const gym = '/gym';
+
+  /// Plan version comparison (Plan A vs Plan B for the same customer).
+  static const planDiff = '/plans/diff';
 }

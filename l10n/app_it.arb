@@ -627,6 +627,7 @@
   "workoutPlanArchiveAction": "Archivia",
   "workoutPlanUnarchiveAction": "Ripristina",
   "workoutPlanCompleteAction": "Segna completato",
+  "workoutPlanDiffCompareAction": "Confronta con…",
   "workoutPlanStatusArchived": "Archiviato",
   "workoutPlanStatusCompleted": "Completato",
   "workoutPlanStatusActive": "Attivo",
@@ -1418,6 +1419,54 @@
   "gymModeSaveAndComplete": "Salva e completa",
   "gymModeSaving": "Salvataggio…",
   "gymModeLogSuccess": "Sessione salvata",
+  "workoutPlanDiffTitle": "Confronto piani",
+  "workoutPlanDiffPickPlanBTitle": "Scegli un piano da confrontare",
+  "workoutPlanDiffPlanALabel": "Piano A (attuale)",
+  "workoutPlanDiffPlanBLabel": "Piano B",
+  "workoutPlanDiffChangePlanB": "Cambia",
+  "workoutPlanDiffNoOtherPlans": "Nessun altro piano per questo cliente.",
+  "workoutPlanDiffEmpty": "Nessuna differenza strutturale tra questi piani.",
+  "workoutPlanDiffLoadError": "Impossibile caricare questi piani.",
+  "workoutPlanDiffSummaryDaysAdded": "{count} giorni aggiunti",
+  "@workoutPlanDiffSummaryDaysAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryDaysRemoved": "{count} giorni rimossi",
+  "@workoutPlanDiffSummaryDaysRemoved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryDaysChanged": "{count} giorni modificati",
+  "@workoutPlanDiffSummaryDaysChanged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesAdded": "{count} esercizi aggiunti",
+  "@workoutPlanDiffSummaryExercisesAdded": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesRemoved": "{count} esercizi rimossi",
+  "@workoutPlanDiffSummaryExercisesRemoved": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffSummaryExercisesChanged": "{count} esercizi modificati",
+  "@workoutPlanDiffSummaryExercisesChanged": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPlanDiffBadgeAdded": "Aggiunto",
+  "workoutPlanDiffBadgeRemoved": "Rimosso",
+  "workoutPlanDiffBadgeChanged": "Modificato",
+  "workoutPlanDiffCoachingNoteLabel": "Nota coaching",
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",
