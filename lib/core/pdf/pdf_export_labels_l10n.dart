@@ -16,6 +16,8 @@ extension PdfExportLabelsL10n on AppLocalizations {
       colNotes: pdfColNotes,
       mobilityFallback: pdfMobilitySection,
       superset: pdfSuperset,
+      circuit: pdfCircuit,
+      emom: pdfEmom,
       dayNumber: pdfDayNumber,
       emptyValue: pdfEmptyValue,
       footerDisclaimer: pdfFooterDisclaimer,

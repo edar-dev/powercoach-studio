@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
+import 'density_block.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
 import 'session_execution.dart';
@@ -148,14 +149,18 @@ Exercise decodeExercise(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> encodeDay(Day day) => {
-  'id': day.id,
-  'name': day.name,
-  'exercises': day.exercises.map(encodeExercise).toList(),
-  if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
-  if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
-    'coachingNote': day.coachingNote!.trim(),
-};
+Map<String, dynamic> encodeDay(Day day) {
+  final densityBlocks = encodeDensityBlocks(day.densityBlocks);
+  return {
+    'id': day.id,
+    'name': day.name,
+    'exercises': day.exercises.map(encodeExercise).toList(),
+    if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
+    if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
+      'coachingNote': day.coachingNote!.trim(),
+    if (densityBlocks != null) 'densityBlocks': densityBlocks,
+  };
+}
 
 Day decodeDay(Map<String, dynamic> json) => Day(
   id: json['id'] as String? ?? '',
@@ -166,6 +171,7 @@ Day decodeDay(Map<String, dynamic> json) => Day(
       [],
   scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
   coachingNote: json['coachingNote'] as String?,
+  densityBlocks: decodeDensityBlocks(json['densityBlocks']),
 );
 
 Map<String, dynamic> encodeWeek(Week week) => {

@@ -4,7 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'workout_dashed_button.dart';
 
-/// Flat superset group for the session sheet.
+/// Flat density group (superset / circuit / EMOM) for the session sheet.
 class WorkoutSupersetPanel extends StatelessWidget {
   const WorkoutSupersetPanel({
     super.key,
@@ -16,6 +16,10 @@ class WorkoutSupersetPanel extends StatelessWidget {
     required this.onExpandedChanged,
     this.prescriptionSummary,
     this.onOpenEditor,
+    this.heading,
+    this.subtitle,
+    this.headingIcon,
+    this.manageLabel,
   });
 
   final ThemeData theme;
@@ -26,10 +30,19 @@ class WorkoutSupersetPanel extends StatelessWidget {
   final ValueChanged<bool> onExpandedChanged;
   final String? prescriptionSummary;
   final VoidCallback? onOpenEditor;
+  final String? heading;
+  final String? subtitle;
+  final IconData? headingIcon;
+  final String? manageLabel;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final resolvedHeading = heading ?? l10n.workoutBuilderSuperSetHeading;
+    final resolvedIcon = headingIcon ?? Icons.link;
+    final resolvedManage = manageLabel ?? l10n.builderSupersetManage;
+    final densitySubtitle = subtitle?.trim() ?? '';
+    final prescription = prescriptionSummary?.trim() ?? '';
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -44,7 +57,7 @@ class WorkoutSupersetPanel extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(12, 6, 4, 6),
             child: Row(
               children: [
-                Icon(Icons.link, size: 18, color: StitchM3Theme.accent),
+                Icon(resolvedIcon, size: 18, color: StitchM3Theme.accent),
                 const SizedBox(width: 8),
                 Expanded(
                   child: InkWell(
@@ -56,17 +69,26 @@ class WorkoutSupersetPanel extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            l10n.workoutBuilderSuperSetHeading,
+                            resolvedHeading,
                             style: theme.textTheme.titleSmall?.copyWith(
                               color: StitchM3Theme.accent,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          if (prescriptionSummary != null &&
-                              prescriptionSummary!.trim().isNotEmpty) ...[
+                          if (densitySubtitle.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              densitySubtitle,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                          if (prescription.isNotEmpty) ...[
                             const SizedBox(height: 4),
                             Text(
-                              prescriptionSummary!,
+                              prescription,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: colorScheme.onSurface.withValues(
                                   alpha: 0.72,
@@ -98,7 +120,7 @@ class WorkoutSupersetPanel extends StatelessWidget {
                 if (onOpenEditor != null)
                   TextButton(
                     onPressed: onOpenEditor,
-                    child: Text(l10n.builderSupersetManage),
+                    child: Text(resolvedManage),
                   ),
               ],
             ),

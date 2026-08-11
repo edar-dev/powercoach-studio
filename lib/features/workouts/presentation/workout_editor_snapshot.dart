@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
+import '../domain/density_block.dart';
 
 String buildWorkoutEditorSnapshot({
   required WorkoutRoutine routine,
@@ -66,6 +67,8 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
         ..write(day.scheduledWeekday ?? '')
         ..write(',')
         ..write(day.coachingNote ?? '')
+        ..write(',')
+        ..write(serializeDensityBlocksFingerprint(day.densityBlocks))
         ..write(')');
       for (final exercise in day.exercises) {
         buffer

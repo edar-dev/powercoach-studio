@@ -5,7 +5,9 @@ import '../../../core/export/export_artifact.dart';
 import '../data/models/customer_exercise_record.dart';
 import '../data/models/customer_measurement.dart';
 import 'customer_overview_metrics.dart';
+import 'customer_progress_export_labels.dart';
 import 'customer_progress_metrics.dart';
+import 'customer_progress_narrative.dart';
 
 /// Inputs for a unified customer progress CSV export.
 class CustomerProgressExportInput {
@@ -18,6 +20,7 @@ class CustomerProgressExportInput {
     this.exportedAt,
     this.maxMeasurements = 10,
     this.maxPersonalRecords = 10,
+    this.labels,
   });
 
   final String customerName;
@@ -28,19 +31,45 @@ class CustomerProgressExportInput {
   final DateTime? exportedAt;
   final int maxMeasurements;
   final int maxPersonalRecords;
+  final CustomerProgressExportLabels? labels;
 }
 
 String buildCustomerProgressCsv(CustomerProgressExportInput input) {
   final exportedAt = input.exportedAt ?? DateTime.now();
-  final lines = <String>[
-    '# PowerCoach Studio — ${input.customerName}',
-    '# Generated: ${_formatDate(exportedAt)}',
-    '',
+  final labels = input.labels;
+  final dateStamp = _formatDate(exportedAt);
+  final lines = <String>[];
+
+  if (labels != null) {
+    lines.addAll([
+      '# ${labels.title} — ${input.customerName}',
+      '# ${labels.generatedOn}: $dateStamp',
+      '#',
+    ]);
+    final narrative = buildCustomerProgressNarrative(
+      labels: labels,
+      progress: input.progress,
+      topPr: _topPersonalRecordHighlight(input),
+    );
+    if (narrative.isNotEmpty) {
+      lines.add(narrative);
+      lines.add('#');
+    }
+    lines.add('# ${labels.dataSection}');
+  } else {
+    lines.addAll([
+      '# PowerCoach Studio — ${input.customerName}',
+      '# Generated: $dateStamp',
+      '',
+    ]);
+  }
+
+  lines.addAll([
     'section,adherence_30d,completed_sessions_30d,skipped_sessions_30d,last_session_date',
     _summaryRow(input.progress),
     '',
     'section,week_index,adherence',
-    ..._weeklyRows(input.progress.last4Weeks),
+    ..._weeklyRows(input.progress.last4Weeks, labels: labels),
     '',
     'section,exercise,value,unit,date',
     ..._personalRecordRows(
@@ -55,7 +84,7 @@ String buildCustomerProgressCsv(CustomerProgressExportInput input) {
       measurements: input.measurements,
       maxMeasurements: input.maxMeasurements,
     ),
-  ];
+  ]);
 
   return '${lines.join('\n')}\n';
 }
@@ -83,19 +112,51 @@ String _summaryRow(CustomerProgressSnapshot progress) {
       '${progress.skippedSessions30d},$lastSession';
 }
 
-List<String> _weeklyRows(List<WeeklyAdherenceDot> dots) {
+List<String> _weeklyRows(
+  List<WeeklyAdherenceDot> dots, {
+  CustomerProgressExportLabels? labels,
+}) {
   if (dots.isEmpty) {
-    return const ['weekly,0,'];
+    final emptyLabel = labels?.weeklyNoData ?? '';
+    return ['weekly,0,$emptyLabel'];
   }
   return [
     for (var i = 0; i < dots.length; i++)
-      'weekly,$i,${_weeklyAdherenceLabel(dots[i])}',
+      'weekly,$i,${_weeklyAdherenceLabel(dots[i], labels: labels)}',
   ];
 }
 
-String _weeklyAdherenceLabel(WeeklyAdherenceDot dot) {
-  if (dot.completed == null) return '';
-  return dot.completed! ? 'completed' : 'missed';
+String _weeklyAdherenceLabel(
+  WeeklyAdherenceDot dot, {
+  CustomerProgressExportLabels? labels,
+}) {
+  if (dot.completed == null) {
+    return labels?.weeklyNoData ?? '';
+  }
+  if (labels == null) {
+    return dot.completed! ? 'completed' : 'missed';
+  }
+  return dot.completed! ? labels.weeklyCompleted : labels.weeklyMissed;
+}
+
+CustomerPrHighlight? _topPersonalRecordHighlight(
+  CustomerProgressExportInput input,
+) {
+  if (input.exerciseRecords.isNotEmpty) {
+    final sorted = List<CustomerExerciseRecord>.from(input.exerciseRecords)
+      ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
+    final record = sorted.first;
+    return CustomerPrHighlight(
+      exerciseName: record.displayName,
+      value: record.value,
+      unit: record.unit,
+      recordedAt: record.recordedAt,
+    );
+  }
+  if (input.progress.recentPrs.isNotEmpty) {
+    return input.progress.recentPrs.first;
+  }
+  return null;
 }
 
 List<String> _personalRecordRows({

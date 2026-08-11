@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/workout_routine_model.dart';
+import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../workout_builder_session_controller.dart';
 import 'training_week_day_panel.dart';
@@ -37,6 +38,7 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
+    this.onSetDensityBlock,
     required this.onSelectWeek,
     required this.onSelectDay,
     required this.onUpdateScheduledWeekday,
@@ -96,9 +98,17 @@ class WorkoutTrainingTab extends StatelessWidget {
   })
   onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
-  final void Function(int, int, String, String) onAssignToSuperset;
+  final void Function(
+    int,
+    int,
+    String,
+    String, {
+    DensityBlockConfig? densityConfig,
+  })
+  onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
+  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
   final void Function(int weekIndex, int dayIndex, int? weekday)
@@ -177,6 +187,7 @@ class WorkoutTrainingTab extends StatelessWidget {
             onAssignToSuperset: onAssignToSuperset,
             onRemoveFromSuperset: onRemoveFromSuperset,
             onAddExerciseToSuperset: onAddExerciseToSuperset,
+            onSetDensityBlock: onSetDensityBlock,
           );
         },
       ),

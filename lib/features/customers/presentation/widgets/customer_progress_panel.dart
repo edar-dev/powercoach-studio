@@ -152,7 +152,11 @@ class CustomerProgressPanel extends StatelessWidget {
                 (pr) => Padding(
                   padding: const EdgeInsets.only(bottom: 6),
                   child: Text(
-                    '· ${pr.exerciseName} ${pr.value} ${pr.unit}',
+                    l10n.customerProgressPrLine(
+                      pr.exerciseName,
+                      _formatPrValue(pr.value),
+                      pr.unit,
+                    ),
                     style: theme.textTheme.bodyMedium,
                   ),
                 ),
@@ -182,6 +186,13 @@ class CustomerProgressPanel extends StatelessWidget {
     final weeksAgo = total - 1 - index;
     if (weeksAgo == 0) return l10n.customerProgressThisWeek;
     return l10n.customerProgressWeeksAgo(weeksAgo);
+  }
+
+  String _formatPrValue(double value) {
+    if (value == value.roundToDouble()) {
+      return value.toInt().toString();
+    }
+    return value.toString();
   }
 }
 

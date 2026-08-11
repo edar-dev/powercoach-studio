@@ -1,5 +1,6 @@
 // In-memory model for Workout Builder. Serializable via [workout_routine_json_codec.dart].
 
+import '../domain/density_block.dart';
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/session_execution.dart';
 import '../domain/workout_routine_json_codec.dart';
@@ -229,6 +230,7 @@ class Day {
     required this.exercises,
     this.scheduledWeekday,
     this.coachingNote,
+    this.densityBlocks,
   });
 
   final String id;
@@ -242,6 +244,10 @@ class Day {
   /// cues, warmup instructions). Shown read-only in follow-ups/PDF export.
   final String? coachingNote;
 
+  /// Optional density metadata keyed by [Exercise.supersetGroupId]
+  /// (circuit / EMOM / explicit superset). Absent for legacy supersets.
+  final Map<String, DensityBlockConfig>? densityBlocks;
+
   Map<String, dynamic> toJson() => encodeDay(this);
 
   static Day fromJson(Map<String, dynamic> json) => decodeDay(json);
@@ -254,6 +260,8 @@ class Day {
     bool clearScheduledWeekday = false,
     String? coachingNote,
     bool clearCoachingNote = false,
+    Map<String, DensityBlockConfig>? densityBlocks,
+    bool clearDensityBlocks = false,
   }) => Day(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -264,6 +272,9 @@ class Day {
     coachingNote: clearCoachingNote
         ? null
         : (coachingNote ?? this.coachingNote),
+    densityBlocks: clearDensityBlocks
+        ? null
+        : (densityBlocks ?? this.densityBlocks),
   );
 }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/workout_routine_model.dart';
+import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import '../workout_builder_session_controller.dart';
@@ -46,6 +47,8 @@ class WorkoutSupersetActions {
       List<ExerciseSet>? setDetails,
     })
     onUpdateExercise,
+    void Function(int weekIndex, int dayIndex, String groupId, DensityBlockConfig config)?
+    onSetDensityBlock,
   }) {
     return showWorkoutBuilderSupersetEditorSheet(
       context: context,
@@ -60,6 +63,7 @@ class WorkoutSupersetActions {
       onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
       onRemoveFromSuperset: onRemoveFromSuperset,
       onUpdateExercise: onUpdateExercise,
+      onSetDensityBlock: onSetDensityBlock,
     );
   }
 

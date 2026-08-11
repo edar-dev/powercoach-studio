@@ -504,6 +504,8 @@
   "pdfColNotes": "Notes",
   "pdfMobilitySection": "Mobility",
   "pdfSuperset": "Superset",
+  "pdfCircuit": "Circuit",
+  "pdfEmom": "EMOM",
   "pdfDayNumber": "Day {day}",
   "@pdfDayNumber": {
     "placeholders": {
@@ -783,14 +785,55 @@
   },
   "workoutBuilderNoWeeksYet": "No weeks yet. Add a week above.",
   "workoutBuilderSuperSetHeading": "SUPER SET",
+  "workoutBuilderCircuitHeading": "CIRCUIT",
+  "workoutBuilderEmomHeading": "EMOM",
   "builderSupersetPanelTitle": "Manage superset",
+  "builderCircuitPanelTitle": "Manage circuit",
+  "builderEmomPanelTitle": "Manage EMOM",
   "builderSupersetAddExercise": "Add exercise to superset",
   "builderSupersetEmpty": "No exercises in this superset.",
   "builderSupersetPrescriptionLabel": "Prescription (lead exercise)",
   "builderSupersetManage": "Manage",
+  "builderCircuitManage": "Manage",
+  "builderEmomManage": "Manage",
   "workoutBuilderDeleteDayMenu": "Delete day",
   "workoutBuilderNewSuperset": "New superset",
+  "workoutBuilderNewCircuit": "New circuit",
+  "workoutBuilderNewEmom": "New EMOM",
   "workoutBuilderRemoveFromSuperset": "Remove from superset",
+  "densityRoundsLabel": "Rounds",
+  "densityRestSecondsLabel": "Rest (seconds)",
+  "densityIntervalSecondsLabel": "Interval (seconds)",
+  "densityDurationMinutesLabel": "Duration (minutes)",
+  "densityBlockTypeLabel": "Type",
+  "densityBlockTypeSuperset": "Superset",
+  "densityBlockTypeCircuit": "Circuit",
+  "densityBlockTypeEmom": "EMOM",
+  "densityBlockSave": "Save density",
+  "densityCircuitRounds": "{rounds} rounds",
+  "@densityCircuitRounds": {
+    "placeholders": {
+      "rounds": { "type": "int" }
+    }
+  },
+  "densityCircuitRest": "{seconds}s rest",
+  "@densityCircuitRest": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "densityEmomInterval": "EMOM {seconds}s",
+  "@densityEmomInterval": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "densityEmomDuration": "{minutes} min",
+  "@densityEmomDuration": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
   "workoutBuilderTabTraining": "Training",
   "workoutBuilderTabMobility": "Mobility",
   "workoutBuilderTabDetails": "Details",
@@ -1487,6 +1530,42 @@
   "customerProgressExport": "Export progress",
   "customerProgressExportSuccess": "Progress exported",
   "customerProgressExportFailed": "Progress export failed",
+  "customerProgressExportTitle": "PowerCoach Studio",
+  "customerProgressExportGeneratedOn": "Generated",
+  "customerProgressNarrativeSummary": "Over the last 30 days, adherence was {adherence} ({completed} completed, {skipped} skipped).",
+  "@customerProgressNarrativeSummary": {
+    "placeholders": {
+      "adherence": { "type": "String" },
+      "completed": { "type": "int" },
+      "skipped": { "type": "int" }
+    }
+  },
+  "customerProgressNarrativeLastSession": "Last session: {when}.",
+  "@customerProgressNarrativeLastSession": {
+    "placeholders": {
+      "when": { "type": "String" }
+    }
+  },
+  "customerProgressNarrativeRecentPr": "Recent PR: {name} — {value} {unit}.",
+  "@customerProgressNarrativeRecentPr": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
+  "customerProgressExportWeeklyCompleted": "completed",
+  "customerProgressExportWeeklyMissed": "missed",
+  "customerProgressExportWeeklyNoData": "no data",
+  "customerProgressExportDataSection": "--- data ---",
+  "customerProgressPrLine": "· {name} {value} {unit}",
+  "@customerProgressPrLine": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "value": { "type": "String" },
+      "unit": { "type": "String" }
+    }
+  },
   "@customerProgressWeeksAgo": {
     "placeholders": {
       "count": { "type": "int" }
