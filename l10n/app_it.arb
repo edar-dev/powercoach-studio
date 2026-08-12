@@ -1462,6 +1462,8 @@
   "gymModeSaveAndComplete": "Salva e completa",
   "gymModeSaving": "Salvataggio…",
   "gymModeLogSuccess": "Sessione salvata",
+  "gymModeTimerStart": "Avvia",
+  "gymModeTimerReset": "Reset",
   "workoutPlanDiffTitle": "Confronto piani",
   "workoutPlanDiffPickPlanBTitle": "Scegli un piano da confrontare",
   "workoutPlanDiffPlanALabel": "Piano A (attuale)",

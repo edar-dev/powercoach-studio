@@ -19,6 +19,7 @@ Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595
 | **2 PR2** | [feature-45-plan-diff](feature-45-plan-diff.plan.md) | Plan diff A/B in-memory | ✅ |
 | **3 PR1** | [feature-46-density-blocks](feature-46-density-blocks.plan.md) | Circuit / EMOM-lite | ✅ |
 | **3 PR2** | [feature-47-progress-narrative-l10n](feature-47-progress-narrative-l10n.plan.md) | Narrative CSV IT/EN | ✅ |
+| **Polish** | [feature-48-identity-polish](feature-48-identity-polish.plan.md) | Excel/Hevy/diff/gym density | ✅ |
 
 ```mermaid
 flowchart LR
@@ -43,6 +44,8 @@ flowchart LR
 **Wave 2:** [feature-44](feature-44-gym-mode.plan.md) → [feature-45](feature-45-plan-diff.plan.md) — ✅.
 
 **Wave 3:** [feature-46](feature-46-density-blocks.plan.md) → [feature-47](feature-47-progress-narrative-l10n.plan.md) — ✅ su `feat/identity-wave3`.
+
+**Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — Excel density l10n, Hevy notes, plan-diff density, gym timer — branch `feat/identity-post-wave3-polish`.
 
 ---
 
@@ -76,7 +79,7 @@ Analisi: [`docs/workout-builder-ux-analysis.md`](../docs/workout-builder-ux-anal
 |------|------|-------|
 | **1** | Trust/legal (#89) | ✅ |
 | **2** | [web-launch-phase2-billing](web-launch-phase2-billing.plan.md) | ✅ |
-| **3** | [web-launch-phase3-beta-launch](web-launch-phase3-beta-launch.plan.md) | 🚧 branch `feat/web-launch-phase3-landing` |
+| **3** | [web-launch-phase3-beta-launch](web-launch-phase3-beta-launch.plan.md) | ✅ mergiata |
 
 ```mermaid
 flowchart LR

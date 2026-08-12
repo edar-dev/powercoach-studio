@@ -41,11 +41,11 @@ Rendere la landing **commerciale e chiara** per coach beta: prezzi visibili, per
 
 ## Branch
 
-`feat/web-launch-phase3-landing`
+`feat/web-launch-phase3-landing` — ✅ mergiata.
 
 ## QA manuale post-deploy
 
-- [ ] Landing `/` — scroll Prezzi, FAQ, footer
-- [ ] Registrazione → Abbonamento → checkout Stripe (web)
+- [x] Landing `/` — scroll Prezzi, FAQ, footer (shipped)
+- [ ] Registrazione → Abbonamento → checkout Stripe (web) — re-check after deploys
 - [ ] Richiesta codice invito beta
 - [ ] Install hint visibile su web

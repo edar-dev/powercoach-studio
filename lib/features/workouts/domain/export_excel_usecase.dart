@@ -3,12 +3,16 @@ import 'dart:typed_data';
 import 'package:excel/excel.dart';
 
 import '../../../core/export/export_artifact.dart';
+import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/workout_routine_model.dart';
 import 'density_block.dart';
 
 /// Exports [WorkoutRoutine] to an .xlsx file. Layout: plan name, then for each week/day
 /// a table with columns Exercise, Sets, Reps, Load/RPE, Notes.
-Future<ExportArtifact> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async {
+Future<ExportArtifact> exportWorkoutRoutineToExcel(
+  WorkoutRoutine routine, {
+  required PdfExportLabels labels,
+}) async {
   final excel = Excel.createExcel();
   final sheet = excel['Workout Plan'];
 
@@ -60,7 +64,7 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async
         } else {
           final group = item as List<Exercise>;
           sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value =
-              TextCellValue(_excelDensityHeader(day, group));
+              TextCellValue(densityBlockExportLabel(day, group, labels));
           row += 1;
           for (final ex in group) {
             final details = ex.effectiveSetDetails;
@@ -100,20 +104,4 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(WorkoutRoutine routine) async
     mimeType:
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   );
-}
-
-String _excelDensityHeader(Day day, List<Exercise> group) {
-  if (group.isEmpty) return 'Superset';
-  final groupId = group.first.supersetGroupId;
-  if (groupId == null || groupId.isEmpty) return 'Superset';
-  final config = resolveDensityBlock(day, groupId);
-  if (config == null) return 'Superset';
-  final typeLabel = switch (config.type) {
-    DensityBlockType.circuit => 'Circuit',
-    DensityBlockType.emom => 'EMOM',
-    DensityBlockType.superset => 'Superset',
-  };
-  final detail = densityBlockExportDetail(config);
-  if (detail.isEmpty) return typeLabel;
-  return '$typeLabel · $detail';
 }

@@ -246,7 +246,10 @@ class WorkoutBuilderExportActions {
 
     final l10n = AppLocalizations.of(context);
     try {
-      final artifact = await exportWorkoutRoutineToExcel(namedRoutine(routine));
+      final artifact = await exportWorkoutRoutineToExcel(
+        namedRoutine(routine),
+        labels: l10n.toPdfExportLabels(),
+      );
       if (!context.mounted) return;
       await downloadExportArtifact(artifact);
       if (!context.mounted) return;
