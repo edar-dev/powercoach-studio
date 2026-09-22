@@ -24,16 +24,15 @@ WorkoutRoutine? updateDayExercisesInRoutine({
   required int dayIndex,
   required DayExercisesUpdater update,
 }) {
-  if (weekIndex < 0 || weekIndex >= routine.weeks.length) return null;
-  final week = routine.weeks[weekIndex];
+  final loc = routine.locateWeek(weekIndex);
+  if (loc == null) return null;
+  final week = routine.phases[loc.phaseIndex].weeks[loc.weekIndexInPhase];
   if (dayIndex < 0 || dayIndex >= week.days.length) return null;
   final day = week.days[dayIndex];
   final newExercises = update(List<Exercise>.from(day.exercises));
   final newDays = List<Day>.from(week.days);
   newDays[dayIndex] = day.copyWith(exercises: newExercises);
-  final newWeeks = List<Week>.from(routine.weeks);
-  newWeeks[weekIndex] = week.copyWith(days: newDays);
-  return routine.copyWith(weeks: newWeeks);
+  return routine.replaceWeekAt(weekIndex, week.copyWith(days: newDays));
 }
 
 Exercise buildExerciseFromPrescription({

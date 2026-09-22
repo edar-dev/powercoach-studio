@@ -266,4 +266,136 @@ void main() {
       );
     });
   });
+
+  group('phase mutations', () {
+    test('addPhase / rename / objective / duplicate / delete', () {
+      var routine = WorkoutRoutine.empty();
+      routine = addPhaseToRoutine(
+        routine: routine,
+        phaseId: 'p1',
+        phaseName: 'Accumulo',
+        objective: 'Volume base',
+      );
+      expect(routine.phases, hasLength(1));
+      expect(routine.phases.single.name, 'Accumulo');
+      expect(routine.phases.single.objective, 'Volume base');
+
+      routine = renamePhaseInRoutine(
+        routine: routine,
+        phaseIndex: 0,
+        newName: 'Intensificazione',
+      )!;
+      expect(routine.phases.single.name, 'Intensificazione');
+
+      routine = setPhaseObjectiveInRoutine(
+        routine: routine,
+        phaseIndex: 0,
+        objective: '  Peak prep  ',
+      )!;
+      expect(routine.phases.single.objective, 'Peak prep');
+
+      routine = addWeekToRoutine(
+        routine: routine,
+        weekId: 'w1',
+        weekName: 'Week 1',
+        firstDayId: 'd1',
+        firstDayName: 'Day 1',
+        phaseIndex: 0,
+      );
+      expect(routine.weeks, hasLength(1));
+
+      final duplicated = duplicatePhaseInRoutine(
+        routine: routine,
+        phaseIndex: 0,
+        newPhaseId: 'p2',
+        newPhaseName: 'Intensificazione (copia)',
+      )!;
+      expect(duplicated.phases, hasLength(2));
+      expect(duplicated.weeks, hasLength(2));
+      expect(duplicated.phases[1].id, 'p2');
+      expect(duplicated.phases[1].weeks.single.id, isNot('w1'));
+
+      final deleted = deletePhaseFromRoutine(
+        routine: duplicated,
+        phaseIndex: 0,
+      )!;
+      expect(deleted.phases, hasLength(1));
+      expect(deleted.phases.single.id, 'p2');
+    });
+
+    test('deletePhase remaps session completion keys to new global weeks', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        phases: [
+          WorkoutRoutine.defaultPhase(
+            weeks: const [
+              Week(
+                id: 'w1',
+                name: 'P1W1',
+                days: [Day(id: 'd1', name: 'A', exercises: [])],
+              ),
+            ],
+          ),
+          const Phase(
+            id: 'p2',
+            name: 'Picco',
+            weeks: [
+              Week(
+                id: 'w2',
+                name: 'P2W1',
+                days: [Day(id: 'd2', name: 'B', exercises: [])],
+              ),
+            ],
+          ),
+        ],
+        sessionCompletionByKey: const {
+          '0-0': true,
+          '1-0': true,
+        },
+      );
+
+      final deleted = deletePhaseFromRoutine(
+        routine: routine,
+        phaseIndex: 0,
+      )!;
+      expect(deleted.phases, hasLength(1));
+      expect(deleted.sessionCompletionByKey, {'0-0': true});
+      expect(deleted.sessionCompletionByKey.containsKey('1-0'), isFalse);
+    });
+
+    test('week mutations keep global indices across phases', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        phases: [
+          WorkoutRoutine.defaultPhase(
+            weeks: const [
+              Week(
+                id: 'w1',
+                name: 'P1W1',
+                days: [Day(id: 'd1', name: 'A', exercises: [])],
+              ),
+            ],
+          ),
+          const Phase(
+            id: 'p2',
+            name: 'Picco',
+            weeks: [
+              Week(
+                id: 'w2',
+                name: 'P2W1',
+                days: [Day(id: 'd2', name: 'B', exercises: [])],
+              ),
+            ],
+          ),
+        ],
+      );
+
+      expect(routine.globalWeekIndex(1, 0), 1);
+      final renamed = renameWeekInRoutine(
+        routine: routine,
+        weekIndex: 1,
+        newName: 'Peak Week',
+      )!;
+      expect(renamed.phases[1].weeks.single.name, 'Peak Week');
+      expect(renamed.phases[0].weeks.single.name, 'P1W1');
+    });
+  });
 }

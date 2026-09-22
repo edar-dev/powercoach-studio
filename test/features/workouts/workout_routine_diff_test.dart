@@ -7,7 +7,7 @@ WorkoutRoutine _routine({required List<Week> weeks}) => WorkoutRoutine(
   name: 'Plan',
   mobilitySections: const [],
   mobilityItems: const [],
-  weeks: weeks,
+  phases: [WorkoutRoutine.defaultPhase(weeks: weeks)],
 );
 
 void main() {

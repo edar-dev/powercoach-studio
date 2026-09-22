@@ -20,6 +20,9 @@ Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595
 | **3 PR1** | [feature-46-density-blocks](feature-46-density-blocks.plan.md) | Circuit / EMOM-lite | ✅ |
 | **3 PR2** | [feature-47-progress-narrative-l10n](feature-47-progress-narrative-l10n.plan.md) | Narrative CSV IT/EN | ✅ |
 | **Polish** | [feature-48-identity-polish](feature-48-identity-polish.plan.md) | Excel/Hevy/diff/gym density | ✅ |
+| **49** | [feature-49-workout-plan-phases](feature-49-workout-plan-phases.plan.md) | Fasi strutturali Allenamento | 🚧 |
+
+Dettaglio UI Stitch: [`workout_plan_phases_e1a13e69.plan.md`](workout_plan_phases_e1a13e69.plan.md) · asset [`design/stitch-assets/phase-planning-ui/`](../design/stitch-assets/phase-planning-ui/)
 
 ```mermaid
 flowchart LR
@@ -32,20 +35,24 @@ flowchart LR
   F45[45 plan diff]
   F46[46 density blocks]
   F47[47 narrative export]
+  F49[49 plan phases]
   V7 --> F40 --> F41 --> F42
   V7 --> F43
   F41 -.-> F43
   F42 -.-> F43
   V7 --> F44 --> F45 --> F46 --> F47
+  F47 --> F49
 ```
 
 **Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42 — ✅ completata.
 
 **Wave 2:** [feature-44](feature-44-gym-mode.plan.md) → [feature-45](feature-45-plan-diff.plan.md) — ✅.
 
-**Wave 3:** [feature-46](feature-46-density-blocks.plan.md) → [feature-47](feature-47-progress-narrative-l10n.plan.md) — ✅ su `feat/identity-wave3`.
+**Wave 3:** [feature-46](feature-46-density-blocks.plan.md) → [feature-47](feature-47-progress-narrative-l10n.plan.md) — ✅.
 
-**Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — Excel density l10n, Hevy notes, plan-diff density, gym timer — branch `feat/identity-post-wave3-polish`.
+**Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — ✅.
+
+**Fasi piano:** [feature-49](feature-49-workout-plan-phases.plan.md) — 🚧 su `feat/workout-plan-phases`.
 
 ---
 

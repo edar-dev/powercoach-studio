@@ -48,64 +48,74 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
     ..write(routine.startDate?.toIso8601String() ?? '')
     ..write('|ed:')
     ..write(routine.endDate?.toIso8601String() ?? '')
-    ..write('|weeks:');
+    ..write('|phases:');
 
-  for (final week in routine.weeks) {
+  for (final phase in routine.phases) {
     buffer
-      ..write('w(')
-      ..write(week.id)
+      ..write('p(')
+      ..write(phase.id)
       ..write(',')
-      ..write(week.name)
+      ..write(phase.name)
+      ..write(',')
+      ..write(phase.objective ?? '')
       ..write(')');
-    for (final day in week.days) {
+    for (final week in phase.weeks) {
       buffer
-        ..write('d(')
-        ..write(day.id)
+        ..write('w(')
+        ..write(week.id)
         ..write(',')
-        ..write(day.name)
-        ..write(',')
-        ..write(day.scheduledWeekday ?? '')
-        ..write(',')
-        ..write(day.coachingNote ?? '')
-        ..write(',')
-        ..write(serializeDensityBlocksFingerprint(day.densityBlocks))
+        ..write(week.name)
         ..write(')');
-      for (final exercise in day.exercises) {
+      for (final day in week.days) {
         buffer
-          ..write('e(')
-          ..write(exercise.id)
+          ..write('d(')
+          ..write(day.id)
           ..write(',')
-          ..write(exercise.name)
+          ..write(day.name)
           ..write(',')
-          ..write(exercise.shortName)
+          ..write(day.scheduledWeekday ?? '')
           ..write(',')
-          ..write(exercise.sets)
+          ..write(day.coachingNote ?? '')
           ..write(',')
-          ..write(exercise.reps)
-          ..write(',')
-          ..write(exercise.rpe)
-          ..write(',')
-          ..write(exercise.note)
-          ..write(',')
-          ..write(exercise.customExerciseId ?? '')
-          ..write(',')
-          ..write(exercise.supersetGroupId ?? '')
-          ..write(',')
-          ..write(exercise.prescriptionScope.name)
+          ..write(serializeDensityBlocksFingerprint(day.densityBlocks))
           ..write(')');
-        for (final set in exercise.effectiveSetDetails) {
+        for (final exercise in day.exercises) {
           buffer
-            ..write('s(')
-            ..write(set.line)
+            ..write('e(')
+            ..write(exercise.id)
             ..write(',')
-            ..write(set.sets)
+            ..write(exercise.name)
             ..write(',')
-            ..write(set.reps)
+            ..write(exercise.shortName)
             ..write(',')
-            ..write(set.rpe)
+            ..write(exercise.sets)
             ..write(',')
-            ..write(set.note)
+            ..write(exercise.reps)
+            ..write(',')
+            ..write(exercise.rpe)
+            ..write(',')
+            ..write(exercise.note)
+            ..write(',')
+            ..write(exercise.customExerciseId ?? '')
+            ..write(',')
+            ..write(exercise.supersetGroupId ?? '')
+            ..write(',')
+            ..write(exercise.prescriptionScope.name)
             ..write(')');
+          for (final set in exercise.effectiveSetDetails) {
+            buffer
+              ..write('s(')
+              ..write(set.line)
+              ..write(',')
+              ..write(set.sets)
+              ..write(',')
+              ..write(set.reps)
+              ..write(',')
+              ..write(set.rpe)
+              ..write(',')
+              ..write(set.note)
+              ..write(')');
+          }
         }
       }
     }

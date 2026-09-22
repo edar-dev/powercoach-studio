@@ -48,7 +48,9 @@ WorkoutRoutine buildWorkoutRoutineSkeleton({
     );
   }
 
-  return base.copyWith(weeks: weeks);
+  return base.copyWith(
+    phases: [WorkoutRoutine.defaultPhase(weeks: weeks)],
+  );
 }
 
 List<String> _dayNamesForPreset({

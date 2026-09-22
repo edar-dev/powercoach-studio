@@ -784,6 +784,58 @@
     }
   },
   "workoutBuilderNoWeeksYet": "Ancora nessuna settimana. Aggiungine una sopra.",
+  "workoutPhaseAdd": "Aggiungi Fase",
+  "workoutPhaseDuplicate": "Duplica Fase",
+  "workoutPhaseSettings": "Impostazioni Fase",
+  "workoutPhaseEmptyTitle": "Nessuna fase ancora",
+  "workoutPhaseEmptyMessage": "Aggiungi una fase per iniziare a strutturare le settimane di allenamento.",
+  "workoutPhaseNumbered": "Fase {n}",
+  "@workoutPhaseNumbered": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutPhaseWeeksCount": "{count, plural, =0{0 Settimane} =1{1 Settimana} other{{count} Settimane}}",
+  "@workoutPhaseWeeksCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseObjectiveLabel": "Obiettivo",
+  "workoutPhaseObjectiveHint": "Es. Accumulo volume, tecnica squat…",
+  "workoutPhaseNameLabel": "Nome fase",
+  "workoutPhaseDurationLabel": "Durata",
+  "workoutPhaseFrequencyLabel": "Frequenza",
+  "workoutPhaseFrequencyValue": "{count, plural, =0{0 sessioni/sett.} =1{1 sessione/sett.} other{{count} sessioni/sett.}}",
+  "@workoutPhaseFrequencyValue": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseProgressLabel": "Avanzamento",
+  "workoutPhaseProgressValue": "{percent}%",
+  "@workoutPhaseProgressValue": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "workoutPhaseAddWeek": "Aggiungi settimana alla fase",
+  "workoutPhaseSettingsTitle": "Impostazioni fase",
+  "workoutPhaseDeleteTitle": "Eliminare la fase?",
+  "workoutPhaseDeleteMessage": "Verranno rimosse questa fase e tutte le sue settimane. Operazione irreversibile.",
+  "workoutPhaseDeleteMenu": "Elimina fase",
+  "workoutPhaseCustomNameTitle": "Fase personalizzata",
+  "workoutPhasePresetAccumulo": "Accumulo",
+  "workoutPhasePresetIntensificazione": "Intensificazione",
+  "workoutPhasePresetPicco": "Picco",
+  "workoutPhasePresetDeload": "Deload",
+  "workoutPhasePresetMassa": "Massa",
+  "workoutPhasePresetDefinizione": "Definizione",
+  "workoutPhasePresetVolume": "Volume",
+  "workoutPhasePresetAcclimatazione": "Acclimatazione",
+  "workoutPhasePresetGeneral": "Generale",
+  "workoutPhasePresetCustom": "Personalizzata…",
+  "workoutPhaseRemoved": "Fase rimossa",
   "workoutBuilderSuperSetHeading": "SUPER SET",
   "workoutBuilderCircuitHeading": "CIRCUITO",
   "workoutBuilderEmomHeading": "EMOM",

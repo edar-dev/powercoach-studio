@@ -1862,6 +1862,127 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderNoWeeksYet => 'No weeks yet. Add a week above.';
 
   @override
+  String get workoutPhaseAdd => 'Add Phase';
+
+  @override
+  String get workoutPhaseDuplicate => 'Duplicate Phase';
+
+  @override
+  String get workoutPhaseSettings => 'Phase Settings';
+
+  @override
+  String get workoutPhaseEmptyTitle => 'No phases yet';
+
+  @override
+  String get workoutPhaseEmptyMessage =>
+      'Add a phase to start structuring your training weeks.';
+
+  @override
+  String workoutPhaseNumbered(int n) {
+    return 'Phase $n';
+  }
+
+  @override
+  String workoutPhaseWeeksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Weeks',
+      one: '1 Week',
+      zero: '0 Weeks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseObjectiveLabel => 'Objective';
+
+  @override
+  String get workoutPhaseObjectiveHint =>
+      'E.g. Volume accumulation, squat technique…';
+
+  @override
+  String get workoutPhaseNameLabel => 'Phase name';
+
+  @override
+  String get workoutPhaseDurationLabel => 'Duration';
+
+  @override
+  String get workoutPhaseFrequencyLabel => 'Frequency';
+
+  @override
+  String workoutPhaseFrequencyValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessions/wk',
+      one: '1 session/wk',
+      zero: '0 sessions/wk',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseProgressLabel => 'Progress';
+
+  @override
+  String workoutPhaseProgressValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get workoutPhaseAddWeek => 'Add week to phase';
+
+  @override
+  String get workoutPhaseSettingsTitle => 'Phase settings';
+
+  @override
+  String get workoutPhaseDeleteTitle => 'Delete this phase?';
+
+  @override
+  String get workoutPhaseDeleteMessage =>
+      'This phase and all of its weeks will be removed. This cannot be undone.';
+
+  @override
+  String get workoutPhaseDeleteMenu => 'Delete phase';
+
+  @override
+  String get workoutPhaseCustomNameTitle => 'Custom phase';
+
+  @override
+  String get workoutPhasePresetAccumulo => 'Accumulation';
+
+  @override
+  String get workoutPhasePresetIntensificazione => 'Intensification';
+
+  @override
+  String get workoutPhasePresetPicco => 'Peak';
+
+  @override
+  String get workoutPhasePresetDeload => 'Deload';
+
+  @override
+  String get workoutPhasePresetMassa => 'Mass';
+
+  @override
+  String get workoutPhasePresetDefinizione => 'Definition';
+
+  @override
+  String get workoutPhasePresetVolume => 'Volume';
+
+  @override
+  String get workoutPhasePresetAcclimatazione => 'Acclimation';
+
+  @override
+  String get workoutPhasePresetGeneral => 'General';
+
+  @override
+  String get workoutPhasePresetCustom => 'Custom…';
+
+  @override
+  String get workoutPhaseRemoved => 'Phase removed';
+
+  @override
   String get workoutBuilderSuperSetHeading => 'SUPER SET';
 
   @override

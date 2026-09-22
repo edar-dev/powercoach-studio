@@ -48,15 +48,14 @@ WorkoutRoutine? updateDayInRoutine({
   required int dayIndex,
   required Day Function(Day day) update,
 }) {
-  if (weekIndex < 0 || weekIndex >= routine.weeks.length) return null;
-  final week = routine.weeks[weekIndex];
+  final loc = routine.locateWeek(weekIndex);
+  if (loc == null) return null;
+  final week = routine.phases[loc.phaseIndex].weeks[loc.weekIndexInPhase];
   if (dayIndex < 0 || dayIndex >= week.days.length) return null;
   final day = week.days[dayIndex];
   final newDays = List<Day>.from(week.days);
   newDays[dayIndex] = update(day);
-  final newWeeks = List<Week>.from(routine.weeks);
-  newWeeks[weekIndex] = week.copyWith(days: newDays);
-  return routine.copyWith(weeks: newWeeks);
+  return routine.replaceWeekAt(weekIndex, week.copyWith(days: newDays));
 }
 
 WorkoutRoutine? setDensityBlockInRoutine({

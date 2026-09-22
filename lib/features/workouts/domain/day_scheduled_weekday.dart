@@ -13,15 +13,14 @@ int effectiveScheduledWeekday({required Day day, required int dayIndex}) {
 /// Not used on normal editor/draft/import load — null means flexible weekday.
 /// Kept for optional one-off legacy migration or tests.
 WorkoutRoutine hydrateScheduledWeekdays(WorkoutRoutine routine) {
-  final weeks = routine.weeks.map((week) {
+  return routine.mapWeeks((week) {
     final days = week.days.asMap().entries.map((entry) {
       final day = entry.value;
       if (day.scheduledWeekday != null) return day;
       return day.copyWith(scheduledWeekday: inferredScheduledWeekday(entry.key));
     }).toList();
     return week.copyWith(days: days);
-  }).toList();
-  return routine.copyWith(weeks: weeks);
+  });
 }
 
 /// Short Italian weekday labels for compact chips (Ma/Me disambiguation).

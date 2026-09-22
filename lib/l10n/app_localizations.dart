@@ -3466,6 +3466,198 @@ abstract class AppLocalizations {
   /// **'No weeks yet. Add a week above.'**
   String get workoutBuilderNoWeeksYet;
 
+  /// No description provided for @workoutPhaseAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Phase'**
+  String get workoutPhaseAdd;
+
+  /// No description provided for @workoutPhaseDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate Phase'**
+  String get workoutPhaseDuplicate;
+
+  /// No description provided for @workoutPhaseSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase Settings'**
+  String get workoutPhaseSettings;
+
+  /// No description provided for @workoutPhaseEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No phases yet'**
+  String get workoutPhaseEmptyTitle;
+
+  /// No description provided for @workoutPhaseEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a phase to start structuring your training weeks.'**
+  String get workoutPhaseEmptyMessage;
+
+  /// No description provided for @workoutPhaseNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase {n}'**
+  String workoutPhaseNumbered(int n);
+
+  /// No description provided for @workoutPhaseWeeksCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 Weeks} =1{1 Week} other{{count} Weeks}}'**
+  String workoutPhaseWeeksCount(int count);
+
+  /// No description provided for @workoutPhaseObjectiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Objective'**
+  String get workoutPhaseObjectiveLabel;
+
+  /// No description provided for @workoutPhaseObjectiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Volume accumulation, squat technique…'**
+  String get workoutPhaseObjectiveHint;
+
+  /// No description provided for @workoutPhaseNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase name'**
+  String get workoutPhaseNameLabel;
+
+  /// No description provided for @workoutPhaseDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get workoutPhaseDurationLabel;
+
+  /// No description provided for @workoutPhaseFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get workoutPhaseFrequencyLabel;
+
+  /// No description provided for @workoutPhaseFrequencyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 sessions/wk} =1{1 session/wk} other{{count} sessions/wk}}'**
+  String workoutPhaseFrequencyValue(int count);
+
+  /// No description provided for @workoutPhaseProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get workoutPhaseProgressLabel;
+
+  /// No description provided for @workoutPhaseProgressValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String workoutPhaseProgressValue(int percent);
+
+  /// No description provided for @workoutPhaseAddWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Add week to phase'**
+  String get workoutPhaseAddWeek;
+
+  /// No description provided for @workoutPhaseSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase settings'**
+  String get workoutPhaseSettingsTitle;
+
+  /// No description provided for @workoutPhaseDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this phase?'**
+  String get workoutPhaseDeleteTitle;
+
+  /// No description provided for @workoutPhaseDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This phase and all of its weeks will be removed. This cannot be undone.'**
+  String get workoutPhaseDeleteMessage;
+
+  /// No description provided for @workoutPhaseDeleteMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete phase'**
+  String get workoutPhaseDeleteMenu;
+
+  /// No description provided for @workoutPhaseCustomNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom phase'**
+  String get workoutPhaseCustomNameTitle;
+
+  /// No description provided for @workoutPhasePresetAccumulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Accumulation'**
+  String get workoutPhasePresetAccumulo;
+
+  /// No description provided for @workoutPhasePresetIntensificazione.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensification'**
+  String get workoutPhasePresetIntensificazione;
+
+  /// No description provided for @workoutPhasePresetPicco.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak'**
+  String get workoutPhasePresetPicco;
+
+  /// No description provided for @workoutPhasePresetDeload.
+  ///
+  /// In en, this message translates to:
+  /// **'Deload'**
+  String get workoutPhasePresetDeload;
+
+  /// No description provided for @workoutPhasePresetMassa.
+  ///
+  /// In en, this message translates to:
+  /// **'Mass'**
+  String get workoutPhasePresetMassa;
+
+  /// No description provided for @workoutPhasePresetDefinizione.
+  ///
+  /// In en, this message translates to:
+  /// **'Definition'**
+  String get workoutPhasePresetDefinizione;
+
+  /// No description provided for @workoutPhasePresetVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get workoutPhasePresetVolume;
+
+  /// No description provided for @workoutPhasePresetAcclimatazione.
+  ///
+  /// In en, this message translates to:
+  /// **'Acclimation'**
+  String get workoutPhasePresetAcclimatazione;
+
+  /// No description provided for @workoutPhasePresetGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get workoutPhasePresetGeneral;
+
+  /// No description provided for @workoutPhasePresetCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom…'**
+  String get workoutPhasePresetCustom;
+
+  /// No description provided for @workoutPhaseRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase removed'**
+  String get workoutPhaseRemoved;
+
   /// No description provided for @workoutBuilderSuperSetHeading.
   ///
   /// In en, this message translates to:
