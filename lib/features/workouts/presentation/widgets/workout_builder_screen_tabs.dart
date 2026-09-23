@@ -165,7 +165,6 @@ class WorkoutBuilderScreenTabs {
       onRenameDay: trainingHandlers.renameDay,
       onSetDayCoachingNote: trainingHandlers.setDayCoachingNote,
       onDeleteDay: trainingHandlers.deleteDay,
-      onAddExercise: trainingHandlers.addExerciseToDay,
       onDuplicateExercise: trainingHandlers.duplicateExercise,
       onRemoveExercise: trainingHandlers.removeExercise,
       onMoveExercise: trainingHandlers.moveExerciseInDay,

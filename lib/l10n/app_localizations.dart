@@ -3562,6 +3562,66 @@ abstract class AppLocalizations {
   /// **'Add week to phase'**
   String get workoutPhaseAddWeek;
 
+  /// No description provided for @workoutPhaseEditSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit session'**
+  String get workoutPhaseEditSession;
+
+  /// No description provided for @workoutPhaseCreateSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new session'**
+  String get workoutPhaseCreateSession;
+
+  /// No description provided for @workoutPhaseCreateSessionForWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new session for Week {n}'**
+  String workoutPhaseCreateSessionForWeek(int n);
+
+  /// No description provided for @workoutPhaseAddDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Day'**
+  String get workoutPhaseAddDay;
+
+  /// No description provided for @workoutPhaseMoreExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String workoutPhaseMoreExercises(int count);
+
+  /// No description provided for @workoutPhaseNoExercisesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises yet'**
+  String get workoutPhaseNoExercisesYet;
+
+  /// No description provided for @workoutPhaseSetsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 sets total} =1{1 set total} other{{count} sets total}}'**
+  String workoutPhaseSetsTotal(int count);
+
+  /// No description provided for @workoutPhaseWeeksCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 wks} =1{1 wk} other{{count} wks}}'**
+  String workoutPhaseWeeksCountShort(int count);
+
+  /// No description provided for @workoutPhaseExpandWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand week'**
+  String get workoutPhaseExpandWeek;
+
+  /// No description provided for @workoutPhaseCollapseWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse week'**
+  String get workoutPhaseCollapseWeek;
+
   /// No description provided for @workoutPhaseSettingsTitle.
   ///
   /// In en, this message translates to:

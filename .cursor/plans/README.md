@@ -21,8 +21,9 @@ Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595
 | **3 PR2** | [feature-47-progress-narrative-l10n](feature-47-progress-narrative-l10n.plan.md) | Narrative CSV IT/EN | ✅ |
 | **Polish** | [feature-48-identity-polish](feature-48-identity-polish.plan.md) | Excel/Hevy/diff/gym density | ✅ |
 | **49** | [feature-49-workout-plan-phases](feature-49-workout-plan-phases.plan.md) | Fasi strutturali Allenamento | 🚧 |
+| **50** | [feature-50-stitch-editor-ui-parity](feature-50-stitch-editor-ui-parity.plan.md) | Editor Stitch parity (modale/drawer) | 📋 |
 
-Dettaglio UI Stitch: [`workout_plan_phases_e1a13e69.plan.md`](workout_plan_phases_e1a13e69.plan.md) · asset [`design/stitch-assets/phase-planning-ui/`](../design/stitch-assets/phase-planning-ui/)
+Dettaglio UI Stitch fasi: [`workout_plan_phases_e1a13e69.plan.md`](workout_plan_phases_e1a13e69.plan.md) · parity editor: [`stitch_editor_ui_parity_945a84f8.plan.md`](stitch_editor_ui_parity_945a84f8.plan.md) · asset [`design/stitch-assets/phase-planning-ui/`](../../design/stitch-assets/phase-planning-ui/)
 
 ```mermaid
 flowchart LR
@@ -36,12 +37,13 @@ flowchart LR
   F46[46 density blocks]
   F47[47 narrative export]
   F49[49 plan phases]
+  F50[50 stitch editor parity]
   V7 --> F40 --> F41 --> F42
   V7 --> F43
   F41 -.-> F43
   F42 -.-> F43
   V7 --> F44 --> F45 --> F46 --> F47
-  F47 --> F49
+  F47 --> F49 --> F50
 ```
 
 **Ordine PR Wave 1:** 40 → 41 → 42; 43 in parallelo a 41/42 — ✅ completata.
@@ -53,6 +55,8 @@ flowchart LR
 **Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — ✅.
 
 **Fasi piano:** [feature-49](feature-49-workout-plan-phases.plan.md) — 🚧 su `feat/workout-plan-phases`.
+
+**Stitch editor parity:** [feature-50](feature-50-stitch-editor-ui-parity.plan.md) — 📋 pianificato (dopo / insieme a 49 UI).
 
 ---
 

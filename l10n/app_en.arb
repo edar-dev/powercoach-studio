@@ -820,6 +820,36 @@
     }
   },
   "workoutPhaseAddWeek": "Add week to phase",
+  "workoutPhaseEditSession": "Edit session",
+  "workoutPhaseCreateSession": "Create a new session",
+  "workoutPhaseCreateSessionForWeek": "Create a new session for Week {n}",
+  "@workoutPhaseCreateSessionForWeek": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutPhaseAddDay": "Add Day",
+  "workoutPhaseMoreExercises": "+{count} more",
+  "@workoutPhaseMoreExercises": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseNoExercisesYet": "No exercises yet",
+  "workoutPhaseSetsTotal": "{count, plural, =0{0 sets total} =1{1 set total} other{{count} sets total}}",
+  "@workoutPhaseSetsTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseWeeksCountShort": "{count, plural, =0{0 wks} =1{1 wk} other{{count} wks}}",
+  "@workoutPhaseWeeksCountShort": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseExpandWeek": "Expand week",
+  "workoutPhaseCollapseWeek": "Collapse week",
   "workoutPhaseSettingsTitle": "Phase settings",
   "workoutPhaseDeleteTitle": "Delete this phase?",
   "workoutPhaseDeleteMessage": "This phase and all of its weeks will be removed. This cannot be undone.",

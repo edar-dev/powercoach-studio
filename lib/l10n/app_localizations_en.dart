@@ -1934,6 +1934,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutPhaseAddWeek => 'Add week to phase';
 
   @override
+  String get workoutPhaseEditSession => 'Edit session';
+
+  @override
+  String get workoutPhaseCreateSession => 'Create a new session';
+
+  @override
+  String workoutPhaseCreateSessionForWeek(int n) {
+    return 'Create a new session for Week $n';
+  }
+
+  @override
+  String get workoutPhaseAddDay => 'Add Day';
+
+  @override
+  String workoutPhaseMoreExercises(int count) {
+    return '+$count more';
+  }
+
+  @override
+  String get workoutPhaseNoExercisesYet => 'No exercises yet';
+
+  @override
+  String workoutPhaseSetsTotal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sets total',
+      one: '1 set total',
+      zero: '0 sets total',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String workoutPhaseWeeksCountShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count wks',
+      one: '1 wk',
+      zero: '0 wks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseExpandWeek => 'Expand week';
+
+  @override
+  String get workoutPhaseCollapseWeek => 'Collapse week';
+
+  @override
   String get workoutPhaseSettingsTitle => 'Phase settings';
 
   @override

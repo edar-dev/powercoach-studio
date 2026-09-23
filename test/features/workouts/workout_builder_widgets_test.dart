@@ -341,7 +341,6 @@ void main() {
                 onRenameDay: (_, __, ___) {},
                 onSetDayCoachingNote: (_, __, ___) {},
                 onDeleteDay: (_, __) {},
-                onAddExercise: (_, __) {},
                 onDuplicateExercise: (_, __, ___) {},
                 onRemoveExercise: (_, __, ___) {},
                 onMoveExercise: (_, __, ___, {required up}) {},
@@ -388,7 +387,9 @@ void main() {
       expect(find.text('Aggiungi Fase'), findsOneWidget);
     });
 
-    testWidgets('WorkoutTrainingTab shows phase rail labels', (tester) async {
+    testWidgets('WorkoutTrainingTab shows horizontal phase pills and day cards', (
+      tester,
+    ) async {
       final routine = WorkoutRoutine.empty().copyWith(
         phases: [
           WorkoutRoutine.defaultPhase(
@@ -396,7 +397,22 @@ void main() {
               Week(
                 id: 'w1',
                 name: 'Settimana 1',
-                days: [Day(id: 'd1', name: 'Giorno 1', exercises: [])],
+                days: [
+                  Day(
+                    id: 'd1',
+                    name: 'Giorno 1',
+                    scheduledWeekday: DateTime.monday,
+                    exercises: [
+                      Exercise(
+                        id: 'e1',
+                        name: 'Panca piana',
+                        sets: '4',
+                        reps: '8',
+                        rpe: '75kg',
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),
@@ -430,7 +446,6 @@ void main() {
                 onRenameDay: (_, __, ___) {},
                 onSetDayCoachingNote: (_, __, ___) {},
                 onDeleteDay: (_, __) {},
-                onAddExercise: (_, __) {},
                 onDuplicateExercise: (_, __, ___) {},
                 onRemoveExercise: (_, __, ___) {},
                 onMoveExercise: (_, __, ___, {required up}) {},
@@ -473,10 +488,47 @@ void main() {
         ),
       );
 
-      expect(find.text('Fase 1'), findsWidgets);
+      expect(find.text('FASE 1'), findsOneWidget);
       expect(find.text('Generale'), findsWidgets);
       expect(find.text('Aggiungi Fase'), findsOneWidget);
+      expect(find.text('Duplica Fase'), findsOneWidget);
+      expect(find.text('Impostazioni Fase'), findsOneWidget);
       expect(find.text('Settimana 1'), findsWidgets);
+      expect(find.text('Panca piana'), findsOneWidget);
+      expect(find.text('Modifica sessione'), findsOneWidget);
+      expect(find.text('Aggiungi Giorno'), findsWidgets);
+
+      await tester.scrollUntilVisible(
+        find.text('Modifica sessione'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      await tester.tap(find.text('Modifica sessione'));
+      // Phase rail pulse animation prevents pumpAndSettle from completing.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Session editor opens as a full-screen sheet, not an inline panel.
+      expect(find.textContaining('Modifica sessione'), findsWidgets);
+      expect(find.text('Panca piana'), findsWidgets);
+      expect(find.text('Aggiungi esercizio'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.close));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('training-add-week')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      expect(find.byKey(const ValueKey('training-add-week')), findsOneWidget);
+      expect(find.textContaining('Aggiungi settimana alla fase'), findsOneWidget);
+
+      // No vertical ExpansionTile + week panel chrome.
+      expect(find.byType(ExpansionTile), findsNothing);
     });
   });
 }

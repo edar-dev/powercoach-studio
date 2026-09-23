@@ -820,6 +820,36 @@
     }
   },
   "workoutPhaseAddWeek": "Aggiungi settimana alla fase",
+  "workoutPhaseEditSession": "Modifica sessione",
+  "workoutPhaseCreateSession": "Crea una nuova sessione",
+  "workoutPhaseCreateSessionForWeek": "Crea una nuova sessione per la Settimana {n}",
+  "@workoutPhaseCreateSessionForWeek": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutPhaseAddDay": "Aggiungi Giorno",
+  "workoutPhaseMoreExercises": "+{count} altri",
+  "@workoutPhaseMoreExercises": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseNoExercisesYet": "Nessun esercizio",
+  "workoutPhaseSetsTotal": "{count, plural, =0{0 serie tot.} =1{1 serie tot.} other{{count} serie tot.}}",
+  "@workoutPhaseSetsTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseWeeksCountShort": "{count, plural, =0{0 Sett.} =1{1 Sett.} other{{count} Sett.}}",
+  "@workoutPhaseWeeksCountShort": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseExpandWeek": "Espandi settimana",
+  "workoutPhaseCollapseWeek": "Comprimi settimana",
   "workoutPhaseSettingsTitle": "Impostazioni fase",
   "workoutPhaseDeleteTitle": "Eliminare la fase?",
   "workoutPhaseDeleteMessage": "Verranno rimosse questa fase e tutte le sue settimane. Operazione irreversibile.",

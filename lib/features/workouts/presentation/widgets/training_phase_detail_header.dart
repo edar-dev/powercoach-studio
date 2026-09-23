@@ -4,15 +4,17 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/workout_phase_presets.dart';
 
-/// Header for the selected phase: name, objective, duration, frequency, progress.
+/// Meta chips grid for the selected phase (Stitch phase detail row).
+///
+/// Actions (duplicate / settings / delete) live on [TrainingPhaseRail].
 class TrainingPhaseDetailHeader extends StatelessWidget {
   const TrainingPhaseDetailHeader({
     super.key,
     required this.phase,
     required this.phaseIndex,
     required this.progressPercent,
-    required this.onDuplicate,
-    required this.onSettings,
+    this.onDuplicate,
+    this.onSettings,
     this.onDelete,
     this.readOnly = false,
   });
@@ -20,8 +22,10 @@ class TrainingPhaseDetailHeader extends StatelessWidget {
   final Phase phase;
   final int phaseIndex;
   final int progressPercent;
-  final VoidCallback onDuplicate;
-  final VoidCallback onSettings;
+
+  /// Kept for API compatibility; prefer rail trailing actions.
+  final VoidCallback? onDuplicate;
+  final VoidCallback? onSettings;
   final VoidCallback? onDelete;
   final bool readOnly;
 
@@ -30,107 +34,128 @@ class TrainingPhaseDetailHeader extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final name = localizedPhaseName(l10n, phase.name);
     final avgSessions = phaseAverageSessionsPerWeek(phase).round();
     final objective = phase.objective?.trim();
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainerHighest.withValues(alpha: 0.45),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.5)),
+    final chips = <Widget>[
+      if (objective != null && objective.isNotEmpty)
+        _MetaChip(
+          label: l10n.workoutPhaseObjectiveLabel,
+          value: objective,
+          cs: cs,
+          theme: theme,
+        ),
+      _MetaChip(
+        label: l10n.workoutPhaseDurationLabel,
+        value: l10n.workoutPhaseWeeksCount(phase.weeks.length),
+        cs: cs,
+        theme: theme,
+        valueColor: cs.primary,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.workoutPhaseNumbered(phaseIndex + 1),
-                      style: theme.textTheme.labelMedium?.copyWith(
-                        color: cs.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      name,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (!readOnly) ...[
-                TextButton(
-                  onPressed: onDuplicate,
-                  child: Text(l10n.workoutPhaseDuplicate),
-                ),
-                TextButton(
-                  onPressed: onSettings,
-                  child: Text(l10n.workoutPhaseSettings),
-                ),
+      _MetaChip(
+        label: l10n.workoutPhaseFrequencyLabel,
+        value: l10n.workoutPhaseFrequencyValue(avgSessions),
+        cs: cs,
+        theme: theme,
+      ),
+      _ProgressMetaChip(
+        label: l10n.workoutPhaseProgressLabel,
+        percent: progressPercent,
+        percentLabel: l10n.workoutPhaseProgressValue(progressPercent),
+        cs: cs,
+        theme: theme,
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (!readOnly &&
+            (onDuplicate != null || onSettings != null || onDelete != null))
+          Align(
+            alignment: Alignment.centerRight,
+            child: Wrap(
+              spacing: 4,
+              children: [
                 if (onDelete != null)
                   IconButton(
                     tooltip: l10n.workoutPhaseDeleteMenu,
                     onPressed: onDelete,
-                    icon: Icon(Icons.delete_outline, color: cs.error),
+                    icon: Icon(Icons.delete_outline, color: cs.error, size: 20),
+                    visualDensity: VisualDensity.compact,
                   ),
               ],
-            ],
-          ),
-          if (objective != null && objective.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: '${l10n.workoutPhaseObjectiveLabel}: ',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  TextSpan(
-                    text: objective,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ],
-              ),
             ),
-          ],
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 16,
-            runSpacing: 8,
-            children: [
-              _MetaChip(
-                label: l10n.workoutPhaseDurationLabel,
-                value: l10n.workoutPhaseWeeksCount(phase.weeks.length),
-              ),
-              _MetaChip(
-                label: l10n.workoutPhaseFrequencyLabel,
-                value: l10n.workoutPhaseFrequencyValue(avgSessions),
-              ),
-              _MetaChip(
-                label: l10n.workoutPhaseProgressLabel,
-                value: l10n.workoutPhaseProgressValue(progressPercent),
-              ),
-            ],
           ),
-          const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progressPercent / 100,
-              minHeight: 6,
-              backgroundColor: cs.surfaceContainerHighest,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final width = constraints.maxWidth;
+            final columns = width >= 1100
+                ? 4
+                : width >= 700
+                    ? 3
+                    : width >= 420
+                        ? 2
+                        : 1;
+            return GridView.count(
+              crossAxisCount: columns,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              childAspectRatio: columns == 1 ? 4.8 : 3.6,
+              children: chips,
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _MetaChip extends StatelessWidget {
+  const _MetaChip({
+    required this.label,
+    required this.value,
+    required this.cs,
+    required this.theme,
+    this.valueColor,
+  });
+
+  final String label;
+  final String value;
+  final ColorScheme cs;
+  final ThemeData theme;
+  final Color? valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: cs.surface.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.55)),
+      ),
+      child: Row(
+        children: [
+          Text(
+            '$label:',
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              value,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: valueColor ?? cs.onSurface,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],
@@ -139,32 +164,60 @@ class TrainingPhaseDetailHeader extends StatelessWidget {
   }
 }
 
-class _MetaChip extends StatelessWidget {
-  const _MetaChip({required this.label, required this.value});
+class _ProgressMetaChip extends StatelessWidget {
+  const _ProgressMetaChip({
+    required this.label,
+    required this.percent,
+    required this.percentLabel,
+    required this.cs,
+    required this.theme,
+  });
 
   final String label;
-  final String value;
+  final int percent;
+  final String percentLabel;
+  final ColorScheme cs;
+  final ThemeData theme;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: cs.onSurfaceVariant,
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        color: cs.surface.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.55)),
+      ),
+      child: Row(
+        children: [
+          Text(
+            '$label:',
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        Text(
-          value,
-          style: theme.textTheme.titleSmall?.copyWith(
-            fontWeight: FontWeight.w600,
+          const SizedBox(width: 10),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(99),
+              child: LinearProgressIndicator(
+                value: (percent.clamp(0, 100)) / 100,
+                minHeight: 6,
+                backgroundColor: cs.surfaceContainerHighest,
+              ),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 8),
+          Text(
+            percentLabel,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: cs.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

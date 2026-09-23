@@ -26,6 +26,8 @@ Piano dettagliato + screenshot Stitch: [`workout_plan_phases_e1a13e69.plan.md`](
 
 Asset: [`design/stitch-assets/phase-planning-ui/`](../../design/stitch-assets/phase-planning-ui/)
 
+Segue (parity modale/drawer): [`feature-50-stitch-editor-ui-parity.plan.md`](feature-50-stitch-editor-ui-parity.plan.md)
+
 ## Obiettivo
 
 `WorkoutRoutine` → `List<Phase>` → `List<Week>` → days. Tab Allenamento: lista fasi + dettaglio (obiettivo, durata/frequenza derivate, avanzamento %) + settimane annidate.
