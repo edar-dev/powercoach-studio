@@ -21,7 +21,7 @@ Piano origine: [`identity_roadmap_v7_6595dc18.plan.md`](identity_roadmap_v7_6595
 | **3 PR2** | [feature-47-progress-narrative-l10n](feature-47-progress-narrative-l10n.plan.md) | Narrative CSV IT/EN | ✅ |
 | **Polish** | [feature-48-identity-polish](feature-48-identity-polish.plan.md) | Excel/Hevy/diff/gym density | ✅ |
 | **49** | [feature-49-workout-plan-phases](feature-49-workout-plan-phases.plan.md) | Fasi strutturali Allenamento | 🚧 |
-| **50** | [feature-50-stitch-editor-ui-parity](feature-50-stitch-editor-ui-parity.plan.md) | Editor Stitch parity (modale/drawer) | 📋 |
+| **50** | [feature-50-stitch-editor-ui-parity](feature-50-stitch-editor-ui-parity.plan.md) | Editor Stitch parity + F50–F55 | 🚧 |
 
 Dettaglio UI Stitch fasi: [`workout_plan_phases_e1a13e69.plan.md`](workout_plan_phases_e1a13e69.plan.md) · parity editor: [`stitch_editor_ui_parity_945a84f8.plan.md`](stitch_editor_ui_parity_945a84f8.plan.md) · asset [`design/stitch-assets/phase-planning-ui/`](../../design/stitch-assets/phase-planning-ui/)
 
@@ -56,7 +56,7 @@ flowchart LR
 
 **Fasi piano:** [feature-49](feature-49-workout-plan-phases.plan.md) — 🚧 su `feat/workout-plan-phases`.
 
-**Stitch editor parity:** [feature-50](feature-50-stitch-editor-ui-parity.plan.md) — 📋 pianificato (dopo / insieme a 49 UI).
+**Stitch editor parity:** [feature-50](feature-50-stitch-editor-ui-parity.plan.md) — 🚧 F50–F55 follow-up; assets in `design/stitch-assets/phase-planning-ui/`.
 
 ---
 

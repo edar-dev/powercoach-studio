@@ -268,11 +268,36 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
         Expanded(
           child: filtered.isEmpty
               ? Center(
-                  child: Text(
-                    l10n.workoutBuilderCompactAddEmpty,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: showRecent && _exerciseOptions.isEmpty
+                        ? Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                l10n.exerciseLibraryEmpty,
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                l10n.exerciseLibraryEmptyHint,
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: cs.onSurfaceVariant,
+                                ),
+                              ),
+                            ],
+                          )
+                        : Text(
+                            l10n.workoutBuilderCompactAddEmpty,
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cs.onSurfaceVariant,
+                            ),
+                          ),
                   ),
                 )
               : ListView.separated(

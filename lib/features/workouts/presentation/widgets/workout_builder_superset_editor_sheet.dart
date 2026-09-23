@@ -250,7 +250,7 @@ class _WorkoutBuilderSupersetEditorBody extends StatelessWidget {
           const SizedBox(height: 16),
           WorkoutDashedButton(
             icon: Icons.add,
-            label: l10n.builderSupersetAddExercise,
+            label: l10n.builderDensityAddExercise,
             onPressed: onAddExercise,
           ),
         ],
@@ -385,7 +385,7 @@ class _WorkoutBuilderSupersetEditorBody extends StatelessWidget {
         const SizedBox(height: 16),
         WorkoutDashedButton(
           icon: Icons.add,
-          label: l10n.builderSupersetAddExercise,
+          label: l10n.builderDensityAddExercise,
           onPressed: onAddExercise,
         ),
       ],

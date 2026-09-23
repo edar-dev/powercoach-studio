@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#05080e]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F53 — Modale Sessione (Giorno Vuoto · Empty State)</title>
+<!-- Tailwind CSS CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            modal: {
+              bg: '#0c1322',
+              card: '#111b2e',
+              border: '#1e293b',
+              accent: '#1e2d4a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-scrollbars">
+    /* Custom subtle dark scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0c1322;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-200 antialiased font-sans bg-[#05080e] flex flex-col justify-center items-center p-3 md:p-6 overflow-hidden">
+<!-- BEGIN: AnnotationHeader -->
+<div class="w-full max-w-6xl mb-3 flex items-center justify-between text-xs text-slate-400 px-2" data-purpose="modal-annotation">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+<span class="font-medium text-slate-300">F53 — Modale Sessione (Giorno Vuoto · Empty State)</span>
+<span class="text-slate-600">|</span>
+<span class="text-slate-500">Coach Workspace Studio v2.4</span>
+</div>
+<div class="flex items-center gap-3 text-slate-500">
+<span>Tasti rapidi: <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">ESC</kbd> Chiudi</span>
+<span><kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">⌘</kbd> + <kbd class="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">E</kbd> Aggiungi Esercizio</span>
+</div>
+</div>
+<!-- END: AnnotationHeader -->
+<!-- BEGIN: WorkoutModalContainer -->
+<div class="w-full max-w-6xl h-[92vh] max-h-[920px] bg-[#0c1322] border border-[#1e2a42] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative" data-purpose="modal-shell">
+<!-- BEGIN: ModalHeaderSection -->
+<header class="pt-5 px-6 pb-4 border-b border-[#182338] bg-[#0c1322] flex-shrink-0" data-purpose="modal-header">
+<!-- Top meta bar & modal action controls -->
+<div class="flex items-center justify-between gap-4 mb-2.5">
+<div class="flex items-center gap-2 text-xs font-semibold tracking-wide">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-950/80 text-blue-400 border border-blue-800/60 uppercase text-[11px] font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            FASE 1: ACCUMULO &amp; VOLUME
+          </span>
+<span class="text-slate-500">•</span>
+<span class="text-slate-400 font-medium">Settimana 1 di 4</span>
+</div>
+<!-- Full functional Day Toolbar Actions -->
+<div class="flex items-center gap-1.5" data-purpose="day-toolbar">
+<!-- Registra Sessione (Tonal / Inattivo) -->
+<button class="opacity-50 cursor-not-allowed inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-400 bg-[#131d31] rounded-lg border border-slate-800" title="Registra sessione sul diario (Nessun esercizio da registrare)" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Registra sessione</span>
+</button>
+<!-- Storico / Diario -->
+<button class="p-2 text-slate-400 hover:text-slate-200 hover:bg-[#162238] rounded-lg border border-transparent hover:border-slate-700/60 transition-colors" title="Consulta storico sedute" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Duplica Giorno -->
+<button class="p-2 text-slate-400 hover:text-slate-200 hover:bg-[#162238] rounded-lg border border-transparent hover:border-slate-700/60 transition-colors" title="Duplica configurazione giorno" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Note Coaching -->
+<button class="p-2 text-slate-400 hover:text-slate-200 hover:bg-[#162238] rounded-lg border border-transparent hover:border-slate-700/60 transition-colors" title="Note coaching private" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<span class="w-[1px] h-4 bg-slate-800 mx-0.5"></span>
+<!-- Elimina Giorno -->
+<button class="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/20 rounded-lg transition-colors" title="Elimina intero giorno" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Chiudi Modale -->
+<button class="p-2 text-slate-400 hover:text-slate-100 hover:bg-[#1e2a42] rounded-lg transition-colors ml-1" title="Chiudi finestra" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Main session title & inline specs badges -->
+<div class="flex flex-wrap items-center justify-between gap-4">
+<!-- Title and edit icon -->
+<div class="flex items-center gap-2.5">
+<h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-2 group cursor-pointer">
+            Giorno 3: Full Body - Recupero Attivo
+            <button aria-label="Modifica titolo sessione" class="text-slate-500 hover:text-blue-400 transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</h1>
+</div>
+<!-- Session Badges (Day selector, time, count, tonnage) -->
+<div class="flex flex-wrap items-center gap-2 text-xs" data-purpose="session-metrics-badges">
+<!-- Day of week dropdown pill -->
+<button class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#141f33] border border-[#1e2d4a] text-blue-300 font-medium hover:bg-[#1a2942] transition-colors" type="button">
+<svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Mercoledì</span>
+<svg class="w-3 h-3 text-slate-400 ml-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Duration estimate badge -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#101827] border border-slate-800 text-slate-400">
+<svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>0 min stimati</span>
+</div>
+<!-- Volume metrics summary (Zero state) -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#101827] border border-slate-800 text-slate-400">
+<span class="font-medium text-slate-300">0 Esercizi</span>
+<span class="text-slate-600">•</span>
+<span class="font-medium text-slate-300">0 Serie totali</span>
+<span class="text-slate-600">•</span>
+<span class="text-slate-500 font-mono">~0 kg tonnellaggio</span>
+</div>
+</div>
+</div>
+</header>
+<!-- END: ModalHeaderSection -->
+<!-- BEGIN: QuickContextCards -->
+<div class="px-6 py-4 grid grid-cols-1 md:grid-cols-2 gap-4 flex-shrink-0 bg-[#0e1628]/60 border-b border-[#182338]/80" data-purpose="quick-context-panels">
+<!-- Card: Indicazioni Sessione (Empty state note) -->
+<div class="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#111b2e] border border-[#1d2a44] hover:border-slate-700 transition-colors group">
+<div class="flex items-start gap-3">
+<div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Indicazioni Sessione</div>
+<p class="text-xs text-slate-400 mt-0.5 line-clamp-1 italic">Nessuna nota tecnica inserita. Clicca per aggiungere indicazioni per l'atleta.</p>
+</div>
+</div>
+<button class="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap pl-2 flex items-center gap-1" type="button">
+<span>+ Aggiungi nota</span>
+</button>
+</div>
+<!-- Card: Mobilità & Warmup Collegato (Empty state routine) -->
+<div class="flex items-start justify-between gap-3 p-3.5 rounded-xl bg-[#111b2e] border border-[#1d2a44] hover:border-slate-700 transition-colors group">
+<div class="flex items-start gap-3">
+<div class="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Mobilità &amp; Warmup Collegato</div>
+<p class="text-xs text-slate-400 mt-0.5 line-clamp-1 italic">Nessun protocollo di mobilità o riscaldamento associato</p>
+</div>
+</div>
+<button class="text-xs font-medium text-blue-400 hover:text-blue-300 transition-colors whitespace-nowrap pl-2 flex items-center gap-1" type="button">
+<span>+ Collega routine</span>
+</button>
+</div>
+</div>
+<!-- END: QuickContextCards -->
+<!-- BEGIN: CentralEmptyStateArea -->
+<main class="flex-1 p-6 overflow-y-auto flex items-center justify-center" data-purpose="modal-content-area">
+<!-- Box Empty State con bordo tratteggiato e bagliore soft -->
+<div class="w-full max-w-2xl py-12 px-8 rounded-2xl border-2 border-dashed border-[#1f2d47] bg-[#0e1627]/50 flex flex-col items-center text-center relative overflow-hidden group">
+<!-- Glow background accent -->
+<div class="absolute -top-24 left-1/2 -translate-x-1/2 w-80 h-48 bg-blue-600/10 blur-[65px] rounded-full pointer-events-none"></div>
+<!-- Icona bilanciere stilizzata con cerchio luminoso blu -->
+<div class="relative mb-5 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full bg-blue-500/20 blur-xl"></div>
+<div class="relative w-16 h-16 rounded-2xl bg-gradient-to-b from-[#18263e] to-[#101b2d] border border-blue-500/30 flex items-center justify-center shadow-lg shadow-blue-950/40 text-blue-400">
+<!-- Dumbbell / Weight barbell icon -->
+<svg class="w-8 h-8 transform -rotate-12" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 7v10M8 5v14M20 7v10M16 5v14M8 12h8M2 9v6M22 9v6" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+</div>
+<!-- Testi esplicativi -->
+<h2 class="text-xl font-bold text-white tracking-tight">Nessun esercizio in questa sessione</h2>
+<p class="text-sm text-slate-400 mt-2 max-w-md leading-relaxed">
+          Inizia a strutturare la scheda aggiungendo il primo esercizio fondamentale o un gruppo ad alta densità.
+        </p>
+<!-- Pulsanti CTA d'Azione -->
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
+<!-- Primario: Aggiungi esercizio dalla libreria -->
+<button class="w-full sm:w-auto flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium text-sm transition-all duration-150 shadow-lg shadow-blue-600/25 active:scale-[0.98]" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+<span>+ Aggiungi Esercizio dalla Libreria</span>
+</button>
+<!-- Secondario: Crea Density Group -->
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#142036] hover:bg-[#1a2944] text-slate-200 border border-[#233555] font-medium text-sm transition-all duration-150" type="button">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>+ Crea Density Group</span>
+</button>
+</div>
+<!-- Terziario: Copia da un'altra sessione -->
+<button class="mt-4 text-xs font-medium text-slate-400 hover:text-blue-400 inline-flex items-center gap-1.5 transition-colors" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Copia da un'altra sessione o template</span>
+</button>
+</div>
+</main>
+<!-- END: CentralEmptyStateArea -->
+<!-- BEGIN: ModalFooterSection -->
+<footer class="px-6 py-4 bg-[#0a101d] border-t border-[#182338] flex flex-wrap items-center justify-between gap-4 flex-shrink-0" data-purpose="modal-footer">
+<!-- Stimulus distribution indicators (Zero state) -->
+<div class="flex items-center gap-3 text-xs" data-purpose="stimulus-distribution-metrics">
+<span class="font-bold text-slate-400 uppercase tracking-wider text-[11px]">Distribuzione stimolo:</span>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#111929] border border-slate-800 text-slate-500 italic">
+            Nessun dato di volume disponibile.
+          </span>
+</div>
+</div>
+<!-- Footer Action Buttons: Annulla & Salva (Disabled) -->
+<div class="flex items-center gap-3">
+<!-- Annulla -->
+<button class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300 hover:text-white bg-[#121c2f] hover:bg-[#1a2740] border border-[#21304d] transition-colors" type="button">
+          Annulla
+        </button>
+<!-- Salva modifiche alla sessione (Disabled) -->
+<div class="inline-flex rounded-xl shadow-sm">
+<button class="cursor-not-allowed opacity-50 inline-flex items-center gap-2 px-5 py-2 rounded-l-xl bg-blue-600 text-white font-medium text-sm border-r border-blue-700/50" disabled="" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Salva modifiche alla sessione</span>
+</button>
+<!-- Dropdown split icon for additional save options -->
+<button class="cursor-not-allowed opacity-50 px-2.5 py-2 rounded-r-xl bg-blue-600 text-white hover:bg-blue-600" disabled="" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</footer>
+<!-- END: ModalFooterSection -->
+</div>
+<!-- END: WorkoutModalContainer -->
+</body></html>

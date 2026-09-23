@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/density_block.dart';
@@ -71,6 +72,10 @@ Future<void> showTrainingSessionEditSheet({
   required void Function(int, int, String) onAddExerciseToSuperset,
   void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock,
   bool readOnly = false,
+  bool editorMode = false,
+  String? planId,
+  String? customerName,
+  VoidCallback? onLogSession,
 }) {
   final l10n = AppLocalizations.of(context);
   final initialDay = _dayOrNull(session.routine, globalWeekIndex, dayIndex);
@@ -130,6 +135,10 @@ Future<void> showTrainingSessionEditSheet({
           onAddExerciseToSuperset: onAddExerciseToSuperset,
           onSetDensityBlock: onSetDensityBlock,
           readOnly: readOnly,
+          editorMode: editorMode,
+          planId: planId,
+          customerName: customerName,
+          onLogSession: onLogSession,
         );
       },
     ),
@@ -184,6 +193,10 @@ class TrainingSessionEditBody extends StatelessWidget {
     required this.onAddExerciseToSuperset,
     this.onSetDensityBlock,
     this.readOnly = false,
+    this.editorMode = false,
+    this.planId,
+    this.customerName,
+    this.onLogSession,
   });
 
   final ThemeData theme;
@@ -241,6 +254,10 @@ class TrainingSessionEditBody extends StatelessWidget {
   final void Function(int, int, String) onAddExerciseToSuperset;
   final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
   final bool readOnly;
+  final bool editorMode;
+  final String? planId;
+  final String? customerName;
+  final VoidCallback? onLogSession;
 
   void _openLibraryPicker(BuildContext context) {
     showExerciseLibraryPickPanel(
@@ -332,6 +349,56 @@ class TrainingSessionEditBody extends StatelessWidget {
                 ],
               ),
             ),
+            if (editorMode) ...[
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    if ((customerName ?? '').trim().isNotEmpty)
+                      Chip(
+                        avatar: Icon(
+                          Icons.person_outline,
+                          size: 16,
+                          color: cs.primary,
+                        ),
+                        label: Text(
+                          l10n.workoutBuilderAssignedPlanBadge(
+                            customerName!.trim(),
+                          ),
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                    if (onLogSession != null)
+                      TextButton.icon(
+                        onPressed: onLogSession,
+                        icon: const Icon(Icons.edit_note_outlined, size: 18),
+                        label: Text(l10n.workoutBuilderLogSession),
+                      ),
+                    if (planId != null && planId!.isNotEmpty)
+                      TextButton.icon(
+                        onPressed: () {
+                          navigateTo(
+                            context,
+                            workoutDiaryPath(
+                              planId: planId,
+                              sessionKey: WorkoutRoutine.sessionKey(
+                                globalWeekIndex,
+                                dayIndex,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.history, size: 18),
+                        label: Text(l10n.workoutBuilderDayHistory),
+                      ),
+                  ],
+                ),
+              ),
+            ],
             Expanded(
               child: WorkoutDayExerciseList(
                 theme: theme,

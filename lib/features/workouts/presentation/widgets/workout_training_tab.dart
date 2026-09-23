@@ -56,6 +56,7 @@ class WorkoutTrainingTab extends StatelessWidget {
     this.readOnly = false,
     this.editorMode = false,
     this.planId,
+    this.editorCustomerName,
   });
 
   final ThemeData theme;
@@ -132,6 +133,7 @@ class WorkoutTrainingTab extends StatelessWidget {
   final bool readOnly;
   final bool editorMode;
   final String? planId;
+  final String? editorCustomerName;
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +228,7 @@ class WorkoutTrainingTab extends StatelessWidget {
         readOnly: readOnly,
         editorMode: editorMode,
         planId: planId,
+        editorCustomerName: editorCustomerName,
       ),
     );
   }
@@ -276,6 +279,7 @@ class _PhaseTrainingBody extends StatefulWidget {
     this.readOnly = false,
     this.editorMode = false,
     this.planId,
+    this.editorCustomerName,
   });
 
   final ThemeData theme;
@@ -354,6 +358,7 @@ class _PhaseTrainingBody extends StatefulWidget {
   final bool readOnly;
   final bool editorMode;
   final String? planId;
+  final String? editorCustomerName;
 
   @override
   State<_PhaseTrainingBody> createState() => _PhaseTrainingBodyState();
@@ -461,6 +466,10 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
       onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
       onSetDensityBlock: widget.onSetDensityBlock,
       readOnly: widget.readOnly,
+      editorMode: widget.editorMode,
+      planId: widget.planId,
+      customerName: widget.editorCustomerName,
+      onLogSession: widget.onLogSession,
     );
   }
 

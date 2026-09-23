@@ -3760,6 +3760,24 @@ abstract class AppLocalizations {
   /// **'Add exercise to superset'**
   String get builderSupersetAddExercise;
 
+  /// No description provided for @builderDensityAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise to group'**
+  String get builderDensityAddExercise;
+
+  /// No description provided for @workoutBuilderAssignedPlanBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned plan · {customerName}'**
+  String workoutBuilderAssignedPlanBadge(String customerName);
+
+  /// No description provided for @workoutBuilderSessionEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises in this session'**
+  String get workoutBuilderSessionEmptyTitle;
+
   /// No description provided for @builderSupersetEmpty.
   ///
   /// In en, this message translates to:
@@ -4525,7 +4543,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderEmptyDayCta.
   ///
   /// In en, this message translates to:
-  /// **'Add exercise'**
+  /// **'Add exercise from library'**
   String get workoutBuilderEmptyDayCta;
 
   /// No description provided for @workoutActionFailed.

@@ -873,6 +873,14 @@
   "builderCircuitPanelTitle": "Gestisci circuito",
   "builderEmomPanelTitle": "Gestisci EMOM",
   "builderSupersetAddExercise": "Aggiungi esercizio al superset",
+  "builderDensityAddExercise": "Aggiungi esercizio al gruppo",
+  "workoutBuilderAssignedPlanBadge": "Piano assegnato · {customerName}",
+  "@workoutBuilderAssignedPlanBadge": {
+    "placeholders": {
+      "customerName": { "type": "String" }
+    }
+  },
+  "workoutBuilderSessionEmptyTitle": "Nessun esercizio in questa sessione",
   "builderSupersetEmpty": "Nessun esercizio in questo superset.",
   "builderSupersetPrescriptionLabel": "Prescrizione (esercizio guida)",
   "builderSupersetManage": "Gestisci",
@@ -1040,7 +1048,7 @@
   "workoutBuilderProgressionApply": "Applica",
   "workoutBuilderReadOnlyBanner": "Solo lettura — duplica la scheda per modificarla.",
   "planScheduleEmptyHint": "Imposta data di inizio",
-  "workoutBuilderEmptyDayCta": "Aggiungi esercizio",
+  "workoutBuilderEmptyDayCta": "Aggiungi esercizio dalla libreria",
   "workoutActionFailed": "Operazione non riuscita. Riprova.",
   "workoutPlansLoadError": "Impossibile caricare le schede del cliente.",
   "workoutDiaryLoadError": "Impossibile caricare il diario allenamenti.",

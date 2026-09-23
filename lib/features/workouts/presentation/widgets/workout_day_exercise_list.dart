@@ -131,7 +131,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                 size: 40,
                 color: colorScheme.onSurface.withValues(alpha: 0.72),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 12),
+              Text(
+                l10n.workoutBuilderSessionEmptyTitle,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
               if (widget.onAddExercise != null)
                 FilledButton.icon(
                   onPressed: () => widget.onAddExercise!(weekIndex, dayIndex),

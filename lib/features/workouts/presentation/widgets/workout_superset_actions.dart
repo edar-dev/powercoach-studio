@@ -5,7 +5,7 @@ import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import '../workout_builder_session_controller.dart';
-import 'exercise_add_sheet.dart';
+import 'exercise_library_pick_panel.dart';
 import 'workout_builder_superset_editor_sheet.dart';
 
 /// Superset/multiset exercise actions extracted from the builder screen (phase 3).
@@ -82,32 +82,31 @@ class WorkoutSupersetActions {
     if (dayIndex < 0 || dayIndex >= routine.weeks[weekIndex].days.length) {
       return;
     }
-    final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
-    showAddExerciseDialog(context, theme, colorScheme, (
-      name,
-      note,
-      details, [
-      customExerciseId,
-    ]) {
-      final trimmedName = name.trim();
-      if (trimmedName.isEmpty) return;
-      final updated = addExerciseToSupersetInRoutine(
-        routine: routine,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-        supersetGroupId: supersetGroupId,
-        exercise: buildExerciseFromPrescription(
-          id: exId,
-          name: trimmedName,
-          note: note,
-          setDetails: details,
-          customExerciseId: customExerciseId,
+    // Pick-only library panel (useRootNavigator) so session/density sheets stay open.
+    showExerciseLibraryPickPanel(
+      context: context,
+      theme: theme,
+      cs: colorScheme,
+      onPicked: (item) {
+        final exId = 'e_${DateTime.now().millisecondsSinceEpoch}';
+        final updated = addExerciseToSupersetInRoutine(
+          routine: routine,
+          weekIndex: weekIndex,
+          dayIndex: dayIndex,
           supersetGroupId: supersetGroupId,
-        ),
-      );
-      if (updated == null) return;
-      onRoutineChanged(updated);
-    }, customerId: customerId);
+          exercise: buildExerciseFromPrescription(
+            id: exId,
+            name: item.name,
+            note: '',
+            setDetails: defaultExerciseSetDetails(),
+            customExerciseId: item.id,
+            supersetGroupId: supersetGroupId,
+          ),
+        );
+        if (updated == null) return;
+        onRoutineChanged(updated);
+      },
+    );
   }
 
   static WorkoutRoutine? assignToSuperset({

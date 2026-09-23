@@ -51,11 +51,12 @@ Allineare l’editor scheda ai prototipi Stitch progetto `14496212854931615246`:
 
 | ID | Focus | Stato |
 |----|--------|-------|
-| A | Asset sync + Allenamento parity | asset ✅ · UI pending |
-| B | Modale Modifica sessione | pending |
-| C | Drawer libreria | pending |
-| D | Modale crea esercizio | pending |
-| E | Test + analyze | pending |
+| A | Asset sync + Allenamento parity | ✅ |
+| B | Modale Modifica sessione | ✅ |
+| C | Drawer libreria | ✅ |
+| D | Modale crea esercizio | ✅ |
+| E | Test + analyze | ✅ |
+| F50–F55 | Density / editor mode / empty / drawer states | ✅ (F50 chrome full deferred) |
 
 ## Fuori scope
 
@@ -63,3 +64,17 @@ Allineare l’editor scheda ai prototipi Stitch progetto `14496212854931615246`:
 - Gym mode / session log execution
 - Cambio modello `Phase` / codec
 - Font esterni non nel design system (`StitchM3Theme` tokens)
+
+## Follow-up screens F50–F55
+
+Asset folder: [`design/stitch-assets/phase-planning-ui/`](../../design/stitch-assets/phase-planning-ui/)
+
+| ID | Screen | Assets | Implementation notes |
+|----|--------|--------|----------------------|
+| **F55** | Density → library drawer | [`f55-density-to-drawer.png`](../../design/stitch-assets/phase-planning-ui/f55-density-to-drawer.png) · [`f55-density-to-drawer.html`](../../design/stitch-assets/phase-planning-ui/f55-density-to-drawer.html) | Highest priority: `showAddExerciseToSupersetDialog` → `showExerciseLibraryPickPanel` (pick-only, `useRootNavigator`), add via `buildExerciseFromPrescription` + `supersetGroupId` + `defaultExerciseSetDetails()`. CTA label `builderDensityAddExercise`. |
+| **F51** | Session editor mode | [`f51-sessione-editor-mode.png`](../../design/stitch-assets/phase-planning-ui/f51-sessione-editor-mode.png) · [`f51-sessione-editor-mode.html`](../../design/stitch-assets/phase-planning-ui/f51-sessione-editor-mode.html) | Optional `editorMode` / `planId` / `customerName` / `onLogSession` on session sheet: badge + Log session + History. Thread `editorCustomerName` from mobility / tabs config. |
+| **F53** | Empty session day | [`f53-sessione-giorno-vuoto.png`](../../design/stitch-assets/phase-planning-ui/f53-sessione-giorno-vuoto.png) · [`f53-sessione-giorno-vuoto.html`](../../design/stitch-assets/phase-planning-ui/f53-sessione-giorno-vuoto.html) | Title `workoutBuilderSessionEmptyTitle` + empty-day CTA; day toolbar stays visible. |
+| **F52** | Library drawer states | [`f52-drawer-libreria-stati.png`](../../design/stitch-assets/phase-planning-ui/f52-drawer-libreria-stati.png) · [`f52-drawer-libreria-stati.html`](../../design/stitch-assets/phase-planning-ui/f52-drawer-libreria-stati.html) | True empty → `exerciseLibraryEmpty` + hint + create CTA; search empty keeps `workoutBuilderCompactAddEmpty`. |
+| **F50** | Density group manage | [`f50-density-group.png`](../../design/stitch-assets/phase-planning-ui/f50-density-group.png) · [`f50-density-group.html`](../../design/stitch-assets/phase-planning-ui/f50-density-group.html) | Light parity (F55 wiring + density add label). Full Stitch chrome deferred. |
+| **F54** | Nested stack desktop | [`f54-nested-stack-desktop.png`](../../design/stitch-assets/phase-planning-ui/f54-nested-stack-desktop.png) · [`f54-nested-stack-desktop.html`](../../design/stitch-assets/phase-planning-ui/f54-nested-stack-desktop.html) | Reference only — no new UI. Nested navigators already correct (`useRootNavigator` on pick + create). |
+

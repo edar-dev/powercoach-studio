@@ -873,6 +873,14 @@
   "builderCircuitPanelTitle": "Manage circuit",
   "builderEmomPanelTitle": "Manage EMOM",
   "builderSupersetAddExercise": "Add exercise to superset",
+  "builderDensityAddExercise": "Add exercise to group",
+  "workoutBuilderAssignedPlanBadge": "Assigned plan · {customerName}",
+  "@workoutBuilderAssignedPlanBadge": {
+    "placeholders": {
+      "customerName": { "type": "String" }
+    }
+  },
+  "workoutBuilderSessionEmptyTitle": "No exercises in this session",
   "builderSupersetEmpty": "No exercises in this superset.",
   "builderSupersetPrescriptionLabel": "Prescription (lead exercise)",
   "builderSupersetManage": "Manage",
@@ -1040,7 +1048,7 @@
   "workoutBuilderProgressionApply": "Apply",
   "workoutBuilderReadOnlyBanner": "Read-only — duplicate the plan to edit it.",
   "planScheduleEmptyHint": "Set start date",
-  "workoutBuilderEmptyDayCta": "Add exercise",
+  "workoutBuilderEmptyDayCta": "Add exercise from library",
   "workoutActionFailed": "Action failed. Please try again.",
   "workoutPlansLoadError": "Could not load this client's workout plans.",
   "workoutDiaryLoadError": "Could not load the workout diary.",

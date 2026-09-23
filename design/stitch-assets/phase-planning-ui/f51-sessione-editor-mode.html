@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#05080e]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F51 — Modale Sessione (Piano Assegnato · Editor Mode)</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Phosphor Icons CDN for high-fidelity icons -->
+<link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css" rel="stylesheet"/>
+<link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/bold/style.css" rel="stylesheet"/>
+<link href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#05080e',
+              surface: '#0b111e',
+              card: '#101726',
+              input: '#151e30',
+              border: '#1c283f',
+              muted: '#7a8ba4',
+              accent: '#2563eb',
+              accentHover: '#1d4ed8',
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              purple: '#a855f7'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbars">
+    /* Custom refined scrollbars matching dark UI */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b111e;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+<style data-purpose="inputs-and-badges">
+    .custom-input-box {
+      background-color: #111a2d;
+      border: 1px solid #1f2d47;
+      color: #f1f5f9;
+      text-align: center;
+      border-radius: 0.375rem;
+      font-weight: 500;
+      transition: all 0.15s ease-in-out;
+    }
+    .custom-input-box:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px #3b82f6;
+    }
+    .pill-badge {
+      font-size: 0.6875rem;
+      letter-spacing: 0.025em;
+      font-weight: 600;
+      padding: 0.25rem 0.625rem;
+      border-radius: 0.375rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+  </style>
+</head>
+<body class="h-full text-slate-100 flex items-center justify-center p-2 sm:p-4 md:p-6 bg-[#05080e] font-sans antialiased select-none">
+<!-- BEGIN: ModalContainer -->
+<main class="w-full max-w-[1240px] bg-[#090e18] border border-[#172338] rounded-2xl shadow-2xl flex flex-col max-h-[96vh] overflow-hidden" data-purpose="session-editor-modal">
+<!-- BEGIN: ContextualBadgeHeader -->
+<!-- Top annotation requested for context tracking -->
+<div class="px-7 pt-4 pb-1 flex items-center justify-between text-xs text-slate-400 border-b border-[#141d30]/60">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wide bg-blue-500/10 text-blue-400 border border-blue-500/25">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+          F51 — Modale Sessione (Piano Assegnato · Editor Mode)
+        </span>
+</div>
+<div class="text-[11px] text-slate-500">ID Revisione: #WK1-D1-REV3</div>
+</div>
+<!-- END: ContextualBadgeHeader -->
+<!-- BEGIN: ModalHeader -->
+<header class="p-6 md:p-7 pb-5 border-b border-[#172338] flex flex-col gap-4 bg-[#090e18]">
+<!-- Top Meta Line: Phase & Quick Global Actions -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#101b33] text-blue-400 border border-blue-500/30">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            FASE 1: ACCUMULO &amp; VOLUME
+          </span>
+<span class="text-slate-600">•</span>
+<span class="text-slate-400">Settimana 1 di 4</span>
+</div>
+<!-- Quick Modal Actions (Right-aligned) -->
+<div class="flex items-center gap-2">
+<!-- Registra Sessione (Novità Chiave F51) -->
+<button class="flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/90 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg shadow-sm shadow-blue-500/20 transition-colors" title="Avvia compilazione in tempo reale">
+<i class="ph-bold ph-play text-sm"></i>
+<span>Registra sessione</span>
+</button>
+<!-- Storico / Diario (Novità Chiave F51) -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-[#121c2e] hover:bg-[#192740] text-slate-300 text-xs font-medium rounded-lg border border-[#223352] transition-colors" title="Consulta note e carichi storici">
+<i class="ph ph-clock-counter-clockwise text-sm text-slate-400"></i>
+<span>Storico / diario</span>
+</button>
+<span class="h-4 w-px bg-slate-800 mx-1"></span>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-[#141f33] rounded-md transition" title="Duplica giorno intero">
+<i class="ph ph-copy text-base"></i>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-[#141f33] rounded-md transition" title="Note coaching generali">
+<i class="ph ph-chat-teardrop-text text-base"></i>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-[#141f33] rounded-md transition" title="Elimina sessione">
+<i class="ph ph-trash text-base"></i>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-[#141f33] rounded-md transition" title="Altre opzioni">
+<i class="ph ph-dots-three text-base"></i>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-[#141f33] rounded-md transition ml-1" title="Chiudi">
+<i class="ph ph-x text-lg"></i>
+</button>
+</div>
+</div>
+<!-- Main Title & Customer Pill -->
+<div class="flex flex-wrap items-center justify-between gap-y-3">
+<div>
+<div class="flex items-center gap-3">
+<h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white flex items-center gap-2.5">
+              Giorno 1: Upper Body - Panca Focus
+              <button class="text-slate-400 hover:text-blue-400 transition" title="Rinomina giorno">
+<i class="ph ph-pencil-simple text-lg"></i>
+</button>
+</h1>
+</div>
+<!-- Cliente Pill / Sub-badge assegnato -->
+<div class="flex items-center gap-2 mt-1.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+<i class="ph-fill ph-check-circle text-xs"></i>
+              Piano assegnato · Cliente Mario Rossi
+            </span>
+<span class="text-xs text-slate-500">Ultimo salvataggio: Oggi, 10:42</span>
+</div>
+</div>
+<!-- Session Meta Badges (Right side) -->
+<div class="flex flex-wrap items-center gap-2 text-xs">
+<!-- Day of the week dropdown selector -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111b2d] border border-[#202f4a] text-blue-300 font-medium cursor-pointer hover:bg-[#15233c] transition">
+<i class="ph ph-calendar text-sm text-blue-400"></i>
+<span>Lunedì</span>
+<i class="ph ph-caret-down text-xs ml-1"></i>
+</div>
+<!-- Estimated Duration -->
+<div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#111b2d] border border-[#202f4a] text-slate-300 font-medium">
+<i class="ph ph-clock text-sm text-slate-400"></i>
+<span>65 min stimati</span>
+</div>
+<!-- Volume & Exercise breakdown -->
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#111b2d] border border-[#202f4a] text-slate-300">
+<span>4 Esercizi</span>
+<span class="text-slate-600">•</span>
+<span>14 Serie totali</span>
+<span class="text-slate-600">•</span>
+<span class="text-emerald-400 font-medium">~6.850 kg tonnellaggio</span>
+</div>
+</div>
+</div>
+</header>
+<!-- END: ModalHeader -->
+<!-- BEGIN: ModalContentArea -->
+<div class="flex-1 overflow-y-auto p-6 md:p-7 space-y-6">
+<!-- BEGIN: QuickInfoCards -->
+<!-- Indicazioni Sessione & Mobilità/Warmup collegato -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4" data-purpose="quick-session-cards">
+<!-- Indicazioni Sessione -->
+<div class="p-4 rounded-xl bg-[#0e1626] border border-[#1b273d] flex items-start gap-3.5">
+<div class="p-2 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 mt-0.5">
+<i class="ph-bold ph-note-pencil text-base"></i>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Indicazioni Sessione</h2>
+<button class="text-xs font-medium text-blue-400 hover:text-blue-300 transition">Modifica</button>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed line-clamp-2">
+              Focus su fermo al petto 1 sec sulla prima serie di panca. RPE target rigoroso, nessun cedimento su panca piana. Recupero completo.
+            </p>
+</div>
+</div>
+<!-- Mobilità & Warmup Collegato -->
+<div class="p-4 rounded-xl bg-[#0e1626] border border-[#1b273d] flex items-start gap-3.5">
+<div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mt-0.5">
+<i class="ph-bold ph-lightning text-base"></i>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-300">Mobilità &amp; Warmup Collegato</h2>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">8 min</span>
+</div>
+<p class="text-xs text-slate-400 mt-1 leading-relaxed truncate">
+              Warmup Spalle &amp; Cuffia rotatori (Extrarotatori con elastico, Dislocazioni, Scapular Push-up 2x15).
+            </p>
+</div>
+</div>
+</section>
+<!-- END: QuickInfoCards -->
+<!-- BEGIN: ExerciseList -->
+<section class="space-y-4" data-purpose="exercise-stack">
+<!-- EXERCISE 1 (Expanded with full sets table) -->
+<article class="rounded-xl bg-[#0e1626] border border-[#1b273d] overflow-hidden shadow-sm" data-purpose="exercise-card-detailed">
+<!-- Exercise Header -->
+<div class="px-5 py-4 border-b border-[#182338] flex flex-wrap items-center justify-between gap-3 bg-[#10192b]/50">
+<div class="flex items-center gap-3">
+<span class="cursor-grab text-slate-500 hover:text-slate-300 text-lg">
+<i class="ph-bold ph-dots-six-vertical"></i>
+</span>
+<span class="w-6 h-6 rounded-md bg-[#18253d] border border-[#27395c] flex items-center justify-center text-xs font-bold text-blue-400">
+                1
+              </span>
+<h3 class="text-base font-bold text-white tracking-wide">Panca piana bilanciere</h3>
+<span class="pill-badge bg-blue-500/15 text-blue-400 border border-blue-500/30">Primario</span>
+<span class="pill-badge bg-[#162033] text-slate-400 border border-[#22314d]">Petto • Tricipiti</span>
+</div>
+<!-- Header Action Buttons -->
+<div class="flex items-center gap-2 text-xs">
+<button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#141e30] border border-[#23334f] text-slate-300 hover:bg-[#1c2a44] transition">
+<i class="ph ph-play-circle text-sm text-blue-400"></i>
+<span>Video</span>
+</button>
+<button class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#141e30] border border-[#23334f] text-slate-300 hover:bg-[#1c2a44] transition">
+<i class="ph ph-arrows-clockwise text-sm text-slate-400"></i>
+<span>Sostituisci</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-rose-400 transition" title="Elimina esercizio">
+<i class="ph ph-trash text-sm"></i>
+</button>
+</div>
+</div>
+<!-- Sets Table Container -->
+<div class="p-5 pt-3">
+<div class="overflow-x-auto">
+<table class="w-full text-xs text-left">
+<thead>
+<tr class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold border-b border-[#182338]/80">
+<th class="py-2.5 px-2 w-12 text-center">Set</th>
+<th class="py-2.5 px-3 min-w-[140px]">Tipo Serie</th>
+<th class="py-2.5 px-3 min-w-[130px]">Carico (kg)</th>
+<th class="py-2.5 px-3 min-w-[110px]">Ripetizioni</th>
+<th class="py-2.5 px-3 min-w-[110px]">RPE Target</th>
+<th class="py-2.5 px-3 min-w-[90px]">Recupero</th>
+<th class="py-2.5 px-2 w-12 text-center">Azioni</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#152033]">
+<!-- Set 1 (Riscaldamento) -->
+<tr class="group hover:bg-[#121c2e]/40 transition">
+<td class="py-3 px-2 text-center text-slate-400 font-medium">1</td>
+<td class="py-3 px-3">
+<span class="inline-flex px-2.5 py-1 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[11px] font-semibold">
+                        Riscaldamento
+                      </span>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<input class="custom-input-box w-16 py-1 text-sm font-semibold" type="text" value="50"/>
+<span class="text-slate-400 font-medium">kg</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<input class="custom-input-box w-14 py-1 text-sm font-semibold" type="text" value="10"/>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center justify-center px-2 py-1 rounded bg-[#162136] text-slate-300 font-medium border border-[#23334e]">
+                        @ 5.0
+                      </span>
+</td>
+<td class="py-3 px-3 text-slate-300 font-medium">90s</td>
+<td class="py-3 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition" title="Rimuovi serie">
+<i class="ph ph-x text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set 2 (Target Set) -->
+<tr class="group hover:bg-[#121c2e]/40 transition">
+<td class="py-3 px-2 text-center text-blue-400 font-bold">2</td>
+<td class="py-3 px-3">
+<span class="inline-flex px-2.5 py-1 rounded bg-blue-500/15 text-blue-400 border border-blue-500/30 text-[11px] font-semibold">
+                        Target Set
+                      </span>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<input class="custom-input-box w-16 py-1 text-sm font-semibold" type="text" value="75"/>
+<span class="text-slate-400 font-medium">kg</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<input class="custom-input-box w-14 py-1 text-sm font-semibold" type="text" value="8"/>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center justify-center px-2 py-1 rounded bg-blue-500/15 text-blue-400 font-medium border border-blue-500/30">
+                        @ 7.5
+                      </span>
+</td>
+<td class="py-3 px-3 text-slate-300 font-medium">120s</td>
+<td class="py-3 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition" title="Rimuovi serie">
+<i class="ph ph-x text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set 3 (Target Set) -->
+<tr class="group hover:bg-[#121c2e]/40 transition">
+<td class="py-3 px-2 text-center text-blue-400 font-bold">3</td>
+<td class="py-3 px-3">
+<span class="inline-flex px-2.5 py-1 rounded bg-blue-500/15 text-blue-400 border border-blue-500/30 text-[11px] font-semibold">
+                        Target Set
+                      </span>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<input class="custom-input-box w-16 py-1 text-sm font-semibold" type="text" value="75"/>
+<span class="text-slate-400 font-medium">kg</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<input class="custom-input-box w-14 py-1 text-sm font-semibold" type="text" value="8"/>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center justify-center px-2 py-1 rounded bg-blue-500/15 text-blue-400 font-medium border border-blue-500/30">
+                        @ 8.0
+                      </span>
+</td>
+<td class="py-3 px-3 text-slate-300 font-medium">120s</td>
+<td class="py-3 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition" title="Rimuovi serie">
+<i class="ph ph-x text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set 4 (Target Set) -->
+<tr class="group hover:bg-[#121c2e]/40 transition">
+<td class="py-3 px-2 text-center text-blue-400 font-bold">4</td>
+<td class="py-3 px-3">
+<span class="inline-flex px-2.5 py-1 rounded bg-blue-500/15 text-blue-400 border border-blue-500/30 text-[11px] font-semibold">
+                        Target Set
+                      </span>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<input class="custom-input-box w-16 py-1 text-sm font-semibold" type="text" value="75"/>
+<span class="text-slate-400 font-medium">kg</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<input class="custom-input-box w-14 py-1 text-sm font-semibold" type="text" value="8"/>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center justify-center px-2 py-1 rounded bg-amber-500/20 text-amber-300 font-medium border border-amber-500/40">
+                        @ 8.5
+                      </span>
+</td>
+<td class="py-3 px-3 text-slate-300 font-medium">120s</td>
+<td class="py-3 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition" title="Rimuovi serie">
+<i class="ph ph-x text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set 5 (Backoff) -->
+<tr class="group hover:bg-[#121c2e]/40 transition">
+<td class="py-3 px-2 text-center text-purple-400 font-bold">5</td>
+<td class="py-3 px-3">
+<span class="inline-flex px-2.5 py-1 rounded bg-purple-500/15 text-purple-400 border border-purple-500/30 text-[11px] font-semibold">
+                        Backoff (-15%)
+                      </span>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center gap-2">
+<input class="custom-input-box w-16 py-1 text-sm font-semibold" type="text" value="65"/>
+<span class="text-slate-400 font-medium">kg</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<input class="custom-input-box w-14 py-1 text-sm font-semibold" type="text" value="10"/>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center justify-center px-2 py-1 rounded bg-slate-800 text-slate-200 font-medium border border-slate-700">
+                        @ 8.5
+                      </span>
+</td>
+<td class="py-3 px-3 text-slate-300 font-medium">90s</td>
+<td class="py-3 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition" title="Rimuovi serie">
+<i class="ph ph-x text-sm"></i>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Bottom Action Bar -->
+<div class="mt-4 pt-3 border-t border-[#182338]/80 flex flex-wrap items-center justify-between gap-3 text-xs">
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/30 text-blue-400 font-semibold transition">
+<i class="ph-bold ph-plus text-xs"></i>
+<span>Aggiungi Serie</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#141f33] hover:bg-[#1a2842] border border-[#21304a] text-slate-300 font-medium transition">
+<i class="ph ph-copy text-xs"></i>
+<span>Duplica Ultima</span>
+</button>
+</div>
+<!-- 1RM quick calculator link -->
+<button class="flex items-center gap-1.5 text-slate-400 hover:text-slate-200 transition">
+<i class="ph ph-calculator text-sm text-slate-500"></i>
+<span>Calcola da 1RM (100 kg)</span>
+</button>
+</div>
+</div>
+</article>
+<!-- EXERCISE 2 (Compact / Summary view) -->
+<article class="rounded-xl bg-[#0e1626] border border-[#1b273d] p-4.5 px-5 flex flex-col gap-3 shadow-sm hover:border-[#223350] transition" data-purpose="exercise-card-summary">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="cursor-grab text-slate-500 hover:text-slate-300 text-lg">
+<i class="ph-bold ph-dots-six-vertical"></i>
+</span>
+<span class="w-6 h-6 rounded-md bg-[#18253d] border border-[#27395c] flex items-center justify-center text-xs font-bold text-slate-300">
+                2
+              </span>
+<h3 class="text-sm md:text-base font-bold text-white tracking-wide">Spinte manubri panca inclinata 30°</h3>
+<span class="pill-badge bg-[#142033] text-slate-400 border border-[#21324d]">Complementare</span>
+<span class="pill-badge bg-[#142033] text-slate-400 border border-[#21324d]">Petto Clavicolare</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-slate-400 font-medium">3 serie programmate</span>
+<button class="text-slate-400 hover:text-rose-400 transition" title="Elimina esercizio">
+<i class="ph ph-trash text-sm"></i>
+</button>
+</div>
+</div>
+<!-- Series Snapshot Row -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1 text-xs">
+<div class="p-2.5 rounded-lg bg-[#111928] border border-[#1b273d] flex items-center justify-between">
+<span class="text-slate-400 font-medium">Serie 1</span>
+<span class="font-bold text-slate-200">10 reps @ 28 kg</span>
+<span class="px-2 py-0.5 rounded bg-[#162136] text-slate-300 text-[11px] border border-[#23334e]">RPE 8</span>
+</div>
+<div class="p-2.5 rounded-lg bg-[#111928] border border-[#1b273d] flex items-center justify-between">
+<span class="text-slate-400 font-medium">Serie 2</span>
+<span class="font-bold text-slate-200">10 reps @ 28 kg</span>
+<span class="px-2 py-0.5 rounded bg-[#162136] text-slate-300 text-[11px] border border-[#23334e]">RPE 8</span>
+</div>
+<div class="p-2.5 rounded-lg bg-[#111928] border border-[#1b273d] flex items-center justify-between">
+<span class="text-slate-400 font-medium">Serie 3</span>
+<span class="font-bold text-slate-200">10 reps @ 28 kg</span>
+<span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[11px] border border-amber-500/35">RPE 8.5</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+<div class="flex items-center gap-1.5">
+<i class="ph ph-clock text-xs text-slate-500"></i>
+<span>Recupero: 90 sec tra le serie</span>
+</div>
+<button class="text-blue-400 hover:text-blue-300 font-medium transition">+ Aggiungi serie</button>
+</div>
+</article>
+<!-- EXERCISE 3 (Compact / Bodyweight view) -->
+<article class="rounded-xl bg-[#0e1626] border border-[#1b273d] p-4.5 px-5 flex items-center justify-between shadow-sm hover:border-[#223350] transition" data-purpose="exercise-card-compact">
+<div class="flex items-center gap-3">
+<span class="cursor-grab text-slate-500 hover:text-slate-300 text-lg">
+<i class="ph-bold ph-dots-six-vertical"></i>
+</span>
+<span class="w-6 h-6 rounded-md bg-[#18253d] border border-[#27395c] flex items-center justify-center text-xs font-bold text-slate-300">
+              3
+            </span>
+<h3 class="text-sm md:text-base font-bold text-white tracking-wide">Dip alle parallele</h3>
+<span class="pill-badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">Multiarticolare</span>
+<span class="pill-badge bg-[#142033] text-slate-400 border border-[#21324d]">Bodyweight + Sovraccarico</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-xs text-slate-400 font-medium">3 serie da 12 reps</span>
+<button class="text-slate-400 hover:text-rose-400 transition" title="Elimina esercizio">
+<i class="ph ph-trash text-sm"></i>
+</button>
+</div>
+</article>
+</section>
+<!-- END: ExerciseList -->
+</div>
+<!-- END: ModalContentArea -->
+<!-- BEGIN: ModalFooter -->
+<footer class="p-5 md:px-7 border-t border-[#172338] bg-[#0b121f] flex flex-wrap items-center justify-between gap-4" data-purpose="modal-footer">
+<!-- Muscle Target Distribution (Pill counters) -->
+<div class="flex flex-wrap items-center gap-2.5">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-400">Distribuzione Stimolo:</span>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-500/10 border border-blue-500/25 text-xs">
+<span class="text-slate-400">Petto:</span>
+<span class="font-bold text-blue-400">8 serie</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-purple-500/10 border border-purple-500/25 text-xs">
+<span class="text-slate-400">Tricipiti:</span>
+<span class="font-bold text-purple-400">4 serie</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/25 text-xs">
+<span class="text-slate-400">Deltoide Ant.:</span>
+<span class="font-bold text-emerald-400">2 serie</span>
+</div>
+</div>
+<!-- Footer Action Buttons -->
+<div class="flex items-center gap-3">
+<!-- Cancel button -->
+<button class="px-5 py-2.5 rounded-lg bg-[#141d2e] hover:bg-[#1a263d] text-slate-300 text-xs font-semibold border border-[#22314a] transition">
+          Annulla
+        </button>
+<!-- Save Split Button with Dropdown Action -->
+<div class="inline-flex rounded-lg shadow-sm">
+<button class="inline-flex items-center gap-2 px-5 py-2.5 rounded-l-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition">
+<i class="ph-bold ph-check text-sm"></i>
+<span>Salva modifiche alla sessione</span>
+</button>
+<button class="inline-flex items-center justify-center px-3 py-2.5 rounded-r-lg bg-blue-700 hover:bg-blue-600 text-white text-xs border-l border-blue-500 transition" title="Opzioni salvataggio avanzate (Applica a tutte le settimane)">
+<i class="ph-bold ph-caret-down text-xs"></i>
+</button>
+</div>
+</div>
+</footer>
+<!-- END: ModalFooter -->
+</main>
+<!-- END: ModalContainer -->
+</body></html>

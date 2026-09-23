@@ -2056,6 +2056,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get builderSupersetAddExercise => 'Add exercise to superset';
 
   @override
+  String get builderDensityAddExercise => 'Add exercise to group';
+
+  @override
+  String workoutBuilderAssignedPlanBadge(String customerName) {
+    return 'Assigned plan · $customerName';
+  }
+
+  @override
+  String get workoutBuilderSessionEmptyTitle => 'No exercises in this session';
+
+  @override
   String get builderSupersetEmpty => 'No exercises in this superset.';
 
   @override
@@ -2488,7 +2499,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get planScheduleEmptyHint => 'Set start date';
 
   @override
-  String get workoutBuilderEmptyDayCta => 'Add exercise';
+  String get workoutBuilderEmptyDayCta => 'Add exercise from library';
 
   @override
   String get workoutActionFailed => 'Action failed. Please try again.';

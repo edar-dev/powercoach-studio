@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+
+<html lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F55 — Aggiunta Esercizio da Density Panel → Drawer Libreria (Pick-Only)</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              bg: '#06090f',
+              panel: '#0d1322',
+              card: '#11182c',
+              border: '#1e2942',
+              hover: '#17223b',
+              accent: '#2563eb',
+              accentGlow: '#1d4ed8'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="bg-[#05080e] text-slate-200 font-sans min-h-screen overflow-x-hidden antialiased flex flex-col">
+<!-- BEGIN: TopBar -->
+<header class="h-12 border-b border-slate-800/80 bg-[#080d1a]/90 backdrop-blur px-6 flex items-center justify-between text-xs select-none sticky top-0 z-40">
+<div class="flex items-center space-x-3">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        F55
+      </span>
+<span class="text-slate-400 font-medium">Aggiunta Esercizio da Density Panel → Drawer Libreria (Pick-Only)</span>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center gap-1.5 text-slate-400">
+<kbd class="px-2 py-0.5 text-[10px] uppercase font-mono bg-slate-800/80 rounded border border-slate-700 text-slate-300">ESC</kbd>
+<span>Chiudi pannello</span>
+</div>
+<button aria-label="Chiudi schermata" class="text-slate-400 hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: TopBar -->
+<!-- BEGIN: MainWorkspace -->
+<main class="flex-1 flex overflow-hidden relative">
+<!-- BEGIN: LeftBackgroundSession -->
+<!-- Contesto oscurato del workout sottostante -->
+<div class="absolute inset-0 bg-[#060910] opacity-40 pointer-events-none p-8 flex flex-col gap-6 filter blur-[2px]">
+<div class="h-8 w-64 bg-slate-800/50 rounded-lg"></div>
+<div class="h-40 w-full max-w-4xl bg-slate-900/40 border border-slate-800 rounded-xl"></div>
+<div class="h-40 w-full max-w-4xl bg-slate-900/40 border border-slate-800 rounded-xl"></div>
+</div>
+<!-- END: LeftBackgroundSession -->
+<!-- BEGIN: DensityGroupModal -->
+<!-- Pannello Principale Density Group (Centro-Sinistra) -->
+<section class="relative z-10 flex-1 overflow-y-auto p-6 flex justify-center items-start lg:pr-[460px]">
+<div class="w-full max-w-4xl bg-[#0a0f1d] border border-slate-800 rounded-2xl shadow-2xl overflow-hidden my-auto">
+<!-- Intestazione Density Group -->
+<div class="p-6 border-b border-slate-800/80 bg-[#0d1426]">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-4">
+<div class="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mt-0.5 shadow-inner">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-xl font-bold text-white tracking-tight">Configura Density Group</h1>
+<span class="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                    Metodologia Avanzata
+                  </span>
+</div>
+<p class="text-xs text-slate-400 mt-1">Raggruppa serie per densità, tempo e stress metabolico programmato</p>
+</div>
+</div>
+<div class="flex items-center gap-3 text-slate-400">
+<button aria-label="Info e aiuto" class="hover:text-slate-200 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<button aria-label="Chiudi finestra" class="hover:text-slate-200 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Metodologia Tabs -->
+<div class="grid grid-cols-3 gap-2 p-1 bg-[#060a14] rounded-xl border border-slate-800/80 mt-5">
+<button class="py-2 px-3 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition">
+<span class="w-2 h-2 rounded-full bg-slate-600"></span>
+              Superset <span class="text-[10px] text-slate-500">(2 Esercizi)</span>
+</button>
+<button class="py-2 px-3 text-xs font-semibold rounded-lg bg-blue-600 text-white shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Circuito ad Alta Densità
+              <span class="text-[10px] bg-blue-700/80 px-1.5 py-0.5 rounded text-blue-100 uppercase tracking-wider font-bold">Attivo</span>
+</button>
+<button class="py-2 px-3 text-xs font-medium rounded-lg text-slate-400 hover:text-slate-200 flex items-center justify-center gap-2 transition">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              EMOM Interval <span class="text-[10px] text-slate-500">(A tempo)</span>
+</button>
+</div>
+</div>
+<!-- Parametri del Blocco Circuito -->
+<div class="p-6 border-b border-slate-800/70 bg-[#0b1020]/60 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">Circuito #1</span>
+<span class="text-xs font-semibold text-slate-200 uppercase tracking-wide">Parametri del Blocco &amp; Tempi di Recupero</span>
+</div>
+<span class="text-xs text-slate-400 flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              Tempo target stimato: <strong class="text-slate-200">14 min 30s</strong>
+</span>
+</div>
+<div class="grid grid-cols-3 gap-4">
+<div class="bg-[#0f172a]/60 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+<label class="text-[11px] font-medium text-slate-400">Giri Totali (Round)</label>
+<div class="flex items-baseline justify-between mt-2">
+<input class="w-16 bg-[#162036] border border-slate-700 text-white font-bold rounded-lg px-2 py-1 text-base text-center focus:ring-1 focus:ring-blue-500 focus:outline-none" type="number" value="4"/>
+<span class="text-xs text-slate-400">giri</span>
+</div>
+</div>
+<div class="bg-[#0f172a]/60 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+<label class="text-[11px] font-medium text-slate-400">Riposo tra Esercizi</label>
+<div class="flex items-baseline justify-between mt-2">
+<input class="w-16 bg-[#162036] border border-slate-700 text-white font-bold rounded-lg px-2 py-1 text-base text-center focus:ring-1 focus:ring-blue-500 focus:outline-none" type="number" value="15"/>
+<span class="text-xs text-slate-400">secondi</span>
+</div>
+</div>
+<div class="bg-[#0f172a]/60 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+<label class="text-[11px] font-medium text-slate-400">Riposo a Fine Giro</label>
+<div class="flex items-baseline justify-between mt-2">
+<input class="w-20 bg-[#162036] border border-slate-700 text-white font-bold rounded-lg px-2 py-1 text-base text-center focus:ring-1 focus:ring-blue-500 focus:outline-none" type="number" value="120"/>
+<span class="text-xs text-slate-400">secondi</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Lista Esercizi Nel Gruppo -->
+<div class="p-6 space-y-4">
+<div class="flex items-center justify-between text-xs text-slate-400">
+<span class="font-bold tracking-wider uppercase text-[10px] text-slate-300">Esercizi nel Circuito (Sequenza)</span>
+<span class="text-[11px] text-slate-500">Trascina le maniglie per riordinare la sequenza</span>
+</div>
+<!-- Esercizio 1 -->
+<div class="bg-[#0f172a] border border-slate-800/90 rounded-xl p-3.5 flex flex-col gap-3 shadow-sm hover:border-slate-700 transition">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-slate-600 cursor-grab" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="w-6 h-6 rounded-lg bg-blue-900/30 border border-blue-600/40 text-blue-300 flex items-center justify-center text-xs font-bold font-mono">1</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-slate-100">Affondi Bulgari con Manubri</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">Gambe</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">Glutei &amp; Quad</span>
+</div>
+<p class="text-[11px] text-slate-400 mt-0.5">Focus cadenza controllata 3-0-1-0</p>
+</div>
+</div>
+<button aria-label="Rimuovi esercizio 1" class="text-slate-500 hover:text-rose-400 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-xs">
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Target:</span>
+<span class="font-semibold text-white">4 Giri × 10 reps/lato</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Carico:</span>
+<span class="font-semibold text-white">2×16 kg</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">RPE:</span>
+<span class="font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">@ 8.0</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Transizione:</span>
+<span class="text-blue-400 font-medium">15s riposo →</span>
+</div>
+</div>
+</div>
+<!-- Esercizio 2 -->
+<div class="bg-[#0f172a] border border-slate-800/90 rounded-xl p-3.5 flex flex-col gap-3 shadow-sm hover:border-slate-700 transition">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-slate-600 cursor-grab" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="w-6 h-6 rounded-lg bg-blue-900/30 border border-blue-600/40 text-blue-300 flex items-center justify-center text-xs font-bold font-mono">2</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-slate-100">Push-up Zavorrati (Disco su schiena)</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Petto</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">Tricipiti</span>
+</div>
+<p class="text-[11px] text-slate-400 mt-0.5">Escursione completa con fermo 1" al petto</p>
+</div>
+</div>
+<button aria-label="Rimuovi esercizio 2" class="text-slate-500 hover:text-rose-400 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-xs">
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Target:</span>
+<span class="font-semibold text-white">4 Giri × 12 reps</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Carico:</span>
+<span class="font-semibold text-white">+15 kg</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">RPE:</span>
+<span class="font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">@ 8.5</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Transizione:</span>
+<span class="text-blue-400 font-medium">15s riposo →</span>
+</div>
+</div>
+</div>
+<!-- Esercizio 3 -->
+<div class="bg-[#0f172a] border border-slate-800/90 rounded-xl p-3.5 flex flex-col gap-3 shadow-sm hover:border-slate-700 transition">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<svg class="w-4 h-4 text-slate-600 cursor-grab" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<div class="w-6 h-6 rounded-lg bg-blue-900/30 border border-blue-600/40 text-blue-300 flex items-center justify-center text-xs font-bold font-mono">3</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-sm text-slate-100">Alzate Laterali Manubri</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">Deltoide Lat.</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300">Isolamento</span>
+</div>
+<p class="text-[11px] text-slate-400 mt-0.5">Controllo eccentrico continuo senza slancio</p>
+</div>
+</div>
+<button aria-label="Rimuovi esercizio 3" class="text-slate-500 hover:text-rose-400 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<div class="grid grid-cols-4 gap-2 pt-2 border-t border-slate-800/80 text-xs">
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Target:</span>
+<span class="font-semibold text-white">4 Giri × 15 reps</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Carico:</span>
+<span class="font-semibold text-white">2×10 kg</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">RPE:</span>
+<span class="font-bold text-amber-400 bg-amber-400/10 px-1.5 py-0.5 rounded">@ 9.0</span>
+</div>
+<div class="bg-[#151f38] px-3 py-1.5 rounded-lg flex items-center justify-between">
+<span class="text-slate-400">Transizione:</span>
+<span class="text-emerald-400 font-medium">120s Riposo ↺</span>
+</div>
+</div>
+</div>
+<!-- Bottone di Aggiunta in Stato Focus/Attivo -->
+<div class="pt-2">
+<button aria-label="Aggiungi esercizio al gruppo" class="w-full py-3.5 border-2 border-dashed border-blue-500 bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 rounded-xl font-medium text-xs flex items-center justify-center gap-2 transition ring-2 ring-blue-500/40 ring-offset-2 ring-offset-[#0a0f1d] cursor-pointer group">
+<span class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold text-sm shadow-md group-hover:scale-110 transition-transform">+</span>
+<span class="font-semibold tracking-wide">Aggiungi esercizio al gruppo</span>
+<span class="text-[10px] text-blue-300 font-normal ml-2 bg-blue-500/20 px-2 py-0.5 rounded-full">Seleziona dal Drawer laterale →</span>
+</button>
+</div>
+</div>
+<!-- Footer Density Group Modal -->
+<div class="p-4 border-t border-slate-800 bg-[#070b14] flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="text-[10px] uppercase font-bold text-slate-400">Distribuzione Gruppo:</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">Gambe: 4 serie</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">Petto: 4 serie</span>
+<span class="text-[10px] px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Spalle: 4 serie</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Annulla</button>
+<div class="inline-flex rounded-lg shadow-sm">
+<button class="px-5 py-2 rounded-l-lg bg-blue-600 hover:bg-blue-500 font-semibold text-white flex items-center gap-2 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                Salva blocco densità
+              </button>
+<button aria-label="Altre opzioni di salvataggio" class="px-2 py-2 rounded-r-lg bg-blue-700 hover:bg-blue-600 border-l border-blue-500 text-white">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: DensityGroupModal -->
+<!-- BEGIN: PickOnlyExerciseDrawer -->
+<!-- Lato Destro: Drawer Libreria Esercizi Pick-Only (W: 460px) -->
+<aside class="w-[450px] fixed top-12 right-0 bottom-0 z-30 bg-[#0b1122] border-l border-slate-800 flex flex-col shadow-2xl backdrop-blur-xl">
+<!-- Header Drawer Pick-Only -->
+<div class="p-4 border-b border-slate-800/80 bg-[#0d152a] flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-sm font-bold text-white flex items-center gap-2">
+                Libreria Esercizi
+                <span class="text-[10px] font-normal text-slate-400 font-mono">350+</span>
+</h2>
+<p class="text-[11px] text-blue-400 font-medium">Pick-Only Mode: clicca per inserire al volo</p>
+</div>
+</div>
+<button aria-label="Chiudi drawer" class="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<!-- Slot Destinazione Badge -->
+<div class="bg-blue-950/40 border border-blue-500/30 rounded-lg p-2 flex items-center justify-between text-xs">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
+<span class="text-slate-400 text-[11px]">Destinazione:</span>
+<strong class="text-blue-300 font-semibold">Circuito #1 (Slot 4)</strong>
+</div>
+<span class="text-[10px] uppercase font-mono px-1.5 py-0.5 bg-blue-500/20 text-blue-300 rounded font-semibold">Ready</span>
+</div>
+<!-- Barra di Ricerca Rapida -->
+<div class="relative">
+<input class="w-full bg-[#070b14] border border-slate-700/80 rounded-xl pl-9 pr-14 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition shadow-inner" placeholder="Cerca esercizio da inserire nel gruppo..." type="text"/>
+<svg class="w-4 h-4 text-slate-500 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<kbd class="absolute right-2.5 top-2.5 text-[9px] font-mono bg-slate-800 border border-slate-700 text-slate-400 px-1 rounded">⌘K</kbd>
+</div>
+<!-- Chips Filtro Muscolare Rapido -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] no-scrollbar">
+<button class="px-2.5 py-1 rounded-lg bg-blue-600 text-white font-semibold shrink-0 shadow-sm">Tutti</button>
+<button class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition">Core (Addome)</button>
+<button class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition">Dorso</button>
+<button class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition">Gambe</button>
+<button class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition">Petto</button>
+<button class="px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-medium shrink-0 transition">Braccia</button>
+</div>
+</div>
+<!-- Elenco Esercizi Pick-Only Card Lista -->
+<div class="flex-1 overflow-y-auto p-4 space-y-2.5">
+<div class="flex items-center justify-between text-[11px] text-slate-400 px-1 mb-1">
+<span>RISULTATI CONSIGLIATI PER IL CIRCUITO</span>
+<span class="text-[10px] text-blue-400 hover:underline cursor-pointer">Ordina per popolarità</span>
+</div>
+<!-- Card Esercizio 1: Plank con Tocco Spalle -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Plank con Tocco Spalle (Shoulder Tap)</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Core &amp; Anti-rotazione</span>
+<span class="text-[10px] text-slate-400">Corpo Libero</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Plank con Tocco Spalle nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<!-- Card Esercizio 2: Hollow Body Hold -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Hollow Body Hold Isometrico</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Core / Retto Addominale</span>
+<span class="text-[10px] text-slate-400">A tempo / Isometria</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Hollow Body Hold nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<!-- Card Esercizio 3: Rematore Manubrio Singolo -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Rematore con Manubrio su Panca</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-teal-500/15 text-teal-300 border border-teal-500/30">Dorso &amp; Bicipiti</span>
+<span class="text-[10px] text-slate-400">Manubri</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Rematore con Manubrio nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<!-- Card Esercizio 4: Kettlebell Swing -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Kettlebell Swing Russo</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">Catena Posteriore</span>
+<span class="text-[10px] text-slate-400">Kettlebell</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Kettlebell Swing nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<!-- Card Esercizio 5: Dip alle Parallele -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Dip alle Parallele</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">Petto &amp; Tricipiti</span>
+<span class="text-[10px] text-slate-400">Calisthenics</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Dip alle Parallele nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<!-- Card Esercizio 6: Russian Twist -->
+<div class="bg-[#10172c] hover:bg-[#151f38] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-3 flex items-center justify-between transition group shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h3 class="text-xs font-bold text-slate-100 group-hover:text-blue-300 transition-colors">Russian Twist con Disco</h3>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="text-[10px] px-1.5 py-0.2 rounded bg-indigo-500/15 text-indigo-300 border border-indigo-500/30">Obliqui / Core</span>
+<span class="text-[10px] text-slate-400">Pesi liberi</span>
+</div>
+</div>
+</div>
+<button aria-label="Inserisci Russian Twist nel gruppo" class="shrink-0 ml-2 px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white border border-blue-500/40 text-xs font-semibold flex items-center gap-1 transition shadow-sm">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M11 19l-7-7 7-7m8 14l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci</span>
+</button>
+</div>
+<div class="p-3 rounded-xl bg-blue-950/20 border border-blue-900/30 text-center">
+<p class="text-[11px] text-slate-400 leading-relaxed">
+            I parametri di Target (Reps/Carico/RPE) verranno impostati direttamente sulla riga del circuito dopo l'inserimento rapido.
+          </p>
+</div>
+</div>
+<!-- Footer Drawer Pick-Only -->
+<div class="p-3.5 border-t border-slate-800/90 bg-[#090e1c] flex items-center justify-between text-xs">
+<button class="px-3 py-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white font-medium flex items-center gap-1.5 transition">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Crea custom</span>
+</button>
+<button class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-medium transition flex items-center gap-1.5">
+<span>Chiudi drawer</span>
+<kbd class="text-[10px] bg-slate-900 px-1 py-0.5 rounded text-slate-400 font-mono">ESC</kbd>
+</button>
+</div>
+</aside>
+<!-- END: PickOnlyExerciseDrawer -->
+</main>
+<!-- END: MainWorkspace -->
+</body></html>
