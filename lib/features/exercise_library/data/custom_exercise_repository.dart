@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/exercise_catalog_source.dart';
@@ -23,10 +24,15 @@ class CustomExerciseRepository {
 
   static bool _legacyHevyPurgeDone = false;
 
+  /// Reset one-shot purge gate between tests.
+  @visibleForTesting
+  static void resetLegacyHevyPurgeForTest() {
+    _legacyHevyPurgeDone = false;
+  }
+
   /// One-shot cleanup of leftover Hevy catalog rows and prefs.
   Future<void> ensureLegacyHevyPurged() async {
     if (_legacyHevyPurgeDone) return;
-    _legacyHevyPurgeDone = true;
 
     final entities = await _offline.readLocalEntities(
       OfflineEntityType.customExercise,
@@ -43,6 +49,7 @@ class CustomExerciseRepository {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_legacyHevyApiKeyPref);
     await prefs.remove(_legacyHevyMappingsPref);
+    _legacyHevyPurgeDone = true;
   }
 
   Future<List<CustomExerciseItem>> getTree({
