@@ -22,8 +22,6 @@ abstract final class PlanGate {
 
   static Future<bool> canExportProgress() => isPro();
 
-  static Future<bool> canUseHevy() => isPro();
-
   static Future<bool> canExportWorkoutPdfOrExcel() => isPro();
 
   /// Returns `true` when the action is allowed; otherwise shows paywall and returns `false`.

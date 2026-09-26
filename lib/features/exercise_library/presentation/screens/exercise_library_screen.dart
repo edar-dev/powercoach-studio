@@ -51,7 +51,7 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       if (mounted) setState(() {});
     });
@@ -159,7 +159,6 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
                 tabs: [
                   Tab(text: l10n.exerciseLibraryTabExercises),
                   Tab(text: l10n.exerciseLibraryTabMobilityExercises),
-                  Tab(text: l10n.exerciseLibraryTabHevy),
                 ],
               ),
               Container(color: cs.outline, height: 1),
@@ -196,35 +195,19 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
             onTogglePin: _togglePin,
             isPinned: (item) => _pinnedIds.contains(item.id),
           ),
-          ExerciseLibraryTabView(
-            isMobility: false,
-            loading: _loading,
-            error: _error,
-            allItemsEmpty: filterHevyExerciseRoots(_items).isEmpty,
-            onRefresh: _load,
-            buildList: () => filterHevyExerciseRoots(_items),
-            onEdit: _crudHandler.showEditDialog,
-            onDelete: _crudHandler.confirmDelete,
-            onAddVariant: _crudHandler.showAddVariantDialog,
-            onTogglePin: _togglePin,
-            isPinned: (item) => _pinnedIds.contains(item.id),
-            readOnlyFolders: true,
-          ),
         ],
       ),
-      floatingActionButton: _tabController.index == 2
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: _loading
-                  ? null
-                  : () => _crudHandler.showAddDialog(
-                        isMobility: _tabController.index == 1,
-                      ),
-              icon: const Icon(Icons.add),
-              label: Text(l10n.exerciseLibraryAddExercise),
-              backgroundColor: StitchM3Theme.accent,
-              foregroundColor: Colors.white,
-            ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _loading
+            ? null
+            : () => _crudHandler.showAddDialog(
+                  isMobility: _tabController.index == 1,
+                ),
+        icon: const Icon(Icons.add),
+        label: Text(l10n.exerciseLibraryAddExercise),
+        backgroundColor: StitchM3Theme.accent,
+        foregroundColor: Colors.white,
+      ),
     );
   }
 }

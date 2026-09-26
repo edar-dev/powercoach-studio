@@ -160,12 +160,6 @@ class WorkoutBuilderScreenRoutineActions {
       exportActions.exportExcel(_routine);
     } else if (value == 'json') {
       exportActions.exportJson(_routine);
-    } else if (value == 'hevy') {
-      exportActions.exportCurrentDayToHevy(
-        routine: _routine,
-        selectedWeekIndex: selectedWeekIndex(),
-        selectedDayIndex: selectedDayIndex(),
-      );
     }
   }
 }

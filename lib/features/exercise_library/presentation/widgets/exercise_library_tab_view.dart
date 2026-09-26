@@ -18,14 +18,12 @@ class ExerciseLibraryTabView extends StatelessWidget {
     required this.onAddVariant,
     required this.onTogglePin,
     required this.isPinned,
-    this.readOnlyFolders = false,
   });
 
   final bool isMobility;
   final bool loading;
   final String? error;
   final bool allItemsEmpty;
-  final bool readOnlyFolders;
 
   final Future<void> Function() onRefresh;
   final List<CustomExerciseItem> Function() buildList;
@@ -118,7 +116,6 @@ class ExerciseLibraryTabView extends StatelessWidget {
                       onDelete: onDelete,
                       onAddVariant: onAddVariant,
                       onTogglePin: onTogglePin,
-                      readOnlyFolders: readOnlyFolders,
                     );
                   },
                 );

@@ -63,7 +63,6 @@ final kReleaseNotesCatalog = <ReleaseNoteEntry>[
       'v102_1',
       'v102_2',
       'v102_3',
-      'v102_4',
     ],
   ),
   ReleaseNoteEntry(

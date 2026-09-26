@@ -27,11 +27,6 @@ class SubscriptionPlanCompareCard extends StatelessWidget {
         proIncluded: true,
       ),
       _CompareRowData(
-        feature: l10n.subscriptionCompareHevy,
-        freeLabel: l10n.subscriptionCompareNotIncluded,
-        proIncluded: true,
-      ),
-      _CompareRowData(
         feature: l10n.subscriptionCompareWorkoutExport,
         freeLabel: l10n.subscriptionCompareNotIncluded,
         proIncluded: true,

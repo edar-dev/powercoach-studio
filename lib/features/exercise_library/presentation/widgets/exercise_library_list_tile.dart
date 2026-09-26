@@ -12,7 +12,6 @@ class ExerciseLibraryListTile extends StatelessWidget {
     required this.onDelete,
     required this.onAddVariant,
     required this.onTogglePin,
-    this.readOnlyFolders = false,
   });
 
   final CustomExerciseItem item;
@@ -21,7 +20,6 @@ class ExerciseLibraryListTile extends StatelessWidget {
   final void Function(CustomExerciseItem item) onDelete;
   final void Function(CustomExerciseItem item) onAddVariant;
   final void Function(CustomExerciseItem item) onTogglePin;
-  final bool readOnlyFolders;
 
   @override
   Widget build(BuildContext context) {
@@ -44,39 +42,34 @@ class ExerciseLibraryListTile extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               )
             : null,
-        trailing:
-            readOnlyFolders && (item.isHevyFolder || item.children.isNotEmpty)
-            ? null
-            : PopupMenuButton<String>(
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'pin',
-                    child: Text(
-                      pinned
-                          ? l10n.exerciseLibraryUnpin
-                          : l10n.exerciseLibraryPin,
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'addVariant',
-                    child: Text(l10n.exerciseLibraryAddVariant),
-                  ),
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Text(l10n.exerciseLibraryEdit),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Text(l10n.exerciseLibraryDelete),
-                  ),
-                ],
-                onSelected: (value) {
-                  if (value == 'pin') onTogglePin(item);
-                  if (value == 'addVariant') onAddVariant(item);
-                  if (value == 'edit') onEdit(item);
-                  if (value == 'delete') onDelete(item);
-                },
+        trailing: PopupMenuButton<String>(
+          itemBuilder: (context) => [
+            PopupMenuItem(
+              value: 'pin',
+              child: Text(
+                pinned ? l10n.exerciseLibraryUnpin : l10n.exerciseLibraryPin,
               ),
+            ),
+            PopupMenuItem(
+              value: 'addVariant',
+              child: Text(l10n.exerciseLibraryAddVariant),
+            ),
+            PopupMenuItem(
+              value: 'edit',
+              child: Text(l10n.exerciseLibraryEdit),
+            ),
+            PopupMenuItem(
+              value: 'delete',
+              child: Text(l10n.exerciseLibraryDelete),
+            ),
+          ],
+          onSelected: (value) {
+            if (value == 'pin') onTogglePin(item);
+            if (value == 'addVariant') onAddVariant(item);
+            if (value == 'edit') onEdit(item);
+            if (value == 'delete') onDelete(item);
+          },
+        ),
         children: item.children
             .map(
               (child) => Padding(
@@ -88,7 +81,6 @@ class ExerciseLibraryListTile extends StatelessWidget {
                   onDelete: onDelete,
                   onAddVariant: onAddVariant,
                   onTogglePin: onTogglePin,
-                  readOnlyFolders: readOnlyFolders,
                 ),
               ),
             )

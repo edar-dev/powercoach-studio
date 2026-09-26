@@ -84,7 +84,6 @@ class LandingPricingSection extends StatelessWidget {
                     l10n.landingPricingFeatureCustomersPro,
                     l10n.landingPricingFeatureBuilder,
                     l10n.landingPricingFeatureExportPro,
-                    l10n.landingPricingFeatureHevy,
                   ],
                   ctaLabel: isLoggedIn
                       ? l10n.landingPricingProCtaLoggedIn

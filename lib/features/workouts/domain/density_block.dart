@@ -158,8 +158,7 @@ String densityBlockExportDetail(DensityBlockConfig config) {
   }
 }
 
-/// Locale-neutral type name for exports that cannot pass [PdfExportLabels]
-/// (e.g. Hevy notes).
+/// Locale-neutral type name for exports that cannot pass [PdfExportLabels].
 String densityBlockExportTypeName(DensityBlockType type) => switch (type) {
       DensityBlockType.circuit => 'Circuit',
       DensityBlockType.emom => 'EMOM',
@@ -193,22 +192,6 @@ String densityBlockExportLabel(
     DensityBlockType.superset => labels.superset,
   };
   return formatDensityBlockExportLine(config, typeLabel: typeLabel);
-}
-
-/// Short density line for Hevy first-exercise notes (locale-neutral).
-/// Empty for plain supersets — Hevy already has `superset_id`.
-String densityBlockHevyNotePrefix(Day day, List<Exercise> group) {
-  if (group.isEmpty) return '';
-  final groupId = group.first.supersetGroupId;
-  if (groupId == null || groupId.isEmpty) return '';
-  final config = resolveDensityBlock(day, groupId);
-  if (config == null || config.type == DensityBlockType.superset) {
-    return '';
-  }
-  return formatDensityBlockExportLine(
-    config,
-    typeLabel: densityBlockExportTypeName(config.type),
-  );
 }
 
 Map<String, DensityBlockConfig>? decodeDensityBlocks(dynamic raw) {
