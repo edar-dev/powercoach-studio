@@ -1,4 +1,3 @@
-import '../../integrations/hevy/domain/exercise_catalog_source.dart';
 import '../data/custom_exercise_item.dart';
 
 List<CustomExerciseItem> flattenExerciseTree(List<CustomExerciseItem> roots) {
@@ -32,19 +31,10 @@ List<CustomExerciseItem> filterExerciseRootsByMobility(
   return out;
 }
 
-List<CustomExerciseItem> filterHevyExerciseRoots(List<CustomExerciseItem> items) {
-  return items
-      .where((root) => root.catalogSource == ExerciseCatalogSource.hevy)
-      .toList();
-}
-
 List<CustomExerciseItem> filterExerciseNodeByMobility(
   CustomExerciseItem node,
   bool isMobility,
 ) {
-  if (node.catalogSource == ExerciseCatalogSource.hevy) {
-    return const [];
-  }
   final filteredChildren = <CustomExerciseItem>[];
   for (final c in node.children) {
     filteredChildren.addAll(filterExerciseNodeByMobility(c, isMobility));
@@ -60,9 +50,6 @@ List<CustomExerciseItem> filterExerciseNodeByMobility(
         sortOrder: node.sortOrder,
         isMobility: node.isMobility,
         catalogSource: node.catalogSource,
-        hevyTemplateId: node.hevyTemplateId,
-        hevyStableKey: node.hevyStableKey,
-        isHevyFolder: node.isHevyFolder,
         createdAt: node.createdAt,
         updatedAt: node.updatedAt,
         rowVersion: node.rowVersion,

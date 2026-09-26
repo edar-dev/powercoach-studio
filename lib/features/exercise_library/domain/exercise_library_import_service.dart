@@ -1,5 +1,5 @@
-import '../../integrations/hevy/domain/exercise_catalog_source.dart';
 import '../data/custom_exercise_repository.dart';
+import 'exercise_catalog_source.dart';
 
 /// Imports exercise catalog JSON items respecting parent ordering.
 class ExerciseLibraryImportService {
