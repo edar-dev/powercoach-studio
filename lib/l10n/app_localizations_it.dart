@@ -156,9 +156,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get landingPricingFeatureExportPro => 'Export PDF, Excel e CSV';
 
   @override
-  String get landingPricingFeatureHevy => 'Integrazione Hevy';
-
-  @override
   String get landingFaqLabel => 'FAQ';
 
   @override
@@ -184,7 +181,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingFaqFreeProA =>
-      'Gratuito include fino a 5 clienti e tutte le funzioni base del builder. Pro sblocca clienti illimitati, export avanzati e integrazione Hevy.';
+      'Gratuito include fino a 5 clienti e tutte le funzioni base del builder. Pro sblocca clienti illimitati ed export avanzati (PDF, Excel, CSV progressi).';
 
   @override
   String get landingFaqBetaQ => 'Come accedo alla beta?';
@@ -554,9 +551,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get subscriptionCompareProgressExport => 'Export CSV progressi';
 
   @override
-  String get subscriptionCompareHevy => 'Integrazione Hevy';
-
-  @override
   String get subscriptionCompareWorkoutExport => 'Export PDF/Excel allenamenti';
 
   @override
@@ -734,10 +728,6 @@ class AppLocalizationsIt extends AppLocalizations {
       'L\'export CSV del progresso cliente è incluso in PowerCoach Pro.';
 
   @override
-  String get paywallMessageHevy =>
-      'L\'integrazione Hevy è inclusa in PowerCoach Pro.';
-
-  @override
   String get paywallMessageWorkoutExport =>
       'L\'export PDF ed Excel degli allenamenti è incluso in PowerCoach Pro.';
 
@@ -808,7 +798,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitle =>
-      'Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi; la tua chiave API Hevy non viene mai inclusa.';
+      'Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi.';
 
   @override
   String get settingsBackupExport => 'Esporta backup';
@@ -851,7 +841,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitleWeb =>
-      'I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo; la tua chiave API Hevy non viene mai inclusa.';
+      'I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo.';
 
   @override
   String get settingsBackupErrorInvalidFile => 'File di backup non valido.';
@@ -868,10 +858,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsCloudBackupRestore => 'Ripristina da cloud';
-
-  @override
-  String get settingsCloudBackupHevyNote =>
-      'La chiave API Hevy resta solo su questo dispositivo e non viene mai salvata nel backup, locale o cloud.';
 
   @override
   String get settingsCloudBackupUploadSuccess => 'Backup caricato su cloud.';
@@ -3077,117 +3063,6 @@ class AppLocalizationsIt extends AppLocalizations {
   String get updatedJustNow => 'Appena adesso';
 
   @override
-  String get exerciseLibraryTabHevy => 'Hevy';
-
-  @override
-  String get exerciseLibraryImportSourceHevy =>
-      'Sincronizza catalogo Hevy completo';
-
-  @override
-  String get exerciseLibraryImportSourceHevySubtitle =>
-      'Importa tutti gli esercizi dal tuo account Hevy Pro con ID già mappati.';
-
-  @override
-  String get hevySettingsSectionTitle => 'Integrazione Hevy';
-
-  @override
-  String get hevySettingsSectionSubtitle =>
-      'Richiede Hevy Pro. API key da hevy.com/settings (Developer).';
-
-  @override
-  String get hevySettingsApiKeyLabel => 'API key Hevy';
-
-  @override
-  String get hevySettingsApiKeyHint => 'Incolla la tua API key';
-
-  @override
-  String get hevySettingsSaveKey => 'Salva key';
-
-  @override
-  String get hevySettingsTestConnection => 'Test connessione';
-
-  @override
-  String get hevySettingsSyncCatalog => 'Sincronizza tutti gli esercizi';
-
-  @override
-  String get hevySettingsKeySaved => 'API key Hevy salvata.';
-
-  @override
-  String get hevySettingsTestSuccess => 'Connesso a Hevy.';
-
-  @override
-  String hevySettingsTestFailed(String message) {
-    return 'Connessione Hevy fallita: $message';
-  }
-
-  @override
-  String get hevyImportInProgress => 'Sincronizzazione catalogo Hevy…';
-
-  @override
-  String hevyImportSuccessCount(int count) {
-    return 'Sincronizzazione Hevy completata: $count nuovi elementi.';
-  }
-
-  @override
-  String hevyImportFailed(String message) {
-    return 'Sincronizzazione Hevy fallita: $message';
-  }
-
-  @override
-  String get workoutExportHevy => 'Esporta giornata su Hevy';
-
-  @override
-  String get hevyExportSheetTitle => 'Esporta su Hevy';
-
-  @override
-  String get hevyExportConfirm => 'Crea routine su Hevy';
-
-  @override
-  String get hevyExportConfirmRoutine => 'Crea routine su Hevy';
-
-  @override
-  String get hevyExportConfirmWorkout => 'Crea allenamento su Hevy';
-
-  @override
-  String get hevyExportWorkoutHint =>
-      'L\'allenamento viene registrato nel diario Hevy con inizio adesso e fine stimata tra 90 minuti.';
-
-  @override
-  String get hevyExportSuccessRoutine => 'Routine creata su Hevy.';
-
-  @override
-  String get hevyExportSuccessWorkout => 'Allenamento creato su Hevy.';
-
-  @override
-  String get hevyExportAllMapped =>
-      'Tutti gli esercizi sono mappati. Pronto per l\'export.';
-
-  @override
-  String hevyExportUnmappedIntro(int count) {
-    return '$count esercizi richiedono una mappatura Hevy prima dell\'export.';
-  }
-
-  @override
-  String get hevyExportMapExercise => 'Mappa';
-
-  @override
-  String get hevyExportUnmappedBlock =>
-      'Mappa tutti gli esercizi prima di esportare.';
-
-  @override
-  String get hevyExportSuccess => 'Routine creata su Hevy.';
-
-  @override
-  String get hevyExportError => 'Export Hevy fallito. Riprova.';
-
-  @override
-  String get hevyExportNoCatalogHint =>
-      'Sincronizza prima il catalogo Hevy da Impostazioni o Libreria esercizi.';
-
-  @override
-  String get calendarExportHevy => 'Esporta su Hevy';
-
-  @override
   String get workoutDiaryEmpty =>
       'Nessuna sessione registrata. Segna una sessione come completata dal calendario per iniziare il diario.';
 
@@ -3723,10 +3598,6 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get releaseNotesV1023 => 'Export piano PDF / JSON / Excel';
-
-  @override
-  String get releaseNotesV1024 =>
-      'Integrazione Hevy (export verso calendario / libreria)';
 
   @override
   String get releaseNotesV1011 => 'Dashboard \"Oggi\" e agenda sessioni';

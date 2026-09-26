@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_repository.dart';
+import 'package:powercoach_studio/features/exercise_library/domain/exercise_catalog_source.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_library_import_service.dart';
-import 'package:powercoach_studio/features/integrations/hevy/domain/exercise_catalog_source.dart';
 
 class _FakeExerciseRepo extends CustomExerciseRepository {
   _FakeExerciseRepo(this._created);

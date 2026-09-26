@@ -15,7 +15,7 @@ Multi-platform **Flutter/Dart** app (Android, iOS, web, Windows, macOS) for gym 
 | Auth | Supabase (`supabase_flutter ^2.5.0`) — session only |
 | Local DB | **Drift** + SQLite (`powercoach_offline.sqlite`) |
 | Local prefs | **SharedPreferences** (settings, drafts, pins, reminders) |
-| External API | **Hevy** export only — Dio client in `features/integrations/hevy/` |
+| External API | None for business data (local-first; optional Stripe billing on web) |
 | Routing | `go_router ^17` — routes in `lib/core/routing/app_routes.dart`, shell in `lib/app.dart` |
 | Monitoring | `sentry_flutter` (opt-in via `SENTRY_DSN`, release builds) |
 | i18n | Flutter ARB — primary locale **Italian (`it`)**, secondary English |
@@ -31,7 +31,7 @@ Multi-platform **Flutter/Dart** app (Android, iOS, web, Windows, macOS) for gym 
 
 ## Feature Modules (`lib/features/`)
 
-`auth` · `landing` · `dashboard` · `customers` · `workouts` · `exercise_library` · `settings` · `integrations/hevy`
+`auth` · `landing` · `dashboard` · `customers` · `workouts` · `exercise_library` · `settings`
 
 Each feature follows: `presentation/screens/` + optionally `data/` and `domain/`.
 

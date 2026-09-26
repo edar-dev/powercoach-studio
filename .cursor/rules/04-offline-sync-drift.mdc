@@ -43,4 +43,4 @@ Increment `AppDatabase.schemaVersion` and add a `MigrationStrategy` with `onUpgr
 
 ## SharedPreferences
 
-Use for lightweight per-user prefs (locale, notification toggle, workout drafts, Hevy API key). Keys are centralized in `lib/core/settings/settings_prefs_keys.dart` where possible.
+Use for lightweight per-user prefs (locale, notification toggle, workout drafts). Keys are centralized in `lib/core/settings/settings_prefs_keys.dart` where possible.

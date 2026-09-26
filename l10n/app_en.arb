@@ -46,13 +46,14 @@
   "landingPricingFeatureCustomersFree": "Up to {max} active clients",
   "@landingPricingFeatureCustomersFree": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "landingPricingFeatureCustomersPro": "Unlimited clients",
   "landingPricingFeatureBuilder": "Full workout builder",
   "landingPricingFeatureExportPro": "PDF, Excel & CSV export",
-  "landingPricingFeatureHevy": "Hevy integration",
   "landingFaqLabel": "FAQ",
   "landingFaqTitle": "Frequently asked questions",
   "landingFaqLocalDataQ": "Where is my data stored?",
@@ -60,7 +61,7 @@
   "landingFaqDeskGymQ": "Can I plan on desktop and train at the gym?",
   "landingFaqDeskGymA": "Yes. Build the program on desktop, then open the same account on your phone at the gym to log sets, RPE, and pain — no separate app, no sync setup to configure.",
   "landingFaqFreeProQ": "What's the difference between Free and Pro?",
-  "landingFaqFreeProA": "Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.",
+  "landingFaqFreeProA": "Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients and advanced exports (PDF, Excel, progress CSV).",
   "landingFaqBetaQ": "How do I join the beta?",
   "landingFaqBetaA": "Sign up for free, then open Subscription to request an invite code or redeem the one you receive.",
   "landingFaqBrowserQ": "What if I clear browser data?",
@@ -72,7 +73,9 @@
   "landingFooterCopyright": "© {year} PowerCoach Studio",
   "@landingFooterCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "landingFooterPrivacy": "Privacy",
@@ -215,7 +218,6 @@
     }
   },
   "subscriptionCompareProgressExport": "Progress CSV export",
-  "subscriptionCompareHevy": "Hevy integration",
   "subscriptionCompareWorkoutExport": "Workout PDF/Excel export",
   "subscriptionCompareNotIncluded": "—",
   "subscriptionPromoHint": "Have an invite code? Enter it below.",
@@ -333,7 +335,6 @@
     }
   },
   "paywallMessageExport": "Client progress CSV export is included in PowerCoach Pro.",
-  "paywallMessageHevy": "Hevy integration is included in PowerCoach Pro.",
   "paywallMessageWorkoutExport": "Workout PDF and Excel export is included in PowerCoach Pro.",
   "paywallUpgradeCta": "Upgrade to Pro",
   "paywallNotNow": "Not now",
@@ -361,7 +362,7 @@
   "settingsLanguageEnglish": "English",
   "settingsLanguageSaved": "Language updated.",
   "settingsBackupSectionTitle": "Offline backup",
-  "settingsBackupSectionSubtitle": "Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices; your Hevy API key is never included.",
+  "settingsBackupSectionSubtitle": "Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices.",
   "settingsBackupExport": "Export backup",
   "settingsBackupImport": "Import backup",
   "settingsBackupImportConfirmTitle": "Replace local data?",
@@ -373,13 +374,12 @@
   "settingsBackupErrorNotSignedIn": "Sign in to export or import a backup.",
   "settingsBackupErrorWrongAccount": "This backup belongs to another account.",
   "settingsBackupErrorUnsupportedSchema": "This backup format is not supported by this app version.",
-  "settingsBackupSectionSubtitleWeb": "Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device; your Hevy API key is never included.",
+  "settingsBackupSectionSubtitleWeb": "Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device.",
   "settingsBackupErrorInvalidFile": "Invalid backup file.",
   "settingsCloudBackupSectionTitle": "Cloud backup (optional)",
   "settingsCloudBackupSectionSubtitle": "Save or restore a manual snapshot on Supabase Storage, visible only to your account. This is not an automatic sync.",
   "settingsCloudBackupUpload": "Save to cloud",
   "settingsCloudBackupRestore": "Restore from cloud",
-  "settingsCloudBackupHevyNote": "Your Hevy API key stays on this device only and is never included in backups, local or cloud.",
   "settingsCloudBackupUploadSuccess": "Backup uploaded to the cloud.",
   "settingsCloudBackupEmpty": "No cloud backups found for this account.",
   "settingsCloudBackupErrorGeneric": "Couldn't complete the cloud operation. Try again.",
@@ -509,7 +509,9 @@
   "pdfDayNumber": "Day {day}",
   "@pdfDayNumber": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "pdfEmptyValue": "-",
@@ -517,27 +519,37 @@
   "pdfPageOf": "Page {current} of {total}",
   "@pdfPageOf": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "pdfGeneratedOn": "Generated on {date}",
   "@pdfGeneratedOn": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "pdfExportGenerating": "Generating PDF…",
   "pdfMeasurementRecordCount": "{count} records",
   "@pdfMeasurementRecordCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseWeekShort": "W{n}",
   "@pdfDenseWeekShort": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseAllWeeks": "all",
@@ -545,35 +557,51 @@
   "pdfDenseWeekLegendEntry": "W{n} = {name}",
   "@pdfDenseWeekLegendEntry": {
     "placeholders": {
-      "n": { "type": "int" },
-      "name": { "type": "String" }
+      "n": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "pdfDenseWeeksSpan": "W{first}-W{last}",
   "@pdfDenseWeeksSpan": {
     "placeholders": {
-      "first": { "type": "int" },
-      "last": { "type": "int" }
+      "first": {
+        "type": "int"
+      },
+      "last": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseLegend": "W1-W4 = all weeks | \" = same prescription",
   "pdfClientPlanFor": "Plan for: {name}",
   "@pdfClientPlanFor": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "pdfPlanPeriod": "{start} - {end}",
   "@pdfPlanPeriod": {
     "placeholders": {
-      "start": { "type": "String" },
-      "end": { "type": "String" }
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
     }
   },
   "pdfPlanPeriodOpen": "From {start}",
   "@pdfPlanPeriodOpen": {
     "placeholders": {
-      "start": { "type": "String" }
+      "start": {
+        "type": "String"
+      }
     }
   },
   "workoutExerciseShortNameLabel": "PDF name (optional)",
@@ -673,9 +701,15 @@
   "workoutBuilderLoadPercentGuideRow": "{percent}% — {weight} {unit}",
   "@workoutBuilderLoadPercentGuideRow": {
     "placeholders": {
-      "percent": { "type": "String" },
-      "weight": { "type": "String" },
-      "unit": { "type": "String" }
+      "percent": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderLoadPercentGuideBody": "100% — max / ~1 rep\n95% — ~2 reps\n90% — ~4 reps\n85% — ~6 reps\n80% — ~8 reps\n75% — ~10 reps\n70% — ~12 reps\n65% — ~15 reps\n60% — ~18+ reps\n55% — accessory work\n50% — recovery / technique",
@@ -687,9 +721,15 @@
   "workoutBuilderLoadPercentResult": "{weight} {unit} ({percent}% of record)",
   "@workoutBuilderLoadPercentResult": {
     "placeholders": {
-      "weight": { "type": "String" },
-      "unit": { "type": "String" },
-      "percent": { "type": "String" }
+      "weight": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderTitle": "Workout Builder",
@@ -726,19 +766,25 @@
   "workoutBuilderWeekNumbered": "Week {n}",
   "@workoutBuilderWeekNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderDayNumbered": "Day {n}",
   "@workoutBuilderDayNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderSectionNumbered": "Section {n}",
   "@workoutBuilderSectionNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderNewExerciseDefault": "New exercise",
@@ -780,7 +826,9 @@
   "workoutBuilderAddDayToWeek": "Add day to week {n}",
   "@workoutBuilderAddDayToWeek": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderNoWeeksYet": "No weeks yet. Add a week above.",
@@ -813,25 +861,33 @@
   "densityCircuitRounds": "{rounds} rounds",
   "@densityCircuitRounds": {
     "placeholders": {
-      "rounds": { "type": "int" }
+      "rounds": {
+        "type": "int"
+      }
     }
   },
   "densityCircuitRest": "{seconds}s rest",
   "@densityCircuitRest": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "densityEmomInterval": "EMOM {seconds}s",
   "@densityEmomInterval": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "densityEmomDuration": "{minutes} min",
   "@densityEmomDuration": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderTabTraining": "Training",
@@ -866,7 +922,9 @@
   "workoutBuilderRoutineTitleFromCustomer": "Add title · {name}",
   "@workoutBuilderRoutineTitleFromCustomer": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "workoutDiarySessionFilterActive": "Showing sessions for this plan day",
@@ -888,7 +946,9 @@
   "workoutBuilderExerciseCount": "{count, plural, =0{No exercises} =1{1 exercise} other{{count} exercises}}",
   "@workoutBuilderExerciseCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderSaveToPersistHint": "Save the plan to link it to this client. Until then, changes stay in memory only.",
@@ -945,14 +1005,18 @@
   "workoutBuilderProgressionIncreaseLoad": "Suggestion: bump load to {value}",
   "@workoutBuilderProgressionIncreaseLoad": {
     "placeholders": {
-      "value": { "type": "String" }
+      "value": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderProgressionIncreaseLoadGeneric": "Suggestion: consider a small load bump",
   "workoutBuilderProgressionIncreaseReps": "Suggestion: aim for {value} reps",
   "@workoutBuilderProgressionIncreaseReps": {
     "placeholders": {
-      "value": { "type": "String" }
+      "value": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderProgressionApply": "Apply",
@@ -1152,13 +1216,17 @@
   "dashboardDiarySubtitle": "{count} sessions (30d)",
   "@dashboardDiarySubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dashboardStatsSubtitle": "{percent}% adherence (7d)",
   "@dashboardStatsSubtitle": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "customerOpenDiary": "Open diary",
@@ -1289,21 +1357,29 @@
   "workoutTemplatesStructureSummary": "{weeks} weeks · {days} days · {exercises} exercises",
   "@workoutTemplatesStructureSummary": {
     "placeholders": {
-      "weeks": { "type": "int" },
-      "days": { "type": "int" },
-      "exercises": { "type": "int" }
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
     }
   },
   "workoutTemplatesPreviewExercisesMore": "+{count} more exercises",
   "@workoutTemplatesPreviewExercisesMore": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutTemplatesAssignStartDate": "Optional start date",
   "workoutTemplatesAssignStartDateHint": "Tap to choose a start date",
   "workoutTemplatesAssignStartDateSkip": "Skip",
-  "workoutDiaryTitle": "Diary",
+  "workoutDiaryTitle": "Workout diary",
   "workoutStatsTitle": "Stats",
   "placeholderComingSoon": "Coming soon",
   "placeholderSectionNotImplemented": "This section is not yet implemented.",
@@ -1335,59 +1411,6 @@
     }
   },
   "updatedJustNow": "Just now",
-  "exerciseLibraryTabHevy": "Hevy",
-  "exerciseLibraryImportSourceHevy": "Sync full Hevy catalog",
-  "exerciseLibraryImportSourceHevySubtitle": "Import all exercises from your Hevy Pro account with pre-mapped IDs.",
-  "hevySettingsSectionTitle": "Hevy integration",
-  "hevySettingsSectionSubtitle": "Requires Hevy Pro. API key from hevy.com/settings (Developer).",
-  "hevySettingsApiKeyLabel": "Hevy API key",
-  "hevySettingsApiKeyHint": "Paste your API key",
-  "hevySettingsSaveKey": "Save key",
-  "hevySettingsTestConnection": "Test connection",
-  "hevySettingsSyncCatalog": "Sync all exercises",
-  "hevySettingsKeySaved": "Hevy API key saved.",
-  "hevySettingsTestSuccess": "Connected to Hevy.",
-  "hevySettingsTestFailed": "Hevy connection failed: {message}",
-  "@hevySettingsTestFailed": {
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "hevyImportInProgress": "Syncing Hevy catalog…",
-  "hevyImportSuccessCount": "Hevy sync complete: {count} new items.",
-  "@hevyImportSuccessCount": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "hevyImportFailed": "Hevy sync failed: {message}",
-  "@hevyImportFailed": {
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "workoutExportHevy": "Export day to Hevy",
-  "hevyExportSheetTitle": "Export to Hevy",
-  "hevyExportConfirm": "Create routine on Hevy",
-  "hevyExportConfirmRoutine": "Create routine on Hevy",
-  "hevyExportConfirmWorkout": "Create workout on Hevy",
-  "hevyExportWorkoutHint": "The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.",
-  "hevyExportSuccessRoutine": "Routine created on Hevy.",
-  "hevyExportSuccessWorkout": "Workout created on Hevy.",
-  "hevyExportAllMapped": "All exercises are mapped. Ready to export.",
-  "hevyExportUnmappedIntro": "{count} exercises need a Hevy mapping before export.",
-  "@hevyExportUnmappedIntro": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "hevyExportMapExercise": "Map",
-  "hevyExportUnmappedBlock": "Map all exercises before exporting.",
-  "hevyExportSuccess": "Routine created on Hevy.",
-  "hevyExportError": "Hevy export failed. Try again.",
-  "hevyExportNoCatalogHint": "Sync the Hevy catalog from Settings or Exercise Library first.",
-  "calendarExportHevy": "Export to Hevy",
-  "workoutDiaryTitle": "Workout diary",
   "workoutDiaryEmpty": "No logged sessions yet. Mark a session complete from the schedule to start your diary.",
   "workoutDiaryFilterAll": "All clients",
   "coachStatsTitle": "Coach stats",
@@ -1402,8 +1425,12 @@
   "coachStatsChartDaySummary": "{date}: {count} completed",
   "@coachStatsChartDaySummary": {
     "placeholders": {
-      "date": { "type": "String" },
-      "count": { "type": "int" }
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "coachStatsExportCsv": "Export CSV",
@@ -1426,7 +1453,9 @@
   "sessionLogSetLabel": "Set {number}",
   "@sessionLogSetLabel": {
     "placeholders": {
-      "number": { "type": "int" }
+      "number": {
+        "type": "int"
+      }
     }
   },
   "sessionLogExpandSets": "Show sets",
@@ -1438,20 +1467,28 @@
   "sessionLogRpeChipLabel": "RPE {value}/10",
   "@sessionLogRpeChipLabel": {
     "placeholders": {
-      "value": { "type": "int" }
+      "value": {
+        "type": "int"
+      }
     }
   },
   "sessionLogPainChipLabel": "Pain {value}/10",
   "@sessionLogPainChipLabel": {
     "placeholders": {
-      "value": { "type": "int" }
+      "value": {
+        "type": "int"
+      }
     }
   },
   "sessionLogPainChipLabelWithLocation": "Pain {value}/10 · {location}",
   "@sessionLogPainChipLabelWithLocation": {
     "placeholders": {
-      "value": { "type": "int" },
-      "location": { "type": "String" }
+      "value": {
+        "type": "int"
+      },
+      "location": {
+        "type": "String"
+      }
     }
   },
   "gymModeTitle": "Gym mode",
@@ -1475,37 +1512,49 @@
   "workoutPlanDiffSummaryDaysAdded": "{count} days added",
   "@workoutPlanDiffSummaryDaysAdded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryDaysRemoved": "{count} days removed",
   "@workoutPlanDiffSummaryDaysRemoved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryDaysChanged": "{count} days changed",
   "@workoutPlanDiffSummaryDaysChanged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesAdded": "{count} exercises added",
   "@workoutPlanDiffSummaryExercisesAdded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesRemoved": "{count} exercises removed",
   "@workoutPlanDiffSummaryExercisesRemoved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesChanged": "{count} exercises changed",
   "@workoutPlanDiffSummaryExercisesChanged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffBadgeAdded": "Added",
@@ -1521,7 +1570,9 @@
   "customerProgressDaysAgo": "{count} days ago",
   "@customerProgressDaysAgo": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "customerProgressToday": "Today",
@@ -1537,23 +1588,37 @@
   "customerProgressNarrativeSummary": "Over the last 30 days, adherence was {adherence} ({completed} completed, {skipped} skipped).",
   "@customerProgressNarrativeSummary": {
     "placeholders": {
-      "adherence": { "type": "String" },
-      "completed": { "type": "int" },
-      "skipped": { "type": "int" }
+      "adherence": {
+        "type": "String"
+      },
+      "completed": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
     }
   },
   "customerProgressNarrativeLastSession": "Last session: {when}.",
   "@customerProgressNarrativeLastSession": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "customerProgressNarrativeRecentPr": "Recent PR: {name} — {value} {unit}.",
   "@customerProgressNarrativeRecentPr": {
     "placeholders": {
-      "name": { "type": "String" },
-      "value": { "type": "String" },
-      "unit": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "customerProgressExportWeeklyCompleted": "completed",
@@ -1563,14 +1628,22 @@
   "customerProgressPrLine": "· {name} {value} {unit}",
   "@customerProgressPrLine": {
     "placeholders": {
-      "name": { "type": "String" },
-      "value": { "type": "String" },
-      "unit": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "@customerProgressWeeksAgo": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "settingsCalendarRemindersTitle": "Session reminders",
@@ -1579,14 +1652,18 @@
   "settingsCalendarReminderLeadHours": "{hours} hours before",
   "@settingsCalendarReminderLeadHours": {
     "placeholders": {
-      "hours": { "type": "int" }
+      "hours": {
+        "type": "int"
+      }
     }
   },
   "workoutFollowUpFromExecution": "Use loads from last execution",
   "workoutFollowUpFromExecutionHint": "Based on {count} logged sessions",
   "@workoutFollowUpFromExecutionHint": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutFollowUpNoExecutionData": "No execution data — structure only will be copied.",
@@ -1599,16 +1676,26 @@
   "backupImportCounts": "{customers} clients · {plans} plans · {executions} session logs",
   "@backupImportCounts": {
     "placeholders": {
-      "customers": { "type": "int" },
-      "plans": { "type": "int" },
-      "executions": { "type": "int" }
+      "customers": {
+        "type": "int"
+      },
+      "plans": {
+        "type": "int"
+      },
+      "executions": {
+        "type": "int"
+      }
     }
   },
   "backupImportMetadata": "Backup from {date} · app {version}",
   "@backupImportMetadata": {
     "placeholders": {
-      "date": { "type": "String" },
-      "version": { "type": "String" }
+      "date": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
     }
   },
   "backupImportSelectGroups": "Choose what to import",
@@ -1616,25 +1703,33 @@
   "backupImportGroupCustomers": "Clients and related data ({count})",
   "@backupImportGroupCustomers": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupPlans": "Workout plans ({count})",
   "@backupImportGroupPlans": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupExerciseLibrary": "Exercise library ({count})",
   "@backupImportGroupExerciseLibrary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupReminders": "Reminders ({count})",
   "@backupImportGroupReminders": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupPreferences": "Profile and preferences",
@@ -1644,13 +1739,17 @@
   "releaseNotesInstalledVersion": "Installed version: {version}",
   "@releaseNotesInstalledVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "releaseNotesSettingsSubtitle": "Version {version}",
   "@releaseNotesSettingsSubtitle": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "releaseNotesHighlightsLabel": "Highlights",
@@ -1681,7 +1780,6 @@
   "releaseNotesV1021": "Workout plan template library",
   "releaseNotesV1022": "Plan editor autosave + unsaved exit guard",
   "releaseNotesV1023": "Plan export PDF / JSON / Excel",
-  "releaseNotesV1024": "Hevy integration (export to calendar / library)",
   "releaseNotesV1011": "Today dashboard and session schedule",
   "releaseNotesV1012": "Customer management, measurements, exercise records",
   "releaseNotesV1013": "Workout builder (weeks/days/exercises, basic supersets)",

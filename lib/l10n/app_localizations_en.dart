@@ -157,9 +157,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingPricingFeatureExportPro => 'PDF, Excel & CSV export';
 
   @override
-  String get landingPricingFeatureHevy => 'Hevy integration';
-
-  @override
   String get landingFaqLabel => 'FAQ';
 
   @override
@@ -186,7 +183,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingFaqFreeProA =>
-      'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.';
+      'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients and advanced exports (PDF, Excel, progress CSV).';
 
   @override
   String get landingFaqBetaQ => 'How do I join the beta?';
@@ -556,9 +553,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionCompareProgressExport => 'Progress CSV export';
 
   @override
-  String get subscriptionCompareHevy => 'Hevy integration';
-
-  @override
   String get subscriptionCompareWorkoutExport => 'Workout PDF/Excel export';
 
   @override
@@ -733,10 +727,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Client progress CSV export is included in PowerCoach Pro.';
 
   @override
-  String get paywallMessageHevy =>
-      'Hevy integration is included in PowerCoach Pro.';
-
-  @override
   String get paywallMessageWorkoutExport =>
       'Workout PDF and Excel export is included in PowerCoach Pro.';
 
@@ -807,7 +797,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitle =>
-      'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices; your Hevy API key is never included.';
+      'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices.';
 
   @override
   String get settingsBackupExport => 'Export backup';
@@ -848,7 +838,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsBackupSectionSubtitleWeb =>
-      'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device; your Hevy API key is never included.';
+      'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device.';
 
   @override
   String get settingsBackupErrorInvalidFile => 'Invalid backup file.';
@@ -865,10 +855,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCloudBackupRestore => 'Restore from cloud';
-
-  @override
-  String get settingsCloudBackupHevyNote =>
-      'Your Hevy API key stays on this device only and is never included in backups, local or cloud.';
 
   @override
   String get settingsCloudBackupUploadSuccess =>
@@ -3051,115 +3037,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updatedJustNow => 'Just now';
 
   @override
-  String get exerciseLibraryTabHevy => 'Hevy';
-
-  @override
-  String get exerciseLibraryImportSourceHevy => 'Sync full Hevy catalog';
-
-  @override
-  String get exerciseLibraryImportSourceHevySubtitle =>
-      'Import all exercises from your Hevy Pro account with pre-mapped IDs.';
-
-  @override
-  String get hevySettingsSectionTitle => 'Hevy integration';
-
-  @override
-  String get hevySettingsSectionSubtitle =>
-      'Requires Hevy Pro. API key from hevy.com/settings (Developer).';
-
-  @override
-  String get hevySettingsApiKeyLabel => 'Hevy API key';
-
-  @override
-  String get hevySettingsApiKeyHint => 'Paste your API key';
-
-  @override
-  String get hevySettingsSaveKey => 'Save key';
-
-  @override
-  String get hevySettingsTestConnection => 'Test connection';
-
-  @override
-  String get hevySettingsSyncCatalog => 'Sync all exercises';
-
-  @override
-  String get hevySettingsKeySaved => 'Hevy API key saved.';
-
-  @override
-  String get hevySettingsTestSuccess => 'Connected to Hevy.';
-
-  @override
-  String hevySettingsTestFailed(String message) {
-    return 'Hevy connection failed: $message';
-  }
-
-  @override
-  String get hevyImportInProgress => 'Syncing Hevy catalog…';
-
-  @override
-  String hevyImportSuccessCount(int count) {
-    return 'Hevy sync complete: $count new items.';
-  }
-
-  @override
-  String hevyImportFailed(String message) {
-    return 'Hevy sync failed: $message';
-  }
-
-  @override
-  String get workoutExportHevy => 'Export day to Hevy';
-
-  @override
-  String get hevyExportSheetTitle => 'Export to Hevy';
-
-  @override
-  String get hevyExportConfirm => 'Create routine on Hevy';
-
-  @override
-  String get hevyExportConfirmRoutine => 'Create routine on Hevy';
-
-  @override
-  String get hevyExportConfirmWorkout => 'Create workout on Hevy';
-
-  @override
-  String get hevyExportWorkoutHint =>
-      'The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.';
-
-  @override
-  String get hevyExportSuccessRoutine => 'Routine created on Hevy.';
-
-  @override
-  String get hevyExportSuccessWorkout => 'Workout created on Hevy.';
-
-  @override
-  String get hevyExportAllMapped =>
-      'All exercises are mapped. Ready to export.';
-
-  @override
-  String hevyExportUnmappedIntro(int count) {
-    return '$count exercises need a Hevy mapping before export.';
-  }
-
-  @override
-  String get hevyExportMapExercise => 'Map';
-
-  @override
-  String get hevyExportUnmappedBlock => 'Map all exercises before exporting.';
-
-  @override
-  String get hevyExportSuccess => 'Routine created on Hevy.';
-
-  @override
-  String get hevyExportError => 'Hevy export failed. Try again.';
-
-  @override
-  String get hevyExportNoCatalogHint =>
-      'Sync the Hevy catalog from Settings or Exercise Library first.';
-
-  @override
-  String get calendarExportHevy => 'Export to Hevy';
-
-  @override
   String get workoutDiaryEmpty =>
       'No logged sessions yet. Mark a session complete from the schedule to start your diary.';
 
@@ -3689,10 +3566,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get releaseNotesV1023 => 'Plan export PDF / JSON / Excel';
-
-  @override
-  String get releaseNotesV1024 =>
-      'Hevy integration (export to calendar / library)';
 
   @override
   String get releaseNotesV1011 => 'Today dashboard and session schedule';

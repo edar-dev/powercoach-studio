@@ -380,12 +380,6 @@ abstract class AppLocalizations {
   /// **'PDF, Excel & CSV export'**
   String get landingPricingFeatureExportPro;
 
-  /// No description provided for @landingPricingFeatureHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get landingPricingFeatureHevy;
-
   /// No description provided for @landingFaqLabel.
   ///
   /// In en, this message translates to:
@@ -431,7 +425,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqFreeProA.
   ///
   /// In en, this message translates to:
-  /// **'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.'**
+  /// **'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients and advanced exports (PDF, Excel, progress CSV).'**
   String get landingFaqFreeProA;
 
   /// No description provided for @landingFaqBetaQ.
@@ -1100,12 +1094,6 @@ abstract class AppLocalizations {
   /// **'Progress CSV export'**
   String get subscriptionCompareProgressExport;
 
-  /// No description provided for @subscriptionCompareHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get subscriptionCompareHevy;
-
   /// No description provided for @subscriptionCompareWorkoutExport.
   ///
   /// In en, this message translates to:
@@ -1400,12 +1388,6 @@ abstract class AppLocalizations {
   /// **'Client progress CSV export is included in PowerCoach Pro.'**
   String get paywallMessageExport;
 
-  /// No description provided for @paywallMessageHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration is included in PowerCoach Pro.'**
-  String get paywallMessageHevy;
-
   /// No description provided for @paywallMessageWorkoutExport.
   ///
   /// In en, this message translates to:
@@ -1529,7 +1511,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices; your Hevy API key is never included.'**
+  /// **'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices.'**
   String get settingsBackupSectionSubtitle;
 
   /// No description provided for @settingsBackupExport.
@@ -1601,7 +1583,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitleWeb.
   ///
   /// In en, this message translates to:
-  /// **'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device; your Hevy API key is never included.'**
+  /// **'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device.'**
   String get settingsBackupSectionSubtitleWeb;
 
   /// No description provided for @settingsBackupErrorInvalidFile.
@@ -1633,12 +1615,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore from cloud'**
   String get settingsCloudBackupRestore;
-
-  /// No description provided for @settingsCloudBackupHevyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Hevy API key stays on this device only and is never included in backups, local or cloud.'**
-  String get settingsCloudBackupHevyNote;
 
   /// No description provided for @settingsCloudBackupUploadSuccess.
   ///
@@ -5608,198 +5584,6 @@ abstract class AppLocalizations {
   /// **'Just now'**
   String get updatedJustNow;
 
-  /// No description provided for @exerciseLibraryTabHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy'**
-  String get exerciseLibraryTabHevy;
-
-  /// No description provided for @exerciseLibraryImportSourceHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync full Hevy catalog'**
-  String get exerciseLibraryImportSourceHevy;
-
-  /// No description provided for @exerciseLibraryImportSourceHevySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Import all exercises from your Hevy Pro account with pre-mapped IDs.'**
-  String get exerciseLibraryImportSourceHevySubtitle;
-
-  /// No description provided for @hevySettingsSectionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get hevySettingsSectionTitle;
-
-  /// No description provided for @hevySettingsSectionSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Requires Hevy Pro. API key from hevy.com/settings (Developer).'**
-  String get hevySettingsSectionSubtitle;
-
-  /// No description provided for @hevySettingsApiKeyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy API key'**
-  String get hevySettingsApiKeyLabel;
-
-  /// No description provided for @hevySettingsApiKeyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste your API key'**
-  String get hevySettingsApiKeyHint;
-
-  /// No description provided for @hevySettingsSaveKey.
-  ///
-  /// In en, this message translates to:
-  /// **'Save key'**
-  String get hevySettingsSaveKey;
-
-  /// No description provided for @hevySettingsTestConnection.
-  ///
-  /// In en, this message translates to:
-  /// **'Test connection'**
-  String get hevySettingsTestConnection;
-
-  /// No description provided for @hevySettingsSyncCatalog.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync all exercises'**
-  String get hevySettingsSyncCatalog;
-
-  /// No description provided for @hevySettingsKeySaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy API key saved.'**
-  String get hevySettingsKeySaved;
-
-  /// No description provided for @hevySettingsTestSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected to Hevy.'**
-  String get hevySettingsTestSuccess;
-
-  /// No description provided for @hevySettingsTestFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy connection failed: {message}'**
-  String hevySettingsTestFailed(String message);
-
-  /// No description provided for @hevyImportInProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Syncing Hevy catalog…'**
-  String get hevyImportInProgress;
-
-  /// No description provided for @hevyImportSuccessCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy sync complete: {count} new items.'**
-  String hevyImportSuccessCount(int count);
-
-  /// No description provided for @hevyImportFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy sync failed: {message}'**
-  String hevyImportFailed(String message);
-
-  /// No description provided for @workoutExportHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Export day to Hevy'**
-  String get workoutExportHevy;
-
-  /// No description provided for @hevyExportSheetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Export to Hevy'**
-  String get hevyExportSheetTitle;
-
-  /// No description provided for @hevyExportConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Create routine on Hevy'**
-  String get hevyExportConfirm;
-
-  /// No description provided for @hevyExportConfirmRoutine.
-  ///
-  /// In en, this message translates to:
-  /// **'Create routine on Hevy'**
-  String get hevyExportConfirmRoutine;
-
-  /// No description provided for @hevyExportConfirmWorkout.
-  ///
-  /// In en, this message translates to:
-  /// **'Create workout on Hevy'**
-  String get hevyExportConfirmWorkout;
-
-  /// No description provided for @hevyExportWorkoutHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.'**
-  String get hevyExportWorkoutHint;
-
-  /// No description provided for @hevyExportSuccessRoutine.
-  ///
-  /// In en, this message translates to:
-  /// **'Routine created on Hevy.'**
-  String get hevyExportSuccessRoutine;
-
-  /// No description provided for @hevyExportSuccessWorkout.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout created on Hevy.'**
-  String get hevyExportSuccessWorkout;
-
-  /// No description provided for @hevyExportAllMapped.
-  ///
-  /// In en, this message translates to:
-  /// **'All exercises are mapped. Ready to export.'**
-  String get hevyExportAllMapped;
-
-  /// No description provided for @hevyExportUnmappedIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} exercises need a Hevy mapping before export.'**
-  String hevyExportUnmappedIntro(int count);
-
-  /// No description provided for @hevyExportMapExercise.
-  ///
-  /// In en, this message translates to:
-  /// **'Map'**
-  String get hevyExportMapExercise;
-
-  /// No description provided for @hevyExportUnmappedBlock.
-  ///
-  /// In en, this message translates to:
-  /// **'Map all exercises before exporting.'**
-  String get hevyExportUnmappedBlock;
-
-  /// No description provided for @hevyExportSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Routine created on Hevy.'**
-  String get hevyExportSuccess;
-
-  /// No description provided for @hevyExportError.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy export failed. Try again.'**
-  String get hevyExportError;
-
-  /// No description provided for @hevyExportNoCatalogHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync the Hevy catalog from Settings or Exercise Library first.'**
-  String get hevyExportNoCatalogHint;
-
-  /// No description provided for @calendarExportHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Export to Hevy'**
-  String get calendarExportHevy;
-
   /// No description provided for @workoutDiaryEmpty.
   ///
   /// In en, this message translates to:
@@ -6689,12 +6473,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan export PDF / JSON / Excel'**
   String get releaseNotesV1023;
-
-  /// No description provided for @releaseNotesV1024.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration (export to calendar / library)'**
-  String get releaseNotesV1024;
 
   /// No description provided for @releaseNotesV1011.
   ///

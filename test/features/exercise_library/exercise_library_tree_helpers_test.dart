@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_item.dart';
+import 'package:powercoach_studio/features/exercise_library/domain/exercise_catalog_source.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_library_tree_helpers.dart';
-import 'package:powercoach_studio/features/integrations/hevy/domain/exercise_catalog_source.dart';
 
 CustomExerciseItem _item({
   required String id,
@@ -41,19 +41,22 @@ void main() {
       expect(mobility.single.name, 'Mobility child');
     });
 
-    test('excludes hevy catalog nodes from mobility filter', () {
+    test('keeps matching root when mobility matches', () {
       final roots = [
         _item(
-          id: 'hevy',
-          name: 'Hevy',
-          catalogSource: ExerciseCatalogSource.hevy,
+          id: 'root',
+          name: 'Strength',
+          isMobility: false,
+          catalogSource: ExerciseCatalogSource.powercoach,
           children: [
             _item(id: 'child', name: 'Child', isMobility: false),
           ],
         ),
       ];
 
-      expect(filterExerciseRootsByMobility(roots, false), isEmpty);
+      final strength = filterExerciseRootsByMobility(roots, false);
+      expect(strength, hasLength(1));
+      expect(strength.single.name, 'Strength');
     });
   });
 
