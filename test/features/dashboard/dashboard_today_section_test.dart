@@ -44,8 +44,12 @@ void main() {
       expect(find.text('Apri agenda'), findsOneWidget);
       expect(find.text('Apri modalità sala'), findsOneWidget);
 
+      // FilledButton.icon uses a private subclass; match via `is FilledButton`.
       final filled = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Apri agenda'),
+        find.ancestor(
+          of: find.text('Apri agenda'),
+          matching: find.byWidgetPredicate((w) => w is FilledButton),
+        ),
       );
       final style = filled.style;
       expect(style?.foregroundColor?.resolve({}), Colors.white);

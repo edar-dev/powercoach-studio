@@ -61,7 +61,7 @@ void main() {
     expect(edited, isTrue);
   });
 
-  testWidgets('folder tile shows variant count subtitle', (tester) async {
+  testWidgets('folder tile shows name and folder icon', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('en'),
@@ -89,7 +89,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Squat'), findsOneWidget);
-    expect(find.text('2 variants'), findsOneWidget);
     expect(find.byIcon(Icons.folder_outlined), findsOneWidget);
+    // Variant-count subtitle was removed; children appear when expanded.
+    expect(find.text('2 variants'), findsNothing);
   });
 }
