@@ -4,6 +4,7 @@ import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/pinned_exercises_store.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
+import '../../../exercise_library/domain/default_exercise_catalog_seeder.dart';
 import '../../domain/exercise_picker_index_helpers.dart';
 
 /// Loaded exercise picker state for the add-exercise sheet.
@@ -40,6 +41,9 @@ class ExerciseAddSheetLoader {
   final PinnedExercisesStore _pinnedStore;
 
   Future<ExerciseAddSheetPickerData> loadPickerData() async {
+    await DefaultExerciseCatalogSeeder(
+      exerciseRepo: _customExerciseRepo,
+    ).ensureSeeded();
     final items = await _customExerciseRepo.getTree();
     final index = buildExercisePickerIndex(items);
     final recentIds = await _recentStore.getRecentIds();

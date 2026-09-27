@@ -8,6 +8,7 @@ import '../domain/density_block.dart';
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/workout_density_block_mutations.dart';
 import '../domain/workout_exercise_mutations.dart';
+import '../domain/workout_phase_presets.dart';
 import 'workout_builder_session_controller.dart';
 import 'widgets/exercise_add_sheet.dart';
 import 'widgets/workout_superset_actions.dart';
@@ -56,13 +57,180 @@ class WorkoutBuilderTrainingHandlers {
     if (readOnly) return;
     final l10n = AppLocalizations.of(context);
     final id = 'w_${DateTime.now().millisecondsSinceEpoch}';
-    final next = _routine.weeks.length + 1;
+    final phase = session.selectedPhaseIndex < _routine.phases.length
+        ? _routine.phases[session.selectedPhaseIndex]
+        : null;
+    final nextInPhase = (phase?.weeks.length ?? 0) + 1;
     session.addWeek(
       weekId: id,
-      weekName: l10n.workoutBuilderWeekNumbered(next),
+      weekName: l10n.workoutBuilderWeekNumbered(nextInPhase),
       firstDayId: '${id}_d1',
       firstDayName: l10n.workoutBuilderDayNumbered(1),
+      phaseIndex: session.selectedPhaseIndex,
     );
+  }
+
+  Future<void> addPhase() async {
+    if (readOnly) return;
+    final l10n = AppLocalizations.of(context);
+    final preset = await showModalBottomSheet<WorkoutPhasePreset>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  l10n.workoutPhaseAdd,
+                  style: Theme.of(ctx).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final p in kWorkoutPhasePresetChips)
+                      ActionChip(
+                        label: Text(p.localizedLabel(l10n)),
+                        onPressed: () => Navigator.of(ctx).pop(p),
+                      ),
+                    ActionChip(
+                      label: Text(WorkoutPhasePreset.custom.localizedLabel(l10n)),
+                      onPressed: () =>
+                          Navigator.of(ctx).pop(WorkoutPhasePreset.custom),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    if (!context.mounted || preset == null) return;
+
+    var name = preset.storageName;
+    if (preset == WorkoutPhasePreset.custom) {
+      final custom = await showDialog<String>(
+        context: context,
+        builder: (ctx) {
+          final controller = TextEditingController();
+          return AlertDialog(
+            title: Text(l10n.workoutPhaseCustomNameTitle),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: InputDecoration(labelText: l10n.workoutPhaseNameLabel),
+              onSubmitted: (v) => Navigator.of(ctx).pop(v.trim()),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(),
+                child: Text(l10n.customerCancel),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(ctx).pop(controller.text.trim()),
+                child: Text(l10n.workoutPhaseAdd),
+              ),
+            ],
+          );
+        },
+      );
+      if (!context.mounted || custom == null || custom.isEmpty) return;
+      name = custom;
+    }
+
+    final id = 'phase_${DateTime.now().millisecondsSinceEpoch}';
+    session.addPhase(phaseId: id, phaseName: name);
+  }
+
+  Future<void> duplicatePhase(int phaseIndex) async {
+    if (readOnly) return;
+    if (phaseIndex < 0 || phaseIndex >= _routine.phases.length) return;
+    final source = _routine.phases[phaseIndex];
+    final l10n = AppLocalizations.of(context);
+    final defaultName = '${localizedPhaseName(l10n, source.name)}${l10n.workoutBuilderNameCopySuffix}';
+    final newId = 'phase_${DateTime.now().millisecondsSinceEpoch}';
+    session.duplicatePhase(
+      phaseIndex: phaseIndex,
+      newPhaseId: newId,
+      newPhaseName: defaultName,
+    );
+  }
+
+  Future<void> editPhaseSettings(int phaseIndex) async {
+    if (readOnly) return;
+    if (phaseIndex < 0 || phaseIndex >= _routine.phases.length) return;
+    final phase = _routine.phases[phaseIndex];
+    final l10n = AppLocalizations.of(context);
+    final nameController = TextEditingController(text: phase.name);
+    final objectiveController = TextEditingController(
+      text: phase.objective ?? '',
+    );
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(l10n.workoutPhaseSettingsTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: l10n.workoutPhaseNameLabel,
+              ),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: objectiveController,
+              decoration: InputDecoration(
+                labelText: l10n.workoutPhaseObjectiveLabel,
+                hintText: l10n.workoutPhaseObjectiveHint,
+              ),
+              maxLines: 2,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(l10n.customerCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(l10n.customerSave),
+          ),
+        ],
+      ),
+    );
+    if (!context.mounted || saved != true) return;
+    session.renamePhase(phaseIndex, nameController.text);
+    session.setPhaseObjective(phaseIndex, objectiveController.text);
+  }
+
+  Future<void> confirmDeletePhase(int phaseIndex) async {
+    if (readOnly) return;
+    if (phaseIndex < 0 || phaseIndex >= _routine.phases.length) return;
+    final l10n = AppLocalizations.of(context);
+    final removed = _routine.phases[phaseIndex];
+    final confirmed = await showAppConfirmDialog(
+      context: context,
+      title: l10n.workoutPhaseDeleteTitle,
+      message: l10n.workoutPhaseDeleteMessage,
+      confirmLabel: l10n.customerDelete,
+      cancelLabel: l10n.customerCancel,
+      destructive: true,
+    );
+    if (!confirmed || !context.mounted) return;
+    if (!session.deletePhase(phaseIndex)) return;
+    _showUndoSnackBar(l10n.workoutPhaseRemoved, () {
+      session.insertPhaseAtIndex(phaseIndex: phaseIndex, phase: removed);
+      session.selectPhase(phaseIndex);
+    });
   }
 
   Future<void> cloneWeek(int weekIndex) async {

@@ -9,7 +9,7 @@ PowerCoach Studio web subscriptions use **Stripe Checkout** + **Customer Portal*
 | Tier | Price | Limits |
 |------|-------|--------|
 | **Free** | €0 forever | Max **5 active customers** |
-| **Pro** | €12/month or €99/year | Unlimited customers, CSV export, Hevy, PDF/Excel export |
+| **Pro** | €12/month or €99/year | Unlimited customers, CSV export, PDF/Excel export |
 | **Trial** | None | — |
 | **Grace** | 7 days after cancel | `pro_until` keeps Pro gates open |
 

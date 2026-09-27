@@ -6,12 +6,10 @@ class ExerciseLibraryImportSourceSheet extends StatelessWidget {
   const ExerciseLibraryImportSourceSheet({
     super.key,
     required this.onImportDefault,
-    required this.onImportHevy,
     required this.onImportCustomFile,
   });
 
   final VoidCallback onImportDefault;
-  final VoidCallback onImportHevy;
   final VoidCallback onImportCustomFile;
 
   @override
@@ -25,12 +23,6 @@ class ExerciseLibraryImportSourceSheet extends StatelessWidget {
           title: Text(l10n.exerciseLibraryImportSourceDefault),
           subtitle: Text(l10n.exerciseLibraryImportSourceDefaultSubtitle),
           onTap: onImportDefault,
-        ),
-        ListTile(
-          leading: const Icon(Icons.fitness_center),
-          title: Text(l10n.exerciseLibraryImportSourceHevy),
-          subtitle: Text(l10n.exerciseLibraryImportSourceHevySubtitle),
-          onTap: onImportHevy,
         ),
         ListTile(
           leading: const Icon(Icons.upload_file),

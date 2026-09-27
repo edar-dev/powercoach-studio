@@ -9,7 +9,7 @@
 - **Local-first:** business data in Drift/SQLite + SharedPreferences, scoped per authenticated Supabase `userId`.
 - **Supabase:** authentication session only — no table CRUD for customers, workouts, or coach profile fields.
 - **No GymBlog.API**, no `GYMBLOG_API_URL`, no remote sync replay unless an approved plan explicitly reintroduces it.
-- **Hevy:** only via `lib/features/integrations/hevy/` (user-provided API key in app settings).
+- **No third-party workout APIs** (Hevy and similar integrations were removed; do not reintroduce without an approved plan).
 - **Backup/restore:** JSON export/import is the official multi-device path (`UserDataBackupService`).
 
 ## CI / Flutter version

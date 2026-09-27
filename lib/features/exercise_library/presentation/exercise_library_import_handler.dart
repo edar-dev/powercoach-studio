@@ -7,12 +7,9 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
-import '../../integrations/hevy/data/hevy_api_models.dart';
-import '../../integrations/hevy/data/hevy_catalog_import_service.dart';
-import '../../integrations/hevy/data/hevy_settings_store.dart';
-import '../../integrations/hevy/domain/exercise_catalog_source.dart';
 import '../data/default_exercise_catalog.dart';
 import '../data/import_file_reader.dart';
+import '../domain/exercise_catalog_source.dart';
 import '../domain/exercise_library_import_service.dart';
 import '../presentation/widgets/exercise_library_import_source_sheet.dart';
 
@@ -40,68 +37,12 @@ class ExerciseLibraryImportHandler {
           Navigator.of(sheetContext).pop();
           importDefaultCatalog();
         },
-        onImportHevy: () {
-          Navigator.of(sheetContext).pop();
-          importHevyCatalog();
-        },
         onImportCustomFile: () {
           Navigator.of(sheetContext).pop();
           importCustomFile();
         },
       ),
     );
-  }
-
-  Future<void> importHevyCatalog() async {
-    final l10n = AppLocalizations.of(context);
-    final hasKey = await HevySettingsStore.instance.hasApiKey();
-    if (!hasKey) {
-      if (!context.mounted) return;
-      showAppSnackBar(context, content: Text(l10n.hevyExportNoCatalogHint));
-      return;
-    }
-    if (!context.mounted) return;
-    showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) {
-        final label = l10n.hevyImportInProgress;
-        return AlertDialog(
-          title: Text(l10n.exerciseLibraryImportSourceHevy),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 16),
-              Text(label),
-            ],
-          ),
-        );
-      },
-    );
-    try {
-      final count = await HevyCatalogImportService().importAllFromApi(
-        onProgress: (_, __, ___) {},
-      );
-      if (!context.mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(
-        context,
-        content: Text(l10n.hevyImportSuccessCount(count)),
-      );
-      onReload();
-    } on HevyApiException catch (e) {
-      if (!context.mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(context, content: Text(l10n.hevyImportFailed(e.message)));
-    } catch (e) {
-      if (!context.mounted) return;
-      Navigator.of(context, rootNavigator: true).pop();
-      showAppSnackBar(
-        context,
-        content: Text(l10n.hevyImportFailed(e.toString())),
-      );
-    }
   }
 
   Future<void> importDefaultCatalog() async {

@@ -5,7 +5,7 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/dashboard_snapshot.dart';
-import 'dashboard_empty_placeholder.dart';
+import 'dashboard_positive_empty_card.dart';
 
 /// "Clients without a program" section for the coach dashboard.
 class DashboardNoPlanSection extends StatelessWidget {
@@ -25,8 +25,9 @@ class DashboardNoPlanSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (snapshot.customersWithoutPlan.isEmpty) {
-      return DashboardEmptyPlaceholder(
+      return DashboardPositiveEmptyCard(
         message: l10n.dashboardNoCustomersWithoutPlan,
+        hint: l10n.dashboardNoCustomersWithoutPlanHint,
         icon: Icons.people_outline,
       );
     }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import '../../domain/customer_progress_metrics.dart';
 
 class CustomerProgressPanel extends StatelessWidget {
@@ -22,8 +22,6 @@ class CustomerProgressPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
     if (loading) {
       return const Padding(
@@ -32,143 +30,142 @@ class CustomerProgressPanel extends StatelessWidget {
           child: SizedBox(
             width: 28,
             height: 28,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      );
-    }
-
-    if (!snapshot.hasAnyData) {
-      return Card(
-        elevation: 0,
-        color: cs.surfaceContainerHighest,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _PanelHeader(
-              title: l10n.customerProgressTitle,
-              exportTooltip: l10n.customerProgressExport,
-              onExport: onExport,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: MarketingDarkColors.brandLight,
             ),
-            const SizedBox(height: 12),
-            Text(
-              l10n.customerProgressNoData,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-              ),
-            ],
           ),
         ),
       );
     }
 
-    return Card(
-      elevation: 0,
-      color: cs.surfaceContainerHighest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: MarketingDarkColors.surfaceElevated,
+        borderRadius: BorderRadius.circular(MarketingDarkColors.radius2xl),
+        border: Border.all(color: MarketingDarkColors.borderSubtle),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _PanelHeader(
-              title: l10n.customerProgressTitle,
-              exportTooltip: l10n.customerProgressExport,
-              onExport: onExport,
-            ),
-            const SizedBox(height: 20),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
+      child: !snapshot.hasAnyData
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: Text(
-                    l10n.customerProgressAdherence,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                  ),
+                _PanelHeader(
+                  title: l10n.customerProgressTitle,
+                  exportTooltip: l10n.customerProgressExport,
+                  onExport: onExport,
                 ),
+                const SizedBox(height: 12),
                 Text(
-                  snapshot.adherencePercent == null
-                      ? '—'
-                      : '${(snapshot.adherencePercent! * 100).round()}%',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: cs.primary,
+                  l10n.customerProgressNoData,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: MarketingDarkColors.slate400,
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 10),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(3),
-              child: LinearProgressIndicator(
-                value: snapshot.adherencePercent ?? 0,
-                minHeight: 6,
-                backgroundColor: cs.surfaceContainerHigh,
-                color: cs.primary,
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              '${l10n.customerProgressLastSession}: ${_formatLastSession(context, l10n)}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              l10n.customerProgressLast4Weeks,
-              style: theme.textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _WeeklyAdherenceStrip(
-              dots: snapshot.last4Weeks,
-              weekLabelBuilder: (index) =>
-                  _weekLabel(l10n, index, snapshot.last4Weeks.length),
-            ),
-            if (snapshot.recentPrs.isNotEmpty) ...[
-              const SizedBox(height: 20),
-              Text(
-                l10n.customerProgressRecentPrs,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w600,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _PanelHeader(
+                  title: l10n.customerProgressTitle,
+                  exportTooltip: l10n.customerProgressExport,
+                  onExport: onExport,
                 ),
-              ),
-              const SizedBox(height: 8),
-              ...snapshot.recentPrs.map(
-                (pr) => Padding(
-                  padding: const EdgeInsets.only(bottom: 6),
-                  child: Text(
-                    l10n.customerProgressPrLine(
-                      pr.exerciseName,
-                      _formatPrValue(pr.value),
-                      pr.unit,
+                const SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.customerProgressAdherence,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: MarketingDarkColors.slate400,
+                        ),
+                      ),
                     ),
-                    style: theme.textTheme.bodyMedium,
+                    Text(
+                      snapshot.adherencePercent == null
+                          ? '—'
+                          : '${(snapshot.adherencePercent! * 100).round()}%',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: MarketingDarkColors.brandLight,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(3),
+                  child: LinearProgressIndicator(
+                    value: snapshot.adherencePercent ?? 0,
+                    minHeight: 6,
+                    backgroundColor: MarketingDarkColors.surface700,
+                    color: MarketingDarkColors.brandMid,
                   ),
                 ),
-              ),
-            ],
-          ],
-        ),
-      ),
+                const SizedBox(height: 14),
+                Text(
+                  '${l10n.customerProgressLastSession}: ${_formatLastSession(l10n)}',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: MarketingDarkColors.slate500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  l10n.customerProgressLast4Weeks,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: MarketingDarkColors.slate400,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _WeeklyAdherenceStrip(
+                  dots: snapshot.last4Weeks,
+                  weekLabelBuilder: (index) =>
+                      _weekLabel(l10n, index, snapshot.last4Weeks.length),
+                ),
+                if (snapshot.recentPrs.isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  Text(
+                    l10n.customerProgressRecentPrs,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: MarketingDarkColors.slate300,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ...snapshot.recentPrs.map(
+                    (pr) => Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        l10n.customerProgressPrLine(
+                          pr.exerciseName,
+                          _formatPrValue(pr.value),
+                          pr.unit,
+                        ),
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: MarketingDarkColors.text,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
     );
   }
 
-  String _formatLastSession(BuildContext context, AppLocalizations l10n) {
+  String _formatLastSession(AppLocalizations l10n) {
     final date = snapshot.lastSessionDate;
     if (date == null) return l10n.customerProgressNoSession;
 
@@ -209,15 +206,15 @@ class _PanelHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Row(
       children: [
         Expanded(
           child: Text(
             title,
-            style: theme.textTheme.titleMedium?.copyWith(
+            style: const TextStyle(
+              fontSize: 16,
               fontWeight: FontWeight.w700,
+              color: MarketingDarkColors.text,
             ),
           ),
         ),
@@ -225,6 +222,7 @@ class _PanelHeader extends StatelessWidget {
           IconButton(
             tooltip: exportTooltip,
             icon: const Icon(Icons.ios_share_outlined),
+            color: MarketingDarkColors.slate300,
             onPressed: onExport,
           ),
       ],
@@ -243,9 +241,6 @@ class _WeeklyAdherenceStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -271,8 +266,8 @@ class _WeeklyAdherenceStrip extends StatelessWidget {
                     textAlign: TextAlign.center,
                     maxLines: 2,
                     softWrap: true,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant,
+                    style: const TextStyle(
+                      color: MarketingDarkColors.slate500,
                       fontSize: 11,
                       height: 1.2,
                     ),
@@ -293,15 +288,13 @@ class _WeekDot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     final Color fill;
     if (dot.completed == null) {
-      fill = cs.outlineVariant.withValues(alpha: 0.35);
+      fill = MarketingDarkColors.borderMuted.withValues(alpha: 0.35);
     } else if (dot.completed!) {
-      fill = StitchM3Theme.success;
+      fill = MarketingDarkColors.emerald;
     } else {
-      fill = cs.outline.withValues(alpha: 0.55);
+      fill = MarketingDarkColors.slate500.withValues(alpha: 0.55);
     }
 
     return Container(
@@ -311,7 +304,9 @@ class _WeekDot extends StatelessWidget {
         color: fill,
         borderRadius: BorderRadius.circular(6),
         border: dot.completed == null
-            ? Border.all(color: cs.outlineVariant.withValues(alpha: 0.5))
+            ? Border.all(
+                color: MarketingDarkColors.borderMuted.withValues(alpha: 0.5),
+              )
             : null,
       ),
     );

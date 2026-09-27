@@ -45,7 +45,11 @@ flowchart LR
 
 **Wave 3:** [feature-46](feature-46-density-blocks.plan.md) → [feature-47](feature-47-progress-narrative-l10n.plan.md) — ✅ su `feat/identity-wave3`.
 
-**Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — Excel density l10n, Hevy notes, plan-diff density, gym timer — branch `feat/identity-post-wave3-polish`.
+**Post–Wave 3 polish:** [feature-48](feature-48-identity-polish.plan.md) — ✅.
+
+**Fasi piano:** [feature-49](feature-49-workout-plan-phases.plan.md) — 🚧 integrated onto `feat/remove-hevy-integration` (Hevy stays removed).
+
+**Stitch editor parity:** [feature-50](feature-50-stitch-editor-ui-parity.plan.md) — 🚧 F50–F55 follow-up; assets in `design/stitch-assets/phase-planning-ui/` · Exercise Library Stitch assets in [`design/stitch-assets/exercise-library/`](../../design/stitch-assets/exercise-library/) · Coach Dashboard redesign assets in [`design/stitch-assets/dashboard/`](../../design/stitch-assets/dashboard/).
 
 ---
 

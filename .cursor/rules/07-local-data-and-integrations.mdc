@@ -1,6 +1,6 @@
 ---
-description: Local data persistence and Hevy integration (replaces legacy GymBlog.API rule)
-globs: lib/core/storage/**,lib/core/backup/**,lib/features/integrations/**
+description: Local data persistence and integrations policy (replaces legacy GymBlog.API / Hevy rules)
+globs: lib/core/storage/**,lib/core/backup/**
 alwaysApply: false
 ---
 
@@ -14,7 +14,7 @@ Business data is **local-first**. Use these entry points:
 |-------|---------|
 | `OfflineLocalStore` | Customers, workout plans, entities in Drift |
 | Feature `*Store` / `*Repository` classes | Feature-specific reads/writes |
-| `SharedPreferences` | Settings, drafts, exercise pins, Hevy API key |
+| `SharedPreferences` | Settings, drafts, exercise pins |
 | `UserDataBackupService` | JSON backup export/import |
 | `CloudBackupRepository` | Optional Supabase Storage snapshots of the backup JSON (opt-in, not sync) |
 
@@ -25,16 +25,6 @@ final store = OfflineLocalStore.instance;
 await store.ensureReady(userId);
 // use store methods — never raw Supabase for business CRUD
 ```
-
-## Hevy integration (optional)
-
-The only external REST integration is **Hevy** export:
-
-- Client: `lib/features/integrations/hevy/data/hevy_api_client.dart` (Dio)
-- API key: stored in SharedPreferences via `HevySettingsStore`
-- Instantiate `HevyApiClient` directly in the integration layer — no service locator
-
-Handle errors at the presentation boundary; show user-facing messages from l10n.
 
 ## Cloud backup snapshots (allowed, opt-in)
 
@@ -49,6 +39,7 @@ conflict resolution. See `docs/sync-strategy.md` ("Cloud snapshots != sync").
 - Remote sync replay without an approved plan (see `.cursor/plans/local-first-ux-v1.plan.md`)
 - Direct Supabase table CRUD for coach/client/workout data
 - Automatic/background cloud backup uploads (cloud snapshots stay explicit, user-triggered)
+- Third-party workout app integrations (e.g. Hevy) without an approved plan
 
 ## Agent deny-list (do not reintroduce without approved plan)
 
@@ -58,3 +49,4 @@ conflict resolution. See `docs/sync-strategy.md` ("Cloud snapshots != sync").
 - `get_it` or a global DI container
 - Remote write paths via `PendingOperations` expecting server ACK
 - Supabase `.from('...')` CRUD for business entities
+- `lib/features/integrations/hevy/` or a `dio`-based Hevy (or similar) client

@@ -57,6 +57,7 @@ class WorkoutBuilderScreenTabs {
     this.onIncludesMobilityTabChanged,
     this.onSyncMobilityTabVisibility,
     this.routineTitleHint,
+    this.editorCustomerName,
   });
 
   final BuildContext context;
@@ -99,6 +100,7 @@ class WorkoutBuilderScreenTabs {
   final ValueChanged<bool>? onIncludesMobilityTabChanged;
   final VoidCallback? onSyncMobilityTabVisibility;
   final String? routineTitleHint;
+  final String? editorCustomerName;
 
   WorkoutRoutine get _routine => builderSession.routine;
 
@@ -148,9 +150,15 @@ class WorkoutBuilderScreenTabs {
       cs: cs,
       embeddedInTab: true,
       session: builderSession,
-      weeks: _routine.weeks,
+      phases: _routine.phases,
+      selectedPhaseIndex: builderSession.selectedPhaseIndex,
       selectedWeekIndex: builderSession.selectedWeekIndex,
       selectedDayIndex: builderSession.selectedDayIndex,
+      onAddPhase: trainingHandlers.addPhase,
+      onDuplicatePhase: trainingHandlers.duplicatePhase,
+      onEditPhaseSettings: trainingHandlers.editPhaseSettings,
+      onDeletePhase: trainingHandlers.confirmDeletePhase,
+      onSelectPhase: (i) => builderSession.selectPhase(i),
       onNewWeek: trainingHandlers.addWeek,
       onCloneWeek: trainingHandlers.cloneWeek,
       onDeleteWeek: trainingHandlers.confirmDeleteWeek,
@@ -159,7 +167,6 @@ class WorkoutBuilderScreenTabs {
       onRenameDay: trainingHandlers.renameDay,
       onSetDayCoachingNote: trainingHandlers.setDayCoachingNote,
       onDeleteDay: trainingHandlers.deleteDay,
-      onAddExercise: trainingHandlers.addExerciseToDay,
       onDuplicateExercise: trainingHandlers.duplicateExercise,
       onRemoveExercise: trainingHandlers.removeExercise,
       onMoveExercise: trainingHandlers.moveExerciseInDay,
@@ -180,6 +187,7 @@ class WorkoutBuilderScreenTabs {
       readOnly: readOnly,
       editorMode: editorMode,
       planId: loadedPlanId,
+      editorCustomerName: editorCustomerName,
     );
   }
 

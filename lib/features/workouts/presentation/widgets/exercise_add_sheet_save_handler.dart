@@ -168,8 +168,11 @@ void handleExerciseAddSheetSave({
 
   if (fromLibrary && resolvedSelection != null) {
     unawaited(recentStore.recordUse(resolvedSelection.id));
+    final workoutName = libraryDisplayName != null
+        ? libraryDisplayName(resolvedSelection)
+        : resolvedSelection.name;
     onSaveWithSets(
-      resolvedSelection.name,
+      workoutName,
       note,
       normalizedDetails,
       resolvedSelection.id,

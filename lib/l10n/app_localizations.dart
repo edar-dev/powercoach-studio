@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingHeroBadge.
   ///
   /// In en, this message translates to:
-  /// **'The Future of Coaching is Here'**
+  /// **'Early access — Beta Coach Studio v2.4'**
   String get landingHeroBadge;
 
   /// No description provided for @landingTitlePrefix.
@@ -125,19 +125,19 @@ abstract class AppLocalizations {
   /// No description provided for @landingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Create and manage workout plans for your clients.'**
+  /// **'Create and manage workout plans for your clients with scientific precision.'**
   String get landingSubtitle;
 
   /// No description provided for @landingCtaPrimary.
   ///
   /// In en, this message translates to:
-  /// **'Get Started'**
+  /// **'Start free — No card required'**
   String get landingCtaPrimary;
 
   /// No description provided for @landingCtaSecondary.
   ///
   /// In en, this message translates to:
-  /// **'Learn More'**
+  /// **'See pricing & demo'**
   String get landingCtaSecondary;
 
   /// No description provided for @notImplementedMessage.
@@ -145,6 +145,114 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Feature not yet implemented.'**
   String get notImplementedMessage;
+
+  /// No description provided for @landingBrandPowerCoach.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach'**
+  String get landingBrandPowerCoach;
+
+  /// No description provided for @landingBrandStudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio'**
+  String get landingBrandStudio;
+
+  /// No description provided for @landingEarlyAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Early access'**
+  String get landingEarlyAccess;
+
+  /// No description provided for @landingBetaVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'Beta Coach Studio v2.4'**
+  String get landingBetaVersion;
+
+  /// No description provided for @landingHeroLeadBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'Create and manage workout plans for your clients with '**
+  String get landingHeroLeadBefore;
+
+  /// No description provided for @landingHeroLeadEmphasis.
+  ///
+  /// In en, this message translates to:
+  /// **'scientific precision'**
+  String get landingHeroLeadEmphasis;
+
+  /// No description provided for @landingHeroLeadAfter.
+  ///
+  /// In en, this message translates to:
+  /// **'.'**
+  String get landingHeroLeadAfter;
+
+  /// No description provided for @landingHeroSupporting.
+  ///
+  /// In en, this message translates to:
+  /// **'The modular platform built for strength coaches, athletic trainers, and professional personal trainers. Block periodization, customizable microcycles, and real-time load tracking.'**
+  String get landingHeroSupporting;
+
+  /// No description provided for @landingCtaStartFreeNoCard.
+  ///
+  /// In en, this message translates to:
+  /// **'Start free — No card required'**
+  String get landingCtaStartFreeNoCard;
+
+  /// No description provided for @landingCtaSeePricingDemo.
+  ///
+  /// In en, this message translates to:
+  /// **'See pricing & demo'**
+  String get landingCtaSeePricingDemo;
+
+  /// No description provided for @landingTrustExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'266+ Preconfigured exercises'**
+  String get landingTrustExercises;
+
+  /// No description provided for @landingTrustOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-First architecture'**
+  String get landingTrustOffline;
+
+  /// No description provided for @landingTrustExport.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export & fast sharing'**
+  String get landingTrustExport;
+
+  /// No description provided for @landingPreviewEditorLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan editor — Max Strength Mesocycle (Accumulation W2)'**
+  String get landingPreviewEditorLabel;
+
+  /// No description provided for @landingStatusOfflineFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-First'**
+  String get landingStatusOfflineFirst;
+
+  /// No description provided for @landingNavFeatures.
+  ///
+  /// In en, this message translates to:
+  /// **'Features'**
+  String get landingNavFeatures;
+
+  /// No description provided for @landingNavLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise Library'**
+  String get landingNavLibrary;
+
+  /// No description provided for @landingNavPhases.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase Planning'**
+  String get landingNavPhases;
 
   /// No description provided for @landingFeaturesTitle.
   ///
@@ -161,19 +269,19 @@ abstract class AppLocalizations {
   /// No description provided for @landingFeaturesDesc.
   ///
   /// In en, this message translates to:
-  /// **'Focus on what you do best—coaching. We\'ll handle the logistics and tracking with precision tools.'**
+  /// **'Focus on what you do best—coaching. We handle logistics, block periodization, and tracking.'**
   String get landingFeaturesDesc;
 
   /// No description provided for @landingFeaturesCustomers.
   ///
   /// In en, this message translates to:
-  /// **'Customer management'**
+  /// **'Client & plan management'**
   String get landingFeaturesCustomers;
 
   /// No description provided for @landingFeaturesEditor.
   ///
   /// In en, this message translates to:
-  /// **'Visual editor for workout plans'**
+  /// **'Visual editor for modular phase plans'**
   String get landingFeaturesEditor;
 
   /// No description provided for @landingFeaturesClientData.
@@ -185,19 +293,211 @@ abstract class AppLocalizations {
   /// No description provided for @landingFeaturesExport.
   ///
   /// In en, this message translates to:
-  /// **'Export to PDF'**
+  /// **'PDF export & custom exercise DB'**
   String get landingFeaturesExport;
+
+  /// No description provided for @landingFeature1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Client & plan management'**
+  String get landingFeature1Title;
+
+  /// No description provided for @landingFeature1Eyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual editor for modular phase plans'**
+  String get landingFeature1Eyebrow;
+
+  /// No description provided for @landingFeature1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Structure advanced programming into microcycles and mesocycles (Accumulation, Intensification, Realization, Deload). Assign volume progressions, 1RM-based percentages, RPE, and detailed execution notes.'**
+  String get landingFeature1Body;
+
+  /// No description provided for @landingFeature1Bullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual timeline with automatic tonnage calculation'**
+  String get landingFeature1Bullet1;
+
+  /// No description provided for @landingFeature1Bullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate mesocycles across athletes with automated progression'**
+  String get landingFeature1Bullet2;
+
+  /// No description provided for @landingFeature1Bullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly check-ins with immediate alerts'**
+  String get landingFeature1Bullet3;
+
+  /// No description provided for @landingFeature1FooterLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Responsive drag & drop editor'**
+  String get landingFeature1FooterLeft;
+
+  /// No description provided for @landingFeature1FooterRight.
+  ///
+  /// In en, this message translates to:
+  /// **'100% Customizable'**
+  String get landingFeature1FooterRight;
+
+  /// No description provided for @landingFeature2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Client data & library'**
+  String get landingFeature2Title;
+
+  /// No description provided for @landingFeature2Eyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export & custom exercise DB'**
+  String get landingFeature2Eyebrow;
+
+  /// No description provided for @landingFeature2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Internal database with 266+ exercises classified by muscle group, resistance curve, and biomechanical pattern. Generate high-resolution PDF prints or share interactive links ready for your client\'s phone.'**
+  String get landingFeature2Body;
+
+  /// No description provided for @landingFeature2Bullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast folders: Presses, Squats, Push, Pull'**
+  String get landingFeature2Bullet1;
+
+  /// No description provided for @landingFeature2Bullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Professional PDF export with tutorial video QR codes'**
+  String get landingFeature2Bullet2;
+
+  /// No description provided for @landingFeature2Bullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom fields for angles, wedges, and grip type'**
+  String get landingFeature2Bullet3;
+
+  /// No description provided for @landingFeature2FooterLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'266+ Ready variants'**
+  String get landingFeature2FooterLeft;
+
+  /// No description provided for @landingFeature2FooterRight.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 & Mobile export'**
+  String get landingFeature2FooterRight;
+
+  /// No description provided for @landingFeature3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Superset, Cluster & Jump Set'**
+  String get landingFeature3Title;
+
+  /// No description provided for @landingFeature3Eyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced intensity methodology tools'**
+  String get landingFeature3Eyebrow;
+
+  /// No description provided for @landingFeature3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Group exercises in one click. Configure antagonist pairings, drop sets, myo-reps, and differentiated intra/inter-set rests with a preset audio timer.'**
+  String get landingFeature3Body;
+
+  /// No description provided for @landingFeature3Bullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'Letter color coding (A1-A2, B1-B2)'**
+  String get landingFeature3Bullet1;
+
+  /// No description provided for @landingFeature3Bullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Session density calculation (kg per minute of work)'**
+  String get landingFeature3Bullet2;
+
+  /// No description provided for @landingFeature3Bullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'Timed circuits, EMOM, and AMRAP for conditioning'**
+  String get landingFeature3Bullet3;
+
+  /// No description provided for @landingFeature3FooterLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced methodologies'**
+  String get landingFeature3FooterLeft;
+
+  /// No description provided for @landingFeature3FooterRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Zero Confusion'**
+  String get landingFeature3FooterRight;
+
+  /// No description provided for @landingFeature4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected data & Offline-First'**
+  String get landingFeature4Title;
+
+  /// No description provided for @landingFeature4Eyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Data stays stored locally on your device'**
+  String get landingFeature4Eyebrow;
+
+  /// No description provided for @landingFeature4Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Never lose an edit even if the gym Wi‑Fi drops. All programs are stored on-device. Use JSON backups or optional snapshots to move between devices.'**
+  String get landingFeature4Body;
+
+  /// No description provided for @landingFeature4Bullet1.
+  ///
+  /// In en, this message translates to:
+  /// **'One-click JSON/CSV backup export'**
+  String get landingFeature4Bullet1;
+
+  /// No description provided for @landingFeature4Bullet2.
+  ///
+  /// In en, this message translates to:
+  /// **'Native-speed performance with no loading delays'**
+  String get landingFeature4Bullet2;
+
+  /// No description provided for @landingFeature4Bullet3.
+  ///
+  /// In en, this message translates to:
+  /// **'GDPR-aligned security standards for athlete data'**
+  String get landingFeature4Bullet3;
+
+  /// No description provided for @landingFeature4FooterLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Local database'**
+  String get landingFeature4FooterLeft;
+
+  /// No description provided for @landingFeature4FooterRight.
+  ///
+  /// In en, this message translates to:
+  /// **'Always Available'**
+  String get landingFeature4FooterRight;
 
   /// No description provided for @landingHowItWorksLabel.
   ///
   /// In en, this message translates to:
-  /// **'The Process'**
+  /// **'Scientific planning'**
   String get landingHowItWorksLabel;
 
   /// No description provided for @landingHowItWorksTitle.
   ///
   /// In en, this message translates to:
-  /// **'How PowerCoach Studio Works'**
+  /// **'Linear or block periodization—without unreadable spreadsheets.'**
   String get landingHowItWorksTitle;
 
   /// No description provided for @landingHowItWorksStep1.
@@ -224,16 +524,46 @@ abstract class AppLocalizations {
   /// **'Export to PDF'**
   String get landingHowItWorksStep4;
 
+  /// No description provided for @landingPhasesBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Scientific planning'**
+  String get landingPhasesBadge;
+
+  /// No description provided for @landingPhasesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Linear or block periodization—without unreadable spreadsheets.'**
+  String get landingPhasesTitle;
+
+  /// No description provided for @landingPhasesBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop chaotic tables. Coach Studio charts weekly volume, suggests load increases based on RPE/RIR, and lets athletes log results in their own logbook.'**
+  String get landingPhasesBody;
+
+  /// No description provided for @landingPhasesCtaPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your first plan in 2 minutes'**
+  String get landingPhasesCtaPrimary;
+
+  /// No description provided for @landingPhasesCtaSecondary.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore the Exercise Library'**
+  String get landingPhasesCtaSecondary;
+
   /// No description provided for @landingCtaSectionTitle.
   ///
   /// In en, this message translates to:
-  /// **'Ready to Transform Your Coaching?'**
+  /// **'Ready to reinvent your coaching method?'**
   String get landingCtaSectionTitle;
 
   /// No description provided for @landingCtaSectionSubtext.
   ///
   /// In en, this message translates to:
-  /// **'Sign in to get started.'**
+  /// **'Join the PowerCoach Studio beta. Manage athletes with modern tools, clean plans, and zero admin friction.'**
   String get landingCtaSectionSubtext;
 
   /// No description provided for @landingCtaSectionButton.
@@ -245,14 +575,26 @@ abstract class AppLocalizations {
   /// No description provided for @landingCtaSectionSubtextLoggedIn.
   ///
   /// In en, this message translates to:
-  /// **'Go to your profile to get started.'**
+  /// **'Go to your profile or dashboard to continue.'**
   String get landingCtaSectionSubtextLoggedIn;
 
   /// No description provided for @landingCtaSectionButtonLoggedIn.
   ///
   /// In en, this message translates to:
-  /// **'Profile'**
+  /// **'Dashboard'**
   String get landingCtaSectionButtonLoggedIn;
+
+  /// No description provided for @landingCtaCreateAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create your free coach account'**
+  String get landingCtaCreateAccount;
+
+  /// No description provided for @landingCtaFootnote.
+  ///
+  /// In en, this message translates to:
+  /// **'No credit card required · Ready in 60 seconds'**
+  String get landingCtaFootnote;
 
   /// No description provided for @landingNavPricing.
   ///
@@ -263,7 +605,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingBetaBadge.
   ///
   /// In en, this message translates to:
-  /// **'Early access — coach beta'**
+  /// **'Early access — Beta Coach Studio v2.4'**
   String get landingBetaBadge;
 
   /// No description provided for @landingCtaStartFree.
@@ -277,6 +619,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'See pricing'**
   String get landingCtaSeePricing;
+
+  /// No description provided for @landingFooterTagline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-first athletic monitoring and planning for coaches, trainers, and demanding athletes.'**
+  String get landingFooterTagline;
+
+  /// No description provided for @landingFooterSystemsOk.
+  ///
+  /// In en, this message translates to:
+  /// **'All systems operational'**
+  String get landingFooterSystemsOk;
 
   /// No description provided for @landingPricingLabel.
   ///
@@ -380,12 +734,6 @@ abstract class AppLocalizations {
   /// **'PDF, Excel & CSV export'**
   String get landingPricingFeatureExportPro;
 
-  /// No description provided for @landingPricingFeatureHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get landingPricingFeatureHevy;
-
   /// No description provided for @landingFaqLabel.
   ///
   /// In en, this message translates to:
@@ -431,7 +779,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqFreeProA.
   ///
   /// In en, this message translates to:
-  /// **'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients, advanced exports, and Hevy integration.'**
+  /// **'Free includes up to 5 clients and all core builder features. Pro unlocks unlimited clients and advanced exports (PDF, Excel, progress CSV).'**
   String get landingFaqFreeProA;
 
   /// No description provided for @landingFaqBetaQ.
@@ -527,8 +875,14 @@ abstract class AppLocalizations {
   /// No description provided for @registrationEmail.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
+  /// **'Professional email'**
   String get registrationEmail;
+
+  /// No description provided for @registrationEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'mario.rossi@powercoach.it'**
+  String get registrationEmailHint;
 
   /// No description provided for @registrationPassword.
   ///
@@ -545,7 +899,7 @@ abstract class AppLocalizations {
   /// No description provided for @registrationSubmit.
   ///
   /// In en, this message translates to:
-  /// **'Sign up'**
+  /// **'Create account and start free trial'**
   String get registrationSubmit;
 
   /// No description provided for @registrationSuccessMessage.
@@ -611,7 +965,7 @@ abstract class AppLocalizations {
   /// No description provided for @registrationErrorPasswordWeak.
   ///
   /// In en, this message translates to:
-  /// **'Choose a stronger password.'**
+  /// **'Min. 8 characters, 1 number, and 1 special character.'**
   String get registrationErrorPasswordWeak;
 
   /// No description provided for @registrationErrorInvalidEmail.
@@ -638,10 +992,16 @@ abstract class AppLocalizations {
   /// **'Registration failed. Please try again.'**
   String get registrationErrorGeneric;
 
+  /// No description provided for @registrationErrorNameEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Required field.'**
+  String get registrationErrorNameEmpty;
+
   /// No description provided for @registrationAlreadyHaveAccount.
   ///
   /// In en, this message translates to:
-  /// **'Already have an account?'**
+  /// **'Already have a coach account?'**
   String get registrationAlreadyHaveAccount;
 
   /// No description provided for @registrationLoginLink.
@@ -653,8 +1013,164 @@ abstract class AppLocalizations {
   /// No description provided for @registrationHeadline.
   ///
   /// In en, this message translates to:
-  /// **'Create your account'**
+  /// **'Create your Coach account'**
   String get registrationHeadline;
+
+  /// No description provided for @registrationEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio'**
+  String get registrationEyebrow;
+
+  /// No description provided for @registrationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Join the scientific programming and athlete management platform.'**
+  String get registrationSubtitle;
+
+  /// No description provided for @registrationTrialBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'14-day free trial · No card required'**
+  String get registrationTrialBadge;
+
+  /// No description provided for @registrationTrustExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'266+ Exercises included'**
+  String get registrationTrustExercises;
+
+  /// No description provided for @registrationTrustOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-First'**
+  String get registrationTrustOffline;
+
+  /// No description provided for @registrationTrustMesocycles.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced mesocycles'**
+  String get registrationTrustMesocycles;
+
+  /// No description provided for @registrationFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First name'**
+  String get registrationFirstName;
+
+  /// No description provided for @registrationFirstNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Mario'**
+  String get registrationFirstNameHint;
+
+  /// No description provided for @registrationLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last name'**
+  String get registrationLastName;
+
+  /// No description provided for @registrationLastNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rossi'**
+  String get registrationLastNameHint;
+
+  /// No description provided for @registrationSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary specialization'**
+  String get registrationSpecialty;
+
+  /// No description provided for @registrationSpecialtyPt.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Trainer'**
+  String get registrationSpecialtyPt;
+
+  /// No description provided for @registrationSpecialtyAthletic.
+  ///
+  /// In en, this message translates to:
+  /// **'Athletic Prep'**
+  String get registrationSpecialtyAthletic;
+
+  /// No description provided for @registrationSpecialtyPowerlifting.
+  ///
+  /// In en, this message translates to:
+  /// **'Powerlifting'**
+  String get registrationSpecialtyPowerlifting;
+
+  /// No description provided for @registrationPasswordRulesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Min. 8 chars · 1 num. · 1 special'**
+  String get registrationPasswordRulesHint;
+
+  /// No description provided for @registrationPasswordSecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Strength:'**
+  String get registrationPasswordSecurity;
+
+  /// No description provided for @registrationPasswordStrengthWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Weak'**
+  String get registrationPasswordStrengthWeak;
+
+  /// No description provided for @registrationPasswordStrengthFair.
+  ///
+  /// In en, this message translates to:
+  /// **'Fair'**
+  String get registrationPasswordStrengthFair;
+
+  /// No description provided for @registrationPasswordStrengthGood.
+  ///
+  /// In en, this message translates to:
+  /// **'Good'**
+  String get registrationPasswordStrengthGood;
+
+  /// No description provided for @registrationPasswordStrengthStrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Strong'**
+  String get registrationPasswordStrengthStrong;
+
+  /// No description provided for @registrationTermsPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'I accept the'**
+  String get registrationTermsPrefix;
+
+  /// No description provided for @registrationTermsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Service'**
+  String get registrationTermsOfService;
+
+  /// No description provided for @registrationTermsMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **'and confirm I have read the'**
+  String get registrationTermsMiddle;
+
+  /// No description provided for @registrationPrivacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get registrationPrivacyPolicy;
+
+  /// No description provided for @registrationAcceptTermsError.
+  ///
+  /// In en, this message translates to:
+  /// **'Please accept the terms to continue.'**
+  String get registrationAcceptTermsError;
+
+  /// No description provided for @registrationOrContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'or sign up with'**
+  String get registrationOrContinueWith;
 
   /// No description provided for @loginTitle.
   ///
@@ -665,14 +1181,26 @@ abstract class AppLocalizations {
   /// No description provided for @loginHeadline.
   ///
   /// In en, this message translates to:
-  /// **'Welcome back!'**
+  /// **'Welcome back, Coach!'**
   String get loginHeadline;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to your workspace to manage athletes, mesocycles, and the biomechanics library.'**
+  String get loginSubtitle;
 
   /// No description provided for @loginEmail.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
+  /// **'Email or Username'**
   String get loginEmail;
+
+  /// No description provided for @loginEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. marco@coachstudio.it'**
+  String get loginEmailHint;
 
   /// No description provided for @loginPassword.
   ///
@@ -683,7 +1211,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginSubmit.
   ///
   /// In en, this message translates to:
-  /// **'Log in'**
+  /// **'Sign in to workspace'**
   String get loginSubmit;
 
   /// No description provided for @loginForgotPassword.
@@ -695,14 +1223,56 @@ abstract class AppLocalizations {
   /// No description provided for @loginNoAccount.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t have an account?'**
+  /// **'Don\'t have a coach account yet?'**
   String get loginNoAccount;
 
   /// No description provided for @loginRegisterLink.
   ///
   /// In en, this message translates to:
-  /// **'Sign up'**
+  /// **'Sign up free'**
   String get loginRegisterLink;
+
+  /// No description provided for @loginTrialChip.
+  ///
+  /// In en, this message translates to:
+  /// **'14-day trial'**
+  String get loginTrialChip;
+
+  /// No description provided for @loginRoleCoach.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach / Trainer'**
+  String get loginRoleCoach;
+
+  /// No description provided for @loginRoleAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete'**
+  String get loginRoleAthlete;
+
+  /// No description provided for @loginAthleteUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete login is not available yet. PowerCoach Studio is built for coaches.'**
+  String get loginAthleteUnavailable;
+
+  /// No description provided for @loginStaySignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay signed in on this device'**
+  String get loginStaySignedIn;
+
+  /// No description provided for @loginStaySignedInOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'(Offline-First)'**
+  String get loginStaySignedInOffline;
+
+  /// No description provided for @loginOrContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'or continue with'**
+  String get loginOrContinueWith;
 
   /// No description provided for @loginErrorInvalidEmail.
   ///
@@ -745,6 +1315,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome back!'**
   String get loginSuccessMessage;
+
+  /// No description provided for @authBackHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to home'**
+  String get authBackHome;
+
+  /// No description provided for @authBackLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to login'**
+  String get authBackLogin;
+
+  /// No description provided for @authEncryptionBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'256-bit encryption active'**
+  String get authEncryptionBadge;
+
+  /// No description provided for @authEncryptionBadgeShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Protected'**
+  String get authEncryptionBadgeShort;
+
+  /// No description provided for @authSocialUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Google/Apple sign-in is not available yet. Use email and password.'**
+  String get authSocialUnavailable;
+
+  /// No description provided for @authFooterCompliance.
+  ///
+  /// In en, this message translates to:
+  /// **'256-bit AES encryption · GDPR compliant · Secure local backup'**
+  String get authFooterCompliance;
 
   /// No description provided for @forgotPasswordTitle.
   ///
@@ -1100,12 +1706,6 @@ abstract class AppLocalizations {
   /// **'Progress CSV export'**
   String get subscriptionCompareProgressExport;
 
-  /// No description provided for @subscriptionCompareHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get subscriptionCompareHevy;
-
   /// No description provided for @subscriptionCompareWorkoutExport.
   ///
   /// In en, this message translates to:
@@ -1400,12 +2000,6 @@ abstract class AppLocalizations {
   /// **'Client progress CSV export is included in PowerCoach Pro.'**
   String get paywallMessageExport;
 
-  /// No description provided for @paywallMessageHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration is included in PowerCoach Pro.'**
-  String get paywallMessageHevy;
-
   /// No description provided for @paywallMessageWorkoutExport.
   ///
   /// In en, this message translates to:
@@ -1529,7 +2123,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices; your Hevy API key is never included.'**
+  /// **'Export or replace all local data for this account as a JSON file — your data stays yours. Use this to move data between devices.'**
   String get settingsBackupSectionSubtitle;
 
   /// No description provided for @settingsBackupExport.
@@ -1601,7 +2195,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupSectionSubtitleWeb.
   ///
   /// In en, this message translates to:
-  /// **'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device; your Hevy API key is never included.'**
+  /// **'Your coach data is stored in this browser — it stays yours. Export a JSON backup regularly so you can restore it or move to another device.'**
   String get settingsBackupSectionSubtitleWeb;
 
   /// No description provided for @settingsBackupErrorInvalidFile.
@@ -1633,12 +2227,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Restore from cloud'**
   String get settingsCloudBackupRestore;
-
-  /// No description provided for @settingsCloudBackupHevyNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Hevy API key stays on this device only and is never included in backups, local or cloud.'**
-  String get settingsCloudBackupHevyNote;
 
   /// No description provided for @settingsCloudBackupUploadSuccess.
   ///
@@ -1748,23 +2336,59 @@ abstract class AppLocalizations {
   /// **'Protect your coach data'**
   String get backupOnboardingTitle;
 
-  /// No description provided for @backupOnboardingMessage.
+  /// No description provided for @backupOnboardingMessageAfterBrand.
   ///
   /// In en, this message translates to:
-  /// **'PowerCoach Studio stores your clients and workout plans on this device. If you clear browser data or sign out, that information is removed unless you have a backup file.'**
-  String get backupOnboardingMessage;
+  /// **' stores clients and workout plans directly on this device ('**
+  String get backupOnboardingMessageAfterBrand;
+
+  /// No description provided for @backupOnboardingMessageAfterOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'). If you clear browser history or switch machines, that information is removed unless you have a backup.'**
+  String get backupOnboardingMessageAfterOffline;
 
   /// No description provided for @backupOnboardingWebHint.
   ///
   /// In en, this message translates to:
-  /// **'We recommend exporting a JSON backup from Settings after your first session and whenever you make important changes.'**
+  /// **'On the web, data stays in this browser’s storage on this device.'**
   String get backupOnboardingWebHint;
 
-  /// No description provided for @backupOnboardingDeskGymHint.
+  /// No description provided for @backupOnboardingCalloutLead.
   ///
   /// In en, this message translates to:
-  /// **'Plan on desktop, then bring the same account to the gym on your phone — a backup lets you carry your data with you, without a cloud account.'**
-  String get backupOnboardingDeskGymHint;
+  /// **'Maximum flexibility between studio and gym floor:'**
+  String get backupOnboardingCalloutLead;
+
+  /// No description provided for @backupOnboardingCalloutBody.
+  ///
+  /// In en, this message translates to:
+  /// **' Plan on desktop at home or in the office, then bring the same archive to the gym on your phone — a simple JSON backup lets you move your data freely, '**
+  String get backupOnboardingCalloutBody;
+
+  /// No description provided for @backupOnboardingCalloutEmphasis.
+  ///
+  /// In en, this message translates to:
+  /// **'without sharing data on unauthorized external cloud servers'**
+  String get backupOnboardingCalloutEmphasis;
+
+  /// No description provided for @backupOnboardingRecommendBefore.
+  ///
+  /// In en, this message translates to:
+  /// **'We recommend exporting a JSON copy from '**
+  String get backupOnboardingRecommendBefore;
+
+  /// No description provided for @backupOnboardingRecommendSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get backupOnboardingRecommendSettings;
+
+  /// No description provided for @backupOnboardingRecommendAfter.
+  ///
+  /// In en, this message translates to:
+  /// **' after every programming block.'**
+  String get backupOnboardingRecommendAfter;
 
   /// No description provided for @backupOnboardingOpenSettings.
   ///
@@ -1783,6 +2407,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get backupOnboardingGotIt;
+
+  /// No description provided for @backupOnboardingCloseSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get backupOnboardingCloseSemantic;
 
   /// No description provided for @customerCreationLocalDataHint.
   ///
@@ -1835,7 +2465,7 @@ abstract class AppLocalizations {
   /// No description provided for @exerciseLibraryImportSourceDefaultSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Load 200 common exercises with variants and hierarchy.'**
+  /// **'Load 266 common exercises with variants and hierarchy (incl. powerlifting).'**
   String get exerciseLibraryImportSourceDefaultSubtitle;
 
   /// No description provided for @exerciseLibraryImportSourceCustom.
@@ -2018,6 +2648,54 @@ abstract class AppLocalizations {
   /// **'Add variant'**
   String get exerciseLibraryAddVariant;
 
+  /// No description provided for @exerciseLibrarySearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name…'**
+  String get exerciseLibrarySearchHint;
+
+  /// No description provided for @exerciseLibrarySearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises match your search.'**
+  String get exerciseLibrarySearchEmpty;
+
+  /// No description provided for @exerciseLibraryVariantCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 variants} =1{1 variant} other{{count} variants}}'**
+  String exerciseLibraryVariantCount(int count);
+
+  /// No description provided for @exerciseLibrarySortAlphabetical.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort: Alphabetical (A-Z)'**
+  String get exerciseLibrarySortAlphabetical;
+
+  /// No description provided for @exerciseLibrarySortByVariantCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Variant count'**
+  String get exerciseLibrarySortByVariantCount;
+
+  /// No description provided for @exerciseLibraryNewFolder.
+  ///
+  /// In en, this message translates to:
+  /// **'New folder'**
+  String get exerciseLibraryNewFolder;
+
+  /// No description provided for @exerciseLibraryExerciseCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} exercises'**
+  String exerciseLibraryExerciseCount(int count);
+
+  /// No description provided for @exerciseLibraryFolderCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} folders'**
+  String exerciseLibraryFolderCount(int count);
+
   /// No description provided for @placeholderBackToDashboard.
   ///
   /// In en, this message translates to:
@@ -2033,7 +2711,7 @@ abstract class AppLocalizations {
   /// No description provided for @customersEmptyMessage.
   ///
   /// In en, this message translates to:
-  /// **'Let\'s grow your studio! Start by adding your first client to track their progress and manage their workouts.'**
+  /// **'Let\'s grow your studio! Start by adding your first client to track progress, set up mesocycles, and manage workouts.'**
   String get customersEmptyMessage;
 
   /// No description provided for @customersAddCustomer.
@@ -2045,7 +2723,7 @@ abstract class AppLocalizations {
   /// No description provided for @customersAddFirstClient.
   ///
   /// In en, this message translates to:
-  /// **'Add Your First Client'**
+  /// **'Add your first client'**
   String get customersAddFirstClient;
 
   /// No description provided for @customersImportContacts.
@@ -2066,10 +2744,226 @@ abstract class AppLocalizations {
   /// **'New customer'**
   String get customersNewCustomer;
 
+  /// No description provided for @customersSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name…'**
+  String get customersSearchHint;
+
+  /// No description provided for @customersFilterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get customersFilterAll;
+
+  /// No description provided for @customersFilterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get customersFilterActive;
+
+  /// No description provided for @customersFilterPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get customersFilterPaused;
+
+  /// No description provided for @customersFilterUnassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get customersFilterUnassigned;
+
+  /// No description provided for @customersFilterCount.
+  ///
+  /// In en, this message translates to:
+  /// **'({count})'**
+  String customersFilterCount(int count);
+
+  /// No description provided for @customersEmptyStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile & Target'**
+  String get customersEmptyStep1Title;
+
+  /// No description provided for @customersEmptyStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter anthropometrics, maxes, and primary goals (Hypertrophy, Strength, Cut).'**
+  String get customersEmptyStep1Body;
+
+  /// No description provided for @customersEmptyStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign a Plan'**
+  String get customersEmptyStep2Title;
+
+  /// No description provided for @customersEmptyStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a custom mesocycle or pick a template from the Library.'**
+  String get customersEmptyStep2Body;
+
+  /// No description provided for @customersEmptyStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Loads & RPE'**
+  String get customersEmptyStep3Title;
+
+  /// No description provided for @customersEmptyStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'View training logs, tonnage, and progressions in real time.'**
+  String get customersEmptyStep3Body;
+
+  /// No description provided for @customersOfflineFirstFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline-First architecture · data saved locally on this device'**
+  String get customersOfflineFirstFooter;
+
+  /// No description provided for @customersSearchEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No clients match these filters.'**
+  String get customersSearchEmpty;
+
+  /// No description provided for @customersMetricTotalAthletes.
+  ///
+  /// In en, this message translates to:
+  /// **'Total athletes'**
+  String get customersMetricTotalAthletes;
+
+  /// No description provided for @customersMetricActiveCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} active'**
+  String customersMetricActiveCount(int count);
+
+  /// No description provided for @customersMetricPlansInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans in progress'**
+  String get customersMetricPlansInProgress;
+
+  /// No description provided for @customersMetricPlansSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'with a plan'**
+  String get customersMetricPlansSubtitle;
+
+  /// No description provided for @customersMetricPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get customersMetricPaused;
+
+  /// No description provided for @customersMetricPausedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'archived'**
+  String get customersMetricPausedSubtitle;
+
+  /// No description provided for @customersMetricNeedsUpdate.
+  ///
+  /// In en, this message translates to:
+  /// **'Needs update'**
+  String get customersMetricNeedsUpdate;
+
+  /// No description provided for @customersMetricNeedsUpdateSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'due soon'**
+  String get customersMetricNeedsUpdateSubtitle;
+
+  /// No description provided for @customersSortPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort:'**
+  String get customersSortPrefix;
+
+  /// No description provided for @customersSortRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Most recent'**
+  String get customersSortRecent;
+
+  /// No description provided for @customersSortNameAsc.
+  ///
+  /// In en, this message translates to:
+  /// **'Name A-Z'**
+  String get customersSortNameAsc;
+
+  /// No description provided for @customersShownOfTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {shown} of {total} athletes'**
+  String customersShownOfTotal(int shown, int total);
+
+  /// No description provided for @customersRowAgeYears.
+  ///
+  /// In en, this message translates to:
+  /// **'{age} years'**
+  String customersRowAgeYears(int age);
+
+  /// No description provided for @customersRowGoalEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get customersRowGoalEmpty;
+
+  /// No description provided for @customersRowNoPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No plan assigned'**
+  String get customersRowNoPlan;
+
+  /// No description provided for @customersRowPlanUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last plan update: {date}'**
+  String customersRowPlanUpdated(String date);
+
+  /// No description provided for @customersRowStatusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get customersRowStatusActive;
+
+  /// No description provided for @customersRowStatusPaused.
+  ///
+  /// In en, this message translates to:
+  /// **'Paused'**
+  String get customersRowStatusPaused;
+
+  /// No description provided for @customersRowStatusUnassigned.
+  ///
+  /// In en, this message translates to:
+  /// **'Unassigned'**
+  String get customersRowStatusUnassigned;
+
+  /// No description provided for @customersRowActionOpenPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Open plan'**
+  String get customersRowActionOpenPlan;
+
+  /// No description provided for @customersRowActionAssign.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Assign'**
+  String get customersRowActionAssign;
+
+  /// No description provided for @customersRowActionOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Open'**
+  String get customersRowActionOpen;
+
   /// No description provided for @customerName.
   ///
   /// In en, this message translates to:
-  /// **'Name'**
+  /// **'Full name'**
   String get customerName;
 
   /// No description provided for @customerNameRequired.
@@ -2078,17 +2972,41 @@ abstract class AppLocalizations {
   /// **'Name is required'**
   String get customerNameRequired;
 
+  /// No description provided for @customerNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Alex Johnson'**
+  String get customerNameHint;
+
   /// No description provided for @customerEmail.
   ///
   /// In en, this message translates to:
-  /// **'Email'**
+  /// **'Email address'**
   String get customerEmail;
+
+  /// No description provided for @customerEmailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'alex.johnson@example.com'**
+  String get customerEmailHint;
 
   /// No description provided for @customerPhone.
   ///
   /// In en, this message translates to:
-  /// **'Phone'**
+  /// **'Phone / WhatsApp'**
   String get customerPhone;
+
+  /// No description provided for @customerPhoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'334 123 4567'**
+  String get customerPhoneHint;
+
+  /// No description provided for @customerPhoneCountryPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'+39'**
+  String get customerPhoneCountryPrefix;
 
   /// No description provided for @customerDateOfBirth.
   ///
@@ -2096,35 +3014,221 @@ abstract class AppLocalizations {
   /// **'Date of birth'**
   String get customerDateOfBirth;
 
+  /// No description provided for @customerEstimatedAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated age'**
+  String get customerEstimatedAge;
+
+  /// No description provided for @customerEstimatedAgeUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'years'**
+  String get customerEstimatedAgeUnit;
+
   /// No description provided for @customerHeight.
   ///
   /// In en, this message translates to:
-  /// **'Height (cm)'**
+  /// **'Height'**
   String get customerHeight;
+
+  /// No description provided for @customerHeightHint.
+  ///
+  /// In en, this message translates to:
+  /// **'180'**
+  String get customerHeightHint;
+
+  /// No description provided for @customerHeightUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'cm'**
+  String get customerHeightUnit;
 
   /// No description provided for @customerWeight.
   ///
   /// In en, this message translates to:
-  /// **'Weight (kg)'**
+  /// **'Starting weight'**
   String get customerWeight;
+
+  /// No description provided for @customerWeightHint.
+  ///
+  /// In en, this message translates to:
+  /// **'78.5'**
+  String get customerWeightHint;
+
+  /// No description provided for @customerWeightUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'kg'**
+  String get customerWeightUnit;
 
   /// No description provided for @customerNotes.
   ///
   /// In en, this message translates to:
-  /// **'Notes'**
+  /// **'Coach notes, injuries, or limitations'**
   String get customerNotes;
+
+  /// No description provided for @customerNotesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional'**
+  String get customerNotesOptional;
+
+  /// No description provided for @customerNotesHintCreation.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Prior right shoulder cuff discomfort; prefers training 4 days/week…'**
+  String get customerNotesHintCreation;
 
   /// No description provided for @customerGoals.
   ///
   /// In en, this message translates to:
-  /// **'Goals'**
+  /// **'Primary goal'**
   String get customerGoals;
+
+  /// No description provided for @customerGoalHypertrophy.
+  ///
+  /// In en, this message translates to:
+  /// **'Hypertrophy'**
+  String get customerGoalHypertrophy;
+
+  /// No description provided for @customerGoalHypertrophySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Muscle Gain'**
+  String get customerGoalHypertrophySubtitle;
+
+  /// No description provided for @customerGoalStrength.
+  ///
+  /// In en, this message translates to:
+  /// **'Max Strength'**
+  String get customerGoalStrength;
+
+  /// No description provided for @customerGoalStrengthSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Powerlifting'**
+  String get customerGoalStrengthSubtitle;
+
+  /// No description provided for @customerGoalRecomp.
+  ///
+  /// In en, this message translates to:
+  /// **'Recomposition'**
+  String get customerGoalRecomp;
+
+  /// No description provided for @customerGoalRecompSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Fat loss & tone'**
+  String get customerGoalRecompSubtitle;
+
+  /// No description provided for @customerGoalAthletic.
+  ///
+  /// In en, this message translates to:
+  /// **'Athletic prep'**
+  String get customerGoalAthletic;
+
+  /// No description provided for @customerGoalAthleticSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sport-specific'**
+  String get customerGoalAthleticSubtitle;
+
+  /// No description provided for @customerExperienceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience level'**
+  String get customerExperienceLabel;
+
+  /// No description provided for @customerExperienceBeginner.
+  ///
+  /// In en, this message translates to:
+  /// **'Beginner (0–1 year)'**
+  String get customerExperienceBeginner;
+
+  /// No description provided for @customerExperienceIntermediate.
+  ///
+  /// In en, this message translates to:
+  /// **'Intermediate (1–3 years)'**
+  String get customerExperienceIntermediate;
+
+  /// No description provided for @customerExperienceAdvanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced (3+ years of consistent training)'**
+  String get customerExperienceAdvanced;
+
+  /// No description provided for @customerExperienceElite.
+  ///
+  /// In en, this message translates to:
+  /// **'Competitive / elite athlete'**
+  String get customerExperienceElite;
+
+  /// No description provided for @customerExperienceNotesPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Experience: {level}'**
+  String customerExperienceNotesPrefix(String level);
+
+  /// No description provided for @customerCreationHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Start a new journey'**
+  String get customerCreationHeroTitle;
+
+  /// No description provided for @customerCreationHeroSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your athlete’s profile and goals to start planning workouts and tracking progress.'**
+  String get customerCreationHeroSubtitle;
+
+  /// No description provided for @customerCreationBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete profile'**
+  String get customerCreationBadge;
+
+  /// No description provided for @customerCreationHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio · Creation & onboarding'**
+  String get customerCreationHeaderSubtitle;
+
+  /// No description provided for @customerCreationStepProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Step 1 of 2'**
+  String get customerCreationStepProgress;
+
+  /// No description provided for @customerCreationSectionAnagrafica.
+  ///
+  /// In en, this message translates to:
+  /// **'1. Personal details'**
+  String get customerCreationSectionAnagrafica;
+
+  /// No description provided for @customerCreationSectionPhysical.
+  ///
+  /// In en, this message translates to:
+  /// **'2. Physical & biometric data'**
+  String get customerCreationSectionPhysical;
+
+  /// No description provided for @customerCreationSectionGoals.
+  ///
+  /// In en, this message translates to:
+  /// **'3. Goals & training profile'**
+  String get customerCreationSectionGoals;
 
   /// No description provided for @customerSave.
   ///
   /// In en, this message translates to:
   /// **'Save'**
   String get customerSave;
+
+  /// No description provided for @customerSaveAndCreatePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Save and create plan'**
+  String get customerSaveAndCreatePlan;
 
   /// No description provided for @customerCancel.
   ///
@@ -3466,6 +4570,258 @@ abstract class AppLocalizations {
   /// **'No weeks yet. Add a week above.'**
   String get workoutBuilderNoWeeksYet;
 
+  /// No description provided for @workoutPhaseAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Phase'**
+  String get workoutPhaseAdd;
+
+  /// No description provided for @workoutPhaseDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate Phase'**
+  String get workoutPhaseDuplicate;
+
+  /// No description provided for @workoutPhaseSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase Settings'**
+  String get workoutPhaseSettings;
+
+  /// No description provided for @workoutPhaseEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No phases yet'**
+  String get workoutPhaseEmptyTitle;
+
+  /// No description provided for @workoutPhaseEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a phase to start structuring your training weeks.'**
+  String get workoutPhaseEmptyMessage;
+
+  /// No description provided for @workoutPhaseNumbered.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase {n}'**
+  String workoutPhaseNumbered(int n);
+
+  /// No description provided for @workoutPhaseWeeksCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 Weeks} =1{1 Week} other{{count} Weeks}}'**
+  String workoutPhaseWeeksCount(int count);
+
+  /// No description provided for @workoutPhaseObjectiveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Objective'**
+  String get workoutPhaseObjectiveLabel;
+
+  /// No description provided for @workoutPhaseObjectiveHint.
+  ///
+  /// In en, this message translates to:
+  /// **'E.g. Volume accumulation, squat technique…'**
+  String get workoutPhaseObjectiveHint;
+
+  /// No description provided for @workoutPhaseNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase name'**
+  String get workoutPhaseNameLabel;
+
+  /// No description provided for @workoutPhaseDurationLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Duration'**
+  String get workoutPhaseDurationLabel;
+
+  /// No description provided for @workoutPhaseFrequencyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Frequency'**
+  String get workoutPhaseFrequencyLabel;
+
+  /// No description provided for @workoutPhaseFrequencyValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 sessions/wk} =1{1 session/wk} other{{count} sessions/wk}}'**
+  String workoutPhaseFrequencyValue(int count);
+
+  /// No description provided for @workoutPhaseProgressLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Progress'**
+  String get workoutPhaseProgressLabel;
+
+  /// No description provided for @workoutPhaseProgressValue.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}%'**
+  String workoutPhaseProgressValue(int percent);
+
+  /// No description provided for @workoutPhaseAddWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Add week to phase'**
+  String get workoutPhaseAddWeek;
+
+  /// No description provided for @workoutPhaseEditSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit session'**
+  String get workoutPhaseEditSession;
+
+  /// No description provided for @workoutPhaseCreateSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new session'**
+  String get workoutPhaseCreateSession;
+
+  /// No description provided for @workoutPhaseCreateSessionForWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a new session for Week {n}'**
+  String workoutPhaseCreateSessionForWeek(int n);
+
+  /// No description provided for @workoutPhaseAddDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Day'**
+  String get workoutPhaseAddDay;
+
+  /// No description provided for @workoutPhaseMoreExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String workoutPhaseMoreExercises(int count);
+
+  /// No description provided for @workoutPhaseNoExercisesYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises yet'**
+  String get workoutPhaseNoExercisesYet;
+
+  /// No description provided for @workoutPhaseSetsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 sets total} =1{1 set total} other{{count} sets total}}'**
+  String workoutPhaseSetsTotal(int count);
+
+  /// No description provided for @workoutPhaseWeeksCountShort.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{0 wks} =1{1 wk} other{{count} wks}}'**
+  String workoutPhaseWeeksCountShort(int count);
+
+  /// No description provided for @workoutPhaseExpandWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Expand week'**
+  String get workoutPhaseExpandWeek;
+
+  /// No description provided for @workoutPhaseCollapseWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse week'**
+  String get workoutPhaseCollapseWeek;
+
+  /// No description provided for @workoutPhaseSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase settings'**
+  String get workoutPhaseSettingsTitle;
+
+  /// No description provided for @workoutPhaseDeleteTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this phase?'**
+  String get workoutPhaseDeleteTitle;
+
+  /// No description provided for @workoutPhaseDeleteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This phase and all of its weeks will be removed. This cannot be undone.'**
+  String get workoutPhaseDeleteMessage;
+
+  /// No description provided for @workoutPhaseDeleteMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete phase'**
+  String get workoutPhaseDeleteMenu;
+
+  /// No description provided for @workoutPhaseCustomNameTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom phase'**
+  String get workoutPhaseCustomNameTitle;
+
+  /// No description provided for @workoutPhasePresetAccumulo.
+  ///
+  /// In en, this message translates to:
+  /// **'Accumulation'**
+  String get workoutPhasePresetAccumulo;
+
+  /// No description provided for @workoutPhasePresetIntensificazione.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensification'**
+  String get workoutPhasePresetIntensificazione;
+
+  /// No description provided for @workoutPhasePresetPicco.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak'**
+  String get workoutPhasePresetPicco;
+
+  /// No description provided for @workoutPhasePresetDeload.
+  ///
+  /// In en, this message translates to:
+  /// **'Deload'**
+  String get workoutPhasePresetDeload;
+
+  /// No description provided for @workoutPhasePresetMassa.
+  ///
+  /// In en, this message translates to:
+  /// **'Mass'**
+  String get workoutPhasePresetMassa;
+
+  /// No description provided for @workoutPhasePresetDefinizione.
+  ///
+  /// In en, this message translates to:
+  /// **'Definition'**
+  String get workoutPhasePresetDefinizione;
+
+  /// No description provided for @workoutPhasePresetVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get workoutPhasePresetVolume;
+
+  /// No description provided for @workoutPhasePresetAcclimatazione.
+  ///
+  /// In en, this message translates to:
+  /// **'Acclimation'**
+  String get workoutPhasePresetAcclimatazione;
+
+  /// No description provided for @workoutPhasePresetGeneral.
+  ///
+  /// In en, this message translates to:
+  /// **'General'**
+  String get workoutPhasePresetGeneral;
+
+  /// No description provided for @workoutPhasePresetCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom…'**
+  String get workoutPhasePresetCustom;
+
+  /// No description provided for @workoutPhaseRemoved.
+  ///
+  /// In en, this message translates to:
+  /// **'Phase removed'**
+  String get workoutPhaseRemoved;
+
   /// No description provided for @workoutBuilderSuperSetHeading.
   ///
   /// In en, this message translates to:
@@ -3507,6 +4863,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add exercise to superset'**
   String get builderSupersetAddExercise;
+
+  /// No description provided for @builderDensityAddExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise to group'**
+  String get builderDensityAddExercise;
+
+  /// No description provided for @workoutBuilderAssignedPlanBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned plan · {customerName}'**
+  String workoutBuilderAssignedPlanBadge(String customerName);
+
+  /// No description provided for @workoutBuilderSessionEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises in this session'**
+  String get workoutBuilderSessionEmptyTitle;
+
+  /// No description provided for @workoutSessionEditTitleWithDay.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Session · {dayName}'**
+  String workoutSessionEditTitleWithDay(String dayName);
+
+  /// No description provided for @workoutSessionSaveChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Save changes'**
+  String get workoutSessionSaveChanges;
+
+  /// No description provided for @workoutSessionHistoryShort.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get workoutSessionHistoryShort;
+
+  /// No description provided for @workoutSessionDuplicateShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get workoutSessionDuplicateShort;
+
+  /// No description provided for @workoutSessionAssignedPlanPill.
+  ///
+  /// In en, this message translates to:
+  /// **'Assigned plan: {customerName}'**
+  String workoutSessionAssignedPlanPill(String customerName);
+
+  /// No description provided for @workoutSessionMetricExercises.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get workoutSessionMetricExercises;
+
+  /// No description provided for @workoutSessionMetricTotalSets.
+  ///
+  /// In en, this message translates to:
+  /// **'Total sets'**
+  String get workoutSessionMetricTotalSets;
+
+  /// No description provided for @workoutSessionMetricSetsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} sets'**
+  String workoutSessionMetricSetsCount(int count);
+
+  /// No description provided for @workoutSessionMetricEstimatedVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated volume'**
+  String get workoutSessionMetricEstimatedVolume;
+
+  /// No description provided for @workoutSessionMetricAvgRest.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg. rest'**
+  String get workoutSessionMetricAvgRest;
+
+  /// No description provided for @workoutSessionMetricUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'—'**
+  String get workoutSessionMetricUnavailable;
+
+  /// No description provided for @workoutSessionVolumeKg.
+  ///
+  /// In en, this message translates to:
+  /// **'{kg} kg'**
+  String workoutSessionVolumeKg(String kg);
+
+  /// No description provided for @workoutSessionAddFromLibrary.
+  ///
+  /// In en, this message translates to:
+  /// **'Add exercise from library'**
+  String get workoutSessionAddFromLibrary;
+
+  /// No description provided for @workoutSessionCreateSupersetCircuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Superset / Circuit'**
+  String get workoutSessionCreateSupersetCircuit;
+
+  /// No description provided for @workoutSessionAutosaveActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft autosave active'**
+  String get workoutSessionAutosaveActive;
+
+  /// No description provided for @workoutSessionAthletePreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete plan preview →'**
+  String get workoutSessionAthletePreview;
+
+  /// No description provided for @workoutSessionTechnicalNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical notes'**
+  String get workoutSessionTechnicalNotes;
+
+  /// No description provided for @workoutSessionTechnicalNotesForAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical notes for athlete ({name}):'**
+  String workoutSessionTechnicalNotesForAthlete(String name);
+
+  /// No description provided for @workoutSessionSavedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved'**
+  String get workoutSessionSavedHint;
+
+  /// No description provided for @workoutSessionDuplicateLastSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate last set'**
+  String get workoutSessionDuplicateLastSet;
+
+  /// No description provided for @workoutSessionDuplicateLastSetN.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate last set (Set {n})'**
+  String workoutSessionDuplicateLastSetN(int n);
+
+  /// No description provided for @workoutSessionColSet.
+  ///
+  /// In en, this message translates to:
+  /// **'SET'**
+  String get workoutSessionColSet;
+
+  /// No description provided for @workoutSessionColReps.
+  ///
+  /// In en, this message translates to:
+  /// **'REPS'**
+  String get workoutSessionColReps;
+
+  /// No description provided for @workoutSessionColLoadRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'LOAD / RPE'**
+  String get workoutSessionColLoadRpe;
+
+  /// No description provided for @workoutSessionColNote.
+  ///
+  /// In en, this message translates to:
+  /// **'NOTES'**
+  String get workoutSessionColNote;
 
   /// No description provided for @builderSupersetEmpty.
   ///
@@ -4330,11 +5854,29 @@ abstract class AppLocalizations {
   /// **'Date'**
   String get measurementDate;
 
+  /// No description provided for @measurementDateDetected.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement date'**
+  String get measurementDateDetected;
+
+  /// No description provided for @measurementToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get measurementToday;
+
   /// No description provided for @measurement1RM.
   ///
   /// In en, this message translates to:
   /// **'1RM (kg)'**
   String get measurement1RM;
+
+  /// No description provided for @measurement1RMSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated or tested 1RM (kg)'**
+  String get measurement1RMSection;
 
   /// No description provided for @measurementSquat.
   ///
@@ -4353,6 +5895,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Deadlift'**
   String get measurementDeadlift;
+
+  /// No description provided for @measurementSbdTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'SBD total'**
+  String get measurementSbdTotal;
+
+  /// No description provided for @measurementSbdEstimated.
+  ///
+  /// In en, this message translates to:
+  /// **'Estimated SBD total'**
+  String get measurementSbdEstimated;
+
+  /// No description provided for @measurementBodyComp.
+  ///
+  /// In en, this message translates to:
+  /// **'Body composition'**
+  String get measurementBodyComp;
+
+  /// No description provided for @measurementFormSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Update 1RM loads, skinfolds, and body metrics'**
+  String get measurementFormSubtitle;
+
+  /// No description provided for @measurementDeltaUnchanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Unchanged'**
+  String get measurementDeltaUnchanged;
 
   /// No description provided for @measurementSkinfolds.
   ///
@@ -4515,6 +6087,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'View history'**
   String get measurementHistoryOpen;
+
+  /// No description provided for @measurementHistoryOpenFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Open full history'**
+  String get measurementHistoryOpenFull;
+
+  /// No description provided for @measurementHistoryRange30d.
+  ///
+  /// In en, this message translates to:
+  /// **'30d'**
+  String get measurementHistoryRange30d;
+
+  /// No description provided for @measurementHistoryRange3m.
+  ///
+  /// In en, this message translates to:
+  /// **'3m'**
+  String get measurementHistoryRange3m;
+
+  /// No description provided for @measurementHistoryRange6m.
+  ///
+  /// In en, this message translates to:
+  /// **'6m'**
+  String get measurementHistoryRange6m;
+
+  /// No description provided for @measurementHistoryRangeAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get measurementHistoryRangeAll;
+
+  /// No description provided for @measurementHistoryCurrentValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Current value'**
+  String get measurementHistoryCurrentValue;
+
+  /// No description provided for @measurementHistoryRegistered.
+  ///
+  /// In en, this message translates to:
+  /// **'Registered measurements'**
+  String get measurementHistoryRegistered;
 
   /// No description provided for @customerNotesTitle.
   ///
@@ -5002,10 +6616,16 @@ abstract class AppLocalizations {
   /// **'Your last backup is over 7 days old. Export or upload a recent copy for safety.'**
   String get dashboardBackupReminderMessage;
 
+  /// No description provided for @dashboardBackupReminderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Protect technical sheets, progressions, and max tests for your athletes.'**
+  String get dashboardBackupReminderSubtitle;
+
   /// No description provided for @dashboardBackupReminderCta.
   ///
   /// In en, this message translates to:
-  /// **'Open backup settings'**
+  /// **'Open backup in settings →'**
   String get dashboardBackupReminderCta;
 
   /// No description provided for @dashboardBackupReminderSnooze.
@@ -5013,6 +6633,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remind me in 3 days'**
   String get dashboardBackupReminderSnooze;
+
+  /// No description provided for @dashboardBackupReminderDismissSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss reminder'**
+  String get dashboardBackupReminderDismissSemantic;
 
   /// No description provided for @dashboardLoadError.
   ///
@@ -5122,6 +6748,144 @@ abstract class AppLocalizations {
   /// **'Programs that may need an update'**
   String get dashboardSemanticStaleList;
 
+  /// No description provided for @dashboardCoachStudioBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach Studio'**
+  String get dashboardCoachStudioBadge;
+
+  /// No description provided for @dashboardMetricAthletes.
+  ///
+  /// In en, this message translates to:
+  /// **'Athletes followed'**
+  String get dashboardMetricAthletes;
+
+  /// No description provided for @dashboardMetricActivePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Active plans'**
+  String get dashboardMetricActivePlans;
+
+  /// No description provided for @dashboardMetricWeeklyUpdates.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly updates'**
+  String get dashboardMetricWeeklyUpdates;
+
+  /// No description provided for @dashboardMetricCoachAttention.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach attention'**
+  String get dashboardMetricCoachAttention;
+
+  /// No description provided for @dashboardMetricAlertsSuffix.
+  ///
+  /// In en, this message translates to:
+  /// **'alerts'**
+  String get dashboardMetricAlertsSuffix;
+
+  /// No description provided for @dashboardTodayEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No sessions or reminders planned for this date. Open the agenda or gym mode.'**
+  String get dashboardTodayEmptyHint;
+
+  /// No description provided for @dashboardOpenAgenda.
+  ///
+  /// In en, this message translates to:
+  /// **'Open agenda'**
+  String get dashboardOpenAgenda;
+
+  /// No description provided for @dashboardCoachToolsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} tools available'**
+  String dashboardCoachToolsAvailable(int count);
+
+  /// No description provided for @dashboardAttentionLocalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data stays stored on this device.'**
+  String get dashboardAttentionLocalHint;
+
+  /// No description provided for @dashboardNoCustomersWithoutPlanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No athletes waiting for a first plan assignment.'**
+  String get dashboardNoCustomersWithoutPlanHint;
+
+  /// No description provided for @dashboardNoPlanAllAssignedBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'100% assigned'**
+  String get dashboardNoPlanAllAssignedBadge;
+
+  /// No description provided for @dashboardStaleWindowBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'{days}-day window'**
+  String dashboardStaleWindowBadge(int days);
+
+  /// No description provided for @dashboardNoStalePlansHint.
+  ///
+  /// In en, this message translates to:
+  /// **'No programs older than the {days}-day refresh window.'**
+  String dashboardNoStalePlansHint(int days);
+
+  /// No description provided for @dashboardShortcutsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Management shortcuts'**
+  String get dashboardShortcutsTitle;
+
+  /// No description provided for @dashboardShortcutLibrarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises and folders'**
+  String get dashboardShortcutLibrarySubtitle;
+
+  /// No description provided for @dashboardShortcutTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans & templates'**
+  String get dashboardShortcutTemplates;
+
+  /// No description provided for @dashboardShortcutTemplatesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready-made models'**
+  String get dashboardShortcutTemplatesSubtitle;
+
+  /// No description provided for @dashboardShortcutNewAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'New athlete'**
+  String get dashboardShortcutNewAthlete;
+
+  /// No description provided for @dashboardShortcutNewAthleteSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile and plan'**
+  String get dashboardShortcutNewAthleteSubtitle;
+
+  /// No description provided for @dashboardShortcutSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and local data'**
+  String get dashboardShortcutSettingsSubtitle;
+
+  /// No description provided for @dashboardCreateWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'New workout'**
+  String get dashboardCreateWorkout;
+
+  /// No description provided for @dashboardOfflineFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach Studio · Offline-first athletic monitoring and planning.'**
+  String get dashboardOfflineFooter;
+
   /// No description provided for @customerEditProfile.
   ///
   /// In en, this message translates to:
@@ -5151,6 +6915,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Muscle Mass'**
   String get customerMuscleMass;
+
+  /// No description provided for @customerBackToList.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to customers'**
+  String get customerBackToList;
+
+  /// No description provided for @customerBiometricParamsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key biometric parameters'**
+  String get customerBiometricParamsTitle;
+
+  /// No description provided for @customerRegisterNewMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Record new measurement'**
+  String get customerRegisterNewMeasurement;
+
+  /// No description provided for @customerJourneyStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey start'**
+  String get customerJourneyStart;
+
+  /// No description provided for @customerLastCheckIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Last check-in'**
+  String get customerLastCheckIn;
+
+  /// No description provided for @customerIdChip.
+  ///
+  /// In en, this message translates to:
+  /// **'ID: #{id}'**
+  String customerIdChip(String id);
+
+  /// No description provided for @customerAgeWithDob.
+  ///
+  /// In en, this message translates to:
+  /// **'{age} years ({dob})'**
+  String customerAgeWithDob(int age, String dob);
 
   /// No description provided for @customerOverviewNoMeasurements.
   ///
@@ -5607,198 +7413,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Just now'**
   String get updatedJustNow;
-
-  /// No description provided for @exerciseLibraryTabHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy'**
-  String get exerciseLibraryTabHevy;
-
-  /// No description provided for @exerciseLibraryImportSourceHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync full Hevy catalog'**
-  String get exerciseLibraryImportSourceHevy;
-
-  /// No description provided for @exerciseLibraryImportSourceHevySubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Import all exercises from your Hevy Pro account with pre-mapped IDs.'**
-  String get exerciseLibraryImportSourceHevySubtitle;
-
-  /// No description provided for @hevySettingsSectionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration'**
-  String get hevySettingsSectionTitle;
-
-  /// No description provided for @hevySettingsSectionSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Requires Hevy Pro. API key from hevy.com/settings (Developer).'**
-  String get hevySettingsSectionSubtitle;
-
-  /// No description provided for @hevySettingsApiKeyLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy API key'**
-  String get hevySettingsApiKeyLabel;
-
-  /// No description provided for @hevySettingsApiKeyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste your API key'**
-  String get hevySettingsApiKeyHint;
-
-  /// No description provided for @hevySettingsSaveKey.
-  ///
-  /// In en, this message translates to:
-  /// **'Save key'**
-  String get hevySettingsSaveKey;
-
-  /// No description provided for @hevySettingsTestConnection.
-  ///
-  /// In en, this message translates to:
-  /// **'Test connection'**
-  String get hevySettingsTestConnection;
-
-  /// No description provided for @hevySettingsSyncCatalog.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync all exercises'**
-  String get hevySettingsSyncCatalog;
-
-  /// No description provided for @hevySettingsKeySaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy API key saved.'**
-  String get hevySettingsKeySaved;
-
-  /// No description provided for @hevySettingsTestSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Connected to Hevy.'**
-  String get hevySettingsTestSuccess;
-
-  /// No description provided for @hevySettingsTestFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy connection failed: {message}'**
-  String hevySettingsTestFailed(String message);
-
-  /// No description provided for @hevyImportInProgress.
-  ///
-  /// In en, this message translates to:
-  /// **'Syncing Hevy catalog…'**
-  String get hevyImportInProgress;
-
-  /// No description provided for @hevyImportSuccessCount.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy sync complete: {count} new items.'**
-  String hevyImportSuccessCount(int count);
-
-  /// No description provided for @hevyImportFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy sync failed: {message}'**
-  String hevyImportFailed(String message);
-
-  /// No description provided for @workoutExportHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Export day to Hevy'**
-  String get workoutExportHevy;
-
-  /// No description provided for @hevyExportSheetTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Export to Hevy'**
-  String get hevyExportSheetTitle;
-
-  /// No description provided for @hevyExportConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Create routine on Hevy'**
-  String get hevyExportConfirm;
-
-  /// No description provided for @hevyExportConfirmRoutine.
-  ///
-  /// In en, this message translates to:
-  /// **'Create routine on Hevy'**
-  String get hevyExportConfirmRoutine;
-
-  /// No description provided for @hevyExportConfirmWorkout.
-  ///
-  /// In en, this message translates to:
-  /// **'Create workout on Hevy'**
-  String get hevyExportConfirmWorkout;
-
-  /// No description provided for @hevyExportWorkoutHint.
-  ///
-  /// In en, this message translates to:
-  /// **'The workout is logged in your Hevy diary starting now, with an estimated end in 90 minutes.'**
-  String get hevyExportWorkoutHint;
-
-  /// No description provided for @hevyExportSuccessRoutine.
-  ///
-  /// In en, this message translates to:
-  /// **'Routine created on Hevy.'**
-  String get hevyExportSuccessRoutine;
-
-  /// No description provided for @hevyExportSuccessWorkout.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout created on Hevy.'**
-  String get hevyExportSuccessWorkout;
-
-  /// No description provided for @hevyExportAllMapped.
-  ///
-  /// In en, this message translates to:
-  /// **'All exercises are mapped. Ready to export.'**
-  String get hevyExportAllMapped;
-
-  /// No description provided for @hevyExportUnmappedIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} exercises need a Hevy mapping before export.'**
-  String hevyExportUnmappedIntro(int count);
-
-  /// No description provided for @hevyExportMapExercise.
-  ///
-  /// In en, this message translates to:
-  /// **'Map'**
-  String get hevyExportMapExercise;
-
-  /// No description provided for @hevyExportUnmappedBlock.
-  ///
-  /// In en, this message translates to:
-  /// **'Map all exercises before exporting.'**
-  String get hevyExportUnmappedBlock;
-
-  /// No description provided for @hevyExportSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Routine created on Hevy.'**
-  String get hevyExportSuccess;
-
-  /// No description provided for @hevyExportError.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy export failed. Try again.'**
-  String get hevyExportError;
-
-  /// No description provided for @hevyExportNoCatalogHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Sync the Hevy catalog from Settings or Exercise Library first.'**
-  String get hevyExportNoCatalogHint;
-
-  /// No description provided for @calendarExportHevy.
-  ///
-  /// In en, this message translates to:
-  /// **'Export to Hevy'**
-  String get calendarExportHevy;
 
   /// No description provided for @workoutDiaryEmpty.
   ///
@@ -6689,12 +8303,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Plan export PDF / JSON / Excel'**
   String get releaseNotesV1023;
-
-  /// No description provided for @releaseNotesV1024.
-  ///
-  /// In en, this message translates to:
-  /// **'Hevy integration (export to calendar / library)'**
-  String get releaseNotesV1024;
 
   /// No description provided for @releaseNotesV1011.
   ///

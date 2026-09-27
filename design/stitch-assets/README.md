@@ -48,3 +48,26 @@ Puoi anche impostare le variabili d’ambiente e lanciare lo script (vedi `desig
 | Generated Screen | 80e27a86da484d75b1dc9481a2d61b1c | generated-pdf-screen.png / .html |
 
 `stitch-urls.json` non va committato se contiene URL con token; usa `stitch-urls.example.json` come template.
+
+---
+
+## Landing (phase-planning project)
+
+**Project ID:** `14496212854931615246` · folder [`landing/`](landing/)
+
+| Screen | Screen ID | File | Notes |
+|--------|-----------|------|-------|
+| PowerCoach Studio - Landing Page Redesign Dark Theme | `8f70bab127c04f47b18d30a213463c57` | [`landing/landing-dark-theme.html`](landing/landing-dark-theme.html) · [`landing/landing-dark-theme.png`](landing/landing-dark-theme.png) | **Source of truth** for Flutter public landing |
+| w8 landing (partial / light export) | `8807023090542286040` | [`landing/w8-landing.png`](landing/w8-landing.png) | Partial thumbnail only — not canonical |
+
+## Auth (dark)
+
+| Screen | Assets | Stitch ID |
+|--------|--------|-----------|
+| Login dark | auth/login-dark.html · login-dark.png | 75b281a64afc47fbb12b7e07fbd342ab |
+| Register dark | auth/register-dark.html · register-dark.png | 3048409cc4154aa891fe1c5cfc264fd9 |
+
+
+## Phase planning UI
+
+| Modifica Sessione Redesign Intuitivo | [`phase-planning-ui/modifica-sessione-redesign-intuitivo.png`](phase-planning-ui/modifica-sessione-redesign-intuitivo.png) · [`phase-planning-ui/modifica-sessione-redesign-intuitivo.html`](phase-planning-ui/modifica-sessione-redesign-intuitivo.html) | screen `08fb2bda9714400caa991972bea2f6c3` — session edit modal (header / metrics / cards / footer)

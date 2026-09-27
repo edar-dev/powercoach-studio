@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer_measurement.dart';
@@ -37,6 +38,7 @@ class _CustomerMeasurementHistoryScreenState
 
   List<CustomerMeasurement> _measurements = [];
   MeasurementMetric? _selectedMetric;
+  MeasurementHistoryRange _range = MeasurementHistoryRange.all;
   bool _loading = true;
   String? _error;
 
@@ -76,19 +78,31 @@ class _CustomerMeasurementHistoryScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
+      backgroundColor: MarketingDarkColors.bgAlt,
       appBar: AppBar(
-        title: Text(l10n.measurementHistoryTitle),
+        backgroundColor: MarketingDarkColors.bgAlt,
+        foregroundColor: MarketingDarkColors.text,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
+        title: Text(
+          l10n.measurementHistoryTitle,
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: MarketingDarkColors.text,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          color: MarketingDarkColors.slate300,
           onPressed: () => context.pop(),
         ),
         actions: [
           if (_measurements.isNotEmpty)
             PopupMenuButton<String>(
+              color: MarketingDarkColors.surface800,
               onSelected: (value) {
                 final baseName = widget.customerName?.trim().isNotEmpty == true
                     ? widget.customerName!.trim()
@@ -124,28 +138,38 @@ class _CustomerMeasurementHistoryScreenState
               itemBuilder: (context) => [
                 PopupMenuItem(
                   value: 'csv',
-                  child: Text(l10n.measurementExportCsv),
+                  child: Text(
+                    l10n.measurementExportCsv,
+                    style: const TextStyle(color: MarketingDarkColors.text),
+                  ),
                 ),
                 PopupMenuItem(
                   value: 'pdf',
-                  child: Text(l10n.measurementExportPdf),
+                  child: Text(
+                    l10n.measurementExportPdf,
+                    style: const TextStyle(color: MarketingDarkColors.text),
+                  ),
                 ),
               ],
             ),
         ],
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(1),
+          child: ColoredBox(
+            color: MarketingDarkColors.border,
+            child: SizedBox(height: 1, width: double.infinity),
+          ),
+        ),
       ),
-      body: _buildBody(context, theme, colorScheme, l10n),
+      body: _buildBody(context, l10n),
     );
   }
 
-  Widget _buildBody(
-    BuildContext context,
-    ThemeData theme,
-    ColorScheme colorScheme,
-    AppLocalizations l10n,
-  ) {
+  Widget _buildBody(BuildContext context, AppLocalizations l10n) {
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+        child: CircularProgressIndicator(color: MarketingDarkColors.brandLight),
+      );
     }
     if (_error != null) {
       return Center(
@@ -154,16 +178,23 @@ class _CustomerMeasurementHistoryScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline, size: 48, color: colorScheme.error),
+              const Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Color(0xFFF87171),
+              ),
               const SizedBox(height: 16),
               Text(
                 l10n.measurementHistoryLoadError,
-                style: theme.textTheme.bodyLarge,
+                style: const TextStyle(color: MarketingDarkColors.text),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: _load,
+                style: FilledButton.styleFrom(
+                  backgroundColor: MarketingDarkColors.brand,
+                ),
                 child: Text(l10n.customersRetry),
               ),
             ],
@@ -178,25 +209,24 @@ class _CustomerMeasurementHistoryScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
+              const Icon(
                 Icons.show_chart,
                 size: 48,
-                color: colorScheme.onSurfaceVariant,
+                color: MarketingDarkColors.slate500,
               ),
               const SizedBox(height: 16),
               Text(
                 l10n.measurementsEmpty,
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: MarketingDarkColors.slate300,
                 ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
                 l10n.measurementsEmptyHint,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: const TextStyle(color: MarketingDarkColors.slate500),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -209,7 +239,11 @@ class _CustomerMeasurementHistoryScreenState
     final selectedMetric = _selectedMetric;
     final points = selectedMetric == null
         ? const <MeasurementChartPoint>[]
-        : MeasurementSeriesBuilder.buildSeries(_measurements, selectedMetric);
+        : MeasurementSeriesBuilder.buildSeries(
+            _measurements,
+            selectedMetric,
+            range: _range,
+          );
     final periodDelta = selectedMetric == null
         ? const MeasurementPeriodDelta(
             recentAverage: null,
@@ -223,6 +257,7 @@ class _CustomerMeasurementHistoryScreenState
           );
 
     return RefreshIndicator(
+      color: MarketingDarkColors.brandLight,
       onRefresh: _load,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
@@ -230,9 +265,25 @@ class _CustomerMeasurementHistoryScreenState
           if (metrics.isNotEmpty)
             DropdownButtonFormField<MeasurementMetric>(
               initialValue: selectedMetric,
+              dropdownColor: MarketingDarkColors.surface800,
+              style: const TextStyle(color: MarketingDarkColors.text),
               decoration: InputDecoration(
                 labelText: l10n.measurementHistoryMetricLabel,
-                border: const OutlineInputBorder(),
+                labelStyle: const TextStyle(color: MarketingDarkColors.slate400),
+                filled: true,
+                fillColor: MarketingDarkColors.surfaceInput,
+                border: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(MarketingDarkColors.radiusXl),
+                  borderSide:
+                      const BorderSide(color: MarketingDarkColors.borderSubtle),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius:
+                      BorderRadius.circular(MarketingDarkColors.radiusXl),
+                  borderSide:
+                      const BorderSide(color: MarketingDarkColors.borderSubtle),
+                ),
               ),
               items: [
                 for (final metric in metrics)
@@ -246,38 +297,83 @@ class _CustomerMeasurementHistoryScreenState
                 setState(() => _selectedMetric = metric);
               },
             ),
-          const SizedBox(height: 16),
-          if (selectedMetric != null && points.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  measurementHistoryNoMetricDataMessage(l10n),
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              for (final r in MeasurementHistoryRange.values)
+                ChoiceChip(
+                  label: Text(_rangeLabel(l10n, r)),
+                  selected: _range == r,
+                  onSelected: (_) => setState(() => _range = r),
+                  selectedColor:
+                      MarketingDarkColors.brand.withValues(alpha: 0.25),
+                  backgroundColor: MarketingDarkColors.surface800,
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: _range == r
+                        ? MarketingDarkColors.brandSoft
+                        : MarketingDarkColors.slate400,
+                  ),
+                  side: BorderSide(
+                    color: _range == r
+                        ? MarketingDarkColors.brandMid
+                        : MarketingDarkColors.border,
                   ),
                 ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (selectedMetric != null && points.isEmpty)
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: MarketingDarkColors.surfaceElevated,
+                borderRadius:
+                    BorderRadius.circular(MarketingDarkColors.radiusXl),
+                border: Border.all(color: MarketingDarkColors.border),
+              ),
+              child: Text(
+                measurementHistoryNoMetricDataMessage(l10n),
+                style: const TextStyle(color: MarketingDarkColors.slate400),
               ),
             )
           else if (selectedMetric != null)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: MeasurementHistoryChart(
-                  points: points,
-                  metricLabel: selectedMetric.label(l10n),
-                  dateAxisLabel: l10n.measurementDate,
-                  valueAxisLabel: selectedMetric.label(l10n),
-                ),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: MarketingDarkColors.surfaceElevated,
+                borderRadius:
+                    BorderRadius.circular(MarketingDarkColors.radius2xl),
+                border: Border.all(color: MarketingDarkColors.borderSubtle),
+              ),
+              child: MeasurementHistoryChart(
+                points: points,
+                metricLabel: selectedMetric.label(l10n),
+                dateAxisLabel: l10n.measurementDate,
+                valueAxisLabel: selectedMetric.label(l10n),
+                dark: true,
               ),
             ),
           const SizedBox(height: 16),
           MeasurementHistoryPeriodCompareCard(
             delta: periodDelta,
             metricLabel: selectedMetric?.label(l10n) ?? '',
+            dark: true,
           ),
         ],
       ),
     );
+  }
+
+  String _rangeLabel(AppLocalizations l10n, MeasurementHistoryRange range) {
+    return switch (range) {
+      MeasurementHistoryRange.days30 => l10n.measurementHistoryRange30d,
+      MeasurementHistoryRange.months3 => l10n.measurementHistoryRange3m,
+      MeasurementHistoryRange.months6 => l10n.measurementHistoryRange6m,
+      MeasurementHistoryRange.all => l10n.measurementHistoryRangeAll,
+    };
   }
 }

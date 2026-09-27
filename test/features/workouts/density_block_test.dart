@@ -77,7 +77,7 @@ void main() {
       expect(resolveDensityBlock(day, 'missing'), isNull);
     });
 
-    test('densityBlockExportDetail and Hevy prefix format circuit', () {
+    test('densityBlockExportDetail formats circuit', () {
       const config = DensityBlockConfig(
         type: DensityBlockType.circuit,
         rounds: 3,
@@ -86,26 +86,6 @@ void main() {
       expect(densityBlockExportDetail(config), '3× · 90s');
       expect(
         formatDensityBlockExportLine(config, typeLabel: 'Circuit'),
-        'Circuit · 3× · 90s',
-      );
-
-      const day = Day(
-        id: 'd1',
-        name: 'Day',
-        exercises: [
-          Exercise(
-            id: 'e1',
-            name: 'A',
-            sets: '1',
-            reps: '8',
-            rpe: '',
-            supersetGroupId: 'ss_1',
-          ),
-        ],
-        densityBlocks: {'ss_1': config},
-      );
-      expect(
-        densityBlockHevyNotePrefix(day, day.exercises),
         'Circuit · 3× · 90s',
       );
     });

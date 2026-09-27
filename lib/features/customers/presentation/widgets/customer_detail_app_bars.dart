@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/models/customer.dart';
@@ -22,13 +23,15 @@ class CustomerDetailFallbackAppBar extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     return AppBar(
+      backgroundColor: MarketingDarkColors.bgAlt,
+      foregroundColor: MarketingDarkColors.text,
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
+        color: MarketingDarkColors.slate300,
         onPressed: () {
           HapticFeedback.mediumImpact();
           navigateBack(context, fallback: '/customers');
@@ -36,15 +39,19 @@ class CustomerDetailFallbackAppBar extends StatelessWidget
       ),
       title: Text(
         title,
-        style: theme.textTheme.titleLarge?.copyWith(
+        style: const TextStyle(
           fontWeight: FontWeight.w700,
-          color: cs.onSurface,
+          fontSize: 18,
+          color: MarketingDarkColors.text,
         ),
       ),
       centerTitle: false,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: cs.outline, height: 1),
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(1),
+        child: ColoredBox(
+          color: MarketingDarkColors.border,
+          child: SizedBox(height: 1, width: double.infinity),
+        ),
       ),
     );
   }
@@ -75,37 +82,138 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
   final VoidCallback onDelete;
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 48);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 52);
+
+  String get _shortId {
+    final id = customer.id.trim();
+    if (id.isEmpty) return '';
+    final short = id.length <= 8 ? id : id.substring(0, 8);
+    return short.toUpperCase();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final isActive = !customer.isArchived;
+    final shortId = _shortId;
 
     return AppBar(
+      backgroundColor: MarketingDarkColors.bgAlt,
+      foregroundColor: MarketingDarkColors.text,
       elevation: 0,
       scrolledUnderElevation: 0,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          navigateBack(context, fallback: '/customers');
-        },
-      ),
-      title: Text(
-        l10n.customerDetailTitle,
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: colorScheme.onSurface,
+      surfaceTintColor: Colors.transparent,
+      leadingWidth: 140,
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: TextButton.icon(
+          onPressed: () {
+            HapticFeedback.mediumImpact();
+            navigateBack(context, fallback: '/customers');
+          },
+          icon: const Icon(Icons.arrow_back, size: 16),
+          label: Text(
+            l10n.customerBackToList,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          ),
+          style: TextButton.styleFrom(
+            foregroundColor: MarketingDarkColors.slate300,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            visualDensity: VisualDensity.compact,
+          ),
         ),
+      ),
+      title: Row(
+        children: [
+          Flexible(
+            child: Text(
+              l10n.customerDetailTitle,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                color: MarketingDarkColors.text,
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            decoration: BoxDecoration(
+              color: isActive
+                  ? MarketingDarkColors.emeraldBg
+                  : MarketingDarkColors.surface700,
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(
+                color: isActive
+                    ? MarketingDarkColors.emeraldBorder
+                    : MarketingDarkColors.borderMuted,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isActive
+                        ? MarketingDarkColors.emerald
+                        : MarketingDarkColors.slate500,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  isActive
+                      ? l10n.customersRowStatusActive
+                      : l10n.customersRowStatusPaused,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: isActive
+                        ? MarketingDarkColors.emerald
+                        : MarketingDarkColors.slate400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (shortId.isNotEmpty) ...[
+            const SizedBox(width: 8),
+            Text(
+              l10n.customerIdChip(shortId),
+              style: const TextStyle(
+                fontSize: 11,
+                fontFamily: 'monospace',
+                color: MarketingDarkColors.slate500,
+              ),
+            ),
+          ],
+        ],
       ),
       centerTitle: false,
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(48),
+        preferredSize: const Size.fromHeight(52),
         child: Column(
           children: [
             TabBar(
               controller: tabController,
+              isScrollable: true,
+              tabAlignment: TabAlignment.start,
+              labelColor: MarketingDarkColors.text,
+              unselectedLabelColor: MarketingDarkColors.slate400,
+              indicatorColor: MarketingDarkColors.brandMid,
+              indicatorWeight: 2.5,
+              dividerColor: Colors.transparent,
+              labelStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+              ),
+              unselectedLabelStyle: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
               tabs: [
                 Tab(text: l10n.customerDetailOverview),
                 Tab(text: l10n.customerDetailMeasurements),
@@ -113,7 +221,10 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
                 Tab(text: l10n.customerTabWorkouts),
               ],
             ),
-            Container(color: colorScheme.outline, height: 1),
+            const ColoredBox(
+              color: MarketingDarkColors.border,
+              child: SizedBox(height: 1, width: double.infinity),
+            ),
           ],
         ),
       ),
@@ -131,6 +242,7 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
             onDelete: onDelete,
           ),
           icon: const Icon(Icons.more_vert),
+          color: MarketingDarkColors.slate300,
         ),
       ],
     );

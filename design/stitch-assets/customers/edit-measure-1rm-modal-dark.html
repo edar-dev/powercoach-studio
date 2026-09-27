@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PowerCoach Studio - Modifica Misura</title>
+<!-- Tailwind CSS v3 with forms & container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            coach: {
+              base: '#090d16',
+              surface: '#0f172a',
+              card: '#162033',
+              input: '#1a273f',
+              border: '#24334f',
+              borderMuted: '#1e293b'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbars">
+    /* Custom refined dark scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #25334c;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-coach-base text-slate-100 font-sans antialiased min-h-screen relative overflow-x-hidden selection:bg-brand-600 selection:text-white">
+<!-- BEGIN: BackgroundAppShell -->
+<!-- Underlying dashboard mock representing PowerCoach Studio desktop layout -->
+<div class="filter blur-sm select-none pointer-events-none opacity-40 transition-all duration-300">
+<!-- Top Global Header -->
+<header class="h-16 border-b border-coach-borderMuted bg-coach-surface/90 px-6 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-sky-400 flex items-center justify-center font-black shadow-lg shadow-brand-600/30">
+<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<span class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            PowerCoach <span class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">STUDIO</span>
+</span>
+</div>
+<nav class="hidden md:flex items-center gap-1 text-sm font-medium text-slate-400">
+<span class="px-3 py-1.5 rounded-lg hover:text-white">Dashboard</span>
+<span class="px-3 py-1.5 rounded-lg bg-coach-card text-brand-400 border border-brand-500/20">Clienti</span>
+<span class="px-3 py-1.5 rounded-lg hover:text-white">Programmi &amp; Mesocicli</span>
+<span class="px-3 py-1.5 rounded-lg hover:text-white">Analitiche &amp; Test</span>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Cloud Sync OK
+        </div>
+<div class="flex items-center gap-3 pl-3 border-l border-slate-800">
+<div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-semibold">MC</div>
+<div class="text-left text-xs leading-tight">
+<div class="font-medium text-white">Marco Coach</div>
+<div class="text-slate-400">Master Trainer</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Subheader summary -->
+<div class="max-w-7xl mx-auto px-6 py-6 space-y-6">
+<div class="grid grid-cols-4 gap-4">
+<div class="bg-coach-card p-4 rounded-xl border border-coach-border">
+<p class="text-xs text-slate-400 uppercase font-semibold">Totale Atleti</p>
+<p class="text-2xl font-bold mt-1 text-white">18 <span class="text-xs font-normal text-emerald-400">14 attivi</span></p>
+</div>
+<div class="bg-coach-card p-4 rounded-xl border border-coach-border">
+<p class="text-xs text-slate-400 uppercase font-semibold">Schede in corso</p>
+<p class="text-2xl font-bold mt-1 text-white">16 <span class="text-xs font-normal text-slate-400">mesocicli</span></p>
+</div>
+<div class="bg-coach-card p-4 rounded-xl border border-coach-border">
+<p class="text-xs text-slate-400 uppercase font-semibold">Check-in Settimanali</p>
+<p class="text-2xl font-bold mt-1 text-white">11/14 <span class="text-xs font-normal text-emerald-400">78%</span></p>
+</div>
+<div class="bg-coach-card p-4 rounded-xl border border-coach-border">
+<p class="text-xs text-slate-400 uppercase font-semibold">Da Aggiornare</p>
+<p class="text-2xl font-bold mt-1 text-amber-400">2 <span class="text-xs font-normal text-slate-400">&lt; 5gg</span></p>
+</div>
+</div>
+<!-- Dummy Table Placeholder -->
+<div class="bg-coach-card rounded-2xl border border-coach-border p-6 h-96"></div>
+</div>
+</div>
+<!-- END: BackgroundAppShell -->
+<!-- BEGIN: ModalBackdropAndContainer -->
+<!-- Dialog Overlay Backdrop with Dark Dim and Backdrop Blur -->
+<div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto" data-purpose="modal-overlay">
+<!-- BEGIN: ModalWindow -->
+<div class="w-full max-w-3xl bg-coach-surface rounded-2xl border border-coach-border/90 shadow-2xl shadow-black/80 flex flex-col my-auto overflow-hidden animate-in fade-in zoom-in-95 duration-200" data-purpose="measurement-modal">
+<!-- BEGIN: ModalHeader -->
+<header class="px-6 py-4 border-b border-coach-border bg-gradient-to-b from-coach-card to-coach-surface flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-base font-semibold text-white tracking-wide flex items-center gap-2">
+              Modifica Misura
+              <span class="text-xs font-normal px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700/60">Edoardo Rossi</span>
+</h2>
+<p class="text-xs text-slate-400">Aggiorna i carichi 1RM, parametri plicometrici e metriche corporee</p>
+</div>
+</div>
+<!-- Quick actions: Close and top quick save -->
+<div class="flex items-center gap-2">
+<button class="text-xs font-medium text-brand-400 hover:text-brand-300 px-3 py-1.5 rounded-lg hover:bg-brand-500/10 transition-colors" title="Salvataggio rapido" type="button">
+            Salva
+          </button>
+<button aria-label="Chiudi finestra" class="w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 flex items-center justify-center transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: ModalHeader -->
+<!-- BEGIN: ModalContentForm -->
+<form class="p-6 space-y-6 max-h-[calc(85vh-130px)] overflow-y-auto">
+<!-- SECTION 1: Date of measurement -->
+<div class="bg-coach-card/50 rounded-xl p-3.5 border border-coach-borderMuted flex flex-col sm:flex-row sm:items-center justify-between gap-3" data-purpose="date-picker-row">
+<div>
+<label class="block text-xs font-medium text-slate-300 uppercase tracking-wider" for="measurement-date">
+              Data Rilevazione
+            </label>
+<span class="text-[11px] text-slate-400">Data in cui sono stati registrati i massimali</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="relative">
+<input class="w-44 bg-coach-input text-sm text-slate-100 rounded-lg border border-coach-border focus:border-brand-500 focus:ring-1 focus:ring-brand-500 pl-9 pr-3 py-2 text-left font-mono font-medium shadow-inner" id="measurement-date" type="date" value="2026-09-23"/>
+<svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<button class="px-3 py-2 text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors" type="button">
+              Oggi
+            </button>
+</div>
+</div>
+<!-- SECTION 2: 1RM Big 3 / Powerlifting -->
+<section class="space-y-3" data-purpose="1rm-section">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-xs font-bold uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+                1RM Stimati o Testati (kg)
+              </span>
+</div>
+<span class="text-[11px] text-slate-400">Valutazione SBD</span>
+</div>
+<!-- 3 Columns Input Grid for Squat, Bench, Deadlift -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Squat input card -->
+<div class="relative bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-xs font-semibold text-slate-300" for="input-squat">Squat</label>
+<span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">+5 kg</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-lg font-bold text-white px-3 py-2 focus:ring-0" id="input-squat" step="0.5" type="number" value="140"/>
+<span class="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">kg</span>
+</div>
+</div>
+<!-- Bench Press input card -->
+<div class="relative bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-xs font-semibold text-slate-300" for="input-bench">Panca piana</label>
+<span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">Parità</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-lg font-bold text-white px-3 py-2 focus:ring-0" id="input-bench" step="0.5" type="number" value="100"/>
+<span class="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">kg</span>
+</div>
+</div>
+<!-- Deadlift input card -->
+<div class="relative bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-xs font-semibold text-slate-300" for="input-deadlift">Stacco</label>
+<span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">+7.5 kg</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-lg font-bold text-white px-3 py-2 focus:ring-0" id="input-deadlift" step="0.5" type="number" value="175"/>
+<span class="absolute right-3 text-xs font-semibold text-slate-400 pointer-events-none">kg</span>
+</div>
+</div>
+</div>
+<!-- Total SBD calculation banner -->
+<div class="p-3 rounded-xl bg-brand-500/10 border border-brand-500/20 flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-brand-400"></span>
+<span class="text-xs font-medium text-slate-300">Totale SBD stimato:</span>
+<span class="text-sm font-black text-brand-300 tracking-tight">415.0 kg</span>
+</div>
+<div class="flex items-center gap-3 text-xs text-slate-400">
+<span>DOTS: <strong class="text-slate-200 font-semibold">284.2</strong> pt</span>
+<span>•</span>
+<span>Wilks: <strong class="text-slate-200 font-semibold">290.4</strong> pt</span>
+</div>
+</div>
+</section>
+<!-- SECTION 3: Body Composition Metrics -->
+<section class="space-y-3" data-purpose="body-comp-section">
+<div class="flex items-center justify-between">
+<span class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+              Composizione Corporea
+            </span>
+<span class="text-[11px] text-slate-400">Bioimpedenziometria / Caliper</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+<!-- Peso Corporeo -->
+<div class="bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 transition-all">
+<label class="block text-xs font-medium text-slate-300 mb-1.5" for="input-weight">Peso corporeo</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-base font-semibold text-white px-3 py-2 focus:ring-0" id="input-weight" step="0.1" type="number" value="78.5"/>
+<span class="absolute right-3 text-xs font-medium text-slate-400 pointer-events-none">kg</span>
+</div>
+</div>
+<!-- Massa Grassa % -->
+<div class="bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="text-xs font-medium text-slate-300" for="input-fat">Massa grassa</label>
+<span class="text-[10px] text-emerald-400 font-medium">Ottimale</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-base font-semibold text-white px-3 py-2 focus:ring-0" id="input-fat" step="0.1" type="number" value="10.0"/>
+<span class="absolute right-3 text-xs font-medium text-slate-400 pointer-events-none">%</span>
+</div>
+</div>
+<!-- Massa Muscolare kg -->
+<div class="bg-coach-card rounded-xl p-3.5 border border-coach-border focus-within:border-brand-500 transition-all">
+<label class="block text-xs font-medium text-slate-300 mb-1.5" for="input-muscle">Massa muscolare</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input border-0 rounded-lg text-base font-semibold text-white px-3 py-2 focus:ring-0" id="input-muscle" placeholder="Inserisci kg" step="0.1" type="number" value="64.2"/>
+<span class="absolute right-3 text-xs font-medium text-slate-400 pointer-events-none">kg</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: Circumferences & Anthropometrics (Collapsible Details) -->
+<details class="group bg-coach-card/40 rounded-xl border border-coach-border overflow-hidden" data-purpose="anthropometrics-details">
+<summary class="flex items-center justify-between px-4 py-3 cursor-pointer select-none text-xs font-semibold text-slate-300 hover:text-white transition-colors">
+<span class="flex items-center gap-2">
+<svg class="w-4 h-4 text-slate-400 group-hover:text-brand-400 transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+              Circonferenze Antropometriche (cm) <span class="font-normal text-slate-400 text-[11px]">(Opzionale)</span>
+</span>
+<svg class="w-4 h-4 text-slate-400 transform transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</summary>
+<div class="px-4 pb-4 pt-1 grid grid-cols-2 sm:grid-cols-4 gap-3 border-t border-coach-border/60">
+<div>
+<label class="block text-[11px] text-slate-400 mb-1" for="circ-chest">Torace</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input text-sm text-slate-100 rounded-lg border border-coach-border px-2.5 py-1.5 focus:border-brand-500 focus:ring-0" id="circ-chest" step="0.5" type="number" value="104.5"/>
+<span class="absolute right-2 text-[10px] text-slate-500">cm</span>
+</div>
+</div>
+<div>
+<label class="block text-[11px] text-slate-400 mb-1" for="circ-arm">Braccio dx</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input text-sm text-slate-100 rounded-lg border border-coach-border px-2.5 py-1.5 focus:border-brand-500 focus:ring-0" id="circ-arm" step="0.5" type="number" value="38.0"/>
+<span class="absolute right-2 text-[10px] text-slate-500">cm</span>
+</div>
+</div>
+<div>
+<label class="block text-[11px] text-slate-400 mb-1" for="circ-waist">Vita</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input text-sm text-slate-100 rounded-lg border border-coach-border px-2.5 py-1.5 focus:border-brand-500 focus:ring-0" id="circ-waist" step="0.5" type="number" value="79.0"/>
+<span class="absolute right-2 text-[10px] text-slate-500">cm</span>
+</div>
+</div>
+<div>
+<label class="block text-[11px] text-slate-400 mb-1" for="circ-thigh">Coscia</label>
+<div class="relative flex items-center">
+<input class="w-full bg-coach-input text-sm text-slate-100 rounded-lg border border-coach-border px-2.5 py-1.5 focus:border-brand-500 focus:ring-0" id="circ-thigh" step="0.5" type="number" value="59.5"/>
+<span class="absolute right-2 text-[10px] text-slate-500">cm</span>
+</div>
+</div>
+</div>
+</details>
+<!-- SECTION 5: Notes & Clinical Observations -->
+<section class="space-y-2" data-purpose="notes-section">
+<div class="flex items-center justify-between">
+<label class="text-xs font-semibold text-slate-300 flex items-center gap-1.5" for="field-notes">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+              Note &amp; Condizioni di Rilevazione
+            </label>
+<span class="text-[11px] text-slate-500">Markdown supportato</span>
+</div>
+<textarea class="w-full bg-coach-card border border-coach-border rounded-xl text-sm text-slate-200 placeholder-slate-500 px-3.5 py-2.5 focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all resize-none leading-relaxed" id="field-notes" placeholder="Es. Pesata a digiuno pre-workout. Test stacco eseguito con cinta e magnesite. Ottima velocità su panca, margine stimato 2.5 kg..." rows="3"></textarea>
+</section>
+</form>
+<!-- END: ModalContentForm -->
+<!-- BEGIN: ModalFooter -->
+<footer class="px-6 py-4 border-t border-coach-border bg-coach-card/90 flex flex-col sm:flex-row items-center justify-between gap-3">
+<!-- Delete measurement trigger (destructive secondary) -->
+<button class="w-full sm:w-auto px-3.5 py-2 rounded-xl text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 border border-rose-500/20 transition-colors flex items-center justify-center gap-1.5" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Elimina misurazione
+        </button>
+<!-- Right action buttons -->
+<div class="w-full sm:w-auto flex items-center justify-end gap-2.5">
+<button class="w-1/2 sm:w-auto px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 rounded-xl border border-slate-700 transition-colors" type="button">
+            Annulla
+          </button>
+<button class="w-1/2 sm:w-auto px-5 py-2 text-xs font-semibold text-white bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 rounded-xl shadow-lg shadow-brand-600/30 hover:shadow-brand-500/40 border border-brand-400/30 transition-all flex items-center justify-center gap-1.5" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+            Salva misurazione
+          </button>
+</div>
+</footer>
+<!-- END: ModalFooter -->
+</div>
+<!-- END: ModalWindow -->
+</div>
+<!-- END: ModalBackdropAndContainer -->
+</body></html>

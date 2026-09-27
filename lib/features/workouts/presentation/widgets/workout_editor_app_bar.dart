@@ -78,7 +78,6 @@ class WorkoutEditorAppBar extends StatelessWidget
                 child: Text(l10n.workoutExportExcel),
               ),
               PopupMenuItem(value: 'json', child: Text(l10n.workoutExportJson)),
-              PopupMenuItem(value: 'hevy', child: Text(l10n.workoutExportHevy)),
             ],
           ),
         if (editorMode && !loading && saveStatusIndicator != null)

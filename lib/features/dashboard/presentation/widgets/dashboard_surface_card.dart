@@ -4,16 +4,21 @@ import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 /// Rounded surface used for dashboard section bodies and empty states.
 class DashboardSurfaceCard extends StatelessWidget {
-  const DashboardSurfaceCard({super.key, required this.child});
+  const DashboardSurfaceCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+  });
 
   final Widget child;
+  final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: padding,
       decoration: BoxDecoration(
         color: cs.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),

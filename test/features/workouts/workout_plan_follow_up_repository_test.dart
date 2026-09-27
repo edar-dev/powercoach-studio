@@ -43,9 +43,13 @@ void main() {
       name: 'Block 1',
       mobilitySections: WorkoutRoutine.empty().mobilitySections,
       mobilityItems: const [],
-      weeks: const [
-        Week(id: 'w1', name: 'Week 1', days: []),
-        Week(id: 'w2', name: 'Week 2', days: []),
+      phases: [
+        WorkoutRoutine.defaultPhase(
+          weeks: const [
+            Week(id: 'w1', name: 'Week 1', days: []),
+            Week(id: 'w2', name: 'Week 2', days: []),
+          ],
+        ),
       ],
       startDate: DateTime(2026, 1, 1),
       endDate: DateTime(2026, 2, 1),

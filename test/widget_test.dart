@@ -19,9 +19,11 @@ Widget _wrapWithApp(Widget child) {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     home: Scaffold(
       body: Center(
+        // Match login_screen_test harness: 400px overflows auth top bar /
+        // password meter rows on the Stitch dark auth layout.
         child: SizedBox(
-          width: 400,
-          height: 800,
+          width: 480,
+          height: 1200,
           child: child,
         ),
       ),
@@ -35,10 +37,15 @@ void main() {
       await tester.pumpWidget(_wrapWithApp(const RegistrationScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Registrati'), findsWidgets);
-      expect(find.text('Email'), findsWidgets);
-      expect(find.text('Password'), findsWidgets);
-      expect(find.text('Conferma password'), findsOneWidget);
+      expect(find.text('Crea il tuo account Coach'), findsOneWidget);
+      // AuthDarkTextField uppercases field labels.
+      expect(find.text('EMAIL PROFESSIONALE'), findsOneWidget);
+      expect(find.text('PASSWORD'), findsWidgets);
+      expect(find.text('CONFERMA PASSWORD'), findsOneWidget);
+      expect(
+        find.text('Crea account e inizia la prova gratuita'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('Forgot password screen shows form and back link', (WidgetTester tester) async {
@@ -47,7 +54,8 @@ void main() {
 
       expect(find.text('Reimposta password'), findsOneWidget);
       expect(find.text('Invia link'), findsOneWidget);
-      expect(find.text('Torna al login'), findsOneWidget);
+      // Header back link + in-form link both use the same copy.
+      expect(find.text('Torna al login'), findsAtLeastNWidgets(1));
     });
   });
 

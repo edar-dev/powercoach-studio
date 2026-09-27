@@ -177,7 +177,6 @@ void main() {
     expect(prefs['settings_calendar_reminders_enabled'], isTrue);
     expect(prefs['settings_calendar_reminder_lead_hours'], 6);
     expect(prefs['workout_builder_include_mobility_default_v1'], isFalse);
-    expect(prefs.containsKey('hevy_api_key_v1'), isFalse);
   });
 
   test('restoreParsed ignores legacy pendingOperations in envelope', () async {

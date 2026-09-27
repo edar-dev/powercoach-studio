@@ -189,6 +189,24 @@ Week decodeWeek(Map<String, dynamic> json) => Week(
       [],
 );
 
+Map<String, dynamic> encodePhase(Phase phase) => {
+  'id': phase.id,
+  'name': phase.name,
+  if (phase.objective != null && phase.objective!.trim().isNotEmpty)
+    'objective': phase.objective!.trim(),
+  'weeks': phase.weeks.map(encodeWeek).toList(),
+};
+
+Phase decodePhase(Map<String, dynamic> json) => Phase(
+  id: json['id'] as String? ?? '',
+  name: json['name'] as String? ?? kDefaultPhaseName,
+  objective: json['objective'] as String?,
+  weeks: (json['weeks'] as List<dynamic>?)
+          ?.map((e) => decodeWeek(e as Map<String, dynamic>))
+          .toList() ??
+      [],
+);
+
 List<Week> defaultWorkoutWeeks() => [
   Week(
     id: 'w1',
@@ -220,11 +238,38 @@ List<Week> defaultWorkoutWeeks() => [
   ),
 ];
 
+List<Phase> defaultWorkoutPhases() => [
+  WorkoutRoutine.defaultPhase(weeks: defaultWorkoutWeeks()),
+];
+
+/// Dual-read: prefer non-empty `phases`; empty `phases` falls back to legacy
+/// `weeks` when present; else wrap legacy flat `weeks` in one General phase.
+List<Phase> decodeWorkoutPhases(Map<String, dynamic> json) {
+  final phasesJson = json['phases'] as List<dynamic>?;
+  final weeksJson = json['weeks'] as List<dynamic>?;
+  final legacyWeeks = weeksJson
+      ?.map((e) => decodeWeek(e as Map<String, dynamic>))
+      .toList();
+
+  if (phasesJson != null && phasesJson.isNotEmpty) {
+    return phasesJson
+        .map((e) => decodePhase(e as Map<String, dynamic>))
+        .toList();
+  }
+  if (legacyWeeks != null) {
+    return [WorkoutRoutine.defaultPhase(weeks: legacyWeeks)];
+  }
+  if (phasesJson != null) {
+    return [];
+  }
+  return defaultWorkoutPhases();
+}
+
 Map<String, dynamic> encodeWorkoutRoutine(WorkoutRoutine routine) => {
   'name': routine.name,
   'mobilitySections': routine.mobilitySections.map(encodeMobilitySection).toList(),
   'mobilityItems': routine.mobilityItems.map(encodeMobilityItem).toList(),
-  'weeks': routine.weeks.map(encodeWeek).toList(),
+  'phases': routine.phases.map(encodePhase).toList(),
   if (routine.startDate != null)
     'startDate': DateTime(
       routine.startDate!.year,
@@ -302,10 +347,7 @@ WorkoutRoutine decodeWorkoutRoutine(Map<String, dynamic> json) {
     name: json['name'] as String? ?? 'Hypertrophy Phase 1',
     mobilitySections: sections,
     mobilityItems: items,
-    weeks: (json['weeks'] as List<dynamic>?)
-            ?.map((e) => decodeWeek(e as Map<String, dynamic>))
-            .toList() ??
-        defaultWorkoutWeeks(),
+    phases: decodeWorkoutPhases(json),
     startDate: parsedStart,
     endDate: parsedEnd,
     currentWeek: currentWeek,
@@ -337,8 +379,8 @@ WorkoutRoutine decodeWorkoutRoutineJson(String jsonText) {
   }
   final map = decoded.cast<String, dynamic>();
   final routineMap = _extractRoutineMap(map);
-  if (routineMap['weeks'] is! List) {
-    throw const FormatException('Missing weeks array');
+  if (routineMap['phases'] is! List && routineMap['weeks'] is! List) {
+    throw const FormatException('Missing phases or weeks array');
   }
   return decodeWorkoutRoutine(routineMap);
 }

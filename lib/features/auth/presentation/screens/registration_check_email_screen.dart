@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/auth_redirect_urls.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../widgets/auth_dark_form_shell.dart';
+import '../widgets/auth_social_buttons.dart';
 
 /// Shown after sign-up when email confirmation is required before first login.
 class RegistrationCheckEmailScreen extends StatefulWidget {
@@ -75,91 +76,81 @@ class _RegistrationCheckEmailScreenState
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerHighest,
-      appBar: StitchSecondaryAppBar(title: l10n.registrationCheckEmailTitle),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Center(
-            child: Container(
-              constraints: const BoxConstraints(
-                maxWidth: StitchM3Theme.authCardMaxWidth,
-              ),
-              decoration: BoxDecoration(
-                color: cs.surface,
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                border: Border.all(color: cs.outline),
-              ),
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Icon(Icons.mark_email_unread_outlined, size: 48, color: cs.primary),
-                  const SizedBox(height: 16),
-                  Text(
-                    l10n.registrationCheckEmailTitle,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    l10n.registrationCheckEmailBody(widget.email),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    l10n.registrationCheckEmailSpamHint,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: _isResending ? null : _resend,
-                    style: FilledButton.styleFrom(
-                      backgroundColor: StitchM3Theme.accent,
-                      foregroundColor: Colors.white,
-                      minimumSize: const Size(0, StitchM3Theme.inputHeight),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                          StitchM3Theme.radiusMd,
-                        ),
-                      ),
-                    ),
-                    child: _isResending
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : Text(l10n.registrationResendEmail),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      context.go('/login');
-                    },
-                    child: Text(l10n.registrationGoToLogin),
-                  ),
-                ],
-              ),
+    return AuthDarkFormShell(
+      backLabel: l10n.authBackLogin,
+      onBack: () {
+        HapticFeedback.mediumImpact();
+        context.go('/login');
+      },
+      topBadge: const AuthEncryptionBadge(),
+      pageFooter: const AuthPageFooter(),
+      cardHeader: Column(
+        children: [
+          const Icon(
+            Icons.mark_email_unread_outlined,
+            size: 48,
+            color: MarketingDarkColors.brandLight,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            l10n.registrationCheckEmailTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
             ),
           ),
-        ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.registrationCheckEmailBody(widget.email),
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.4,
+              color: MarketingDarkColors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.registrationCheckEmailSpamHint,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 12,
+              color: MarketingDarkColors.slate500,
+            ),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AuthPrimaryCta(
+            label: l10n.registrationResendEmail,
+            isLoading: _isResending,
+            onPressed: _resend,
+          ),
+          const SizedBox(height: 12),
+          OutlinedButton(
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              context.go('/login');
+            },
+            style: OutlinedButton.styleFrom(
+              foregroundColor: MarketingDarkColors.slate300,
+              side: BorderSide(
+                color: MarketingDarkColors.borderMuted.withValues(alpha: 0.8),
+              ),
+              minimumSize: const Size(0, 48),
+              shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(MarketingDarkColors.radiusXl),
+              ),
+            ),
+            child: Text(l10n.registrationGoToLogin),
+          ),
+        ],
       ),
     );
   }

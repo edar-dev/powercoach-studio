@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#070b12]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PowerCoach Studio - Dettaglio Cliente | Misure &amp; Composizione Corporea</title>
+<!-- Tailwind CSS CDN with forms and container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              base: '#070b12',
+              card: '#0e1422',
+              panel: '#131b2e',
+              border: '#1e293b',
+              hover: '#182238'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-scrollbar">
+    /* Subtle scrollbar for table and panel navigation */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col bg-[#070b12] text-slate-200 antialiased font-sans selection:bg-blue-600 selection:text-white">
+<!-- BEGIN: MainHeader -->
+<!-- Top Navigation Bar aligned with PowerCoach Studio Dark Pro design -->
+<header class="sticky top-0 z-50 bg-[#0a0f1d]/90 backdrop-blur-md border-b border-slate-800/80 px-4 lg:px-8 py-3">
+<div class="max-w-[1600px] mx-auto flex items-center justify-between gap-4">
+<!-- Brand & Global Tabs -->
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-2.5 group" href="#">
+<div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25 ring-1 ring-blue-400/40">
+<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<div class="flex items-baseline gap-1.5">
+<span class="text-lg font-bold tracking-tight text-white">PowerCoach</span>
+<span class="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700/60 text-slate-300">STUDIO</span>
+</div>
+</a>
+<!-- Primary Workspace Links -->
+<nav class="hidden md:flex items-center gap-1 text-sm font-medium">
+<a class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition" href="#">Dashboard</a>
+<a class="px-3.5 py-1.5 rounded-lg text-white bg-blue-600/20 text-blue-400 border border-blue-500/30 flex items-center gap-2" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+            Clienti
+          </a>
+<a class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition" href="#">Programmi &amp; Mesocicli</a>
+<a class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition" href="#">Libreria Esercizi</a>
+<a class="px-3.5 py-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50 transition" href="#">Analitiche &amp; Test</a>
+</nav>
+</div>
+<!-- Quick Search, Sync Status, Profile -->
+<div class="flex items-center gap-3">
+<!-- Quick search pill with hotkey -->
+<div class="relative hidden sm:block w-56 lg:w-64">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="w-full bg-[#111726] border border-slate-700/60 rounded-lg pl-9 pr-10 py-1.5 text-xs text-slate-300 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500" placeholder="Ricerca rapida..." readonly="" type="text"/>
+<span class="absolute inset-y-0 right-2 flex items-center text-[10px] font-semibold text-slate-400 bg-slate-800/80 px-1.5 py-0.5 my-1.5 rounded border border-slate-700">⌘K</span>
+</div>
+<!-- Cloud Sync Badge -->
+<div class="flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs">
+<span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"></span>
+<span class="hidden sm:inline font-medium">Cloud Sync OK</span>
+</div>
+<!-- Notification Bell -->
+<button aria-label="Notifiche" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/60 transition border border-transparent hover:border-slate-700/60" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Coach Avatar Capsule -->
+<div class="flex items-center gap-2.5 pl-2 border-l border-slate-800">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-slate-700 to-slate-600 flex items-center justify-center text-xs font-bold text-white border border-slate-600">
+            MC
+          </div>
+<div class="hidden xl:block text-left">
+<p class="text-xs font-semibold text-slate-200 leading-tight">Marco Coach</p>
+<p class="text-[10px] text-slate-400 leading-tight">Master Trainer</p>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: ClientProfileSubheader -->
+<!-- Contextual breadcrumb & client navigation strip -->
+<section class="border-b border-slate-800/80 bg-[#0b101c]/70">
+<div class="max-w-[1600px] mx-auto px-4 lg:px-8 pt-5 pb-0">
+<!-- Top context row -->
+<div class="flex flex-wrap items-center justify-between gap-4 pb-4">
+<div class="flex items-center gap-3">
+<a class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white px-2.5 py-1.5 rounded-md bg-slate-800/40 hover:bg-slate-800 border border-slate-700/50 transition" href="#">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+<span>Torna ai clienti</span>
+</a>
+<span class="text-slate-600">/</span>
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+<span class="text-sm font-semibold text-slate-200">Edoardo Moretti</span>
+<span class="text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">Prep. Atletica</span>
+</div>
+</div>
+<!-- Direct fast actions -->
+<div class="flex items-center gap-2 text-xs">
+<span class="text-slate-400">Ultimo aggiornamento: <span class="text-slate-200 font-medium">23 Settembre 2026</span></span>
+<span class="w-1 h-1 rounded-full bg-slate-600"></span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Stato: Attivo</span>
+</div>
+</div>
+<!-- Main Title & Primary Secondary Tabs -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-1">
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-white flex items-center gap-3">
+            Dettaglio Cliente
+            <span class="text-sm font-normal text-slate-400 border-l border-slate-700 pl-3">Misure &amp; Composizione Corporea</span>
+</h1>
+</div>
+</div>
+<!-- Client Navigation Tabs (Panoramica, Misure, Record, Workout) -->
+<nav class="flex items-center gap-8 mt-5 -mb-px text-sm font-medium border-b border-transparent">
+<a class="pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition" href="#">Panoramica</a>
+<!-- Active Tab with glowing underline -->
+<a class="pb-3 text-blue-400 border-b-2 border-blue-500 font-semibold flex items-center gap-2 transition shadow-sm" href="#">
+<span>Misure</span>
+<span class="text-[10px] px-1.5 py-0.2 rounded-full bg-blue-500/20 text-blue-300 font-mono">1</span>
+</a>
+<a class="pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition" href="#">Record</a>
+<a class="pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition" href="#">Workout</a>
+</nav>
+</div>
+</section>
+<!-- END: ClientProfileSubheader -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 max-w-[1600px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+<!-- BEGIN: MeasurementToolbar -->
+<!-- Action and Metric Filtering Bar -->
+<div class="bg-[#0e1424] border border-slate-800/90 rounded-2xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-xl">
+<!-- Metric Selection Dropdown & Range -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Metric Selector -->
+<div class="relative min-w-[240px]">
+<label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Metrica attiva</label>
+<div class="relative">
+<select class="w-full appearance-none bg-[#141b2f] border border-slate-700/70 hover:border-slate-600 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer transition pr-10">
+<option selected="" value="bf">Massa grassa %</option>
+<option value="weight">Peso corporeo (kg)</option>
+<option value="lean">Massa muscolare (kg)</option>
+<option value="circ">Circonferenze &amp; Pliche</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Range Pills Selector -->
+<div class="self-end pt-1 sm:pt-0">
+<label class="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">Intervallo temporale</label>
+<div class="inline-flex p-1 bg-[#131a2c] rounded-xl border border-slate-800">
+<button class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white shadow">Ultimi 30 giorni</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition">3 mesi</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition">6 mesi</button>
+<button class="px-3 py-1.5 text-xs font-medium rounded-lg text-slate-400 hover:text-white transition">Tutto lo storico</button>
+</div>
+</div>
+</div>
+<!-- Action CTAs -->
+<div class="flex items-center gap-3 self-end lg:self-center">
+<!-- Apri storico completo (inspired by IMAGE_2 button) -->
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-blue-500/40 bg-blue-950/30 hover:bg-blue-900/40 text-blue-400 text-xs font-semibold transition hover:border-blue-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Apri storico completo
+        </button>
+<!-- New Measurement Primary CTA -->
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 transition transform active:scale-95" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+          Nuova misurazione
+        </button>
+</div>
+</div>
+<!-- END: MeasurementToolbar -->
+<!-- BEGIN: AnalyticsAndChartsSection -->
+<div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+<!-- Chart Card (Takes 2 columns on wide screens) -->
+<section aria-label="Grafico Storico" class="xl:col-span-2 bg-[#0e1424] border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<!-- Header of the chart -->
+<div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+<div>
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-teal-400 shadow-[0_0_10px_rgba(45,212,191,0.6)]"></span>
+<h2 class="text-base font-bold text-white tracking-wide">Massa grassa %</h2>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">Progressione rilevata con plicometria a 7 punti Jackson-Pollock</p>
+</div>
+<!-- Highlight Metric Badge -->
+<div class="bg-[#141b2e] border border-slate-700/60 rounded-xl px-3.5 py-2 text-right">
+<div class="text-[10px] uppercase font-bold text-slate-400">Valore Attuale</div>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-black text-white font-mono">10.0%</span>
+<span class="inline-flex items-center text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                ↓ -0.5%
+              </span>
+</div>
+</div>
+</div>
+<!-- Canvas / SVG Graphic Area aligned with history.png (IMAGE_4) -->
+<div class="relative w-full h-64 sm:h-72 mt-2 bg-[#0a0f1d]/60 rounded-xl border border-slate-800/70 p-4 flex flex-col justify-between">
+<!-- Y-axis labels & horizontal guide lines -->
+<div class="relative w-full h-full flex flex-col justify-between text-[11px] font-mono text-slate-400 select-none">
+<!-- Guideline 11.0 -->
+<div class="w-full flex items-center">
+<span class="w-9 shrink-0 text-slate-400 font-semibold">11.0</span>
+<div class="w-full border-b border-slate-800/90 ml-2"></div>
+</div>
+<!-- Guideline 10.5 -->
+<div class="w-full flex items-center">
+<span class="w-9 shrink-0 text-slate-400 font-semibold">10.5</span>
+<div class="w-full border-b border-slate-800/90 ml-2"></div>
+</div>
+<!-- Guideline 10.0 (Target & Active line) -->
+<div class="w-full flex items-center">
+<span class="w-9 shrink-0 text-teal-400 font-bold">10.0</span>
+<div class="w-full border-b border-teal-500/30 ml-2"></div>
+</div>
+<!-- Guideline 9.5 -->
+<div class="w-full flex items-center">
+<span class="w-9 shrink-0 text-slate-400 font-semibold">9.5</span>
+<div class="w-full border-b border-slate-800/90 ml-2"></div>
+</div>
+<!-- Guideline 9.0 -->
+<div class="w-full flex items-center">
+<span class="w-9 shrink-0 text-slate-400 font-semibold">9.0</span>
+<div class="w-full border-b border-slate-800/90 ml-2"></div>
+</div>
+<!-- SVG Data overlay (Trendline with data dot) -->
+<div class="absolute inset-0 left-11 top-0 bottom-0 pointer-events-none">
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 500 200">
+<!-- Area gradient -->
+<defs>
+<lineargradient id="chartGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#14b8a6" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#14b8a6" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Trend Line path from previous (10.5% ~ y:50) to 23/09 (10.0% ~ y:100) -->
+<path d="M 40,50 L 160,75 L 320,85 L 440,100" fill="none" stroke="#2dd4bf" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<path d="M 40,50 L 160,75 L 320,85 L 440,100 L 440,200 L 40,200 Z" fill="url(#chartGradient)"></path>
+<!-- Previous Month Dot -->
+<circle class="cursor-pointer" cx="40" cy="50" fill="#0f172a" r="5" stroke="#2dd4bf" stroke-width="2"></circle>
+<!-- Latest Point marker (23/09 - 10.0%) as in IMAGE_4 -->
+<circle class="shadow-lg animate-pulse" cx="440" cy="100" fill="#2dd4bf" r="6" stroke="#ffffff" stroke-width="2.5"></circle>
+</svg>
+<!-- Interactive Floating Label for 23/09 point -->
+<div class="absolute top-[82px] left-[84%] transform -translate-x-1/2 -translate-y-8 bg-slate-900 border border-teal-500/60 rounded-md px-2 py-0.5 text-[10px] font-mono font-bold text-teal-300 shadow-xl pointer-events-auto">
+                23/09: 10.0%
+              </div>
+</div>
+</div>
+<!-- X-Axis Dates -->
+<div class="pt-2 pl-10 flex items-center justify-between text-[11px] font-mono text-slate-400 border-t border-slate-800">
+<span>25/08</span>
+<span>05/09</span>
+<span>15/09</span>
+<span class="text-teal-400 font-bold bg-teal-500/10 px-1.5 py-0.5 rounded">23/09 (Oggi)</span>
+</div>
+<!-- Axis Footnotes -->
+<div class="text-center text-[10px] uppercase tracking-wider font-semibold text-slate-400 mt-1">
+            Data Rilevazione
+          </div>
+</div>
+<!-- Legend / Notes Footer -->
+<div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-800/80 text-xs text-slate-400">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5">
+<span class="w-3 h-0.5 bg-teal-400 rounded-full"></span> Rilevazioni Ufficiali
+            </span>
+<span class="flex items-center gap-1.5 text-slate-400">
+<span class="w-2 h-2 rounded-full border border-teal-400"></span> Plica Addome &amp; Pettorale
+            </span>
+</div>
+<span class="text-slate-400">Prossima misurazione consigliata: <span class="text-slate-200 font-medium">23 Ottobre</span></span>
+</div>
+</section>
+<!-- Comparison Card (Confronto Periodi from history.png / IMAGE_4) -->
+<section aria-label="Confronto Periodi" class="bg-[#0e1424] border border-slate-800/90 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+<div>
+<!-- Section Title -->
+<div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+<div>
+<h2 class="text-base font-bold text-white tracking-wide">Confronto periodi</h2>
+<p class="text-xs text-slate-400 mt-0.5">Ultimi 30 giorni vs 30 giorni precedenti</p>
+</div>
+<span class="px-2 py-1 rounded bg-slate-800 text-[10px] font-mono text-slate-300 border border-slate-700">M-o-M</span>
+</div>
+<!-- Comparison Rows -->
+<div class="space-y-4">
+<!-- Ultimi 30 giorni block -->
+<div class="p-3.5 rounded-xl bg-[#131b2e] border border-slate-800/80 hover:border-slate-700 transition">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-semibold text-slate-300">Ultimi 30 giorni</span>
+<span class="text-[11px] text-slate-400 font-mono">1 rilevazione</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="text-2xl font-black text-white font-mono">10.0%</span>
+<span class="text-xs font-semibold text-emerald-400 flex items-center gap-1">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 14l-7 7m0 0l-7-7m7 7V3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+                  -0.5%
+                </span>
+</div>
+<div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-teal-400 h-full rounded-full" style="width: 72%"></div>
+</div>
+</div>
+<!-- 30 giorni precedenti block -->
+<div class="p-3.5 rounded-xl bg-[#131b2e] border border-slate-800/80 hover:border-slate-700 transition">
+<div class="flex items-center justify-between mb-1">
+<span class="text-xs font-semibold text-slate-400">30 giorni precedenti</span>
+<span class="text-[11px] text-slate-400 font-mono">1 rilevazione</span>
+</div>
+<div class="flex items-baseline justify-between">
+<span class="text-2xl font-black text-slate-300 font-mono">10.5%</span>
+<span class="text-xs font-medium text-slate-400">Baseline</span>
+</div>
+<div class="w-full bg-slate-800 h-1.5 rounded-full mt-2 overflow-hidden">
+<div class="bg-slate-600 h-full rounded-full" style="width: 80%"></div>
+</div>
+</div>
+<!-- Coach Insight Box -->
+<div class="p-3.5 rounded-xl bg-blue-950/20 border border-blue-800/30 flex items-start gap-3">
+<div class="p-1.5 rounded-lg bg-blue-500/10 text-blue-400 shrink-0 mt-0.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<h4 class="text-xs font-bold text-blue-300">Trend Positivo Rilevato</h4>
+<p class="text-xs text-slate-300 mt-0.5 leading-relaxed">
+                  Definizione muscolare migliorata mantenendo inalterati i carichi massimali (SBD totale: <strong class="text-white">415 kg</strong>).
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- Card Action Footer -->
+<div class="pt-4 border-t border-slate-800">
+<button class="w-full py-2 px-3 rounded-lg text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition flex items-center justify-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+            Scarica report PDF periodico
+          </button>
+</div>
+</section>
+</div>
+<!-- END: AnalyticsAndChartsSection -->
+<!-- BEGIN: MeasurementRecordsLog -->
+<!-- Log delle misurazioni registrate (derived from local_customer IMAGE_2) -->
+<section aria-label="Registro Storico Misurazioni" class="bg-[#0e1424] border border-slate-800/90 rounded-2xl p-6 shadow-xl space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800">
+<div>
+<h2 class="text-lg font-bold text-white tracking-wide">Rilevazioni Registrate</h2>
+<p class="text-xs text-slate-400">Elenco cronologico completo dei check-in fisici e carichi registrati</p>
+</div>
+<div class="flex items-center gap-2 text-xs text-slate-400">
+<span class="inline-block w-2 h-2 rounded-full bg-blue-500"></span>
+<span>Totale check-in: <strong class="text-slate-200">2 registrazioni</strong></span>
+</div>
+</div>
+<!-- Entries Stack -->
+<div class="space-y-3">
+<!-- Entry 1: Current Active 2026-09-23 (Exact data from IMAGE_2: S 140 · B 100 · D 175 · BF 10%) -->
+<article class="group relative bg-[#131b2e] hover:bg-[#17223b] border border-slate-800/90 hover:border-blue-500/50 rounded-xl p-4 sm:p-5 transition-all duration-150 cursor-pointer shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Left Info Block -->
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="text-base font-bold font-mono text-white tracking-tight">2026-09-23</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Check Recente</span>
+<span class="text-xs text-slate-400">Plicometria &amp; Test Forza</span>
+</div>
+<!-- Main Metrics Badges (from IMAGE_2 S 140 · B 100 · D 175 · BF 10%) -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<!-- Squat -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-700/60 text-xs">
+<span class="text-blue-400 font-bold">S</span>
+<span class="text-white font-mono font-medium">140 kg</span>
+</div>
+<!-- Bench -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-700/60 text-xs">
+<span class="text-blue-400 font-bold">B</span>
+<span class="text-white font-mono font-medium">100 kg</span>
+</div>
+<!-- Deadlift -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-700/60 text-xs">
+<span class="text-blue-400 font-bold">D</span>
+<span class="text-white font-mono font-medium">175 kg</span>
+</div>
+<!-- Body Fat -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-teal-950/40 border border-teal-500/40 text-xs">
+<span class="text-teal-400 font-bold">BF</span>
+<span class="text-teal-200 font-mono font-bold">10%</span>
+</div>
+<!-- Additional complementary metrics -->
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-700/60 text-xs">
+<span class="text-slate-400 font-bold">Peso</span>
+<span class="text-white font-mono font-medium">78.5 kg</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-700/60 text-xs">
+<span class="text-slate-400 font-bold">MM</span>
+<span class="text-white font-mono font-medium">64.0 kg</span>
+</div>
+</div>
+<!-- Notes extract -->
+<p class="text-xs text-slate-400 italic pt-0.5">
+                Note coach: <span class="text-slate-300 font-normal">"Ottimo feeling sul blocco stacco; vascolarizzazione addominale evidente."</span>
+</p>
+</div>
+<!-- Right Actions & Chevron -->
+<div class="flex items-center gap-3 self-end md:self-center shrink-0">
+<div class="hidden sm:flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700 border border-slate-700 transition" type="button">
+                  Modifica
+                </button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-900/30 hover:bg-blue-900/50 border border-blue-700/40 transition" type="button">
+                  Dettagli Pliche
+                </button>
+</div>
+<!-- Iconic Chevron from IMAGE_2 -->
+<div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 group-hover:text-blue-400 group-hover:translate-x-0.5 transition">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</div>
+</article>
+<!-- Entry 2: Previous Month Record 2026-08-25 -->
+<article class="group relative bg-[#131b2e]/70 hover:bg-[#17223b] border border-slate-800/70 hover:border-slate-700 rounded-xl p-4 sm:p-5 transition-all duration-150 cursor-pointer shadow-sm">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<!-- Left Info Block -->
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="text-base font-bold font-mono text-slate-300 tracking-tight">2026-08-25</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 text-slate-400 border border-slate-700">Precedente</span>
+<span class="text-xs text-slate-400">Baseline Trimestrale</span>
+</div>
+<!-- Main Metrics Badges -->
+<div class="flex flex-wrap items-center gap-2 pt-1">
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">S</span>
+<span class="text-slate-300 font-mono">135 kg</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">B</span>
+<span class="text-slate-300 font-mono">97.5 kg</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">D</span>
+<span class="text-slate-300 font-mono">170 kg</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">BF</span>
+<span class="text-slate-300 font-mono">10.5%</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">Peso</span>
+<span class="text-slate-300 font-mono">79.1 kg</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#0a0f1d] border border-slate-800 text-xs">
+<span class="text-slate-400 font-bold">MM</span>
+<span class="text-slate-300 font-mono">63.8 kg</span>
+</div>
+</div>
+<p class="text-xs text-slate-400 italic pt-0.5">
+                Note coach: <span class="text-slate-400 font-normal">"Fase di accumulo completata. Inizio ciclo di definizione."</span>
+</p>
+</div>
+<!-- Right Actions & Chevron -->
+<div class="flex items-center gap-3 self-end md:self-center shrink-0">
+<div class="hidden sm:flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 border border-slate-800 transition" type="button">
+                  Modifica
+                </button>
+</div>
+<div class="w-8 h-8 rounded-full flex items-center justify-center text-slate-500 group-hover:text-slate-300 group-hover:translate-x-0.5 transition">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- END: MeasurementRecordsLog -->
+</main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: FloatingAddButton -->
+<!-- Persistent Floating Action Button identical in placement to IMAGE_2 -->
+<div class="fixed bottom-6 right-6 lg:bottom-8 lg:right-8 z-40">
+<button class="w-14 h-14 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-2xl shadow-blue-600/50 border border-blue-400/40 hover:scale-105 active:scale-95 transition-transform duration-150" title="Aggiungi Nuova Misurazione" type="button">
+<svg class="w-7 h-7" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+</div>
+<!-- END: FloatingAddButton -->
+<!-- BEGIN: MainFooter -->
+<!-- Footer matching SCREEN_5 style -->
+<footer class="mt-auto border-t border-slate-800/80 bg-[#070b12] py-4 px-4 lg:px-8 text-xs text-slate-400">
+<div class="max-w-[1600px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<span>© 2025 PowerCoach Studio Pro. Tutti i diritti riservati.</span>
+<span class="text-slate-700">•</span>
+<span class="flex items-center gap-1.5 text-slate-400">
+<svg class="w-3.5 h-3.5 text-blue-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Crittografia End-to-End Client Data
+        </span>
+</div>
+<div class="flex items-center gap-4 text-slate-400">
+<span>Architettura Offline-First</span>
+<span class="text-slate-700">•</span>
+<span class="font-mono text-slate-400">Versione 2.4.1-rc</span>
+</div>
+</div>
+</footer>
+<!-- END: MainFooter -->
+</body></html>

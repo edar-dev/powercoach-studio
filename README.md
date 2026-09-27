@@ -2,7 +2,7 @@
 
 Flutter app (Material 3) for gym coaches: clients, workout plans, measurements, calendar, and session tracking.
 
-**Architecture:** local-first — business data lives in Drift/SQLite and SharedPreferences, scoped per authenticated user. **Supabase** is used for authentication only. Optional **Hevy** export uses Dio against the Hevy API (user-provided API key in app settings).
+**Architecture:** local-first — business data lives in Drift/SQLite and SharedPreferences, scoped per authenticated user. **Supabase** is used for authentication only.
 
 ## Environment
 
@@ -109,7 +109,7 @@ lib/
 │   ├── routing/    # app_routes.dart, route_redirect.dart
 │   ├── theme/      # StitchM3Theme
 │   └── ui/widgets/ # shared Stitch components (AppBar, Card, sheets…)
-├── features/       # auth, landing, dashboard, customers, workouts, settings, integrations/hevy
+├── features/       # auth, landing, dashboard, customers, workouts, exercise_library, settings
 ├── app.dart        # MaterialApp.router + configureAppRouter()
 └── main.dart       # bootstrap
 ```

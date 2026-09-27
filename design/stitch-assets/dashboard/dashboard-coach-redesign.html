@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard Coach - Studio Fitness</title>
+<!-- Tailwind CSS CDN with forms & container queries plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            dark: {
+              bg: '#090d16',
+              surface: '#0f172a',
+              card: '#111b2e',
+              cardHover: '#15223a',
+              border: 'rgba(255, 255, 255, 0.07)',
+              borderFocus: 'rgba(59, 130, 246, 0.4)',
+              subtle: '#1e293b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Glassmorphism & Micro-interactions -->
+<style data-purpose="custom-theme-styles">
+    body {
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #090d16;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    .card-surface {
+      background-color: #111b2e;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-surface:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
+    }
+
+    .subtle-badge {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-600 selection:text-white">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-30 bg-[#090d16]/90 backdrop-blur-md border-b border-white/5 px-4 lg:px-8 py-3.5 transition-colors">
+<div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+<!-- Brand & Navigation Controls -->
+<div class="flex items-center gap-3 md:gap-4">
+<button aria-label="Menu laterale" class="p-2 -ml-1 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<div class="flex items-center gap-2.5">
+<h1 class="text-xl font-bold tracking-tight text-white">Dashboard</h1>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold tracking-wide uppercase bg-brand-500/10 text-brand-400 border border-brand-500/20">
+            Coach Studio
+          </span>
+</div>
+</div>
+<!-- Quick Search Bar (Compact for Coach Hub) -->
+<div class="hidden md:flex flex-1 max-w-xs mx-4">
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="w-full bg-[#111b2e] border border-white/10 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-colors" placeholder="Cerca atleta, scheda o esercizio... (⌘K)" type="text"/>
+</div>
+</div>
+<!-- Action items & User Profile -->
+<div class="flex items-center gap-3">
+<!-- Cloud Sync Badge from reference design -->
+<div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[#111b2e] text-slate-300 border border-white/10">
+<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+<span>Cloud Sync OK</span>
+</div>
+<!-- Notification Bell -->
+<button aria-label="Notifiche" class="relative p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors focus:outline-none" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full ring-2 ring-[#090d16]"></span>
+</button>
+<!-- Vertical Divider -->
+<div class="h-5 w-px bg-white/10"></div>
+<!-- Coach Profile Button -->
+<div class="flex items-center gap-2 pl-1">
+<button class="flex items-center gap-2.5 text-left focus:outline-none group" type="button">
+<div class="relative w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white font-semibold text-xs ring-2 ring-white/10 group-hover:ring-brand-500 transition-all">
+<span>MC</span>
+</div>
+<div class="hidden xl:block">
+<p class="text-xs font-medium text-slate-200 group-hover:text-white leading-none">Marco Coach</p>
+<span class="text-[10px] text-slate-400 leading-none">Master Trainer</span>
+</div>
+<svg class="w-3.5 h-3.5 text-slate-500 group-hover:text-slate-300 transition-transform hidden sm:block" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-7 space-y-8">
+<!-- BEGIN: QuickKPIBar -->
+<!-- Sintesi rapida dell'attività coach -->
+<section aria-label="Indicatori chiave" class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+<div class="card-surface p-3.5 sm:p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs font-medium text-slate-400">Atleti seguiti</p>
+<p class="text-xl sm:text-2xl font-bold text-white mt-0.5">18</p>
+</div>
+<div class="w-10 h-10 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-brand-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="card-surface p-3.5 sm:p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs font-medium text-slate-400">Schede attive</p>
+<p class="text-xl sm:text-2xl font-bold text-white mt-0.5">24</p>
+</div>
+<div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="card-surface p-3.5 sm:p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs font-medium text-slate-400">Sessioni completate</p>
+<p class="text-xl sm:text-2xl font-bold text-white mt-0.5">0 <span class="text-xs font-normal text-slate-500">/ 30gg</span></p>
+</div>
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+<div class="card-surface p-3.5 sm:p-4 rounded-xl flex items-center justify-between">
+<div>
+<p class="text-xs font-medium text-slate-400">Attenzione coach</p>
+<p class="text-xl sm:text-2xl font-bold text-emerald-400 mt-0.5">0 <span class="text-xs text-slate-400">avvisi</span></p>
+</div>
+<div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+</div>
+</section>
+<!-- END: QuickKPIBar -->
+<!-- BEGIN: SectionOggi -->
+<!-- Sezione 1: Attività pianificate per la giornata -->
+<section class="space-y-3.5" data-purpose="today-schedule-section">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<h2 class="text-lg font-semibold tracking-tight text-white">Oggi</h2>
+<span class="text-xs text-slate-400 font-medium">· Martedì, 24 Ottobre</span>
+</div>
+<a class="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-1 group" href="#calendario">
+<span>Vedi tutto</span>
+<svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</a>
+</div>
+<div class="card-surface rounded-xl p-5 md:p-6 relative overflow-hidden">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-5">
+<!-- Stato vuoto odierno coerente con w7.png ma arricchito graficamente -->
+<div class="flex items-start sm:items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-800/80 border border-white/10 flex items-center justify-center text-slate-400 shrink-0">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-semibold text-slate-200">Nessun elemento in programma per oggi.</p>
+<p class="text-xs text-slate-400 mt-0.5">Non ci sono sessioni live, check-in o promemoria pianificati per questa data.</p>
+</div>
+</div>
+<!-- Azioni rapide per la giornata -->
+<div class="flex items-center gap-2.5 sm:self-auto self-start">
+<button class="px-3.5 py-2 text-xs font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors inline-flex items-center gap-1.5" type="button">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Apri agenda</span>
+</button>
+<button class="px-3.5 py-2 text-xs font-medium text-white bg-brand-600 hover:bg-brand-500 rounded-lg shadow-sm shadow-brand-600/30 transition-all inline-flex items-center gap-1.5" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Pianifica sessione</span>
+</button>
+</div>
+</div>
+<!-- Prossima attività prevista a breve (prospettiva coach) -->
+<div class="mt-4 pt-4 border-t border-white/5 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+<span>Prossima attività schedulata: <strong class="text-slate-300 font-medium">Domani ore 09:30 · Check-in Mario R.</strong></span>
+</div>
+<span class="text-[11px] text-slate-500">Aggiornato pochi secondi fa</span>
+</div>
+</div>
+</section>
+<!-- END: SectionOggi -->
+<!-- BEGIN: SectionStrumentiCoach -->
+<!-- Sezione 2: Moduli operativi principali del Coach -->
+<section class="space-y-3.5" data-purpose="coach-tools-section">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold tracking-tight text-white">Strumenti coach</h2>
+<span class="text-xs text-slate-500">2 strumenti disponibili</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Card 1: Diario allenamenti -->
+<div class="card-surface rounded-xl p-5 md:p-6 flex flex-col justify-between group cursor-pointer">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-xl bg-blue-500/10 border border-blue-500/20 text-brand-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+<!-- Icona libro/diario fedele a w7.png -->
+<svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24">
+<path d="M19 2H6c-1.2 0-2 .8-2 2v16c0 1.2.8 2 2 2h13a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-1 18H6a.9.9 0 0 1-1-.9V4a.9.9 0 0 1 .9-.9H18v16.9zM8 7h8v1.5H8V7zm0 3.5h8V12H8v-1.5zm0 3.5h5v1.5H8V14z"></path>
+</svg>
+</div>
+<span class="subtle-badge px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400">
+                Log registro
+              </span>
+</div>
+<div>
+<h3 class="text-base font-semibold text-white group-hover:text-brand-400 transition-colors">Diario allenamenti</h3>
+<p class="text-sm font-medium text-slate-400 mt-1">0 sessioni <span class="text-slate-500 font-normal">(30 gg)</span></p>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2">Registra workout completati dagli atleti in tempo reale, serie effettive, RPE e note d'esecuzione tecnica.</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+<span class="text-xs text-slate-400">Nessuna sessione pendente</span>
+<span class="text-xs font-semibold text-brand-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Apri diario
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+</div>
+</div>
+<!-- Card 2: Statistiche coach -->
+<div class="card-surface rounded-xl p-5 md:p-6 flex flex-col justify-between group cursor-pointer">
+<div class="space-y-4">
+<div class="flex items-start justify-between">
+<div class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+<!-- Icona trend/statistiche fedele a w7.png -->
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<span class="subtle-badge px-2.5 py-1 rounded-md text-[11px] font-medium text-slate-400">
+                Analytics
+              </span>
+</div>
+<div>
+<h3 class="text-base font-semibold text-white group-hover:text-cyan-400 transition-colors">Statistiche coach</h3>
+<p class="text-sm font-medium text-slate-400 mt-1">—</p>
+<p class="text-xs text-slate-500 mt-2 line-clamp-2">Monitora carichi massimali teorici, volume progressivo settimanale e aderenza alle schede dei tuoi atleti.</p>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
+<span class="text-xs text-slate-400">Dati in attesa di calcolo</span>
+<span class="text-xs font-semibold text-cyan-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+              Visualizza report
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: SectionStrumentiCoach -->
+<!-- BEGIN: SectionRichiedeAttenzione -->
+<!-- Sezione 3: Notifiche e stato di sicurezza / backup del dispositivo -->
+<section class="space-y-3.5" data-purpose="attention-backup-section">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold tracking-tight text-white">Richiede attenzione</h2>
+<span class="inline-flex items-center gap-1 text-xs text-emerald-400 font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+          Sistema aggiornato
+        </span>
+</div>
+<div class="space-y-3">
+<!-- Card 3A: Messaggio "Al momento non c'è nulla che richieda attenzione" -->
+<div class="card-surface rounded-xl p-4 sm:p-5 flex items-center gap-4">
+<div class="w-10 h-10 rounded-xl bg-slate-800/80 border border-white/10 flex items-center justify-center text-slate-400 shrink-0">
+<!-- Icona nuvola da w7.png -->
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 00-9.78 2.096A4.001 4.001 0 003 15z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div class="flex-1">
+<p class="text-sm font-medium text-slate-200">Al momento non c'è nulla che richieda attenzione.</p>
+<p class="text-xs text-slate-500">Tutti i parametri degli atleti e le configurazioni del server sono conformi.</p>
+</div>
+</div>
+<!-- Card 3B: Banner backup dati locali con pulsante evidenziato -->
+<div class="card-surface rounded-xl p-4 sm:p-5 border-l-4 border-l-brand-500 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-start gap-3.5">
+<div class="w-9 h-9 rounded-lg bg-brand-500/10 border border-brand-500/20 text-brand-400 flex items-center justify-center shrink-0 mt-0.5">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7c0-2-1-3-3-3H7C5 4 4 5 4 7zm4 5h8m-8-3h4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<p class="text-xs sm:text-sm text-slate-300 font-medium">I dati restano archiviati su questo dispositivo.</p>
+<p class="text-xs text-slate-400 mt-0.5">Esporta un backup sicuro da Impostazioni prima di reinstallare l'applicazione o cambiare dispositivo di lavoro.</p>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+<a class="text-xs font-semibold text-brand-400 hover:text-brand-300 hover:underline px-3 py-1.5 transition-colors" href="#backup">
+              Apri backup
+            </a>
+<button class="text-xs font-medium text-white bg-slate-800 hover:bg-slate-700 border border-white/10 px-3.5 py-1.5 rounded-lg transition-colors inline-flex items-center gap-1.5" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Esporta ora</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: SectionRichiedeAttenzione -->
+<!-- BEGIN: SectionAuditClientiProgrammi -->
+<!-- Sezione 4: Controllo di conformità dei clienti e dei piani di allenamento -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Card 4A: Clienti senza programma -->
+<section class="space-y-3.5" data-purpose="clients-without-program">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold tracking-tight text-white">Clienti senza programma</h2>
+<span class="subtle-badge px-2 py-0.5 rounded text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20">
+            100% Assegnati
+          </span>
+</div>
+<div class="card-surface rounded-xl p-5 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<!-- Icona community/utenti da w7.png -->
+<div class="w-10 h-10 rounded-xl bg-slate-800/80 border border-white/10 flex items-center justify-center text-slate-400 shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-200">Ogni cliente ha almeno un programma.</p>
+<p class="text-xs text-slate-500">Nessun atleta in attesa di primo inserimento o scheda.</p>
+</div>
+</div>
+<a class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#clienti" title="Visualizza lista clienti">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</a>
+</div>
+</section>
+<!-- Card 4B: Programmi da aggiornare -->
+<section class="space-y-3.5" data-purpose="programs-to-update">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-semibold tracking-tight text-white">Programmi da aggiornare</h2>
+<span class="subtle-badge px-2 py-0.5 rounded text-[11px] font-medium text-slate-400">
+            Finestra 14 gg
+          </span>
+</div>
+<div class="card-surface rounded-xl p-5 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3.5">
+<!-- Icona orologio da w7.png -->
+<div class="w-10 h-10 rounded-xl bg-slate-800/80 border border-white/10 flex items-center justify-center text-slate-400 shrink-0">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div>
+<p class="text-sm font-medium text-slate-200">Tutti i programmi sono stati aggiornati negli ultimi 14 giorni.</p>
+<p class="text-xs text-slate-500">I mesocicli correnti sono tutti in fase attiva e non scaduti.</p>
+</div>
+</div>
+<a class="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors" href="#schede" title="Verifica scadenze programmi">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</a>
+</div>
+</section>
+</div>
+<!-- END: SectionAuditClientiProgrammi -->
+<!-- BEGIN: QuickShortcutsGrid -->
+<!-- Collegamenti veloci alle aree operative (Libreria Esercizi, Atleti, Template) -->
+<section aria-label="Accesso rapido" class="pt-2">
+<div class="border-t border-white/5 pt-6">
+<h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3.5">Scorciatoie di gestione</h3>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<a class="card-surface p-3.5 rounded-lg flex items-center gap-3 hover:border-brand-500/40 transition-colors" href="#libreria-esercizi">
+<div class="w-8 h-8 rounded-md bg-blue-500/10 text-brand-400 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-slate-200 truncate">Libreria esercizi</p>
+<p class="text-[10px] text-slate-500">348 varianti</p>
+</div>
+</a>
+<a class="card-surface p-3.5 rounded-lg flex items-center gap-3 hover:border-brand-500/40 transition-colors" href="#schede-template">
+<div class="w-8 h-8 rounded-md bg-indigo-500/10 text-indigo-400 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-slate-200 truncate">Schede &amp; Template</p>
+<p class="text-[10px] text-slate-500">Modelli pronti</p>
+</div>
+</a>
+<a class="card-surface p-3.5 rounded-lg flex items-center gap-3 hover:border-brand-500/40 transition-colors" href="#nuovo-atleta">
+<div class="w-8 h-8 rounded-md bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-slate-200 truncate">Nuovo atleta</p>
+<p class="text-[10px] text-slate-500">Invito e scheda</p>
+</div>
+</a>
+<a class="card-surface p-3.5 rounded-lg flex items-center gap-3 hover:border-brand-500/40 transition-colors" href="#impostazioni">
+<div class="w-8 h-8 rounded-md bg-slate-700/50 text-slate-400 flex items-center justify-center">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div class="overflow-hidden">
+<p class="text-xs font-medium text-slate-200 truncate">Impostazioni</p>
+<p class="text-[10px] text-slate-500">Backup &amp; Cloud</p>
+</div>
+</a>
+</div>
+</div>
+</section>
+<!-- END: QuickShortcutsGrid -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomStatusBar / FloatingAction -->
+<!-- Barra di stato e azione rapida per il Coach -->
+<aside aria-label="Azione rapida coach" class="fixed bottom-5 right-5 z-40">
+<button class="flex items-center gap-2.5 px-4 py-2.5 bg-brand-600 hover:bg-brand-500 active:scale-95 text-white font-medium text-xs rounded-full shadow-lg shadow-brand-600/40 border border-brand-400/30 transition-all" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+<span>Nuovo Allenamento</span>
+</button>
+</aside>
+<!-- END: BottomStatusBar / FloatingAction -->
+<!-- BEGIN: Footer -->
+<footer class="mt-auto border-t border-white/5 py-4 px-4 lg:px-8 text-center text-xs text-slate-600">
+<p>Coach Studio · Sistema di monitoraggio e pianificazione atletica offline-first.</p>
+</footer>
+<!-- END: Footer -->
+</body></html>

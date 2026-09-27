@@ -6,7 +6,6 @@ import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../backup_onboarding_dialog.dart';
-import '../../../integrations/hevy/presentation/hevy_settings_section.dart';
 
 /// Main settings list body (personal info, notifications, backup, language).
 class SettingsScreenContent extends StatelessWidget {
@@ -162,15 +161,6 @@ class SettingsScreenContent extends StatelessWidget {
           trailing: const Icon(Icons.chevron_right),
           onTap: onRestoreCloudBackup,
         ),
-        Text(
-          l10n.settingsCloudBackupHevyNote,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-        const Divider(height: 32),
-        const HevySettingsSection(),
-        const SizedBox(height: 24),
         const Divider(height: 32),
         ListTile(
           title: Text(l10n.settingsLanguage),

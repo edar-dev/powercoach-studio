@@ -15,8 +15,6 @@ import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dar
 import 'package:powercoach_studio/core/ui/widgets/pdf_export_preview_dialog.dart';
 import 'package:powercoach_studio/features/customers/data/customer_repository.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
-import 'package:powercoach_studio/features/integrations/hevy/data/hevy_settings_store.dart';
-import 'package:powercoach_studio/features/integrations/hevy/presentation/hevy_export_review_sheet.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/domain/export_excel_usecase.dart';
 import 'package:powercoach_studio/features/workouts/domain/export_json_usecase.dart';
@@ -26,7 +24,7 @@ import 'package:powercoach_studio/features/exercise_library/data/import_file_rea
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// PDF / JSON / Excel / Hevy export helpers for the workout builder screen.
+/// PDF / JSON / Excel export helpers for the workout builder screen.
 class WorkoutBuilderExportActions {
   WorkoutBuilderExportActions({
     required this.context,
@@ -270,45 +268,5 @@ class WorkoutBuilderExportActions {
         ),
       );
     }
-  }
-
-  Future<void> exportCurrentDayToHevy({
-    required WorkoutRoutine routine,
-    required int selectedWeekIndex,
-    required int selectedDayIndex,
-  }) async {
-    if (!await PlanGate.requirePro(context, feature: PaywallFeature.hevy)) {
-      return;
-    }
-    if (!context.mounted) return;
-
-    final l10n = AppLocalizations.of(context);
-    final hasKey = await HevySettingsStore.instance.hasApiKey();
-    if (!hasKey) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.hevyExportNoCatalogHint)),
-      );
-      return;
-    }
-    if (routine.weeks.isEmpty) return;
-    final weekIndex = selectedWeekIndex.clamp(0, routine.weeks.length - 1);
-    final week = routine.weeks[weekIndex];
-    if (week.days.isEmpty) return;
-    final dayIndex = selectedDayIndex.clamp(0, week.days.length - 1);
-    final day = week.days[dayIndex];
-    final programName = routineNameController.text.trim().isEmpty
-        ? routine.name
-        : routineNameController.text.trim();
-
-    if (!context.mounted) return;
-    await showHevyExportReviewSheet(
-      context: context,
-      day: day,
-      programName: programName,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      customerName: editorCustomer?.name,
-    );
   }
 }

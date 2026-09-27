@@ -9,6 +9,12 @@ class CustomerOverviewSnapshot {
   const CustomerOverviewSnapshot({
     required this.weightKg,
     required this.weightFromProfile,
+    required this.muscleMassKg,
+    required this.muscleMassDelta,
+    required this.bodyFatPercent,
+    required this.bodyFatDelta,
+    required this.sbdTotal,
+    required this.sbdDelta,
     required this.secondaryLabel,
     required this.secondaryValue,
     required this.secondaryUnit,
@@ -21,6 +27,12 @@ class CustomerOverviewSnapshot {
 
   final double? weightKg;
   final bool weightFromProfile;
+  final double? muscleMassKg;
+  final double? muscleMassDelta;
+  final double? bodyFatPercent;
+  final double? bodyFatDelta;
+  final double? sbdTotal;
+  final double? sbdDelta;
   final String secondaryLabel;
   final double? secondaryValue;
   final String secondaryUnit;
@@ -54,6 +66,7 @@ class CustomerOverviewMetrics {
 
     final muscleMass = latest?.muscleMassKg;
     final bodyFat = latest?.bodyFatPercent;
+    final sbd = sbdTotalOf(latest);
 
     final secondaryMetric = muscleMass != null
         ? MeasurementMetric.muscleMassKg
@@ -98,6 +111,12 @@ class CustomerOverviewMetrics {
     return CustomerOverviewSnapshot(
       weightKg: customer.weightKg,
       weightFromProfile: customer.weightKg != null,
+      muscleMassKg: muscleMass,
+      muscleMassDelta: absoluteDelta(sorted, (m) => m.muscleMassKg),
+      bodyFatPercent: bodyFat,
+      bodyFatDelta: absoluteDelta(sorted, (m) => m.bodyFatPercent),
+      sbdTotal: sbd,
+      sbdDelta: absoluteDelta(sorted, sbdTotalOf),
       secondaryLabel: secondaryLabel,
       secondaryValue: secondaryValue,
       secondaryUnit: secondaryUnit,
@@ -107,6 +126,37 @@ class CustomerOverviewMetrics {
       lastMeasurementDate: lastDate,
       hasMeasurements: sorted.isNotEmpty,
     );
+  }
+
+  /// Sum of squat + bench + deadlift when all three are present.
+  static double? sbdTotalOf(CustomerMeasurement? m) {
+    if (m == null) return null;
+    final s = m.squat1RM;
+    final b = m.benchPress1RM;
+    final d = m.deadlift1RM;
+    if (s == null || b == null || d == null) return null;
+    return s + b + d;
+  }
+
+  /// Latest minus previous non-null value in [sortedDesc] (newest first).
+  static double? absoluteDelta(
+    List<CustomerMeasurement> sortedDesc,
+    double? Function(CustomerMeasurement) extractor,
+  ) {
+    double? latest;
+    double? previous;
+    for (final m in sortedDesc) {
+      final v = extractor(m);
+      if (v == null) continue;
+      if (latest == null) {
+        latest = v;
+      } else {
+        previous = v;
+        break;
+      }
+    }
+    if (latest == null || previous == null) return null;
+    return latest - previous;
   }
 
   static List<MeasurementChartPoint> _sparklineSeries(
@@ -123,6 +173,13 @@ class CustomerOverviewMetrics {
   static String formatTrendPercent(double percent) {
     final sign = percent > 0 ? '+' : '';
     return '$sign${percent.toStringAsFixed(1)}%';
+  }
+
+  static String formatAbsoluteDelta(double delta, {required String unit}) {
+    final sign = delta > 0 ? '+' : '';
+    final value = formatMetricValue(delta.abs(), isPercent: unit == '%');
+    final signed = delta < 0 ? '-$value' : '$sign$value';
+    return '$signed $unit';
   }
 
   static String formatMetricValue(double value, {required bool isPercent}) {

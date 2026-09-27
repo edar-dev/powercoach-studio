@@ -7,7 +7,6 @@ import 'plan_limits.dart';
 enum PaywallFeature {
   customers,
   exportProgress,
-  hevy,
   workoutExport,
 }
 
@@ -23,7 +22,6 @@ Future<void> showPaywallDialog(
         activeCustomerCount: activeCustomerCount,
       ),
     PaywallFeature.exportProgress => l10n.paywallMessageExport,
-    PaywallFeature.hevy => l10n.paywallMessageHevy,
     PaywallFeature.workoutExport => l10n.paywallMessageWorkoutExport,
   };
 

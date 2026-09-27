@@ -46,7 +46,7 @@ Altre entry sullo stesso cliente: tile piano recente; **Vedi tutti** → `Custom
 |------|------|--------------|
 | 1 | Dashboard drawer / footer → `/workouts/builder` | Sandbox |
 | 2 | Draft | `SharedPrefsWorkoutDraftStore` |
-| 3 | Save | SharedPreferences; export PDF/JSON/Excel/Hevy |
+| 3 | Save | SharedPreferences; export PDF/JSON/Excel |
 | 4 | Indietro | Esce a `/dashboard` (web URL sync) |
 
 ### Percorso D — Piano → esecuzione → diario

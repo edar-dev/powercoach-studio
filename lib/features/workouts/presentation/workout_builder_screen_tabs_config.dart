@@ -134,6 +134,7 @@ class WorkoutBuilderScreenTabsConfig {
       onIncludesMobilityTabChanged: onIncludesMobilityTabChanged,
       onSyncMobilityTabVisibility: onSyncMobilityTabVisibility,
       routineTitleHint: titleHint,
+      editorCustomerName: editorCustomerName,
     );
   }
 }

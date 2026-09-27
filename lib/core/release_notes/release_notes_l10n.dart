@@ -29,7 +29,6 @@ String releaseNoteHighlight(AppLocalizations l10n, String key) {
     'v102_1' => l10n.releaseNotesV1021,
     'v102_2' => l10n.releaseNotesV1022,
     'v102_3' => l10n.releaseNotesV1023,
-    'v102_4' => l10n.releaseNotesV1024,
     'v101_1' => l10n.releaseNotesV1011,
     'v101_2' => l10n.releaseNotesV1012,
     'v101_3' => l10n.releaseNotesV1013,

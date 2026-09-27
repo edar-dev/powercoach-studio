@@ -1,35 +1,93 @@
 {
-  "@@locale": "it",
   "appTitle": "PowerCoach Studio",
-  "landingHeroBadge": "Il futuro del coaching è qui",
+  "landingHeroBadge": "Accesso anticipato — Beta Coach Studio v2.4",
   "landingTitlePrefix": "Power",
   "landingTitleSuffix": "Coach Studio",
-  "landingSubtitle": "Crea e gestisci le schede allenamento per i tuoi clienti.",
-  "landingCtaPrimary": "Inizia ora",
-  "landingCtaSecondary": "Scopri di più",
+  "landingSubtitle": "Crea e gestisci le schede allenamento per i tuoi clienti con precisione scientifica.",
+  "landingCtaPrimary": "Inizia gratis — Nessuna carta",
+  "landingCtaSecondary": "Vedi prezzi & demo",
   "notImplementedMessage": "Funzionalità non ancora implementata.",
+  "landingBrandPowerCoach": "PowerCoach",
+  "landingBrandStudio": "Studio",
+  "landingEarlyAccess": "Accesso anticipato",
+  "landingBetaVersion": "Beta Coach Studio v2.4",
+  "landingHeroLeadBefore": "Crea e gestisci le schede allenamento per i tuoi clienti con ",
+  "landingHeroLeadEmphasis": "precisione scientifica",
+  "landingHeroLeadAfter": ".",
+  "landingHeroSupporting": "La piattaforma modulare concepita per preparatori atletici, coach di forza e personal trainer professionisti. Programmazione a blocchi, microcicli personalizzabili e monitoraggio carichi in tempo reale.",
+  "landingCtaStartFreeNoCard": "Inizia gratis — Nessuna carta",
+  "landingCtaSeePricingDemo": "Vedi prezzi & demo",
+  "landingTrustExercises": "266+ Esercizi preconfigurati",
+  "landingTrustOffline": "Architettura Offline-First",
+  "landingTrustExport": "Export PDF e Condivisione Rapida",
+  "landingPreviewEditorLabel": "Editor Scheda — Mesociclo Forza Massima (Fase Accumulo W2)",
+  "landingStatusOfflineFirst": "Offline-First",
+  "landingNavFeatures": "Funzionalità",
+  "landingNavLibrary": "Libreria Esercizi",
+  "landingNavPhases": "Pianificazione a Fasi",
   "landingFeaturesTitle": "Funzionalità Premium",
   "landingFeaturesHeadline": "Tutto ciò che serve per crescere.",
-  "landingFeaturesDesc": "Concentrati su ciò che fai meglio: il coaching. Noi ci occupiamo di logistica e monitoraggio.",
-  "landingFeaturesCustomers": "Gestione clienti",
-  "landingFeaturesEditor": "Editor visuale per le schede",
-  "landingFeaturesClientData": "Dati cliente e libreria",
-  "landingFeaturesExport": "Esportazione in PDF",
-  "landingHowItWorksLabel": "Il processo",
-  "landingHowItWorksTitle": "Come funziona PowerCoach Studio",
+  "landingFeaturesDesc": "Concentrati su ciò che fai meglio: il coaching. Noi ci occupiamo di logistica, programmazione a blocchi e monitoraggio.",
+  "landingFeaturesCustomers": "Gestione clienti & Schede",
+  "landingFeaturesEditor": "Editor visuale per le schede a fasi modulari",
+  "landingFeaturesClientData": "Dati cliente & libreria",
+  "landingFeaturesExport": "Esportazione in PDF e Custom Exercise DB",
+  "landingFeature1Title": "Gestione clienti & Schede",
+  "landingFeature1Eyebrow": "Editor visuale per le schede a fasi modulari",
+  "landingFeature1Body": "Struttura la programmazione avanzata in microcicli e mesocicli (Accumulo, Intensificazione, Realizzazione, Scarico). Assegna progressioni di volume, carichi percentuali basati sul test 1RM, RPE e note esecutive dettagliate.",
+  "landingFeature1Bullet1": "Timeline visuale con calcolo automatico del tonnellaggio",
+  "landingFeature1Bullet2": "Duplica mesocicli tra atleti con progressione automatizzata",
+  "landingFeature1Bullet3": "Check-in settimanali integrati con avvisi immediati",
+  "landingFeature1FooterLeft": "Editor Drag & Drop reattivo",
+  "landingFeature1FooterRight": "100% Personalizzabile",
+  "landingFeature2Title": "Dati cliente & libreria",
+  "landingFeature2Eyebrow": "Esportazione in PDF e Custom Exercise DB",
+  "landingFeature2Body": "Database interno con oltre 266 esercizi classificati per distretto muscolare, curva di resistenza e pattern biomeccanico. Genera stampe PDF ad alta risoluzione o condividi link interattivi pronti per lo smartphone del cliente.",
+  "landingFeature2Bullet1": "Catalogazione rapida con cartelle: Alzate, Squat, Spinta, Trazione",
+  "landingFeature2Bullet2": "Esportazione PDF professionale con QR-code dei video tutorial",
+  "landingFeature2Bullet3": "Campi custom per setup angolari, cunei e tipo di impugnatura",
+  "landingFeature2FooterLeft": "266+ Varianti pronte",
+  "landingFeature2FooterRight": "Export A4 & Mobile",
+  "landingFeature3Title": "Superset, Cluster & Jump Set",
+  "landingFeature3Eyebrow": "Gestione avanzata delle metodologie di intensità",
+  "landingFeature3Body": "Raggruppa gli esercizi con un solo clic. Configura accoppiamenti antagonisti, protocolli stripping a scalare, myo-reps e recuperi differenziati intra-serie e inter-serie con timer acustico preimpostato.",
+  "landingFeature3Bullet1": "Codifica cromatica per lettere (A1-A2, B1-B2)",
+  "landingFeature3Bullet2": "Calcolo della densità della seduta (Kg per minuto di lavoro)",
+  "landingFeature3Bullet3": "Circuiti a tempo, EMOM ed AMRAP dedicati al conditioning",
+  "landingFeature3FooterLeft": "Metodologie Avanzate",
+  "landingFeature3FooterRight": "Zero Confusione",
+  "landingFeature4Title": "Dati protetti & Offline-First",
+  "landingFeature4Eyebrow": "I dati restano archiviati in locale sul tuo dispositivo",
+  "landingFeature4Body": "Non perdere mai una modifica anche se la connessione in sala pesi salta. Tutti i programmi sono memorizzati sul dispositivo. Usa backup JSON o snapshot opzionali per spostarti tra dispositivi.",
+  "landingFeature4Bullet1": "Esportazione di backup JSON/CSV in un click",
+  "landingFeature4Bullet2": "Prestazioni native immediate senza tempi di caricamento",
+  "landingFeature4Bullet3": "Conforme agli standard di sicurezza GDPR per i dati atleti",
+  "landingFeature4FooterLeft": "Database Locale",
+  "landingFeature4FooterRight": "Sempre Disponibile",
+  "landingHowItWorksLabel": "Pianificazione scientifica",
+  "landingHowItWorksTitle": "La programmazione lineare o a blocchi, finalmente senza fogli Excel illeggibili.",
   "landingHowItWorksStep1": "Crea un profilo cliente",
   "landingHowItWorksStep2": "Crea le schede allenamento",
   "landingHowItWorksStep3": "Aggiungi esercizi, serie e ripetizioni",
   "landingHowItWorksStep4": "Esporta in PDF",
-  "landingCtaSectionTitle": "Pronto a trasformare il tuo coaching?",
-  "landingCtaSectionSubtext": "Accedi per iniziare.",
+  "landingPhasesBadge": "Pianificazione scientifica",
+  "landingPhasesTitle": "La programmazione lineare o a blocchi, finalmente senza fogli Excel illeggibili.",
+  "landingPhasesBody": "Elimina decine di tabelle caotiche. Coach Studio calcola la curva di volume settimanale, suggerisce incrementi del carico basati su RPE/RIR e permette all'atleta di segnare i risultati direttamente sul proprio logbook.",
+  "landingPhasesCtaPrimary": "Crea la prima scheda in 2 minuti",
+  "landingPhasesCtaSecondary": "Esplora la Libreria Esercizi",
+  "landingCtaSectionTitle": "Pronto a rivoluzionare il tuo metodo di coaching?",
+  "landingCtaSectionSubtext": "Unisciti alla beta di PowerCoach Studio. Gestisci i tuoi atleti con strumenti moderni, schede impeccabili e zero frizioni burocratiche.",
   "landingCtaSectionButton": "Accedi",
-  "landingCtaSectionSubtextLoggedIn": "Vai al profilo per iniziare.",
-  "landingCtaSectionButtonLoggedIn": "Profilo",
+  "landingCtaSectionSubtextLoggedIn": "Vai al profilo o alla dashboard per continuare.",
+  "landingCtaSectionButtonLoggedIn": "Dashboard",
+  "landingCtaCreateAccount": "Crea il tuo account coach gratuito",
+  "landingCtaFootnote": "Nessuna carta di credito richiesta · Setup immediato in 60 secondi",
   "landingNavPricing": "Prezzi",
-  "landingBetaBadge": "Accesso anticipato — beta coach",
+  "landingBetaBadge": "Accesso anticipato — Beta Coach Studio v2.4",
   "landingCtaStartFree": "Inizia gratis",
   "landingCtaSeePricing": "Vedi prezzi",
+  "landingFooterTagline": "Sistema di monitoraggio e pianificazione atletica offline-first per coach, preparatori e atleti esigenti.",
+  "landingFooterSystemsOk": "Tutti i sistemi operativi",
   "landingPricingLabel": "Piani",
   "landingPricingTitle": "Scegli il piano giusto per te",
   "landingPricingSubtitle": "Inizia gratis con fino a 5 clienti. Passa a Pro quando cresci.",
@@ -46,13 +104,14 @@
   "landingPricingFeatureCustomersFree": "Fino a {max} clienti attivi",
   "@landingPricingFeatureCustomersFree": {
     "placeholders": {
-      "max": { "type": "int" }
+      "max": {
+        "type": "int"
+      }
     }
   },
   "landingPricingFeatureCustomersPro": "Clienti illimitati",
   "landingPricingFeatureBuilder": "Builder schede completo",
   "landingPricingFeatureExportPro": "Export PDF, Excel e CSV",
-  "landingPricingFeatureHevy": "Integrazione Hevy",
   "landingFaqLabel": "FAQ",
   "landingFaqTitle": "Domande frequenti",
   "landingFaqLocalDataQ": "Dove sono salvati i dati?",
@@ -60,7 +119,7 @@
   "landingFaqDeskGymQ": "Posso programmare da desktop e allenarmi in sala?",
   "landingFaqDeskGymA": "Sì. Costruisci la scheda da desktop, poi apri lo stesso account dal telefono in sala per registrare serie, RPE e dolore — nessuna app separata, nessuna configurazione di sync.",
   "landingFaqFreeProQ": "Qual è la differenza tra Gratuito e Pro?",
-  "landingFaqFreeProA": "Gratuito include fino a 5 clienti e tutte le funzioni base del builder. Pro sblocca clienti illimitati, export avanzati e integrazione Hevy.",
+  "landingFaqFreeProA": "Gratuito include fino a 5 clienti e tutte le funzioni base del builder. Pro sblocca clienti illimitati ed export avanzati (PDF, Excel, CSV progressi).",
   "landingFaqBetaQ": "Come accedo alla beta?",
   "landingFaqBetaA": "Registrati gratis, poi vai in Abbonamento e richiedi un codice invito oppure attiva Pro con il codice che ricevi.",
   "landingFaqBrowserQ": "Cosa succede se cancello i dati del browser?",
@@ -72,7 +131,9 @@
   "landingFooterCopyright": "© {year} PowerCoach Studio",
   "@landingFooterCopyright": {
     "placeholders": {
-      "year": { "type": "int" }
+      "year": {
+        "type": "int"
+      }
     }
   },
   "landingFooterPrivacy": "Privacy",
@@ -81,10 +142,11 @@
   "headerLogin": "Accedi",
   "headerJoinNow": "Iscriviti",
   "registrationTitle": "Registrati",
-  "registrationEmail": "Email",
+  "registrationEmail": "Email professionale",
+  "registrationEmailHint": "mario.rossi@powercoach.it",
   "registrationPassword": "Password",
   "registrationConfirmPassword": "Conferma password",
-  "registrationSubmit": "Registrati",
+  "registrationSubmit": "Crea account e inizia la prova gratuita",
   "registrationSuccessMessage": "Controlla la tua email per confermare l'account.",
   "registrationSuccessReady": "Account creato. Accesso in corso…",
   "registrationCheckEmailTitle": "Controlla la tua email",
@@ -102,22 +164,58 @@
   "registrationResendEmailError": "Impossibile reinviare l'email. Riprova tra qualche minuto.",
   "registrationGoToLogin": "Vai al login",
   "registrationErrorAlreadyRegistered": "Esiste già un account con questa email. Prova ad accedere.",
-  "registrationErrorPasswordWeak": "Scegli una password più sicura.",
+  "registrationErrorPasswordWeak": "Min. 8 caratteri, 1 numero e 1 carattere speciale.",
   "registrationErrorInvalidEmail": "Inserisci un'email valida.",
   "registrationErrorPasswordMismatch": "Le password non coincidono.",
   "registrationErrorPasswordEmpty": "Inserisci una password.",
   "registrationErrorGeneric": "Registrazione fallita. Riprova.",
-  "registrationAlreadyHaveAccount": "Hai già un account?",
+  "registrationErrorNameEmpty": "Campo obbligatorio.",
+  "registrationAlreadyHaveAccount": "Hai già un account coach?",
   "registrationLoginLink": "Accedi",
-  "registrationHeadline": "Crea il tuo account",
+  "registrationHeadline": "Crea il tuo account Coach",
+  "registrationEyebrow": "PowerCoach Studio",
+  "registrationSubtitle": "Unisciti alla piattaforma di programmazione scientifica e gestione atleti.",
+  "registrationTrialBadge": "Prova gratuita 14 giorni · Nessuna carta richiesta",
+  "registrationTrustExercises": "266+ Esercizi inclusi",
+  "registrationTrustOffline": "Offline-First",
+  "registrationTrustMesocycles": "Mesocicli avanzati",
+  "registrationFirstName": "Nome",
+  "registrationFirstNameHint": "Mario",
+  "registrationLastName": "Cognome",
+  "registrationLastNameHint": "Rossi",
+  "registrationSpecialty": "Specializzazione principale",
+  "registrationSpecialtyPt": "Personal Trainer",
+  "registrationSpecialtyAthletic": "Prep. Atletico",
+  "registrationSpecialtyPowerlifting": "Powerlifting",
+  "registrationPasswordRulesHint": "Min. 8 car. · 1 num. · 1 speciale",
+  "registrationPasswordSecurity": "Sicurezza:",
+  "registrationPasswordStrengthWeak": "Debole",
+  "registrationPasswordStrengthFair": "Sufficiente",
+  "registrationPasswordStrengthGood": "Buona",
+  "registrationPasswordStrengthStrong": "Forte",
+  "registrationTermsPrefix": "Accetto i",
+  "registrationTermsOfService": "Termini di Servizio",
+  "registrationTermsMiddle": "e confermo di aver letto l'informativa sulla",
+  "registrationPrivacyPolicy": "Privacy Policy",
+  "registrationAcceptTermsError": "Accetta i termini per continuare.",
+  "registrationOrContinueWith": "oppure registrati con",
   "loginTitle": "Accedi",
-  "loginHeadline": "Bentornato!",
-  "loginEmail": "Email",
+  "loginHeadline": "Bentornato, Coach!",
+  "loginSubtitle": "Accedi al tuo workspace per gestire atleti, mesocicli e libreria biomeccanica.",
+  "loginEmail": "Email o Nome Utente",
+  "loginEmailHint": "es. marco@coachstudio.it",
   "loginPassword": "Password",
-  "loginSubmit": "Accedi",
+  "loginSubmit": "Accedi al workspace",
   "loginForgotPassword": "Password dimenticata?",
-  "loginNoAccount": "Non hai un account?",
-  "loginRegisterLink": "Registrati",
+  "loginNoAccount": "Non hai ancora un account coach?",
+  "loginRegisterLink": "Registrati gratis",
+  "loginTrialChip": "14gg prova",
+  "loginRoleCoach": "Coach / Trainer",
+  "loginRoleAthlete": "Atleta",
+  "loginAthleteUnavailable": "L'accesso atleta non è ancora disponibile. PowerCoach Studio è pensato per i coach.",
+  "loginStaySignedIn": "Resta connesso su questo device",
+  "loginStaySignedInOffline": "(Offline-First)",
+  "loginOrContinueWith": "oppure continua con",
   "loginErrorInvalidEmail": "Inserisci un'email valida.",
   "loginErrorPasswordEmpty": "Inserisci la password.",
   "loginErrorGeneric": "Accesso fallito. Riprova.",
@@ -125,6 +223,12 @@
   "loginErrorEmailNotConfirmed": "Conferma l'email prima di accedere.",
   "loginErrorTooManyRequests": "Troppi tentativi. Riprova più tardi.",
   "loginSuccessMessage": "Bentornato!",
+  "authBackHome": "Torna alla home",
+  "authBackLogin": "Torna al login",
+  "authEncryptionBadge": "Crittografia 256-bit attiva",
+  "authEncryptionBadgeShort": "Protetto",
+  "authSocialUnavailable": "Accesso con Google/Apple non ancora disponibile. Usa email e password.",
+  "authFooterCompliance": "Crittografia 256-bit AES · Conforme GDPR · Backup locale sicuro",
   "forgotPasswordTitle": "Reimposta password",
   "forgotPasswordInstruction": "Inserisci la tua email e ti invieremo un link per reimpostare la password.",
   "forgotPasswordEmailLabel": "Email",
@@ -215,7 +319,6 @@
     }
   },
   "subscriptionCompareProgressExport": "Export CSV progressi",
-  "subscriptionCompareHevy": "Integrazione Hevy",
   "subscriptionCompareWorkoutExport": "Export PDF/Excel allenamenti",
   "subscriptionCompareNotIncluded": "—",
   "subscriptionPromoHint": "Hai un codice invito? Inseriscilo qui sotto.",
@@ -333,7 +436,6 @@
     }
   },
   "paywallMessageExport": "L'export CSV del progresso cliente è incluso in PowerCoach Pro.",
-  "paywallMessageHevy": "L'integrazione Hevy è inclusa in PowerCoach Pro.",
   "paywallMessageWorkoutExport": "L'export PDF ed Excel degli allenamenti è incluso in PowerCoach Pro.",
   "paywallUpgradeCta": "Passa a Pro",
   "paywallNotNow": "Non ora",
@@ -361,7 +463,7 @@
   "settingsLanguageEnglish": "English",
   "settingsLanguageSaved": "Lingua aggiornata.",
   "settingsBackupSectionTitle": "Backup offline",
-  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi; la tua chiave API Hevy non viene mai inclusa.",
+  "settingsBackupSectionSubtitle": "Esporta o sostituisci tutti i dati locali di questo account come file JSON — i tuoi dati restano tuoi. Utile per spostare i dati tra dispositivi.",
   "settingsBackupExport": "Esporta backup",
   "settingsBackupImport": "Importa backup",
   "settingsBackupImportConfirmTitle": "Sostituire i dati locali?",
@@ -373,13 +475,12 @@
   "settingsBackupErrorNotSignedIn": "Accedi per esportare o importare un backup.",
   "settingsBackupErrorWrongAccount": "Questo backup appartiene a un altro account.",
   "settingsBackupErrorUnsupportedSchema": "Questo formato di backup non è supportato da questa versione dell’app.",
-  "settingsBackupSectionSubtitleWeb": "I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo; la tua chiave API Hevy non viene mai inclusa.",
+  "settingsBackupSectionSubtitleWeb": "I dati del coach sono salvati in questo browser — restano tuoi. Esporta regolarmente un backup JSON per ripristinarli o spostarli su un altro dispositivo.",
   "settingsBackupErrorInvalidFile": "File di backup non valido.",
   "settingsCloudBackupSectionTitle": "Backup cloud (opzionale)",
   "settingsCloudBackupSectionSubtitle": "Salva o ripristina uno snapshot manuale su Supabase Storage, visibile solo dal tuo account. Non è una sincronizzazione automatica.",
   "settingsCloudBackupUpload": "Salva in cloud",
   "settingsCloudBackupRestore": "Ripristina da cloud",
-  "settingsCloudBackupHevyNote": "La chiave API Hevy resta solo su questo dispositivo e non viene mai salvata nel backup, locale o cloud.",
   "settingsCloudBackupUploadSuccess": "Backup caricato su cloud.",
   "settingsCloudBackupEmpty": "Nessun backup cloud trovato per questo account.",
   "settingsCloudBackupErrorGeneric": "Impossibile completare l’operazione cloud. Riprova.",
@@ -398,12 +499,19 @@
   "signOutConfirmUploadCloud": "Carica in cloud prima di uscire",
   "signOutConfirmProceed": "Esci comunque",
   "backupOnboardingTitle": "Proteggi i tuoi dati da coach",
-  "backupOnboardingMessage": "PowerCoach Studio salva clienti e piani workout su questo dispositivo. Se cancelli i dati del browser o esci, le informazioni vengono rimosse salvo backup.",
-  "backupOnboardingWebHint": "Consigliamo di esportare un backup JSON da Impostazioni dopo la prima sessione e quando fai modifiche importanti.",
-  "backupOnboardingDeskGymHint": "Programma da desktop, poi porta lo stesso account in sala dal telefono — un backup ti permette di portare con te i tuoi dati, senza un account cloud.",
+  "backupOnboardingMessageAfterBrand": " salva clienti e piani workout direttamente su questo dispositivo (",
+  "backupOnboardingMessageAfterOffline": "). Se cancelli la cronologia browser o cambi postazione, le informazioni vengono rimosse salvo la presenza di un backup.",
+  "backupOnboardingWebHint": "Su web i dati restano nello storage del browser di questo dispositivo.",
+  "backupOnboardingCalloutLead": "Massima flessibilità tra studio e sala pesi:",
+  "backupOnboardingCalloutBody": " Programma da desktop a casa o in ufficio, poi porta lo stesso archivio in sala dal telefono — un semplice backup JSON ti permette di spostare i dati liberamente, ",
+  "backupOnboardingCalloutEmphasis": "senza dover condividere dati su server cloud esterni non autorizzati",
+  "backupOnboardingRecommendBefore": "Consigliamo di esportare una copia JSON dalle ",
+  "backupOnboardingRecommendSettings": "Impostazioni",
+  "backupOnboardingRecommendAfter": " dopo ogni blocco di programmazione.",
   "backupOnboardingOpenSettings": "Apri impostazioni",
   "backupOnboardingExportNow": "Esporta backup ora",
   "backupOnboardingGotIt": "Ho capito",
+  "backupOnboardingCloseSemantic": "Chiudi",
   "customerCreationLocalDataHint": "I dati del cliente sono salvati localmente su questo dispositivo. Non viene inviata alcuna email di benvenuto.",
   "customersTitle": "Clienti",
   "exerciseLibraryTitle": "Libreria esercizi",
@@ -412,7 +520,7 @@
   "exerciseLibraryExport": "Esporta",
   "exerciseLibraryImportSourceTitle": "Importa esercizi",
   "exerciseLibraryImportSourceDefault": "Importa catalogo predefinito",
-  "exerciseLibraryImportSourceDefaultSubtitle": "Carica 200 esercizi comuni con varianti e gerarchia.",
+  "exerciseLibraryImportSourceDefaultSubtitle": "Carica 266 esercizi comuni con varianti e gerarchia (inclusi powerlifting).",
   "exerciseLibraryImportSourceCustom": "Importa JSON personalizzato",
   "exerciseLibraryImportSourceCustomSubtitle": "Carica esercizi dal tuo file JSON.",
   "exerciseLibraryAddExercise": "Aggiungi esercizio",
@@ -450,24 +558,169 @@
   "exerciseLibraryParentLabel": "Esercizio padre (variante di)",
   "exerciseLibraryParentNone": "Nessuno",
   "exerciseLibraryAddVariant": "Aggiungi variante",
+  "exerciseLibrarySearchHint": "Cerca per nome…",
+  "exerciseLibrarySearchEmpty": "Nessun esercizio corrisponde alla ricerca.",
+  "exerciseLibraryVariantCount": "{count, plural, =0{0 varianti} =1{1 variante} other{{count} varianti}}",
+  "@exerciseLibraryVariantCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseLibrarySortAlphabetical": "Ordina: Alfabetico (A-Z)",
+  "exerciseLibrarySortByVariantCount": "Numero di varianti",
+  "exerciseLibraryNewFolder": "Nuova cartella",
+  "exerciseLibraryExerciseCount": "{count} esercizi",
+  "@exerciseLibraryExerciseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "exerciseLibraryFolderCount": "{count} cartelle",
+  "@exerciseLibraryFolderCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "placeholderBackToDashboard": "Torna alla Dashboard",
   "customersEmptyTitle": "Nessun cliente ancora",
-  "customersEmptyMessage": "Facciamo crescere il tuo studio! Inizia aggiungendo il tuo primo cliente per tracciare i progressi e gestire gli allenamenti.",
+  "customersEmptyMessage": "Facciamo crescere il tuo studio! Inizia aggiungendo il tuo primo cliente per tracciare i progressi, impostare i mesocicli e gestire gli allenamenti.",
   "customersAddCustomer": "Aggiungi cliente",
   "customersAddFirstClient": "Aggiungi il tuo primo cliente",
   "customersImportContacts": "Importa dai contatti",
   "customersImportContactsDenied": "È necessario il permesso contatti per importare.",
   "customersNewCustomer": "Nuovo cliente",
-  "customerName": "Nome",
+  "customersSearchHint": "Cerca per nome…",
+  "customersFilterAll": "Tutti",
+  "customersFilterActive": "Attivi",
+  "customersFilterPaused": "In pausa",
+  "customersFilterUnassigned": "Da assegnare",
+  "customersFilterCount": "({count})",
+  "@customersFilterCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersEmptyStep1Title": "Anagrafica & Target",
+  "customersEmptyStep1Body": "Inserisci dati antropometrici, massimali e obiettivi primari (Ipertrofia, Forza, Cut).",
+  "customersEmptyStep2Title": "Assegna Scheda",
+  "customersEmptyStep2Body": "Collega un mesociclo personalizzato o seleziona un template dalla Libreria.",
+  "customersEmptyStep3Title": "Monitora Carichi & RPE",
+  "customersEmptyStep3Body": "Visualizza in tempo reale i log d'allenamento, tonnellaggio e progressioni.",
+  "customersOfflineFirstFooter": "Architettura Offline-First · dati salvati in locale su questo dispositivo",
+  "customersSearchEmpty": "Nessun cliente corrisponde ai filtri.",
+  "customersMetricTotalAthletes": "Totale Atleti",
+  "customersMetricActiveCount": "{count} attivi",
+  "@customersMetricActiveCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "customersMetricPlansInProgress": "Schede in corso",
+  "customersMetricPlansSubtitle": "con scheda",
+  "customersMetricPaused": "In pausa",
+  "customersMetricPausedSubtitle": "archiviati",
+  "customersMetricNeedsUpdate": "Da aggiornare",
+  "customersMetricNeedsUpdateSubtitle": "in scadenza",
+  "customersSortPrefix": "Ordina:",
+  "customersSortRecent": "Più recenti",
+  "customersSortNameAsc": "Nome A-Z",
+  "customersShownOfTotal": "Mostrati {shown} di {total} atleti",
+  "@customersShownOfTotal": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "customersRowAgeYears": "{age} anni",
+  "@customersRowAgeYears": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "customersRowGoalEmpty": "—",
+  "customersRowNoPlan": "Nessuna scheda assegnata",
+  "customersRowPlanUpdated": "Ultimo aggiornamento scheda: {date}",
+  "@customersRowPlanUpdated": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "customersRowStatusActive": "Attivo",
+  "customersRowStatusPaused": "In pausa",
+  "customersRowStatusUnassigned": "Da assegnare",
+  "customersRowActionOpenPlan": "Apri scheda",
+  "customersRowActionAssign": "+ Assegna",
+  "customersRowActionOpen": "Apri",
+  "customerName": "Nome e Cognome",
   "customerNameRequired": "Il nome è obbligatorio",
-  "customerEmail": "Email",
-  "customerPhone": "Telefono",
+  "customerNameHint": "es. Alessandro Bianchi",
+  "customerEmail": "Indirizzo Email",
+  "customerEmailHint": "alessandro.bianchi@esempio.it",
+  "customerPhone": "Telefono / WhatsApp",
+  "customerPhoneHint": "334 123 4567",
+  "customerPhoneCountryPrefix": "+39",
   "customerDateOfBirth": "Data di nascita",
-  "customerHeight": "Altezza (cm)",
-  "customerWeight": "Peso (kg)",
-  "customerNotes": "Note",
-  "customerGoals": "Obiettivi",
+  "customerEstimatedAge": "Età stimata",
+  "customerEstimatedAgeUnit": "anni",
+  "customerHeight": "Altezza",
+  "customerHeightHint": "180",
+  "customerHeightUnit": "cm",
+  "customerWeight": "Peso iniziale",
+  "customerWeightHint": "78.5",
+  "customerWeightUnit": "kg",
+  "customerNotes": "Note del Coach, Infortuni o Limitazioni",
+  "customerNotesOptional": "Opzionale",
+  "customerNotesHintCreation": "Es. Pregresso fastidio cuffia dei rotatori spalla dx; preferisce frequenza su 4 giorni a settimana…",
+  "customerGoals": "Obiettivo Principale",
+  "customerGoalHypertrophy": "Ipertrofia",
+  "customerGoalHypertrophySubtitle": "Muscle Gain",
+  "customerGoalStrength": "Forza Massima",
+  "customerGoalStrengthSubtitle": "Powerlifting",
+  "customerGoalRecomp": "Ricomposizione",
+  "customerGoalRecompSubtitle": "Dimagrimento & Tono",
+  "customerGoalAthletic": "Prep. Atletica",
+  "customerGoalAthleticSubtitle": "Sport Specifico",
+  "customerExperienceLabel": "Livello di Esperienza",
+  "customerExperienceBeginner": "Principiante (0 - 1 anno)",
+  "customerExperienceIntermediate": "Intermedio (1 - 3 anni)",
+  "customerExperienceAdvanced": "Avanzato (3+ anni di allenamento costante)",
+  "customerExperienceElite": "Atleta agonista / Élite",
+  "customerExperienceNotesPrefix": "Esperienza: {level}",
+  "@customerExperienceNotesPrefix": {
+    "placeholders": {
+      "level": {
+        "type": "String"
+      }
+    }
+  },
+  "customerCreationHeroTitle": "Inizia un nuovo percorso",
+  "customerCreationHeroSubtitle": "Inserisci i dati anagrafici e gli obiettivi del tuo atleta per iniziare a pianificare allenamenti e monitorare i progressi.",
+  "customerCreationBadge": "Anagrafica Atleta",
+  "customerCreationHeaderSubtitle": "PowerCoach Studio · Creazione e onboarding",
+  "customerCreationStepProgress": "Step 1 di 2",
+  "customerCreationSectionAnagrafica": "1. Informazioni Anagrafiche",
+  "customerCreationSectionPhysical": "2. Dati Fisici & Biometrici",
+  "customerCreationSectionGoals": "3. Obiettivi & Profilo di Allenamento",
   "customerSave": "Salva",
+  "customerSaveAndCreatePlan": "Salva e crea scheda",
   "customerCancel": "Annulla",
   "customerEdit": "Modifica",
   "customerDelete": "Elimina",
@@ -509,7 +762,9 @@
   "pdfDayNumber": "Giorno {day}",
   "@pdfDayNumber": {
     "placeholders": {
-      "day": { "type": "int" }
+      "day": {
+        "type": "int"
+      }
     }
   },
   "pdfEmptyValue": "-",
@@ -517,27 +772,37 @@
   "pdfPageOf": "Pagina {current} di {total}",
   "@pdfPageOf": {
     "placeholders": {
-      "current": { "type": "int" },
-      "total": { "type": "int" }
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
     }
   },
   "pdfGeneratedOn": "Generato il {date}",
   "@pdfGeneratedOn": {
     "placeholders": {
-      "date": { "type": "String" }
+      "date": {
+        "type": "String"
+      }
     }
   },
   "pdfExportGenerating": "Generazione PDF in corso…",
   "pdfMeasurementRecordCount": "{count} rilevazioni",
   "@pdfMeasurementRecordCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseWeekShort": "S{n}",
   "@pdfDenseWeekShort": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseAllWeeks": "tutte",
@@ -545,35 +810,51 @@
   "pdfDenseWeekLegendEntry": "S{n} = {name}",
   "@pdfDenseWeekLegendEntry": {
     "placeholders": {
-      "n": { "type": "int" },
-      "name": { "type": "String" }
+      "n": {
+        "type": "int"
+      },
+      "name": {
+        "type": "String"
+      }
     }
   },
   "pdfDenseWeeksSpan": "S{first}-S{last}",
   "@pdfDenseWeeksSpan": {
     "placeholders": {
-      "first": { "type": "int" },
-      "last": { "type": "int" }
+      "first": {
+        "type": "int"
+      },
+      "last": {
+        "type": "int"
+      }
     }
   },
   "pdfDenseLegend": "S1-S4 = tutte le settimane | \" = stessa prescrizione",
   "pdfClientPlanFor": "Piano per: {name}",
   "@pdfClientPlanFor": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "pdfPlanPeriod": "{start} - {end}",
   "@pdfPlanPeriod": {
     "placeholders": {
-      "start": { "type": "String" },
-      "end": { "type": "String" }
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
     }
   },
   "pdfPlanPeriodOpen": "Dal {start}",
   "@pdfPlanPeriodOpen": {
     "placeholders": {
-      "start": { "type": "String" }
+      "start": {
+        "type": "String"
+      }
     }
   },
   "workoutExerciseShortNameLabel": "Nome PDF (facoltativo)",
@@ -673,9 +954,15 @@
   "workoutBuilderLoadPercentGuideRow": "{percent}% — {weight} {unit}",
   "@workoutBuilderLoadPercentGuideRow": {
     "placeholders": {
-      "percent": { "type": "String" },
-      "weight": { "type": "String" },
-      "unit": { "type": "String" }
+      "percent": {
+        "type": "String"
+      },
+      "weight": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderLoadPercentGuideBody": "100% — massimale / ~1 rip\n95% — ~2 rip\n90% — ~4 rip\n85% — ~6 rip\n80% — ~8 rip\n75% — ~10 rip\n70% — ~12 rip\n65% — ~15 rip\n60% — ~18+ rip\n55% — lavoro accessori\n50% — recupero / tecnica",
@@ -687,9 +974,15 @@
   "workoutBuilderLoadPercentResult": "{weight} {unit} ({percent}% del record)",
   "@workoutBuilderLoadPercentResult": {
     "placeholders": {
-      "weight": { "type": "String" },
-      "unit": { "type": "String" },
-      "percent": { "type": "String" }
+      "weight": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderTitle": "Editor scheda",
@@ -726,19 +1019,25 @@
   "workoutBuilderWeekNumbered": "Settimana {n}",
   "@workoutBuilderWeekNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderDayNumbered": "Giorno {n}",
   "@workoutBuilderDayNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderSectionNumbered": "Sezione {n}",
   "@workoutBuilderSectionNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderNewExerciseDefault": "Nuovo esercizio",
@@ -780,10 +1079,94 @@
   "workoutBuilderAddDayToWeek": "Aggiungi giorno alla settimana {n}",
   "@workoutBuilderAddDayToWeek": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderNoWeeksYet": "Ancora nessuna settimana. Aggiungine una sopra.",
+  "workoutPhaseAdd": "Aggiungi Fase",
+  "workoutPhaseDuplicate": "Duplica Fase",
+  "workoutPhaseSettings": "Impostazioni Fase",
+  "workoutPhaseEmptyTitle": "Nessuna fase ancora",
+  "workoutPhaseEmptyMessage": "Aggiungi una fase per iniziare a strutturare le settimane di allenamento.",
+  "workoutPhaseNumbered": "Fase {n}",
+  "@workoutPhaseNumbered": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutPhaseWeeksCount": "{count, plural, =0{0 Settimane} =1{1 Settimana} other{{count} Settimane}}",
+  "@workoutPhaseWeeksCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseObjectiveLabel": "Obiettivo",
+  "workoutPhaseObjectiveHint": "Es. Accumulo volume, tecnica squat…",
+  "workoutPhaseNameLabel": "Nome fase",
+  "workoutPhaseDurationLabel": "Durata",
+  "workoutPhaseFrequencyLabel": "Frequenza",
+  "workoutPhaseFrequencyValue": "{count, plural, =0{0 sessioni/sett.} =1{1 sessione/sett.} other{{count} sessioni/sett.}}",
+  "@workoutPhaseFrequencyValue": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseProgressLabel": "Avanzamento",
+  "workoutPhaseProgressValue": "{percent}%",
+  "@workoutPhaseProgressValue": {
+    "placeholders": {
+      "percent": { "type": "int" }
+    }
+  },
+  "workoutPhaseAddWeek": "Aggiungi settimana alla fase",
+  "workoutPhaseEditSession": "Modifica sessione",
+  "workoutPhaseCreateSession": "Crea una nuova sessione",
+  "workoutPhaseCreateSessionForWeek": "Crea una nuova sessione per la Settimana {n}",
+  "@workoutPhaseCreateSessionForWeek": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutPhaseAddDay": "Aggiungi Giorno",
+  "workoutPhaseMoreExercises": "+{count} altri",
+  "@workoutPhaseMoreExercises": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseNoExercisesYet": "Nessun esercizio",
+  "workoutPhaseSetsTotal": "{count, plural, =0{0 serie tot.} =1{1 serie tot.} other{{count} serie tot.}}",
+  "@workoutPhaseSetsTotal": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseWeeksCountShort": "{count, plural, =0{0 Sett.} =1{1 Sett.} other{{count} Sett.}}",
+  "@workoutPhaseWeeksCountShort": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutPhaseExpandWeek": "Espandi settimana",
+  "workoutPhaseCollapseWeek": "Comprimi settimana",
+  "workoutPhaseSettingsTitle": "Impostazioni fase",
+  "workoutPhaseDeleteTitle": "Eliminare la fase?",
+  "workoutPhaseDeleteMessage": "Verranno rimosse questa fase e tutte le sue settimane. Operazione irreversibile.",
+  "workoutPhaseDeleteMenu": "Elimina fase",
+  "workoutPhaseCustomNameTitle": "Fase personalizzata",
+  "workoutPhasePresetAccumulo": "Accumulo",
+  "workoutPhasePresetIntensificazione": "Intensificazione",
+  "workoutPhasePresetPicco": "Picco",
+  "workoutPhasePresetDeload": "Deload",
+  "workoutPhasePresetMassa": "Massa",
+  "workoutPhasePresetDefinizione": "Definizione",
+  "workoutPhasePresetVolume": "Volume",
+  "workoutPhasePresetAcclimatazione": "Acclimatazione",
+  "workoutPhasePresetGeneral": "Generale",
+  "workoutPhasePresetCustom": "Personalizzata…",
+  "workoutPhaseRemoved": "Fase rimossa",
   "workoutBuilderSuperSetHeading": "SUPER SET",
   "workoutBuilderCircuitHeading": "CIRCUITO",
   "workoutBuilderEmomHeading": "EMOM",
@@ -791,6 +1174,69 @@
   "builderCircuitPanelTitle": "Gestisci circuito",
   "builderEmomPanelTitle": "Gestisci EMOM",
   "builderSupersetAddExercise": "Aggiungi esercizio al superset",
+  "builderDensityAddExercise": "Aggiungi esercizio al gruppo",
+  "workoutBuilderAssignedPlanBadge": "Piano assegnato · {customerName}",
+  "@workoutBuilderAssignedPlanBadge": {
+    "placeholders": {
+      "customerName": { "type": "String" }
+    }
+  },
+  "workoutBuilderSessionEmptyTitle": "Nessun esercizio in questa sessione",
+  "workoutSessionEditTitleWithDay": "Modifica Sessione · {dayName}",
+  "@workoutSessionEditTitleWithDay": {
+    "placeholders": {
+      "dayName": { "type": "String" }
+    }
+  },
+  "workoutSessionSaveChanges": "Salva modifiche",
+  "workoutSessionHistoryShort": "Storia",
+  "workoutSessionDuplicateShort": "Duplica",
+  "workoutSessionAssignedPlanPill": "Piano assegnato: {customerName}",
+  "@workoutSessionAssignedPlanPill": {
+    "placeholders": {
+      "customerName": { "type": "String" }
+    }
+  },
+  "workoutSessionMetricExercises": "Esercizi",
+  "workoutSessionMetricTotalSets": "Serie totali",
+  "workoutSessionMetricSetsCount": "{count} serie",
+  "@workoutSessionMetricSetsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workoutSessionMetricEstimatedVolume": "Volume stimato",
+  "workoutSessionMetricAvgRest": "Recupero medio",
+  "workoutSessionMetricUnavailable": "—",
+  "workoutSessionVolumeKg": "{kg} kg",
+  "@workoutSessionVolumeKg": {
+    "placeholders": {
+      "kg": { "type": "String" }
+    }
+  },
+  "workoutSessionAddFromLibrary": "Aggiungi esercizio da libreria",
+  "workoutSessionCreateSupersetCircuit": "Crea Superset / Circuito",
+  "workoutSessionAutosaveActive": "Autosalvataggio bozza attivo",
+  "workoutSessionAthletePreview": "Anteprima scheda atleta →",
+  "workoutSessionTechnicalNotes": "Note tecniche",
+  "workoutSessionTechnicalNotesForAthlete": "Note tecniche per l'atleta ({name}):",
+  "@workoutSessionTechnicalNotesForAthlete": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "workoutSessionSavedHint": "Salvato",
+  "workoutSessionDuplicateLastSet": "Duplica ultima serie",
+  "workoutSessionDuplicateLastSetN": "Duplica ultima serie (Set {n})",
+  "@workoutSessionDuplicateLastSetN": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "workoutSessionColSet": "SET",
+  "workoutSessionColReps": "RIPETIZIONI",
+  "workoutSessionColLoadRpe": "CARICO / RPE",
+  "workoutSessionColNote": "NOTE",
   "builderSupersetEmpty": "Nessun esercizio in questo superset.",
   "builderSupersetPrescriptionLabel": "Prescrizione (esercizio guida)",
   "builderSupersetManage": "Gestisci",
@@ -813,25 +1259,33 @@
   "densityCircuitRounds": "{rounds} giri",
   "@densityCircuitRounds": {
     "placeholders": {
-      "rounds": { "type": "int" }
+      "rounds": {
+        "type": "int"
+      }
     }
   },
   "densityCircuitRest": "{seconds}s recupero",
   "@densityCircuitRest": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "densityEmomInterval": "EMOM {seconds}s",
   "@densityEmomInterval": {
     "placeholders": {
-      "seconds": { "type": "int" }
+      "seconds": {
+        "type": "int"
+      }
     }
   },
   "densityEmomDuration": "{minutes} min",
   "@densityEmomDuration": {
     "placeholders": {
-      "minutes": { "type": "int" }
+      "minutes": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderTabTraining": "Allenamento",
@@ -866,7 +1320,9 @@
   "workoutBuilderRoutineTitleFromCustomer": "Aggiungi titolo · {name}",
   "@workoutBuilderRoutineTitleFromCustomer": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "workoutDiarySessionFilterActive": "Sessioni per questo giorno del piano",
@@ -888,7 +1344,9 @@
   "workoutBuilderExerciseCount": "{count, plural, =0{Nessun esercizio} =1{1 esercizio} other{{count} esercizi}}",
   "@workoutBuilderExerciseCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutBuilderSaveToPersistHint": "Salva la scheda per associarla al cliente. Fino ad allora le modifiche restano solo in memoria.",
@@ -945,14 +1403,18 @@
   "workoutBuilderProgressionIncreaseLoad": "Suggerimento: aumenta il carico a {value}",
   "@workoutBuilderProgressionIncreaseLoad": {
     "placeholders": {
-      "value": { "type": "String" }
+      "value": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderProgressionIncreaseLoadGeneric": "Suggerimento: valuta un piccolo aumento di carico",
   "workoutBuilderProgressionIncreaseReps": "Suggerimento: punta a {value} ripetizioni",
   "@workoutBuilderProgressionIncreaseReps": {
     "placeholders": {
-      "value": { "type": "String" }
+      "value": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderProgressionApply": "Applica",
@@ -968,10 +1430,18 @@
   "measurementAdd": "Aggiungi misura",
   "measurementEdit": "Modifica misura",
   "measurementDate": "Data",
+  "measurementDateDetected": "Data rilevazione",
+  "measurementToday": "Oggi",
   "measurement1RM": "1RM (kg)",
+  "measurement1RMSection": "1RM stimati o testati (kg)",
   "measurementSquat": "Squat",
   "measurementBench": "Panca piana",
   "measurementDeadlift": "Stacco",
+  "measurementSbdTotal": "Totale SBD",
+  "measurementSbdEstimated": "Totale SBD stimato",
+  "measurementBodyComp": "Composizione corporea",
+  "measurementFormSubtitle": "Aggiorna i carichi 1RM, parametri plicometrici e metriche corporee",
+  "measurementDeltaUnchanged": "Parità",
   "measurementSkinfolds": "Pliche (mm)",
   "measurementBodyFat": "Massa grassa %",
   "measurementMuscleMass": "Massa muscolare (kg)",
@@ -1016,6 +1486,13 @@
     }
   },
   "measurementHistoryOpen": "Apri storico",
+  "measurementHistoryOpenFull": "Apri storico completo",
+  "measurementHistoryRange30d": "30g",
+  "measurementHistoryRange3m": "3m",
+  "measurementHistoryRange6m": "6m",
+  "measurementHistoryRangeAll": "Tutto",
+  "measurementHistoryCurrentValue": "Valore attuale",
+  "measurementHistoryRegistered": "Rilevazioni registrate",
   "customerNotesTitle": "Note cliente",
   "customerNotesTitleFor": "Note — {customerName}",
   "@customerNotesTitleFor": {
@@ -1152,13 +1629,17 @@
   "dashboardDiarySubtitle": "{count} sessioni (30 gg)",
   "@dashboardDiarySubtitle": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dashboardStatsSubtitle": "{percent}% aderenza (7 gg)",
   "@dashboardStatsSubtitle": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "customerOpenDiary": "Vedi diario",
@@ -1166,8 +1647,10 @@
   "dashboardBackupHint": "I dati restano su questo dispositivo. Esporta un backup da Impostazioni prima di reinstallare o cambiare dispositivo.",
   "dashboardOpenBackupSettings": "Apri backup",
   "dashboardBackupReminderMessage": "Ultimo backup di oltre 7 giorni fa. Esporta o carica una copia recente per sicurezza.",
-  "dashboardBackupReminderCta": "Apri backup nelle impostazioni",
+  "dashboardBackupReminderSubtitle": "Proteggi schede tecniche, progressioni e test massimali dei tuoi atleti.",
+  "dashboardBackupReminderCta": "Apri backup nelle impostazioni →",
   "dashboardBackupReminderSnooze": "Ricordamelo tra 3 giorni",
+  "dashboardBackupReminderDismissSemantic": "Nascondi avviso",
   "dashboardLoadError": "Impossibile caricare la dashboard. Scorri verso il basso per riprovare.",
   "dashboardNoStalePlans": "Tutti i programmi sono stati aggiornati negli ultimi {days} giorni.",
   "@dashboardNoStalePlans": {
@@ -1214,11 +1697,73 @@
   "dashboardSemanticAttentionList": "Coda di sincronizzazione ed errori",
   "dashboardSemanticNoPlanList": "Clienti senza programma",
   "dashboardSemanticStaleList": "Programmi da aggiornare",
+  "dashboardCoachStudioBadge": "Coach Studio",
+  "dashboardMetricAthletes": "Atleti seguiti",
+  "dashboardMetricActivePlans": "Schede attive",
+  "dashboardMetricWeeklyUpdates": "Aggiornamenti settimana",
+  "dashboardMetricCoachAttention": "Attenzione coach",
+  "dashboardMetricAlertsSuffix": "avvisi",
+  "dashboardTodayEmptyHint": "Nessuna sessione o promemoria pianificato per questa data. Apri l'agenda o la modalità sala.",
+  "dashboardOpenAgenda": "Apri agenda",
+  "dashboardCoachToolsAvailable": "{count} strumenti disponibili",
+  "@dashboardCoachToolsAvailable": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "dashboardAttentionLocalHint": "I dati restano archiviati su questo dispositivo.",
+  "dashboardNoCustomersWithoutPlanHint": "Nessun atleta in attesa di primo inserimento o scheda.",
+  "dashboardNoPlanAllAssignedBadge": "100% assegnati",
+  "dashboardStaleWindowBadge": "Finestra {days} gg",
+  "@dashboardStaleWindowBadge": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "dashboardNoStalePlansHint": "Nessun programma oltre la finestra di {days} giorni.",
+  "@dashboardNoStalePlansHint": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "dashboardShortcutsTitle": "Scorciatoie di gestione",
+  "dashboardShortcutLibrarySubtitle": "Esercizi e cartelle",
+  "dashboardShortcutTemplates": "Schede & template",
+  "dashboardShortcutTemplatesSubtitle": "Modelli pronti",
+  "dashboardShortcutNewAthlete": "Nuovo atleta",
+  "dashboardShortcutNewAthleteSubtitle": "Profilo e scheda",
+  "dashboardShortcutSettingsSubtitle": "Backup e dati locali",
+  "dashboardCreateWorkout": "Nuovo allenamento",
+  "dashboardOfflineFooter": "Coach Studio · Monitoraggio e pianificazione atletica offline-first.",
   "customerEditProfile": "Modifica profilo",
   "customerAssignWorkout": "Assegna workout",
   "customerGoalLabel": "Obiettivo",
   "customerCurrentWeight": "Peso attuale",
   "customerMuscleMass": "Massa muscolare",
+  "customerBackToList": "Torna ai clienti",
+  "customerBiometricParamsTitle": "Parametri biometrici chiave",
+  "customerRegisterNewMeasurement": "Registra nuova misurazione",
+  "customerJourneyStart": "Inizio percorso",
+  "customerLastCheckIn": "Ultimo check-in",
+  "customerIdChip": "ID: #{id}",
+  "@customerIdChip": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "customerAgeWithDob": "{age} anni ({dob})",
+  "@customerAgeWithDob": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      },
+      "dob": {
+        "type": "String"
+      }
+    }
+  },
   "customerOverviewNoMeasurements": "Nessuna misura ancora. Aggiungine una per seguire i progressi.",
   "customerOverviewLastMeasurement": "Ultima misura: {date}",
   "@customerOverviewLastMeasurement": {
@@ -1289,26 +1834,34 @@
   "workoutTemplatesStructureSummary": "{weeks} sett. · {days} giorni · {exercises} esercizi",
   "@workoutTemplatesStructureSummary": {
     "placeholders": {
-      "weeks": { "type": "int" },
-      "days": { "type": "int" },
-      "exercises": { "type": "int" }
+      "weeks": {
+        "type": "int"
+      },
+      "days": {
+        "type": "int"
+      },
+      "exercises": {
+        "type": "int"
+      }
     }
   },
   "workoutTemplatesPreviewExercisesMore": "+{count} altri esercizi",
   "@workoutTemplatesPreviewExercisesMore": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutTemplatesAssignStartDate": "Data di inizio opzionale",
   "workoutTemplatesAssignStartDateHint": "Tocca per scegliere una data di inizio",
   "workoutTemplatesAssignStartDateSkip": "Salta",
-  "workoutDiaryTitle": "Diario",
+  "workoutDiaryTitle": "Diario allenamenti",
   "workoutStatsTitle": "Statistiche",
   "placeholderComingSoon": "In arrivo",
   "placeholderSectionNotImplemented": "Questa sezione non è ancora implementata.",
   "placeholderBackToBuilder": "Torna al builder",
-  "customerDetailTitle": "Dettaglio cliente",
+  "customerDetailTitle": "Dettaglio Cliente",
   "actionsTitle": "Azioni",
   "updatedDaysAgo": "Aggiornato {count}g fa",
   "@updatedDaysAgo": {
@@ -1335,59 +1888,6 @@
     }
   },
   "updatedJustNow": "Appena adesso",
-  "exerciseLibraryTabHevy": "Hevy",
-  "exerciseLibraryImportSourceHevy": "Sincronizza catalogo Hevy completo",
-  "exerciseLibraryImportSourceHevySubtitle": "Importa tutti gli esercizi dal tuo account Hevy Pro con ID già mappati.",
-  "hevySettingsSectionTitle": "Integrazione Hevy",
-  "hevySettingsSectionSubtitle": "Richiede Hevy Pro. API key da hevy.com/settings (Developer).",
-  "hevySettingsApiKeyLabel": "API key Hevy",
-  "hevySettingsApiKeyHint": "Incolla la tua API key",
-  "hevySettingsSaveKey": "Salva key",
-  "hevySettingsTestConnection": "Test connessione",
-  "hevySettingsSyncCatalog": "Sincronizza tutti gli esercizi",
-  "hevySettingsKeySaved": "API key Hevy salvata.",
-  "hevySettingsTestSuccess": "Connesso a Hevy.",
-  "hevySettingsTestFailed": "Connessione Hevy fallita: {message}",
-  "@hevySettingsTestFailed": {
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "hevyImportInProgress": "Sincronizzazione catalogo Hevy…",
-  "hevyImportSuccessCount": "Sincronizzazione Hevy completata: {count} nuovi elementi.",
-  "@hevyImportSuccessCount": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "hevyImportFailed": "Sincronizzazione Hevy fallita: {message}",
-  "@hevyImportFailed": {
-    "placeholders": {
-      "message": { "type": "String" }
-    }
-  },
-  "workoutExportHevy": "Esporta giornata su Hevy",
-  "hevyExportSheetTitle": "Esporta su Hevy",
-  "hevyExportConfirm": "Crea routine su Hevy",
-  "hevyExportConfirmRoutine": "Crea routine su Hevy",
-  "hevyExportConfirmWorkout": "Crea allenamento su Hevy",
-  "hevyExportWorkoutHint": "L'allenamento viene registrato nel diario Hevy con inizio adesso e fine stimata tra 90 minuti.",
-  "hevyExportSuccessRoutine": "Routine creata su Hevy.",
-  "hevyExportSuccessWorkout": "Allenamento creato su Hevy.",
-  "hevyExportAllMapped": "Tutti gli esercizi sono mappati. Pronto per l'export.",
-  "hevyExportUnmappedIntro": "{count} esercizi richiedono una mappatura Hevy prima dell'export.",
-  "@hevyExportUnmappedIntro": {
-    "placeholders": {
-      "count": { "type": "int" }
-    }
-  },
-  "hevyExportMapExercise": "Mappa",
-  "hevyExportUnmappedBlock": "Mappa tutti gli esercizi prima di esportare.",
-  "hevyExportSuccess": "Routine creata su Hevy.",
-  "hevyExportError": "Export Hevy fallito. Riprova.",
-  "hevyExportNoCatalogHint": "Sincronizza prima il catalogo Hevy da Impostazioni o Libreria esercizi.",
-  "calendarExportHevy": "Esporta su Hevy",
-  "workoutDiaryTitle": "Diario allenamenti",
   "workoutDiaryEmpty": "Nessuna sessione registrata. Segna una sessione come completata dal calendario per iniziare il diario.",
   "workoutDiaryFilterAll": "Tutti i clienti",
   "coachStatsTitle": "Statistiche coach",
@@ -1402,8 +1902,12 @@
   "coachStatsChartDaySummary": "{date}: {count} completate",
   "@coachStatsChartDaySummary": {
     "placeholders": {
-      "date": { "type": "String" },
-      "count": { "type": "int" }
+      "date": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
     }
   },
   "coachStatsExportCsv": "Esporta CSV",
@@ -1426,7 +1930,9 @@
   "sessionLogSetLabel": "Set {number}",
   "@sessionLogSetLabel": {
     "placeholders": {
-      "number": { "type": "int" }
+      "number": {
+        "type": "int"
+      }
     }
   },
   "sessionLogExpandSets": "Mostra set",
@@ -1438,20 +1944,28 @@
   "sessionLogRpeChipLabel": "RPE {value}/10",
   "@sessionLogRpeChipLabel": {
     "placeholders": {
-      "value": { "type": "int" }
+      "value": {
+        "type": "int"
+      }
     }
   },
   "sessionLogPainChipLabel": "Dolore {value}/10",
   "@sessionLogPainChipLabel": {
     "placeholders": {
-      "value": { "type": "int" }
+      "value": {
+        "type": "int"
+      }
     }
   },
   "sessionLogPainChipLabelWithLocation": "Dolore {value}/10 · {location}",
   "@sessionLogPainChipLabelWithLocation": {
     "placeholders": {
-      "value": { "type": "int" },
-      "location": { "type": "String" }
+      "value": {
+        "type": "int"
+      },
+      "location": {
+        "type": "String"
+      }
     }
   },
   "gymModeTitle": "Modalità sala",
@@ -1475,37 +1989,49 @@
   "workoutPlanDiffSummaryDaysAdded": "{count} giorni aggiunti",
   "@workoutPlanDiffSummaryDaysAdded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryDaysRemoved": "{count} giorni rimossi",
   "@workoutPlanDiffSummaryDaysRemoved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryDaysChanged": "{count} giorni modificati",
   "@workoutPlanDiffSummaryDaysChanged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesAdded": "{count} esercizi aggiunti",
   "@workoutPlanDiffSummaryExercisesAdded": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesRemoved": "{count} esercizi rimossi",
   "@workoutPlanDiffSummaryExercisesRemoved": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffSummaryExercisesChanged": "{count} esercizi modificati",
   "@workoutPlanDiffSummaryExercisesChanged": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPlanDiffBadgeAdded": "Aggiunto",
@@ -1532,23 +2058,37 @@
   "customerProgressNarrativeSummary": "Negli ultimi 30 giorni l'aderenza è stata del {adherence} ({completed} completate, {skipped} saltate).",
   "@customerProgressNarrativeSummary": {
     "placeholders": {
-      "adherence": { "type": "String" },
-      "completed": { "type": "int" },
-      "skipped": { "type": "int" }
+      "adherence": {
+        "type": "String"
+      },
+      "completed": {
+        "type": "int"
+      },
+      "skipped": {
+        "type": "int"
+      }
     }
   },
   "customerProgressNarrativeLastSession": "Ultima sessione: {when}.",
   "@customerProgressNarrativeLastSession": {
     "placeholders": {
-      "when": { "type": "String" }
+      "when": {
+        "type": "String"
+      }
     }
   },
   "customerProgressNarrativeRecentPr": "PR recente: {name} — {value} {unit}.",
   "@customerProgressNarrativeRecentPr": {
     "placeholders": {
-      "name": { "type": "String" },
-      "value": { "type": "String" },
-      "unit": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "customerProgressExportWeeklyCompleted": "completata",
@@ -1558,9 +2098,15 @@
   "customerProgressPrLine": "· {name} {value} {unit}",
   "@customerProgressPrLine": {
     "placeholders": {
-      "name": { "type": "String" },
-      "value": { "type": "String" },
-      "unit": { "type": "String" }
+      "name": {
+        "type": "String"
+      },
+      "value": {
+        "type": "String"
+      },
+      "unit": {
+        "type": "String"
+      }
     }
   },
   "settingsCalendarRemindersTitle": "Promemoria sessioni",
@@ -1580,8 +2126,12 @@
   "backupImportMetadata": "Backup del {date} · app {version}",
   "@backupImportMetadata": {
     "placeholders": {
-      "date": { "type": "String" },
-      "version": { "type": "String" }
+      "date": {
+        "type": "String"
+      },
+      "version": {
+        "type": "String"
+      }
     }
   },
   "backupImportSelectGroups": "Scegli cosa importare",
@@ -1589,25 +2139,33 @@
   "backupImportGroupCustomers": "Clienti e dati correlati ({count})",
   "@backupImportGroupCustomers": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupPlans": "Piani workout ({count})",
   "@backupImportGroupPlans": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupExerciseLibrary": "Libreria esercizi ({count})",
   "@backupImportGroupExerciseLibrary": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupReminders": "Promemoria ({count})",
   "@backupImportGroupReminders": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "backupImportGroupPreferences": "Profilo e preferenze",
@@ -1617,13 +2175,17 @@
   "releaseNotesInstalledVersion": "Versione installata: {version}",
   "@releaseNotesInstalledVersion": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "releaseNotesSettingsSubtitle": "Versione {version}",
   "@releaseNotesSettingsSubtitle": {
     "placeholders": {
-      "version": { "type": "String" }
+      "version": {
+        "type": "String"
+      }
     }
   },
   "releaseNotesHighlightsLabel": "In evidenza",
@@ -1654,7 +2216,6 @@
   "releaseNotesV1021": "Libreria template piani workout",
   "releaseNotesV1022": "Autosave editor piano + guard uscita con modifiche non salvate",
   "releaseNotesV1023": "Export piano PDF / JSON / Excel",
-  "releaseNotesV1024": "Integrazione Hevy (export verso calendario / libreria)",
   "releaseNotesV1011": "Dashboard \"Oggi\" e agenda sessioni",
   "releaseNotesV1012": "Gestione clienti, misure, record esercizi",
   "releaseNotesV1013": "Workout builder (settimane/giorni/esercizi, superset base)",

@@ -63,6 +63,7 @@ Future<void> showWorkoutBuilderSupersetEditorSheet({
     context: context,
     title: title,
     fullScreen: true,
+    useRootNavigator: true,
     bodyBuilder: (sheetContext) => ListenableBuilder(
       listenable: session,
       builder: (context, _) {

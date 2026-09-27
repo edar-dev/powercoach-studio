@@ -4,14 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
+import '../widgets/customer_creation_dark_field.dart';
+import '../widgets/customer_creation_goal_chips.dart';
+import '../widgets/customer_creation_hero_banner.dart';
 
-/// Customer Creation Page – Stitch screen ID 534f6e3664244ba59196220f2909eb46.
+/// New customer – Stitch dark form (`new-customer-dark`, screen 9cdeb5f6…).
 class CustomerCreationScreen extends StatefulWidget {
   const CustomerCreationScreen({super.key});
 
@@ -25,11 +28,13 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _notesController = TextEditingController();
-  final _goalsController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
   bool _saving = false;
   bool _prefillApplied = false;
+  DateTime? _dateOfBirth;
+  int? _selectedGoalIndex;
+  int _experienceIndex = 1; // intermediate default (Stitch)
   final CustomerRepository _repo = CustomerRepository();
 
   @override
@@ -52,10 +57,73 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     _emailController.dispose();
     _phoneController.dispose();
     _notesController.dispose();
-    _goalsController.dispose();
     _heightController.dispose();
     _weightController.dispose();
     super.dispose();
+  }
+
+  int? get _estimatedAge {
+    final dob = _dateOfBirth;
+    if (dob == null) return null;
+    final now = DateTime.now();
+    var age = now.year - dob.year;
+    final m = now.month - dob.month;
+    if (m < 0 || (m == 0 && now.day < dob.day)) age--;
+    if (age <= 0 || age >= 110) return null;
+    return age;
+  }
+
+  String _experienceLabel(AppLocalizations l10n) {
+    return switch (_experienceIndex) {
+      0 => l10n.customerExperienceBeginner,
+      1 => l10n.customerExperienceIntermediate,
+      2 => l10n.customerExperienceAdvanced,
+      _ => l10n.customerExperienceElite,
+    };
+  }
+
+  String? _composeNotes(AppLocalizations l10n) {
+    final coachNotes = _notesController.text.trim();
+    final experienceLine =
+        l10n.customerExperienceNotesPrefix(_experienceLabel(l10n));
+    if (coachNotes.isEmpty) return experienceLine;
+    return '$experienceLine\n\n$coachNotes';
+  }
+
+  String? _composeGoals(AppLocalizations l10n) {
+    if (_selectedGoalIndex == null) return null;
+    final labels = [
+      l10n.customerGoalHypertrophy,
+      l10n.customerGoalStrength,
+      l10n.customerGoalRecomp,
+      l10n.customerGoalAthletic,
+    ];
+    return labels[_selectedGoalIndex!];
+  }
+
+  Future<void> _pickDateOfBirth() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _dateOfBirth ?? DateTime(now.year - 28, now.month, now.day),
+      firstDate: DateTime(1920),
+      lastDate: now,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: MarketingDarkColors.brand,
+              surface: MarketingDarkColors.surface,
+              onSurface: MarketingDarkColors.text,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && mounted) {
+      setState(() => _dateOfBirth = picked);
+    }
   }
 
   Future<void> _submit() async {
@@ -85,17 +153,28 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
         return;
       }
 
+      final dob = _dateOfBirth;
+      final dobIso = dob == null
+          ? null
+          : '${dob.year.toString().padLeft(4, '0')}-'
+              '${dob.month.toString().padLeft(2, '0')}-'
+              '${dob.day.toString().padLeft(2, '0')}';
+
       final customer = Customer(
         id: '',
         userId: user.id,
         name: _nameController.text.trim(),
-        email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
-        phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-        dateOfBirth: null,
+        email: _emailController.text.trim().isEmpty
+            ? null
+            : _emailController.text.trim(),
+        phone: _phoneController.text.trim().isEmpty
+            ? null
+            : _phoneController.text.trim(),
+        dateOfBirth: dobIso,
         heightCm: double.tryParse(_heightController.text.trim()),
         weightKg: double.tryParse(_weightController.text.trim()),
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
-        goals: _goalsController.text.trim().isEmpty ? null : _goalsController.text.trim(),
+        notes: _composeNotes(l10n),
+        goals: _composeGoals(l10n),
         pdfHeader: null,
         useCustomPdfHeader: false,
         isFavorite: false,
@@ -136,236 +215,510 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     }
   }
 
-  Widget _formLabel(BuildContext context, String label) {
-    final theme = Theme.of(context);
-    return Text(
-      label,
-      style: theme.textTheme.bodyMedium?.copyWith(
-        fontWeight: FontWeight.w500,
-        color: theme.colorScheme.onSurfaceVariant,
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration(BuildContext context, {required IconData prefixIcon, String? hint}) {
-    final cs = Theme.of(context).colorScheme;
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(color: cs.onSurfaceVariant),
-      prefixIcon: Icon(prefixIcon, size: 22, color: cs.onSurfaceVariant),
-      filled: true,
-      fillColor: cs.surfaceContainerHighest,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-        borderSide: BorderSide(color: cs.outline),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final authLoading = authRouteLoadingOrNull();
     if (authLoading != null) return authLoading;
 
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-        title: Text(
-          l10n.customersNewCustomer,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        centerTitle: false,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: colorScheme.outline, height: 1),
-        ),
-      ),
+      backgroundColor: MarketingDarkColors.bgAlt,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Hero: Stitch "Start a New Journey"
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-                    border: Border.all(color: StitchM3Theme.accent.withValues(alpha: 0.15)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        StitchM3Theme.accent.withValues(alpha: 0.12),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 64,
-                        height: 64,
-                        decoration: BoxDecoration(
-                          color: StitchM3Theme.accent,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: StitchM3Theme.accent.withValues(alpha: 0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 4),
+        bottom: false,
+        child: Column(
+          children: [
+            _CreationHeader(
+              l10n: l10n,
+              onBack: () {
+                HapticFeedback.mediumImpact();
+                context.pop();
+              },
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+                child: Form(
+                  key: _formKey,
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 720),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const CustomerCreationHeroBanner(),
+                        const SizedBox(height: 28),
+                        CustomerCreationSectionTitle(
+                          title: l10n.customerCreationSectionAnagrafica,
+                        ),
+                        const SizedBox(height: 14),
+                        CustomerCreationDarkField(
+                          label: '${l10n.customerName} *',
+                          controller: _nameController,
+                          hint: l10n.customerNameHint,
+                          prefixIcon: Icons.person_outline,
+                          textInputAction: TextInputAction.next,
+                          validator: (v) => v == null || v.trim().isEmpty
+                              ? l10n.customerNameRequired
+                              : null,
+                        ),
+                        const SizedBox(height: 14),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final sideBySide = constraints.maxWidth >= 520;
+                            final email = CustomerCreationDarkField(
+                              label: l10n.customerEmail,
+                              controller: _emailController,
+                              hint: l10n.customerEmailHint,
+                              prefixIcon: Icons.mail_outline,
+                              keyboardType: TextInputType.emailAddress,
+                              textInputAction: TextInputAction.next,
+                            );
+                            final phone = CustomerCreationPhoneField(
+                              label: l10n.customerPhone,
+                              controller: _phoneController,
+                              hint: l10n.customerPhoneHint,
+                              prefixLabel: l10n.customerPhoneCountryPrefix,
+                            );
+                            if (!sideBySide) {
+                              return Column(
+                                children: [
+                                  email,
+                                  const SizedBox(height: 14),
+                                  phone,
+                                ],
+                              );
+                            }
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(child: email),
+                                const SizedBox(width: 12),
+                                Expanded(child: phone),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        CustomerCreationSectionTitle(
+                          title: l10n.customerCreationSectionPhysical,
+                        ),
+                        const SizedBox(height: 14),
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final cols = constraints.maxWidth >= 640
+                                ? 4
+                                : constraints.maxWidth >= 400
+                                    ? 2
+                                    : 1;
+                            final age = _estimatedAge;
+                            final items = [
+                              CustomerCreationTapField(
+                                label: l10n.customerDateOfBirth,
+                                value: _dateOfBirth == null
+                                    ? null
+                                    : MaterialLocalizations.of(context)
+                                        .formatCompactDate(_dateOfBirth!),
+                                hint: l10n.customerDateOfBirth,
+                                prefixIcon: Icons.calendar_today_outlined,
+                                onTap: _pickDateOfBirth,
+                              ),
+                              CustomerCreationReadonlyField(
+                                label: l10n.customerEstimatedAge,
+                                value: age?.toString(),
+                                hint: '—',
+                                suffix: l10n.customerEstimatedAgeUnit,
+                              ),
+                              CustomerCreationDarkField(
+                                label: l10n.customerHeight,
+                                controller: _heightController,
+                                hint: l10n.customerHeightHint,
+                                keyboardType: TextInputType.number,
+                                textInputAction: TextInputAction.next,
+                                suffixText: l10n.customerHeightUnit,
+                              ),
+                              CustomerCreationDarkField(
+                                label: l10n.customerWeight,
+                                controller: _weightController,
+                                hint: l10n.customerWeightHint,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                  decimal: true,
+                                ),
+                                textInputAction: TextInputAction.next,
+                                suffixText: l10n.customerWeightUnit,
+                              ),
+                            ];
+                            if (cols == 1) {
+                              return Column(
+                                children: [
+                                  for (var i = 0; i < items.length; i++) ...[
+                                    if (i > 0) const SizedBox(height: 12),
+                                    items[i],
+                                  ],
+                                ],
+                              );
+                            }
+                            return Wrap(
+                              spacing: 12,
+                              runSpacing: 12,
+                              children: [
+                                for (final item in items)
+                                  SizedBox(
+                                    width: cols == 4
+                                        ? (constraints.maxWidth - 36) / 4
+                                        : (constraints.maxWidth - 12) / 2,
+                                    child: item,
+                                  ),
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 28),
+                        CustomerCreationSectionTitle(
+                          title: l10n.customerCreationSectionGoals,
+                        ),
+                        const SizedBox(height: 14),
+                        Text(
+                          l10n.customerGoals,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: MarketingDarkColors.slate300,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        CustomerCreationGoalChips(
+                          selectedIndex: _selectedGoalIndex,
+                          onSelected: (i) =>
+                              setState(() => _selectedGoalIndex = i),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          l10n.customerExperienceLabel,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: MarketingDarkColors.slate300,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        DropdownButtonFormField<int>(
+                          initialValue: _experienceIndex,
+                          dropdownColor: MarketingDarkColors.surface800,
+                          style: const TextStyle(
+                            color: MarketingDarkColors.text,
+                            fontSize: 14,
+                          ),
+                          decoration: customerCreationInputDecoration(),
+                          items: [
+                            DropdownMenuItem(
+                              value: 0,
+                              child: Text(l10n.customerExperienceBeginner),
+                            ),
+                            DropdownMenuItem(
+                              value: 1,
+                              child: Text(l10n.customerExperienceIntermediate),
+                            ),
+                            DropdownMenuItem(
+                              value: 2,
+                              child: Text(l10n.customerExperienceAdvanced),
+                            ),
+                            DropdownMenuItem(
+                              value: 3,
+                              child: Text(l10n.customerExperienceElite),
+                            ),
+                          ],
+                          onChanged: (v) {
+                            if (v != null) {
+                              setState(() => _experienceIndex = v);
+                            }
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                l10n.customerNotes,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: MarketingDarkColors.slate300,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              l10n.customerNotesOptional,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: MarketingDarkColors.slate500,
+                              ),
                             ),
                           ],
                         ),
-                        child: const Icon(Icons.person_add, color: Colors.white, size: 32),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Start a New Journey',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurface,
+                        const SizedBox(height: 6),
+                        TextFormField(
+                          controller: _notesController,
+                          maxLines: 3,
+                          style: const TextStyle(
+                            color: MarketingDarkColors.text,
+                            fontSize: 14,
+                          ),
+                          cursorColor: MarketingDarkColors.brandLight,
+                          decoration: customerCreationInputDecoration(
+                            hint: l10n.customerNotesHintCreation,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "Capture your client's initial details to begin tracking their progress.",
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 32),
-                _formLabel(context, l10n.customerName),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _nameController,
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.person, hint: 'e.g. Alex Johnson'),
-                  validator: (v) =>
-                      v == null || v.trim().isEmpty ? l10n.customerNameRequired : null,
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerEmail),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.mail, hint: 'alex@example.com'),
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerPhone),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.phone_outlined),
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerGoals),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _goalsController,
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.flag_outlined, hint: 'e.g. Muscle Gain'),
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerWeight),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _weightController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.monitor_weight_outlined, hint: '0.0'),
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerHeight),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _heightController,
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.next,
-                  decoration: _inputDecoration(context, prefixIcon: Icons.height),
-                ),
-                const SizedBox(height: 24),
-                _formLabel(context, l10n.customerNotes),
-                const SizedBox(height: 8),
-                TextFormField(
-                  controller: _notesController,
-                  maxLines: 3,
-                  textInputAction: TextInputAction.newline,
-                  decoration: InputDecoration(
-                    hintText: l10n.customerNotes,
-                    hintStyle: TextStyle(color: colorScheme.onSurfaceVariant),
-                    filled: true,
-                    fillColor: colorScheme.surfaceContainerHighest,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-                      borderSide: BorderSide(color: colorScheme.outline),
+                      ],
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
-                const SizedBox(height: 32),
-                FilledButton(
-                  onPressed: _saving ? null : _submit,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: StitchM3Theme.accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    minimumSize: const Size(0, 48),
-                    elevation: 4,
-                    shadowColor: StitchM3Theme.accent.withValues(alpha: 0.35),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg)),
-                  ),
-                  child: _saving
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.save, size: 20),
-                            const SizedBox(width: 8),
-                            Text(l10n.customerSave),
-                          ],
+              ),
+            ),
+            _CreationFooter(
+              l10n: l10n,
+              saving: _saving,
+              bottomInset: bottomInset,
+              onCancel: () => context.pop(),
+              onSave: _submit,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CreationHeader extends StatelessWidget {
+  const _CreationHeader({required this.l10n, required this.onBack});
+
+  final AppLocalizations l10n;
+  final VoidCallback onBack;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 8, 16, 12),
+      decoration: const BoxDecoration(
+        color: MarketingDarkColors.bgAlt,
+        border: Border(
+          bottom: BorderSide(color: MarketingDarkColors.border),
+        ),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            onPressed: onBack,
+            icon: const Icon(Icons.arrow_back),
+            color: MarketingDarkColors.slate400,
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+          ),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  children: [
+                    Text(
+                      l10n.customersNewCustomer,
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: MarketingDarkColors.text,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: MarketingDarkColors.brand.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(999),
+                        border: Border.all(
+                          color:
+                              MarketingDarkColors.brand.withValues(alpha: 0.25),
                         ),
+                      ),
+                      child: Text(
+                        l10n.customerCreationBadge,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: MarketingDarkColors.brandLight,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 2),
                 Text(
-                  l10n.customerCreationLocalDataHint,
-                  style: theme.textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
-                  textAlign: TextAlign.center,
+                  l10n.customerCreationHeaderSubtitle,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: MarketingDarkColors.slate400,
+                  ),
                 ),
               ],
             ),
           ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                l10n.customerCreationStepProgress,
+                style: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: MarketingDarkColors.slate400,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Row(
+                children: [
+                  Container(
+                    width: 24,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: MarketingDarkColors.brand,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Container(
+                    width: 12,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: MarketingDarkColors.surface700,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CreationFooter extends StatelessWidget {
+  const _CreationFooter({
+    required this.l10n,
+    required this.saving,
+    required this.bottomInset,
+    required this.onCancel,
+    required this.onSave,
+  });
+
+  final AppLocalizations l10n;
+  final bool saving;
+  final double bottomInset;
+  final VoidCallback onCancel;
+  final VoidCallback onSave;
+
+  @override
+  Widget build(BuildContext context) {
+    final narrow = MediaQuery.sizeOf(context).width < 560;
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 12 + bottomInset),
+      decoration: const BoxDecoration(
+        color: Color(0xFF0F1624),
+        border: Border(
+          top: BorderSide(color: MarketingDarkColors.border),
         ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (!narrow)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Text(
+                l10n.customerCreationLocalDataHint,
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: MarketingDarkColors.slate400,
+                ),
+              ),
+            ),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: saving ? null : onCancel,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: MarketingDarkColors.slate300,
+                    side: const BorderSide(
+                      color: MarketingDarkColors.borderMuted,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        MarketingDarkColors.radiusXl,
+                      ),
+                    ),
+                  ),
+                  child: Text(l10n.customerCancel),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                flex: 2,
+                child: FilledButton.icon(
+                  onPressed: saving ? null : onSave,
+                  icon: saving
+                      ? const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Icon(Icons.add, size: 18),
+                  label: Text(
+                    l10n.customerSaveAndCreatePlan,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: MarketingDarkColors.brand,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                        MarketingDarkColors.radiusXl,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          if (narrow) ...[
+            const SizedBox(height: 8),
+            Text(
+              l10n.customerCreationLocalDataHint,
+              style: const TextStyle(
+                fontSize: 11,
+                color: MarketingDarkColors.slate400,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ],
       ),
     );
   }

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#05070c]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F50 — Density Group: Superset, Circuito, EMOM</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              900: '#1e3a8a',
+            },
+            slateBg: '#070a12',
+            slateCard: '#0d1322',
+            slateCardHover: '#131b2e',
+            slateBorder: '#1c273e',
+            slateBorderLight: '#263554',
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="scrollbar-styling">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090e1a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e2c47;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #2b3e63;
+    }
+  </style>
+<style data-purpose="glow-effects">
+    .modal-glow {
+      box-shadow: 0 0 50px -10px rgba(37, 99, 235, 0.15), 0 25px 60px -15px rgba(0, 0, 0, 0.85);
+    }
+    .active-tab-glow {
+      box-shadow: 0 2px 14px -2px rgba(59, 130, 246, 0.45);
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="h-full text-slate-200 antialiased font-sans flex flex-col justify-center items-center p-3 md:p-6 overflow-x-hidden relative selection:bg-blue-600 selection:text-white">
+<!-- BEGIN: Backdrop Simulation (Original Workout Session Behind) -->
+<div class="fixed inset-0 bg-[#060911]/90 backdrop-blur-md pointer-events-none z-0 flex flex-col items-center justify-start pt-8 opacity-40">
+<div class="w-full max-w-6xl rounded-2xl bg-[#0a0f1d] border border-slate-800 p-6 shadow-2xl">
+<div class="flex items-center justify-between pb-6 border-b border-slate-800">
+<div class="flex items-center gap-3">
+<span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-950/80 text-blue-400 border border-blue-800/60">• FASE 1: ACCUMULO &amp; VOLUME</span>
+<span class="text-xs text-slate-500">Settimana 1 di 4</span>
+</div>
+</div>
+<div class="mt-4 flex items-center justify-between">
+<h2 class="text-xl font-bold text-white">Giorno 1: Upper Body - Panca Focus</h2>
+</div>
+<div class="mt-4 grid grid-cols-2 gap-4">
+<div class="h-16 rounded-xl bg-slate-900/60 border border-slate-800/80"></div>
+<div class="h-16 rounded-xl bg-slate-900/60 border border-slate-800/80"></div>
+</div>
+</div>
+</div>
+<!-- END: Backdrop Simulation -->
+<!-- BEGIN: Top Context Badge Tag -->
+<div class="relative z-10 w-full max-w-5xl mb-3 flex items-center justify-between px-1">
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#0e172a]/90 border border-blue-900/50 backdrop-blur text-xs tracking-wide">
+<span class="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+<span class="font-mono text-blue-300 font-semibold uppercase">F50 — Density Group</span>
+<span class="text-slate-400">| Configurazione Gruppi ad Alta Densità</span>
+</div>
+<div class="text-xs text-slate-400 hidden sm:flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 font-mono text-[10px] text-slate-300">ESC</span>
+<span>Chiudi pannello</span>
+</div>
+</div>
+<!-- END: Top Context Badge Tag -->
+<!-- BEGIN: Main Density Group Modal -->
+<main class="relative z-10 w-full max-w-5xl bg-[#090e1a] border border-[#1b263e] rounded-2xl modal-glow flex flex-col max-h-[92vh] overflow-hidden">
+<!-- BEGIN: Modal Header -->
+<header class="px-6 py-5 border-b border-[#162137] bg-[#0c1222]/90 flex items-center justify-between shrink-0">
+<div class="flex items-center gap-3.5">
+<div class="w-10 h-10 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-lg font-bold text-white tracking-tight">Configura Density Group</h1>
+<span class="text-[11px] px-2 py-0.5 rounded bg-indigo-950/70 border border-indigo-700/50 text-indigo-300 font-medium">Metodologia Avanzata</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">Raggruppa serie per densità, tempo e stress metabolico programmato</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button aria-label="Aiuto e linee guida" class="p-2 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button aria-label="Chiudi finestra" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-red-950/50 hover:border-red-800/50 border border-transparent transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</header>
+<!-- END: Modal Header -->
+<!-- BEGIN: Density Mode Segmented Control (Tabs) -->
+<section class="px-6 pt-5 pb-2 bg-[#090e1a] shrink-0" data-purpose="mode-switcher">
+<div class="p-1 rounded-xl bg-[#0d1424] border border-[#19243c] grid grid-cols-3 gap-1">
+<!-- Tab 1: Superset -->
+<button class="group flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all" type="button">
+<span class="w-2 h-2 rounded-full bg-cyan-400/80 group-hover:bg-cyan-300"></span>
+<span>Superset</span>
+<span class="text-[10px] text-slate-500 font-mono">(2 Esercizi)</span>
+</button>
+<!-- Tab 2: Circuito (Active State) -->
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-semibold text-white bg-blue-600 active-tab-glow border border-blue-400/30 transition-all" type="button">
+<span class="w-2 h-2 rounded-full bg-white"></span>
+<span>Circuito ad Alta Densità</span>
+<span class="text-[10px] text-blue-100 bg-blue-700/60 px-1.5 py-0.2 rounded font-mono">Attivo</span>
+</button>
+<!-- Tab 3: EMOM -->
+<button class="group flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all" type="button">
+<span class="w-2 h-2 rounded-full bg-amber-400/80 group-hover:bg-amber-300"></span>
+<span>EMOM Interval</span>
+<span class="text-[10px] text-slate-500 font-mono">(A tempo)</span>
+</button>
+</div>
+</section>
+<!-- END: Density Mode Segmented Control -->
+<!-- BEGIN: Scrollable Modal Body -->
+<div class="px-6 py-4 overflow-y-auto space-y-6 flex-1">
+<!-- BEGIN: Active Circuit Meta Settings Section -->
+<section class="rounded-xl bg-[#0c1322] border border-[#1b273f] p-4" data-purpose="circuit-parameters">
+<div class="flex flex-wrap items-center justify-between gap-3 mb-3.5 pb-3 border-b border-[#172238]">
+<div class="flex items-center gap-2.5">
+<span class="px-2.5 py-1 rounded-md text-[11px] font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800/50">Circuito #1</span>
+<span class="text-sm font-semibold text-white">Parametri del Blocco &amp; Tempi di Recupero</span>
+</div>
+<div class="flex items-center gap-2 text-xs text-slate-400">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+<span>Tempo target stimato: <strong class="text-slate-200">14 min 30s</strong></span>
+</div>
+</div>
+<!-- Meta Input Fields -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+<!-- Giri Programmati -->
+<div class="p-3 rounded-lg bg-[#080d18] border border-[#162137]">
+<label class="block text-[11px] font-medium text-slate-400 mb-1.5">Giri Totali (Round)</label>
+<div class="flex items-center justify-between">
+<input class="w-20 bg-[#0f172a] border border-[#22304d] rounded-md text-white text-sm font-semibold px-2.5 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" max="20" min="1" type="number" value="4"/>
+<span class="text-xs text-slate-400 font-mono">giri</span>
+</div>
+</div>
+<!-- Riposo Tra Esercizi -->
+<div class="p-3 rounded-lg bg-[#080d18] border border-[#162137]">
+<label class="block text-[11px] font-medium text-slate-400 mb-1.5">Riposo tra Esercizi</label>
+<div class="flex items-center justify-between">
+<input class="w-20 bg-[#0f172a] border border-[#22304d] rounded-md text-white text-sm font-semibold px-2.5 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" step="5" type="number" value="15"/>
+<span class="text-xs text-slate-400 font-mono">secondi</span>
+</div>
+</div>
+<!-- Riposo a Fine Giro -->
+<div class="p-3 rounded-lg bg-[#080d18] border border-[#162137]">
+<label class="block text-[11px] font-medium text-slate-400 mb-1.5">Riposo a Fine Giro</label>
+<div class="flex items-center justify-between">
+<input class="w-20 bg-[#0f172a] border border-[#22304d] rounded-md text-white text-sm font-semibold px-2.5 py-1 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" step="10" type="number" value="120"/>
+<span class="text-xs text-slate-400 font-mono">secondi</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Active Circuit Meta Settings Section -->
+<!-- BEGIN: Circuit Exercise Stack (3 Exercises) -->
+<section class="space-y-3" data-purpose="density-exercise-stack">
+<div class="flex items-center justify-between">
+<h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Esercizi nel Circuito (Sequenza)</h2>
+<span class="text-xs text-slate-500">Trascina le maniglie per riordinare la sequenza</span>
+</div>
+<!-- Exercise 1 in Circuit: Affondi bulgari -->
+<article class="rounded-xl bg-[#0c1322] border border-[#1b273f] p-4 transition-all hover:border-slate-700">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-center gap-3">
+<!-- Drag Handle -->
+<button aria-label="Riordina esercizio" class="text-slate-600 hover:text-slate-300 cursor-grab active:cursor-grabbing p-1" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<!-- Step Index Badge -->
+<span class="w-6 h-6 rounded-md bg-blue-950/80 border border-blue-700/60 text-blue-300 font-mono text-xs flex items-center justify-center font-bold">1</span>
+<!-- Title and Muscle Tags -->
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="text-sm font-bold text-white">Affondi Bulgari con Manubri</h3>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-blue-900/40 text-blue-300 border border-blue-700/40">Gambe</span>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-slate-800 text-slate-300 border border-slate-700">Glutei &amp; Quad</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-0.5">Focus cadenza controllata 3-0-1-0</div>
+</div>
+</div>
+<!-- Remove Button -->
+<button class="text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 p-1.5 rounded-lg border border-transparent hover:border-rose-900/40 transition-colors" title="Rimuovi dal circuito" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<!-- Parameter Row -->
+<div class="mt-3.5 pt-3 border-t border-[#162137] grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Target</span>
+<span class="text-xs font-bold text-white">4 Giri × 10 reps/lato</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Carico</span>
+<span class="text-xs font-bold text-white">2×16 kg</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">RPE</span>
+<span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-950/70 border border-amber-600/50 text-amber-300">@ 8.0</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Transizione</span>
+<span class="text-xs text-blue-400 font-mono">15s riposo ➔</span>
+</div>
+</div>
+</article>
+<!-- Exercise 2 in Circuit: Push-up Zavorrati -->
+<article class="rounded-xl bg-[#0c1322] border border-[#1b273f] p-4 transition-all hover:border-slate-700">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-center gap-3">
+<button aria-label="Riordina esercizio" class="text-slate-600 hover:text-slate-300 cursor-grab active:cursor-grabbing p-1" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="w-6 h-6 rounded-md bg-blue-950/80 border border-blue-700/60 text-blue-300 font-mono text-xs flex items-center justify-center font-bold">2</span>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="text-sm font-bold text-white">Push-up Zavorrati (Disco su schiena)</h3>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-emerald-950 text-emerald-300 border border-emerald-800/40">Petto</span>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-slate-800 text-slate-300 border border-slate-700">Tricipiti</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-0.5">Escursione completa con fermo 1" al petto</div>
+</div>
+</div>
+<button class="text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 p-1.5 rounded-lg border border-transparent hover:border-rose-900/40 transition-colors" title="Rimuovi dal circuito" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="mt-3.5 pt-3 border-t border-[#162137] grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Target</span>
+<span class="text-xs font-bold text-white">4 Giri × 12 reps</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Carico</span>
+<span class="text-xs font-bold text-white">+15 kg</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">RPE</span>
+<span class="px-2 py-0.5 text-xs font-semibold rounded bg-amber-950/70 border border-amber-600/50 text-amber-300">@ 8.5</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Transizione</span>
+<span class="text-xs text-blue-400 font-mono">15s riposo ➔</span>
+</div>
+</div>
+</article>
+<!-- Exercise 3 in Circuit: Alzate laterali -->
+<article class="rounded-xl bg-[#0c1322] border border-[#1b273f] p-4 transition-all hover:border-slate-700">
+<div class="flex items-start justify-between gap-3">
+<div class="flex items-center gap-3">
+<button aria-label="Riordina esercizio" class="text-slate-600 hover:text-slate-300 cursor-grab active:cursor-grabbing p-1" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<span class="w-6 h-6 rounded-md bg-blue-950/80 border border-blue-700/60 text-blue-300 font-mono text-xs flex items-center justify-center font-bold">3</span>
+<div>
+<div class="flex flex-wrap items-center gap-2">
+<h3 class="text-sm font-bold text-white">Alzate Laterali Manubri</h3>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-purple-950 text-purple-300 border border-purple-800/40">Deltoide Lat.</span>
+<span class="px-2 py-0.5 text-[10px] font-medium rounded bg-slate-800 text-slate-300 border border-slate-700">Isolamento</span>
+</div>
+<div class="text-[11px] text-slate-400 mt-0.5">Controllo eccentrico continuo senza slancio</div>
+</div>
+</div>
+<button class="text-slate-500 hover:text-rose-400 hover:bg-rose-950/40 p-1.5 rounded-lg border border-transparent hover:border-rose-900/40 transition-colors" title="Rimuovi dal circuito" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="mt-3.5 pt-3 border-t border-[#162137] grid grid-cols-2 sm:grid-cols-4 gap-2.5 items-center">
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Target</span>
+<span class="text-xs font-bold text-white">4 Giri × 15 reps</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Carico</span>
+<span class="text-xs font-bold text-white">2×10 kg</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">RPE</span>
+<span class="px-2 py-0.5 text-xs font-semibold rounded bg-orange-950/70 border border-orange-600/50 text-orange-300">@ 9.0</span>
+</div>
+<div class="bg-[#080d18] border border-[#172238] rounded-lg px-3 py-1.5 flex items-center justify-between">
+<span class="text-[11px] text-slate-400">Fine Giro</span>
+<span class="text-xs text-emerald-400 font-mono font-semibold">120s Riposo ↻</span>
+</div>
+</div>
+</article>
+<!-- Add Exercise to Density Block Button -->
+<button class="w-full py-3 border-2 border-dashed border-[#1f2c47] hover:border-blue-500/70 rounded-xl bg-[#0a101f]/60 hover:bg-[#0e162b] text-slate-300 hover:text-white transition-all flex items-center justify-center gap-2 group text-xs font-medium" type="button">
+<span class="p-1 rounded-md bg-blue-600/20 text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</span>
+<span>Aggiungi esercizio al gruppo</span>
+<span class="text-[11px] text-slate-500 font-normal">(apre il Drawer Libreria Esercizi)</span>
+</button>
+</section>
+<!-- END: Circuit Exercise Stack -->
+<!-- BEGIN: Side-by-Side Alternative Modalities (Superset & EMOM Previews) -->
+<section class="pt-4 border-t border-[#172238]" data-purpose="alternative-density-modes">
+<div class="mb-3 flex items-center justify-between">
+<span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Altre Modalità Densità Salvate nel Modello</span>
+<span class="text-[11px] text-blue-400 cursor-pointer hover:underline">Espandi dettagli rapidi</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Block 1: Superset (2 Esercizi) -->
+<div class="rounded-xl bg-[#090f1d] border border-[#18233a] p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-800">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+<span class="text-xs font-bold text-white">Superset Antagonista (A1 + A2)</span>
+</div>
+<span class="text-[10px] px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-800/40">2 Esercizi</span>
+</div>
+<!-- Exercise List Inside Superset -->
+<div class="mt-3 space-y-2">
+<div class="p-2.5 rounded-lg bg-[#070b14] border border-[#141d30] flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-mono text-cyan-400 font-bold text-[11px]">A1</span>
+<div>
+<div class="font-medium text-slate-200">Spinte manubri panca 30°</div>
+<div class="text-[10px] text-slate-400">Petto Clavicolare • Manubri</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono text-slate-200">4×10</span>
+<span class="text-[10px] text-amber-300 ml-1.5 font-semibold">@8.0</span>
+</div>
+</div>
+<!-- Recovery indicator between exercises -->
+<div class="flex items-center justify-center gap-2 text-[10px] text-slate-400 font-mono py-0.5">
+<div class="h-px bg-slate-800 flex-1"></div>
+<span class="text-cyan-300">Recupero tra A1 e A2: 0s (Immediato)</span>
+<div class="h-px bg-slate-800 flex-1"></div>
+</div>
+<div class="p-2.5 rounded-lg bg-[#070b14] border border-[#141d30] flex items-center justify-between text-xs">
+<div class="flex items-center gap-2">
+<span class="font-mono text-cyan-400 font-bold text-[11px]">A2</span>
+<div>
+<div class="font-medium text-slate-200">Croci ai cavi alti</div>
+<div class="text-[10px] text-slate-400">Petto Sternale • Isolamento</div>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono text-slate-200">4×12</span>
+<span class="text-[10px] text-orange-300 ml-1.5 font-semibold">@8.5</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Superset Recovery Footer -->
+<div class="mt-3 pt-2 border-t border-[#131d30] flex items-center justify-between text-[11px]">
+<span class="text-slate-400">Recupero a fine Superset:</span>
+<span class="font-mono font-semibold text-slate-200 bg-[#0e172a] px-2 py-0.5 rounded border border-[#1d2a45]">90 secondi</span>
+</div>
+</div>
+<!-- Block 2: EMOM Interval (Every Minute On the Minute) -->
+<div class="rounded-xl bg-[#090f1d] border border-[#18233a] p-4 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between pb-2 border-b border-slate-800">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+<span class="text-xs font-bold text-white">EMOM Alternato (Every Minute)</span>
+</div>
+<span class="text-[10px] px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/40">12 Minuti</span>
+</div>
+<!-- EMOM Meta Badges -->
+<div class="mt-3 grid grid-cols-2 gap-2 text-center text-xs">
+<div class="bg-[#070b14] border border-[#141d30] p-2 rounded-lg">
+<span class="text-[10px] text-slate-400 block">Work Window</span>
+<span class="font-mono font-bold text-amber-300">Ogni 1'00"</span>
+</div>
+<div class="bg-[#070b14] border border-[#141d30] p-2 rounded-lg">
+<span class="text-[10px] text-slate-400 block">Rounds Totali</span>
+<span class="font-mono font-bold text-slate-200">6 Cicli (12 min)</span>
+</div>
+</div>
+<!-- EMOM Interval Steps -->
+<div class="mt-2.5 space-y-1.5">
+<div class="p-2 rounded-lg bg-[#070b14] border border-[#141d30] flex items-center justify-between text-xs">
+<span class="text-[10px] font-semibold text-blue-400 font-mono bg-blue-950 px-1.5 py-0.5 rounded">Minuto Dispari (1, 3, 5...)</span>
+<span class="font-medium text-slate-200">10 Trazioni Zavorrate (+10kg)</span>
+</div>
+<div class="p-2 rounded-lg bg-[#070b14] border border-[#141d30] flex items-center justify-between text-xs">
+<span class="text-[10px] font-semibold text-indigo-400 font-mono bg-indigo-950 px-1.5 py-0.5 rounded">Minuto Pari (2, 4, 6...)</span>
+<span class="font-medium text-slate-200">15 Dip alle Parallele</span>
+</div>
+</div>
+</div>
+<!-- EMOM note -->
+<div class="mt-3 pt-2 border-t border-[#131d30] flex items-center justify-between text-[11px]">
+<span class="text-slate-400">Tempo residuo per minuto:</span>
+<span class="font-mono text-emerald-400">Recupero passivo</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Side-by-Side Alternative Modalities -->
+</div>
+<!-- END: Scrollable Modal Body -->
+<!-- BEGIN: Modal Footer -->
+<footer class="px-6 py-4 border-t border-[#162137] bg-[#0c1222] flex flex-wrap items-center justify-between gap-4 shrink-0">
+<!-- Stimulus Summary Pills (Consistent with SCREEN_4) -->
+<div class="flex items-center gap-2">
+<span class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 hidden lg:inline">Distribuzione Gruppo:</span>
+<div class="flex flex-wrap items-center gap-1.5 text-xs">
+<span class="px-2.5 py-1 rounded bg-[#0e1b33] border border-blue-900/60 text-blue-300">Gambe: <strong>4 serie</strong></span>
+<span class="px-2.5 py-1 rounded bg-[#10192e] border border-slate-700/70 text-slate-300">Petto: <strong>4 serie</strong></span>
+<span class="px-2.5 py-1 rounded bg-[#1a1330] border border-purple-900/60 text-purple-300">Spalle: <strong>4 serie</strong></span>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-3 ml-auto">
+<button class="px-4 py-2 rounded-lg text-xs font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 border border-slate-700/80 transition-colors" type="button">
+          Annulla
+        </button>
+<div class="inline-flex rounded-lg shadow-sm">
+<button class="inline-flex items-center gap-2 px-5 py-2 rounded-l-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold tracking-wide transition-all shadow-lg shadow-blue-900/30" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Salva blocco densità</span>
+</button>
+<button class="px-2.5 py-2 rounded-r-lg bg-blue-700 hover:bg-blue-600 border-l border-blue-500/40 text-white text-xs transition-colors" title="Opzioni salvataggio aggiuntive" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</footer>
+<!-- END: Modal Footer -->
+</main>
+<!-- END: Main Density Group Modal -->
+</body></html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#080c14]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registrati - Crea il tuo account Coach | PowerCoach Studio</title>
+<!-- Tailwind CSS CDN v3 con plugin form e container-queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              glow: '#38bdf8'
+            },
+            surface: {
+              base: '#080c14',
+              elevated: '#0d1526',
+              card: '#0f172a',
+              input: '#131e33',
+              border: '#1e293b',
+              'border-subtle': '#24344d'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'glow-blue': '0 0 45px -10px rgba(37, 99, 235, 0.35)',
+            'card-elevated': '0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Technical Grid and Glow Effects -->
+<style data-purpose="custom-backgrounds">
+    .tech-grid-pattern {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    }
+    .radial-accent-glow {
+      background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.18) 0%, rgba(8, 12, 20, 0) 70%);
+    }
+  </style>
+<!-- Custom Styles for Input States and Transitions -->
+<style data-purpose="form-interactions">
+    .focus-ring-blue:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col font-sans text-slate-200 antialiased relative selection:bg-brand-600 selection:text-white">
+<!-- Ambient Glow & Pattern Background Layer -->
+<div aria-hidden="true" class="fixed inset-0 tech-grid-pattern pointer-events-none z-0"></div>
+<div aria-hidden="true" class="fixed inset-0 radial-accent-glow pointer-events-none z-0"></div>
+<!-- BEGIN: NavigationHeader -->
+<header class="relative z-10 w-full border-b border-surface-border/60 bg-[#080c14]/85 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+<!-- Back Link & Studio Brand -->
+<div class="flex items-center gap-6">
+<a class="inline-flex items-center gap-2 text-xs sm:text-sm font-medium text-slate-400 hover:text-white transition-colors duration-150 group" href="#login">
+<svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Torna al login</span>
+</a>
+<div aria-hidden="true" class="h-4 w-px bg-slate-800 hidden sm:block"></div>
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-blue-500 flex items-center justify-center shadow-lg shadow-brand-600/30">
+<svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+</svg>
+</div>
+<span class="text-sm font-semibold tracking-tight text-white hidden md:inline-block">PowerCoach <span class="text-brand-400 font-light">Studio</span></span>
+</div>
+</div>
+<!-- Free Trial Guarantee Badge -->
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-brand-500/10 text-brand-400 border border-brand-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Prova gratuita 14 giorni · Nessuna carta richiesta
+        </span>
+</div>
+</div>
+</header>
+<!-- END: NavigationHeader -->
+<!-- BEGIN: MainContent -->
+<main class="relative z-10 flex-1 flex items-center justify-center px-4 sm:px-6 py-10 lg:py-14">
+<div class="w-full max-w-[560px]">
+<!-- Registration Card Container -->
+<div class="bg-surface-card/90 rounded-2xl border border-surface-border shadow-card-elevated shadow-glow-blue backdrop-blur-xl p-6 sm:p-9 transition-all">
+<!-- Header: Brand Icon & Titles -->
+<div class="text-center mb-6">
+<div class="mx-auto mb-4 w-12 h-12 rounded-xl bg-gradient-to-br from-brand-500 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-500/25 ring-1 ring-white/20">
+<svg class="w-6 h-6 text-white drop-shadow" fill="currentColor" viewbox="0 0 24 24">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+</svg>
+</div>
+<p class="text-xs uppercase font-bold tracking-wider text-brand-400 mb-1">PowerCoach Studio</p>
+<h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">Crea il tuo account Coach</h1>
+<p class="mt-1.5 text-xs sm:text-sm text-slate-400">
+            Unisciti alla piattaforma di programmazione scientifica e gestione atleti.
+          </p>
+<!-- Key Benefit Highlights -->
+<div class="mt-4 flex flex-wrap items-center justify-center gap-2 pt-1">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-slate-300 bg-slate-800/80 border border-slate-700/60 rounded-md">
+<svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+              348+ Esercizi inclusi
+            </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-slate-300 bg-slate-800/80 border border-slate-700/60 rounded-md">
+<svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+              Offline-First
+            </span>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 text-[11px] font-medium text-slate-300 bg-slate-800/80 border border-slate-700/60 rounded-md">
+<svg class="w-3.5 h-3.5 text-emerald-400" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd"></path>
+</svg>
+              Mesocicli avanzati
+            </span>
+</div>
+</div>
+<!-- BEGIN: RegistrationForm -->
+<form class="space-y-4" data-purpose="registration-form" onsubmit="event.preventDefault();">
+<!-- Dual Column: First and Last Name -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5" for="first-name">Nome</label>
+<div class="relative focus-ring-blue rounded-lg border border-surface-border-subtle bg-surface-input/70">
+<input class="w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-slate-500 border-0 focus:ring-0" id="first-name" name="first-name" placeholder="Mario" required="" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5" for="last-name">Cognome</label>
+<div class="relative focus-ring-blue rounded-lg border border-surface-border-subtle bg-surface-input/70">
+<input class="w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-slate-500 border-0 focus:ring-0" id="last-name" name="last-name" placeholder="Rossi" required="" type="text"/>
+</div>
+</div>
+</div>
+<!-- Professional Specialization Tag Selector -->
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5">Specializzazione principale</label>
+<div class="grid grid-cols-3 gap-2">
+<label class="cursor-pointer">
+<input checked="" class="peer sr-only" name="specialty" type="radio" value="pt"/>
+<span class="flex items-center justify-center text-center text-xs font-medium py-2 px-2 rounded-lg bg-surface-input/60 border border-surface-border-subtle text-slate-400 peer-checked:border-brand-500 peer-checked:bg-brand-500/15 peer-checked:text-brand-300 transition-all">
+                  Personal Trainer
+                </span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="specialty" type="radio" value="strength"/>
+<span class="flex items-center justify-center text-center text-xs font-medium py-2 px-2 rounded-lg bg-surface-input/60 border border-surface-border-subtle text-slate-400 peer-checked:border-brand-500 peer-checked:bg-brand-500/15 peer-checked:text-brand-300 transition-all">
+                  Prep. Atletico
+                </span>
+</label>
+<label class="cursor-pointer">
+<input class="peer sr-only" name="specialty" type="radio" value="powerlifting"/>
+<span class="flex items-center justify-center text-center text-xs font-medium py-2 px-2 rounded-lg bg-surface-input/60 border border-surface-border-subtle text-slate-400 peer-checked:border-brand-500 peer-checked:bg-brand-500/15 peer-checked:text-brand-300 transition-all">
+                  Powerlifting
+                </span>
+</label>
+</div>
+</div>
+<!-- Professional Email Input -->
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5" for="email">Email professionale</label>
+<div class="relative focus-ring-blue rounded-lg border border-surface-border-subtle bg-surface-input/70 flex items-center">
+<span class="pl-3.5 pr-1 text-slate-500 pointer-events-none">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="w-full bg-transparent px-2.5 py-2.5 text-sm text-white placeholder-slate-500 border-0 focus:ring-0" id="email" name="email" placeholder="mario.rossi@powercoach.it" required="" type="email"/>
+</div>
+</div>
+<!-- Password Field with Security Bar -->
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5" for="password">Password</label>
+<div class="relative focus-ring-blue rounded-lg border border-surface-border-subtle bg-surface-input/70 flex items-center">
+<input class="w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-slate-500 border-0 focus:ring-0" id="password" name="password" placeholder="••••••••••••" required="" type="password"/>
+<button aria-label="Mostra o nascondi password" class="px-3.5 text-slate-500 hover:text-slate-300 transition-colors" data-purpose="toggle-password-visibility" id="toggle-password" type="button">
+<svg class="w-4 h-4" fill="none" id="eye-icon-pw" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<!-- Password Strength Bar & Hints -->
+<div class="mt-2" data-purpose="password-meter">
+<div class="grid grid-cols-4 gap-1.5">
+<div class="h-1 rounded-full bg-emerald-500 transition-all" id="str-bar-1"></div>
+<div class="h-1 rounded-full bg-emerald-500 transition-all" id="str-bar-2"></div>
+<div class="h-1 rounded-full bg-emerald-500 transition-all" id="str-bar-3"></div>
+<div class="h-1 rounded-full bg-slate-700 transition-all" id="str-bar-4"></div>
+</div>
+<p class="text-[11px] text-slate-400 mt-1.5 flex items-center justify-between">
+<span>Sicurezza: <strong class="text-emerald-400 font-medium">Buona</strong></span>
+<span class="text-slate-500 text-[10px]">Min. 8 car. · 1 num. · 1 speciale</span>
+</p>
+</div>
+</div>
+<!-- Confirm Password Field -->
+<div>
+<label class="block text-xs font-semibold text-slate-300 mb-1.5" for="confirm-password">Conferma password</label>
+<div class="relative focus-ring-blue rounded-lg border border-surface-border-subtle bg-surface-input/70 flex items-center">
+<input class="w-full bg-transparent px-3 py-2.5 text-sm text-white placeholder-slate-500 border-0 focus:ring-0" id="confirm-password" name="confirm-password" placeholder="••••••••••••" required="" type="password"/>
+<button aria-label="Mostra o nascondi conferma password" class="px-3.5 text-slate-500 hover:text-slate-300 transition-colors" data-purpose="toggle-confirm-visibility" id="toggle-confirm-password" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+<path d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Terms and Policy Checkbox -->
+<div class="pt-1">
+<label class="flex items-start gap-2.5 cursor-pointer">
+<input checked="" class="mt-0.5 rounded bg-surface-input border-surface-border text-brand-600 focus:ring-brand-500 focus:ring-offset-surface-card" required="" type="checkbox"/>
+<span class="text-xs text-slate-400 leading-relaxed">
+                Accetto i <a class="text-brand-400 hover:text-brand-300 underline underline-offset-2" href="#terms">Termini di Servizio</a> e confermo di aver letto l'informativa sulla <a class="text-brand-400 hover:text-brand-300 underline underline-offset-2" href="#privacy">Privacy Policy</a>.
+              </span>
+</label>
+</div>
+<!-- Primary Submit CTA Button -->
+<div class="pt-2">
+<button class="w-full relative group overflow-hidden rounded-xl bg-gradient-to-r from-brand-600 via-blue-600 to-blue-500 p-px shadow-lg shadow-brand-600/30 hover:shadow-brand-600/50 hover:scale-[1.008] active:scale-[0.99] transition duration-200" type="submit">
+<div class="relative flex items-center justify-center gap-2 py-3 px-4 rounded-[11px] bg-gradient-to-r from-brand-600 to-blue-600 text-sm font-semibold text-white tracking-wide">
+<span>Crea account e inizia la prova gratuita</span>
+<svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+</button>
+</div>
+</form>
+<!-- END: RegistrationForm -->
+<!-- Social Register Divider -->
+<div class="relative my-5">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-surface-border"></div>
+</div>
+<div class="relative flex justify-center text-xs">
+<span class="bg-surface-card px-3 text-slate-500 uppercase tracking-wider font-semibold">oppure registrati con</span>
+</div>
+</div>
+<!-- Social Sign-up Buttons -->
+<div class="grid grid-cols-2 gap-3" data-purpose="social-auth-buttons">
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg border border-surface-border-subtle bg-surface-input/50 hover:bg-surface-input hover:border-slate-600 text-xs font-medium text-slate-300 transition-colors" type="button">
+<svg class="w-4 h-4" fill="currentColor" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"></path>
+</svg>
+<span>Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg border border-surface-border-subtle bg-surface-input/50 hover:bg-surface-input hover:border-slate-600 text-xs font-medium text-slate-300 transition-colors" type="button">
+<svg class="w-4 h-4 text-white" fill="currentColor" viewbox="0 0 24 24">
+<path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.13.65-2.77 1.39-.58.65-1.09 1.71-1.02 2.74 1.06.08 2.18-.55 2.78-1.26z"></path>
+</svg>
+<span>Apple</span>
+</button>
+</div>
+<!-- Card Footer: Login Switch -->
+<div class="mt-6 text-center text-xs text-slate-400">
+          Hai già un account coach?
+          <a class="font-semibold text-brand-400 hover:text-brand-300 underline underline-offset-2 ml-1" href="#login">
+            Accedi
+          </a>
+</div>
+</div>
+</div>
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: PageFooter -->
+<footer class="relative z-10 w-full border-t border-surface-border/50 py-5 bg-[#080c14]/90 text-xs text-slate-500">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+<div class="flex items-center gap-2">
+<svg class="w-3.5 h-3.5 text-brand-400" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2v-2zm0-10h2v8h-2V6z"></path>
+</svg>
+<span>PowerCoach Studio © 2025 · Crittografia locale &amp; sincrono cloud protetto</span>
+</div>
+<div class="flex items-center gap-4">
+<a class="hover:text-slate-400 transition-colors" href="#privacy">Privacy</a>
+<span class="text-slate-700">·</span>
+<a class="hover:text-slate-400 transition-colors" href="#terms">Termini di Servizio</a>
+<span class="text-slate-700">·</span>
+<a class="hover:text-slate-400 transition-colors" href="#support">Assistenza Tecnica</a>
+</div>
+</div>
+</footer>
+<!-- END: PageFooter -->
+<!-- Password Visibility Toggle Handler Script -->
+<script data-purpose="toggle-password-handler">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Toggle for Main Password Field
+      const togglePw = document.getElementById('toggle-password');
+      const pwInput = document.getElementById('password');
+      if (togglePw && pwInput) {
+        togglePw.addEventListener('click', () => {
+          const isPassword = pwInput.type === 'password';
+          pwInput.type = isPassword ? 'text' : 'password';
+          togglePw.classList.toggle('text-brand-400', isPassword);
+        });
+      }
+
+      // Toggle for Confirm Password Field
+      const toggleConfirmPw = document.getElementById('toggle-confirm-password');
+      const confirmPwInput = document.getElementById('confirm-password');
+      if (toggleConfirmPw && confirmPwInput) {
+        toggleConfirmPw.addEventListener('click', () => {
+          const isPassword = confirmPwInput.type === 'password';
+          confirmPwInput.type = isPassword ? 'text' : 'password';
+          toggleConfirmPw.classList.toggle('text-brand-400', isPassword);
+        });
+      }
+    });
+  </script>
+</body></html>
