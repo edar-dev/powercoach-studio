@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../landing_colors.dart';
 
-/// Bottom call-to-action block on the landing page.
+/// Bottom call-to-action block matching Stitch dark landing.
 class LandingCtaSection extends StatelessWidget {
   const LandingCtaSection({
     super.key,
@@ -10,71 +10,118 @@ class LandingCtaSection extends StatelessWidget {
     required this.subtext,
     required this.buttonLabel,
     required this.onCta,
+    this.footnote,
   });
 
   final String title;
   final String subtext;
   final String buttonLabel;
   final VoidCallback onCta;
+  final String? footnote;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: StitchM3Theme.accent,
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-          boxShadow: [
-            BoxShadow(
-              color: StitchM3Theme.accent.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
+      padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 900),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(LandingColors.radius3xl),
+              border: Border.all(
+                color: LandingColors.brandMid.withValues(alpha: 0.3),
+              ),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0xFF10192E), Color(0xFF0A0F1D)],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.4),
+                  blurRadius: 32,
+                  offset: const Offset(0, 16),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(32),
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                subtext,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.9),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: onCta,
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: StitchM3Theme.accent,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
+            child: Column(
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: LandingColors.brand.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(LandingColors.radius2xl),
+                    border: Border.all(
+                      color: LandingColors.brandMid.withValues(alpha: 0.4),
+                    ),
                   ),
-                  minimumSize: const Size(44, 44),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+                  child: const Icon(
+                    Icons.bolt,
+                    size: 32,
+                    color: LandingColors.brandLight,
                   ),
-                  textStyle: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                child: Text(buttonLabel),
-              ),
-            ],
+                const SizedBox(height: 20),
+                Text(
+                  title,
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    letterSpacing: -0.5,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: Text(
+                    subtext,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: LandingColors.slate300,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                FilledButton(
+                  onPressed: onCta,
+                  style: FilledButton.styleFrom(
+                    backgroundColor: LandingColors.brand,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 28,
+                      vertical: 18,
+                    ),
+                    minimumSize: const Size(44, 52),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(LandingColors.radiusXl),
+                    ),
+                  ),
+                  child: Text(
+                    buttonLabel,
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                ),
+                if (footnote != null) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    footnote!,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: LandingColors.textMuted,
+                      fontFamily: 'monospace',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ],
+            ),
           ),
         ),
       ),

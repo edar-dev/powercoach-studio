@@ -14,6 +14,21 @@ CustomExerciseItem _leaf({required String id, required String name}) {
   );
 }
 
+CustomExerciseItem _folder({
+  required String id,
+  required String name,
+  required List<CustomExerciseItem> children,
+}) {
+  final now = DateTime(2026, 1, 1);
+  return CustomExerciseItem(
+    id: id,
+    name: name,
+    createdAt: now,
+    updatedAt: now,
+    children: children,
+  );
+}
+
 void main() {
   testWidgets('ExerciseLibraryListTile shows exercise name and menu', (
     tester,
@@ -44,5 +59,37 @@ void main() {
     await tester.tap(find.text('Edit'));
     await tester.pump();
     expect(edited, isTrue);
+  });
+
+  testWidgets('folder tile shows variant count subtitle', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: ExerciseLibraryListTile(
+            item: _folder(
+              id: 'squat',
+              name: 'Squat',
+              children: [
+                _leaf(id: 'low', name: 'Low bar'),
+                _leaf(id: 'high', name: 'High bar'),
+              ],
+            ),
+            isPinned: (_) => false,
+            onEdit: (_) {},
+            onDelete: (_) {},
+            onAddVariant: (_) {},
+            onTogglePin: (_) {},
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Squat'), findsOneWidget);
+    expect(find.text('2 variants'), findsOneWidget);
+    expect(find.byIcon(Icons.folder_outlined), findsOneWidget);
   });
 }

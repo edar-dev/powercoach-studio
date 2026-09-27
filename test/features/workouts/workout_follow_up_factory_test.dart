@@ -8,7 +8,9 @@ void main() {
       name: 'Strength block',
       mobilitySections: WorkoutRoutine.empty().mobilitySections,
       mobilityItems: const [],
-      weeks: WorkoutRoutine.defaultWeeks(),
+      phases: [
+        WorkoutRoutine.defaultPhase(weeks: WorkoutRoutine.defaultWeeks()),
+      ],
       startDate: DateTime(2026, 1, 1),
       endDate: DateTime(2026, 2, 1),
       currentWeek: 4,
@@ -36,7 +38,9 @@ void main() {
       name: 'Hypertrophy',
       mobilitySections: WorkoutRoutine.empty().mobilitySections,
       mobilityItems: const [],
-      weeks: WorkoutRoutine.defaultWeeks(),
+      phases: [
+        WorkoutRoutine.defaultPhase(weeks: WorkoutRoutine.defaultWeeks()),
+      ],
       startDate: DateTime(2026, 4, 10),
     );
 

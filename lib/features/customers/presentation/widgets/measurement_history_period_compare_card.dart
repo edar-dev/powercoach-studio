@@ -8,10 +8,12 @@ class MeasurementHistoryPeriodCompareCard extends StatelessWidget {
     super.key,
     required this.delta,
     required this.metricLabel,
+    this.dark = false,
   });
 
   final MeasurementPeriodDelta delta;
   final String metricLabel;
+  final bool dark;
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +21,21 @@ class MeasurementHistoryPeriodCompareCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final percent = delta.percentChange;
+    final onSurface = dark ? const Color(0xFFF1F5F9) : null;
+    final onVariant =
+        dark ? const Color(0xFF94A3B8) : colorScheme.onSurfaceVariant;
+    final cardColor = dark ? const Color(0xFF0C1220) : null;
+    final borderColor = dark ? const Color(0xFF1E293B) : null;
 
     return Card(
+      color: cardColor,
+      elevation: dark ? 0 : null,
+      shape: dark
+          ? RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: borderColor!),
+            )
+          : null,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -28,34 +43,32 @@ class MeasurementHistoryPeriodCompareCard extends StatelessWidget {
           children: [
             Text(
               l10n.measurementHistoryCompareTitle,
-              style: theme.textTheme.titleMedium,
+              style: theme.textTheme.titleMedium?.copyWith(color: onSurface),
             ),
             const SizedBox(height: 8),
             Text(
               l10n.measurementHistoryCompareSubtitle,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: onVariant),
             ),
             const SizedBox(height: 16),
             if (delta.recentCount == 0 && delta.previousCount == 0)
               Text(
                 l10n.measurementHistoryCompareInsufficient,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: theme.textTheme.bodyMedium?.copyWith(color: onVariant),
               )
             else ...[
               MeasurementHistoryCompareRow(
                 label: l10n.measurementHistoryCompareRecent,
                 value: delta.recentAverage,
                 count: delta.recentCount,
+                dark: dark,
               ),
               const SizedBox(height: 8),
               MeasurementHistoryCompareRow(
                 label: l10n.measurementHistoryComparePrevious,
                 value: delta.previousAverage,
                 count: delta.previousCount,
+                dark: dark,
               ),
               if (percent != null) ...[
                 const SizedBox(height: 12),
@@ -65,7 +78,13 @@ class MeasurementHistoryPeriodCompareCard extends StatelessWidget {
                     _formatSignedPercent(percent),
                   ),
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: percent <= 0 ? colorScheme.tertiary : colorScheme.error,
+                    color: percent <= 0
+                        ? (dark
+                            ? const Color(0xFF34D399)
+                            : colorScheme.tertiary)
+                        : (dark
+                            ? const Color(0xFFFBBF24)
+                            : colorScheme.error),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -89,11 +108,13 @@ class MeasurementHistoryCompareRow extends StatelessWidget {
     required this.label,
     required this.value,
     required this.count,
+    this.dark = false,
   });
 
   final String label;
   final double? value;
   final int count;
+  final bool dark;
 
   @override
   Widget build(BuildContext context) {
@@ -103,25 +124,26 @@ class MeasurementHistoryCompareRow extends StatelessWidget {
     final valueLabel = value == null
         ? l10n.measurementHistoryCompareNoData
         : value!.toStringAsFixed(1);
+    final onSurface = dark ? const Color(0xFFF1F5F9) : null;
+    final onVariant =
+        dark ? const Color(0xFF94A3B8) : colorScheme.onSurfaceVariant;
 
     return Row(
       children: [
         Expanded(
           child: Text(
             label,
-            style: theme.textTheme.bodyMedium,
+            style: theme.textTheme.bodyMedium?.copyWith(color: onSurface),
           ),
         ),
         Text(
           valueLabel,
-          style: theme.textTheme.titleSmall,
+          style: theme.textTheme.titleSmall?.copyWith(color: onSurface),
         ),
         const SizedBox(width: 8),
         Text(
           l10n.measurementHistoryCompareSampleCount(count),
-          style: theme.textTheme.labelSmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
+          style: theme.textTheme.labelSmall?.copyWith(color: onVariant),
         ),
       ],
     );

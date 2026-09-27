@@ -3,6 +3,21 @@ import 'measurement_metric.dart';
 
 const int kMeasurementSeriesMaxPoints = 200;
 
+/// Chart / list time window for measurement history surfaces.
+enum MeasurementHistoryRange {
+  days30,
+  months3,
+  months6,
+  all;
+
+  int? get lookbackDays => switch (this) {
+        MeasurementHistoryRange.days30 => 30,
+        MeasurementHistoryRange.months3 => 90,
+        MeasurementHistoryRange.months6 => 180,
+        MeasurementHistoryRange.all => null,
+      };
+}
+
 class MeasurementChartPoint {
   const MeasurementChartPoint({required this.date, required this.value});
 
@@ -15,10 +30,19 @@ class MeasurementSeriesBuilder {
 
   static List<MeasurementChartPoint> buildSeries(
     List<CustomerMeasurement> measurements,
-    MeasurementMetric metric,
-  ) {
+    MeasurementMetric metric, {
+    MeasurementHistoryRange range = MeasurementHistoryRange.all,
+    DateTime? referenceDate,
+  }) {
     final sorted = List<CustomerMeasurement>.from(measurements)
       ..sort((a, b) => a.measurementDate.compareTo(b.measurementDate));
+
+    final lookback = range.lookbackDays;
+    final clock = referenceDate ?? DateTime.now();
+    final today = DateTime(clock.year, clock.month, clock.day);
+    final cutoff = lookback == null
+        ? null
+        : today.subtract(Duration(days: lookback));
 
     final points = <MeasurementChartPoint>[];
     for (final measurement in sorted) {
@@ -26,13 +50,17 @@ class MeasurementSeriesBuilder {
       if (value == null) {
         continue;
       }
+      final day = DateTime(
+        measurement.measurementDate.year,
+        measurement.measurementDate.month,
+        measurement.measurementDate.day,
+      );
+      if (cutoff != null && day.isBefore(cutoff)) {
+        continue;
+      }
       points.add(
         MeasurementChartPoint(
-          date: DateTime(
-            measurement.measurementDate.year,
-            measurement.measurementDate.month,
-            measurement.measurementDate.day,
-          ),
+          date: day,
           value: value,
         ),
       );

@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#090d16]" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Editor Scheda di Allenamento</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            app: {
+              base: '#090d16',
+              surface: '#0f172a',
+              card: '#131e33',
+              cardHover: '#182640',
+              border: '#1e293b',
+              borderLight: '#334155',
+              accent: '#2563eb',
+              accentHover: '#1d4ed8',
+              accentGlow: 'rgba(37, 99, 235, 0.15)',
+              textMuted: '#94a3b8',
+              textSubtle: '#64748b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Scrollbar & Aesthetics -->
+<style data-purpose="custom-scrollbars">
+    /* Custom scrollbars for clean horizontal sliding */
+    .horizontal-scroll-container::-webkit-scrollbar {
+      height: 6px;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-track {
+      background: #090d16;
+      border-radius: 9999px;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    .horizontal-scroll-container::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+<style data-purpose="interactive-styles">
+    /* Smooth transitions and card elevation styling */
+    .hover-lift {
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.18s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.5), 0 0 16px -2px rgba(37, 99, 235, 0.12);
+    }
+  </style>
+</head>
+<body class="h-full text-slate-100 bg-[#090d16] font-sans antialiased selection:bg-blue-600 selection:text-white flex flex-col">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-40 bg-[#0c1322]/95 backdrop-blur-md border-b border-app-border/80">
+<!-- Top Bar with Navigation and Global Actions -->
+<div class="px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+<!-- Left: Back Navigation and Sheet Identity -->
+<div class="flex items-center gap-3.5 min-w-0">
+<button aria-label="Torna indietro" class="p-2 text-slate-300 hover:text-white hover:bg-slate-800/60 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="truncate">
+<div class="flex items-center gap-2">
+<h1 class="text-lg sm:text-xl font-bold tracking-tight text-white">Editor scheda</h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              Salvato
+            </span>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-app-textMuted group cursor-pointer hover:text-slate-200 mt-0.5">
+<span class="truncate font-medium">Fase Ipertrofia &amp; Forza • Edoardo</span>
+<svg class="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+</div>
+</div>
+<!-- Right: Main Quick Actions -->
+<div class="flex items-center gap-2">
+<button class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 rounded-lg transition-all" type="button">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+          Duplica Scheda
+        </button>
+<button class="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 rounded-lg transition-all" type="button">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span class="hidden sm:inline">Condividi</span>
+</button>
+<button aria-label="Altre opzioni" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800/70 rounded-lg transition-colors" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav aria-label="Sezioni scheda" class="px-4 sm:px-6 lg:px-8 flex space-x-8 border-t border-app-border/40 text-sm font-medium">
+<button class="relative py-3.5 text-blue-400 font-semibold focus:outline-none">
+        Allenamento
+        <span class="absolute bottom-0 inset-x-0 h-0.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+</button>
+<button class="py-3.5 text-app-textMuted hover:text-slate-200 transition-colors focus:outline-none">
+        Mobilità
+      </button>
+<button class="py-3.5 text-app-textMuted hover:text-slate-200 transition-colors focus:outline-none">
+        Dettagli &amp; Note
+      </button>
+<button class="py-3.5 text-app-textMuted hover:text-slate-200 transition-colors focus:outline-none">
+        Progressione &amp; Carichi
+      </button>
+</nav>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 py-6 space-y-7 max-w-[1720px] mx-auto w-full">
+<!-- BEGIN: PhaseSelectorBar -->
+<section class="bg-app-surface/90 border border-app-border rounded-2xl p-4 sm:p-5 shadow-xl shadow-black/20" data-purpose="phase-management">
+<!-- Top: Phase Pills + Add Phase Action -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-app-border">
+<!-- Phases Horizontal Scroll Bar -->
+<div class="flex items-center gap-2.5 overflow-x-auto horizontal-scroll-container pb-1 lg:pb-0">
+<!-- Phase 1 (Active) -->
+<button class="relative group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-900/40 border border-blue-400/40 flex-shrink-0 transition-all text-left" type="button">
+<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+<div>
+<div class="text-xs font-semibold tracking-wide uppercase opacity-90 leading-none">Fase 1</div>
+<div class="text-sm font-bold mt-0.5 leading-none">Accumulo &amp; Volume</div>
+</div>
+<span class="ml-1.5 px-2 py-0.5 text-[10px] font-semibold bg-blue-700/70 border border-blue-400/30 rounded-md">
+              4 Settimane
+            </span>
+</button>
+<!-- Phase 2 -->
+<button class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-app-card hover:bg-app-cardHover text-slate-300 hover:text-white border border-app-border flex-shrink-0 transition-all text-left" type="button">
+<span class="w-2 h-2 rounded-full bg-slate-500 group-hover:bg-slate-400"></span>
+<div>
+<div class="text-xs font-semibold tracking-wide uppercase text-app-textMuted group-hover:text-slate-300 leading-none">Fase 2</div>
+<div class="text-sm font-medium mt-0.5 leading-none">Intensificazione</div>
+</div>
+<span class="ml-1.5 px-2 py-0.5 text-[10px] font-medium bg-slate-800 text-slate-400 rounded-md">
+              3 Sett.
+            </span>
+</button>
+<!-- Phase 3 -->
+<button class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-app-card hover:bg-app-cardHover text-slate-300 hover:text-white border border-app-border flex-shrink-0 transition-all text-left" type="button">
+<span class="w-2 h-2 rounded-full bg-slate-500 group-hover:bg-slate-400"></span>
+<div>
+<div class="text-xs font-semibold tracking-wide uppercase text-app-textMuted group-hover:text-slate-300 leading-none">Fase 3</div>
+<div class="text-sm font-medium mt-0.5 leading-none">Picco &amp; Test Massimali</div>
+</div>
+<span class="ml-1.5 px-2 py-0.5 text-[10px] font-medium bg-slate-800 text-slate-400 rounded-md">
+              2 Sett.
+            </span>
+</button>
+<!-- Phase 4 -->
+<button class="group flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-app-card hover:bg-app-cardHover text-slate-300 hover:text-white border border-app-border flex-shrink-0 transition-all text-left" type="button">
+<span class="w-2 h-2 rounded-full bg-slate-500 group-hover:bg-slate-400"></span>
+<div>
+<div class="text-xs font-semibold tracking-wide uppercase text-app-textMuted group-hover:text-slate-300 leading-none">Fase 4</div>
+<div class="text-sm font-medium mt-0.5 leading-none">Deload &amp; Scarico</div>
+</div>
+<span class="ml-1.5 px-2 py-0.5 text-[10px] font-medium bg-slate-800 text-slate-400 rounded-md">
+              1 Sett.
+            </span>
+</button>
+<!-- Add Phase Button -->
+<button class="flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl border border-dashed border-slate-700 hover:border-blue-500/80 text-slate-400 hover:text-blue-400 hover:bg-blue-950/20 text-xs font-semibold transition-all flex-shrink-0" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+            Aggiungi Fase
+          </button>
+</div>
+<!-- Phase Quick Action Buttons -->
+<div class="flex items-center gap-2 self-end lg:self-center flex-shrink-0">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 rounded-lg border border-slate-700/80 transition-colors" type="button">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+            Duplica Fase
+          </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800/70 hover:bg-slate-700 rounded-lg border border-slate-700/80 transition-colors" type="button">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.986 2.783.247.548.832.897 1.434.897h1.5c.602 0 1.187-.349 1.434-.897.402-.891.733-1.821.986-2.783m-6.34 0a47.255 47.255 0 006.34 0" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+            Impostazioni Fase
+          </button>
+</div>
+</div>
+<!-- Bottom: Contextual Meta Information for the Active Phase -->
+<div class="mt-3.5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 text-xs">
+<div class="flex items-center gap-2 text-app-textMuted bg-app-base/60 px-3 py-2 rounded-lg border border-app-border/60">
+<span class="text-slate-400 font-semibold">Obiettivo:</span>
+<span class="text-slate-200">Capacità di lavoro &amp; Volume muscolare (RPE 7-8.5)</span>
+</div>
+<div class="flex items-center gap-2 text-app-textMuted bg-app-base/60 px-3 py-2 rounded-lg border border-app-border/60">
+<span class="text-slate-400 font-semibold">Durata complessiva:</span>
+<span class="text-blue-400 font-medium">4 Microcicli (4 Settimane)</span>
+</div>
+<div class="flex items-center gap-2 text-app-textMuted bg-app-base/60 px-3 py-2 rounded-lg border border-app-border/60">
+<span class="text-slate-400 font-semibold">Frequenza:</span>
+<span class="text-slate-200">4 Sessioni / settimana (Spinta/Trazione)</span>
+</div>
+<div class="flex items-center justify-between text-app-textMuted bg-app-base/60 px-3 py-2 rounded-lg border border-app-border/60">
+<span class="text-slate-400 font-semibold">Avanzamento fase:</span>
+<div class="flex items-center gap-2 w-32">
+<div class="w-full bg-slate-800 rounded-full h-1.5">
+<div class="bg-blue-500 h-1.5 rounded-full" style="width: 25%"></div>
+</div>
+<span class="text-[11px] font-bold text-slate-300">25%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PhaseSelectorBar -->
+<!-- BEGIN: WeeksSection -->
+<div class="space-y-8" data-purpose="weeks-container">
+<!-- ==================== SETTIMANA 1 ==================== -->
+<!-- BEGIN: WeekOneBlock -->
+<section class="space-y-3.5" data-purpose="week-block">
+<!-- Week Header Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 px-1">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<button class="p-1 text-slate-400 hover:text-white transition-colors" title="Comprimi settimana">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Settimana 1</h2>
+</div>
+<span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30">
+              Focus Volume Introduttivo
+            </span>
+<span class="text-xs text-app-textMuted hidden sm:inline-block">
+              4 Sessioni programmate • ~52 serie
+            </span>
+</div>
+<div class="flex items-center gap-2">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg transition-all" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+              Aggiungi Giorno
+            </button>
+<button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Horizontal Scrollable Container for Days -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+<!-- Day 1 Card -->
+<!-- BEGIN: DayCard1 -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<!-- Day Card Top Meta -->
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Lun</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 1</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                    65 min
+                  </span>
+<button class="text-slate-400 hover:text-white p-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Workout Title -->
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Upper Body - Panca Focus</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Spinta orizzontale + deltoidi</p>
+</div>
+<!-- Exercise List Preview -->
+<div class="space-y-2 text-xs">
+<!-- Ex 1 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Panca piana bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x8 @ 75kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 7.5</span>
+</div>
+<!-- Ex 2 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Spinte manubri inclinata 30°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 28kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 3 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Dip alle parallele</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x12 @ BW+10kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 4 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Croci ai cavi alti</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x15 @ 12.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8.5</span>
+</div>
+</div>
+</div>
+<!-- Day Card Footer -->
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">13 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 group" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- END: DayCard1 -->
+<!-- Day 2 Card -->
+<!-- BEGIN: DayCard2 -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<!-- Day Card Top Meta -->
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-indigo-600/20 text-indigo-400 font-bold text-xs rounded border border-indigo-500/30">Mer</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 2</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                    70 min
+                  </span>
+<button class="text-slate-400 hover:text-white p-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Workout Title -->
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Lower Body - Quad &amp; Stacco</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Catena cinetica posteriore + Gambe</p>
+</div>
+<!-- Exercise List Preview -->
+<div class="space-y-2 text-xs">
+<!-- Ex 1 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Stacco da terra convenzionale</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x5 @ 140kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 2 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Leg Press 45°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x10 @ 210kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 3 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Leg Curl sdraiato</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x12 @ 45kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8.5</span>
+</div>
+<!-- Ex 4 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Calf machine seduto</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x15 @ 40kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 9</span>
+</div>
+</div>
+</div>
+<!-- Day Card Footer -->
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">15 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 group" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- END: DayCard2 -->
+<!-- Day 3 Card -->
+<!-- BEGIN: DayCard3 -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<!-- Day Card Top Meta -->
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Ven</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 3</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                    60 min
+                  </span>
+<button class="text-slate-400 hover:text-white p-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Workout Title -->
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Upper Body - Dorso &amp; Spalle</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Trazione verticale / orizzontale</p>
+</div>
+<!-- Exercise List Preview -->
+<div class="space-y-2 text-xs">
+<!-- Ex 1 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Trazioni alla sbarra prone</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x6 @ BW+10kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 2 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Rematore con bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x8 @ 70kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 7.5</span>
+</div>
+<!-- Ex 3 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Military Press bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x8 @ 45kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 4 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Alzate laterali ai cavi</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x15 @ 7.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 9</span>
+</div>
+</div>
+</div>
+<!-- Day Card Footer -->
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">13 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 group" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- END: DayCard3 -->
+<!-- Day 4 Card -->
+<!-- BEGIN: DayCard4 -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<!-- Day Card Top Meta -->
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Sab</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 4</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+                    55 min
+                  </span>
+<button class="text-slate-400 hover:text-white p-1">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Workout Title -->
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Braccia, Polpacci &amp; Addome</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Isolamento e stabilità core</p>
+</div>
+<!-- Exercise List Preview -->
+<div class="space-y-2 text-xs">
+<!-- Ex 1 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Curl bilanciere sagomato EZ</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 32.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 2 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">French Press manubri panca 15°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 14+14kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8</span>
+</div>
+<!-- Ex 3 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Plank zavorrato</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x60s @ +15kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 7</span>
+</div>
+<!-- Ex 4 -->
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Hanging Leg Raise alla sbarra</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x12 @ BW</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded flex-shrink-0">RPE 8.5</span>
+</div>
+</div>
+</div>
+<!-- Day Card Footer -->
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">12 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1 group" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</article>
+<!-- END: DayCard4 -->
+<!-- Add Day Slot Placeholder Card -->
+<!-- BEGIN: AddDaySlot -->
+<div class="border-2 border-dashed border-app-border hover:border-blue-500/60 rounded-xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer transition-all min-h-[340px] bg-slate-900/20 hover:bg-blue-950/10">
+<div class="w-11 h-11 rounded-full bg-slate-800/80 group-hover:bg-blue-600/20 text-slate-400 group-hover:text-blue-400 border border-slate-700 group-hover:border-blue-500/40 flex items-center justify-center transition-colors mb-3">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<h4 class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">Aggiungi Giorno</h4>
+<p class="text-xs text-app-textMuted mt-1 max-w-[170px]">Crea una nuova sessione per la Settimana 1</p>
+</div>
+<!-- END: AddDaySlot -->
+</div>
+</section>
+<!-- END: WeekOneBlock -->
+<!-- ==================== SETTIMANA 2 ==================== -->
+<!-- BEGIN: WeekTwoBlock -->
+<section class="space-y-3.5" data-purpose="week-block">
+<!-- Week Header Row -->
+<div class="flex flex-wrap items-center justify-between gap-3 px-1">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<button class="p-1 text-slate-400 hover:text-white transition-colors" title="Comprimi settimana">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<h2 class="text-base sm:text-lg font-bold text-white tracking-tight">Settimana 2</h2>
+</div>
+<span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+              Progressione +2.5% Sovraccarico
+            </span>
+<span class="text-xs text-app-textMuted hidden sm:inline-block">
+              4 Sessioni programmate • ~54 serie
+            </span>
+</div>
+<div class="flex items-center gap-2">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 rounded-lg transition-all" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+              Aggiungi Giorno
+            </button>
+<button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Horizontal Scrollable Container for Days -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+<!-- W2 Day 1 Card -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Lun</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 1</span>
+</div>
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">65 min</span>
+</div>
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Upper Body - Panca Focus</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Intensificazione carichi target</p>
+</div>
+<div class="space-y-2 text-xs">
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Panca piana bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x8 @ 77.5kg <span class="text-emerald-400 text-[10px] font-sans">(+2.5kg)</span></div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Spinte manubri inclinata 30°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 30kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Dip alle parallele</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x10 @ BW+12.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Croci ai cavi alti</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x15 @ 12.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">14 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- W2 Day 2 Card -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-indigo-600/20 text-indigo-400 font-bold text-xs rounded border border-indigo-500/30">Mer</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 2</span>
+</div>
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">70 min</span>
+</div>
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Lower Body - Quad &amp; Stacco</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Incremento carico principale</p>
+</div>
+<div class="space-y-2 text-xs">
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Stacco da terra convenzionale</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x5 @ 145kg <span class="text-emerald-400 text-[10px] font-sans">(+5kg)</span></div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Leg Press 45°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x10 @ 220kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Leg Curl sdraiato</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x12 @ 47.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Calf machine seduto</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x15 @ 42.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 9</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">15 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- W2 Day 3 Card -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Ven</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 3</span>
+</div>
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">60 min</span>
+</div>
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Upper Body - Dorso &amp; Spalle</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Trazione verticale / orizzontale</p>
+</div>
+<div class="space-y-2 text-xs">
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Trazioni alla sbarra prone</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x6 @ BW+12.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Rematore con bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x8 @ 72.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Military Press bilanciere</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x8 @ 47.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Alzate laterali ai cavi</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">4x15 @ 7.5kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 9</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">14 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- W2 Day 4 Card -->
+<article class="bg-app-card border border-app-border hover:border-slate-600 rounded-xl p-4 flex flex-col justify-between hover-lift">
+<div>
+<div class="flex items-center justify-between pb-2.5 border-b border-app-border/70">
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 bg-blue-600/20 text-blue-400 font-bold text-xs rounded border border-blue-500/30">Sab</span>
+<span class="text-xs font-semibold text-slate-300">Giorno 4</span>
+</div>
+<span class="text-[11px] text-app-textMuted flex items-center gap-1">55 min</span>
+</div>
+<div class="mt-3 mb-3">
+<h3 class="text-sm font-bold text-white tracking-wide">Braccia, Polpacci &amp; Addome</h3>
+<p class="text-[11px] text-app-textMuted mt-0.5">Isolamento e stabilità core</p>
+</div>
+<div class="space-y-2 text-xs">
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Curl bilanciere sagomato EZ</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 35kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">French Press manubri panca 15°</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x10 @ 16+16kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Plank zavorrato</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x65s @ +15kg</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8</span>
+</div>
+<div class="bg-app-base/70 p-2.5 rounded-lg border border-app-border/70 flex items-center justify-between">
+<div class="min-w-0 pr-2">
+<div class="font-medium text-slate-200 truncate">Hanging Leg Raise alla sbarra</div>
+<div class="text-[11px] text-blue-400 font-mono mt-0.5">3x12 @ BW</div>
+</div>
+<span class="text-[10px] font-semibold text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">RPE 8.5</span>
+</div>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-app-border/70 flex items-center justify-between text-[11px]">
+<span class="text-app-textMuted font-medium">12 serie tot.</span>
+<button class="font-semibold text-blue-400 hover:text-blue-300 inline-flex items-center gap-1" type="button">
+                Modifica sessione
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</article>
+<!-- Add Day Slot Placeholder Card -->
+<div class="border-2 border-dashed border-app-border hover:border-blue-500/60 rounded-xl p-6 flex flex-col items-center justify-center text-center group cursor-pointer transition-all min-h-[340px] bg-slate-900/20 hover:bg-blue-950/10">
+<div class="w-11 h-11 rounded-full bg-slate-800/80 group-hover:bg-blue-600/20 text-slate-400 group-hover:text-blue-400 border border-slate-700 group-hover:border-blue-500/40 flex items-center justify-center transition-colors mb-3">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<h4 class="text-sm font-semibold text-slate-300 group-hover:text-white transition-colors">Aggiungi Giorno</h4>
+<p class="text-xs text-app-textMuted mt-1 max-w-[170px]">Crea una nuova sessione per la Settimana 2</p>
+</div>
+</div>
+</section>
+<!-- END: WeekTwoBlock -->
+<!-- ==================== SETTIMANA 3 & 4 (COMPACT / COLLAPSED STATE) ==================== -->
+<!-- BEGIN: CollapsedWeeks -->
+<section class="space-y-3" data-purpose="collapsed-weeks">
+<!-- Settimana 3 Preview Bar -->
+<div class="bg-app-card/60 hover:bg-app-card border border-app-border rounded-xl p-4 flex items-center justify-between transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="p-1 text-slate-400 group-hover:text-white transition-colors">
+<svg class="w-4 h-4 transform -rotate-90 group-hover:rotate-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2.5">
+<h3 class="text-sm font-bold text-white">Settimana 3</h3>
+<span class="px-2 py-0.5 text-[11px] font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700">Picco di Volume Stimolante</span>
+</div>
+<p class="text-xs text-app-textMuted mt-0.5">4 Sessioni configurate • Focus su intensità percepita RPE 8.5-9</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-400 hidden sm:inline-block">Espandi settimana</span>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Settimana 4 Preview Bar -->
+<div class="bg-app-card/60 hover:bg-app-card border border-app-border rounded-xl p-4 flex items-center justify-between transition-colors cursor-pointer group">
+<div class="flex items-center gap-3">
+<div class="p-1 text-slate-400 group-hover:text-white transition-colors">
+<svg class="w-4 h-4 transform -rotate-90 group-hover:rotate-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M19.5 8.25l-7.5 7.5-7.5-7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2.5">
+<h3 class="text-sm font-bold text-white">Settimana 4</h3>
+<span class="px-2 py-0.5 text-[11px] font-medium rounded-full bg-slate-800 text-slate-400 border border-slate-700">Overreaching &amp; Chiusura Blocco</span>
+</div>
+<p class="text-xs text-app-textMuted mt-0.5">4 Sessioni configurate • Test di mantenimento volume massimale</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs text-slate-400 hidden sm:inline-block">Espandi settimana</span>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+</div>
+</section>
+<!-- END: CollapsedWeeks -->
+<!-- BEGIN: AddWeekActionArea -->
+<div class="pt-2 pb-10">
+<button class="w-full py-4 border-2 border-dashed border-app-border hover:border-blue-500/70 hover:bg-blue-950/20 text-slate-300 hover:text-blue-400 font-semibold text-sm rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-sm" type="button">
+<div class="w-6 h-6 rounded-full bg-blue-600/20 flex items-center justify-center border border-blue-500/40">
+<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+          + Aggiungi Nuova Settimana alla Fase 1
+        </button>
+</div>
+<!-- END: AddWeekActionArea -->
+</div>
+<!-- END: WeeksSection -->
+</main>
+<!-- END: MainContent -->
+</body></html>

@@ -49,10 +49,14 @@ class _DashboardCoachToolsSectionState extends State<DashboardCoachToolsSection>
     final cs = theme.colorScheme;
     final hints = _hints;
 
+    const toolCount = 2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        DashboardSectionHeader(title: l10n.dashboardCoachToolsTitle),
+        DashboardSectionHeader(
+          title: l10n.dashboardCoachToolsTitle,
+          badge: l10n.dashboardCoachToolsAvailable(toolCount),
+        ),
         const SizedBox(height: 12),
         Row(
           children: [

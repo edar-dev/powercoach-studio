@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Modifica Sessione · PowerCoach Studio</title>
+<!-- Google Fonts Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- FontAwesome for robust UI icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              background: '#090d16',
+              backdrop: '#0f172a',
+              card: '#151d2e',
+              row: '#1a2337',
+              border: '#28354d',
+              input: '#0f1624'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Micro-Styles -->
+<style data-purpose="custom-scrollbars">
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f19;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #28354d;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+  </style>
+<style data-purpose="table-layout-tuning">
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+  </style>
+<!-- END: Custom Micro-Styles -->
+</head>
+<body class="bg-surface-background text-slate-100 font-sans antialiased min-h-screen relative flex items-center justify-center p-3 sm:p-6 lg:p-10 selection:bg-brand-500 selection:text-white">
+<!-- Background App Mock Backdrop (Simulating PowerCoach Studio Environment) -->
+<div aria-hidden="true" class="fixed inset-0 pointer-events-none opacity-20 filter blur-sm flex flex-col">
+<div class="h-16 border-b border-slate-800 bg-slate-900 flex items-center px-8 justify-between">
+<div class="h-6 w-36 bg-slate-700 rounded"></div>
+<div class="h-8 w-60 bg-slate-700 rounded-full"></div>
+</div>
+<div class="flex-1 flex">
+<div class="w-64 border-r border-slate-800 bg-slate-900 p-6 space-y-4">
+<div class="h-4 bg-slate-700 rounded w-3/4"></div>
+<div class="h-4 bg-slate-800 rounded w-1/2"></div>
+<div class="h-4 bg-slate-800 rounded w-2/3"></div>
+</div>
+<div class="flex-1 p-8 grid grid-cols-3 gap-6">
+<div class="h-48 rounded-xl bg-slate-800 border border-slate-700"></div>
+<div class="h-48 rounded-xl bg-slate-800 border border-slate-700"></div>
+<div class="h-48 rounded-xl bg-slate-800 border border-slate-700"></div>
+</div>
+</div>
+</div>
+<!-- BEGIN: WorkoutEditorModal -->
+<main class="relative z-10 w-full max-w-5xl bg-[#111827] border border-surface-border rounded-2xl shadow-2xl overflow-hidden flex flex-col transition-all duration-200 backdrop-blur-md">
+<!-- BEGIN: TopNavigationBar -->
+<!-- Top Action and Session Title Header -->
+<header class="border-b border-surface-border bg-slate-900/90 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<!-- Close/Dismiss Modal Button -->
+<button aria-label="Chiudi modale" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition" type="button">
+<i class="fa-solid fa-xmark text-lg"></i>
+</button>
+<div>
+<div class="flex items-center gap-2.5 flex-wrap">
+<span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10 text-brand-500 border border-brand-500/20">
+<i class="fa-solid fa-dumbbell text-sm"></i>
+</span>
+<h1 class="text-xl font-bold text-white tracking-tight flex items-center gap-2">
+              Modifica Sessione · Giorno 1
+              <button class="text-xs text-slate-400 hover:text-brand-500 transition" title="Rinomina giorno">
+<i class="fa-solid fa-pen"></i>
+</button>
+</h1>
+<!-- Dynamic Athlete Tag (Edoardo Arlati) -->
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-slate-800 text-blue-300 border border-blue-500/20 shadow-sm ml-1">
+<i class="fa-regular fa-user text-[11px] text-blue-400"></i>
+<span>Piano assegnato: <strong class="font-semibold text-slate-100">Edoardo Arlati</strong></span>
+</div>
+</div>
+<p class="text-xs text-slate-400 mt-1 pl-11">Fase Ipertrofia &amp; Forza Generale · Mesociclo A (Settimana 3)</p>
+</div>
+</div>
+<!-- Quick Action Utilities + Save Buttons -->
+<div class="flex items-center gap-2 justify-end">
+<div class="flex items-center bg-slate-800/80 rounded-lg p-1 border border-slate-700/60 mr-2">
+<button class="p-2 text-slate-300 hover:text-white hover:bg-slate-700/80 rounded-md transition text-xs flex items-center gap-1.5 px-2.5" title="Duplica sessione" type="button">
+<i class="fa-regular fa-copy"></i>
+<span class="hidden sm:inline">Duplica</span>
+</button>
+<button class="p-2 text-slate-300 hover:text-white hover:bg-slate-700/80 rounded-md transition text-xs flex items-center gap-1.5 px-2.5" title="Cronologia modifiche" type="button">
+<i class="fa-solid fa-clock-rotate-left"></i>
+<span class="hidden sm:inline">Storia</span>
+</button>
+<button class="p-2 text-rose-400 hover:text-rose-300 hover:bg-rose-950/40 rounded-md transition text-xs px-2.5" title="Elimina intera sessione" type="button">
+<i class="fa-solid fa-trash-can"></i>
+</button>
+</div>
+<button class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition border border-transparent hover:border-slate-700" type="button">
+          Annulla
+        </button>
+<button class="px-5 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-500 active:bg-brand-700 rounded-lg transition shadow-lg shadow-blue-600/30 flex items-center gap-2" type="button">
+<i class="fa-solid fa-check"></i>
+          Salva modifiche
+        </button>
+</div>
+</header>
+<!-- END: TopNavigationBar -->
+<!-- BEGIN: SessionMetricsBar -->
+<!-- Live calculated metrics: Exercises, Volume, Tonnage, Rest Avg -->
+<section aria-label="Metriche aggregate di sessione" class="bg-[#131b2c] border-b border-surface-border px-6 py-3 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-medium">
+<div class="flex items-center gap-2.5 text-slate-300">
+<span class="p-1.5 rounded-md bg-blue-500/10 text-brand-500"><i class="fa-solid fa-layer-group"></i></span>
+<span>Esercizi: <strong class="text-white font-semibold">1</strong></span>
+</div>
+<div class="flex items-center gap-2.5 text-slate-300">
+<span class="p-1.5 rounded-md bg-indigo-500/10 text-indigo-400"><i class="fa-solid fa-repeat"></i></span>
+<span>Serie totali: <strong class="text-white font-semibold">3 serie</strong></span>
+</div>
+<div class="flex items-center gap-2.5 text-slate-300">
+<span class="p-1.5 rounded-md bg-emerald-500/10 text-emerald-400"><i class="fa-solid fa-weight-hanging"></i></span>
+<span>Volume stimato: <strong class="text-emerald-400 font-semibold">1.800 kg</strong></span>
+</div>
+<div class="flex items-center gap-2.5 text-slate-300">
+<span class="p-1.5 rounded-md bg-amber-500/10 text-amber-400"><i class="fa-regular fa-stopwatch"></i></span>
+<span>Recupero medio: <strong class="text-white font-semibold">2' 10"</strong></span>
+</div>
+</section>
+<!-- END: SessionMetricsBar -->
+<!-- BEGIN: WorkoutExercisesContainer -->
+<div class="p-6 space-y-6 max-h-[calc(85vh-160px)] overflow-y-auto">
+<!-- BEGIN: ExerciseCard_BenchPress -->
+<article class="bg-surface-card border border-surface-border rounded-xl shadow-md transition-all duration-200 hover:border-slate-600/60 overflow-hidden" data-purpose="exercise-card">
+<!-- Exercise Card Header -->
+<header class="p-4 bg-slate-800/50 border-b border-surface-border/70 flex flex-wrap items-center justify-between gap-3">
+<div class="flex items-center gap-3">
+<!-- Drag Handle -->
+<button class="cursor-grab text-slate-500 hover:text-slate-300 transition" title="Trascina per riordinare" type="button">
+<i class="fa-solid fa-grip-vertical"></i>
+</button>
+<span class="w-7 h-7 rounded bg-brand-600/20 text-brand-400 font-bold text-xs flex items-center justify-center border border-brand-500/30">
+              1
+            </span>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-base font-bold text-white tracking-wide">Panca piana con bilanciere</h2>
+<!-- Target Muscle Badge -->
+<span class="text-[10px] uppercase font-semibold tracking-wider px-2 py-0.5 rounded bg-slate-700/80 text-slate-300 border border-slate-600/50">
+                  Pettorali • Tricipiti
+                </span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">Bilanciere Olimpico standard (20 kg compresi)</p>
+</div>
+</div>
+<!-- Athlete 1RM guidance & Context actions -->
+<div class="flex items-center gap-2">
+<!-- Target 1RM Guide -->
+<div class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-slate-900/90 text-amber-400 border border-amber-500/30 text-xs">
+<i class="fa-solid fa-chart-line text-[10px]"></i>
+<span>1RM Atleta: <strong class="text-white font-semibold">100 kg</strong></span>
+<span class="text-slate-400 text-[10px]">(60% = 60 kg)</span>
+</div>
+<button class="text-slate-400 hover:text-white p-1.5 rounded hover:bg-slate-700/60 transition" title="Comprimi esercizio" type="button">
+<i class="fa-solid fa-chevron-up text-sm"></i>
+</button>
+<!-- Exercise Dropdown Actions -->
+<div class="relative inline-block text-left">
+<button class="text-slate-400 hover:text-white p-1.5 rounded hover:bg-slate-700/60 transition" title="Opzioni esercizio" type="button">
+<i class="fa-solid fa-ellipsis-vertical text-sm"></i>
+</button>
+</div>
+</div>
+</header>
+<!-- BEGIN: SetsTableSection -->
+<div class="p-4 sm:p-5">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs border-collapse" data-purpose="sets-table">
+<thead>
+<tr class="border-b border-surface-border text-slate-400 uppercase tracking-wider text-[11px]">
+<th class="py-2.5 px-2 w-12 text-center font-semibold" scope="col">SET</th>
+<th class="py-2.5 px-3 min-w-[130px] font-semibold" scope="col">TIPO SERIE</th>
+<th class="py-2.5 px-3 min-w-[100px] font-semibold" scope="col">CARICO (KG)</th>
+<th class="py-2.5 px-3 min-w-[100px] font-semibold" scope="col">RIPETIZIONI</th>
+<th class="py-2.5 px-3 min-w-[100px] font-semibold" scope="col">RPE / RIR</th>
+<th class="py-2.5 px-3 min-w-[110px] font-semibold" scope="col">RECUPERO</th>
+<th class="py-2.5 px-2 w-12 text-center font-semibold" scope="col">STATUS</th>
+<th class="py-2.5 px-2 w-10 text-center font-semibold" scope="col"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-border/50 text-slate-200">
+<!-- Set Row 1 -->
+<tr class="hover:bg-slate-800/40 transition group">
+<td class="py-2.5 px-2 text-center font-bold text-slate-400 group-hover:text-white">
+                    1
+                  </td>
+<td class="py-2 px-3">
+<select class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-blue-400 font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+<option value="warmup">Riscaldamento</option>
+<option selected="" value="target">Target (Lavoro)</option>
+<option value="backoff">Back-off</option>
+<option value="dropset">Drop set</option>
+<option value="amrap">AMRAP</option>
+</select>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-7 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" step="0.5" type="number" value="60"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">kg</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-8 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="number" value="10"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">reps</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-slate-200 text-center font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="@7 (RIR 3)"/>
+</td>
+<td class="py-2 px-3">
+<div class="flex items-center gap-1.5">
+<i class="fa-regular fa-clock text-slate-500 text-[11px]"></i>
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2 text-slate-300 font-medium text-center focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="2' 00&quot;"/>
+</div>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="w-6 h-6 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition flex items-center justify-center text-xs mx-auto" title="Contrassegna completato" type="button">
+<i class="fa-solid fa-check text-[10px]"></i>
+</button>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition p-1" title="Rimuovi serie" type="button">
+<i class="fa-regular fa-circle-xmark text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set Row 2 -->
+<tr class="hover:bg-slate-800/40 transition group">
+<td class="py-2.5 px-2 text-center font-bold text-slate-400 group-hover:text-white">
+                    2
+                  </td>
+<td class="py-2 px-3">
+<select class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-blue-400 font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+<option value="warmup">Riscaldamento</option>
+<option selected="" value="target">Target (Lavoro)</option>
+<option value="backoff">Back-off</option>
+<option value="dropset">Drop set</option>
+<option value="amrap">AMRAP</option>
+</select>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-7 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" step="0.5" type="number" value="60"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">kg</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-8 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="number" value="10"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">reps</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-slate-200 text-center font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="@8 (RIR 2)"/>
+</td>
+<td class="py-2 px-3">
+<div class="flex items-center gap-1.5">
+<i class="fa-regular fa-clock text-slate-500 text-[11px]"></i>
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2 text-slate-300 font-medium text-center focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="2' 00&quot;"/>
+</div>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="w-6 h-6 rounded-full border border-slate-600 bg-slate-800 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition flex items-center justify-center text-xs mx-auto" title="Segna come completato" type="button">
+<i class="fa-solid fa-check text-[10px]"></i>
+</button>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition p-1" title="Rimuovi serie" type="button">
+<i class="fa-regular fa-circle-xmark text-sm"></i>
+</button>
+</td>
+</tr>
+<!-- Set Row 3 -->
+<tr class="hover:bg-slate-800/40 transition group">
+<td class="py-2.5 px-2 text-center font-bold text-slate-400 group-hover:text-white">
+                    3
+                  </td>
+<td class="py-2 px-3">
+<select class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-blue-400 font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500">
+<option value="warmup">Riscaldamento</option>
+<option selected="" value="target">Target (Lavoro)</option>
+<option value="backoff">Back-off</option>
+<option value="dropset">Drop set</option>
+<option value="amrap">AMRAP</option>
+</select>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-7 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" step="0.5" type="number" value="60"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">kg</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<div class="relative">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-white font-semibold text-right pr-8 focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="number" value="10"/>
+<span class="absolute right-2 top-1.5 text-slate-500 text-[10px] pointer-events-none">reps</span>
+</div>
+</td>
+<td class="py-2 px-3">
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2.5 text-slate-200 text-center font-medium focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="@8.5 (RIR 1-2)"/>
+</td>
+<td class="py-2 px-3">
+<div class="flex items-center gap-1.5">
+<i class="fa-regular fa-clock text-slate-500 text-[11px]"></i>
+<input class="w-full bg-surface-input border border-surface-border rounded-lg text-xs py-1.5 px-2 text-slate-300 font-medium text-center focus:ring-1 focus:ring-brand-500 focus:border-brand-500" type="text" value="2' 30&quot;"/>
+</div>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="w-6 h-6 rounded-full border border-slate-600 bg-slate-800 text-slate-400 hover:border-emerald-500 hover:text-emerald-400 transition flex items-center justify-center text-xs mx-auto" title="Segna come completato" type="button">
+<i class="fa-solid fa-check text-[10px]"></i>
+</button>
+</td>
+<td class="py-2 px-2 text-center">
+<button class="text-slate-500 hover:text-rose-400 transition p-1" title="Rimuovi serie" type="button">
+<i class="fa-regular fa-circle-xmark text-sm"></i>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Add Set Quick Buttons Bar -->
+<div class="mt-3.5 flex flex-wrap items-center gap-2 pt-2 border-t border-surface-border/40">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600/10 text-brand-400 hover:bg-brand-600/20 border border-brand-500/20 transition" type="button">
+<i class="fa-solid fa-plus text-[11px]"></i>
+              Aggiungi serie
+            </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700/70 border border-slate-700 transition" type="button">
+<i class="fa-regular fa-clone text-[11px]"></i>
+              Duplica ultima serie (Set 3)
+            </button>
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 hover:text-amber-400 hover:bg-slate-800 transition ml-auto" type="button">
+<i class="fa-solid fa-calculator text-[11px]"></i>
+              Calcola Warm-up automatico
+            </button>
+</div>
+<!-- BEGIN: CoachNotesArea -->
+<!-- Always visible, prominent coach instructions -->
+<div class="mt-4 pt-3.5 border-t border-surface-border/50">
+<label class="flex items-center gap-1.5 text-xs font-medium text-slate-300 mb-1.5" for="coach-notes-bench">
+<i class="fa-regular fa-comment-dots text-brand-400"></i>
+              Note tecniche per l'atleta (Edoardo):
+            </label>
+<div class="relative">
+<textarea class="w-full bg-surface-input border border-surface-border focus:border-brand-500 focus:ring-1 focus:ring-brand-500 rounded-lg text-xs text-slate-200 p-2.5 placeholder-slate-500 leading-relaxed resize-none" id="coach-notes-bench" placeholder="Inserisci indicazioni su setup, cadenza ecc..." rows="2">Presa con distanza pari a 1.5x larghezza spalle. Fermo al petto solido di 1 secondo su ogni ripetizione. Curare l'adduzione scapolare e la spinta dal suolo (leg drive).</textarea>
+<span class="absolute bottom-2 right-2.5 text-[10px] text-slate-500 font-mono">Salvato</span>
+</div>
+</div>
+<!-- END: CoachNotesArea -->
+</div>
+<!-- END: SetsTableSection -->
+</article>
+<!-- END: ExerciseCard_BenchPress -->
+<!-- BEGIN: AddExerciseOptionsBar -->
+<!-- High-visibility triggers to grow the session -->
+<section aria-label="Aggiungi altri esercizi o componenti" class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+<button class="group flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl border-2 border-dashed border-brand-500/40 hover:border-brand-500 bg-brand-500/5 hover:bg-brand-500/10 text-brand-400 hover:text-brand-300 font-semibold text-sm transition shadow-sm" type="button">
+<span class="w-6 h-6 rounded-full bg-brand-500/20 flex items-center justify-center group-hover:scale-110 transition">
+<i class="fa-solid fa-plus text-xs text-brand-400"></i>
+</span>
+          Aggiungi esercizio da libreria
+        </button>
+<button class="group flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl border border-slate-700/80 hover:border-slate-600 bg-slate-800/40 hover:bg-slate-800 text-slate-300 hover:text-white font-medium text-sm transition" type="button">
+<i class="fa-solid fa-link text-slate-400 group-hover:text-blue-400 transition text-xs"></i>
+          Crea Superset / Circuito
+        </button>
+</section>
+<!-- END: AddExerciseOptionsBar -->
+</div>
+<!-- END: WorkoutExercisesContainer -->
+<!-- BEGIN: ModalBottomFooter -->
+<!-- Sticky footer with confirmation status -->
+<footer class="border-t border-surface-border bg-slate-900/90 px-6 py-3 flex items-center justify-between text-xs text-slate-400">
+<div class="flex items-center gap-2">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Autosalvataggio bozza attivo</span>
+</div>
+<div class="flex items-center gap-4">
+<span>Scorciatoia rapida: <kbd class="px-1.5 py-0.5 bg-slate-800 border border-slate-700 rounded text-[10px] text-slate-300">Ctrl + S</kbd></span>
+<button class="text-brand-400 hover:text-brand-300 font-medium" type="button">Anteprima scheda atleta →</button>
+</div>
+</footer>
+<!-- END: ModalBottomFooter -->
+</main>
+<!-- END: WorkoutEditorModal -->
+</body></html>

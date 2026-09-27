@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+
 class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomerListAppBar({
     super.key,
@@ -17,22 +19,24 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     return AppBar(
-      backgroundColor: cs.surface,
+      backgroundColor: MarketingDarkColors.bgAlt,
+      foregroundColor: MarketingDarkColors.text,
       elevation: 0,
-      scrolledUnderElevation: 1,
+      scrolledUnderElevation: 0,
+      surfaceTintColor: Colors.transparent,
       leading: showMenu
           ? Builder(
               builder: (drawerContext) => IconButton(
                 icon: const Icon(Icons.menu),
+                color: MarketingDarkColors.slate300,
                 onPressed: () => Scaffold.of(drawerContext).openDrawer(),
                 tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
               ),
             )
           : IconButton(
               icon: const Icon(Icons.arrow_back),
+              color: MarketingDarkColors.slate300,
               onPressed: () {
                 HapticFeedback.mediumImpact();
                 final router = GoRouter.of(context);
@@ -45,15 +49,19 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
             ),
       title: Text(
         title,
-        style: theme.textTheme.titleLarge?.copyWith(
+        style: const TextStyle(
           fontWeight: FontWeight.w700,
-          color: cs.onSurface,
+          fontSize: 20,
+          color: MarketingDarkColors.text,
         ),
       ),
       centerTitle: false,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: cs.outline, height: 1),
+      bottom: const PreferredSize(
+        preferredSize: Size.fromHeight(1),
+        child: ColoredBox(
+          color: MarketingDarkColors.border,
+          child: SizedBox(height: 1, width: double.infinity),
+        ),
       ),
     );
   }

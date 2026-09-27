@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/billing/plan_limits.dart';
-import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../landing_colors.dart';
 
-/// Public pricing section with Free vs Pro tiers.
+/// Public pricing section with Free vs Pro tiers (dark Stitch chrome).
 class LandingPricingSection extends StatelessWidget {
   const LandingPricingSection({
     super.key,
@@ -23,18 +23,17 @@ class LandingPricingSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-      color: cs.surface,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 56),
+      color: LandingColors.bg,
       child: Column(
         children: [
           Text(
             l10n.landingPricingLabel.toUpperCase(),
             style: theme.textTheme.labelLarge?.copyWith(
-              color: StitchM3Theme.accent,
+              color: LandingColors.brandLight,
               fontWeight: FontWeight.w700,
               letterSpacing: 1.2,
             ),
@@ -43,8 +42,8 @@ class LandingPricingSection extends StatelessWidget {
           Text(
             l10n.landingPricingTitle,
             style: theme.textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: StitchM3Theme.textPrimary,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
             ),
             textAlign: TextAlign.center,
           ),
@@ -52,7 +51,7 @@ class LandingPricingSection extends StatelessWidget {
           Text(
             l10n.landingPricingSubtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: StitchM3Theme.textMuted,
+              color: LandingColors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -118,7 +117,7 @@ class LandingPricingSection extends StatelessWidget {
           Text(
             l10n.landingPricingBetaNote,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: cs.onSurfaceVariant,
+              color: LandingColors.textMuted,
             ),
             textAlign: TextAlign.center,
           ),
@@ -150,69 +149,84 @@ class _PricingTierCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
-    return Card(
-      elevation: highlighted ? 2 : 0,
-      color: highlighted ? cs.primaryContainer.withValues(alpha: 0.35) : cs.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        side: BorderSide(
-          color: highlighted ? cs.primary : cs.outline,
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        color: highlighted
+            ? LandingColors.brand.withValues(alpha: 0.12)
+            : LandingColors.surface.withValues(alpha: 0.9),
+        borderRadius: BorderRadius.circular(LandingColors.radius2xl),
+        border: Border.all(
+          color: highlighted ? LandingColors.brandMid : LandingColors.border,
           width: highlighted ? 2 : 1,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            title,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            price,
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              color: highlighted ? LandingColors.brandLight : Colors.white,
+            ),
+          ),
+          Text(
+            period,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: LandingColors.textMuted,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ...features.map(
+            (feature) => Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.check_circle_outline,
+                    size: 20,
+                    color: LandingColors.brandLight,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      feature,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: LandingColors.slate300,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              price,
-              style: theme.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: highlighted ? cs.primary : cs.onSurface,
+          ),
+          const SizedBox(height: 16),
+          FilledButton(
+            onPressed: onCta,
+            style: FilledButton.styleFrom(
+              backgroundColor: highlighted
+                  ? LandingColors.brand
+                  : LandingColors.surfaceElevated,
+              foregroundColor: Colors.white,
+              minimumSize: const Size.fromHeight(44),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(LandingColors.radiusXl),
               ),
             ),
-            Text(
-              period,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: cs.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ...features.map(
-              (feature) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Icon(Icons.check_circle_outline, size: 20, color: cs.primary),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(feature, style: theme.textTheme.bodyMedium)),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
-            FilledButton(
-              onPressed: onCta,
-              style: FilledButton.styleFrom(
-                backgroundColor: highlighted ? cs.primary : cs.surfaceContainerHighest,
-                foregroundColor: highlighted ? cs.onPrimary : cs.onSurface,
-                minimumSize: const Size.fromHeight(44),
-              ),
-              child: Text(ctaLabel),
-            ),
-          ],
-        ),
+            child: Text(ctaLabel),
+          ),
+        ],
       ),
     );
   }

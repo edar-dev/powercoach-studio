@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 import '../storage/offline_local_store.dart';
 import 'offline_models.dart';
 
@@ -6,6 +8,7 @@ class OfflineRepositorySupport {
       : _store = store ?? OfflineLocalStore.instance;
 
   final OfflineLocalStore _store;
+  static const _uuid = Uuid();
 
   Future<void> saveLocalEntity({
     required OfflineEntityType type,
@@ -62,9 +65,10 @@ class OfflineRepositorySupport {
     // Local-only mode: keep writes in local entities and skip remote outbox.
   }
 
+  /// Unique local id. Must stay unique under bulk creates in the same ms
+  /// (e.g. default exercise catalog import of 200+ rows).
   String newTempId(String prefix) {
-    final now = DateTime.now().millisecondsSinceEpoch;
-    return 'local_${prefix}_$now';
+    return 'local_${prefix}_${_uuid.v4()}';
   }
 
   Future<void> markDeleted(OfflineEntityType type, String entityId) =>

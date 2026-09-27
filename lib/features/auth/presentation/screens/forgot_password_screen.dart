@@ -3,15 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/auth_redirect_urls.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
+import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
-import '../widgets/auth_form_card.dart';
+import '../widgets/auth_dark_form_shell.dart';
+import '../widgets/auth_dark_text_field.dart';
+import '../widgets/auth_social_buttons.dart';
 
-/// Forgot Password – Stitch ID 3563377ad3864dfca42385fcd5ea0840.
+/// Forgot Password — dark shell aligned with login/register.
 /// Sends reset link via Supabase Auth resetPasswordForEmail.
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -100,71 +101,91 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerHighest,
-      appBar: StitchSecondaryAppBar(title: l10n.forgotPasswordTitle),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: AuthFormCard(
-            headerIcon: Icons.lock_reset,
-            subtitle: l10n.forgotPasswordInstruction,
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: l10n.forgotPasswordEmailLabel,
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    ),
-                    validator: (value) {
-                      final t = value?.trim() ?? '';
-                      if (t.isEmpty) return l10n.loginErrorInvalidEmail;
-                      if (!_emailRegex.hasMatch(t)) return l10n.loginErrorInvalidEmail;
-                      return null;
-                    },
-                    onFieldSubmitted: (_) => _submit(),
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    height: StitchM3Theme.inputHeight,
-                    child: FilledButton(
-                      onPressed: _isLoading ? null : _submit,
-                      style: FilledButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-                        ),
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : Text(l10n.forgotPasswordSubmit),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      context.go('/login');
-                    },
-                    child: Text(l10n.forgotPasswordBackToLogin),
-                  ),
-                ],
+    return AuthDarkFormShell(
+      backLabel: l10n.authBackLogin,
+      onBack: () {
+        HapticFeedback.mediumImpact();
+        context.go('/login');
+      },
+      topBadge: const AuthEncryptionBadge(),
+      pageFooter: const AuthPageFooter(),
+      cardHeader: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: MarketingDarkColors.brand.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: MarketingDarkColors.brand.withValues(alpha: 0.3),
               ),
             ),
+            child: const Icon(
+              Icons.lock_reset,
+              size: 28,
+              color: MarketingDarkColors.brandLight,
+            ),
           ),
+          const SizedBox(height: 14),
+          Text(
+            l10n.forgotPasswordTitle,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.forgotPasswordInstruction,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.4,
+              color: MarketingDarkColors.textMuted,
+            ),
+          ),
+        ],
+      ),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AuthDarkTextField(
+              label: l10n.forgotPasswordEmailLabel,
+              controller: _emailController,
+              prefixIcon: Icons.mail_outline,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.done,
+              validator: (value) {
+                final t = value?.trim() ?? '';
+                if (t.isEmpty) return l10n.loginErrorInvalidEmail;
+                if (!_emailRegex.hasMatch(t)) return l10n.loginErrorInvalidEmail;
+                return null;
+              },
+              onFieldSubmitted: (_) => _submit(),
+            ),
+            const SizedBox(height: 24),
+            AuthPrimaryCta(
+              label: l10n.forgotPasswordSubmit,
+              isLoading: _isLoading,
+              onPressed: _submit,
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                context.go('/login');
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: MarketingDarkColors.brandLight,
+              ),
+              child: Text(l10n.forgotPasswordBackToLogin),
+            ),
+          ],
         ),
       ),
     );

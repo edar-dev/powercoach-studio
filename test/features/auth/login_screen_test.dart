@@ -14,7 +14,7 @@ Widget _wrapWithApp(Widget child) {
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     home: Scaffold(
       body: Center(
-        child: SizedBox(width: 400, height: 800, child: child),
+        child: SizedBox(width: 480, height: 1200, child: child),
       ),
     ),
   );
@@ -22,28 +22,45 @@ Widget _wrapWithApp(Widget child) {
 
 void main() {
   group('LoginScreen', () {
-    testWidgets('shows form fields and navigation links', (tester) async {
+    testWidgets('shows Stitch dark copy and navigation links', (tester) async {
       await tester.pumpWidget(_wrapWithApp(const LoginScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Accedi'), findsWidgets);
-      expect(find.text('Email'), findsWidgets);
-      expect(find.text('Password'), findsWidgets);
+      expect(find.text('Bentornato, Coach!'), findsOneWidget);
+      expect(find.text('Accedi al workspace'), findsOneWidget);
+      expect(find.text('EMAIL O NOME UTENTE'), findsOneWidget);
+      expect(find.text('PASSWORD'), findsWidgets);
       expect(find.text('Password dimenticata?'), findsOneWidget);
-      expect(find.text('Registrati'), findsOneWidget);
+      expect(find.text('Registrati gratis'), findsOneWidget);
+      expect(find.text('Coach / Trainer'), findsOneWidget);
+      expect(find.text('Atleta'), findsOneWidget);
     });
 
     testWidgets('shows validation errors when submitted empty', (tester) async {
       await tester.pumpWidget(_wrapWithApp(const LoginScreen()));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.widgetWithText(FilledButton, 'Accedi'));
+      await tester.ensureVisible(find.text('Accedi al workspace'));
+      await tester.tap(find.text('Accedi al workspace'));
       await tester.pumpAndSettle();
 
       expect(
         find.text('Inserisci un\'email valida.').evaluate().isNotEmpty ||
             find.text('Inserisci la password.').evaluate().isNotEmpty,
         isTrue,
+      );
+    });
+
+    testWidgets('athlete role shows unavailable snackbar', (tester) async {
+      await tester.pumpWidget(_wrapWithApp(const LoginScreen()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Atleta'));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.textContaining('accesso atleta', findRichText: true),
+        findsOneWidget,
       );
     });
   });

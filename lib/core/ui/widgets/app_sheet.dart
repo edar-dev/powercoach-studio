@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import 'package:powercoach_studio/core/ui/breakpoints.dart';
 
 typedef AppSheetBodyBuilder = Widget Function(BuildContext context);
 
@@ -21,7 +24,11 @@ Future<T?> showAppBottomSheet<T>({
   bool fullScreen = false,
   /// When true, the sheet sizes to its content instead of filling [maxHeightFraction].
   bool wrapContent = false,
+  /// When false, the body fills remaining height without an outer scroll view
+  /// (needed for nested scrollables / Expanded lists).
+  bool scrollBody = true,
   double maxHeightFraction = 0.88,
+  bool useRootNavigator = false,
 }) {
   final cs = Theme.of(context).colorScheme;
 
@@ -32,6 +39,7 @@ Future<T?> showAppBottomSheet<T>({
     isScrollControlled: true,
     backgroundColor: cs.surface,
     useSafeArea: true,
+    useRootNavigator: useRootNavigator,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(StitchM3Theme.radiusXl)),
     ),
@@ -40,21 +48,111 @@ Future<T?> showAppBottomSheet<T>({
       final height = MediaQuery.sizeOf(sheetContext).height;
       final maxHeight =
           fullScreen ? height * 0.96 : height * maxHeightFraction;
+      final scaffold = _AppSheetScaffold(
+        title: title,
+        trailing: trailing,
+        primaryActionLabel: primaryActionLabel,
+        onPrimaryAction: onPrimaryAction,
+        wrapContent: wrapContent,
+        scrollBody: scrollBody,
+        child: bodyBuilder(sheetContext),
+      );
 
-      return ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: maxHeight),
-        child: Padding(
-          padding: EdgeInsets.only(bottom: bottomInset),
-          child: _AppSheetScaffold(
-            title: title,
-            trailing: trailing,
-            primaryActionLabel: primaryActionLabel,
-            onPrimaryAction: onPrimaryAction,
-            wrapContent: wrapContent,
-            child: bodyBuilder(sheetContext),
+      // Full-screen sheets need a tight height so [Expanded] body fills the
+      // viewport; max-only constraints size-to-child and look like an inline
+      // section at the bottom of the host page.
+      final sheet = fullScreen && !wrapContent
+          ? SizedBox(height: maxHeight, width: double.infinity, child: scaffold)
+          : ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: maxHeight),
+              child: scaffold,
+            );
+
+      return Padding(
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: sheet,
+      );
+    },
+  );
+}
+
+/// Desktop end-aligned side panel; on narrow viewports falls back to [showAppBottomSheet].
+Future<T?> showAppSidePanel<T>({
+  required BuildContext context,
+  required String title,
+  required AppSheetBodyBuilder bodyBuilder,
+  Widget? trailing,
+  String? primaryActionLabel,
+  VoidCallback? onPrimaryAction,
+  bool isDismissible = true,
+  bool fullScreen = false,
+  bool wrapContent = false,
+  bool scrollBody = true,
+  double maxHeightFraction = 0.88,
+  double panelWidth = 420,
+  bool useRootNavigator = true,
+}) {
+  if (!AppBreakpoints.isDesktop(context)) {
+    return showAppBottomSheet<T>(
+      context: context,
+      title: title,
+      bodyBuilder: bodyBuilder,
+      trailing: trailing,
+      primaryActionLabel: primaryActionLabel,
+      onPrimaryAction: onPrimaryAction,
+      isDismissible: isDismissible,
+      fullScreen: fullScreen,
+      wrapContent: wrapContent,
+      scrollBody: scrollBody,
+      maxHeightFraction: maxHeightFraction,
+      useRootNavigator: useRootNavigator,
+    );
+  }
+
+  final cs = Theme.of(context).colorScheme;
+  final width = math.min(
+    panelWidth,
+    MediaQuery.sizeOf(context).width * 0.42,
+  );
+
+  return showGeneralDialog<T>(
+    context: context,
+    barrierDismissible: isDismissible,
+    barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+    barrierColor: Colors.black.withValues(alpha: 0.45),
+    useRootNavigator: useRootNavigator,
+    transitionDuration: const Duration(milliseconds: 220),
+    pageBuilder: (dialogContext, animation, secondaryAnimation) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: Material(
+          color: cs.surface,
+          elevation: 8,
+          child: SafeArea(
+            left: false,
+            child: SizedBox(
+              width: width,
+              height: double.infinity,
+              child: _AppSheetScaffold(
+                title: title,
+                trailing: trailing,
+                primaryActionLabel: primaryActionLabel,
+                onPrimaryAction: onPrimaryAction,
+                wrapContent: wrapContent,
+                scrollBody: scrollBody,
+                child: bodyBuilder(dialogContext),
+              ),
+            ),
           ),
         ),
       );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      final offset = Tween<Offset>(
+        begin: const Offset(1, 0),
+        end: Offset.zero,
+      ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+      return SlideTransition(position: offset, child: child);
     },
   );
 }
@@ -102,6 +200,7 @@ class _AppSheetScaffold extends StatelessWidget {
     this.primaryActionLabel,
     this.onPrimaryAction,
     this.wrapContent = false,
+    this.scrollBody = true,
   });
 
   final String title;
@@ -110,6 +209,7 @@ class _AppSheetScaffold extends StatelessWidget {
   final String? primaryActionLabel;
   final VoidCallback? onPrimaryAction;
   final bool wrapContent;
+  final bool scrollBody;
 
   @override
   Widget build(BuildContext context) {
@@ -119,14 +219,22 @@ class _AppSheetScaffold extends StatelessWidget {
         ? theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)
         : theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700);
 
-    final body = ScrollConfiguration(
-      behavior: const _NoGlowScrollBehavior(),
-      child: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+    final Widget body;
+    if (scrollBody) {
+      body = ScrollConfiguration(
+        behavior: const _NoGlowScrollBehavior(),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.fromLTRB(16, wrapContent ? 12 : 16, 16, 16),
+          child: child,
+        ),
+      );
+    } else {
+      body = Padding(
         padding: EdgeInsets.fromLTRB(16, wrapContent ? 12 : 16, 16, 16),
         child: child,
-      ),
-    );
+      );
+    }
 
     return Column(
       mainAxisSize: wrapContent ? MainAxisSize.min : MainAxisSize.max,

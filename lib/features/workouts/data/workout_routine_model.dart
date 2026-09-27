@@ -32,12 +32,62 @@ class MobilitySection {
       );
 }
 
+/// Stable id for the synthetic phase created when decoding legacy flat `weeks`.
+const String kDefaultPhaseId = 'phase_default';
+
+/// Stable English name for the default/legacy phase (UI localizes via l10n).
+const String kDefaultPhaseName = 'General';
+
+/// Locates a week inside [WorkoutRoutine.phases] using a global week index.
+class PhaseWeekLocation {
+  const PhaseWeekLocation({
+    required this.phaseIndex,
+    required this.weekIndexInPhase,
+  });
+
+  final int phaseIndex;
+  final int weekIndexInPhase;
+}
+
+/// Structural training phase (mesocycle) containing ordered weeks.
+class Phase {
+  const Phase({
+    required this.id,
+    required this.name,
+    this.objective,
+    required this.weeks,
+  });
+
+  final String id;
+  final String name;
+  final String? objective;
+  final List<Week> weeks;
+
+  Map<String, dynamic> toJson() => encodePhase(this);
+
+  static Phase fromJson(Map<String, dynamic> json) => decodePhase(json);
+
+  Phase copyWith({
+    String? id,
+    String? name,
+    String? objective,
+    bool clearObjective = false,
+    List<Week>? weeks,
+  }) =>
+      Phase(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        objective: clearObjective ? null : (objective ?? this.objective),
+        weeks: weeks ?? this.weeks,
+      );
+}
+
 class WorkoutRoutine {
   WorkoutRoutine({
     required this.name,
     required this.mobilitySections,
     required this.mobilityItems,
-    required this.weeks,
+    required this.phases,
     this.startDate,
     this.endDate,
     this.currentWeek,
@@ -51,7 +101,7 @@ class WorkoutRoutine {
   final String name;
   final List<MobilitySection> mobilitySections;
   final List<MobilityItem> mobilityItems;
-  final List<Week> weeks;
+  final List<Phase> phases;
 
   /// When false, the builder hides the mobility tab (training + details only).
   final bool includesMobilityTab;
@@ -65,20 +115,151 @@ class WorkoutRoutine {
   /// Coach-facing progress marker (1-based week index when set).
   final int? currentWeek;
 
-  /// Keys `weekIndex-dayIndex` → completed session.
+  /// Keys `weekIndex-dayIndex` → completed session (global week index).
   final Map<String, bool> sessionCompletionByKey;
 
-  /// Keys `weekIndex-dayIndex` → skipped session.
+  /// Keys `weekIndex-dayIndex` → skipped session (global week index).
   final Map<String, bool> sessionSkippedByKey;
 
   /// Keys `weekIndex-dayIndex-yyyy-MM-dd` → occurrence-level override.
   final Map<String, SessionOverride> sessionOverrides;
 
-  /// Keys `weekIndex-dayIndex` → session execution log.
+  /// Keys `weekIndex-dayIndex` → session execution log (global week index).
   final Map<String, SessionExecution> sessionExecutions;
+
+  /// Flattened weeks across all phases (calendar / session keys / exports).
+  List<Week> flattenWeeks() => [
+        for (final phase in phases) ...phase.weeks,
+      ];
+
+  /// Convenience alias for [flattenWeeks] used by calendar/session/export paths.
+  List<Week> get weeks => flattenWeeks();
+
+  /// Global week index for `[phaseIndex][weekInPhase]`, or null if out of range.
+  int? globalWeekIndex(int phaseIndex, int weekInPhase) {
+    if (phaseIndex < 0 || phaseIndex >= phases.length) return null;
+    if (weekInPhase < 0 || weekInPhase >= phases[phaseIndex].weeks.length) {
+      return null;
+    }
+    var offset = 0;
+    for (var i = 0; i < phaseIndex; i++) {
+      offset += phases[i].weeks.length;
+    }
+    return offset + weekInPhase;
+  }
+
+  /// Reverse lookup of a flattened week index into phase + week-in-phase.
+  PhaseWeekLocation? locateWeek(int globalWeekIndex) {
+    if (globalWeekIndex < 0) return null;
+    var remaining = globalWeekIndex;
+    for (var phaseIndex = 0; phaseIndex < phases.length; phaseIndex++) {
+      final count = phases[phaseIndex].weeks.length;
+      if (remaining < count) {
+        return PhaseWeekLocation(
+          phaseIndex: phaseIndex,
+          weekIndexInPhase: remaining,
+        );
+      }
+      remaining -= count;
+    }
+    return null;
+  }
+
+  /// Replaces the week at [globalWeekIndex]; returns null if out of range.
+  WorkoutRoutine? replaceWeekAt(int globalWeekIndex, Week week) {
+    final loc = locateWeek(globalWeekIndex);
+    if (loc == null) return null;
+    return replacePhaseWeeks(
+      loc.phaseIndex,
+      List<Week>.from(phases[loc.phaseIndex].weeks)
+        ..[loc.weekIndexInPhase] = week,
+    );
+  }
+
+  /// Replaces the weeks list of [phaseIndex]; returns null if out of range.
+  WorkoutRoutine? replacePhaseWeeks(int phaseIndex, List<Week> weeks) {
+    if (phaseIndex < 0 || phaseIndex >= phases.length) return null;
+    final next = List<Phase>.from(phases);
+    next[phaseIndex] = next[phaseIndex].copyWith(weeks: weeks);
+    return copyWith(phases: next);
+  }
+
+  /// Maps every week across all phases (preserves phase boundaries).
+  WorkoutRoutine mapWeeks(Week Function(Week week) map) {
+    return copyWith(
+      phases: [
+        for (final phase in phases)
+          phase.copyWith(weeks: phase.weeks.map(map).toList()),
+      ],
+    );
+  }
 
   static String sessionKey(int weekIndex, int dayIndex) =>
       '$weekIndex-$dayIndex';
+
+  /// Remaps session maps when global week indices shift.
+  /// [newWeekIndex] returns null to drop that week’s keys.
+  WorkoutRoutine remapSessionWeekIndices(
+    int? Function(int oldWeekIndex) newWeekIndex,
+  ) {
+    Map<String, V> remapSimple<V>(Map<String, V> source) {
+      if (source.isEmpty) return source;
+      final next = <String, V>{};
+      for (final entry in source.entries) {
+        final parts = entry.key.split('-');
+        if (parts.length < 2) continue;
+        final oldWeek = int.tryParse(parts[0]);
+        final day = int.tryParse(parts[1]);
+        if (oldWeek == null || day == null) continue;
+        final mapped = newWeekIndex(oldWeek);
+        if (mapped == null) continue;
+        next[sessionKey(mapped, day)] = entry.value;
+      }
+      return next;
+    }
+
+    Map<String, SessionOverride> remapOverrides() {
+      if (sessionOverrides.isEmpty) return sessionOverrides;
+      final next = <String, SessionOverride>{};
+      for (final entry in sessionOverrides.entries) {
+        // Keys: weekIndex-dayIndex-yyyy-MM-dd
+        final parts = entry.key.split('-');
+        if (parts.length < 3) continue;
+        final oldWeek = int.tryParse(parts[0]);
+        final day = int.tryParse(parts[1]);
+        if (oldWeek == null || day == null) continue;
+        final mapped = newWeekIndex(oldWeek);
+        if (mapped == null) continue;
+        final dateSuffix = parts.sublist(2).join('-');
+        next['$mapped-$day-$dateSuffix'] = entry.value;
+      }
+      return next;
+    }
+
+    Map<String, SessionExecution> remapExecutions() {
+      if (sessionExecutions.isEmpty) return sessionExecutions;
+      final next = <String, SessionExecution>{};
+      for (final entry in sessionExecutions.entries) {
+        final parts = entry.key.split('-');
+        if (parts.length < 2) continue;
+        final oldWeek = int.tryParse(parts[0]);
+        final day = int.tryParse(parts[1]);
+        if (oldWeek == null || day == null) continue;
+        final mapped = newWeekIndex(oldWeek);
+        if (mapped == null) continue;
+        final key = sessionKey(mapped, day);
+        next[key] = entry.value.copyWith(sessionKey: key);
+      }
+      return next;
+    }
+
+    return copyWith(
+      sessionCompletionByKey: remapSimple(sessionCompletionByKey),
+      sessionSkippedByKey: remapSimple(sessionSkippedByKey),
+      sessionOverrides: remapOverrides(),
+      sessionExecutions: remapExecutions(),
+    );
+  }
 
   Map<String, dynamic> toJson() => encodeWorkoutRoutine(this);
 
@@ -87,6 +268,12 @@ class WorkoutRoutine {
 
   static List<Week> defaultWeeks() => defaultWorkoutWeeks();
 
+  static Phase defaultPhase({List<Week> weeks = const []}) => Phase(
+        id: kDefaultPhaseId,
+        name: kDefaultPhaseName,
+        weeks: weeks,
+      );
+
   /// Empty routine for creating a new workout from scratch (one default mobility section).
   static WorkoutRoutine empty() {
     final n = DateTime.now();
@@ -94,7 +281,7 @@ class WorkoutRoutine {
       name: '',
       mobilitySections: [const MobilitySection(id: 'sec_1', name: '')],
       mobilityItems: [],
-      weeks: [],
+      phases: [],
       startDate: DateTime(n.year, n.month, n.day),
     );
   }
@@ -103,6 +290,8 @@ class WorkoutRoutine {
     String? name,
     List<MobilitySection>? mobilitySections,
     List<MobilityItem>? mobilityItems,
+    List<Phase>? phases,
+    /// Test/legacy helper: replaces all phases with one General phase.
     List<Week>? weeks,
     DateTime? startDate,
     DateTime? endDate,
@@ -112,21 +301,31 @@ class WorkoutRoutine {
     Map<String, bool>? sessionSkippedByKey,
     Map<String, SessionOverride>? sessionOverrides,
     Map<String, SessionExecution>? sessionExecutions,
-  }) => WorkoutRoutine(
-    name: name ?? this.name,
-    mobilitySections: mobilitySections ?? this.mobilitySections,
-    mobilityItems: mobilityItems ?? this.mobilityItems,
-    weeks: weeks ?? this.weeks,
-    startDate: startDate ?? this.startDate,
-    endDate: endDate ?? this.endDate,
-    currentWeek: currentWeek ?? this.currentWeek,
-    includesMobilityTab: includesMobilityTab ?? this.includesMobilityTab,
-    sessionCompletionByKey:
-        sessionCompletionByKey ?? this.sessionCompletionByKey,
-    sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
-    sessionOverrides: sessionOverrides ?? this.sessionOverrides,
-    sessionExecutions: sessionExecutions ?? this.sessionExecutions,
-  );
+  }) {
+    assert(
+      phases == null || weeks == null,
+      'Pass either phases or weeks to copyWith, not both',
+    );
+    final resolvedPhases = phases ??
+        (weeks != null
+            ? [WorkoutRoutine.defaultPhase(weeks: weeks)]
+            : null);
+    return WorkoutRoutine(
+      name: name ?? this.name,
+      mobilitySections: mobilitySections ?? this.mobilitySections,
+      mobilityItems: mobilityItems ?? this.mobilityItems,
+      phases: resolvedPhases ?? this.phases,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      currentWeek: currentWeek ?? this.currentWeek,
+      includesMobilityTab: includesMobilityTab ?? this.includesMobilityTab,
+      sessionCompletionByKey:
+          sessionCompletionByKey ?? this.sessionCompletionByKey,
+      sessionSkippedByKey: sessionSkippedByKey ?? this.sessionSkippedByKey,
+      sessionOverrides: sessionOverrides ?? this.sessionOverrides,
+      sessionExecutions: sessionExecutions ?? this.sessionExecutions,
+    );
+  }
 }
 
 enum SessionOverrideKind { skipped, moved }

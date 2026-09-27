@@ -8,6 +8,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../landing_colors.dart';
 import '../widgets/landing_cta_section.dart';
 import '../widgets/landing_faq_section.dart';
 import '../widgets/landing_features_section.dart';
@@ -18,7 +19,7 @@ import '../widgets/landing_pricing_section.dart';
 import '../widgets/landing_pwa_hint_section.dart';
 import '../widgets/landing_screen_app_bar.dart';
 
-/// Landing page: hero, features, pricing, FAQ, beta/PWA hints, legal footer.
+/// Landing page: dark Stitch redesign — hero, features, pricing, FAQ, CTA.
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
@@ -28,6 +29,7 @@ class LandingScreen extends StatefulWidget {
 
 class _LandingScreenState extends State<LandingScreen> {
   final GlobalKey _featuresKey = GlobalKey();
+  final GlobalKey _phasesKey = GlobalKey();
   final GlobalKey _pricingKey = GlobalKey();
   StreamSubscription<dynamic>? _authSubscription;
   int _deferredSectionsStage = 0;
@@ -107,6 +109,15 @@ class _LandingScreenState extends State<LandingScreen> {
     }
   }
 
+  void _onNavLibrary() {
+    HapticFeedback.mediumImpact();
+    if (_isLoggedIn) {
+      navigateTo(context, '/exercise-library');
+    } else {
+      _scrollTo(_featuresKey);
+    }
+  }
+
   @override
   void dispose() {
     _authSubscription?.cancel();
@@ -116,14 +127,21 @@ class _LandingScreenState extends State<LandingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
     final isLoggedIn = _isLoggedIn;
-    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
+      backgroundColor: LandingColors.bg,
       appBar: LandingScreenAppBar(
         isLoggedIn: isLoggedIn,
+        onScrollToFeatures: () {
+          HapticFeedback.mediumImpact();
+          _scrollTo(_featuresKey);
+        },
+        onScrollToLibrary: _onNavLibrary,
+        onScrollToPhases: () {
+          HapticFeedback.mediumImpact();
+          _scrollTo(_phasesKey);
+        },
         onScrollToPricing: () {
           HapticFeedback.mediumImpact();
           _scrollTo(_pricingKey);
@@ -133,18 +151,26 @@ class _LandingScreenState extends State<LandingScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: LandingHeroSection(
-              heroBadge: l10n.landingBetaBadge,
+              earlyAccessLabel: l10n.landingEarlyAccess,
+              betaVersionLabel: l10n.landingBetaVersion,
               titlePrefix: l10n.landingTitlePrefix,
               titleSuffix: l10n.landingTitleSuffix,
-              subtitle: l10n.landingSubtitle,
+              leadBefore: l10n.landingHeroLeadBefore,
+              leadEmphasis: l10n.landingHeroLeadEmphasis,
+              leadAfter: l10n.landingHeroLeadAfter,
+              supporting: l10n.landingHeroSupporting,
               ctaPrimary: isLoggedIn
                   ? l10n.landingCtaSectionButtonLoggedIn
-                  : l10n.landingCtaStartFree,
-              ctaSecondary: l10n.landingCtaSeePricing,
+                  : l10n.landingCtaStartFreeNoCard,
+              ctaSecondary: l10n.landingCtaSeePricingDemo,
+              trustExercises: l10n.landingTrustExercises,
+              trustOffline: l10n.landingTrustOffline,
+              trustExport: l10n.landingTrustExport,
+              previewEditorLabel: l10n.landingPreviewEditorLabel,
               onPrimary: () {
                 HapticFeedback.mediumImpact();
                 if (isLoggedIn) {
-                  navigateTo(context, '/profile');
+                  navigateTo(context, '/dashboard');
                 } else {
                   navigateTo(context, '/register');
                 }
@@ -162,7 +188,12 @@ class _LandingScreenState extends State<LandingScreen> {
             ),
           if (_deferredSectionsStage >= 2)
             SliverToBoxAdapter(
-              child: LandingHowItWorksSection(l10n: l10n),
+              key: _phasesKey,
+              child: LandingHowItWorksSection(
+                l10n: l10n,
+                onPrimary: _navigateStartFree,
+                onSecondary: _onNavLibrary,
+              ),
             ),
           if (_deferredSectionsStage >= 3)
             SliverToBoxAdapter(
@@ -184,10 +215,11 @@ class _LandingScreenState extends State<LandingScreen> {
                 title: l10n.landingCtaSectionTitle,
                 subtext: isLoggedIn
                     ? l10n.landingCtaSectionSubtextLoggedIn
-                    : l10n.landingPricingSubtitle,
+                    : l10n.landingCtaSectionSubtext,
                 buttonLabel: isLoggedIn
                     ? l10n.landingPricingProCtaLoggedIn
-                    : l10n.landingCtaStartFree,
+                    : l10n.landingCtaCreateAccount,
+                footnote: isLoggedIn ? null : l10n.landingCtaFootnote,
                 onCta: () {
                   if (isLoggedIn) {
                     navigateTo(context, AppPaths.subscription);
@@ -205,7 +237,7 @@ class _LandingScreenState extends State<LandingScreen> {
             SliverToBoxAdapter(child: LandingPwaHintSection(l10n: l10n)),
             SliverToBoxAdapter(child: LandingFooterSection(l10n: l10n)),
           ],
-          const SliverToBoxAdapter(child: SizedBox(height: 48)),
+          const SliverToBoxAdapter(child: SizedBox(height: 24)),
         ],
       ),
     );

@@ -24,16 +24,24 @@ WorkoutRoutine prepareFollowUpRoutine({
       ? DateTime(newStartDate.year, newStartDate.month, newStartDate.day)
       : cloned.startDate;
 
-  var weeks = cloned.weeks;
+  var phases = cloned.phases;
   if (options.applyExecutedLoads && executions.isNotEmpty) {
-    weeks = _applyExecutedLoadsToWeeks(weeks, executions);
+    final updatedWeeks = _applyExecutedLoadsToWeeks(cloned.weeks, executions);
+    // Rebuild phases with updated weeks while preserving boundaries.
+    var offset = 0;
+    phases = [
+      for (final phase in cloned.phases)
+        phase.copyWith(
+          weeks: updatedWeeks.sublist(offset, offset += phase.weeks.length),
+        ),
+    ];
   }
 
   return WorkoutRoutine(
     name: cloned.name,
     mobilitySections: cloned.mobilitySections,
     mobilityItems: cloned.mobilityItems,
-    weeks: weeks,
+    phases: phases,
     startDate: resolvedStart,
     endDate: null,
     currentWeek: 1,

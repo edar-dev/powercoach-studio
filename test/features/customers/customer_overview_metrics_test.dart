@@ -53,10 +53,47 @@ void main() {
 
       expect(snapshot.weightKg, 82);
       expect(snapshot.weightFromProfile, isTrue);
+      expect(snapshot.muscleMassKg, 39);
+      expect(snapshot.muscleMassDelta, 1);
       expect(snapshot.secondaryValue, 39);
       expect(snapshot.hasMeasurements, isTrue);
       expect(snapshot.sparklineMetric, MeasurementMetric.muscleMassKg);
       expect(snapshot.sparklinePoints.length, 2);
+    });
+
+    test('computes SBD total and absolute delta when all lifts present', () {
+      final snapshot = CustomerOverviewMetrics.build(
+        customer: _customer(),
+        measurements: [
+          CustomerMeasurement(
+            id: 'm1',
+            customerId: 'c1',
+            userId: 'u1',
+            measurementDate: DateTime(2026, 5, 10),
+            squat1RM: 140,
+            benchPress1RM: 100,
+            deadlift1RM: 175,
+            createdAt: DateTime(2026, 5, 10),
+            updatedAt: DateTime(2026, 5, 10),
+          ),
+          CustomerMeasurement(
+            id: 'm0',
+            customerId: 'c1',
+            userId: 'u1',
+            measurementDate: DateTime(2026, 5, 1),
+            squat1RM: 135,
+            benchPress1RM: 100,
+            deadlift1RM: 170,
+            createdAt: DateTime(2026, 5, 1),
+            updatedAt: DateTime(2026, 5, 1),
+          ),
+        ],
+        muscleMassLabel: 'Muscle Mass',
+        bodyFatLabel: 'Body fat',
+      );
+
+      expect(snapshot.sbdTotal, 415);
+      expect(snapshot.sbdDelta, 10);
     });
 
     test('showSecondaryTrend requires at least two recent samples', () {

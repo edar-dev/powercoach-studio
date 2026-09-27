@@ -4,6 +4,8 @@ import 'package:powercoach_studio/features/workouts/data/workout_routine_model.d
 import 'package:powercoach_studio/features/workouts/presentation/widgets/training_week_day_panel.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_plan_details_tab.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_training_tab.dart';
+import 'package:powercoach_studio/features/workouts/presentation/workout_builder_session_controller.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_editor_controller.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -305,6 +307,231 @@ void main() {
       await tester.enterText(find.text('Strength'), 'Power');
       await tester.pump();
       expect(metadataChanged, isTrue);
+    });
+
+    testWidgets('WorkoutTrainingTab empty phases shows Aggiungi Fase', (
+      tester,
+    ) async {
+      final session = WorkoutBuilderSessionController(
+        routine: WorkoutRoutine.empty(),
+      );
+      await tester.pumpWidget(
+        _wrap(
+          Builder(
+            builder: (context) {
+              final theme = Theme.of(context);
+              return WorkoutTrainingTab(
+                theme: theme,
+                cs: theme.colorScheme,
+                session: session,
+                phases: const [],
+                selectedPhaseIndex: 0,
+                selectedWeekIndex: 0,
+                selectedDayIndex: 0,
+                onAddPhase: () {},
+                onDuplicatePhase: (_) {},
+                onEditPhaseSettings: (_) {},
+                onDeletePhase: (_) {},
+                onSelectPhase: (_) {},
+                onNewWeek: () {},
+                onCloneWeek: (_) {},
+                onDeleteWeek: (_) {},
+                onRenameWeek: (_, __) {},
+                onAddDay: (_) {},
+                onRenameDay: (_, __, ___) {},
+                onSetDayCoachingNote: (_, __, ___) {},
+                onDeleteDay: (_, __) {},
+                onDuplicateExercise: (_, __, ___) {},
+                onRemoveExercise: (_, __, ___) {},
+                onMoveExercise: (_, __, ___, {required up}) {},
+                onMoveExerciseWithinSuperset: (_, __, ___, {required up}) {},
+                onUpdateExercise: (
+                  _,
+                  __,
+                  ___, {
+                  name,
+                  sets,
+                  reps,
+                  rpe,
+                  note,
+                  shortName,
+                  prescriptionScope,
+                  setDetails,
+                }) {},
+                onAddSetToExercise: (_, __, ___) {},
+                onUpdateExerciseSet: (
+                  _,
+                  __,
+                  ___,
+                  ____, {
+                  line,
+                  sets,
+                  reps,
+                  rpe,
+                  note,
+                }) {},
+                onRemoveExerciseSet: (_, __, ___, ____) {},
+                onAssignToSuperset: (_, __, ___, ____, {densityConfig}) {},
+                onRemoveFromSuperset: (_, __, ___) {},
+                onAddExerciseToSuperset: (_, __, ___) {},
+                onSelectWeek: (_) {},
+                onSelectDay: (_) {},
+                onUpdateScheduledWeekday: (_, __, ___) {},
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('Nessuna fase ancora'), findsOneWidget);
+      expect(find.text('Aggiungi Fase'), findsOneWidget);
+    });
+
+    testWidgets('WorkoutTrainingTab shows horizontal phase pills and day cards', (
+      tester,
+    ) async {
+      final routine = WorkoutRoutine.empty().copyWith(
+        phases: [
+          WorkoutRoutine.defaultPhase(
+            weeks: const [
+              Week(
+                id: 'w1',
+                name: 'Settimana 1',
+                days: [
+                  Day(
+                    id: 'd1',
+                    name: 'Giorno 1',
+                    scheduledWeekday: DateTime.monday,
+                    exercises: [
+                      Exercise(
+                        id: 'e1',
+                        name: 'Panca piana',
+                        sets: '4',
+                        reps: '8',
+                        rpe: '75kg',
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+      final session = WorkoutBuilderSessionController(routine: routine);
+      await tester.pumpWidget(
+        _wrap(
+          width: 1000,
+          Builder(
+            builder: (context) {
+              final theme = Theme.of(context);
+              return WorkoutTrainingTab(
+                theme: theme,
+                cs: theme.colorScheme,
+                session: session,
+                phases: routine.phases,
+                selectedPhaseIndex: 0,
+                selectedWeekIndex: 0,
+                selectedDayIndex: 0,
+                onAddPhase: () {},
+                onDuplicatePhase: (_) {},
+                onEditPhaseSettings: (_) {},
+                onDeletePhase: (_) {},
+                onSelectPhase: (_) {},
+                onNewWeek: () {},
+                onCloneWeek: (_) {},
+                onDeleteWeek: (_) {},
+                onRenameWeek: (_, __) {},
+                onAddDay: (_) {},
+                onRenameDay: (_, __, ___) {},
+                onSetDayCoachingNote: (_, __, ___) {},
+                onDeleteDay: (_, __) {},
+                onDuplicateExercise: (_, __, ___) {},
+                onRemoveExercise: (_, __, ___) {},
+                onMoveExercise: (_, __, ___, {required up}) {},
+                onMoveExerciseWithinSuperset: (_, __, ___, {required up}) {},
+                onUpdateExercise: (
+                  _,
+                  __,
+                  ___, {
+                  name,
+                  sets,
+                  reps,
+                  rpe,
+                  note,
+                  shortName,
+                  prescriptionScope,
+                  setDetails,
+                }) {},
+                onAddSetToExercise: (_, __, ___) {},
+                onUpdateExerciseSet: (
+                  _,
+                  __,
+                  ___,
+                  ____, {
+                  line,
+                  sets,
+                  reps,
+                  rpe,
+                  note,
+                }) {},
+                onRemoveExerciseSet: (_, __, ___, ____) {},
+                onAssignToSuperset: (_, __, ___, ____, {densityConfig}) {},
+                onRemoveFromSuperset: (_, __, ___) {},
+                onAddExerciseToSuperset: (_, __, ___) {},
+                onSelectWeek: (_) {},
+                onSelectDay: (_) {},
+                onUpdateScheduledWeekday: (_, __, ___) {},
+              );
+            },
+          ),
+        ),
+      );
+
+      expect(find.text('FASE 1'), findsOneWidget);
+      expect(find.text('Generale'), findsWidgets);
+      expect(find.text('Aggiungi Fase'), findsOneWidget);
+      expect(find.text('Duplica Fase'), findsOneWidget);
+      expect(find.text('Impostazioni Fase'), findsOneWidget);
+      expect(find.text('Settimana 1'), findsWidgets);
+      expect(find.text('Panca piana'), findsOneWidget);
+      expect(find.text('Modifica sessione'), findsOneWidget);
+      expect(find.text('Aggiungi Giorno'), findsWidgets);
+
+      await tester.scrollUntilVisible(
+        find.text('Modifica sessione'),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      await tester.tap(find.text('Modifica sessione'));
+      // Phase rail pulse animation prevents pumpAndSettle from completing.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Session editor opens as a fullscreen dialog route, not an inline panel.
+      expect(find.textContaining('Modifica Sessione'), findsWidgets);
+      expect(find.text('Panca piana'), findsWidgets);
+      expect(find.text('Aggiungi esercizio da libreria'), findsOneWidget);
+      expect(find.text('Crea Superset / Circuito'), findsOneWidget);
+      expect(find.text('Autosalvataggio bozza attivo'), findsOneWidget);
+      expect(find.text('Salva modifiche'), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.close).first);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('training-add-week')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pump();
+      expect(find.byKey(const ValueKey('training-add-week')), findsOneWidget);
+      expect(find.textContaining('Aggiungi settimana alla fase'), findsOneWidget);
+
+      // No vertical ExpansionTile + week panel chrome.
+      expect(find.byType(ExpansionTile), findsNothing);
     });
   });
 }

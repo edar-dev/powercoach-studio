@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-slate-950 text-slate-100" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>F52 — Drawer Libreria Esercizi (Stati: Skeleton, Empty, Error)</title>
+<!-- Tailwind CSS v3 with Forms & Container Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Custom Configuration -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              900: '#090d16',
+              850: '#0d1322',
+              800: '#111827',
+              750: '#151d30',
+              700: '#1e293b',
+              600: '#334155'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-animations">
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+    .skeleton-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.8s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    }
+  </style>
+</head>
+<body class="h-full font-sans antialiased overflow-hidden select-none bg-[#05070d]">
+<!-- BEGIN: TopAnnotationBar -->
+<header class="fixed top-0 left-0 right-0 h-10 bg-slate-900/90 border-b border-slate-800 z-50 flex items-center justify-between px-5 backdrop-blur-md">
+<div class="flex items-center space-x-3 text-xs">
+<span class="inline-flex items-center px-2 py-0.5 rounded font-mono font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">F52</span>
+<span class="text-slate-200 font-medium">Drawer Libreria Esercizi (Stati: Skeleton, Empty, Error)</span>
+<span class="text-slate-500 hidden sm:inline">• Modalità ispezione componenti UX</span>
+</div>
+<div class="flex items-center gap-2">
+<!-- Interactive Tab Switcher -->
+<nav class="flex p-0.5 bg-slate-950/80 rounded-lg border border-slate-800 text-xs" data-purpose="state-switcher">
+<button class="state-tab px-3 py-1 rounded-md text-slate-300 hover:text-white font-medium transition-colors bg-blue-600 !text-white shadow-sm flex items-center gap-1.5" id="btn-state-loading" onclick="switchState('loading')">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-300 animate-pulse"></span>
+          1. Loading Skeleton
+        </button>
+<button class="state-tab px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-colors flex items-center gap-1.5" id="btn-state-empty" onclick="switchState('empty')">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+          2. Nessun Risultato
+        </button>
+<button class="state-tab px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-colors flex items-center gap-1.5" id="btn-state-error" onclick="switchState('error')">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+          3. Sincronizzazione Errore
+        </button>
+</nav>
+</div>
+</header>
+<!-- END: TopAnnotationBar -->
+<!-- BEGIN: MainViewportWithOverlay -->
+<div class="relative w-full h-full pt-10 flex overflow-hidden">
+<!-- Mock Session Modal Background (Dimmed & Blurred as in Screenshot) -->
+<main class="flex-1 h-full p-8 opacity-25 filter blur-[2px] pointer-events-none select-none overflow-hidden bg-[#070b14]" data-purpose="background-workout-session">
+<div class="max-w-4xl space-y-6">
+<div class="flex items-center gap-3 text-xs tracking-wider uppercase text-blue-400 font-semibold">
+<span>&lt; FASE 1: ACCUMULO &amp; VOLUME</span>
+<span class="text-slate-600">•</span>
+<span class="text-slate-400">Settimana 1 di 4</span>
+</div>
+<h1 class="text-3xl font-bold text-slate-100">Giorno 1: Upper Body - Panca Focus</h1>
+<!-- Mock Log Box -->
+<div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold">!</div>
+<div class="space-y-1">
+<div class="text-xs text-slate-400">INDICAZIONE SESSIONE</div>
+<div class="text-sm text-slate-300">Panca su fermo al petto 1 sec sulla prima serie di panca. RPE target rigoroso, massimizzare il volume.</div>
+</div>
+</div>
+<!-- Mock Exercise Table Card -->
+<div class="rounded-xl border border-slate-800/80 bg-slate-900/40 p-5 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded bg-slate-800 flex items-center justify-center text-slate-400 font-mono text-xs">01</span>
+<span class="font-semibold text-lg text-slate-200">Panca piana bilanciere</span>
+<span class="px-2 py-0.5 rounded text-[11px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-medium">Primario</span>
+</div>
+</div>
+<div class="h-28 rounded-lg bg-slate-950/60 border border-slate-800/50"></div>
+</div>
+<div class="rounded-xl border border-slate-800/80 bg-slate-900/40 p-5 space-y-4">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<span class="w-7 h-7 rounded bg-slate-800 flex items-center justify-center text-slate-400 font-mono text-xs">02</span>
+<span class="font-semibold text-lg text-slate-200">Spinte manubri panca inclinata 30°</span>
+</div>
+</div>
+<div class="h-20 rounded-lg bg-slate-950/60 border border-slate-800/50"></div>
+</div>
+</div>
+</main>
+<!-- Dark Backdrop Click Catcher -->
+<div class="absolute inset-0 bg-black/60 z-20 backdrop-blur-[1px]"></div>
+<!-- BEGIN: ExerciseDrawer -->
+<aside class="relative z-30 w-full max-w-[620px] h-full bg-[#090d16] border-l border-slate-800/90 shadow-2xl flex flex-col justify-between" data-purpose="exercise-library-drawer">
+<!-- Drawer Header -->
+<section class="p-6 pb-4 border-b border-slate-800/70 shrink-0" data-purpose="drawer-header">
+<div class="flex items-center justify-between mb-5">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-lg font-bold text-slate-100 tracking-tight">Libreria Esercizi</h2>
+<span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 font-medium" id="badge-count">350+ disponibili</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">Seleziona o crea una variante biomeccanica da integrare</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-blue-600/15 text-blue-400 border border-blue-500/30 hover:bg-blue-600/25 transition-all">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Nuovo</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors" title="Chiudi drawer">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path></svg>
+</button>
+</div>
+</div>
+<!-- Search Input Bar -->
+<div class="relative mb-4">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<input class="w-full pl-10 pr-12 py-2 text-sm bg-slate-900/90 border border-slate-750 focus:border-blue-500 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all" id="search-input-field" placeholder="Cerca per nome, pattern motorio o muscolo target..." type="text" value=""/>
+<span class="absolute right-3 top-2.5 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-800 rounded border border-slate-700">⌘K</span>
+</div>
+<!-- Dynamic Category Filter Chips -->
+<div class="space-y-3" id="filter-chips-container">
+<!-- Muscle Targets -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+<button class="px-3 py-1 rounded-lg font-medium bg-blue-600 text-white whitespace-nowrap shadow-sm shadow-blue-900/30">Petto (42)</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Tutti</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Spalle</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Dorso</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Tricipiti</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Bicipiti</button>
+<button class="px-3 py-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 whitespace-nowrap">Gambe</button>
+</div>
+<!-- Equipment Tags -->
+<div class="flex items-center justify-between pt-1 border-t border-slate-800/50 text-[11px]">
+<div class="flex items-center gap-1.5 overflow-x-auto text-slate-400">
+<span class="text-slate-500 font-medium mr-1">Attrezzo:</span>
+<button class="px-2 py-0.5 rounded bg-slate-800 text-slate-200 font-medium">Tutti</button>
+<button class="px-2 py-0.5 rounded hover:bg-slate-800 hover:text-slate-300">Manubri</button>
+<button class="px-2 py-0.5 rounded hover:bg-slate-800 hover:text-slate-300">Cavi</button>
+<button class="px-2 py-0.5 rounded hover:bg-slate-800 hover:text-slate-300">Macchine</button>
+<button class="px-2 py-0.5 rounded hover:bg-slate-800 hover:text-slate-300">Bilanciere</button>
+</div>
+<label class="flex items-center gap-1.5 text-slate-400 cursor-pointer hover:text-slate-300">
+<input checked="" class="w-3.5 h-3.5 rounded border-slate-700 text-blue-600 focus:ring-0 bg-slate-900" type="checkbox"/>
+<span>Preferiti</span>
+</label>
+</div>
+</div>
+<!-- Skeleton Chips Placeholder (Visible only during loading) -->
+<div class="hidden space-y-3" id="filter-chips-skeleton">
+<div class="flex items-center gap-2 overflow-hidden py-1">
+<div class="h-6 w-20 rounded-lg bg-slate-800 skeleton-shimmer shrink-0"></div>
+<div class="h-6 w-14 rounded-lg bg-slate-800/60 skeleton-shimmer shrink-0"></div>
+<div class="h-6 w-16 rounded-lg bg-slate-800/60 skeleton-shimmer shrink-0"></div>
+<div class="h-6 w-16 rounded-lg bg-slate-800/60 skeleton-shimmer shrink-0"></div>
+<div class="h-6 w-18 rounded-lg bg-slate-800/60 skeleton-shimmer shrink-0"></div>
+<div class="h-6 w-14 rounded-lg bg-slate-800/60 skeleton-shimmer shrink-0"></div>
+</div>
+<div class="flex items-center justify-between pt-1 border-t border-slate-800/50">
+<div class="flex items-center gap-2">
+<div class="h-4 w-12 rounded bg-slate-800/40 skeleton-shimmer"></div>
+<div class="h-5 w-14 rounded bg-slate-800/60 skeleton-shimmer"></div>
+<div class="h-5 w-16 rounded bg-slate-800/60 skeleton-shimmer"></div>
+<div class="h-5 w-14 rounded bg-slate-800/60 skeleton-shimmer"></div>
+</div>
+<div class="h-4 w-20 rounded bg-slate-800/50 skeleton-shimmer"></div>
+</div>
+</div>
+</section>
+<!-- Subheader with Results Count -->
+<div class="px-6 py-2.5 bg-slate-900/40 flex items-center justify-between text-xs border-b border-slate-800/50" id="results-count-bar">
+<span class="text-slate-400 font-semibold tracking-wide uppercase text-[11px]" id="results-title-text">Risultati Ricerca</span>
+<button class="text-slate-500 hover:text-slate-300 text-[11px]">ordina per frequenza d'uso</button>
+</div>
+<!-- BEGIN: ScrollableBodyContent -->
+<div class="flex-1 overflow-y-auto px-6 py-4 space-y-3.5">
+<!-- ============================================== -->
+<!-- STATE 1: LOADING SKELETON                      -->
+<!-- ============================================== -->
+<section class="space-y-3.5" data-purpose="state-loading-skeleton" id="state-loading-view">
+<!-- Skeleton Card 1 -->
+<article class="p-4 rounded-xl border border-slate-800/70 bg-slate-900/40 relative overflow-hidden">
+<div class="flex items-start justify-between gap-4">
+<div class="flex items-start gap-3 w-full">
+<!-- Media Thumbnail Skeleton -->
+<div class="w-10 h-10 rounded-lg bg-slate-800 skeleton-shimmer shrink-0"></div>
+<div class="flex-1 space-y-2.5">
+<div class="h-4 w-3/5 rounded bg-slate-800 skeleton-shimmer"></div>
+<div class="flex items-center gap-2">
+<div class="h-5 w-24 rounded-md bg-slate-800/80 skeleton-shimmer"></div>
+<div class="h-5 w-16 rounded-md bg-slate-800/60 skeleton-shimmer"></div>
+<div class="h-5 w-20 rounded-md bg-slate-800/60 skeleton-shimmer"></div>
+</div>
+</div>
+</div>
+<div class="h-7 w-20 rounded-lg bg-slate-800/90 skeleton-shimmer shrink-0"></div>
+</div>
+<!-- Subtitle/Log line skeleton -->
+<div class="mt-3.5 pt-3 border-t border-slate-800/40 flex items-center justify-between">
+<div class="h-3 w-40 rounded bg-slate-800/50 skeleton-shimmer"></div>
+<div class="h-3 w-28 rounded bg-slate-800/50 skeleton-shimmer"></div>
+</div>
+</article>
+<!-- Skeleton Card 2 (Expanded / Detailed Mock) -->
+<article class="p-4 rounded-xl border border-slate-800 bg-slate-900/50 relative overflow-hidden">
+<div class="flex items-start justify-between gap-4">
+<div class="flex items-start gap-3 w-full">
+<div class="w-10 h-10 rounded-lg bg-slate-800 skeleton-shimmer shrink-0"></div>
+<div class="flex-1 space-y-2.5">
+<div class="h-4 w-4/6 rounded bg-slate-800 skeleton-shimmer"></div>
+<div class="flex items-center gap-2">
+<div class="h-5 w-28 rounded-md bg-slate-800/80 skeleton-shimmer"></div>
+<div class="h-5 w-20 rounded-md bg-slate-800/60 skeleton-shimmer"></div>
+</div>
+</div>
+</div>
+<div class="h-7 w-20 rounded-lg bg-slate-800/90 skeleton-shimmer shrink-0"></div>
+</div>
+<!-- Detail Box Skeleton -->
+<div class="mt-3.5 p-3 rounded-lg bg-slate-950/50 border border-slate-800/40 grid grid-cols-2 gap-3">
+<div class="space-y-1.5">
+<div class="h-2.5 w-24 rounded bg-slate-800/70 skeleton-shimmer"></div>
+<div class="h-3.5 w-36 rounded bg-slate-800/50 skeleton-shimmer"></div>
+</div>
+<div class="space-y-1.5">
+<div class="h-2.5 w-24 rounded bg-slate-800/70 skeleton-shimmer"></div>
+<div class="h-3.5 w-32 rounded bg-slate-800/50 skeleton-shimmer"></div>
+</div>
+</div>
+<div class="mt-3 flex items-center justify-between">
+<div class="h-3 w-36 rounded bg-slate-800/50 skeleton-shimmer"></div>
+<div class="h-7 w-32 rounded-lg bg-slate-800 skeleton-shimmer"></div>
+</div>
+</article>
+<!-- Skeleton Card 3 -->
+<article class="p-4 rounded-xl border border-slate-800/70 bg-slate-900/40 relative overflow-hidden">
+<div class="flex items-start justify-between gap-4">
+<div class="flex items-start gap-3 w-full">
+<div class="w-10 h-10 rounded-lg bg-slate-800 skeleton-shimmer shrink-0"></div>
+<div class="flex-1 space-y-2.5">
+<div class="h-4 w-1/2 rounded bg-slate-800 skeleton-shimmer"></div>
+<div class="flex items-center gap-2">
+<div class="h-5 w-24 rounded-md bg-slate-800/80 skeleton-shimmer"></div>
+<div class="h-5 w-28 rounded-md bg-slate-800/60 skeleton-shimmer"></div>
+</div>
+</div>
+</div>
+<div class="h-7 w-20 rounded-lg bg-slate-800/90 skeleton-shimmer shrink-0"></div>
+</div>
+<div class="mt-3 pt-2.5">
+<div class="h-3 w-4/5 rounded bg-slate-800/40 skeleton-shimmer"></div>
+</div>
+</article>
+</section>
+<!-- ============================================== -->
+<!-- STATE 2: EMPTY STATE (NESSUN RISULTATO)        -->
+<!-- ============================================== -->
+<section class="hidden h-full flex flex-col items-center justify-center text-center py-12 px-6" data-purpose="state-empty" id="state-empty-view">
+<!-- Stylized Fitness Empty State Icon -->
+<div class="relative w-20 h-20 mb-5 flex items-center justify-center">
+<!-- Ambient circular glow -->
+<div class="absolute inset-0 bg-blue-500/10 rounded-full blur-xl"></div>
+<div class="relative w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 shadow-inner">
+<!-- Barbell / Search Zero Vector -->
+<svg class="w-8 h-8 text-slate-400 stroke-current" fill="none" viewbox="0 0 24 24">
+<path d="M3 10h2a1 1 0 001-1V7a1 1 0 00-1-1H3a1 1 0 00-1 1v2a1 1 0 001 1zm0 0v4m0 0H2a1 1 0 01-1-1v-2a1 1 0 011-1h1m0 4h2a1 1 0 001-1v-2a1 1 0 00-1-1H3m18-4h-2a1 1 0 00-1 1v2a1 1 0 001 1h2a1 1 0 001-1V7a1 1 0 00-1-1zm0 0V5a1 1 0 00-1-1h-1m2 6v4m0 0h1a1 1 0 001-1v-2a1 1 0 00-1-1h-1m0 4h-2a1 1 0 01-1-1v-2a1 1 0 011-1h2m-13-1h10" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+<circle cx="17.5" cy="17.5" r="3.5" stroke-width="1.5"></circle>
+<line stroke-linecap="round" stroke-width="1.5" x1="20" x2="22" y1="20" y2="22"></line>
+</svg>
+</div>
+<!-- Secondary chip icon -->
+<span class="absolute -top-1 -right-1 flex h-4 w-4">
+<span class="relative inline-flex rounded-full h-4 w-4 bg-slate-800 border border-slate-700 text-[10px] text-slate-400 items-center justify-center font-bold">0</span>
+</span>
+</div>
+<h3 class="text-base font-semibold text-slate-100 mb-1.5">Nessun esercizio trovato in libreria</h3>
+<p class="text-xs text-slate-400 max-w-sm leading-relaxed mb-6">
+            Non ci sono esercizi corrispondenti alla ricerca <span class="text-blue-400 font-mono bg-blue-500/10 px-1.5 py-0.5 rounded">"Stacco sumo con catene"</span> o ai filtri attivi nel database del team.
+          </p>
+<!-- Quick Action Buttons -->
+<div class="flex flex-col sm:flex-row items-center gap-2.5 w-full max-w-xs">
+<button class="w-full sm:w-auto flex-1 px-4 py-2 text-xs font-semibold rounded-lg bg-slate-800/90 text-slate-300 border border-slate-700 hover:bg-slate-750 hover:text-white transition-all" onclick="resetFilters()">
+              Reimposta filtri
+            </button>
+<button class="w-full sm:w-auto flex-1 px-4 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-900/30 transition-all flex items-center justify-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>+ Crea nuovo</span>
+</button>
+</div>
+<!-- Helpful hint card -->
+<div class="mt-8 p-3 rounded-lg border border-slate-800/60 bg-slate-900/30 text-[11px] text-slate-400 flex items-center gap-2.5 text-left max-w-sm">
+<svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Suggerimento: controlla l'ortografia oppure seleziona la categoria <strong>"Tutti"</strong> per ampliare la lista.</span>
+</div>
+</section>
+<!-- ============================================== -->
+<!-- STATE 3: ERROR STATE (ERRORE DI SINCRONIZZAZIONE) -->
+<!-- ============================================== -->
+<section class="hidden h-full flex flex-col items-center justify-center text-center py-12 px-6" data-purpose="state-error" id="state-error-view">
+<!-- Error Badge Icon -->
+<div class="relative w-16 h-16 mb-4 flex items-center justify-center">
+<div class="absolute inset-0 bg-red-500/10 rounded-2xl blur-lg"></div>
+<div class="relative w-16 h-16 rounded-2xl bg-red-950/30 border border-red-500/30 flex items-center justify-center text-red-400">
+<!-- Offline / Sync Warning SVG -->
+<svg class="w-8 h-8" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+</div>
+<h3 class="text-base font-semibold text-slate-100 mb-1.5">Impossibile caricare la libreria</h3>
+<p class="text-xs text-slate-400 max-w-sm leading-relaxed mb-5">
+            Si è verificato un errore di connessione con il database esercizi. I dati in locale potrebbero non essere aggiornati.
+          </p>
+<!-- Error Details Callout Banner -->
+<div class="w-full max-w-sm mb-6 p-3 rounded-lg border border-red-900/40 bg-red-950/20 text-left flex items-start gap-2.5">
+<svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 4.243a9 9 0 01-12.728 0m0 0l2.829-2.829m-2.829 2.829L3 21m2.828-12.536a5 5 0 017.072 0" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<div class="text-[11px] text-red-300/90 font-mono">
+<span class="font-semibold block text-red-200">ERR_NETWORK_DISCONNECTED</span>
+              Codice timeout 504 Gateway (Database Supabase Endpoint)
+            </div>
+</div>
+<!-- Retry & Fallback Actions -->
+<div class="flex items-center gap-3">
+<button class="px-5 py-2 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30 transition-all flex items-center gap-2" id="btn-retry" onclick="simulateReload()">
+<svg class="w-3.5 h-3.5" fill="none" id="retry-icon" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Riprova sincronizzazione</span>
+</button>
+<button class="px-4 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg transition-colors">
+              Usa cache offline
+            </button>
+</div>
+</section>
+</div>
+<!-- END: ScrollableBodyContent -->
+<!-- Drawer Sticky Footer -->
+<footer class="p-4 px-6 border-t border-slate-800/80 bg-slate-900/80 backdrop-blur flex items-center justify-between shrink-0" data-purpose="drawer-footer">
+<div class="flex items-center gap-2 text-xs text-slate-400">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+<span id="footer-summary-text"><strong class="text-slate-200 font-medium">0 esercizi</strong> in anteprima</span>
+</div>
+<div class="flex items-center gap-2.5">
+<button class="px-4 py-1.5 text-xs font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors">
+            Annulla
+          </button>
+<button class="px-4 py-1.5 text-xs font-semibold rounded-lg bg-blue-600/50 text-slate-300 cursor-not-allowed transition-all flex items-center gap-1.5" disabled="" id="footer-cta-btn">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span>Inserisci nella sessione</span>
+</button>
+</div>
+</footer>
+</aside>
+<!-- END: ExerciseDrawer -->
+</div>
+<!-- END: MainViewportWithOverlay -->
+<!-- BEGIN: InteractiveStateSwitcherScript -->
+<script data-purpose="state-manager">
+    /**
+     * Controls the 3 system drawer visual states:
+     * - loading: Shimmer skeleton cards & chip placeholders
+     * - empty: Zero-state with custom reset filter & create new action
+     * - error: Sync failure banner with retry action
+     */
+    function switchState(stateName) {
+      // Views
+      const viewLoading = document.getElementById('state-loading-view');
+      const viewEmpty = document.getElementById('state-empty-view');
+      const viewError = document.getElementById('state-error-view');
+      
+      // Inputs & Header Elements
+      const searchInput = document.getElementById('search-input-field');
+      const filterChipsContainer = document.getElementById('filter-chips-container');
+      const filterChipsSkeleton = document.getElementById('filter-chips-skeleton');
+      const resultsTitleText = document.getElementById('results-title-text');
+      const badgeCount = document.getElementById('badge-count');
+      const footerSummary = document.getElementById('footer-summary-text');
+      const footerCta = document.getElementById('footer-cta-btn');
+
+      // State Tabs
+      const tabs = {
+        loading: document.getElementById('btn-state-loading'),
+        empty: document.getElementById('btn-state-empty'),
+        error: document.getElementById('btn-state-error')
+      };
+
+      // Reset all tab styling
+      Object.keys(tabs).forEach(key => {
+        tabs[key].className = 'state-tab px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition-colors flex items-center gap-1.5';
+      });
+
+      // Highlight active tab
+      if (tabs[stateName]) {
+        tabs[stateName].className = 'state-tab px-3 py-1 rounded-md text-white font-medium transition-colors bg-blue-600 shadow-sm flex items-center gap-1.5';
+      }
+
+      // Hide all states
+      viewLoading.classList.add('hidden');
+      viewEmpty.classList.add('hidden');
+      viewError.classList.add('hidden');
+
+      if (stateName === 'loading') {
+        viewLoading.classList.remove('hidden');
+        filterChipsContainer.classList.add('hidden');
+        filterChipsSkeleton.classList.remove('hidden');
+        searchInput.value = '';
+        searchInput.placeholder = 'Caricamento libreria in corso...';
+        resultsTitleText.textContent = 'Caricamento database (350+)...';
+        badgeCount.textContent = 'Sincronizzazione...';
+        footerSummary.innerHTML = '<span class="text-slate-400">In attesa di selezione...</span>';
+        footerCta.disabled = true;
+        footerCta.className = 'px-4 py-1.5 text-xs font-semibold rounded-lg bg-blue-600/40 text-slate-400 cursor-not-allowed flex items-center gap-1.5';
+      } 
+      else if (stateName === 'empty') {
+        viewEmpty.classList.remove('hidden');
+        filterChipsContainer.classList.remove('hidden');
+        filterChipsSkeleton.classList.add('hidden');
+        searchInput.value = 'Stacco sumo con catene';
+        resultsTitleText.textContent = 'Risultati Ricerca (0)';
+        badgeCount.textContent = '0 trovati';
+        footerSummary.innerHTML = '<strong class="text-slate-300 font-medium">0 esercizi</strong> selezionati';
+        footerCta.disabled = true;
+        footerCta.className = 'px-4 py-1.5 text-xs font-semibold rounded-lg bg-blue-600/40 text-slate-400 cursor-not-allowed flex items-center gap-1.5';
+      } 
+      else if (stateName === 'error') {
+        viewError.classList.remove('hidden');
+        filterChipsContainer.classList.remove('hidden');
+        filterChipsSkeleton.classList.add('hidden');
+        searchInput.value = '';
+        searchInput.placeholder = 'Database offline';
+        resultsTitleText.textContent = 'Stato Connessione Database';
+        badgeCount.textContent = 'Non raggiungibile';
+        badgeCount.className = 'text-xs px-2 py-0.5 rounded-full bg-red-500/15 text-red-400 border border-red-500/30 font-medium';
+        footerSummary.innerHTML = '<span class="text-red-400 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Connessione interrotta</span>';
+        footerCta.disabled = true;
+        footerCta.className = 'px-4 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed flex items-center gap-1.5';
+      }
+
+      // Reset badge style if not error
+      if (stateName !== 'error') {
+        badgeCount.className = 'text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30 font-medium';
+      }
+    }
+
+    function resetFilters() {
+      // Helper function to return to loading / cleared state
+      const searchInput = document.getElementById('search-input-field');
+      searchInput.value = '';
+      switchState('loading');
+    }
+
+    function simulateReload() {
+      const retryIcon = document.getElementById('retry-icon');
+      retryIcon.classList.add('animate-spin');
+      setTimeout(() => {
+        retryIcon.classList.remove('animate-spin');
+        switchState('loading');
+      }, 700);
+    }
+
+    // Default initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      switchState('loading');
+    });
+  </script>
+<!-- END: InteractiveStateSwitcherScript -->
+</body></html>

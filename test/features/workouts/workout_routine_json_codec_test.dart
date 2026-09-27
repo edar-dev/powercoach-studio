@@ -155,4 +155,69 @@ void main() {
       throwsFormatException,
     );
   });
+
+  test('encodes phases and round-trips multi-phase routines', () {
+    final routine = WorkoutRoutine.empty().copyWith(
+      name: 'Phased',
+      phases: [
+        const Phase(
+          id: 'p1',
+          name: 'Accumulo',
+          objective: 'Volume',
+          weeks: [
+            Week(
+              id: 'w1',
+              name: 'Week 1',
+              days: [Day(id: 'd1', name: 'Day A', exercises: [])],
+            ),
+          ],
+        ),
+        const Phase(
+          id: 'p2',
+          name: 'Picco',
+          weeks: [
+            Week(
+              id: 'w2',
+              name: 'Week 2',
+              days: [Day(id: 'd2', name: 'Day B', exercises: [])],
+            ),
+          ],
+        ),
+      ],
+    );
+    final encoded = encodeWorkoutRoutine(routine);
+    expect(encoded.containsKey('phases'), isTrue);
+    expect(encoded.containsKey('weeks'), isFalse);
+    expect((encoded['phases'] as List), hasLength(2));
+
+    final restored = decodeWorkoutRoutine(encoded);
+    expect(restored.phases, hasLength(2));
+    expect(restored.phases.first.name, 'Accumulo');
+    expect(restored.phases.first.objective, 'Volume');
+    expect(restored.weeks, hasLength(2));
+    expect(restored.globalWeekIndex(1, 0), 1);
+    expect(restored.locateWeek(1)?.phaseIndex, 1);
+  });
+
+  test('decodes legacy flat weeks into default General phase', () {
+    final legacy = {
+      'name': 'Legacy Plan',
+      'mobilitySections': <Map<String, dynamic>>[],
+      'mobilityItems': <Map<String, dynamic>>[],
+      'weeks': [
+        {
+          'id': 'w1',
+          'name': 'Week 1',
+          'days': [
+            {'id': 'd1', 'name': 'Day A', 'exercises': <Map<String, dynamic>>[]},
+          ],
+        },
+      ],
+    };
+    final restored = decodeWorkoutRoutine(legacy);
+    expect(restored.phases, hasLength(1));
+    expect(restored.phases.single.id, kDefaultPhaseId);
+    expect(restored.phases.single.name, kDefaultPhaseName);
+    expect(restored.weeks.single.id, 'w1');
+  });
 }

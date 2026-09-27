@@ -1,0 +1,435 @@
+<!DOCTYPE html><html class="dark" lang="it"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Crea Nuovo Esercizio - Database Biomeccanico</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              bg: '#070b13',
+              card: '#0b1120',
+              input: '#131b2e',
+              border: '#1e293b',
+              borderHighlight: '#334155'
+            }
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="custom-scrollbars">
+    /* Custom dark scrollbar for the modal body */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+<style data-purpose="form-controls">
+    /* Remove default appearance for custom styled inputs */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+      border: 2px solid #ffffff;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="bg-[#070b13] text-slate-100 font-sans antialiased overflow-hidden min-h-screen relative selection:bg-blue-600 selection:text-white">
+<!-- BEGIN: BackgroundWorkoutWorkspace (Simulated background from SCREEN_1) -->
+<div class="fixed inset-0 w-full h-full flex select-none pointer-events-none opacity-30 blur-[6px] filter transition-all" data-purpose="background-context">
+<!-- Left Main Session Editor preview -->
+<div class="flex-1 p-8 bg-[#0a0f1d] border-r border-slate-900 flex flex-col gap-6">
+<div class="flex items-center gap-3 text-xs tracking-wider font-semibold text-blue-400 uppercase">
+<span class="">Fase 1: Accumulo &amp; Volume</span>
+<span class="">•</span>
+<span class="">Settimana 1 di 4</span>
+</div>
+<h1 class="text-3xl font-bold text-white flex items-center gap-3">
+        Giorno 1: Upper Body - Panca Focus
+      </h1>
+<div class="w-full bg-[#111827] border border-slate-800 rounded-xl p-4 flex gap-4 text-sm text-slate-400">
+<div class="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">!</div>
+<div>
+<div class="text-white font-medium">Indicazioni Sessione</div>
+<div class="text-xs text-slate-400 mt-0.5">Panca su fermo al petto 1 sec sulla prima serie di picco. RPE target rigoroso, massimizzare il controllo eccentrico.</div>
+</div>
+</div>
+<!-- Dummy Exercise Rows -->
+<div class="space-y-4 mt-2">
+<div class="bg-[#0e1628] p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300">1</span>
+<div>
+<div class="font-semibold text-white">Panca piana bilanciere</div>
+<div class="text-xs text-slate-400">Multiarticolare • Bilanciere</div>
+</div>
+</div>
+<div class="flex gap-4 text-xs font-mono text-slate-400">
+<span class="">4 SET</span>
+<span class="">RPE 8.5</span>
+<span class="">Rec: 3'</span>
+</div>
+</div>
+<div class="bg-[#0e1628] p-4 rounded-xl border border-slate-800 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<span class="w-8 h-8 rounded bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-300">2</span>
+<div>
+<div class="font-semibold text-white">Spinte manubri panca inclinata 30°</div>
+<div class="text-xs text-slate-400">Complementare • Manubri</div>
+</div>
+</div>
+<div class="flex gap-4 text-xs font-mono text-slate-400">
+<span class="">3 SET</span>
+<span class="">RPE 9</span>
+<span class="">Rec: 2'</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Drawer Preview (Similar to SCREEN_1) -->
+<div class="w-[520px] bg-[#0c1222] border-l border-slate-800 p-6 flex flex-col gap-5">
+<div class="flex items-center justify-between pb-4 border-b border-slate-800">
+<div class="flex items-center gap-2">
+<div class="p-2 rounded-lg bg-blue-600/20 text-blue-400 font-bold">📚</div>
+<div>
+<div class="text-sm font-semibold text-white">Libreria Esercizi</div>
+<div class="text-xs text-slate-400">350+ disponibili</div>
+</div>
+</div>
+<div class="px-3 py-1.5 rounded-lg bg-blue-600 text-xs font-semibold text-white">+ Nuovo</div>
+</div>
+<div class="h-10 bg-slate-900 border border-slate-800 rounded-lg"></div>
+<div class="space-y-3">
+<div class="h-20 bg-slate-900/60 rounded-xl border border-slate-800/80"></div>
+<div class="h-44 bg-blue-950/20 border border-blue-500/40 rounded-xl"></div>
+<div class="h-20 bg-slate-900/60 rounded-xl border border-slate-800/80"></div>
+</div>
+</div>
+</div>
+<!-- END: BackgroundWorkoutWorkspace -->
+<!-- BEGIN: ModalOverlay -->
+<div class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto" data-purpose="modal-backdrop">
+<!-- BEGIN: CreateExerciseModalCard -->
+<section class="relative w-full max-w-4xl bg-[#0b1120] border border-slate-800/90 rounded-2xl shadow-2xl shadow-black/80 flex flex-col max-h-[92vh] overflow-hidden transform animate-in fade-in zoom-in-95 duration-200" data-purpose="create-exercise-modal-dialog">
+<!-- BEGIN: ModalHeader -->
+<header class="px-6 py-5 bg-[#0f172a] border-b border-slate-800/80 flex items-center justify-between flex-shrink-0" data-purpose="modal-header">
+<div class="flex items-center gap-3.5">
+<!-- Icon Badge -->
+<div class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"></path>
+</svg>
+</div>
+<!-- Title & Subtitle -->
+<div>
+<div class="flex items-center gap-2.5">
+<h2 class="text-lg font-bold text-white tracking-tight">Crea Nuovo Esercizio</h2>
+<span class="text-[11px] font-semibold tracking-wide uppercase px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/25">Custom DB</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">Definisci biomeccanica, pattern motorio e parametri tecnici per la tua libreria</p>
+</div>
+</div>
+<!-- Close Button -->
+<button aria-label="Chiudi finestra modale" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800/80 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</header>
+<!-- END: ModalHeader -->
+<!-- BEGIN: ModalFormScrollableBody -->
+<div class="p-6 overflow-y-auto space-y-7 text-sm" data-purpose="modal-content-scroll">
+<!-- SECTION 1: Dati Principali -->
+<fieldset class="space-y-4">
+<legend class="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2 mb-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            1. Dati Principali &amp; Classificazione Motoria
+          </legend>
+<!-- Nome Esercizio -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide" for="exercise-name">
+              Nome Esercizio <span class="text-rose-400">*</span>
+</label>
+<div class="relative rounded-lg shadow-sm">
+<input class="w-full bg-[#131b2e] border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" id="exercise-name" placeholder="es. Panca piana con fermo 3 sec, Lat Machine presa neutra stretta..." required="" type="text" value="Panca piana con fermo al petto 3 sec">
+<div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-xs text-slate-500">
+                Variante
+              </div>
+</div>
+</div>
+<!-- Grid: Pattern di Movimento & Gruppo Muscolare Primario -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Pattern di Movimento -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide" for="movement-pattern">
+                Pattern di Movimento / Categoria Primaria <span class="text-rose-400">*</span>
+</label>
+<select class="w-full bg-[#131b2e] border border-slate-700/80 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors" id="movement-pattern">
+<option selected="" value="horizontal-push">Spinta Orizzontale (Horizontal Push)</option>
+<option value="vertical-push">Spinta Verticale (Overhead Push)</option>
+<option value="vertical-pull">Trazione Verticale (Vertical Pull)</option>
+<option value="horizontal-pull">Trazione Orizzontale (Rowing)</option>
+<option value="squat">Accosciata / Squat Pattern</option>
+<option value="hip-hinge">Cerniera d'Anca (Hip Hinge / Stacco)</option>
+<option value="isolation-chest">Isolamento Pettorale / Adduzione</option>
+<option value="arm-isolation">Isolamento Braccia / Flesso-estensione</option>
+</select>
+</div>
+<!-- Gruppo Muscolare Primario Quick Select -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+                Gruppo Muscolare Target Primario <span class="text-rose-400">*</span>
+</label>
+<div class="flex flex-wrap gap-1.5 pt-0.5">
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-blue-600 text-white shadow-sm border border-blue-500" type="button">Petto</button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800" type="button">Dorso</button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800" type="button">Spalle</button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800" type="button">Quadricipiti</button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800" type="button">Femorali / Glutei</button>
+<button class="px-3 py-1.5 rounded-lg text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800" type="button">Braccia</button>
+</div>
+</div>
+</div>
+<!-- Muscoli Secondari / Sinergici (Tag multi-select style) -->
+<div class="space-y-2">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+              Muscoli Secondari &amp; Stabilizzatori Sinergici
+            </label>
+<div class="flex flex-wrap items-center gap-2 p-2.5 bg-[#131b2e] border border-slate-700/80 rounded-xl">
+<!-- Chip 1 -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-200 border border-slate-700">
+                Deltoide Anteriore
+                <button class="text-slate-400 hover:text-rose-400" type="button">×</button>
+</span>
+<!-- Chip 2 -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-200 border border-slate-700">
+                Tricipite Brachiale (Capo Mediale/Laterale)
+                <button class="text-slate-400 hover:text-rose-400" type="button">×</button>
+</span>
+<!-- Chip 3 -->
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-200 border border-slate-700">
+                Dentato Anteriore
+                <button class="text-slate-400 hover:text-rose-400" type="button">×</button>
+</span>
+<!-- Add button tag -->
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-blue-400 hover:text-blue-300 bg-blue-500/10 border border-blue-500/30 hover:bg-blue-500/20 transition-colors" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+                Aggiungi muscolo
+              </button>
+</div>
+</div>
+</fieldset>
+<!-- SECTION 2: Dettagli Biomeccanici & Attrezzatura -->
+<fieldset class="space-y-4 pt-3 border-t border-slate-800/80">
+<legend class="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2 mb-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            2. Biomeccanica, Profilo di Resistenza &amp; Attrezzatura
+          </legend>
+<!-- Attrezzatura Selector -->
+<div class="space-y-2">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+              Attrezzatura Richiesta <span class="text-rose-400">*</span>
+</label>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+<!-- Option: Bilanciere (Selected) -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-blue-500 bg-blue-600/15 text-blue-300 text-xs font-medium gap-1.5 transition-all shadow-sm" type="button">
+<span class="text-lg">🏋️‍♂️</span>
+<span class="font-semibold">Bilanciere</span>
+</button>
+<!-- Option: Manubri -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-[#131b2e] hover:border-slate-700 text-slate-300 text-xs font-medium gap-1.5 transition-all hover:bg-slate-800/50" type="button">
+<span class="text-lg">🦾</span>
+<span class="">Manubri</span>
+</button>
+<!-- Option: Cavi -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-[#131b2e] hover:border-slate-700 text-slate-300 text-xs font-medium gap-1.5 transition-all hover:bg-slate-800/50" type="button">
+<span class="text-lg">⚙️</span>
+<span class="">Cavi / Carrucola</span>
+</button>
+<!-- Option: Macchinario -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-[#131b2e] hover:border-slate-700 text-slate-300 text-xs font-medium gap-1.5 transition-all hover:bg-slate-800/50" type="button">
+<span class="text-lg">🎛️</span>
+<span class="">Macchinario</span>
+</button>
+<!-- Option: Corpo Libero -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-[#131b2e] hover:border-slate-700 text-slate-300 text-xs font-medium gap-1.5 transition-all hover:bg-slate-800/50" type="button">
+<span class="text-lg">🤸</span>
+<span class="">Corpo Libero</span>
+</button>
+<!-- Option: Altro / Kettlebell -->
+<button class="flex flex-col items-center justify-center p-3 rounded-xl border border-slate-800 bg-[#131b2e] hover:border-slate-700 text-slate-300 text-xs font-medium gap-1.5 transition-all hover:bg-slate-800/50" type="button">
+<span class="text-lg">🔔</span>
+<span class="">Kettlebell / Altro</span>
+</button>
+</div>
+</div>
+<!-- Dual Column: Curva di Resistenza & Tipologia Esercizio -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-1">
+<!-- Curva di Resistenza / Profilo Biomeccanico -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+                  Curva di Resistenza (Peak Tension)
+                </label>
+<span class="text-[11px] text-slate-400">Biomeccanica muscolare</span>
+</div>
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-[#131b2e] border border-slate-700/80 rounded-xl text-center text-xs">
+<button class="py-2 px-1 rounded-lg font-medium bg-blue-600 text-white shadow-sm" type="button">
+                  Allungamento
+                </button>
+<button class="py-2 px-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800" type="button">
+                  Costante / Lineare
+                </button>
+<button class="py-2 px-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800" type="button">
+                  Accorciamento
+                </button>
+</div>
+<p class="text-[11px] text-slate-400">Massima tensione nel punto di inversione eccentrico/concentrico.</p>
+</div>
+<!-- Tipologia Ruolo Esercizio -->
+<div class="space-y-2">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+                Ruolo nella Programmazione
+              </label>
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-[#131b2e] border border-slate-700/80 rounded-xl text-center text-xs">
+<button class="py-2 px-1 rounded-lg font-medium bg-blue-600 text-white shadow-sm" type="button">
+                  Fondamentale
+                </button>
+<button class="py-2 px-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800" type="button">
+                  Complementare
+                </button>
+<button class="py-2 px-1 rounded-lg font-medium text-slate-400 hover:text-slate-200 hover:bg-slate-800" type="button">
+                  Isolamento
+                </button>
+</div>
+<p class="text-[11px] text-slate-400">Multiarticolare tassante ad elevato impatto sistemico neurale.</p>
+</div>
+</div>
+</fieldset>
+<!-- SECTION 3: Parametri di Default, RPE & Setup Guide -->
+<fieldset class="space-y-4 pt-3 border-t border-slate-800/80">
+<legend class="text-xs font-semibold uppercase tracking-wider text-blue-400 flex items-center gap-2 mb-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+            3. Metriche di Default, Setup &amp; Coaching Notes
+          </legend>
+<!-- 3 Columns Metric Defaults -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Unità di Carico -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide" for="load-unit">
+                Unità di Misura Primaria
+              </label>
+<select class="w-full bg-[#131b2e] border border-slate-700/80 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500" id="load-unit">
+<option selected="" value="kg">Chilogrammi (Kg / Sovraccarico)</option>
+<option value="lbs">Libbre (Lbs)</option>
+<option value="bodyweight">Corpo Libero / Ripetizioni</option>
+<option value="time">Tempo sotto tensione (Sec / Min)</option>
+<option value="distance">Distanza (Metri)</option>
+</select>
+</div>
+<!-- RPE Suggerito Slider -->
+<div class="space-y-1.5">
+<div class="flex items-center justify-between">
+<label class="block font-medium text-slate-200 text-xs tracking-wide" for="rpe-slider">
+                  RPE Target Tipico
+                </label>
+<span class="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20">8.0 - 8.5</span>
+</div>
+<div class="pt-2 px-1">
+<input class="w-full h-1.5 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500" id="rpe-slider" max="10" min="6" step="0.5" type="range" value="8.5">
+</div>
+</div>
+<!-- Calcolo 1RM Toggle Switch -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide">
+                Calcolo 1RM &amp; Analytics
+              </label>
+<div class="flex items-center justify-between p-2.5 bg-[#131b2e] border border-slate-700/80 rounded-xl">
+<span class="text-xs text-slate-300">Stima 1RM &amp; Volume</span>
+<!-- Custom Checkbox Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox">
+<div class="w-9 h-5 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-blue-600"></div>
+</label>
+</div>
+</div>
+</div>
+<!-- Video / Demo URL Link -->
+<div class="space-y-1.5">
+<label class="block font-medium text-slate-200 text-xs tracking-wide" for="video-url">
+              Link Dimostrativo / Video Esecuzione Biomeccanica (YouTube, Loom, Vimeo)
+            </label>
+<div class="relative rounded-lg shadow-sm">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<input class="w-full bg-[#131b2e] border border-slate-700/80 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" id="video-url" placeholder="https://youtu.be/... o incolla URL dimostrazione video" type="url">
+</div>
+</div>
+<!-- Setup Notes & Coaching Cues -->
+<div class="space-y-3 pt-1 border-t border-slate-800/80"><div class="flex items-center justify-between"><label class="block font-medium text-slate-200 text-xs tracking-wide flex items-center gap-1.5"><svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>Specifiche di Setup Tecnico &amp; Regolazioni Macchina/Panca</label><span class="text-[11px] text-blue-400/80 font-mono">Preset Macchinari</span></div><div class="grid grid-cols-1 md:grid-cols-3 gap-3 bg-[#0e1628] p-3 rounded-xl border border-slate-800/90"><div class="space-y-1"><span class="block text-[11px] font-medium text-slate-400">Inclinazione Panca</span><div class="flex items-center gap-1"><button type="button" class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white shadow-sm">Piana (0°)</button><button type="button" class="px-2 py-1 rounded text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800">30°</button><button type="button" class="px-2 py-1 rounded text-xs font-medium bg-[#131b2e] text-slate-300 hover:text-white border border-slate-700/80 hover:bg-slate-800">45°</button></div></div><div class="space-y-1"><span class="block text-[11px] font-medium text-slate-400">Altezza Carrucola / Pin</span><input type="text" class="w-full bg-[#131b2e] border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="es. Tacca 8 / Spalle" value="Tacca 8"></div><div class="space-y-1"><span class="block text-[11px] font-medium text-slate-400">Larghezza Presa / Grip</span><input type="text" class="w-full bg-[#131b2e] border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500" placeholder="es. Media 1.5x biacromiale" value="Media 1.5x biacromiale"></div></div><div class="space-y-1.5"><div class="flex items-center justify-between"><label class="block font-medium text-slate-200 text-xs tracking-wide" for="coaching-notes">Note Tecniche di Setup &amp; Cue di Esecuzione</label><span class="text-[11px] text-slate-500">Istruzioni biomeccaniche per l'atleta</span></div><textarea id="coaching-notes" rows="3" class="w-full bg-[#131b2e] border border-slate-700/80 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors leading-relaxed" placeholder="Es. Inclinazione schienale a 30°, cavi all'altezza delle spalle (tacca 7), presa prona con polsini neutri, enfasi su fermo 1 sec in allungamento..."></textarea></div></div>
+</fieldset>
+</div>
+<!-- END: ModalFormScrollableBody -->
+<!-- BEGIN: ModalFooter -->
+<footer class="px-6 py-4 bg-[#0f172a] border-t border-slate-800/90 flex flex-col sm:flex-row items-center justify-between gap-4 flex-shrink-0" data-purpose="modal-footer">
+<!-- Left Footer Action: Quick Checkbox Insert -->
+<label class="flex items-center gap-2.5 text-xs text-slate-300 hover:text-white cursor-pointer select-none">
+<input checked="" class="rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-blue-500 focus:ring-offset-[#0f172a] w-4 h-4" type="checkbox">
+<span class="">Inserisci subito nella sessione attiva (<strong class="text-blue-400">Giorno 1</strong>)</span>
+</label>
+<!-- Right Footer Action Buttons -->
+<div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+<button class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-700 hover:border-slate-600 text-xs font-semibold text-slate-300 hover:text-white bg-slate-800/60 hover:bg-slate-800 transition-all focus:outline-none" type="button">
+            Annulla
+          </button>
+<button class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-lg shadow-blue-600/30 hover:shadow-blue-500/40 flex items-center justify-center gap-2 transition-all transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"></path>
+</svg>
+<span class="">Salva nella Libreria</span>
+</button>
+</div>
+</footer>
+<!-- END: ModalFooter -->
+</section>
+<!-- END: CreateExerciseModalCard -->
+</div>
+<!-- END: ModalOverlay -->
+
+
+</body></html>

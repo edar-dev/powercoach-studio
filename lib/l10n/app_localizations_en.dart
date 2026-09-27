@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'PowerCoach Studio';
 
   @override
-  String get landingHeroBadge => 'The Future of Coaching is Here';
+  String get landingHeroBadge => 'Early access — Beta Coach Studio v2.4';
 
   @override
   String get landingTitlePrefix => 'Power';
@@ -22,16 +22,73 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingSubtitle =>
-      'Create and manage workout plans for your clients.';
+      'Create and manage workout plans for your clients with scientific precision.';
 
   @override
-  String get landingCtaPrimary => 'Get Started';
+  String get landingCtaPrimary => 'Start free — No card required';
 
   @override
-  String get landingCtaSecondary => 'Learn More';
+  String get landingCtaSecondary => 'See pricing & demo';
 
   @override
   String get notImplementedMessage => 'Feature not yet implemented.';
+
+  @override
+  String get landingBrandPowerCoach => 'PowerCoach';
+
+  @override
+  String get landingBrandStudio => 'Studio';
+
+  @override
+  String get landingEarlyAccess => 'Early access';
+
+  @override
+  String get landingBetaVersion => 'Beta Coach Studio v2.4';
+
+  @override
+  String get landingHeroLeadBefore =>
+      'Create and manage workout plans for your clients with ';
+
+  @override
+  String get landingHeroLeadEmphasis => 'scientific precision';
+
+  @override
+  String get landingHeroLeadAfter => '.';
+
+  @override
+  String get landingHeroSupporting =>
+      'The modular platform built for strength coaches, athletic trainers, and professional personal trainers. Block periodization, customizable microcycles, and real-time load tracking.';
+
+  @override
+  String get landingCtaStartFreeNoCard => 'Start free — No card required';
+
+  @override
+  String get landingCtaSeePricingDemo => 'See pricing & demo';
+
+  @override
+  String get landingTrustExercises => '266+ Preconfigured exercises';
+
+  @override
+  String get landingTrustOffline => 'Offline-First architecture';
+
+  @override
+  String get landingTrustExport => 'PDF export & fast sharing';
+
+  @override
+  String get landingPreviewEditorLabel =>
+      'Plan editor — Max Strength Mesocycle (Accumulation W2)';
+
+  @override
+  String get landingStatusOfflineFirst => 'Offline-First';
+
+  @override
+  String get landingNavFeatures => 'Features';
+
+  @override
+  String get landingNavLibrary => 'Exercise Library';
+
+  @override
+  String get landingNavPhases => 'Phase Planning';
 
   @override
   String get landingFeaturesTitle => 'Premium Features';
@@ -41,25 +98,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingFeaturesDesc =>
-      'Focus on what you do best—coaching. We\'ll handle the logistics and tracking with precision tools.';
+      'Focus on what you do best—coaching. We handle logistics, block periodization, and tracking.';
 
   @override
-  String get landingFeaturesCustomers => 'Customer management';
+  String get landingFeaturesCustomers => 'Client & plan management';
 
   @override
-  String get landingFeaturesEditor => 'Visual editor for workout plans';
+  String get landingFeaturesEditor => 'Visual editor for modular phase plans';
 
   @override
   String get landingFeaturesClientData => 'Client data & library';
 
   @override
-  String get landingFeaturesExport => 'Export to PDF';
+  String get landingFeaturesExport => 'PDF export & custom exercise DB';
 
   @override
-  String get landingHowItWorksLabel => 'The Process';
+  String get landingFeature1Title => 'Client & plan management';
 
   @override
-  String get landingHowItWorksTitle => 'How PowerCoach Studio Works';
+  String get landingFeature1Eyebrow => 'Visual editor for modular phase plans';
+
+  @override
+  String get landingFeature1Body =>
+      'Structure advanced programming into microcycles and mesocycles (Accumulation, Intensification, Realization, Deload). Assign volume progressions, 1RM-based percentages, RPE, and detailed execution notes.';
+
+  @override
+  String get landingFeature1Bullet1 =>
+      'Visual timeline with automatic tonnage calculation';
+
+  @override
+  String get landingFeature1Bullet2 =>
+      'Duplicate mesocycles across athletes with automated progression';
+
+  @override
+  String get landingFeature1Bullet3 => 'Weekly check-ins with immediate alerts';
+
+  @override
+  String get landingFeature1FooterLeft => 'Responsive drag & drop editor';
+
+  @override
+  String get landingFeature1FooterRight => '100% Customizable';
+
+  @override
+  String get landingFeature2Title => 'Client data & library';
+
+  @override
+  String get landingFeature2Eyebrow => 'PDF export & custom exercise DB';
+
+  @override
+  String get landingFeature2Body =>
+      'Internal database with 266+ exercises classified by muscle group, resistance curve, and biomechanical pattern. Generate high-resolution PDF prints or share interactive links ready for your client\'s phone.';
+
+  @override
+  String get landingFeature2Bullet1 =>
+      'Fast folders: Presses, Squats, Push, Pull';
+
+  @override
+  String get landingFeature2Bullet2 =>
+      'Professional PDF export with tutorial video QR codes';
+
+  @override
+  String get landingFeature2Bullet3 =>
+      'Custom fields for angles, wedges, and grip type';
+
+  @override
+  String get landingFeature2FooterLeft => '266+ Ready variants';
+
+  @override
+  String get landingFeature2FooterRight => 'A4 & Mobile export';
+
+  @override
+  String get landingFeature3Title => 'Superset, Cluster & Jump Set';
+
+  @override
+  String get landingFeature3Eyebrow => 'Advanced intensity methodology tools';
+
+  @override
+  String get landingFeature3Body =>
+      'Group exercises in one click. Configure antagonist pairings, drop sets, myo-reps, and differentiated intra/inter-set rests with a preset audio timer.';
+
+  @override
+  String get landingFeature3Bullet1 => 'Letter color coding (A1-A2, B1-B2)';
+
+  @override
+  String get landingFeature3Bullet2 =>
+      'Session density calculation (kg per minute of work)';
+
+  @override
+  String get landingFeature3Bullet3 =>
+      'Timed circuits, EMOM, and AMRAP for conditioning';
+
+  @override
+  String get landingFeature3FooterLeft => 'Advanced methodologies';
+
+  @override
+  String get landingFeature3FooterRight => 'Zero Confusion';
+
+  @override
+  String get landingFeature4Title => 'Protected data & Offline-First';
+
+  @override
+  String get landingFeature4Eyebrow =>
+      'Data stays stored locally on your device';
+
+  @override
+  String get landingFeature4Body =>
+      'Never lose an edit even if the gym Wi‑Fi drops. All programs are stored on-device. Use JSON backups or optional snapshots to move between devices.';
+
+  @override
+  String get landingFeature4Bullet1 => 'One-click JSON/CSV backup export';
+
+  @override
+  String get landingFeature4Bullet2 =>
+      'Native-speed performance with no loading delays';
+
+  @override
+  String get landingFeature4Bullet3 =>
+      'GDPR-aligned security standards for athlete data';
+
+  @override
+  String get landingFeature4FooterLeft => 'Local database';
+
+  @override
+  String get landingFeature4FooterRight => 'Always Available';
+
+  @override
+  String get landingHowItWorksLabel => 'Scientific planning';
+
+  @override
+  String get landingHowItWorksTitle =>
+      'Linear or block periodization—without unreadable spreadsheets.';
 
   @override
   String get landingHowItWorksStep1 => 'Create a customer profile';
@@ -74,32 +242,65 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingHowItWorksStep4 => 'Export to PDF';
 
   @override
-  String get landingCtaSectionTitle => 'Ready to Transform Your Coaching?';
+  String get landingPhasesBadge => 'Scientific planning';
 
   @override
-  String get landingCtaSectionSubtext => 'Sign in to get started.';
+  String get landingPhasesTitle =>
+      'Linear or block periodization—without unreadable spreadsheets.';
+
+  @override
+  String get landingPhasesBody =>
+      'Drop chaotic tables. Coach Studio charts weekly volume, suggests load increases based on RPE/RIR, and lets athletes log results in their own logbook.';
+
+  @override
+  String get landingPhasesCtaPrimary => 'Create your first plan in 2 minutes';
+
+  @override
+  String get landingPhasesCtaSecondary => 'Explore the Exercise Library';
+
+  @override
+  String get landingCtaSectionTitle =>
+      'Ready to reinvent your coaching method?';
+
+  @override
+  String get landingCtaSectionSubtext =>
+      'Join the PowerCoach Studio beta. Manage athletes with modern tools, clean plans, and zero admin friction.';
 
   @override
   String get landingCtaSectionButton => 'Sign in';
 
   @override
   String get landingCtaSectionSubtextLoggedIn =>
-      'Go to your profile to get started.';
+      'Go to your profile or dashboard to continue.';
 
   @override
-  String get landingCtaSectionButtonLoggedIn => 'Profile';
+  String get landingCtaSectionButtonLoggedIn => 'Dashboard';
+
+  @override
+  String get landingCtaCreateAccount => 'Create your free coach account';
+
+  @override
+  String get landingCtaFootnote =>
+      'No credit card required · Ready in 60 seconds';
 
   @override
   String get landingNavPricing => 'Pricing';
 
   @override
-  String get landingBetaBadge => 'Early access — coach beta';
+  String get landingBetaBadge => 'Early access — Beta Coach Studio v2.4';
 
   @override
   String get landingCtaStartFree => 'Start free';
 
   @override
   String get landingCtaSeePricing => 'See pricing';
+
+  @override
+  String get landingFooterTagline =>
+      'Offline-first athletic monitoring and planning for coaches, trainers, and demanding athletes.';
+
+  @override
+  String get landingFooterSystemsOk => 'All systems operational';
 
   @override
   String get landingPricingLabel => 'Plans';
@@ -237,7 +438,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationTitle => 'Sign up';
 
   @override
-  String get registrationEmail => 'Email';
+  String get registrationEmail => 'Professional email';
+
+  @override
+  String get registrationEmailHint => 'mario.rossi@powercoach.it';
 
   @override
   String get registrationPassword => 'Password';
@@ -246,7 +450,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registrationConfirmPassword => 'Confirm password';
 
   @override
-  String get registrationSubmit => 'Sign up';
+  String get registrationSubmit => 'Create account and start free trial';
 
   @override
   String get registrationSuccessMessage =>
@@ -285,7 +489,8 @@ class AppLocalizationsEn extends AppLocalizations {
       'An account with this email already exists. Try signing in.';
 
   @override
-  String get registrationErrorPasswordWeak => 'Choose a stronger password.';
+  String get registrationErrorPasswordWeak =>
+      'Min. 8 characters, 1 number, and 1 special character.';
 
   @override
   String get registrationErrorInvalidEmail => 'Please enter a valid email.';
@@ -301,37 +506,150 @@ class AppLocalizationsEn extends AppLocalizations {
       'Registration failed. Please try again.';
 
   @override
-  String get registrationAlreadyHaveAccount => 'Already have an account?';
+  String get registrationErrorNameEmpty => 'Required field.';
+
+  @override
+  String get registrationAlreadyHaveAccount => 'Already have a coach account?';
 
   @override
   String get registrationLoginLink => 'Log in';
 
   @override
-  String get registrationHeadline => 'Create your account';
+  String get registrationHeadline => 'Create your Coach account';
+
+  @override
+  String get registrationEyebrow => 'PowerCoach Studio';
+
+  @override
+  String get registrationSubtitle =>
+      'Join the scientific programming and athlete management platform.';
+
+  @override
+  String get registrationTrialBadge => '14-day free trial · No card required';
+
+  @override
+  String get registrationTrustExercises => '266+ Exercises included';
+
+  @override
+  String get registrationTrustOffline => 'Offline-First';
+
+  @override
+  String get registrationTrustMesocycles => 'Advanced mesocycles';
+
+  @override
+  String get registrationFirstName => 'First name';
+
+  @override
+  String get registrationFirstNameHint => 'Mario';
+
+  @override
+  String get registrationLastName => 'Last name';
+
+  @override
+  String get registrationLastNameHint => 'Rossi';
+
+  @override
+  String get registrationSpecialty => 'Primary specialization';
+
+  @override
+  String get registrationSpecialtyPt => 'Personal Trainer';
+
+  @override
+  String get registrationSpecialtyAthletic => 'Athletic Prep';
+
+  @override
+  String get registrationSpecialtyPowerlifting => 'Powerlifting';
+
+  @override
+  String get registrationPasswordRulesHint =>
+      'Min. 8 chars · 1 num. · 1 special';
+
+  @override
+  String get registrationPasswordSecurity => 'Strength:';
+
+  @override
+  String get registrationPasswordStrengthWeak => 'Weak';
+
+  @override
+  String get registrationPasswordStrengthFair => 'Fair';
+
+  @override
+  String get registrationPasswordStrengthGood => 'Good';
+
+  @override
+  String get registrationPasswordStrengthStrong => 'Strong';
+
+  @override
+  String get registrationTermsPrefix => 'I accept the';
+
+  @override
+  String get registrationTermsOfService => 'Terms of Service';
+
+  @override
+  String get registrationTermsMiddle => 'and confirm I have read the';
+
+  @override
+  String get registrationPrivacyPolicy => 'Privacy Policy';
+
+  @override
+  String get registrationAcceptTermsError =>
+      'Please accept the terms to continue.';
+
+  @override
+  String get registrationOrContinueWith => 'or sign up with';
 
   @override
   String get loginTitle => 'Log in';
 
   @override
-  String get loginHeadline => 'Welcome back!';
+  String get loginHeadline => 'Welcome back, Coach!';
 
   @override
-  String get loginEmail => 'Email';
+  String get loginSubtitle =>
+      'Sign in to your workspace to manage athletes, mesocycles, and the biomechanics library.';
+
+  @override
+  String get loginEmail => 'Email or Username';
+
+  @override
+  String get loginEmailHint => 'e.g. marco@coachstudio.it';
 
   @override
   String get loginPassword => 'Password';
 
   @override
-  String get loginSubmit => 'Log in';
+  String get loginSubmit => 'Sign in to workspace';
 
   @override
   String get loginForgotPassword => 'Forgot password?';
 
   @override
-  String get loginNoAccount => 'Don\'t have an account?';
+  String get loginNoAccount => 'Don\'t have a coach account yet?';
 
   @override
-  String get loginRegisterLink => 'Sign up';
+  String get loginRegisterLink => 'Sign up free';
+
+  @override
+  String get loginTrialChip => '14-day trial';
+
+  @override
+  String get loginRoleCoach => 'Coach / Trainer';
+
+  @override
+  String get loginRoleAthlete => 'Athlete';
+
+  @override
+  String get loginAthleteUnavailable =>
+      'Athlete login is not available yet. PowerCoach Studio is built for coaches.';
+
+  @override
+  String get loginStaySignedIn => 'Stay signed in on this device';
+
+  @override
+  String get loginStaySignedInOffline => '(Offline-First)';
+
+  @override
+  String get loginOrContinueWith => 'or continue with';
 
   @override
   String get loginErrorInvalidEmail => 'Please enter a valid email.';
@@ -356,6 +674,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginSuccessMessage => 'Welcome back!';
+
+  @override
+  String get authBackHome => 'Back to home';
+
+  @override
+  String get authBackLogin => 'Back to login';
+
+  @override
+  String get authEncryptionBadge => '256-bit encryption active';
+
+  @override
+  String get authEncryptionBadgeShort => 'Protected';
+
+  @override
+  String get authSocialUnavailable =>
+      'Google/Apple sign-in is not available yet. Use email and password.';
+
+  @override
+  String get authFooterCompliance =>
+      '256-bit AES encryption · GDPR compliant · Secure local backup';
 
   @override
   String get forgotPasswordTitle => 'Reset password';
@@ -915,16 +1253,39 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backupOnboardingTitle => 'Protect your coach data';
 
   @override
-  String get backupOnboardingMessage =>
-      'PowerCoach Studio stores your clients and workout plans on this device. If you clear browser data or sign out, that information is removed unless you have a backup file.';
+  String get backupOnboardingMessageAfterBrand =>
+      ' stores clients and workout plans directly on this device (';
+
+  @override
+  String get backupOnboardingMessageAfterOffline =>
+      '). If you clear browser history or switch machines, that information is removed unless you have a backup.';
 
   @override
   String get backupOnboardingWebHint =>
-      'We recommend exporting a JSON backup from Settings after your first session and whenever you make important changes.';
+      'On the web, data stays in this browser’s storage on this device.';
 
   @override
-  String get backupOnboardingDeskGymHint =>
-      'Plan on desktop, then bring the same account to the gym on your phone — a backup lets you carry your data with you, without a cloud account.';
+  String get backupOnboardingCalloutLead =>
+      'Maximum flexibility between studio and gym floor:';
+
+  @override
+  String get backupOnboardingCalloutBody =>
+      ' Plan on desktop at home or in the office, then bring the same archive to the gym on your phone — a simple JSON backup lets you move your data freely, ';
+
+  @override
+  String get backupOnboardingCalloutEmphasis =>
+      'without sharing data on unauthorized external cloud servers';
+
+  @override
+  String get backupOnboardingRecommendBefore =>
+      'We recommend exporting a JSON copy from ';
+
+  @override
+  String get backupOnboardingRecommendSettings => 'Settings';
+
+  @override
+  String get backupOnboardingRecommendAfter =>
+      ' after every programming block.';
 
   @override
   String get backupOnboardingOpenSettings => 'Open settings';
@@ -934,6 +1295,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupOnboardingGotIt => 'Got it';
+
+  @override
+  String get backupOnboardingCloseSemantic => 'Close';
 
   @override
   String get customerCreationLocalDataHint =>
@@ -962,7 +1326,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exerciseLibraryImportSourceDefaultSubtitle =>
-      'Load 200 common exercises with variants and hierarchy.';
+      'Load 266 common exercises with variants and hierarchy (incl. powerlifting).';
 
   @override
   String get exerciseLibraryImportSourceCustom => 'Import custom JSON';
@@ -1065,6 +1429,43 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseLibraryAddVariant => 'Add variant';
 
   @override
+  String get exerciseLibrarySearchHint => 'Search by name…';
+
+  @override
+  String get exerciseLibrarySearchEmpty => 'No exercises match your search.';
+
+  @override
+  String exerciseLibraryVariantCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count variants',
+      one: '1 variant',
+      zero: '0 variants',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get exerciseLibrarySortAlphabetical => 'Sort: Alphabetical (A-Z)';
+
+  @override
+  String get exerciseLibrarySortByVariantCount => 'Variant count';
+
+  @override
+  String get exerciseLibraryNewFolder => 'New folder';
+
+  @override
+  String exerciseLibraryExerciseCount(int count) {
+    return '$count exercises';
+  }
+
+  @override
+  String exerciseLibraryFolderCount(int count) {
+    return '$count folders';
+  }
+
+  @override
   String get placeholderBackToDashboard => 'Back to Dashboard';
 
   @override
@@ -1072,13 +1473,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customersEmptyMessage =>
-      'Let\'s grow your studio! Start by adding your first client to track their progress and manage their workouts.';
+      'Let\'s grow your studio! Start by adding your first client to track progress, set up mesocycles, and manage workouts.';
 
   @override
   String get customersAddCustomer => 'Add customer';
 
   @override
-  String get customersAddFirstClient => 'Add Your First Client';
+  String get customersAddFirstClient => 'Add your first client';
 
   @override
   String get customersImportContacts => 'Import from contacts';
@@ -1091,34 +1492,267 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersNewCustomer => 'New customer';
 
   @override
-  String get customerName => 'Name';
+  String get customersSearchHint => 'Search by name…';
+
+  @override
+  String get customersFilterAll => 'All';
+
+  @override
+  String get customersFilterActive => 'Active';
+
+  @override
+  String get customersFilterPaused => 'Paused';
+
+  @override
+  String get customersFilterUnassigned => 'Unassigned';
+
+  @override
+  String customersFilterCount(int count) {
+    return '($count)';
+  }
+
+  @override
+  String get customersEmptyStep1Title => 'Profile & Target';
+
+  @override
+  String get customersEmptyStep1Body =>
+      'Enter anthropometrics, maxes, and primary goals (Hypertrophy, Strength, Cut).';
+
+  @override
+  String get customersEmptyStep2Title => 'Assign a Plan';
+
+  @override
+  String get customersEmptyStep2Body =>
+      'Link a custom mesocycle or pick a template from the Library.';
+
+  @override
+  String get customersEmptyStep3Title => 'Track Loads & RPE';
+
+  @override
+  String get customersEmptyStep3Body =>
+      'View training logs, tonnage, and progressions in real time.';
+
+  @override
+  String get customersOfflineFirstFooter =>
+      'Offline-First architecture · data saved locally on this device';
+
+  @override
+  String get customersSearchEmpty => 'No clients match these filters.';
+
+  @override
+  String get customersMetricTotalAthletes => 'Total athletes';
+
+  @override
+  String customersMetricActiveCount(int count) {
+    return '$count active';
+  }
+
+  @override
+  String get customersMetricPlansInProgress => 'Plans in progress';
+
+  @override
+  String get customersMetricPlansSubtitle => 'with a plan';
+
+  @override
+  String get customersMetricPaused => 'Paused';
+
+  @override
+  String get customersMetricPausedSubtitle => 'archived';
+
+  @override
+  String get customersMetricNeedsUpdate => 'Needs update';
+
+  @override
+  String get customersMetricNeedsUpdateSubtitle => 'due soon';
+
+  @override
+  String get customersSortPrefix => 'Sort:';
+
+  @override
+  String get customersSortRecent => 'Most recent';
+
+  @override
+  String get customersSortNameAsc => 'Name A-Z';
+
+  @override
+  String customersShownOfTotal(int shown, int total) {
+    return 'Showing $shown of $total athletes';
+  }
+
+  @override
+  String customersRowAgeYears(int age) {
+    return '$age years';
+  }
+
+  @override
+  String get customersRowGoalEmpty => '—';
+
+  @override
+  String get customersRowNoPlan => 'No plan assigned';
+
+  @override
+  String customersRowPlanUpdated(String date) {
+    return 'Last plan update: $date';
+  }
+
+  @override
+  String get customersRowStatusActive => 'Active';
+
+  @override
+  String get customersRowStatusPaused => 'Paused';
+
+  @override
+  String get customersRowStatusUnassigned => 'Unassigned';
+
+  @override
+  String get customersRowActionOpenPlan => 'Open plan';
+
+  @override
+  String get customersRowActionAssign => '+ Assign';
+
+  @override
+  String get customersRowActionOpen => 'Open';
+
+  @override
+  String get customerName => 'Full name';
 
   @override
   String get customerNameRequired => 'Name is required';
 
   @override
-  String get customerEmail => 'Email';
+  String get customerNameHint => 'e.g. Alex Johnson';
 
   @override
-  String get customerPhone => 'Phone';
+  String get customerEmail => 'Email address';
+
+  @override
+  String get customerEmailHint => 'alex.johnson@example.com';
+
+  @override
+  String get customerPhone => 'Phone / WhatsApp';
+
+  @override
+  String get customerPhoneHint => '334 123 4567';
+
+  @override
+  String get customerPhoneCountryPrefix => '+39';
 
   @override
   String get customerDateOfBirth => 'Date of birth';
 
   @override
-  String get customerHeight => 'Height (cm)';
+  String get customerEstimatedAge => 'Estimated age';
 
   @override
-  String get customerWeight => 'Weight (kg)';
+  String get customerEstimatedAgeUnit => 'years';
 
   @override
-  String get customerNotes => 'Notes';
+  String get customerHeight => 'Height';
 
   @override
-  String get customerGoals => 'Goals';
+  String get customerHeightHint => '180';
+
+  @override
+  String get customerHeightUnit => 'cm';
+
+  @override
+  String get customerWeight => 'Starting weight';
+
+  @override
+  String get customerWeightHint => '78.5';
+
+  @override
+  String get customerWeightUnit => 'kg';
+
+  @override
+  String get customerNotes => 'Coach notes, injuries, or limitations';
+
+  @override
+  String get customerNotesOptional => 'Optional';
+
+  @override
+  String get customerNotesHintCreation =>
+      'e.g. Prior right shoulder cuff discomfort; prefers training 4 days/week…';
+
+  @override
+  String get customerGoals => 'Primary goal';
+
+  @override
+  String get customerGoalHypertrophy => 'Hypertrophy';
+
+  @override
+  String get customerGoalHypertrophySubtitle => 'Muscle Gain';
+
+  @override
+  String get customerGoalStrength => 'Max Strength';
+
+  @override
+  String get customerGoalStrengthSubtitle => 'Powerlifting';
+
+  @override
+  String get customerGoalRecomp => 'Recomposition';
+
+  @override
+  String get customerGoalRecompSubtitle => 'Fat loss & tone';
+
+  @override
+  String get customerGoalAthletic => 'Athletic prep';
+
+  @override
+  String get customerGoalAthleticSubtitle => 'Sport-specific';
+
+  @override
+  String get customerExperienceLabel => 'Experience level';
+
+  @override
+  String get customerExperienceBeginner => 'Beginner (0–1 year)';
+
+  @override
+  String get customerExperienceIntermediate => 'Intermediate (1–3 years)';
+
+  @override
+  String get customerExperienceAdvanced =>
+      'Advanced (3+ years of consistent training)';
+
+  @override
+  String get customerExperienceElite => 'Competitive / elite athlete';
+
+  @override
+  String customerExperienceNotesPrefix(String level) {
+    return 'Experience: $level';
+  }
+
+  @override
+  String get customerCreationHeroTitle => 'Start a new journey';
+
+  @override
+  String get customerCreationHeroSubtitle =>
+      'Enter your athlete’s profile and goals to start planning workouts and tracking progress.';
+
+  @override
+  String get customerCreationBadge => 'Athlete profile';
+
+  @override
+  String get customerCreationHeaderSubtitle =>
+      'PowerCoach Studio · Creation & onboarding';
+
+  @override
+  String get customerCreationStepProgress => 'Step 1 of 2';
+
+  @override
+  String get customerCreationSectionAnagrafica => '1. Personal details';
+
+  @override
+  String get customerCreationSectionPhysical => '2. Physical & biometric data';
+
+  @override
+  String get customerCreationSectionGoals => '3. Goals & training profile';
 
   @override
   String get customerSave => 'Save';
+
+  @override
+  String get customerSaveAndCreatePlan => 'Save and create plan';
 
   @override
   String get customerCancel => 'Cancel';
@@ -1848,6 +2482,179 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderNoWeeksYet => 'No weeks yet. Add a week above.';
 
   @override
+  String get workoutPhaseAdd => 'Add Phase';
+
+  @override
+  String get workoutPhaseDuplicate => 'Duplicate Phase';
+
+  @override
+  String get workoutPhaseSettings => 'Phase Settings';
+
+  @override
+  String get workoutPhaseEmptyTitle => 'No phases yet';
+
+  @override
+  String get workoutPhaseEmptyMessage =>
+      'Add a phase to start structuring your training weeks.';
+
+  @override
+  String workoutPhaseNumbered(int n) {
+    return 'Phase $n';
+  }
+
+  @override
+  String workoutPhaseWeeksCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count Weeks',
+      one: '1 Week',
+      zero: '0 Weeks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseObjectiveLabel => 'Objective';
+
+  @override
+  String get workoutPhaseObjectiveHint =>
+      'E.g. Volume accumulation, squat technique…';
+
+  @override
+  String get workoutPhaseNameLabel => 'Phase name';
+
+  @override
+  String get workoutPhaseDurationLabel => 'Duration';
+
+  @override
+  String get workoutPhaseFrequencyLabel => 'Frequency';
+
+  @override
+  String workoutPhaseFrequencyValue(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessions/wk',
+      one: '1 session/wk',
+      zero: '0 sessions/wk',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseProgressLabel => 'Progress';
+
+  @override
+  String workoutPhaseProgressValue(int percent) {
+    return '$percent%';
+  }
+
+  @override
+  String get workoutPhaseAddWeek => 'Add week to phase';
+
+  @override
+  String get workoutPhaseEditSession => 'Edit session';
+
+  @override
+  String get workoutPhaseCreateSession => 'Create a new session';
+
+  @override
+  String workoutPhaseCreateSessionForWeek(int n) {
+    return 'Create a new session for Week $n';
+  }
+
+  @override
+  String get workoutPhaseAddDay => 'Add Day';
+
+  @override
+  String workoutPhaseMoreExercises(int count) {
+    return '+$count more';
+  }
+
+  @override
+  String get workoutPhaseNoExercisesYet => 'No exercises yet';
+
+  @override
+  String workoutPhaseSetsTotal(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sets total',
+      one: '1 set total',
+      zero: '0 sets total',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String workoutPhaseWeeksCountShort(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count wks',
+      one: '1 wk',
+      zero: '0 wks',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get workoutPhaseExpandWeek => 'Expand week';
+
+  @override
+  String get workoutPhaseCollapseWeek => 'Collapse week';
+
+  @override
+  String get workoutPhaseSettingsTitle => 'Phase settings';
+
+  @override
+  String get workoutPhaseDeleteTitle => 'Delete this phase?';
+
+  @override
+  String get workoutPhaseDeleteMessage =>
+      'This phase and all of its weeks will be removed. This cannot be undone.';
+
+  @override
+  String get workoutPhaseDeleteMenu => 'Delete phase';
+
+  @override
+  String get workoutPhaseCustomNameTitle => 'Custom phase';
+
+  @override
+  String get workoutPhasePresetAccumulo => 'Accumulation';
+
+  @override
+  String get workoutPhasePresetIntensificazione => 'Intensification';
+
+  @override
+  String get workoutPhasePresetPicco => 'Peak';
+
+  @override
+  String get workoutPhasePresetDeload => 'Deload';
+
+  @override
+  String get workoutPhasePresetMassa => 'Mass';
+
+  @override
+  String get workoutPhasePresetDefinizione => 'Definition';
+
+  @override
+  String get workoutPhasePresetVolume => 'Volume';
+
+  @override
+  String get workoutPhasePresetAcclimatazione => 'Acclimation';
+
+  @override
+  String get workoutPhasePresetGeneral => 'General';
+
+  @override
+  String get workoutPhasePresetCustom => 'Custom…';
+
+  @override
+  String get workoutPhaseRemoved => 'Phase removed';
+
+  @override
   String get workoutBuilderSuperSetHeading => 'SUPER SET';
 
   @override
@@ -1867,6 +2674,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get builderSupersetAddExercise => 'Add exercise to superset';
+
+  @override
+  String get builderDensityAddExercise => 'Add exercise to group';
+
+  @override
+  String workoutBuilderAssignedPlanBadge(String customerName) {
+    return 'Assigned plan · $customerName';
+  }
+
+  @override
+  String get workoutBuilderSessionEmptyTitle => 'No exercises in this session';
+
+  @override
+  String workoutSessionEditTitleWithDay(String dayName) {
+    return 'Edit Session · $dayName';
+  }
+
+  @override
+  String get workoutSessionSaveChanges => 'Save changes';
+
+  @override
+  String get workoutSessionHistoryShort => 'History';
+
+  @override
+  String get workoutSessionDuplicateShort => 'Duplicate';
+
+  @override
+  String workoutSessionAssignedPlanPill(String customerName) {
+    return 'Assigned plan: $customerName';
+  }
+
+  @override
+  String get workoutSessionMetricExercises => 'Exercises';
+
+  @override
+  String get workoutSessionMetricTotalSets => 'Total sets';
+
+  @override
+  String workoutSessionMetricSetsCount(int count) {
+    return '$count sets';
+  }
+
+  @override
+  String get workoutSessionMetricEstimatedVolume => 'Estimated volume';
+
+  @override
+  String get workoutSessionMetricAvgRest => 'Avg. rest';
+
+  @override
+  String get workoutSessionMetricUnavailable => '—';
+
+  @override
+  String workoutSessionVolumeKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
+  String get workoutSessionAddFromLibrary => 'Add exercise from library';
+
+  @override
+  String get workoutSessionCreateSupersetCircuit => 'Create Superset / Circuit';
+
+  @override
+  String get workoutSessionAutosaveActive => 'Draft autosave active';
+
+  @override
+  String get workoutSessionAthletePreview => 'Athlete plan preview →';
+
+  @override
+  String get workoutSessionTechnicalNotes => 'Technical notes';
+
+  @override
+  String workoutSessionTechnicalNotesForAthlete(String name) {
+    return 'Technical notes for athlete ($name):';
+  }
+
+  @override
+  String get workoutSessionSavedHint => 'Saved';
+
+  @override
+  String get workoutSessionDuplicateLastSet => 'Duplicate last set';
+
+  @override
+  String workoutSessionDuplicateLastSetN(int n) {
+    return 'Duplicate last set (Set $n)';
+  }
+
+  @override
+  String get workoutSessionColSet => 'SET';
+
+  @override
+  String get workoutSessionColReps => 'REPS';
+
+  @override
+  String get workoutSessionColLoadRpe => 'LOAD / RPE';
+
+  @override
+  String get workoutSessionColNote => 'NOTES';
 
   @override
   String get builderSupersetEmpty => 'No exercises in this superset.';
@@ -2333,7 +3238,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get measurementDate => 'Date';
 
   @override
+  String get measurementDateDetected => 'Measurement date';
+
+  @override
+  String get measurementToday => 'Today';
+
+  @override
   String get measurement1RM => '1RM (kg)';
+
+  @override
+  String get measurement1RMSection => 'Estimated or tested 1RM (kg)';
 
   @override
   String get measurementSquat => 'Squat';
@@ -2343,6 +3257,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get measurementDeadlift => 'Deadlift';
+
+  @override
+  String get measurementSbdTotal => 'SBD total';
+
+  @override
+  String get measurementSbdEstimated => 'Estimated SBD total';
+
+  @override
+  String get measurementBodyComp => 'Body composition';
+
+  @override
+  String get measurementFormSubtitle =>
+      'Update 1RM loads, skinfolds, and body metrics';
+
+  @override
+  String get measurementDeltaUnchanged => 'Unchanged';
 
   @override
   String get measurementSkinfolds => 'Skinfolds (mm)';
@@ -2432,6 +3362,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get measurementHistoryOpen => 'View history';
+
+  @override
+  String get measurementHistoryOpenFull => 'Open full history';
+
+  @override
+  String get measurementHistoryRange30d => '30d';
+
+  @override
+  String get measurementHistoryRange3m => '3m';
+
+  @override
+  String get measurementHistoryRange6m => '6m';
+
+  @override
+  String get measurementHistoryRangeAll => 'All';
+
+  @override
+  String get measurementHistoryCurrentValue => 'Current value';
+
+  @override
+  String get measurementHistoryRegistered => 'Registered measurements';
 
   @override
   String get customerNotesTitle => 'Client notes';
@@ -2703,10 +3654,17 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your last backup is over 7 days old. Export or upload a recent copy for safety.';
 
   @override
-  String get dashboardBackupReminderCta => 'Open backup settings';
+  String get dashboardBackupReminderSubtitle =>
+      'Protect technical sheets, progressions, and max tests for your athletes.';
+
+  @override
+  String get dashboardBackupReminderCta => 'Open backup in settings →';
 
   @override
   String get dashboardBackupReminderSnooze => 'Remind me in 3 days';
+
+  @override
+  String get dashboardBackupReminderDismissSemantic => 'Dismiss reminder';
 
   @override
   String get dashboardLoadError =>
@@ -2773,6 +3731,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardSemanticStaleList => 'Programs that may need an update';
 
   @override
+  String get dashboardCoachStudioBadge => 'Coach Studio';
+
+  @override
+  String get dashboardMetricAthletes => 'Athletes followed';
+
+  @override
+  String get dashboardMetricActivePlans => 'Active plans';
+
+  @override
+  String get dashboardMetricWeeklyUpdates => 'Weekly updates';
+
+  @override
+  String get dashboardMetricCoachAttention => 'Coach attention';
+
+  @override
+  String get dashboardMetricAlertsSuffix => 'alerts';
+
+  @override
+  String get dashboardTodayEmptyHint =>
+      'No sessions or reminders planned for this date. Open the agenda or gym mode.';
+
+  @override
+  String get dashboardOpenAgenda => 'Open agenda';
+
+  @override
+  String dashboardCoachToolsAvailable(int count) {
+    return '$count tools available';
+  }
+
+  @override
+  String get dashboardAttentionLocalHint =>
+      'Your data stays stored on this device.';
+
+  @override
+  String get dashboardNoCustomersWithoutPlanHint =>
+      'No athletes waiting for a first plan assignment.';
+
+  @override
+  String get dashboardNoPlanAllAssignedBadge => '100% assigned';
+
+  @override
+  String dashboardStaleWindowBadge(int days) {
+    return '$days-day window';
+  }
+
+  @override
+  String dashboardNoStalePlansHint(int days) {
+    return 'No programs older than the $days-day refresh window.';
+  }
+
+  @override
+  String get dashboardShortcutsTitle => 'Management shortcuts';
+
+  @override
+  String get dashboardShortcutLibrarySubtitle => 'Exercises and folders';
+
+  @override
+  String get dashboardShortcutTemplates => 'Plans & templates';
+
+  @override
+  String get dashboardShortcutTemplatesSubtitle => 'Ready-made models';
+
+  @override
+  String get dashboardShortcutNewAthlete => 'New athlete';
+
+  @override
+  String get dashboardShortcutNewAthleteSubtitle => 'Profile and plan';
+
+  @override
+  String get dashboardShortcutSettingsSubtitle => 'Backup and local data';
+
+  @override
+  String get dashboardCreateWorkout => 'New workout';
+
+  @override
+  String get dashboardOfflineFooter =>
+      'Coach Studio · Offline-first athletic monitoring and planning.';
+
+  @override
   String get customerEditProfile => 'Edit Profile';
 
   @override
@@ -2786,6 +3823,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerMuscleMass => 'Muscle Mass';
+
+  @override
+  String get customerBackToList => 'Back to customers';
+
+  @override
+  String get customerBiometricParamsTitle => 'Key biometric parameters';
+
+  @override
+  String get customerRegisterNewMeasurement => 'Record new measurement';
+
+  @override
+  String get customerJourneyStart => 'Journey start';
+
+  @override
+  String get customerLastCheckIn => 'Last check-in';
+
+  @override
+  String customerIdChip(String id) {
+    return 'ID: #$id';
+  }
+
+  @override
+  String customerAgeWithDob(int age, String dob) {
+    return '$age years ($dob)';
+  }
 
   @override
   String get customerOverviewNoMeasurements =>

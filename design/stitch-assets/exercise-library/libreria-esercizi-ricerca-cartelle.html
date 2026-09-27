@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Libreria Esercizi - Workout Management Platform</title>
+<!-- Tailwind CSS v3 with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration for custom theme aesthetics -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            surface: {
+              base: '#0b0f17',
+              card: '#111827',
+              cardHover: '#162032',
+              inner: '#0d131f',
+              border: '#1e293b',
+              borderLight: '#334155'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Core Layout & Custom Micro-interactions Style -->
+<style data-purpose="custom-styling">
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0b0f17;
+      color: #f1f5f9;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    /* Custom scrollbar for desktop elegance */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    .folder-transition {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#0b0f17] text-slate-100 flex flex-col selection:bg-brand-600 selection:text-white">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-40 bg-[#0d131f]/95 backdrop-blur-md border-b border-surface-border" data-purpose="primary-header">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Top Title and Controls Bar -->
+<div class="flex items-center justify-between h-16 gap-4">
+<!-- Left: Back Navigation and Library Title -->
+<div class="flex items-center space-x-3.5">
+<button aria-label="Torna indietro" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500" type="button">
+<!-- Arrow Left Icon -->
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<div class="flex items-center gap-3">
+<h1 class="text-xl font-bold tracking-tight text-white">Libreria esercizi</h1>
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-brand-400 border border-slate-700">
+              348 esercizi
+            </span>
+</div>
+</div>
+<!-- Right: Actions & Tools -->
+<div class="flex items-center gap-2">
+<!-- Sync Status Indicator -->
+<div class="hidden sm:flex items-center text-xs text-slate-400 bg-slate-800/60 px-2.5 py-1.5 rounded-md border border-slate-700/60 mr-1" title="Sincronizzato col cloud">
+<span class="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+            Cloud Sync OK
+          </div>
+<!-- Import / Export Actions -->
+<button aria-label="Importa" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors border border-transparent hover:border-slate-700" title="Importa esercizi (CSV, JSON, Hevy)" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<button aria-label="Esporta" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors border border-transparent hover:border-slate-700" title="Esporta catalogo" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- More Options Menu -->
+<button aria-label="Altre opzioni" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors" title="Altre impostazioni" type="button">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Navigation Tabs -->
+<nav aria-label="Tabs" class="flex space-x-8 -mb-px" data-purpose="sub-navigation">
+<a aria-current="page" class="border-b-2 border-brand-500 text-brand-400 py-3 px-1 text-sm font-semibold flex items-center gap-2" href="#">
+<span>Esercizi</span>
+<span class="bg-brand-500/20 text-brand-300 text-xs py-0.5 px-2 rounded-full font-medium">9 Cartelle</span>
+</a>
+<a class="border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700 py-3 px-1 text-sm font-medium transition-colors" href="#">
+          Esercizi di mobilità
+        </a>
+<a class="border-b-2 border-transparent text-slate-400 hover:text-slate-200 hover:border-slate-700 py-3 px-1 text-sm font-medium transition-colors flex items-center gap-2" href="#">
+<span>Hevy &amp; Integrazioni</span>
+<span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-semibold tracking-wide uppercase px-1.5 py-0.5 rounded border border-emerald-500/20">Sync</span>
+</a>
+</nav>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+<!-- BEGIN: SearchAndFiltersSection -->
+<section class="space-y-4" data-purpose="search-and-filters">
+<!-- Primary Search Bar -->
+<div class="relative flex items-center w-full shadow-lg rounded-xl bg-slate-900/90 border border-surface-borderLight focus-within:border-brand-500 focus-within:ring-1 focus-within:ring-brand-500 transition-all">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+<svg class="h-5 w-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="w-full pl-11 pr-24 py-3.5 bg-transparent border-0 text-slate-100 placeholder-slate-400 text-sm focus:ring-0 focus:outline-none" id="exercise-search-input" placeholder="Cerca per nome, gruppo muscolare, attrezzatura... (es. Alzate laterali, Manubri)" type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+<kbd class="hidden sm:inline-block px-2 py-1 text-[11px] font-semibold text-slate-400 bg-slate-800 border border-slate-700 rounded-md shadow-sm">
+            ⌘ K
+          </kbd>
+</div>
+</div>
+<!-- Quick Category Chips and Secondary Filter Selectors -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+<!-- Muscle Group Chips -->
+<div class="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-none" data-purpose="muscle-group-chips">
+<button class="px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium shadow-sm hover:bg-brand-500 transition-colors whitespace-nowrap">
+            Tutti
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Spalle
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Gambe
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Dorso
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Pettorali
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Braccia
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-slate-800/80 text-slate-300 border border-slate-700/70 hover:bg-slate-700/80 hover:text-white transition-colors whitespace-nowrap">
+            Addome &amp; Core
+          </button>
+</div>
+<!-- Filter Dropdowns & Sorting Controls -->
+<div class="flex items-center gap-2 self-start lg:self-auto flex-wrap sm:flex-nowrap">
+<!-- Equipment Filter -->
+<div class="relative">
+<select aria-label="Filtra per attrezzatura" class="appearance-none bg-slate-800/90 text-slate-300 border border-slate-700 text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 hover:border-slate-600 transition-colors">
+<option>Tutte le attrezzature</option>
+<option>Bilanciere</option>
+<option>Manubri</option>
+<option>Cavi</option>
+<option>Corpo libero</option>
+<option>Macchinari</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Sort Filter -->
+<div class="relative">
+<select aria-label="Ordina per" class="appearance-none bg-slate-800/90 text-slate-300 border border-slate-700 text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:ring-1 focus:ring-brand-500 hover:border-slate-600 transition-colors">
+<option>Ordina: Alfabetico (A-Z)</option>
+<option>Più utilizzati</option>
+<option>Aggiunti di recente</option>
+<option>Numero di varianti</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Collapse/Expand All Toggle -->
+<button class="px-2.5 py-1.5 bg-slate-800/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-700 rounded-lg flex items-center gap-1 transition-colors" title="Comprimi tutte le cartelle" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 8h16M4 16h16" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="hidden md:inline">Compatta</span>
+</button>
+</div>
+</div>
+</section>
+<!-- END: SearchAndFiltersSection -->
+<!-- BEGIN: ExerciseFolderList -->
+<section class="space-y-3" data-purpose="exercise-tree-view">
+<!-- FOLDER 1: Alzate laterali (EXPANDED STATE AS IN REFERENCE) -->
+<div class="border border-brand-500/40 rounded-xl bg-slate-900/70 overflow-hidden shadow-sm shadow-brand-900/10">
+<!-- Folder Row Header -->
+<div class="flex items-center justify-between p-3.5 sm:px-4 bg-slate-800/40 hover:bg-slate-800/60 cursor-pointer folder-transition group">
+<div class="flex items-center space-x-3">
+<!-- Open/Close Chevron -->
+<button aria-label="Espandi o comprimi cartella Alzate laterali" class="text-brand-400 group-hover:text-brand-300" type="button">
+<svg class="w-4 h-4 transform rotate-90" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<!-- Folder Icon -->
+<div class="text-brand-400 group-hover:text-brand-300 transition-colors">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-400" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<!-- Folder Name and Tag -->
+<div class="flex items-center gap-2.5">
+<span class="font-semibold text-slate-100 text-sm sm:text-base tracking-wide">Alzate laterali</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+                4 varianti
+              </span>
+</div>
+</div>
+<!-- Right Action Menu -->
+<div class="flex items-center space-x-1">
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors" title="Aggiungi variante a questa cartella" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded-lg transition-colors" title="Opzioni cartella" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- Expanded Items List (Indented Nested Elements) -->
+<div class="divide-y divide-slate-800/80 bg-slate-950/40 pl-6 sm:pl-10 pr-3 sm:pr-4 py-1">
+<!-- Nested Sub-item 1: Cavo (Featured highlighted as in screenshot) -->
+<div class="py-2.5 px-3 my-1 rounded-lg bg-slate-800/50 hover:bg-slate-800/90 border border-slate-700/50 flex items-center justify-between transition-all group">
+<div class="flex items-center space-x-3">
+<!-- Exercise Equipment Icon: Cable/Dumbbell -->
+<div class="w-8 h-8 rounded-md bg-brand-500/15 text-brand-400 flex items-center justify-center border border-brand-500/30">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="text-sm font-medium text-white group-hover:text-brand-300 transition-colors">Cavo</h4>
+<span class="text-[10px] font-medium px-2 py-0.2 bg-blue-950/80 text-blue-300 border border-blue-800 rounded">Cavi</span>
+<span class="text-[10px] font-medium px-2 py-0.2 bg-slate-800 text-slate-300 rounded">Deltoide laterale</span>
+</div>
+<p class="text-xs text-slate-400">Tensione continua su tutto il ROM • Consigliato ai cavi bassi</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 hidden sm:inline-flex items-center gap-1">
+<span>Dettagli</span>
+</button>
+<button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- Nested Sub-item 2: Manubri in piedi -->
+<div class="py-2.5 px-3 my-1 rounded-lg hover:bg-slate-800/40 flex items-center justify-between transition-all group">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-md bg-slate-800 text-slate-400 flex items-center justify-center border border-slate-700">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<circle cx="6" cy="12" r="3" stroke-width="2"></circle>
+<circle cx="18" cy="12" r="3" stroke-width="2"></circle>
+<path d="M9 12h6" stroke-linecap="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="text-sm font-medium text-slate-200 group-hover:text-white">Manubri in piedi</h4>
+<span class="text-[10px] font-medium px-2 py-0.2 bg-slate-800 text-slate-400 rounded">Manubri</span>
+</div>
+<p class="text-xs text-slate-400">Classico con busto leggermente flesso</p>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+<!-- Nested Sub-item 3: Panca inclinata 30° -->
+<div class="py-2.5 px-3 my-1 rounded-lg hover:bg-slate-800/40 flex items-center justify-between transition-all group">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-md bg-slate-800 text-slate-400 flex items-center justify-center border border-slate-700">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M4 19l4-14h12l-4 14H4z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h4 class="text-sm font-medium text-slate-200 group-hover:text-white">Panca inclinata 30°</h4>
+<span class="text-[10px] font-medium px-2 py-0.2 bg-slate-800 text-slate-400 rounded">Isolamento massimo</span>
+</div>
+<p class="text-xs text-slate-400">Elimina completamente il cheating di anca e schiena</p>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+</div>
+<!-- FOLDER 2: Calf raise -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Calf raise" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Calf raise</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">3 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 3: Curl bicipiti -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Curl bicipiti" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Curl bicipiti</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">6 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 4: Dip alle parallele -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Dip alle parallele" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Dip alle parallele</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">2 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 5: Front squat -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Front squat" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Front squat</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">2 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 6: Leg curl -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Leg curl" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Leg curl</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">4 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 7: Lento avanti -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Lento avanti" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Lento avanti</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">3 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 8: Military press -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Military press" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Military press</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">3 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 9: Rematore bilanciere -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Rematore bilanciere" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Rematore bilanciere</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">4 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+<!-- FOLDER 10: Squat con bilanciere -->
+<div class="border border-surface-border rounded-xl bg-slate-900/50 hover:border-slate-700/80 transition-all">
+<div class="flex items-center justify-between p-3.5 sm:px-4 cursor-pointer group">
+<div class="flex items-center space-x-3">
+<button aria-label="Espandi cartella Squat con bilanciere" class="text-slate-400 group-hover:text-brand-400" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</button>
+<div class="text-brand-500">
+<svg class="w-5 h-5 fill-brand-500/20 stroke-brand-500" stroke-width="1.75" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2.5">
+<span class="font-medium text-slate-200 text-sm sm:text-base group-hover:text-white">Squat con bilanciere</span>
+<span class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700/80">5 varianti</span>
+</div>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-800 rounded-lg" type="button">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+</div>
+</div>
+</section>
+<!-- END: ExerciseFolderList -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: FloatingActionHub -->
+<!-- Primary bottom-right action bar mimicking and improving the bottom-right CTA from screenshot -->
+<aside class="fixed bottom-6 right-6 z-50 flex items-center space-x-3" data-purpose="floating-actions">
+<!-- Secondary Quick Folder Button -->
+<button class="hidden sm:inline-flex items-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white px-4 py-3 rounded-xl border border-slate-700 shadow-xl backdrop-blur-md text-sm font-medium transition-all" type="button">
+<svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Nuova cartella</span>
+</button>
+<!-- Main "+ Aggiungi esercizio" Button (Matches original screenshot pill button) -->
+<button class="inline-flex items-center gap-2.5 bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-3.5 rounded-2xl shadow-xl shadow-brand-600/30 hover:shadow-brand-500/40 transform active:scale-95 transition-all text-sm sm:text-base border border-brand-400/30" type="button">
+<svg class="w-5 h-5 stroke-[2.5]" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+<span>Aggiungi esercizio</span>
+</button>
+</aside>
+<!-- END: FloatingActionHub -->
+<!-- Minimal Keyboard Shortcut Helper for Search -->
+<script data-purpose="keyboard-shortcuts">
+    document.addEventListener('keydown', function(e) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const searchInput = document.getElementById('exercise-search-input');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }
+    });
+  </script>
+</body></html>
