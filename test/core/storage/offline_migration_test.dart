@@ -40,6 +40,30 @@ void main() {
         'deleted': false,
         'localOnly': false,
       },
+      // Former exerciseRecord index — must be skipped, not remapped.
+      {
+        'id': 'local_record_1',
+        'type': 3,
+        'scopeId': '__legacy__',
+        'payload': {'id': 'local_record_1'},
+        'updatedAt': now.toIso8601String(),
+        'deleted': false,
+        'localOnly': false,
+      },
+      // Former customExercise index 4 → current customExercise.
+      {
+        'id': 'local_ex_1',
+        'type': 4,
+        'scopeId': '__legacy__',
+        'payload': {
+          'id': 'local_ex_1',
+          'userId': '__legacy__',
+          'name': 'Squat',
+        },
+        'updatedAt': now.toIso8601String(),
+        'deleted': false,
+        'localOnly': false,
+      },
     ]);
     final pendingJson = jsonEncode([
       {
@@ -72,8 +96,11 @@ void main() {
     );
 
     final entityRows = await db.select(db.localEntities).get();
-    expect(entityRows, hasLength(1));
-    expect(entityRows.single.id, 'local_customer_99');
+    expect(entityRows, hasLength(2));
+    final byId = {for (final row in entityRows) row.id: row};
+    expect(byId['local_customer_99']!.type, OfflineEntityType.customer.index);
+    expect(byId['local_ex_1']!.type, OfflineEntityType.customExercise.index);
+    expect(byId.containsKey('local_record_1'), isFalse);
 
     final prefs = await SharedPreferences.getInstance();
     expect(prefs.getBool(OfflineMigration.migrationPrefsKey), isTrue);

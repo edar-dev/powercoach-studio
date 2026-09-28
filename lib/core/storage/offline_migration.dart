@@ -29,11 +29,9 @@ class OfflineMigration {
         for (final item in list) {
           if (item is! Map) continue;
           final body = item.cast<String, dynamic>();
-          // Skip removed/unknown types (e.g. legacy exerciseRecord) so one bad
-          // row cannot abort the whole SharedPreferences → Drift migration.
-          if (!isKnownOfflineEntityTypeName(body['type']?.toString())) {
-            continue;
-          }
+          // Skip removed/unknown types (e.g. legacy exerciseRecord index 3 or
+          // name) and malformed rows so one bad entry cannot abort migration.
+          // Type may be a legacy int index — do not use name-only checks here.
           final OfflineEntity e;
           try {
             e = OfflineEntity.fromJson(body);

@@ -23,6 +23,46 @@ bool isKnownOfflineEntityTypeName(String? name) {
   return false;
 }
 
+/// Parses a type from backup JSON (name) or legacy SharedPreferences (index).
+///
+/// Pre-v3 integer layout: `customer(0)`, `workoutPlan(1)`, `measurement(2)`,
+/// `exerciseRecord(3)` (removed → null), `customExercise(4)`, `customerNote(5)`.
+OfflineEntityType? tryParseOfflineEntityType(Object? rawType) {
+  if (rawType is int) {
+    return _parseLegacyTypeIndex(rawType);
+  }
+  final typeName = rawType?.toString() ?? '';
+  if (typeName.isEmpty) return null;
+  for (final candidate in OfflineEntityType.values) {
+    if (candidate.name == typeName) return candidate;
+  }
+  // Legacy SharedPreferences caches stored enum indexes as JSON numbers that
+  // decode as strings after some round-trips ("0", "1", …).
+  final asIndex = int.tryParse(typeName);
+  if (asIndex != null) return _parseLegacyTypeIndex(asIndex);
+  return null;
+}
+
+OfflineEntityType? _parseLegacyTypeIndex(int index) {
+  switch (index) {
+    case 0:
+      return OfflineEntityType.customer;
+    case 1:
+      return OfflineEntityType.workoutPlan;
+    case 2:
+      return OfflineEntityType.measurement;
+    case 3:
+      // Former OfflineEntityType.exerciseRecord — skip on read.
+      return null;
+    case 4:
+      return OfflineEntityType.customExercise;
+    case 5:
+      return OfflineEntityType.customerNote;
+    default:
+      return null;
+  }
+}
+
 enum OfflineOperationType {
   create,
   update,
@@ -70,30 +110,7 @@ class OfflineEntity {
 
   static OfflineEntity fromJson(Map<String, dynamic> json) {
     final rawType = json['type'];
-    OfflineEntityType? parsed;
-    if (rawType is int) {
-      if (rawType >= 0 && rawType < OfflineEntityType.values.length) {
-        parsed = OfflineEntityType.values[rawType];
-      }
-    } else {
-      final typeName = rawType?.toString() ?? '';
-      for (final candidate in OfflineEntityType.values) {
-        if (candidate.name == typeName) {
-          parsed = candidate;
-          break;
-        }
-      }
-      // Legacy SharedPreferences caches stored enum indexes as JSON numbers
-      // that decode as strings after some round-trips ("0", "1", …).
-      if (parsed == null) {
-        final asIndex = int.tryParse(typeName);
-        if (asIndex != null &&
-            asIndex >= 0 &&
-            asIndex < OfflineEntityType.values.length) {
-          parsed = OfflineEntityType.values[asIndex];
-        }
-      }
-    }
+    final parsed = tryParseOfflineEntityType(rawType);
     if (parsed == null) {
       throw FormatException('Unknown offline entity type: $rawType');
     }
