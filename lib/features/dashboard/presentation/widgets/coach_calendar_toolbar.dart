@@ -124,42 +124,18 @@ class CoachCalendarToolbar extends StatelessWidget {
             ],
           );
 
-          final actions = Wrap(
-            spacing: 10,
-            runSpacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                decoration: BoxDecoration(
-                  color: MarketingDarkColors.surface,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: MarketingDarkColors.stitchBorder),
-                ),
-                child: Text(
-                  l10n.calendarFilterAllAthletes,
-                  style: theme.textTheme.labelMedium?.copyWith(
-                    color: MarketingDarkColors.slate300,
-                  ),
-                ),
+          final actions = FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: MarketingDarkColors.brand,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 10,
               ),
-              FilledButton.icon(
-                style: FilledButton.styleFrom(
-                  backgroundColor: MarketingDarkColors.brand,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 10,
-                  ),
-                ),
-                onPressed: onAddSession,
-                icon: const Icon(Icons.add, size: 16),
-                label: Text(l10n.calendarAddSession),
-              ),
-            ],
+            ),
+            onPressed: onAddSession,
+            icon: const Icon(Icons.add, size: 16),
+            label: Text(l10n.calendarAddSession),
           );
 
           if (stacked) {

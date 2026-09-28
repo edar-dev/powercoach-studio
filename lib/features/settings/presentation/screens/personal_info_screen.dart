@@ -88,7 +88,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     if (user == null) {
       setState(() {
         _isLoading = false;
-        _loadError = 'Not signed in';
+        _loadError = AppLocalizations.of(context).profileLoadError;
       });
       return;
     }

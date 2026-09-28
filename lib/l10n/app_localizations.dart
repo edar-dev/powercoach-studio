@@ -6753,7 +6753,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsHubSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Manage your coach identity, notification preferences, local backups, and data sync.'**
+  /// **'Manage your coach identity, notification preferences, and local or cloud backups.'**
   String get settingsHubSubtitle;
 
   /// No description provided for @settingsHubSyncPill.

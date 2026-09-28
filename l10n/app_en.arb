@@ -1823,7 +1823,7 @@
   "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Profile & Platform Settings",
-  "settingsHubSubtitle": "Manage your coach identity, notification preferences, local backups, and data sync.",
+  "settingsHubSubtitle": "Manage your coach identity, notification preferences, and local or cloud backups.",
   "settingsHubSyncPill": "Local data active",
   "settingsNavPersonalInfo": "Personal info",
   "settingsNavSubscription": "Subscription",

@@ -115,7 +115,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _loadProfile() async {
     final user = SupabaseBootstrap.currentUser;
     if (user == null) {
-      _profileLoadError = 'Not signed in';
+      if (!mounted) return;
+      _profileLoadError = AppLocalizations.of(context).profileLoadError;
       return;
     }
     try {

@@ -1782,7 +1782,7 @@
   "backupImportTypeConfirm": "Digita IMPORT per confermare la sostituzione di tutti i dati",
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Impostazioni Profilo & Piattaforma",
-  "settingsHubSubtitle": "Gestisci la tua identità coach, preferenze notifiche, salvataggi locali e sincronizzazione dati.",
+  "settingsHubSubtitle": "Gestisci la tua identità coach, preferenze notifiche e salvataggi locali o cloud.",
   "settingsHubSyncPill": "Dati locali attivi",
   "settingsNavPersonalInfo": "Informazioni personali",
   "settingsNavSubscription": "Abbonamento",

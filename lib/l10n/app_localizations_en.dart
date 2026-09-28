@@ -3747,7 +3747,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsHubSubtitle =>
-      'Manage your coach identity, notification preferences, local backups, and data sync.';
+      'Manage your coach identity, notification preferences, and local or cloud backups.';
 
   @override
   String get settingsHubSyncPill => 'Local data active';
