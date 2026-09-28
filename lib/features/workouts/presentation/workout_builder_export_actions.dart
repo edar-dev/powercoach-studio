@@ -17,14 +17,13 @@ import 'package:powercoach_studio/features/customers/data/customer_repository.da
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/domain/export_excel_usecase.dart';
-import 'package:powercoach_studio/features/workouts/domain/export_json_usecase.dart';
 import 'package:powercoach_studio/features/workouts/domain/export_pdf_usecase.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_import_export_coordinator.dart';
 import 'package:powercoach_studio/features/exercise_library/data/import_file_reader.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// PDF / JSON / Excel export helpers for the workout builder screen.
+/// PDF / Excel export helpers for the workout builder screen.
 class WorkoutBuilderExportActions {
   WorkoutBuilderExportActions({
     required this.context,
@@ -159,32 +158,6 @@ class WorkoutBuilderExportActions {
       );
     } finally {
       if (context.mounted) hidePdfExportProgressDialog(context);
-    }
-  }
-
-  Future<void> exportJson(WorkoutRoutine routine) async {
-    final l10n = AppLocalizations.of(context);
-    try {
-      final artifact = await exportWorkoutRoutineToJson(namedRoutine(routine));
-      if (!context.mounted) return;
-      await downloadExportArtifact(artifact);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportSuccess),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (_) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
     }
   }
 

@@ -110,14 +110,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     }
   }
 
-  void _openPlanDiff(WorkoutPlanApiModel plan) {
-    navigateTo(
-      context,
-      planDiffPath(customerId: widget.customerId, planIdA: plan.id),
-    );
-  }
-
-  Future<void> _openNewWorkoutSheet() async {
+  void _openNewWorkoutSheet() async {
     HapticFeedback.mediumImpact();
     await showCustomerNewWorkoutSheet(
       context,
@@ -147,7 +140,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       onCreateFollowUp: () => _createFollowUpWorkout(plan),
       onDuplicate: () => _duplicatePlan(plan),
       onSaveAsTemplate: () => _savePlanAsTemplate(plan),
-      onCompare: _plans.length > 1 ? () => _openPlanDiff(plan) : null,
       onArchive: () => _archivePlan(plan),
       onUnarchive: () => _unarchivePlan(plan),
       onMarkCompleted: () => _markPlanCompleted(plan),

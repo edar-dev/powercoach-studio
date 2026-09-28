@@ -6,7 +6,6 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
 
@@ -36,8 +35,6 @@ class SessionExerciseEditorCard extends StatefulWidget {
     this.supersetOptions = const [],
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
-    this.progressionSuggestion,
-    this.onApplyProgressionSuggestion,
   });
 
   final ThemeData theme;
@@ -77,8 +74,6 @@ class SessionExerciseEditorCard extends StatefulWidget {
   final void Function(String groupId, {DensityBlockConfig? densityConfig})?
   onAssignToSuperset;
   final VoidCallback? onRemoveFromSuperset;
-  final ExerciseProgressionSuggestion? progressionSuggestion;
-  final VoidCallback? onApplyProgressionSuggestion;
 
   static const Color _cardBg = Color(0xFF151D2E);
   static const Color _cardBorder = Color(0xFF28354D);
@@ -282,21 +277,6 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (widget.progressionSuggestion != null &&
-                      (widget.progressionSuggestion!.type ==
-                              ProgressionSuggestionType.increaseLoad ||
-                          widget.progressionSuggestion!.type ==
-                              ProgressionSuggestionType.increaseReps))
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 10),
-                      child: _SessionProgressionChip(
-                        l10n: l10n,
-                        theme: theme,
-                        colorScheme: cs,
-                        suggestion: widget.progressionSuggestion!,
-                        onApply: widget.onApplyProgressionSuggestion,
-                      ),
-                    ),
                   _SetTableHeader(theme: theme, l10n: l10n),
                   const SizedBox(height: 6),
                   ...details.asMap().entries.map((entry) {
@@ -663,77 +643,6 @@ class _SetTableRow extends StatelessWidget {
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SessionProgressionChip extends StatelessWidget {
-  const _SessionProgressionChip({
-    required this.l10n,
-    required this.theme,
-    required this.colorScheme,
-    required this.suggestion,
-    this.onApply,
-  });
-
-  final AppLocalizations l10n;
-  final ThemeData theme;
-  final ColorScheme colorScheme;
-  final ExerciseProgressionSuggestion suggestion;
-  final VoidCallback? onApply;
-
-  String get _label {
-    if (suggestion.type == ProgressionSuggestionType.increaseReps &&
-        suggestion.suggestedReps != null) {
-      return l10n.workoutBuilderProgressionIncreaseReps(
-        suggestion.suggestedReps!,
-      );
-    }
-    if (suggestion.type == ProgressionSuggestionType.increaseLoad &&
-        suggestion.suggestedLoad != null) {
-      return l10n.workoutBuilderProgressionIncreaseLoad(
-        suggestion.suggestedLoad!,
-      );
-    }
-    return l10n.workoutBuilderProgressionIncreaseLoadGeneric;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.trending_up,
-            size: 16,
-            color: colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              _label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          if (suggestion.isActionable && onApply != null)
-            TextButton(
-              style: TextButton.styleFrom(
-                minimumSize: const Size(0, 32),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-              ),
-              onPressed: onApply,
-              child: Text(l10n.workoutBuilderProgressionApply),
-            ),
         ],
       ),
     );

@@ -151,8 +151,6 @@ class _LandingScreenState extends State<LandingScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: LandingHeroSection(
-              earlyAccessLabel: l10n.landingEarlyAccess,
-              betaVersionLabel: l10n.landingBetaVersion,
               titlePrefix: l10n.landingTitlePrefix,
               titleSuffix: l10n.landingTitleSuffix,
               leadBefore: l10n.landingHeroLeadBefore,

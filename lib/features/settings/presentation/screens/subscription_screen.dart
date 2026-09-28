@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/billing_checkout.dart';
-import 'package:powercoach_studio/core/billing/billing_promo.dart';
 import 'package:powercoach_studio/core/billing/entitlement_models.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/billing/plan_usage.dart';
@@ -14,7 +13,6 @@ import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart'
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_billing_details_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_plan_compare_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_pro_actions_card.dart';
-import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_promo_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_upgrade_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_status_card.dart';
 import 'package:powercoach_studio/features/settings/presentation/widgets/subscription/subscription_usage_card.dart';
@@ -116,46 +114,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         : l10n.subscriptionPlanFree;
   }
 
-  Future<void> _redeemPromoCode(String code) async {
-    final l10n = AppLocalizations.of(context);
-    if (code.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.subscriptionPromoCodeEmpty)),
-      );
-      return;
-    }
-
-    setState(() => _busy = true);
-    try {
-      final result = await BillingPromo.redeemCode(code);
-      await _load();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.alreadyPro
-                ? l10n.subscriptionPromoAlreadyPro
-                : l10n.subscriptionPromoRedeemSuccess,
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } on BillingPromoException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
-    } catch (e, stack) {
-      debugPrint('Promo redeem error: $e\n$stack');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.subscriptionPromoRedeemError)),
-      );
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
   Future<void> _startCheckout(BillingInterval interval) async {
     if (!kIsWeb) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -179,39 +137,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.subscriptionCheckoutError)),
-      );
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _requestCoupon(String? message) async {
-    final l10n = AppLocalizations.of(context);
-    setState(() => _busy = true);
-    try {
-      final result = await BillingPromo.requestCoupon(message: message);
-      await _load();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            result.alreadyPending
-                ? l10n.subscriptionCouponRequestPending
-                : l10n.subscriptionCouponRequestSuccess,
-          ),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } on BillingPromoException catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
-    } catch (e, stack) {
-      debugPrint('Coupon request error: $e\n$stack');
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.subscriptionCouponRequestError)),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -305,27 +230,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                         onPressed: _busy ? null : () => _openPortal(),
                         child: Text(l10n.subscriptionManage),
                       ),
-                    ] else if (isPro) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.subscriptionPromoProActiveHint,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: cs.onSurfaceVariant,
-                        ),
-                      ),
-                    ] else ...[
+                    ] else if (!isPro) ...[
                       const SizedBox(height: 16),
                       SubscriptionUpgradeCard(
                         busy: _busy,
                         onCheckoutStarted: _startCheckout,
-                      ),
-                      const SizedBox(height: 16),
-                      SubscriptionPromoCard(
-                        busy: _busy,
-                        hasPendingCouponRequest: entitlement.hasPendingCouponRequest,
-                        onRedeem: _redeemPromoCode,
-                        onRequestCoupon: _requestCoupon,
                       ),
                     ],
                   ],

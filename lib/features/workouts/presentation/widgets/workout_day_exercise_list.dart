@@ -4,7 +4,6 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
 import 'session_exercise_editor_card.dart';
@@ -300,10 +299,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final weekIndex = widget.weekIndex;
     final dayIndex = widget.dayIndex;
     final day = widget.day;
-    final suggestion = suggestExerciseProgression(
-      plannedExercise: ex,
-      executions: widget.session.routine.sessionExecutions.values.toList(),
-    );
     void onEdit(
       String name,
       String sets,
@@ -421,11 +416,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         onRemoveFromSuperset: canEdit && ex.supersetGroupId != null
             ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
             : null,
-        progressionSuggestion: suggestion,
-        onApplyProgressionSuggestion: canEdit && suggestion.isActionable
-            ? () =>
-                _applyProgressionSuggestion(suggestion, ex, weekIndex, dayIndex)
-            : null,
       );
     }
 
@@ -464,32 +454,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       onRemoveFromSuperset: ex.supersetGroupId != null
           ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
           : null,
-      progressionSuggestion: suggestion,
-      onApplyProgressionSuggestion: suggestion.isActionable
-          ? () => _applyProgressionSuggestion(suggestion, ex, weekIndex, dayIndex)
-          : null,
-    );
-  }
-
-  void _applyProgressionSuggestion(
-    ExerciseProgressionSuggestion suggestion,
-    Exercise ex,
-    int weekIndex,
-    int dayIndex,
-  ) {
-    final updatedSets = ex.effectiveSetDetails
-        .map(
-          (s) => s.copyWith(
-            reps: suggestion.suggestedReps,
-            rpe: suggestion.suggestedLoad,
-          ),
-        )
-        .toList();
-    widget.onUpdateExercise(
-      weekIndex,
-      dayIndex,
-      ex.id,
-      setDetails: updatedSets,
     );
   }
 }

@@ -23,24 +23,21 @@ import '../workout_builder_screen_routine_actions.dart';
 import '../workout_builder_screen_tabs_config.dart';
 import '../workout_builder_session_controller.dart';
 import '../workout_builder_training_handlers.dart';
-import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
 import '../widgets/session_log_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 
-/// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
+/// Workout Builder – training + optional mobility tab from [WorkoutRoutine.includesMobilityTab].
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
   const WorkoutBuilderMobilityScreen({
     super.key,
-    this.variant = WorkoutBuilderVariant.mobility,
     this.customerId,
     this.planId,
     this.editorMode = false,
   });
 
-  final WorkoutBuilderVariant variant;
   final String? customerId;
   final String? planId;
   final bool editorMode;
@@ -85,7 +82,6 @@ class _WorkoutBuilderMobilityScreenState
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
 
   bool get _showsMobilityTab =>
-      widget.variant.showsMobilityTab &&
       _builderSession.routine.includesMobilityTab;
 
   bool get _readOnly => _planArchived || _planCompleted;

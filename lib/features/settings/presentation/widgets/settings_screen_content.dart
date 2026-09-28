@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:powercoach_studio/core/constants/app_info.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -58,18 +57,6 @@ class SettingsScreenContent extends StatelessWidget {
           title: Text(l10n.settingsSubscription),
           trailing: const Icon(Icons.chevron_right),
           onTap: () => navigateToSubscription(context),
-        ),
-        ListTile(
-          leading: const Icon(Icons.new_releases_outlined),
-          title: Text(l10n.releaseNotesTitle),
-          subtitle: Text(
-            l10n.releaseNotesSettingsSubtitle(kAppVersionLabel),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () => context.push('/settings/release-notes'),
         ),
         SwitchListTile(
           title: Text(l10n.settingsNotifications),

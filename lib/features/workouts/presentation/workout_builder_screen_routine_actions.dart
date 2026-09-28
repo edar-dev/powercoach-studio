@@ -158,8 +158,6 @@ class WorkoutBuilderScreenRoutineActions {
       showPdfExportSheet();
     } else if (value == 'excel') {
       exportActions.exportExcel(_routine);
-    } else if (value == 'json') {
-      exportActions.exportJson(_routine);
     }
   }
 }

@@ -113,14 +113,6 @@ class LandingPricingSection extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: 24),
-          Text(
-            l10n.landingPricingBetaNote,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: LandingColors.textMuted,
-            ),
-            textAlign: TextAlign.center,
-          ),
         ],
       ),
     );

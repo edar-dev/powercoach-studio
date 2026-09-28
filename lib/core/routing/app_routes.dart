@@ -20,15 +20,12 @@ import 'package:powercoach_studio/features/dashboard/presentation/screens/schedu
 import 'package:powercoach_studio/features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'package:powercoach_studio/features/landing/presentation/screens/landing_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/personal_info_screen.dart';
-import 'package:powercoach_studio/features/settings/presentation/screens/release_notes_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/gym_mode_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/gym_session_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/plan_diff_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/workout_builder_variant.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_entry_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_plan_templates_screen.dart';
@@ -105,11 +102,6 @@ List<RouteBase> buildAppRoutes() {
       ],
     ),
     GoRoute(
-      path: AppPaths.planDiff,
-      parentNavigatorKey: appRootNavigatorKey,
-      builder: (context, state) => const PlanDiffScreen(),
-    ),
-    GoRoute(
       path: '/settings',
       builder: (context, state) => const SettingsScreen(),
       routes: [
@@ -127,11 +119,6 @@ List<RouteBase> buildAppRoutes() {
                 ? AppPaths.subscription
                 : '${AppPaths.subscription}?$query';
           },
-        ),
-        GoRoute(
-          path: 'release-notes',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const ReleaseNotesScreen(),
         ),
       ],
     ),
@@ -170,7 +157,6 @@ List<RouteBase> buildAppRoutes() {
               builder: (context, state) {
                 final customerId = state.pathParameters['id'] ?? '';
                 return WorkoutBuilderMobilityScreen(
-                  variant: WorkoutBuilderVariant.mobility,
                   customerId: customerId,
                   editorMode: true,
                 );
@@ -183,7 +169,6 @@ List<RouteBase> buildAppRoutes() {
                 final customerId = state.pathParameters['id'] ?? '';
                 final planId = state.pathParameters['planId'] ?? '';
                 return WorkoutBuilderMobilityScreen(
-                  variant: WorkoutBuilderVariant.mobility,
                   customerId: customerId,
                   planId: planId,
                   editorMode: true,
@@ -235,7 +220,6 @@ List<RouteBase> buildAppRoutes() {
           builder: (context, state) {
             final customerId = state.uri.queryParameters['customerId'];
             return WorkoutBuilderMobilityScreen(
-              variant: WorkoutBuilderVariant.mobility,
               customerId: customerId,
               editorMode: true,
             );
@@ -248,7 +232,6 @@ List<RouteBase> buildAppRoutes() {
                 final planId = state.pathParameters['planId'];
                 final customerId = state.uri.queryParameters['customerId'];
                 return WorkoutBuilderMobilityScreen(
-                  variant: WorkoutBuilderVariant.mobility,
                   customerId: customerId,
                   planId: planId,
                   editorMode: true,
@@ -265,32 +248,7 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'builder',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (_, __) => const WorkoutBuilderMobilityScreen(
-            variant: WorkoutBuilderVariant.mobility,
-          ),
-          routes: [
-            GoRoute(
-              path: 'multiset',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (_, __) => const WorkoutBuilderMobilityScreen(
-                variant: WorkoutBuilderVariant.multiset,
-              ),
-            ),
-            GoRoute(
-              path: 'superset',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (_, __) => const WorkoutBuilderMobilityScreen(
-                variant: WorkoutBuilderVariant.superset,
-              ),
-            ),
-            GoRoute(
-              path: 'intuitive-superset',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (_, __) => const WorkoutBuilderMobilityScreen(
-                variant: WorkoutBuilderVariant.intuitiveSuperset,
-              ),
-            ),
-          ],
+          builder: (_, __) => const WorkoutBuilderMobilityScreen(),
         ),
         GoRoute(
           path: 'library',
