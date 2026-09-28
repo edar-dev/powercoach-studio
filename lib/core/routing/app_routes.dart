@@ -3,7 +3,6 @@ import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';
-import 'package:powercoach_studio/features/auth/presentation/screens/profile_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/registration_check_email_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/registration_screen.dart';
 import 'package:powercoach_studio/features/customers/presentation/screens/customer_creation_screen.dart';
@@ -16,15 +15,11 @@ import 'package:powercoach_studio/features/customers/presentation/screens/custom
 import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_calendar_screen.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_dashboard_screen.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/screens/schedule_detail_screen.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/screens/schedule_screen.dart';
 import 'package:powercoach_studio/features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'package:powercoach_studio/features/landing/presentation/screens/landing_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/personal_info_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/coach_stats_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/gym_mode_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/gym_session_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_entry_screen.dart';
@@ -66,10 +61,16 @@ List<RouteBase> buildAppRoutes() {
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const CoachCalendarScreen(),
         ),
+        // List hub removed (Wave C); keep detail for calendar/today session log.
         GoRoute(
           path: 'schedule',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const ScheduleScreen(),
+          redirect: (context, state) {
+            if (state.uri.path == '/dashboard/schedule') {
+              return '/dashboard/calendar';
+            }
+            return null;
+          },
           routes: [
             GoRoute(
               path: 'detail',
@@ -82,7 +83,7 @@ List<RouteBase> buildAppRoutes() {
     ),
     GoRoute(
       path: '/profile',
-      builder: (context, state) => const ProfileScreen(),
+      redirect: (context, state) => AppPaths.personalInfo,
     ),
     GoRoute(
       path: AppPaths.subscription,
@@ -90,16 +91,8 @@ List<RouteBase> buildAppRoutes() {
       builder: (context, state) => const SubscriptionScreen(),
     ),
     GoRoute(
-      path: AppPaths.gym,
-      parentNavigatorKey: appRootNavigatorKey,
-      builder: (context, state) => const GymModeScreen(),
-      routes: [
-        GoRoute(
-          path: 'session',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const GymSessionScreen(),
-        ),
-      ],
+      path: '/gym',
+      redirect: (context, state) => '/dashboard',
     ),
     GoRoute(
       path: '/settings',
@@ -273,7 +266,7 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'stats',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const CoachStatsScreen(),
+          redirect: (_, __) => '/workouts/diary',
         ),
       ],
     ),

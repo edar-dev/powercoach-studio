@@ -7,7 +7,7 @@ import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/dashboard_coach_tools_hints.dart';
 import 'dashboard_section_header.dart';
 
-/// Quick entry points to workout diary and coach stats from the dashboard hub.
+/// Quick entry point to workout History from the dashboard hub.
 class DashboardCoachToolsSection extends StatefulWidget {
   const DashboardCoachToolsSection({
     super.key,
@@ -49,49 +49,26 @@ class _DashboardCoachToolsSectionState extends State<DashboardCoachToolsSection>
     final cs = theme.colorScheme;
     final hints = _hints;
 
-    const toolCount = 2;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         DashboardSectionHeader(
           title: l10n.dashboardCoachToolsTitle,
-          badge: l10n.dashboardCoachToolsAvailable(toolCount),
+          badge: l10n.dashboardCoachToolsAvailable(1),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            Expanded(
-              child: _CoachToolActionCard(
-                theme: theme,
-                colorScheme: cs,
-                icon: Icons.menu_book_outlined,
-                title: l10n.dashboardDiaryAction,
-                subtitle: hints == null
-                    ? '—'
-                    : l10n.dashboardDiarySubtitle(hints.loggedSessions30d),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  navigateTo(context, workoutDiaryPath());
-                },
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _CoachToolActionCard(
-                theme: theme,
-                colorScheme: cs,
-                icon: Icons.insights_outlined,
-                title: l10n.dashboardStatsAction,
-                subtitle: hints == null || hints.adherence7dPercent == null
-                    ? '—'
-                    : l10n.dashboardStatsSubtitle(hints.adherence7dPercent!),
-                onTap: () {
-                  HapticFeedback.mediumImpact();
-                  navigateTo(context, '/workouts/stats');
-                },
-              ),
-            ),
-          ],
+        _CoachToolActionCard(
+          theme: theme,
+          colorScheme: cs,
+          icon: Icons.menu_book_outlined,
+          title: l10n.dashboardDiaryAction,
+          subtitle: hints == null
+              ? '—'
+              : l10n.dashboardDiarySubtitle(hints.loggedSessions30d),
+          onTap: () {
+            HapticFeedback.mediumImpact();
+            navigateTo(context, workoutDiaryPath());
+          },
         ),
       ],
     );

@@ -3655,7 +3655,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardCoachToolsTitle => 'Strumenti coach';
 
   @override
-  String get dashboardDiaryAction => 'Diario allenamenti';
+  String get dashboardDiaryAction => 'Storico';
 
   @override
   String get dashboardStatsAction => 'Statistiche coach';
@@ -3786,7 +3786,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get dashboardTodayEmptyHint =>
-      'Nessuna sessione o promemoria pianificato per questa data. Apri l\'agenda o la modalità sala.';
+      'Nessuna sessione o promemoria pianificato per questa data. Apri il calendario.';
 
   @override
   String get dashboardOpenAgenda => 'Apri agenda';
@@ -4098,7 +4098,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutTemplatesAssignStartDateSkip => 'Salta';
 
   @override
-  String get workoutDiaryTitle => 'Diario allenamenti';
+  String get workoutDiaryTitle => 'Storico';
 
   @override
   String get workoutStatsTitle => 'Statistiche';

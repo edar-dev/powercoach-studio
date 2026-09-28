@@ -1624,7 +1624,7 @@
   "dashboardSectionStalePlans": "Programmi da aggiornare",
   "dashboardSectionCustomersNoPlan": "Clienti senza programma",
   "dashboardCoachToolsTitle": "Strumenti coach",
-  "dashboardDiaryAction": "Diario allenamenti",
+  "dashboardDiaryAction": "Storico",
   "dashboardStatsAction": "Statistiche coach",
   "dashboardDiarySubtitle": "{count} sessioni (30 gg)",
   "@dashboardDiarySubtitle": {
@@ -1703,7 +1703,7 @@
   "dashboardMetricWeeklyUpdates": "Aggiornamenti settimana",
   "dashboardMetricCoachAttention": "Attenzione coach",
   "dashboardMetricAlertsSuffix": "avvisi",
-  "dashboardTodayEmptyHint": "Nessuna sessione o promemoria pianificato per questa data. Apri l'agenda o la modalità sala.",
+  "dashboardTodayEmptyHint": "Nessuna sessione o promemoria pianificato per questa data. Apri il calendario.",
   "dashboardOpenAgenda": "Apri agenda",
   "dashboardCoachToolsAvailable": "{count} strumenti disponibili",
   "@dashboardCoachToolsAvailable": {
@@ -1856,7 +1856,7 @@
   "workoutTemplatesAssignStartDate": "Data di inizio opzionale",
   "workoutTemplatesAssignStartDateHint": "Tocca per scegliere una data di inizio",
   "workoutTemplatesAssignStartDateSkip": "Salta",
-  "workoutDiaryTitle": "Diario allenamenti",
+  "workoutDiaryTitle": "Storico",
   "workoutStatsTitle": "Statistiche",
   "placeholderComingSoon": "In arrivo",
   "placeholderSectionNotImplemented": "Questa sezione non è ancora implementata.",

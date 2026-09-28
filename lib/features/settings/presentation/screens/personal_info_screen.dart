@@ -10,7 +10,8 @@ import 'package:powercoach_studio/core/ui/widgets/stitch_card.dart';
 import 'package:powercoach_studio/core/ui/widgets/stitch_secondary_app_bar.dart';
 
 /// Personal Info Settings – Stitch screen ID 0f594d4c05da4c8aa79172ab31ce8790.
-/// Edit display name, email (read-only), phone; save locally per user.
+/// Edit display name, email (read-only), phone, bio, avatar URL, website;
+/// save locally per user via [LocalCoachProfileRepository].
 class PersonalInfoScreen extends StatefulWidget {
   const PersonalInfoScreen({super.key});
 
@@ -22,6 +23,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   final _formKey = GlobalKey<FormState>();
   final _displayNameController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _bioController = TextEditingController();
+  final _avatarUrlController = TextEditingController();
+  final _websiteController = TextEditingController();
   final _emailController = TextEditingController();
   bool _isLoading = true;
   bool _isSaving = false;
@@ -39,6 +43,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
   void dispose() {
     _displayNameController.dispose();
     _phoneController.dispose();
+    _bioController.dispose();
+    _avatarUrlController.dispose();
+    _websiteController.dispose();
     _emailController.dispose();
     super.dispose();
   }
@@ -61,6 +68,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
           _loadError = null;
           _displayNameController.text = localProfile.displayName;
           _phoneController.text = localProfile.phone;
+          _bioController.text = localProfile.bio;
+          _avatarUrlController.text = localProfile.avatarUrl;
+          _websiteController.text = localProfile.website;
         });
       }
     } catch (e) {
@@ -91,9 +101,9 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
         LocalUserProfileData(
           displayName: _displayNameController.text.trim(),
           phone: _phoneController.text.trim(),
-          bio: current.bio,
-          avatarUrl: current.avatarUrl,
-          website: current.website,
+          bio: _bioController.text.trim(),
+          avatarUrl: _avatarUrlController.text.trim(),
+          website: _websiteController.text.trim(),
           subscriptionPlan: current.subscriptionPlan,
         ),
       );
@@ -176,6 +186,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       appBar: StitchSecondaryAppBar(title: l10n.settingsPersonalInfoTitle),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
           child: StitchCard(
             padding: const EdgeInsets.all(24),
@@ -208,8 +219,36 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   TextFormField(
                     controller: _phoneController,
                     keyboardType: TextInputType.phone,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     decoration: InputDecoration(labelText: l10n.profilePhone),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _bioController,
+                    maxLines: 4,
+                    textInputAction: TextInputAction.newline,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileBio,
+                      alignLabelWithHint: true,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _avatarUrlController,
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.next,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileAvatarUrl,
+                    ),
+                  ),
+                  const SizedBox(height: StitchM3Theme.formFieldSpacing),
+                  TextFormField(
+                    controller: _websiteController,
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    decoration: InputDecoration(
+                      labelText: l10n.profileWebsite,
+                    ),
                   ),
                   const SizedBox(height: 32),
                   FilledButton(

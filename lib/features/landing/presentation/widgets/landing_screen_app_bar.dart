@@ -304,7 +304,7 @@ class _RightActions extends StatelessWidget {
           TextButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/profile');
+              navigateTo(context, '/settings/personal-info');
             },
             style: TextButton.styleFrom(
               foregroundColor: LandingColors.slate300,

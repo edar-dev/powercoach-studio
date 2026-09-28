@@ -22,7 +22,7 @@ class WorkoutBuilderBottomNav extends StatelessWidget {
     final items = [
       (Icons.add_circle, l10n.workoutBuilderNavBuilder, '/workouts/builder'),
       (Icons.library_books, l10n.workoutTemplatesTitle, '/workouts/templates'),
-      (Icons.person, l10n.profileTitle, '/profile'),
+      (Icons.person, l10n.profileTitle, '/settings/personal-info'),
     ];
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

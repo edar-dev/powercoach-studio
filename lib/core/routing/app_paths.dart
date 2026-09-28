@@ -11,6 +11,6 @@ abstract final class AppPaths {
 
   static const settings = '/settings';
 
-  /// Gym mode — full-page session runner for today's scheduled sessions.
-  static const gym = '/gym';
+  /// Personal info (canonical destination for legacy `/profile`).
+  static const personalInfo = '/settings/personal-info';
 }

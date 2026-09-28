@@ -10,7 +10,8 @@ bool isProtectedAppPath(String path) {
       path.startsWith('/settings') ||
       path == AppPaths.subscription ||
       path == '/exercise-library' ||
-      path.startsWith(AppPaths.gym);
+      path == '/gym' ||
+      path.startsWith('/gym/');
 }
 
 /// Returns a safe in-app path from a post-login redirect query parameter.
@@ -52,6 +53,20 @@ String? resolveAppRouteRedirect(GoRouterState state) {
 
   if (path == '/workouts/library') {
     return '/exercise-library';
+  }
+
+  // Wave C legacy redirects (gym / profile / schedule list / stats).
+  if (path == '/gym' || path.startsWith('/gym/')) {
+    return '/dashboard';
+  }
+  if (path == '/profile') {
+    return AppPaths.personalInfo;
+  }
+  if (path == '/dashboard/schedule') {
+    return '/dashboard/calendar';
+  }
+  if (path == '/workouts/stats') {
+    return '/workouts/diary';
   }
 
   return null;

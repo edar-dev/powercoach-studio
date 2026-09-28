@@ -1624,7 +1624,7 @@
   "dashboardSectionStalePlans": "Plans to refresh",
   "dashboardSectionCustomersNoPlan": "Clients without a program",
   "dashboardCoachToolsTitle": "Coach tools",
-  "dashboardDiaryAction": "Workout diary",
+  "dashboardDiaryAction": "History",
   "dashboardStatsAction": "Coach stats",
   "dashboardDiarySubtitle": "{count} sessions (30d)",
   "@dashboardDiarySubtitle": {
@@ -1703,7 +1703,7 @@
   "dashboardMetricWeeklyUpdates": "Weekly updates",
   "dashboardMetricCoachAttention": "Coach attention",
   "dashboardMetricAlertsSuffix": "alerts",
-  "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the agenda or gym mode.",
+  "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the calendar.",
   "dashboardOpenAgenda": "Open agenda",
   "dashboardCoachToolsAvailable": "{count} tools available",
   "@dashboardCoachToolsAvailable": {
@@ -1856,7 +1856,7 @@
   "workoutTemplatesAssignStartDate": "Optional start date",
   "workoutTemplatesAssignStartDateHint": "Tap to choose a start date",
   "workoutTemplatesAssignStartDateSkip": "Skip",
-  "workoutDiaryTitle": "Workout diary",
+  "workoutDiaryTitle": "History",
   "workoutStatsTitle": "Stats",
   "placeholderComingSoon": "Coming soon",
   "placeholderSectionNotImplemented": "This section is not yet implemented.",

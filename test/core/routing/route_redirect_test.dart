@@ -31,6 +31,8 @@ void main() {
     expect(isProtectedAppPath('/subscription'), isTrue);
     expect(isProtectedAppPath('/settings/subscription'), isTrue);
     expect(isProtectedAppPath('/profile'), isTrue);
+    expect(isProtectedAppPath('/gym'), isTrue);
+    expect(isProtectedAppPath('/gym/session'), isTrue);
     expect(isProtectedAppPath('/dashboard/calendar'), isTrue);
     expect(isProtectedAppPath('/dashboard/schedule/detail'), isTrue);
     expect(isProtectedAppPath('/exercise-library'), isTrue);

@@ -73,7 +73,9 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).headerProfile),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) navigateTo(context, '/profile');
+                if (context.mounted) {
+                  navigateTo(context, '/settings/personal-info');
+                }
               },
             ),
             ListTile(

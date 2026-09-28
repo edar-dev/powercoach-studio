@@ -6565,7 +6565,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardDiaryAction.
   ///
   /// In en, this message translates to:
-  /// **'Workout diary'**
+  /// **'History'**
   String get dashboardDiaryAction;
 
   /// No description provided for @dashboardStatsAction.
@@ -6787,7 +6787,7 @@ abstract class AppLocalizations {
   /// No description provided for @dashboardTodayEmptyHint.
   ///
   /// In en, this message translates to:
-  /// **'No sessions or reminders planned for this date. Open the agenda or gym mode.'**
+  /// **'No sessions or reminders planned for this date. Open the calendar.'**
   String get dashboardTodayEmptyHint;
 
   /// No description provided for @dashboardOpenAgenda.
@@ -7351,7 +7351,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutDiaryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Workout diary'**
+  /// **'History'**
   String get workoutDiaryTitle;
 
   /// No description provided for @workoutStatsTitle.

@@ -3621,7 +3621,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardCoachToolsTitle => 'Coach tools';
 
   @override
-  String get dashboardDiaryAction => 'Workout diary';
+  String get dashboardDiaryAction => 'History';
 
   @override
   String get dashboardStatsAction => 'Coach stats';
@@ -3750,7 +3750,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dashboardTodayEmptyHint =>
-      'No sessions or reminders planned for this date. Open the agenda or gym mode.';
+      'No sessions or reminders planned for this date. Open the calendar.';
 
   @override
   String get dashboardOpenAgenda => 'Open agenda';
@@ -4059,7 +4059,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutTemplatesAssignStartDateSkip => 'Skip';
 
   @override
-  String get workoutDiaryTitle => 'Workout diary';
+  String get workoutDiaryTitle => 'History';
 
   @override
   String get workoutStatsTitle => 'Stats';
