@@ -11,7 +11,6 @@ void showCustomerDetailActionsSheet({
   required Customer customer,
   required int unreadNotesCount,
   required VoidCallback onOpenNotes,
-  required VoidCallback onOpenReminder,
   required VoidCallback onEdit,
   required VoidCallback onDelete,
 }) {
@@ -31,14 +30,6 @@ void showCustomerDetailActionsSheet({
           onTap: () {
             Navigator.pop(sheetContext);
             onOpenNotes();
-          },
-        ),
-        ListTile(
-          leading: const Icon(Icons.alarm_add_outlined),
-          title: Text(l10n.customerReminderAction),
-          onTap: () {
-            Navigator.pop(sheetContext);
-            onOpenReminder();
           },
         ),
         ListTile(

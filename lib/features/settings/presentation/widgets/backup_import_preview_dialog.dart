@@ -130,14 +130,6 @@ class _BackupImportPreviewDialogState extends State<BackupImportPreviewDialog> {
             CheckboxListTile(
               contentPadding: EdgeInsets.zero,
               controlAffinity: ListTileControlAffinity.leading,
-              value: _selectedGroups.contains(BackupEntityGroup.reminders),
-              onChanged: (value) =>
-                  _toggleGroup(BackupEntityGroup.reminders, value),
-              title: Text(l10n.backupImportGroupReminders(counts.reminders)),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
               value: _selectedGroups.contains(BackupEntityGroup.preferences),
               onChanged: (value) =>
                   _toggleGroup(BackupEntityGroup.preferences, value),

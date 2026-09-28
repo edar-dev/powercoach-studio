@@ -141,9 +141,6 @@ class SessionExecutionService {
     required PlanSessionStatus status,
     List<ExecutedExercise> exercises = const [],
     String notes = '',
-    int? sessionRpe,
-    int? painLevel,
-    String? painLocation,
   }) async {
     final sessionKey = WorkoutRoutine.sessionKey(weekIndex, dayIndex);
     if (status == PlanSessionStatus.planned) {
@@ -165,9 +162,6 @@ class SessionExecutionService {
       completedAt: DateTime.now(),
       notes: notes,
       exercises: exercises,
-      sessionRpe: sessionRpe,
-      painLevel: painLevel,
-      painLocation: painLocation,
     );
     await save(planId: planId, execution: execution);
     return execution;

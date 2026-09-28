@@ -67,7 +67,6 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
     required this.customer,
     required this.unreadNotesCount,
     required this.onOpenNotes,
-    required this.onOpenReminder,
     required this.onEdit,
     required this.onDelete,
   });
@@ -77,7 +76,6 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
   final Customer customer;
   final int unreadNotesCount;
   final VoidCallback onOpenNotes;
-  final VoidCallback onOpenReminder;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
 
@@ -237,7 +235,6 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
             customer: customer,
             unreadNotesCount: unreadNotesCount,
             onOpenNotes: onOpenNotes,
-            onOpenReminder: onOpenReminder,
             onEdit: onEdit,
             onDelete: onDelete,
           ),

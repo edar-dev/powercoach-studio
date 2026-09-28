@@ -5,7 +5,6 @@ enum BackupEntityGroup {
   customers,
   workoutPlans,
   exerciseLibrary,
-  reminders,
   preferences,
 }
 
@@ -13,7 +12,6 @@ const Set<BackupEntityGroup> kAllBackupEntityGroups = {
   BackupEntityGroup.customers,
   BackupEntityGroup.workoutPlans,
   BackupEntityGroup.exerciseLibrary,
-  BackupEntityGroup.reminders,
   BackupEntityGroup.preferences,
 };
 
@@ -35,7 +33,6 @@ Set<OfflineEntityType> entityTypesForBackupGroups(Set<BackupEntityGroup> groups)
         types.add(OfflineEntityType.workoutPlan);
       case BackupEntityGroup.exerciseLibrary:
         types.add(OfflineEntityType.customExercise);
-      case BackupEntityGroup.reminders:
       case BackupEntityGroup.preferences:
         break;
     }

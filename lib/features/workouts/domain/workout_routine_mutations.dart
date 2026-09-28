@@ -28,7 +28,6 @@ Week _cloneWeekDeep(Week source, {required String newWeekId, required String new
               .map((e) => cloneExerciseForWeekCopy(e, newWeekId))
               .toList(),
           scheduledWeekday: day.scheduledWeekday,
-          coachingNote: day.coachingNote,
         ),
       )
       .toList();
@@ -199,28 +198,6 @@ WorkoutRoutine? renameDayInRoutine({
   final day = week.days[dayIndex];
   final newDays = List<Day>.from(week.days);
   newDays[dayIndex] = day.copyWith(name: trimmed);
-  return routine.replaceWeekAt(weekIndex, week.copyWith(days: newDays));
-}
-
-/// Sets or clears the day's coaching note. Passing an empty/blank
-/// [coachingNote] clears it.
-WorkoutRoutine? setDayCoachingNoteInRoutine({
-  required WorkoutRoutine routine,
-  required int weekIndex,
-  required int dayIndex,
-  required String coachingNote,
-}) {
-  final loc = routine.locateWeek(weekIndex);
-  if (loc == null) return null;
-  final week = routine.phases[loc.phaseIndex].weeks[loc.weekIndexInPhase];
-  if (dayIndex < 0 || dayIndex >= week.days.length) return null;
-  final day = week.days[dayIndex];
-  final trimmed = coachingNote.trim();
-  final newDays = List<Day>.from(week.days);
-  newDays[dayIndex] = day.copyWith(
-    coachingNote: trimmed.isEmpty ? null : trimmed,
-    clearCoachingNote: trimmed.isEmpty,
-  );
   return routine.replaceWeekAt(weekIndex, week.copyWith(days: newDays));
 }
 

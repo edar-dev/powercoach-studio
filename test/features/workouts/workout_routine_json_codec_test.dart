@@ -36,48 +36,22 @@ void main() {
     );
   });
 
-  test('round-trip preserves day coaching note', () {
-    final routine = WorkoutRoutine.empty().copyWith(
-      weeks: [
-        const Week(
-          id: 'w1',
-          name: 'Week 1',
-          days: [
-            Day(
-              id: 'd1',
-              name: 'Day A',
-              exercises: [],
-              coachingNote: 'Keep tempo slow on eccentrics',
-            ),
-          ],
-        ),
-      ],
-    );
-    final jsonText = encodeWorkoutRoutineJson(routine);
-    final restored = decodeWorkoutRoutineJson(jsonText);
-
-    expect(
-      restored.weeks.single.days.single.coachingNote,
-      'Keep tempo slow on eccentrics',
-    );
-  });
-
-  test('decodes legacy day JSON without coachingNote as null', () {
+  test('decodeDay ignores legacy coachingNote key', () {
     final legacyDayJson = {
       'id': 'd1',
       'name': 'Day A',
       'exercises': <Map<String, dynamic>>[],
+      'coachingNote': 'Keep tempo slow on eccentrics',
     };
     final day = decodeDay(legacyDayJson);
-    expect(day.coachingNote, isNull);
+    expect(encodeDay(day).containsKey('coachingNote'), isFalse);
   });
 
-  test('encodeDay omits blank coaching note', () {
+  test('encodeDay never writes coachingNote', () {
     const day = Day(
       id: 'd1',
       name: 'Day A',
       exercises: [],
-      coachingNote: '   ',
     );
     expect(encodeDay(day).containsKey('coachingNote'), isFalse);
   });

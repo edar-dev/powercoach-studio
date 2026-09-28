@@ -8,8 +8,8 @@ import 'package:timezone/timezone.dart' as tz;
 
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../routing/root_navigator_key.dart';
+import 'calendar_reminder_scheduler.dart';
 import 'reminder.dart';
-import 'reminder_store.dart';
 
 /// Local notification plugin wiring: channels, permissions, zoned schedule, cancel.
 class NotificationSchedulerService {
@@ -182,7 +182,7 @@ class NotificationSchedulerService {
     );
   }
 
-  /// Re-schedules all future reminders when notifications preference is on.
+  /// Re-schedules calendar-linked reminders when notifications preference is on.
   Future<void> syncWithNotificationPreference() async {
     if (!supportsLocalNotifications) return;
     await ensureInitialized();
@@ -193,13 +193,8 @@ class NotificationSchedulerService {
     }
 
     await _plugin.cancelAll();
-    final reminders = await ReminderStore.instance.loadAll();
-    final now = DateTime.now().toUtc();
-    for (final r in reminders) {
-      if (r.scheduledAtUtc.toUtc().isAfter(now)) {
-        await scheduleReminder(r);
-      }
-    }
+    // Calendar path must not depend on deleted ReminderStore.
+    await CalendarReminderScheduler.instance.rescheduleUpcoming();
   }
 
   /// If preference says enabled but OS denied permission, turn preference off.

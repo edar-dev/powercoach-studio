@@ -33,7 +33,6 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
-    required this.onSetDayCoachingNote,
     required this.onDeleteDay,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
@@ -76,7 +75,6 @@ class WorkoutTrainingTab extends StatelessWidget {
   final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
-  final void Function(int, int, String) onSetDayCoachingNote;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
@@ -196,7 +194,6 @@ class WorkoutTrainingTab extends StatelessWidget {
         onRenameWeek: onRenameWeek,
         onAddDay: onAddDay,
         onRenameDay: onRenameDay,
-        onSetDayCoachingNote: onSetDayCoachingNote,
         onDeleteDay: onDeleteDay,
         onDuplicateExercise: onDuplicateExercise,
         onRemoveExercise: onRemoveExercise,
@@ -246,7 +243,6 @@ class _PhaseTrainingBody extends StatefulWidget {
     required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
-    required this.onSetDayCoachingNote,
     required this.onDeleteDay,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
@@ -291,7 +287,6 @@ class _PhaseTrainingBody extends StatefulWidget {
   final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
-  final void Function(int, int, String) onSetDayCoachingNote;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
@@ -432,14 +427,6 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
           (name) => widget.onRenameDay(weekIndex, index, name),
         );
       },
-      onEditDayNote: (weekIndex, index) {
-        final day = liveDay(weekIndex, index);
-        showEditDayCoachingNoteDialog(
-          context,
-          day.coachingNote ?? '',
-          (note) => widget.onSetDayCoachingNote(weekIndex, index, note),
-        );
-      },
       onDeleteDay: (weekIndex, index) =>
           widget.onDeleteDay(weekIndex, index),
       onCloneDayToTarget: widget.onCloneDayToTarget,
@@ -570,18 +557,6 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
                     widget.globalWeekOffset + wi,
                     dayIndex,
                     name,
-                  ),
-                );
-              },
-              onEditDayNote: (dayIndex) {
-                final day = weeks[wi].days[dayIndex];
-                showEditDayCoachingNoteDialog(
-                  context,
-                  day.coachingNote ?? '',
-                  (note) => widget.onSetDayCoachingNote(
-                    widget.globalWeekOffset + wi,
-                    dayIndex,
-                    note,
                   ),
                 );
               },
@@ -717,7 +692,6 @@ class _WeekBlock extends StatelessWidget {
     required this.onDeleteWeek,
     required this.onRenameWeek,
     required this.onRenameDay,
-    required this.onEditDayNote,
     required this.onDeleteDay,
     required this.onUpdateScheduledWeekday,
     this.readOnly = false,
@@ -738,7 +712,6 @@ class _WeekBlock extends StatelessWidget {
   final VoidCallback onDeleteWeek;
   final VoidCallback onRenameWeek;
   final void Function(int dayIndex) onRenameDay;
-  final void Function(int dayIndex) onEditDayNote;
   final void Function(int dayIndex) onDeleteDay;
   final void Function(int weekIndex, int dayIndex, int? weekday)
   onUpdateScheduledWeekday;
@@ -990,8 +963,6 @@ class _WeekBlock extends StatelessWidget {
                           switch (action) {
                             case 'rename':
                               onRenameDay(index);
-                            case 'note':
-                              onEditDayNote(index);
                             case 'delete':
                               onDeleteDay(index);
                           }

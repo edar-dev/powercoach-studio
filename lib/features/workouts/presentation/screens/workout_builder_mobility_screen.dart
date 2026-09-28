@@ -238,9 +238,6 @@ class _WorkoutBuilderMobilityScreenState
       plannedExercises: day.exercises,
       initialExercises: existing?.exercises,
       initialNotes: existing?.notes ?? '',
-      initialSessionRpe: existing?.sessionRpe,
-      initialPainLevel: existing?.painLevel,
-      initialPainLocation: existing?.painLocation,
     );
     if (logResult == null || !mounted) return;
 
@@ -252,9 +249,6 @@ class _WorkoutBuilderMobilityScreenState
         status: PlanSessionStatus.completed,
         exercises: logResult.exercises,
         notes: logResult.notes,
-        sessionRpe: logResult.sessionRpe,
-        painLevel: logResult.painLevel,
-        painLocation: logResult.painLocation,
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

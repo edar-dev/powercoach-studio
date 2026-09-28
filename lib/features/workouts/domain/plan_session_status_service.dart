@@ -22,9 +22,6 @@ class PlanSessionStatusService {
     DateTime? sessionDate,
     List<ExecutedExercise> exercises = const [],
     String notes = '',
-    int? sessionRpe,
-    int? painLevel,
-    String? painLocation,
   }) async {
     await _repository.setSessionCompleted(
       planId: planId,
@@ -59,9 +56,6 @@ class PlanSessionStatusService {
       status: status,
       exercises: exercises,
       notes: notes,
-      sessionRpe: sessionRpe,
-      painLevel: painLevel,
-      painLocation: painLocation,
     );
   }
 }

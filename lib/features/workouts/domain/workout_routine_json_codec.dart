@@ -149,19 +149,17 @@ Exercise decodeExercise(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> encodeDay(Day day) {
-  // Legacy `densityBlocks` keys are intentionally not written.
+  // Legacy `densityBlocks` / `coachingNote` keys are intentionally not written.
   return {
     'id': day.id,
     'name': day.name,
     'exercises': day.exercises.map(encodeExercise).toList(),
     if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
-    if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
-      'coachingNote': day.coachingNote!.trim(),
   };
 }
 
 Day decodeDay(Map<String, dynamic> json) => Day(
-  // Legacy `densityBlocks` keys are ignored on read (dropped, not crashed).
+  // Legacy `densityBlocks` / `coachingNote` keys are ignored on read.
   id: json['id'] as String? ?? '',
   name: json['name'] as String? ?? 'Day',
   exercises: (json['exercises'] as List<dynamic>?)
@@ -169,7 +167,6 @@ Day decodeDay(Map<String, dynamic> json) => Day(
           .toList() ??
       [],
   scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
-  coachingNote: json['coachingNote'] as String?,
 );
 
 Map<String, dynamic> encodeWeek(Week week) => {

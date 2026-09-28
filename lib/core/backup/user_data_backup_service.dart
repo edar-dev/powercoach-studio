@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import '../constants/app_info.dart';
 import '../notifications/notification_scheduler_service.dart';
-import '../notifications/reminder.dart';
-import '../notifications/reminder_store.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../storage/offline_local_store.dart';
@@ -28,7 +26,9 @@ class UserDataBackupService {
     final store = OfflineLocalStore.instance;
 
     final entities = await store.listEntitiesJsonForBackup(accountUserId);
-    final reminders = await ReminderStore.instance.exportMaps();
+    // Manual ReminderStore reminders are no longer exported; keep empty list
+    // for envelope backward compatibility. Calendar prefs live under preferences.
+    const reminders = <Map<String, dynamic>>[];
     final counts = entityCountsFromBackupEntities(
       entities,
       reminders: reminders.length,
@@ -58,7 +58,8 @@ class UserDataBackupService {
   /// When [groups] is a strict subset of [kAllBackupEntityGroups], only the
   /// selected slices are replaced; other local data stays intact.
   ///
-  /// Legacy `pendingOperations` / `syncMeta` in the envelope are ignored.
+  /// Legacy `pendingOperations` / `syncMeta` / `reminders` in the envelope are
+  /// ignored (manual ReminderStore removed; calendar prefs restore via preferences).
   Future<void> restoreParsed(
     ParsedUserBackup parsed,
     String accountUserId, {
@@ -100,14 +101,6 @@ class UserDataBackupService {
           parsed.notificationsEnabled,
         );
       }
-    }
-
-    if (groups.contains(BackupEntityGroup.reminders)) {
-      await ReminderStore.instance.replaceFromMaps(parsed.reminders);
-    }
-
-    if (groups.contains(BackupEntityGroup.preferences) ||
-        groups.contains(BackupEntityGroup.reminders)) {
       await NotificationSchedulerService.instance
           .syncWithNotificationPreference();
     }
@@ -156,25 +149,6 @@ class UserDataBackupService {
           parsed.notificationsEnabled,
         );
       }
-    }
-
-    if (groups.contains(BackupEntityGroup.reminders) &&
-        parsed.reminders.isNotEmpty) {
-      final existing = await ReminderStore.instance.loadAll();
-      final byId = {for (final r in existing) r.id: r};
-      for (final raw in parsed.reminders) {
-        final reminder = Reminder.tryFromJson(raw);
-        if (reminder != null) {
-          byId[reminder.id] = reminder;
-        }
-      }
-      await ReminderStore.instance.replaceFromMaps(
-        byId.values.map((r) => r.toJson()).toList(),
-      );
-    }
-
-    if (groups.contains(BackupEntityGroup.preferences) ||
-        groups.contains(BackupEntityGroup.reminders)) {
       await NotificationSchedulerService.instance
           .syncWithNotificationPreference();
     }

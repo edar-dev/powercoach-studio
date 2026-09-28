@@ -3,7 +3,6 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
-import 'package:powercoach_studio/features/customers/presentation/widgets/customer_reminder_sheet.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/customer_exercise_record_repository.dart';
@@ -237,11 +236,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
           customerId: widget.customerId,
           customerName: c.name,
           onReturn: _loadUnreadNotes,
-        ),
-        onOpenReminder: () => showCustomerReminderComposer(
-          context,
-          customerId: c.id,
-          customerName: c.name,
         ),
         onEdit: () => navigateTo(context, '/customers/${c.id}/edit'),
         onDelete: () => deleteCustomerDetail(

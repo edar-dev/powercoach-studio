@@ -47,7 +47,7 @@ void main() {
     expect(find.textContaining('80kg'), findsOneWidget);
   });
 
-  testWidgets('WorkoutDiaryEntryBody shows session RPE and pain check-in', (
+  testWidgets('WorkoutDiaryEntryBody has no RPE/pain check-in chips', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -67,9 +67,7 @@ void main() {
                   dayIndex: 0,
                   sessionDate: DateTime(2026, 6, 14),
                   status: PlanSessionStatus.completed,
-                  sessionRpe: 8,
-                  painLevel: 3,
-                  painLocation: 'left knee',
+                  notes: 'Only notes',
                 ),
               ),
             );
@@ -80,7 +78,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('RPE 8/10'), findsOneWidget);
-    expect(find.text('Pain 3/10 · left knee'), findsOneWidget);
+    expect(find.byType(Chip), findsNothing);
+    expect(find.text('Only notes'), findsOneWidget);
   });
 }
