@@ -7,10 +7,9 @@ import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
-import '../../../workouts/presentation/widgets/workout_new_plan_wizard.dart';
 import '../../../workouts/presentation/widgets/workout_plan_name_prompt_dialog.dart';
 
-enum CustomerNewWorkoutChoice { blank, guided, fromTemplate, duplicateExisting }
+enum CustomerNewWorkoutChoice { blank, duplicateExisting }
 
 /// Bottom sheet entry for creating a new customer workout plan.
 Future<void> showCustomerNewWorkoutSheet(
@@ -35,22 +34,6 @@ Future<void> showCustomerNewWorkoutSheet(
     case CustomerNewWorkoutChoice.blank:
       HapticFeedback.mediumImpact();
       navigateTo(context, customerWorkoutEditorPath(customerId));
-    case CustomerNewWorkoutChoice.guided:
-      HapticFeedback.mediumImpact();
-      await showWorkoutNewPlanWizard(
-        context,
-        customerId: customerId,
-        planRepo: repository,
-      );
-    case CustomerNewWorkoutChoice.fromTemplate:
-      HapticFeedback.mediumImpact();
-      navigateTo(
-        context,
-        Uri(
-          path: '/workouts/templates',
-          queryParameters: {'customerId': customerId},
-        ).toString(),
-      );
     case CustomerNewWorkoutChoice.duplicateExisting:
       await _duplicateExistingPlan(
         context,
@@ -168,22 +151,6 @@ class _CustomerNewWorkoutSheetBody extends StatelessWidget {
           subtitle: l10n.customerNewWorkoutBlankHint,
           colorScheme: cs,
           onTap: () => onChoice(CustomerNewWorkoutChoice.blank),
-        ),
-        const SizedBox(height: 8),
-        _ChoiceTile(
-          icon: Icons.auto_fix_high_outlined,
-          title: l10n.customerNewWorkoutGuided,
-          subtitle: l10n.customerNewWorkoutGuidedHint,
-          colorScheme: cs,
-          onTap: () => onChoice(CustomerNewWorkoutChoice.guided),
-        ),
-        const SizedBox(height: 8),
-        _ChoiceTile(
-          icon: Icons.bookmark_outline,
-          title: l10n.customerNewWorkoutFromTemplate,
-          subtitle: l10n.customerNewWorkoutFromTemplateHint,
-          colorScheme: cs,
-          onTap: () => onChoice(CustomerNewWorkoutChoice.fromTemplate),
         ),
         const SizedBox(height: 8),
         _ChoiceTile(

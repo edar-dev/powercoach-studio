@@ -2745,12 +2745,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerNewWorkoutBlankHint => 'Start from scratch in the builder';
 
   @override
-  String get customerNewWorkoutFromTemplate => 'From template library';
-
-  @override
-  String get customerNewWorkoutFromTemplateHint => 'Use a saved template';
-
-  @override
   String get customerNewWorkoutDuplicateExisting => 'Duplicate existing plan';
 
   @override
@@ -2764,81 +2758,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get customerNewWorkoutDuplicatePickTitle =>
       'Choose a plan to duplicate';
-
-  @override
-  String get customerNewWorkoutGuided => 'Guided setup';
-
-  @override
-  String get customerNewWorkoutGuidedHint =>
-      'Name, weeks, days, and a preset split';
-
-  @override
-  String get workoutNewPlanWizardTitle => 'Guided plan setup';
-
-  @override
-  String get workoutNewPlanWizardBack => 'Back';
-
-  @override
-  String get workoutNewPlanWizardNext => 'Next';
-
-  @override
-  String get workoutNewPlanWizardCreate => 'Create plan';
-
-  @override
-  String get workoutNewPlanWizardNameRequired => 'Enter a name for the plan.';
-
-  @override
-  String get workoutNewPlanWizardNameLabel => 'Plan name';
-
-  @override
-  String get workoutNewPlanWizardStepNameTitle =>
-      'What should this plan be called?';
-
-  @override
-  String get workoutNewPlanWizardStepNameHint =>
-      'e.g. Summer hypertrophy, Pre-comp, Mesocycle 1…';
-
-  @override
-  String get workoutNewPlanWizardStepWeeksTitle => 'How many weeks?';
-
-  @override
-  String get workoutNewPlanWizardStepWeeksHint =>
-      'You can add or remove weeks later in the builder.';
-
-  @override
-  String get workoutNewPlanWizardStepDaysTitle => 'How many days per week?';
-
-  @override
-  String get workoutNewPlanWizardStepDaysHint =>
-      'Choose how many training slots you want each week.';
-
-  @override
-  String get workoutNewPlanWizardStepPresetTitle => 'Which split template?';
-
-  @override
-  String get workoutNewPlanWizardStepPresetHint =>
-      'We create empty named days you can rename anytime.';
-
-  @override
-  String get workoutNewPlanWizardPresetFullBody => 'Full body';
-
-  @override
-  String get workoutNewPlanWizardPresetFullBodyHint =>
-      'Day A/B/C… full-body sessions';
-
-  @override
-  String get workoutNewPlanWizardPresetUpperLower => 'Upper / Lower';
-
-  @override
-  String get workoutNewPlanWizardPresetUpperLowerHint =>
-      'Alternate upper and lower days';
-
-  @override
-  String get workoutNewPlanWizardPresetPpl => 'Push / Pull / Legs';
-
-  @override
-  String get workoutNewPlanWizardPresetPplHint =>
-      'Push, pull, and legs rotation';
 
   @override
   String get workoutPdfPreviewTitle => 'PDF preview';
