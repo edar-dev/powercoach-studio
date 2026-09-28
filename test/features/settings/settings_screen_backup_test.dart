@@ -30,11 +30,14 @@ void main() {
     );
 
     await tester.pump();
-    await tester.pump(const Duration(milliseconds: 100));
+    await tester.pumpAndSettle(const Duration(seconds: 2));
 
-    expect(find.text('Backup offline'), findsOneWidget);
+    expect(find.text('Backup offline & Cloud'), findsAtLeastNWidgets(1));
     expect(find.text('Esporta backup'), findsOneWidget);
     expect(find.text('Importa backup'), findsOneWidget);
-    expect(find.textContaining('sincron'), findsNothing);
+    expect(
+      find.textContaining('Non è una sincronizzazione automatica'),
+      findsOneWidget,
+    );
   });
 }
