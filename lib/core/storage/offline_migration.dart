@@ -28,7 +28,18 @@ class OfflineMigration {
       await db.batch((b) {
         for (final item in list) {
           if (item is! Map) continue;
-          final e = OfflineEntity.fromJson(item.cast<String, dynamic>());
+          final body = item.cast<String, dynamic>();
+          // Skip removed/unknown types (e.g. legacy exerciseRecord) so one bad
+          // row cannot abort the whole SharedPreferences → Drift migration.
+          if (!isKnownOfflineEntityTypeName(body['type']?.toString())) {
+            continue;
+          }
+          final OfflineEntity e;
+          try {
+            e = OfflineEntity.fromJson(body);
+          } catch (_) {
+            continue;
+          }
           final rowUid = e.payload['userId']?.toString();
           final effectiveUid =
               (rowUid != null && rowUid.isNotEmpty) ? rowUid : uid;
