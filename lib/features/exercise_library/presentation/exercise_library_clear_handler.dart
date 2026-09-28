@@ -49,10 +49,11 @@ class ExerciseLibraryClearHandler {
       if (!confirmed || !context.mounted) return;
 
       final ids = items.map((e) => e.id).toList();
+      // Suppress auto-seed before deletes so a mid-clear failure cannot re-seed.
+      await DefaultExerciseCatalogSeeder.markAutoSeedSuppressed();
       final count = await exerciseRepo.deleteAll();
       await _pinnedStore.removeIds(ids);
       await _recentStore.removeIds(ids);
-      await DefaultExerciseCatalogSeeder.markAutoSeedSuppressed();
 
       if (!context.mounted) return;
       onReload();
