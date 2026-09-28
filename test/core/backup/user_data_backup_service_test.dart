@@ -187,6 +187,104 @@ void main() {
     expect(customers.map((e) => e.id), isNot(contains('legacy-record')));
   });
 
+  test('restoreParsed always restores all entity types (restore-all)', () async {
+    final store = OfflineLocalStore.instance;
+    await store.upsertEntityForUser(
+      uid,
+      customerEntity(
+        id: 'old-c',
+        name: 'Old',
+        updatedAt: DateTime.utc(2026, 1, 1),
+      ),
+    );
+    await store.upsertEntityForUser(
+      uid,
+      customExerciseEntity(
+        id: 'old-e',
+        updatedAt: DateTime.utc(2026, 1, 1),
+      ),
+    );
+
+    final planEntity = <String, dynamic>{
+      'id': 'plan-1',
+      'type': OfflineEntityType.workoutPlan.name,
+      'scopeId': 'import-c',
+      'payload': <String, dynamic>{
+        'id': 'plan-1',
+        'customerId': 'import-c',
+        'name': 'Imported plan',
+        'userId': uid,
+      },
+      'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+      'deleted': false,
+      'localOnly': false,
+    };
+
+    final parsed = ParsedUserBackup(
+      entities: [
+        customerEntity(
+          id: 'import-c',
+          name: 'Imported',
+          updatedAt: DateTime.utc(2026, 6, 1),
+        ),
+        customExerciseEntity(
+          id: 'import-e',
+          updatedAt: DateTime.utc(2026, 6, 1),
+        ),
+        planEntity,
+      ],
+      pendingOperations: const [],
+      syncMeta: const [],
+      profileJson: null,
+      preferences: const BackupPreferences(notificationsEnabled: true),
+      reminders: const [],
+    );
+
+    // No entity-group filter: replace swaps every known type in one call.
+    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+
+    final customers = await store.readEntities(OfflineEntityType.customer);
+    final exercises = await store.readEntities(OfflineEntityType.customExercise);
+    final plans = await store.readEntities(OfflineEntityType.workoutPlan);
+
+    expect(customers.map((e) => e.id), contains('import-c'));
+    expect(customers.map((e) => e.id), isNot(contains('old-c')));
+    expect(exercises.map((e) => e.id), contains('import-e'));
+    expect(exercises.map((e) => e.id), isNot(contains('old-e')));
+    expect(plans.map((e) => e.id), contains('plan-1'));
+  });
+
+  test('mergeRestore always merges all known types without group filter', () async {
+    final store = OfflineLocalStore.instance;
+    await store.upsertEntityForUser(
+      uid,
+      customerEntity(
+        id: 'keep-c',
+        name: 'Keep',
+        updatedAt: DateTime.utc(2026, 1, 1),
+      ),
+    );
+
+    final parsed = backupWith(
+      customer: customerEntity(
+        id: 'new-c',
+        name: 'New',
+        updatedAt: DateTime.utc(2026, 6, 1),
+      ),
+      exercise: customExerciseEntity(
+        id: 'new-e',
+        updatedAt: DateTime.utc(2026, 6, 1),
+      ),
+    );
+
+    await UserDataBackupService.instance.mergeRestore(parsed, uid);
+
+    final customers = await store.readEntities(OfflineEntityType.customer);
+    final exercises = await store.readEntities(OfflineEntityType.customExercise);
+    expect(customers.map((e) => e.id), containsAll(['keep-c', 'new-c']));
+    expect(exercises.map((e) => e.id), contains('new-e'));
+  });
+
   test('buildExportMap omits pendingOperations and syncMeta and includes prefs', () async {
     SharedPreferences.setMockInitialValues(<String, Object>{
       'settings_notifications_enabled': false,

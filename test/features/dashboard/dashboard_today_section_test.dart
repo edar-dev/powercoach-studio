@@ -42,7 +42,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Apri agenda'), findsOneWidget);
-      expect(find.text('Apri modalità sala'), findsOneWidget);
+      // Gym-mode CTA removed (Wave C); agenda is the sole empty-state action.
+      expect(find.text('Apri modalità sala'), findsNothing);
 
       // FilledButton.icon uses a private subclass; match via `is FilledButton`.
       final filled = tester.widget<FilledButton>(

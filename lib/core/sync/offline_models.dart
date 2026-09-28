@@ -69,16 +69,33 @@ class OfflineEntity {
       };
 
   static OfflineEntity fromJson(Map<String, dynamic> json) {
-    final typeName = json['type']?.toString() ?? '';
+    final rawType = json['type'];
     OfflineEntityType? parsed;
-    for (final candidate in OfflineEntityType.values) {
-      if (candidate.name == typeName) {
-        parsed = candidate;
-        break;
+    if (rawType is int) {
+      if (rawType >= 0 && rawType < OfflineEntityType.values.length) {
+        parsed = OfflineEntityType.values[rawType];
+      }
+    } else {
+      final typeName = rawType?.toString() ?? '';
+      for (final candidate in OfflineEntityType.values) {
+        if (candidate.name == typeName) {
+          parsed = candidate;
+          break;
+        }
+      }
+      // Legacy SharedPreferences caches stored enum indexes as JSON numbers
+      // that decode as strings after some round-trips ("0", "1", …).
+      if (parsed == null) {
+        final asIndex = int.tryParse(typeName);
+        if (asIndex != null &&
+            asIndex >= 0 &&
+            asIndex < OfflineEntityType.values.length) {
+          parsed = OfflineEntityType.values[asIndex];
+        }
       }
     }
     if (parsed == null) {
-      throw FormatException('Unknown offline entity type: $typeName');
+      throw FormatException('Unknown offline entity type: $rawType');
     }
     return OfflineEntity(
       id: json['id']?.toString() ?? '',

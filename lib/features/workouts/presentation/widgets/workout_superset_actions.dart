@@ -7,7 +7,9 @@ import '../workout_builder_session_controller.dart';
 import 'exercise_library_pick_panel.dart';
 import 'workout_builder_superset_editor_sheet.dart';
 
-/// Superset/multiset exercise actions extracted from the builder screen (phase 3).
+/// Superset exercise actions extracted from the builder screen (phase 3).
+/// Orphan multiset/intuitive-superset builder variants were removed; basic
+/// `supersetGroupId` linking remains.
 class WorkoutSupersetActions {
   const WorkoutSupersetActions._();
 

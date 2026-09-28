@@ -1406,12 +1406,6 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profileTitle;
 
-  /// No description provided for @profileComingSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile page coming soon.'**
-  String get profileComingSoon;
-
   /// No description provided for @profileDisplayName.
   ///
   /// In en, this message translates to:
@@ -1718,72 +1712,6 @@ abstract class AppLocalizations {
   /// **'—'**
   String get subscriptionCompareNotIncluded;
 
-  /// No description provided for @subscriptionPromoHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Have an invite code? Enter it below.'**
-  String get subscriptionPromoHint;
-
-  /// No description provided for @subscriptionPromoCardTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Get Pro with an invite'**
-  String get subscriptionPromoCardTitle;
-
-  /// No description provided for @subscriptionPromoCardSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'During early access, Pro is free with an invite code.'**
-  String get subscriptionPromoCardSubtitle;
-
-  /// No description provided for @subscriptionPromoCodeLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Invite code'**
-  String get subscriptionPromoCodeLabel;
-
-  /// No description provided for @subscriptionPromoCodeHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. POWERCOACH-2026'**
-  String get subscriptionPromoCodeHint;
-
-  /// No description provided for @subscriptionPromoCodeEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Enter an invite code.'**
-  String get subscriptionPromoCodeEmpty;
-
-  /// No description provided for @subscriptionPromoRedeemButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Activate Pro'**
-  String get subscriptionPromoRedeemButton;
-
-  /// No description provided for @subscriptionPromoRedeemSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Pro activated. Enjoy!'**
-  String get subscriptionPromoRedeemSuccess;
-
-  /// No description provided for @subscriptionPromoRedeemError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not activate the code. Try again.'**
-  String get subscriptionPromoRedeemError;
-
-  /// No description provided for @subscriptionPromoAlreadyPro.
-  ///
-  /// In en, this message translates to:
-  /// **'You already have Pro access.'**
-  String get subscriptionPromoAlreadyPro;
-
-  /// No description provided for @subscriptionPromoProActiveHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Your Pro access is active via invite code.'**
-  String get subscriptionPromoProActiveHint;
-
   /// No description provided for @subscriptionStatusPromoActive.
   ///
   /// In en, this message translates to:
@@ -1795,54 +1723,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pro access activated with an invite code.'**
   String get subscriptionStatusPromoActiveDetail;
-
-  /// No description provided for @subscriptionCouponRequestIntro.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t have a code? You can request Pro access.'**
-  String get subscriptionCouponRequestIntro;
-
-  /// No description provided for @subscriptionCouponRequestButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Request invite code'**
-  String get subscriptionCouponRequestButton;
-
-  /// No description provided for @subscriptionCouponRequestMessageLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Message (optional)'**
-  String get subscriptionCouponRequestMessageLabel;
-
-  /// No description provided for @subscriptionCouponRequestMessageHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. how many clients you coach, how you use the app…'**
-  String get subscriptionCouponRequestMessageHint;
-
-  /// No description provided for @subscriptionCouponRequestSubmit.
-  ///
-  /// In en, this message translates to:
-  /// **'Send request'**
-  String get subscriptionCouponRequestSubmit;
-
-  /// No description provided for @subscriptionCouponRequestSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Request sent. We\'ll reply by email.'**
-  String get subscriptionCouponRequestSuccess;
-
-  /// No description provided for @subscriptionCouponRequestError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not send the request. Try again.'**
-  String get subscriptionCouponRequestError;
-
-  /// No description provided for @subscriptionCouponRequestPending.
-  ///
-  /// In en, this message translates to:
-  /// **'You already have a pending request. We\'ll reply by email.'**
-  String get subscriptionCouponRequestPending;
 
   /// No description provided for @subscriptionBillingDetailsTitle.
   ///
@@ -2035,60 +1915,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Reminders are not supported in the web version of the app.'**
   String get reminderWebNotSupported;
-
-  /// No description provided for @reminderPlatformNotSupported.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminders are not supported on this platform.'**
-  String get reminderPlatformNotSupported;
-
-  /// No description provided for @reminderEnableNotificationsFirst.
-  ///
-  /// In en, this message translates to:
-  /// **'Turn on notifications in Settings first.'**
-  String get reminderEnableNotificationsFirst;
-
-  /// No description provided for @reminderPastTimeError.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a time in the future.'**
-  String get reminderPastTimeError;
-
-  /// No description provided for @reminderSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminder saved.'**
-  String get reminderSaved;
-
-  /// No description provided for @reminderScheduleError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not schedule the reminder. Try again.'**
-  String get reminderScheduleError;
-
-  /// No description provided for @reminderNotificationTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminder: {customerName}'**
-  String reminderNotificationTitle(String customerName);
-
-  /// No description provided for @reminderNotificationBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Scheduled client reminder'**
-  String get reminderNotificationBody;
-
-  /// No description provided for @reminderDashboardSessionTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Session reminder'**
-  String get reminderDashboardSessionTitle;
-
-  /// No description provided for @customerReminderAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Set reminder'**
-  String get customerReminderAction;
 
   /// No description provided for @settingsLanguageDescription.
   ///
@@ -3314,12 +3140,6 @@ abstract class AppLocalizations {
   /// **'Export to Excel'**
   String get workoutExportExcel;
 
-  /// No description provided for @workoutExportJson.
-  ///
-  /// In en, this message translates to:
-  /// **'Export JSON'**
-  String get workoutExportJson;
-
   /// No description provided for @workoutImportJson.
   ///
   /// In en, this message translates to:
@@ -3445,18 +3265,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Superset'**
   String get pdfSuperset;
-
-  /// No description provided for @pdfCircuit.
-  ///
-  /// In en, this message translates to:
-  /// **'Circuit'**
-  String get pdfCircuit;
-
-  /// No description provided for @pdfEmom.
-  ///
-  /// In en, this message translates to:
-  /// **'EMOM'**
-  String get pdfEmom;
 
   /// No description provided for @pdfDayNumber.
   ///
@@ -3631,30 +3439,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select week'**
   String get workoutRoutineCurrentWeekHint;
-
-  /// No description provided for @workoutPlanPhaseLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Phase'**
-  String get workoutPlanPhaseLabel;
-
-  /// No description provided for @workoutPlanPhaseHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. Hypertrophy, Strength, Deload'**
-  String get workoutPlanPhaseHint;
-
-  /// No description provided for @workoutPlanTagsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Tags'**
-  String get workoutPlanTagsLabel;
-
-  /// No description provided for @workoutPlanTagsHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. upper body, shoulder rehab'**
-  String get workoutPlanTagsHint;
 
   /// No description provided for @workoutPlanNotesLabel.
   ///
@@ -3836,35 +3620,11 @@ abstract class AppLocalizations {
   /// **'Mark completed'**
   String get workoutPlanCompleteAction;
 
-  /// No description provided for @workoutPlanDiffCompareAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Compare with…'**
-  String get workoutPlanDiffCompareAction;
-
   /// No description provided for @workoutPlanStatusArchived.
   ///
   /// In en, this message translates to:
   /// **'Archived'**
   String get workoutPlanStatusArchived;
-
-  /// No description provided for @workoutPlanStatusCompleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed'**
-  String get workoutPlanStatusCompleted;
-
-  /// No description provided for @workoutPlanStatusActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get workoutPlanStatusActive;
-
-  /// No description provided for @workoutPlanStatusDraft.
-  ///
-  /// In en, this message translates to:
-  /// **'Draft'**
-  String get workoutPlanStatusDraft;
 
   /// No description provided for @mobilityAddExercise.
   ///
@@ -3920,149 +3680,11 @@ abstract class AppLocalizations {
   /// **'Measurements'**
   String get customerDetailMeasurements;
 
-  /// No description provided for @customerDetailRecords.
-  ///
-  /// In en, this message translates to:
-  /// **'Records'**
-  String get customerDetailRecords;
-
-  /// No description provided for @recordsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No exercise records yet.'**
-  String get recordsEmpty;
-
-  /// No description provided for @recordsEmptyHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Log a value for a custom exercise (e.g. 1RM, reps) and add updates over time.'**
-  String get recordsEmptyHint;
-
-  /// No description provided for @recordAdd.
-  ///
-  /// In en, this message translates to:
-  /// **'Add record'**
-  String get recordAdd;
-
-  /// No description provided for @recordAddUpdate.
-  ///
-  /// In en, this message translates to:
-  /// **'Add update'**
-  String get recordAddUpdate;
-
-  /// No description provided for @recordValue.
-  ///
-  /// In en, this message translates to:
-  /// **'Value'**
-  String get recordValue;
-
-  /// No description provided for @recordUnit.
-  ///
-  /// In en, this message translates to:
-  /// **'Unit'**
-  String get recordUnit;
-
-  /// No description provided for @recordDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Date'**
-  String get recordDate;
-
-  /// No description provided for @recordNote.
-  ///
-  /// In en, this message translates to:
-  /// **'Note (optional)'**
-  String get recordNote;
-
-  /// No description provided for @recordUnitKg.
-  ///
-  /// In en, this message translates to:
-  /// **'kg'**
-  String get recordUnitKg;
-
-  /// No description provided for @recordUnitReps.
-  ///
-  /// In en, this message translates to:
-  /// **'reps'**
-  String get recordUnitReps;
-
-  /// No description provided for @recordUnitSec.
-  ///
-  /// In en, this message translates to:
-  /// **'sec'**
-  String get recordUnitSec;
-
-  /// No description provided for @recordUnitMin.
-  ///
-  /// In en, this message translates to:
-  /// **'min'**
-  String get recordUnitMin;
-
-  /// No description provided for @recordUnitOther.
-  ///
-  /// In en, this message translates to:
-  /// **'Other'**
-  String get recordUnitOther;
-
-  /// No description provided for @recordDeleteConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete this record?'**
-  String get recordDeleteConfirm;
-
-  /// No description provided for @recordSaved.
-  ///
-  /// In en, this message translates to:
-  /// **'Record saved.'**
-  String get recordSaved;
-
-  /// No description provided for @recordSaveError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not save record.'**
-  String get recordSaveError;
-
-  /// No description provided for @recordDeleted.
-  ///
-  /// In en, this message translates to:
-  /// **'Record deleted.'**
-  String get recordDeleted;
-
-  /// No description provided for @recordDeleteError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not delete record.'**
-  String get recordDeleteError;
-
-  /// No description provided for @recordSelectExercise.
-  ///
-  /// In en, this message translates to:
-  /// **'Select exercise'**
-  String get recordSelectExercise;
-
   /// No description provided for @recordSearchExerciseHint.
   ///
   /// In en, this message translates to:
   /// **'Search by name...'**
   String get recordSearchExerciseHint;
-
-  /// No description provided for @recordDeleteButton.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete record'**
-  String get recordDeleteButton;
-
-  /// No description provided for @workoutBuilderClientRecord.
-  ///
-  /// In en, this message translates to:
-  /// **'Client record'**
-  String get workoutBuilderClientRecord;
-
-  /// No description provided for @workoutBuilderNoExerciseRecord.
-  ///
-  /// In en, this message translates to:
-  /// **'No record for this exercise.'**
-  String get workoutBuilderNoExerciseRecord;
 
   /// No description provided for @workoutBuilderLoadPercentGuideTitle.
   ///
@@ -4462,12 +4084,6 @@ abstract class AppLocalizations {
   /// **'Select an exercise from the library, or type the exact name.'**
   String get workoutBuilderSelectLibraryExercise;
 
-  /// No description provided for @workoutBuilderMultiSetBlockHeader.
-  ///
-  /// In en, this message translates to:
-  /// **'Sets (Set × Reps + Load)'**
-  String get workoutBuilderMultiSetBlockHeader;
-
   /// No description provided for @workoutBuilderSetLabel.
   ///
   /// In en, this message translates to:
@@ -4828,47 +4444,17 @@ abstract class AppLocalizations {
   /// **'SUPER SET'**
   String get workoutBuilderSuperSetHeading;
 
-  /// No description provided for @workoutBuilderCircuitHeading.
-  ///
-  /// In en, this message translates to:
-  /// **'CIRCUIT'**
-  String get workoutBuilderCircuitHeading;
-
-  /// No description provided for @workoutBuilderEmomHeading.
-  ///
-  /// In en, this message translates to:
-  /// **'EMOM'**
-  String get workoutBuilderEmomHeading;
-
   /// No description provided for @builderSupersetPanelTitle.
   ///
   /// In en, this message translates to:
   /// **'Manage superset'**
   String get builderSupersetPanelTitle;
 
-  /// No description provided for @builderCircuitPanelTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage circuit'**
-  String get builderCircuitPanelTitle;
-
-  /// No description provided for @builderEmomPanelTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage EMOM'**
-  String get builderEmomPanelTitle;
-
   /// No description provided for @builderSupersetAddExercise.
   ///
   /// In en, this message translates to:
   /// **'Add exercise to superset'**
   String get builderSupersetAddExercise;
-
-  /// No description provided for @builderDensityAddExercise.
-  ///
-  /// In en, this message translates to:
-  /// **'Add exercise to group'**
-  String get builderDensityAddExercise;
 
   /// No description provided for @workoutBuilderAssignedPlanBadge.
   ///
@@ -5050,18 +4636,6 @@ abstract class AppLocalizations {
   /// **'Manage'**
   String get builderSupersetManage;
 
-  /// No description provided for @builderCircuitManage.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage'**
-  String get builderCircuitManage;
-
-  /// No description provided for @builderEmomManage.
-  ///
-  /// In en, this message translates to:
-  /// **'Manage'**
-  String get builderEmomManage;
-
   /// No description provided for @workoutBuilderDeleteDayMenu.
   ///
   /// In en, this message translates to:
@@ -5074,101 +4648,11 @@ abstract class AppLocalizations {
   /// **'New superset'**
   String get workoutBuilderNewSuperset;
 
-  /// No description provided for @workoutBuilderNewCircuit.
-  ///
-  /// In en, this message translates to:
-  /// **'New circuit'**
-  String get workoutBuilderNewCircuit;
-
-  /// No description provided for @workoutBuilderNewEmom.
-  ///
-  /// In en, this message translates to:
-  /// **'New EMOM'**
-  String get workoutBuilderNewEmom;
-
   /// No description provided for @workoutBuilderRemoveFromSuperset.
   ///
   /// In en, this message translates to:
   /// **'Remove from superset'**
   String get workoutBuilderRemoveFromSuperset;
-
-  /// No description provided for @densityRoundsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Rounds'**
-  String get densityRoundsLabel;
-
-  /// No description provided for @densityRestSecondsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Rest (seconds)'**
-  String get densityRestSecondsLabel;
-
-  /// No description provided for @densityIntervalSecondsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Interval (seconds)'**
-  String get densityIntervalSecondsLabel;
-
-  /// No description provided for @densityDurationMinutesLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Duration (minutes)'**
-  String get densityDurationMinutesLabel;
-
-  /// No description provided for @densityBlockTypeLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Type'**
-  String get densityBlockTypeLabel;
-
-  /// No description provided for @densityBlockTypeSuperset.
-  ///
-  /// In en, this message translates to:
-  /// **'Superset'**
-  String get densityBlockTypeSuperset;
-
-  /// No description provided for @densityBlockTypeCircuit.
-  ///
-  /// In en, this message translates to:
-  /// **'Circuit'**
-  String get densityBlockTypeCircuit;
-
-  /// No description provided for @densityBlockTypeEmom.
-  ///
-  /// In en, this message translates to:
-  /// **'EMOM'**
-  String get densityBlockTypeEmom;
-
-  /// No description provided for @densityBlockSave.
-  ///
-  /// In en, this message translates to:
-  /// **'Save density'**
-  String get densityBlockSave;
-
-  /// No description provided for @densityCircuitRounds.
-  ///
-  /// In en, this message translates to:
-  /// **'{rounds} rounds'**
-  String densityCircuitRounds(int rounds);
-
-  /// No description provided for @densityCircuitRest.
-  ///
-  /// In en, this message translates to:
-  /// **'{seconds}s rest'**
-  String densityCircuitRest(int seconds);
-
-  /// No description provided for @densityEmomInterval.
-  ///
-  /// In en, this message translates to:
-  /// **'EMOM {seconds}s'**
-  String densityEmomInterval(int seconds);
-
-  /// No description provided for @densityEmomDuration.
-  ///
-  /// In en, this message translates to:
-  /// **'{minutes} min'**
-  String densityEmomDuration(int minutes);
 
   /// No description provided for @workoutBuilderTabTraining.
   ///
@@ -5373,12 +4857,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Diary'**
   String get workoutBuilderNavDiary;
-
-  /// No description provided for @workoutBuilderNavStats.
-  ///
-  /// In en, this message translates to:
-  /// **'Stats'**
-  String get workoutBuilderNavStats;
 
   /// No description provided for @workoutBuilderWeeksLabel.
   ///
@@ -5740,48 +5218,6 @@ abstract class AppLocalizations {
   /// **'Duplicate day to'**
   String get workoutBuilderCloneDayTargetTitle;
 
-  /// No description provided for @workoutBuilderDayCoachingNoteTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Coaching note'**
-  String get workoutBuilderDayCoachingNoteTitle;
-
-  /// No description provided for @workoutBuilderDayCoachingNoteLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Note for this day'**
-  String get workoutBuilderDayCoachingNoteLabel;
-
-  /// No description provided for @workoutBuilderDayCoachingNoteHint.
-  ///
-  /// In en, this message translates to:
-  /// **'e.g. focus, cues, warmup instructions'**
-  String get workoutBuilderDayCoachingNoteHint;
-
-  /// No description provided for @workoutBuilderProgressionIncreaseLoad.
-  ///
-  /// In en, this message translates to:
-  /// **'Suggestion: bump load to {value}'**
-  String workoutBuilderProgressionIncreaseLoad(String value);
-
-  /// No description provided for @workoutBuilderProgressionIncreaseLoadGeneric.
-  ///
-  /// In en, this message translates to:
-  /// **'Suggestion: consider a small load bump'**
-  String get workoutBuilderProgressionIncreaseLoadGeneric;
-
-  /// No description provided for @workoutBuilderProgressionIncreaseReps.
-  ///
-  /// In en, this message translates to:
-  /// **'Suggestion: aim for {value} reps'**
-  String workoutBuilderProgressionIncreaseReps(String value);
-
-  /// No description provided for @workoutBuilderProgressionApply.
-  ///
-  /// In en, this message translates to:
-  /// **'Apply'**
-  String get workoutBuilderProgressionApply;
-
   /// No description provided for @workoutBuilderReadOnlyBanner.
   ///
   /// In en, this message translates to:
@@ -5926,12 +5362,6 @@ abstract class AppLocalizations {
   /// **'Unchanged'**
   String get measurementDeltaUnchanged;
 
-  /// No description provided for @measurementSkinfolds.
-  ///
-  /// In en, this message translates to:
-  /// **'Skinfolds (mm)'**
-  String get measurementSkinfolds;
-
   /// No description provided for @measurementBodyFat.
   ///
   /// In en, this message translates to:
@@ -5943,36 +5373,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Muscle mass (kg)'**
   String get measurementMuscleMass;
-
-  /// No description provided for @measurementCircumferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Circumferences (cm)'**
-  String get measurementCircumferences;
-
-  /// No description provided for @measurementChest.
-  ///
-  /// In en, this message translates to:
-  /// **'Chest'**
-  String get measurementChest;
-
-  /// No description provided for @measurementWaist.
-  ///
-  /// In en, this message translates to:
-  /// **'Waist'**
-  String get measurementWaist;
-
-  /// No description provided for @measurementArms.
-  ///
-  /// In en, this message translates to:
-  /// **'Arms'**
-  String get measurementArms;
-
-  /// No description provided for @measurementThighs.
-  ///
-  /// In en, this message translates to:
-  /// **'Thighs'**
-  String get measurementThighs;
 
   /// No description provided for @measurementNotes.
   ///
@@ -6033,54 +5433,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load measurement history.'**
   String get measurementHistoryLoadError;
-
-  /// No description provided for @measurementHistoryCompareTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Period comparison'**
-  String get measurementHistoryCompareTitle;
-
-  /// No description provided for @measurementHistoryCompareSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Last 30 days vs previous 30 days'**
-  String get measurementHistoryCompareSubtitle;
-
-  /// No description provided for @measurementHistoryCompareRecent.
-  ///
-  /// In en, this message translates to:
-  /// **'Last 30 days'**
-  String get measurementHistoryCompareRecent;
-
-  /// No description provided for @measurementHistoryComparePrevious.
-  ///
-  /// In en, this message translates to:
-  /// **'Previous 30 days'**
-  String get measurementHistoryComparePrevious;
-
-  /// No description provided for @measurementHistoryCompareInsufficient.
-  ///
-  /// In en, this message translates to:
-  /// **'Add more measurements to compare periods.'**
-  String get measurementHistoryCompareInsufficient;
-
-  /// No description provided for @measurementHistoryCompareNoData.
-  ///
-  /// In en, this message translates to:
-  /// **'No data'**
-  String get measurementHistoryCompareNoData;
-
-  /// No description provided for @measurementHistoryCompareDelta.
-  ///
-  /// In en, this message translates to:
-  /// **'{metric} change: {delta}'**
-  String measurementHistoryCompareDelta(String metric, String delta);
-
-  /// No description provided for @measurementHistoryCompareSampleCount.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} samples'**
-  String measurementHistoryCompareSampleCount(int count);
 
   /// No description provided for @measurementHistoryOpen.
   ///
@@ -6183,18 +5535,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load notes.'**
   String get customerNotesLoadError;
-
-  /// No description provided for @customerNotesAttachPhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Attach photo'**
-  String get customerNotesAttachPhoto;
-
-  /// No description provided for @customerNotesAttachSoon.
-  ///
-  /// In en, this message translates to:
-  /// **'Photo attachments will arrive in a later update.'**
-  String get customerNotesAttachSoon;
 
   /// No description provided for @measurementExportCsv.
   ///
@@ -6526,12 +5866,6 @@ abstract class AppLocalizations {
   /// **'Details are based on the selected workout plan start date.'**
   String get dashboardDetailHint;
 
-  /// No description provided for @dashboardReminderTooltip.
-  ///
-  /// In en, this message translates to:
-  /// **'Set reminder'**
-  String get dashboardReminderTooltip;
-
   /// No description provided for @dashboardSectionToday.
   ///
   /// In en, this message translates to:
@@ -6568,23 +5902,11 @@ abstract class AppLocalizations {
   /// **'History'**
   String get dashboardDiaryAction;
 
-  /// No description provided for @dashboardStatsAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Coach stats'**
-  String get dashboardStatsAction;
-
   /// No description provided for @dashboardDiarySubtitle.
   ///
   /// In en, this message translates to:
   /// **'{count} sessions (30d)'**
   String dashboardDiarySubtitle(int count);
-
-  /// No description provided for @dashboardStatsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'{percent}% adherence (7d)'**
-  String dashboardStatsSubtitle(int percent);
 
   /// No description provided for @customerOpenDiary.
   ///
@@ -7048,41 +6370,11 @@ abstract class AppLocalizations {
   /// **'All'**
   String get customerWorkoutsFilterAll;
 
-  /// No description provided for @customerWorkoutsFilterActive.
-  ///
-  /// In en, this message translates to:
-  /// **'Active'**
-  String get customerWorkoutsFilterActive;
-
-  /// No description provided for @customerWorkoutsFilterScheduled.
-  ///
-  /// In en, this message translates to:
-  /// **'Scheduled'**
-  String get customerWorkoutsFilterScheduled;
-
-  /// No description provided for @customerWorkoutsFilterUnscheduled.
-  ///
-  /// In en, this message translates to:
-  /// **'Unscheduled'**
-  String get customerWorkoutsFilterUnscheduled;
-
-  /// No description provided for @customerWorkoutsFilterEnded.
-  ///
-  /// In en, this message translates to:
-  /// **'Ended'**
-  String get customerWorkoutsFilterEnded;
-
   /// No description provided for @customerWorkoutsFilterArchived.
   ///
   /// In en, this message translates to:
   /// **'Archived'**
   String get customerWorkoutsFilterArchived;
-
-  /// No description provided for @customerWorkoutsFilterStale.
-  ///
-  /// In en, this message translates to:
-  /// **'Needs update'**
-  String get customerWorkoutsFilterStale;
 
   /// No description provided for @customerWorkoutsSortTitle.
   ///
@@ -7354,12 +6646,6 @@ abstract class AppLocalizations {
   /// **'History'**
   String get workoutDiaryTitle;
 
-  /// No description provided for @workoutStatsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Stats'**
-  String get workoutStatsTitle;
-
   /// No description provided for @placeholderComingSoon.
   ///
   /// In en, this message translates to:
@@ -7426,36 +6712,6 @@ abstract class AppLocalizations {
   /// **'All clients'**
   String get workoutDiaryFilterAll;
 
-  /// No description provided for @coachStatsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Coach stats'**
-  String get coachStatsTitle;
-
-  /// No description provided for @coachStatsAdherence.
-  ///
-  /// In en, this message translates to:
-  /// **'Adherence'**
-  String get coachStatsAdherence;
-
-  /// No description provided for @coachStatsCompletedSessions.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed sessions'**
-  String get coachStatsCompletedSessions;
-
-  /// No description provided for @coachStatsSkippedSessions.
-  ///
-  /// In en, this message translates to:
-  /// **'Skipped sessions'**
-  String get coachStatsSkippedSessions;
-
-  /// No description provided for @coachStatsActiveClients.
-  ///
-  /// In en, this message translates to:
-  /// **'Active clients'**
-  String get coachStatsActiveClients;
-
   /// No description provided for @coachStatsPeriod7d.
   ///
   /// In en, this message translates to:
@@ -7467,36 +6723,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Last 30 days'**
   String get coachStatsPeriod30d;
-
-  /// No description provided for @coachStatsChartTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Completed sessions by day'**
-  String get coachStatsChartTitle;
-
-  /// No description provided for @coachStatsChartEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No completed sessions in this period.'**
-  String get coachStatsChartEmpty;
-
-  /// No description provided for @coachStatsChartDaySummary.
-  ///
-  /// In en, this message translates to:
-  /// **'{date}: {count} completed'**
-  String coachStatsChartDaySummary(String date, int count);
-
-  /// No description provided for @coachStatsExportCsv.
-  ///
-  /// In en, this message translates to:
-  /// **'Export CSV'**
-  String get coachStatsExportCsv;
-
-  /// No description provided for @coachStatsExportCsvSubject.
-  ///
-  /// In en, this message translates to:
-  /// **'PowerCoach coach stats'**
-  String get coachStatsExportCsvSubject;
 
   /// No description provided for @workoutDiaryFilterDate.
   ///
@@ -7605,216 +6831,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Hide sets'**
   String get sessionLogCollapseSets;
-
-  /// No description provided for @sessionLogCheckInTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'How did it go? (optional)'**
-  String get sessionLogCheckInTitle;
-
-  /// No description provided for @sessionLogRpeLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Session RPE (1-10)'**
-  String get sessionLogRpeLabel;
-
-  /// No description provided for @sessionLogPainLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Pain level (0-10)'**
-  String get sessionLogPainLabel;
-
-  /// No description provided for @sessionLogPainLocationHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Where? (optional)'**
-  String get sessionLogPainLocationHint;
-
-  /// No description provided for @sessionLogRpeChipLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'RPE {value}/10'**
-  String sessionLogRpeChipLabel(int value);
-
-  /// No description provided for @sessionLogPainChipLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Pain {value}/10'**
-  String sessionLogPainChipLabel(int value);
-
-  /// No description provided for @sessionLogPainChipLabelWithLocation.
-  ///
-  /// In en, this message translates to:
-  /// **'Pain {value}/10 · {location}'**
-  String sessionLogPainChipLabelWithLocation(int value, String location);
-
-  /// No description provided for @gymModeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Gym mode'**
-  String get gymModeTitle;
-
-  /// No description provided for @gymModeAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Open gym mode'**
-  String get gymModeAction;
-
-  /// No description provided for @gymModeEmptyToday.
-  ///
-  /// In en, this message translates to:
-  /// **'No sessions scheduled for today.'**
-  String get gymModeEmptyToday;
-
-  /// No description provided for @gymModeRunnerTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Session'**
-  String get gymModeRunnerTitle;
-
-  /// No description provided for @gymModeCoachingNoteLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Coaching note'**
-  String get gymModeCoachingNoteLabel;
-
-  /// No description provided for @gymModeSaveAndComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'Save & complete'**
-  String get gymModeSaveAndComplete;
-
-  /// No description provided for @gymModeSaving.
-  ///
-  /// In en, this message translates to:
-  /// **'Saving…'**
-  String get gymModeSaving;
-
-  /// No description provided for @gymModeLogSuccess.
-  ///
-  /// In en, this message translates to:
-  /// **'Session saved'**
-  String get gymModeLogSuccess;
-
-  /// No description provided for @gymModeTimerStart.
-  ///
-  /// In en, this message translates to:
-  /// **'Start'**
-  String get gymModeTimerStart;
-
-  /// No description provided for @gymModeTimerReset.
-  ///
-  /// In en, this message translates to:
-  /// **'Reset'**
-  String get gymModeTimerReset;
-
-  /// No description provided for @workoutPlanDiffTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan comparison'**
-  String get workoutPlanDiffTitle;
-
-  /// No description provided for @workoutPlanDiffPickPlanBTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a plan to compare'**
-  String get workoutPlanDiffPickPlanBTitle;
-
-  /// No description provided for @workoutPlanDiffPlanALabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan A (current)'**
-  String get workoutPlanDiffPlanALabel;
-
-  /// No description provided for @workoutPlanDiffPlanBLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan B'**
-  String get workoutPlanDiffPlanBLabel;
-
-  /// No description provided for @workoutPlanDiffChangePlanB.
-  ///
-  /// In en, this message translates to:
-  /// **'Change'**
-  String get workoutPlanDiffChangePlanB;
-
-  /// No description provided for @workoutPlanDiffNoOtherPlans.
-  ///
-  /// In en, this message translates to:
-  /// **'No other plans for this customer yet.'**
-  String get workoutPlanDiffNoOtherPlans;
-
-  /// No description provided for @workoutPlanDiffEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No structural differences between these plans.'**
-  String get workoutPlanDiffEmpty;
-
-  /// No description provided for @workoutPlanDiffLoadError.
-  ///
-  /// In en, this message translates to:
-  /// **'Couldn\'t load these plans.'**
-  String get workoutPlanDiffLoadError;
-
-  /// No description provided for @workoutPlanDiffSummaryDaysAdded.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days added'**
-  String workoutPlanDiffSummaryDaysAdded(int count);
-
-  /// No description provided for @workoutPlanDiffSummaryDaysRemoved.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days removed'**
-  String workoutPlanDiffSummaryDaysRemoved(int count);
-
-  /// No description provided for @workoutPlanDiffSummaryDaysChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} days changed'**
-  String workoutPlanDiffSummaryDaysChanged(int count);
-
-  /// No description provided for @workoutPlanDiffSummaryExercisesAdded.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} exercises added'**
-  String workoutPlanDiffSummaryExercisesAdded(int count);
-
-  /// No description provided for @workoutPlanDiffSummaryExercisesRemoved.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} exercises removed'**
-  String workoutPlanDiffSummaryExercisesRemoved(int count);
-
-  /// No description provided for @workoutPlanDiffSummaryExercisesChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'{count} exercises changed'**
-  String workoutPlanDiffSummaryExercisesChanged(int count);
-
-  /// No description provided for @workoutPlanDiffBadgeAdded.
-  ///
-  /// In en, this message translates to:
-  /// **'Added'**
-  String get workoutPlanDiffBadgeAdded;
-
-  /// No description provided for @workoutPlanDiffBadgeRemoved.
-  ///
-  /// In en, this message translates to:
-  /// **'Removed'**
-  String get workoutPlanDiffBadgeRemoved;
-
-  /// No description provided for @workoutPlanDiffBadgeChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Changed'**
-  String get workoutPlanDiffBadgeChanged;
-
-  /// No description provided for @workoutPlanDiffCoachingNoteLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Coaching note'**
-  String get workoutPlanDiffCoachingNoteLabel;
 
   /// No description provided for @customerProgressTitle.
   ///
@@ -8064,48 +7080,6 @@ abstract class AppLocalizations {
   /// **'Backup from {date} · app {version}'**
   String backupImportMetadata(String date, String version);
 
-  /// No description provided for @backupImportSelectGroups.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose what to import'**
-  String get backupImportSelectGroups;
-
-  /// No description provided for @backupImportPartialReplaceHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Deselected groups stay unchanged on this device.'**
-  String get backupImportPartialReplaceHint;
-
-  /// No description provided for @backupImportGroupCustomers.
-  ///
-  /// In en, this message translates to:
-  /// **'Clients and related data ({count})'**
-  String backupImportGroupCustomers(int count);
-
-  /// No description provided for @backupImportGroupPlans.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout plans ({count})'**
-  String backupImportGroupPlans(int count);
-
-  /// No description provided for @backupImportGroupExerciseLibrary.
-  ///
-  /// In en, this message translates to:
-  /// **'Exercise library ({count})'**
-  String backupImportGroupExerciseLibrary(int count);
-
-  /// No description provided for @backupImportGroupReminders.
-  ///
-  /// In en, this message translates to:
-  /// **'Reminders ({count})'**
-  String backupImportGroupReminders(int count);
-
-  /// No description provided for @backupImportGroupPreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile and preferences'**
-  String get backupImportGroupPreferences;
-
   /// No description provided for @backupImportTypeConfirm.
   ///
   /// In en, this message translates to:
@@ -8117,234 +7091,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'IMPORT'**
   String get backupImportTypeConfirmHint;
-
-  /// No description provided for @releaseNotesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'What\'s new'**
-  String get releaseNotesTitle;
-
-  /// No description provided for @releaseNotesInstalledVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'Installed version: {version}'**
-  String releaseNotesInstalledVersion(String version);
-
-  /// No description provided for @releaseNotesSettingsSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Version {version}'**
-  String releaseNotesSettingsSubtitle(String version);
-
-  /// No description provided for @releaseNotesHighlightsLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Highlights'**
-  String get releaseNotesHighlightsLabel;
-
-  /// No description provided for @releaseNotesCurrentVersionBadge.
-  ///
-  /// In en, this message translates to:
-  /// **'Current'**
-  String get releaseNotesCurrentVersionBadge;
-
-  /// No description provided for @releaseNotesV1071.
-  ///
-  /// In en, this message translates to:
-  /// **'Coach hub: Diary and Stats cards on the dashboard; overflow menu on the full schedule'**
-  String get releaseNotesV1071;
-
-  /// No description provided for @releaseNotesV1072.
-  ///
-  /// In en, this message translates to:
-  /// **'From customer profile: open diary filtered by customer'**
-  String get releaseNotesV1072;
-
-  /// No description provided for @releaseNotesV1073.
-  ///
-  /// In en, this message translates to:
-  /// **'CSV progress export (adherence, PRs, measurements) from customer overview'**
-  String get releaseNotesV1073;
-
-  /// No description provided for @releaseNotesV1074.
-  ///
-  /// In en, this message translates to:
-  /// **'Dedicated superset panel in workout builder (compact preview + editor)'**
-  String get releaseNotesV1074;
-
-  /// No description provided for @releaseNotesV1075.
-  ///
-  /// In en, this message translates to:
-  /// **'Richer session log: reps and load per set in the session sheet'**
-  String get releaseNotesV1075;
-
-  /// No description provided for @releaseNotesV1061.
-  ///
-  /// In en, this message translates to:
-  /// **'Backup: selective restore by category + export metadata (export date, entity counts)'**
-  String get releaseNotesV1061;
-
-  /// No description provided for @releaseNotesV1062.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout diary v2: date/status filters, navigable session detail'**
-  String get releaseNotesV1062;
-
-  /// No description provided for @releaseNotesV1063.
-  ///
-  /// In en, this message translates to:
-  /// **'Coach stats: daily adherence chart + KPI CSV export'**
-  String get releaseNotesV1063;
-
-  /// No description provided for @releaseNotesV1064.
-  ///
-  /// In en, this message translates to:
-  /// **'Presentation-split builder improvements (exercise sheet, training tab)'**
-  String get releaseNotesV1064;
-
-  /// No description provided for @releaseNotesV1051.
-  ///
-  /// In en, this message translates to:
-  /// **'Session execution model (completed / skipped / planned) persisted locally'**
-  String get releaseNotesV1051;
-
-  /// No description provided for @releaseNotesV1052.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout diary and coach stats (MVP)'**
-  String get releaseNotesV1052;
-
-  /// No description provided for @releaseNotesV1053.
-  ///
-  /// In en, this message translates to:
-  /// **'Customer progress panel: 30-day adherence, recent PRs, 4-week strip'**
-  String get releaseNotesV1053;
-
-  /// No description provided for @releaseNotesV1054.
-  ///
-  /// In en, this message translates to:
-  /// **'Session reminders linked to plan calendar'**
-  String get releaseNotesV1054;
-
-  /// No description provided for @releaseNotesV1055.
-  ///
-  /// In en, this message translates to:
-  /// **'Customer follow-up based on real execution data'**
-  String get releaseNotesV1055;
-
-  /// No description provided for @releaseNotesV1041.
-  ///
-  /// In en, this message translates to:
-  /// **'Customer overview with real measurement metrics (sparkline, 30-day trend)'**
-  String get releaseNotesV1041;
-
-  /// No description provided for @releaseNotesV1042.
-  ///
-  /// In en, this message translates to:
-  /// **'Exercise picker: recents and favorites in library'**
-  String get releaseNotesV1042;
-
-  /// No description provided for @releaseNotesV1043.
-  ///
-  /// In en, this message translates to:
-  /// **'Calendar session detail with real plan data'**
-  String get releaseNotesV1043;
-
-  /// No description provided for @releaseNotesV1044.
-  ///
-  /// In en, this message translates to:
-  /// **'Single-occurrence session override (reschedule without changing the plan)'**
-  String get releaseNotesV1044;
-
-  /// No description provided for @releaseNotesV1045.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan lifecycle (draft, active, completed, archived)'**
-  String get releaseNotesV1045;
-
-  /// No description provided for @releaseNotesV1031.
-  ///
-  /// In en, this message translates to:
-  /// **'Business data local-only (Drift); Supabase for authentication only'**
-  String get releaseNotesV1031;
-
-  /// No description provided for @releaseNotesV1032.
-  ///
-  /// In en, this message translates to:
-  /// **'Removed obsolete cloud sync UX; tier 2/3 backfill tests'**
-  String get releaseNotesV1032;
-
-  /// No description provided for @releaseNotesV1033.
-  ///
-  /// In en, this message translates to:
-  /// **'Local prefs and coach profile repositories'**
-  String get releaseNotesV1033;
-
-  /// No description provided for @releaseNotesV1034.
-  ///
-  /// In en, this message translates to:
-  /// **'Modular offline store migration'**
-  String get releaseNotesV1034;
-
-  /// No description provided for @releaseNotesV1021.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout plan template library'**
-  String get releaseNotesV1021;
-
-  /// No description provided for @releaseNotesV1022.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan editor autosave + unsaved exit guard'**
-  String get releaseNotesV1022;
-
-  /// No description provided for @releaseNotesV1023.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan export PDF / JSON / Excel'**
-  String get releaseNotesV1023;
-
-  /// No description provided for @releaseNotesV1011.
-  ///
-  /// In en, this message translates to:
-  /// **'Today dashboard and session schedule'**
-  String get releaseNotesV1011;
-
-  /// No description provided for @releaseNotesV1012.
-  ///
-  /// In en, this message translates to:
-  /// **'Customer management, measurements, exercise records'**
-  String get releaseNotesV1012;
-
-  /// No description provided for @releaseNotesV1013.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout builder (weeks/days/exercises, basic supersets)'**
-  String get releaseNotesV1013;
-
-  /// No description provided for @releaseNotesV1014.
-  ///
-  /// In en, this message translates to:
-  /// **'Coach calendar and plan assignment'**
-  String get releaseNotesV1014;
-
-  /// No description provided for @releaseNotesV1015.
-  ///
-  /// In en, this message translates to:
-  /// **'Local notifications and reminders'**
-  String get releaseNotesV1015;
-
-  /// No description provided for @releaseNotesV1016.
-  ///
-  /// In en, this message translates to:
-  /// **'End-to-end IT/EN localization'**
-  String get releaseNotesV1016;
-
-  /// No description provided for @releaseNotesV1017.
-  ///
-  /// In en, this message translates to:
-  /// **'Account JSON backup export/import'**
-  String get releaseNotesV1017;
 }
 
 class _AppLocalizationsDelegate

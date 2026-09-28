@@ -238,7 +238,6 @@
   "forgotPasswordError": "Impossibile inviare l'email. Riprova.",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
-  "profileComingSoon": "Pagina profilo in arrivo.",
   "profileDisplayName": "Nome visualizzato",
   "profileEmail": "Email",
   "profilePhone": "Telefono",
@@ -321,27 +320,8 @@
   "subscriptionCompareProgressExport": "Export CSV progressi",
   "subscriptionCompareWorkoutExport": "Export PDF/Excel allenamenti",
   "subscriptionCompareNotIncluded": "—",
-  "subscriptionPromoHint": "Hai un codice invito? Inseriscilo qui sotto.",
-  "subscriptionPromoCardTitle": "Accedi a Pro con invito",
-  "subscriptionPromoCardSubtitle": "Durante l'accesso anticipato Pro è gratuito con un codice invito.",
-  "subscriptionPromoCodeLabel": "Codice invito",
-  "subscriptionPromoCodeHint": "Es. POWERCOACH-2026",
-  "subscriptionPromoCodeEmpty": "Inserisci un codice invito.",
-  "subscriptionPromoRedeemButton": "Attiva Pro",
-  "subscriptionPromoRedeemSuccess": "Pro attivato. Buon lavoro!",
-  "subscriptionPromoRedeemError": "Impossibile attivare il codice. Riprova.",
-  "subscriptionPromoAlreadyPro": "Hai già accesso Pro.",
-  "subscriptionPromoProActiveHint": "Il tuo accesso Pro è attivo tramite codice invito.",
   "subscriptionStatusPromoActive": "Pro (invito)",
   "subscriptionStatusPromoActiveDetail": "Accesso Pro attivato con codice invito.",
-  "subscriptionCouponRequestIntro": "Non hai un codice? Puoi richiedere l'accesso Pro.",
-  "subscriptionCouponRequestButton": "Richiedi codice invito",
-  "subscriptionCouponRequestMessageLabel": "Messaggio (facoltativo)",
-  "subscriptionCouponRequestMessageHint": "Es. quanti clienti gestisci, come usi l'app…",
-  "subscriptionCouponRequestSubmit": "Invia richiesta",
-  "subscriptionCouponRequestSuccess": "Richiesta inviata. Ti contatteremo via email.",
-  "subscriptionCouponRequestError": "Impossibile inviare la richiesta. Riprova.",
-  "subscriptionCouponRequestPending": "Hai già una richiesta in attesa. Ti risponderemo via email.",
   "subscriptionBillingDetailsTitle": "Fatturazione",
   "subscriptionBillingCycleLabel": "Ciclo",
   "subscriptionBillingAmountLabel": "Importo",
@@ -442,22 +422,6 @@
   "settingsNotificationsDescription": "Promemoria locali per sessioni e clienti",
   "settingsNotificationPermissionDenied": "Le notifiche sono disattivate. Abilitale nelle impostazioni di sistema per attivare questa opzione.",
   "reminderWebNotSupported": "I promemoria non sono supportati nella versione web dell'app.",
-  "reminderPlatformNotSupported": "I promemoria non sono supportati su questa piattaforma.",
-  "reminderEnableNotificationsFirst": "Attiva prima le notifiche in Impostazioni.",
-  "reminderPastTimeError": "Scegli un orario nel futuro.",
-  "reminderSaved": "Promemoria salvato.",
-  "reminderScheduleError": "Impossibile programmare il promemoria. Riprova.",
-  "reminderNotificationTitle": "Promemoria: {customerName}",
-  "@reminderNotificationTitle": {
-    "placeholders": {
-      "customerName": {
-        "type": "String"
-      }
-    }
-  },
-  "reminderNotificationBody": "Promemoria cliente programmato",
-  "reminderDashboardSessionTitle": "Promemoria sessione",
-  "customerReminderAction": "Imposta promemoria",
   "settingsLanguageDescription": "Lingua dell'app",
   "settingsLanguageItalian": "Italiano",
   "settingsLanguageEnglish": "English",
@@ -735,7 +699,6 @@
   "workoutExport": "Esporta",
   "workoutExportPdf": "Esporta in PDF",
   "workoutExportExcel": "Esporta in Excel",
-  "workoutExportJson": "Esporta JSON",
   "workoutImportJson": "Importa JSON",
   "workoutImportJsonSuccess": "Piano importato dal file JSON.",
   "workoutImportJsonError": "File JSON non valido o non supportato.",
@@ -757,8 +720,6 @@
   "pdfColNotes": "Note",
   "pdfMobilitySection": "Mobilità",
   "pdfSuperset": "Superset",
-  "pdfCircuit": "Circuito",
-  "pdfEmom": "EMOM",
   "pdfDayNumber": "Giorno {day}",
   "@pdfDayNumber": {
     "placeholders": {
@@ -876,10 +837,6 @@
   "workoutRoutineEndDatePlaceholder": "Tocca per scegliere",
   "workoutRoutineCurrentWeek": "Settimana corrente",
   "workoutRoutineCurrentWeekHint": "Seleziona settimana",
-  "workoutPlanPhaseLabel": "Fase",
-  "workoutPlanPhaseHint": "es. Ipertrofia, Forza, Deload",
-  "workoutPlanTagsLabel": "Tag",
-  "workoutPlanTagsHint": "es. upper body, rehab spalla",
   "workoutPlanNotesLabel": "Note piano",
   "workoutPlanNotesHint": "Note interne per questo piano",
   "workoutBuilderDetailsOptionsSection": "Opzioni",
@@ -910,11 +867,7 @@
   "workoutPlanArchiveAction": "Archivia",
   "workoutPlanUnarchiveAction": "Ripristina",
   "workoutPlanCompleteAction": "Segna completato",
-  "workoutPlanDiffCompareAction": "Confronta con…",
   "workoutPlanStatusArchived": "Archiviato",
-  "workoutPlanStatusCompleted": "Completato",
-  "workoutPlanStatusActive": "Attivo",
-  "workoutPlanStatusDraft": "Bozza",
   "mobilityAddExercise": "Aggiungi esercizio mobilità",
   "mobilityCreateNew": "Crea nuovo",
   "mobilityFromMobilityLibrary": "Da library mobilità",
@@ -924,30 +877,7 @@
   "mobilitySubtitle": "Sottotitolo",
   "customerDetailOverview": "Panoramica",
   "customerDetailMeasurements": "Misure",
-  "customerDetailRecords": "Record",
-  "recordsEmpty": "Nessun record esercizi ancora.",
-  "recordsEmptyHint": "Registra un valore per un esercizio custom (es. 1RM, ripetizioni) e aggiungi aggiornamenti nel tempo.",
-  "recordAdd": "Aggiungi record",
-  "recordAddUpdate": "Aggiungi aggiornamento",
-  "recordValue": "Valore",
-  "recordUnit": "Unità",
-  "recordDate": "Data",
-  "recordNote": "Nota (opzionale)",
-  "recordUnitKg": "kg",
-  "recordUnitReps": "rip",
-  "recordUnitSec": "sec",
-  "recordUnitMin": "min",
-  "recordUnitOther": "Altro",
-  "recordDeleteConfirm": "Eliminare questo record?",
-  "recordSaved": "Record salvato.",
-  "recordSaveError": "Impossibile salvare il record.",
-  "recordDeleted": "Record eliminato.",
-  "recordDeleteError": "Impossibile eliminare il record.",
-  "recordSelectExercise": "Seleziona esercizio",
   "recordSearchExerciseHint": "Cerca per nome...",
-  "recordDeleteButton": "Elimina record",
-  "workoutBuilderClientRecord": "Record cliente",
-  "workoutBuilderNoExerciseRecord": "Nessun record per questo esercizio.",
   "workoutBuilderLoadPercentGuideTitle": "Intensità tipiche powerlifting",
   "workoutBuilderLoadPercentGuideIntroMass": "Carico per ogni percentuale dell’ultimo record.",
   "workoutBuilderLoadPercentGuideIntroReps": "Ripetizioni indicative per serie a ogni % del massimo registrato (orientamento).",
@@ -1060,7 +990,6 @@
   "workoutBuilderCouldNotCreateExercise": "Impossibile creare l’esercizio. Riprova o aggiungi senza salvare in libreria.",
   "workoutBuilderEnterNameOrSelect": "Inserisci un nome o seleziona un esercizio.",
   "workoutBuilderSelectLibraryExercise": "Seleziona un esercizio dalla libreria, oppure digita il nome esatto.",
-  "workoutBuilderMultiSetBlockHeader": "Serie (Set × Rip + Carico)",
   "workoutBuilderSetLabel": "Set",
   "workoutBuilderSetsLabel": "Serie",
   "workoutBuilderRepsLabel": "Rip",
@@ -1093,13 +1022,17 @@
   "workoutPhaseNumbered": "Fase {n}",
   "@workoutPhaseNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseWeeksCount": "{count, plural, =0{0 Settimane} =1{1 Settimana} other{{count} Settimane}}",
   "@workoutPhaseWeeksCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseObjectiveLabel": "Obiettivo",
@@ -1110,14 +1043,18 @@
   "workoutPhaseFrequencyValue": "{count, plural, =0{0 sessioni/sett.} =1{1 sessione/sett.} other{{count} sessioni/sett.}}",
   "@workoutPhaseFrequencyValue": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseProgressLabel": "Avanzamento",
   "workoutPhaseProgressValue": "{percent}%",
   "@workoutPhaseProgressValue": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseAddWeek": "Aggiungi settimana alla fase",
@@ -1126,27 +1063,35 @@
   "workoutPhaseCreateSessionForWeek": "Crea una nuova sessione per la Settimana {n}",
   "@workoutPhaseCreateSessionForWeek": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseAddDay": "Aggiungi Giorno",
   "workoutPhaseMoreExercises": "+{count} altri",
   "@workoutPhaseMoreExercises": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseNoExercisesYet": "Nessun esercizio",
   "workoutPhaseSetsTotal": "{count, plural, =0{0 serie tot.} =1{1 serie tot.} other{{count} serie tot.}}",
   "@workoutPhaseSetsTotal": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseWeeksCountShort": "{count, plural, =0{0 Sett.} =1{1 Sett.} other{{count} Sett.}}",
   "@workoutPhaseWeeksCountShort": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseExpandWeek": "Espandi settimana",
@@ -1168,24 +1113,23 @@
   "workoutPhasePresetCustom": "Personalizzata…",
   "workoutPhaseRemoved": "Fase rimossa",
   "workoutBuilderSuperSetHeading": "SUPER SET",
-  "workoutBuilderCircuitHeading": "CIRCUITO",
-  "workoutBuilderEmomHeading": "EMOM",
   "builderSupersetPanelTitle": "Gestisci superset",
-  "builderCircuitPanelTitle": "Gestisci circuito",
-  "builderEmomPanelTitle": "Gestisci EMOM",
   "builderSupersetAddExercise": "Aggiungi esercizio al superset",
-  "builderDensityAddExercise": "Aggiungi esercizio al gruppo",
   "workoutBuilderAssignedPlanBadge": "Piano assegnato · {customerName}",
   "@workoutBuilderAssignedPlanBadge": {
     "placeholders": {
-      "customerName": { "type": "String" }
+      "customerName": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderSessionEmptyTitle": "Nessun esercizio in questa sessione",
   "workoutSessionEditTitleWithDay": "Modifica Sessione · {dayName}",
   "@workoutSessionEditTitleWithDay": {
     "placeholders": {
-      "dayName": { "type": "String" }
+      "dayName": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionSaveChanges": "Salva modifiche",
@@ -1194,7 +1138,9 @@
   "workoutSessionAssignedPlanPill": "Piano assegnato: {customerName}",
   "@workoutSessionAssignedPlanPill": {
     "placeholders": {
-      "customerName": { "type": "String" }
+      "customerName": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionMetricExercises": "Esercizi",
@@ -1202,7 +1148,9 @@
   "workoutSessionMetricSetsCount": "{count} serie",
   "@workoutSessionMetricSetsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutSessionMetricEstimatedVolume": "Volume stimato",
@@ -1211,7 +1159,9 @@
   "workoutSessionVolumeKg": "{kg} kg",
   "@workoutSessionVolumeKg": {
     "placeholders": {
-      "kg": { "type": "String" }
+      "kg": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionAddFromLibrary": "Aggiungi esercizio da libreria",
@@ -1222,7 +1172,9 @@
   "workoutSessionTechnicalNotesForAthlete": "Note tecniche per l'atleta ({name}):",
   "@workoutSessionTechnicalNotesForAthlete": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionSavedHint": "Salvato",
@@ -1230,7 +1182,9 @@
   "workoutSessionDuplicateLastSetN": "Duplica ultima serie (Set {n})",
   "@workoutSessionDuplicateLastSetN": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutSessionColSet": "SET",
@@ -1240,54 +1194,9 @@
   "builderSupersetEmpty": "Nessun esercizio in questo superset.",
   "builderSupersetPrescriptionLabel": "Prescrizione (esercizio guida)",
   "builderSupersetManage": "Gestisci",
-  "builderCircuitManage": "Gestisci",
-  "builderEmomManage": "Gestisci",
   "workoutBuilderDeleteDayMenu": "Elimina giorno",
   "workoutBuilderNewSuperset": "Nuovo superset",
-  "workoutBuilderNewCircuit": "Nuovo circuito",
-  "workoutBuilderNewEmom": "Nuovo EMOM",
   "workoutBuilderRemoveFromSuperset": "Rimuovi dal superset",
-  "densityRoundsLabel": "Giri",
-  "densityRestSecondsLabel": "Recupero (secondi)",
-  "densityIntervalSecondsLabel": "Intervallo (secondi)",
-  "densityDurationMinutesLabel": "Durata (minuti)",
-  "densityBlockTypeLabel": "Tipo",
-  "densityBlockTypeSuperset": "Superset",
-  "densityBlockTypeCircuit": "Circuito",
-  "densityBlockTypeEmom": "EMOM",
-  "densityBlockSave": "Salva densità",
-  "densityCircuitRounds": "{rounds} giri",
-  "@densityCircuitRounds": {
-    "placeholders": {
-      "rounds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityCircuitRest": "{seconds}s recupero",
-  "@densityCircuitRest": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityEmomInterval": "EMOM {seconds}s",
-  "@densityEmomInterval": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityEmomDuration": "{minutes} min",
-  "@densityEmomDuration": {
-    "placeholders": {
-      "minutes": {
-        "type": "int"
-      }
-    }
-  },
   "workoutBuilderTabTraining": "Allenamento",
   "workoutBuilderTabMobility": "Mobilità",
   "workoutBuilderTabDetails": "Dettagli",
@@ -1329,7 +1238,6 @@
   "workoutBuilderNavLibrary": "Libreria",
   "workoutBuilderNavBuilder": "Builder",
   "workoutBuilderNavDiary": "Diario",
-  "workoutBuilderNavStats": "Statistiche",
   "workoutBuilderWeeksLabel": "Settimane",
   "workoutBuilderDaysLabel": "Giorni",
   "workoutBuilderCalendarWeekdayLabel": "Giorno calendario",
@@ -1397,27 +1305,6 @@
   "workoutBuilderLogSessionSuccess": "Sessione registrata.",
   "workoutBuilderCloneDayToTarget": "Duplica su…",
   "workoutBuilderCloneDayTargetTitle": "Duplica giorno su",
-  "workoutBuilderDayCoachingNoteTitle": "Nota coaching",
-  "workoutBuilderDayCoachingNoteLabel": "Nota per questo giorno",
-  "workoutBuilderDayCoachingNoteHint": "es. focus, cue, indicazioni riscaldamento",
-  "workoutBuilderProgressionIncreaseLoad": "Suggerimento: aumenta il carico a {value}",
-  "@workoutBuilderProgressionIncreaseLoad": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "workoutBuilderProgressionIncreaseLoadGeneric": "Suggerimento: valuta un piccolo aumento di carico",
-  "workoutBuilderProgressionIncreaseReps": "Suggerimento: punta a {value} ripetizioni",
-  "@workoutBuilderProgressionIncreaseReps": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "workoutBuilderProgressionApply": "Applica",
   "workoutBuilderReadOnlyBanner": "Solo lettura — duplica la scheda per modificarla.",
   "planScheduleEmptyHint": "Imposta data di inizio",
   "workoutBuilderEmptyDayCta": "Aggiungi esercizio",
@@ -1442,14 +1329,8 @@
   "measurementBodyComp": "Composizione corporea",
   "measurementFormSubtitle": "Aggiorna i carichi 1RM, parametri plicometrici e metriche corporee",
   "measurementDeltaUnchanged": "Parità",
-  "measurementSkinfolds": "Pliche (mm)",
   "measurementBodyFat": "Massa grassa %",
   "measurementMuscleMass": "Massa muscolare (kg)",
-  "measurementCircumferences": "Circonferenze (cm)",
-  "measurementChest": "Petto",
-  "measurementWaist": "Vita",
-  "measurementArms": "Braccia",
-  "measurementThighs": "Cosce",
   "measurementNotes": "Note",
   "measurementSaved": "Misura salvata.",
   "measurementSaveError": "Impossibile salvare la misura.",
@@ -1460,31 +1341,6 @@
   "measurementHistoryMetricLabel": "Metrica",
   "measurementHistoryNoMetricData": "Nessun valore registrato per questa metrica.",
   "measurementHistoryLoadError": "Impossibile caricare lo storico misurazioni.",
-  "measurementHistoryCompareTitle": "Confronto periodi",
-  "measurementHistoryCompareSubtitle": "Ultimi 30 giorni vs 30 giorni precedenti",
-  "measurementHistoryCompareRecent": "Ultimi 30 giorni",
-  "measurementHistoryComparePrevious": "30 giorni precedenti",
-  "measurementHistoryCompareInsufficient": "Aggiungi altre misure per confrontare i periodi.",
-  "measurementHistoryCompareNoData": "Nessun dato",
-  "measurementHistoryCompareDelta": "Variazione {metric}: {delta}",
-  "@measurementHistoryCompareDelta": {
-    "placeholders": {
-      "metric": {
-        "type": "String"
-      },
-      "delta": {
-        "type": "String"
-      }
-    }
-  },
-  "measurementHistoryCompareSampleCount": "{count} rilevazioni",
-  "@measurementHistoryCompareSampleCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "measurementHistoryOpen": "Apri storico",
   "measurementHistoryOpenFull": "Apri storico completo",
   "measurementHistoryRange30d": "30g",
@@ -1509,8 +1365,6 @@
   "customerNotesEmptyBody": "Il messaggio non può essere vuoto.",
   "customerNotesSendError": "Impossibile salvare la nota.",
   "customerNotesLoadError": "Impossibile caricare le note.",
-  "customerNotesAttachPhoto": "Allega foto",
-  "customerNotesAttachSoon": "Gli allegati foto arriveranno in un aggiornamento successivo.",
   "measurementExportCsv": "Esporta CSV",
   "measurementExportPdf": "Esporta PDF",
   "measurementExportSuccess": "Download avviato.",
@@ -1618,26 +1472,16 @@
   "dashboardWorkoutBuilder": "Builder workout",
   "dashboardSessionTitle": "Sessione",
   "dashboardDetailHint": "I dettagli si basano sulla data di inizio del piano selezionato.",
-  "dashboardReminderTooltip": "Imposta promemoria",
   "dashboardSectionToday": "Oggi",
   "dashboardSectionAttention": "Richiede attenzione",
   "dashboardSectionStalePlans": "Programmi da aggiornare",
   "dashboardSectionCustomersNoPlan": "Clienti senza programma",
   "dashboardCoachToolsTitle": "Strumenti coach",
   "dashboardDiaryAction": "Storico",
-  "dashboardStatsAction": "Statistiche coach",
   "dashboardDiarySubtitle": "{count} sessioni (30 gg)",
   "@dashboardDiarySubtitle": {
     "placeholders": {
       "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardStatsSubtitle": "{percent}% aderenza (7 gg)",
-  "@dashboardStatsSubtitle": {
-    "placeholders": {
-      "percent": {
         "type": "int"
       }
     }
@@ -1708,7 +1552,9 @@
   "dashboardCoachToolsAvailable": "{count} strumenti disponibili",
   "@dashboardCoachToolsAvailable": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dashboardAttentionLocalHint": "I dati restano archiviati su questo dispositivo.",
@@ -1717,13 +1563,17 @@
   "dashboardStaleWindowBadge": "Finestra {days} gg",
   "@dashboardStaleWindowBadge": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "dashboardNoStalePlansHint": "Nessun programma oltre la finestra di {days} giorni.",
   "@dashboardNoStalePlansHint": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "dashboardShortcutsTitle": "Scorciatoie di gestione",
@@ -1786,12 +1636,7 @@
   "workoutsAssignHint": "Assegna un workout a questo cliente dalla schermata dettaglio cliente.",
   "customerWorkoutsSearchHint": "Cerca per nome, fase o tag",
   "customerWorkoutsFilterAll": "Tutti",
-  "customerWorkoutsFilterActive": "In corso",
-  "customerWorkoutsFilterScheduled": "Con date",
-  "customerWorkoutsFilterUnscheduled": "Senza data",
-  "customerWorkoutsFilterEnded": "Terminati",
   "customerWorkoutsFilterArchived": "Archiviati",
-  "customerWorkoutsFilterStale": "Da aggiornare",
   "customerWorkoutsSortTitle": "Ordina per",
   "customerWorkoutsSortStartDateDesc": "Data inizio (recente)",
   "customerWorkoutsSortStartDateAsc": "Data inizio (meno recente)",
@@ -1857,7 +1702,6 @@
   "workoutTemplatesAssignStartDateHint": "Tocca per scegliere una data di inizio",
   "workoutTemplatesAssignStartDateSkip": "Salta",
   "workoutDiaryTitle": "Storico",
-  "workoutStatsTitle": "Statistiche",
   "placeholderComingSoon": "In arrivo",
   "placeholderSectionNotImplemented": "Questa sezione non è ancora implementata.",
   "placeholderBackToBuilder": "Torna al builder",
@@ -1890,28 +1734,8 @@
   "updatedJustNow": "Appena adesso",
   "workoutDiaryEmpty": "Nessuna sessione registrata. Segna una sessione come completata dal calendario per iniziare il diario.",
   "workoutDiaryFilterAll": "Tutti i clienti",
-  "coachStatsTitle": "Statistiche coach",
-  "coachStatsAdherence": "Aderenza",
-  "coachStatsCompletedSessions": "Sessioni completate",
-  "coachStatsSkippedSessions": "Sessioni saltate",
-  "coachStatsActiveClients": "Clienti attivi",
   "coachStatsPeriod7d": "Ultimi 7 giorni",
   "coachStatsPeriod30d": "Ultimi 30 giorni",
-  "coachStatsChartTitle": "Sessioni completate per giorno",
-  "coachStatsChartEmpty": "Nessuna sessione completata in questo periodo.",
-  "coachStatsChartDaySummary": "{date}: {count} completate",
-  "@coachStatsChartDaySummary": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "coachStatsExportCsv": "Esporta CSV",
-  "coachStatsExportCsvSubject": "Statistiche PowerCoach",
   "workoutDiaryFilterDate": "Intervallo date",
   "workoutDiaryFilterDateAll": "Sempre",
   "workoutDiaryFilterStatusAll": "Tutti gli stati",
@@ -1937,107 +1761,6 @@
   },
   "sessionLogExpandSets": "Mostra set",
   "sessionLogCollapseSets": "Nascondi set",
-  "sessionLogCheckInTitle": "Com'è andata? (opzionale)",
-  "sessionLogRpeLabel": "RPE sessione (1-10)",
-  "sessionLogPainLabel": "Livello di dolore (0-10)",
-  "sessionLogPainLocationHint": "Dove? (opzionale)",
-  "sessionLogRpeChipLabel": "RPE {value}/10",
-  "@sessionLogRpeChipLabel": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "sessionLogPainChipLabel": "Dolore {value}/10",
-  "@sessionLogPainChipLabel": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "sessionLogPainChipLabelWithLocation": "Dolore {value}/10 · {location}",
-  "@sessionLogPainChipLabelWithLocation": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      },
-      "location": {
-        "type": "String"
-      }
-    }
-  },
-  "gymModeTitle": "Modalità sala",
-  "gymModeAction": "Apri modalità sala",
-  "gymModeEmptyToday": "Nessuna sessione in programma per oggi.",
-  "gymModeRunnerTitle": "Sessione",
-  "gymModeCoachingNoteLabel": "Nota coaching",
-  "gymModeSaveAndComplete": "Salva e completa",
-  "gymModeSaving": "Salvataggio…",
-  "gymModeLogSuccess": "Sessione salvata",
-  "gymModeTimerStart": "Avvia",
-  "gymModeTimerReset": "Reset",
-  "workoutPlanDiffTitle": "Confronto piani",
-  "workoutPlanDiffPickPlanBTitle": "Scegli un piano da confrontare",
-  "workoutPlanDiffPlanALabel": "Piano A (attuale)",
-  "workoutPlanDiffPlanBLabel": "Piano B",
-  "workoutPlanDiffChangePlanB": "Cambia",
-  "workoutPlanDiffNoOtherPlans": "Nessun altro piano per questo cliente.",
-  "workoutPlanDiffEmpty": "Nessuna differenza strutturale tra questi piani.",
-  "workoutPlanDiffLoadError": "Impossibile caricare questi piani.",
-  "workoutPlanDiffSummaryDaysAdded": "{count} giorni aggiunti",
-  "@workoutPlanDiffSummaryDaysAdded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryDaysRemoved": "{count} giorni rimossi",
-  "@workoutPlanDiffSummaryDaysRemoved": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryDaysChanged": "{count} giorni modificati",
-  "@workoutPlanDiffSummaryDaysChanged": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesAdded": "{count} esercizi aggiunti",
-  "@workoutPlanDiffSummaryExercisesAdded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesRemoved": "{count} esercizi rimossi",
-  "@workoutPlanDiffSummaryExercisesRemoved": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesChanged": "{count} esercizi modificati",
-  "@workoutPlanDiffSummaryExercisesChanged": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffBadgeAdded": "Aggiunto",
-  "workoutPlanDiffBadgeRemoved": "Rimosso",
-  "workoutPlanDiffBadgeChanged": "Modificato",
-  "workoutPlanDiffCoachingNoteLabel": "Nota coaching",
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",
@@ -2134,93 +1857,6 @@
       }
     }
   },
-  "backupImportSelectGroups": "Scegli cosa importare",
-  "backupImportPartialReplaceHint": "I gruppi deselezionati restano invariati su questo dispositivo.",
-  "backupImportGroupCustomers": "Clienti e dati correlati ({count})",
-  "@backupImportGroupCustomers": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupPlans": "Piani workout ({count})",
-  "@backupImportGroupPlans": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupExerciseLibrary": "Libreria esercizi ({count})",
-  "@backupImportGroupExerciseLibrary": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupReminders": "Promemoria ({count})",
-  "@backupImportGroupReminders": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupPreferences": "Profilo e preferenze",
   "backupImportTypeConfirm": "Digita IMPORT per confermare la sostituzione di tutti i dati",
-  "backupImportTypeConfirmHint": "IMPORT",
-  "releaseNotesTitle": "Novità",
-  "releaseNotesInstalledVersion": "Versione installata: {version}",
-  "@releaseNotesInstalledVersion": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
-  "releaseNotesSettingsSubtitle": "Versione {version}",
-  "@releaseNotesSettingsSubtitle": {
-    "placeholders": {
-      "version": {
-        "type": "String"
-      }
-    }
-  },
-  "releaseNotesHighlightsLabel": "In evidenza",
-  "releaseNotesCurrentVersionBadge": "Corrente",
-  "releaseNotesV1071": "Hub coach: card Diario e Statistiche dalla dashboard; menu su agenda completa",
-  "releaseNotesV1072": "Da scheda cliente: apri diario filtrato per cliente",
-  "releaseNotesV1073": "Export CSV riepilogo progresso (aderenza, PR, misure) da overview cliente",
-  "releaseNotesV1074": "Pannello superset dedicato nel workout builder (anteprima compatta + editor)",
-  "releaseNotesV1075": "Session log arricchito: reps e carico per serie nel foglio sessione",
-  "releaseNotesV1061": "Backup: restore selettivo per categorie + metadata export (data export, conteggi entità)",
-  "releaseNotesV1062": "Diario workout v2: filtri data/stato, dettaglio sessione navigabile",
-  "releaseNotesV1063": "Statistiche coach: grafico aderenza giornaliera + export CSV KPI",
-  "releaseNotesV1064": "Miglioramenti presentation-split builder (sheet esercizi, tab training)",
-  "releaseNotesV1051": "Modello esecuzione sessione (completata / saltata / pianificata) persistito in locale",
-  "releaseNotesV1052": "Diario workout e statistiche coach (MVP)",
-  "releaseNotesV1053": "Pannello progresso cliente: aderenza 30 giorni, PR recenti, strip 4 settimane",
-  "releaseNotesV1054": "Promemoria sessioni collegati al calendario piani",
-  "releaseNotesV1055": "Follow-up cliente basato su dati di esecuzione reali",
-  "releaseNotesV1041": "Overview cliente con metriche reali da misure (sparkline, trend 30 gg)",
-  "releaseNotesV1042": "Picker esercizi: recenti e preferiti in libreria",
-  "releaseNotesV1043": "Dettaglio sessione calendario con dati piano reali",
-  "releaseNotesV1044": "Override per singola occorrenza sessione (ripianifica senza mutare il piano)",
-  "releaseNotesV1045": "Ciclo di vita piano (bozza, attivo, completato, archiviato)",
-  "releaseNotesV1031": "Dati business solo locali (Drift); Supabase solo autenticazione",
-  "releaseNotesV1032": "Rimozione UX sync cloud obsoleta; test backfill tier 2/3",
-  "releaseNotesV1033": "Repository prefs e profilo coach locali",
-  "releaseNotesV1034": "Migrazione offline store modulare",
-  "releaseNotesV1021": "Libreria template piani workout",
-  "releaseNotesV1022": "Autosave editor piano + guard uscita con modifiche non salvate",
-  "releaseNotesV1023": "Export piano PDF / JSON / Excel",
-  "releaseNotesV1011": "Dashboard \"Oggi\" e agenda sessioni",
-  "releaseNotesV1012": "Gestione clienti, misure, record esercizi",
-  "releaseNotesV1013": "Workout builder (settimane/giorni/esercizi, superset base)",
-  "releaseNotesV1014": "Calendario coach e assegnazione piani",
-  "releaseNotesV1015": "Notifiche locali e promemoria",
-  "releaseNotesV1016": "Localizzazione IT/EN end-to-end",
-  "releaseNotesV1017": "Backup export/import JSON account"
+  "backupImportTypeConfirmHint": "IMPORT"
 }

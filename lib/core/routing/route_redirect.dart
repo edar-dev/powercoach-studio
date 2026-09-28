@@ -6,12 +6,15 @@ bool isProtectedAppPath(String path) {
   return path.startsWith('/customers') ||
       path.startsWith('/dashboard') ||
       path.startsWith('/workouts') ||
+      // Legacy bookmark paths: still require auth before redirecting.
       path == '/profile' ||
+      path == '/gym' ||
+      path.startsWith('/gym/') ||
+      path == '/plans/diff' ||
+      path.startsWith('/plans/') ||
       path.startsWith('/settings') ||
       path == AppPaths.subscription ||
-      path == '/exercise-library' ||
-      path == '/gym' ||
-      path.startsWith('/gym/');
+      path == '/exercise-library';
 }
 
 /// Returns a safe in-app path from a post-login redirect query parameter.
@@ -23,6 +26,12 @@ String? safePostLoginRedirect(String? raw) {
   if (!uri.path.startsWith('/')) return null;
   if (uri.path == '/' || uri.path == '/login') return null;
   return uri.toString();
+}
+
+/// Redirect target that preserves the original query string when present.
+String redirectPreservingQuery(Uri uri, String targetPath) {
+  final query = uri.query;
+  return query.isEmpty ? targetPath : '$targetPath?$query';
 }
 
 String? resolveAppRouteRedirect(GoRouterState state) {
@@ -52,21 +61,27 @@ String? resolveAppRouteRedirect(GoRouterState state) {
   }
 
   if (path == '/workouts/library') {
-    return '/exercise-library';
+    return redirectPreservingQuery(state.uri, '/exercise-library');
   }
 
-  // Wave C legacy redirects (gym / profile / schedule list / stats).
+  // Legacy bookmarks from removed surfaces (Waves A–F).
   if (path == '/gym' || path.startsWith('/gym/')) {
-    return '/dashboard';
+    return redirectPreservingQuery(state.uri, '/dashboard');
   }
   if (path == '/profile') {
-    return AppPaths.personalInfo;
+    return redirectPreservingQuery(state.uri, AppPaths.personalInfo);
   }
   if (path == '/dashboard/schedule') {
-    return '/dashboard/calendar';
+    return redirectPreservingQuery(state.uri, '/dashboard/calendar');
   }
   if (path == '/workouts/stats') {
-    return '/workouts/diary';
+    return redirectPreservingQuery(state.uri, '/workouts/diary');
+  }
+  if (path == '/plans/diff' || path.startsWith('/plans/')) {
+    return redirectPreservingQuery(state.uri, '/customers');
+  }
+  if (path == '/settings/release-notes') {
+    return redirectPreservingQuery(state.uri, AppPaths.settings);
   }
 
   return null;

@@ -2,6 +2,8 @@
 
 > Documento di riferimento per coach flow, attriti e backlog miglioramenti.  
 > Aggiornato: 2026-07-19 · Collegato a [workout-builder-ux-roadmap.plan.md](../.cursor/plans/workout-builder-ux-roadmap.plan.md)
+>
+> **Status (UX deep simplification):** orphan builder routes (`multiset` / `superset` / `intuitive-superset`), `WorkoutBuilderVariant` extras, density/EMOM chrome, and plan-diff were **removed**. Single builder at `/workouts/builder` remains; basic supersets stay. Treat sections below about ghost variants as historical backlog, not current product.
 
 ---
 

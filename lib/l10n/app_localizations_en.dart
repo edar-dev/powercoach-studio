@@ -725,9 +725,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileTitle => 'Profile';
 
   @override
-  String get profileComingSoon => 'Profile page coming soon.';
-
-  @override
   String get profileDisplayName => 'Display name';
 
   @override
@@ -897,76 +894,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionCompareNotIncluded => '—';
 
   @override
-  String get subscriptionPromoHint => 'Have an invite code? Enter it below.';
-
-  @override
-  String get subscriptionPromoCardTitle => 'Get Pro with an invite';
-
-  @override
-  String get subscriptionPromoCardSubtitle =>
-      'During early access, Pro is free with an invite code.';
-
-  @override
-  String get subscriptionPromoCodeLabel => 'Invite code';
-
-  @override
-  String get subscriptionPromoCodeHint => 'e.g. POWERCOACH-2026';
-
-  @override
-  String get subscriptionPromoCodeEmpty => 'Enter an invite code.';
-
-  @override
-  String get subscriptionPromoRedeemButton => 'Activate Pro';
-
-  @override
-  String get subscriptionPromoRedeemSuccess => 'Pro activated. Enjoy!';
-
-  @override
-  String get subscriptionPromoRedeemError =>
-      'Could not activate the code. Try again.';
-
-  @override
-  String get subscriptionPromoAlreadyPro => 'You already have Pro access.';
-
-  @override
-  String get subscriptionPromoProActiveHint =>
-      'Your Pro access is active via invite code.';
-
-  @override
   String get subscriptionStatusPromoActive => 'Pro (invite)';
 
   @override
   String get subscriptionStatusPromoActiveDetail =>
       'Pro access activated with an invite code.';
-
-  @override
-  String get subscriptionCouponRequestIntro =>
-      'Don\'t have a code? You can request Pro access.';
-
-  @override
-  String get subscriptionCouponRequestButton => 'Request invite code';
-
-  @override
-  String get subscriptionCouponRequestMessageLabel => 'Message (optional)';
-
-  @override
-  String get subscriptionCouponRequestMessageHint =>
-      'e.g. how many clients you coach, how you use the app…';
-
-  @override
-  String get subscriptionCouponRequestSubmit => 'Send request';
-
-  @override
-  String get subscriptionCouponRequestSuccess =>
-      'Request sent. We\'ll reply by email.';
-
-  @override
-  String get subscriptionCouponRequestError =>
-      'Could not send the request. Try again.';
-
-  @override
-  String get subscriptionCouponRequestPending =>
-      'You already have a pending request. We\'ll reply by email.';
 
   @override
   String get subscriptionBillingDetailsTitle => 'Billing';
@@ -1085,38 +1017,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reminderWebNotSupported =>
       'Reminders are not supported in the web version of the app.';
-
-  @override
-  String get reminderPlatformNotSupported =>
-      'Reminders are not supported on this platform.';
-
-  @override
-  String get reminderEnableNotificationsFirst =>
-      'Turn on notifications in Settings first.';
-
-  @override
-  String get reminderPastTimeError => 'Choose a time in the future.';
-
-  @override
-  String get reminderSaved => 'Reminder saved.';
-
-  @override
-  String get reminderScheduleError =>
-      'Could not schedule the reminder. Try again.';
-
-  @override
-  String reminderNotificationTitle(String customerName) {
-    return 'Reminder: $customerName';
-  }
-
-  @override
-  String get reminderNotificationBody => 'Scheduled client reminder';
-
-  @override
-  String get reminderDashboardSessionTitle => 'Session reminder';
-
-  @override
-  String get customerReminderAction => 'Set reminder';
 
   @override
   String get settingsLanguageDescription => 'App language';
@@ -1797,9 +1697,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportExcel => 'Export to Excel';
 
   @override
-  String get workoutExportJson => 'Export JSON';
-
-  @override
   String get workoutImportJson => 'Import JSON';
 
   @override
@@ -1863,12 +1760,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfSuperset => 'Superset';
-
-  @override
-  String get pdfCircuit => 'Circuit';
-
-  @override
-  String get pdfEmom => 'EMOM';
 
   @override
   String pdfDayNumber(int day) {
@@ -1979,18 +1870,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutRoutineCurrentWeekHint => 'Select week';
 
   @override
-  String get workoutPlanPhaseLabel => 'Phase';
-
-  @override
-  String get workoutPlanPhaseHint => 'e.g. Hypertrophy, Strength, Deload';
-
-  @override
-  String get workoutPlanTagsLabel => 'Tags';
-
-  @override
-  String get workoutPlanTagsHint => 'e.g. upper body, shoulder rehab';
-
-  @override
   String get workoutPlanNotesLabel => 'Plan notes';
 
   @override
@@ -2083,19 +1962,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutPlanCompleteAction => 'Mark completed';
 
   @override
-  String get workoutPlanDiffCompareAction => 'Compare with…';
-
-  @override
   String get workoutPlanStatusArchived => 'Archived';
-
-  @override
-  String get workoutPlanStatusCompleted => 'Completed';
-
-  @override
-  String get workoutPlanStatusActive => 'Active';
-
-  @override
-  String get workoutPlanStatusDraft => 'Draft';
 
   @override
   String get mobilityAddExercise => 'Add mobility exercise';
@@ -2125,77 +1992,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerDetailMeasurements => 'Measurements';
 
   @override
-  String get customerDetailRecords => 'Records';
-
-  @override
-  String get recordsEmpty => 'No exercise records yet.';
-
-  @override
-  String get recordsEmptyHint =>
-      'Log a value for a custom exercise (e.g. 1RM, reps) and add updates over time.';
-
-  @override
-  String get recordAdd => 'Add record';
-
-  @override
-  String get recordAddUpdate => 'Add update';
-
-  @override
-  String get recordValue => 'Value';
-
-  @override
-  String get recordUnit => 'Unit';
-
-  @override
-  String get recordDate => 'Date';
-
-  @override
-  String get recordNote => 'Note (optional)';
-
-  @override
-  String get recordUnitKg => 'kg';
-
-  @override
-  String get recordUnitReps => 'reps';
-
-  @override
-  String get recordUnitSec => 'sec';
-
-  @override
-  String get recordUnitMin => 'min';
-
-  @override
-  String get recordUnitOther => 'Other';
-
-  @override
-  String get recordDeleteConfirm => 'Delete this record?';
-
-  @override
-  String get recordSaved => 'Record saved.';
-
-  @override
-  String get recordSaveError => 'Could not save record.';
-
-  @override
-  String get recordDeleted => 'Record deleted.';
-
-  @override
-  String get recordDeleteError => 'Could not delete record.';
-
-  @override
-  String get recordSelectExercise => 'Select exercise';
-
-  @override
   String get recordSearchExerciseHint => 'Search by name...';
-
-  @override
-  String get recordDeleteButton => 'Delete record';
-
-  @override
-  String get workoutBuilderClientRecord => 'Client record';
-
-  @override
-  String get workoutBuilderNoExerciseRecord => 'No record for this exercise.';
 
   @override
   String get workoutBuilderLoadPercentGuideTitle =>
@@ -2424,9 +2221,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get workoutBuilderSelectLibraryExercise =>
       'Select an exercise from the library, or type the exact name.';
-
-  @override
-  String get workoutBuilderMultiSetBlockHeader => 'Sets (Set × Reps + Load)';
 
   @override
   String get workoutBuilderSetLabel => 'Set';
@@ -2658,25 +2452,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderSuperSetHeading => 'SUPER SET';
 
   @override
-  String get workoutBuilderCircuitHeading => 'CIRCUIT';
-
-  @override
-  String get workoutBuilderEmomHeading => 'EMOM';
-
-  @override
   String get builderSupersetPanelTitle => 'Manage superset';
 
   @override
-  String get builderCircuitPanelTitle => 'Manage circuit';
-
-  @override
-  String get builderEmomPanelTitle => 'Manage EMOM';
-
-  @override
   String get builderSupersetAddExercise => 'Add exercise to superset';
-
-  @override
-  String get builderDensityAddExercise => 'Add exercise to group';
 
   @override
   String workoutBuilderAssignedPlanBadge(String customerName) {
@@ -2783,72 +2562,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get builderSupersetManage => 'Manage';
 
   @override
-  String get builderCircuitManage => 'Manage';
-
-  @override
-  String get builderEmomManage => 'Manage';
-
-  @override
   String get workoutBuilderDeleteDayMenu => 'Delete day';
 
   @override
   String get workoutBuilderNewSuperset => 'New superset';
 
   @override
-  String get workoutBuilderNewCircuit => 'New circuit';
-
-  @override
-  String get workoutBuilderNewEmom => 'New EMOM';
-
-  @override
   String get workoutBuilderRemoveFromSuperset => 'Remove from superset';
-
-  @override
-  String get densityRoundsLabel => 'Rounds';
-
-  @override
-  String get densityRestSecondsLabel => 'Rest (seconds)';
-
-  @override
-  String get densityIntervalSecondsLabel => 'Interval (seconds)';
-
-  @override
-  String get densityDurationMinutesLabel => 'Duration (minutes)';
-
-  @override
-  String get densityBlockTypeLabel => 'Type';
-
-  @override
-  String get densityBlockTypeSuperset => 'Superset';
-
-  @override
-  String get densityBlockTypeCircuit => 'Circuit';
-
-  @override
-  String get densityBlockTypeEmom => 'EMOM';
-
-  @override
-  String get densityBlockSave => 'Save density';
-
-  @override
-  String densityCircuitRounds(int rounds) {
-    return '$rounds rounds';
-  }
-
-  @override
-  String densityCircuitRest(int seconds) {
-    return '${seconds}s rest';
-  }
-
-  @override
-  String densityEmomInterval(int seconds) {
-    return 'EMOM ${seconds}s';
-  }
-
-  @override
-  String densityEmomDuration(int minutes) {
-    return '$minutes min';
-  }
 
   @override
   String get workoutBuilderTabTraining => 'Training';
@@ -2959,9 +2679,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderNavDiary => 'Diary';
-
-  @override
-  String get workoutBuilderNavStats => 'Stats';
 
   @override
   String get workoutBuilderWeeksLabel => 'Weeks';
@@ -3172,33 +2889,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderCloneDayTargetTitle => 'Duplicate day to';
 
   @override
-  String get workoutBuilderDayCoachingNoteTitle => 'Coaching note';
-
-  @override
-  String get workoutBuilderDayCoachingNoteLabel => 'Note for this day';
-
-  @override
-  String get workoutBuilderDayCoachingNoteHint =>
-      'e.g. focus, cues, warmup instructions';
-
-  @override
-  String workoutBuilderProgressionIncreaseLoad(String value) {
-    return 'Suggestion: bump load to $value';
-  }
-
-  @override
-  String get workoutBuilderProgressionIncreaseLoadGeneric =>
-      'Suggestion: consider a small load bump';
-
-  @override
-  String workoutBuilderProgressionIncreaseReps(String value) {
-    return 'Suggestion: aim for $value reps';
-  }
-
-  @override
-  String get workoutBuilderProgressionApply => 'Apply';
-
-  @override
   String get workoutBuilderReadOnlyBanner =>
       'Read-only — duplicate the plan to edit it.';
 
@@ -3275,28 +2965,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get measurementDeltaUnchanged => 'Unchanged';
 
   @override
-  String get measurementSkinfolds => 'Skinfolds (mm)';
-
-  @override
   String get measurementBodyFat => 'Body fat %';
 
   @override
   String get measurementMuscleMass => 'Muscle mass (kg)';
-
-  @override
-  String get measurementCircumferences => 'Circumferences (cm)';
-
-  @override
-  String get measurementChest => 'Chest';
-
-  @override
-  String get measurementWaist => 'Waist';
-
-  @override
-  String get measurementArms => 'Arms';
-
-  @override
-  String get measurementThighs => 'Thighs';
 
   @override
   String get measurementNotes => 'Notes';
@@ -3329,36 +3001,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get measurementHistoryLoadError =>
       'Could not load measurement history.';
-
-  @override
-  String get measurementHistoryCompareTitle => 'Period comparison';
-
-  @override
-  String get measurementHistoryCompareSubtitle =>
-      'Last 30 days vs previous 30 days';
-
-  @override
-  String get measurementHistoryCompareRecent => 'Last 30 days';
-
-  @override
-  String get measurementHistoryComparePrevious => 'Previous 30 days';
-
-  @override
-  String get measurementHistoryCompareInsufficient =>
-      'Add more measurements to compare periods.';
-
-  @override
-  String get measurementHistoryCompareNoData => 'No data';
-
-  @override
-  String measurementHistoryCompareDelta(String metric, String delta) {
-    return '$metric change: $delta';
-  }
-
-  @override
-  String measurementHistoryCompareSampleCount(int count) {
-    return '$count samples';
-  }
 
   @override
   String get measurementHistoryOpen => 'View history';
@@ -3413,13 +3055,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerNotesLoadError => 'Could not load notes.';
-
-  @override
-  String get customerNotesAttachPhoto => 'Attach photo';
-
-  @override
-  String get customerNotesAttachSoon =>
-      'Photo attachments will arrive in a later update.';
 
   @override
   String get measurementExportCsv => 'Export CSV';
@@ -3603,9 +3238,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Details are based on the selected workout plan start date.';
 
   @override
-  String get dashboardReminderTooltip => 'Set reminder';
-
-  @override
   String get dashboardSectionToday => 'Today';
 
   @override
@@ -3624,16 +3256,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardDiaryAction => 'History';
 
   @override
-  String get dashboardStatsAction => 'Coach stats';
-
-  @override
   String dashboardDiarySubtitle(int count) {
     return '$count sessions (30d)';
-  }
-
-  @override
-  String dashboardStatsSubtitle(int percent) {
-    return '$percent% adherence (7d)';
   }
 
   @override
@@ -3900,22 +3524,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerWorkoutsFilterAll => 'All';
 
   @override
-  String get customerWorkoutsFilterActive => 'Active';
-
-  @override
-  String get customerWorkoutsFilterScheduled => 'Scheduled';
-
-  @override
-  String get customerWorkoutsFilterUnscheduled => 'Unscheduled';
-
-  @override
-  String get customerWorkoutsFilterEnded => 'Ended';
-
-  @override
   String get customerWorkoutsFilterArchived => 'Archived';
-
-  @override
-  String get customerWorkoutsFilterStale => 'Needs update';
 
   @override
   String get customerWorkoutsSortTitle => 'Sort by';
@@ -4062,9 +3671,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDiaryTitle => 'History';
 
   @override
-  String get workoutStatsTitle => 'Stats';
-
-  @override
   String get placeholderComingSoon => 'Coming soon';
 
   @override
@@ -4106,42 +3712,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDiaryFilterAll => 'All clients';
 
   @override
-  String get coachStatsTitle => 'Coach stats';
-
-  @override
-  String get coachStatsAdherence => 'Adherence';
-
-  @override
-  String get coachStatsCompletedSessions => 'Completed sessions';
-
-  @override
-  String get coachStatsSkippedSessions => 'Skipped sessions';
-
-  @override
-  String get coachStatsActiveClients => 'Active clients';
-
-  @override
   String get coachStatsPeriod7d => 'Last 7 days';
 
   @override
   String get coachStatsPeriod30d => 'Last 30 days';
-
-  @override
-  String get coachStatsChartTitle => 'Completed sessions by day';
-
-  @override
-  String get coachStatsChartEmpty => 'No completed sessions in this period.';
-
-  @override
-  String coachStatsChartDaySummary(String date, int count) {
-    return '$date: $count completed';
-  }
-
-  @override
-  String get coachStatsExportCsv => 'Export CSV';
-
-  @override
-  String get coachStatsExportCsvSubject => 'PowerCoach coach stats';
 
   @override
   String get workoutDiaryFilterDate => 'Date range';
@@ -4200,131 +3774,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionLogCollapseSets => 'Hide sets';
-
-  @override
-  String get sessionLogCheckInTitle => 'How did it go? (optional)';
-
-  @override
-  String get sessionLogRpeLabel => 'Session RPE (1-10)';
-
-  @override
-  String get sessionLogPainLabel => 'Pain level (0-10)';
-
-  @override
-  String get sessionLogPainLocationHint => 'Where? (optional)';
-
-  @override
-  String sessionLogRpeChipLabel(int value) {
-    return 'RPE $value/10';
-  }
-
-  @override
-  String sessionLogPainChipLabel(int value) {
-    return 'Pain $value/10';
-  }
-
-  @override
-  String sessionLogPainChipLabelWithLocation(int value, String location) {
-    return 'Pain $value/10 · $location';
-  }
-
-  @override
-  String get gymModeTitle => 'Gym mode';
-
-  @override
-  String get gymModeAction => 'Open gym mode';
-
-  @override
-  String get gymModeEmptyToday => 'No sessions scheduled for today.';
-
-  @override
-  String get gymModeRunnerTitle => 'Session';
-
-  @override
-  String get gymModeCoachingNoteLabel => 'Coaching note';
-
-  @override
-  String get gymModeSaveAndComplete => 'Save & complete';
-
-  @override
-  String get gymModeSaving => 'Saving…';
-
-  @override
-  String get gymModeLogSuccess => 'Session saved';
-
-  @override
-  String get gymModeTimerStart => 'Start';
-
-  @override
-  String get gymModeTimerReset => 'Reset';
-
-  @override
-  String get workoutPlanDiffTitle => 'Plan comparison';
-
-  @override
-  String get workoutPlanDiffPickPlanBTitle => 'Choose a plan to compare';
-
-  @override
-  String get workoutPlanDiffPlanALabel => 'Plan A (current)';
-
-  @override
-  String get workoutPlanDiffPlanBLabel => 'Plan B';
-
-  @override
-  String get workoutPlanDiffChangePlanB => 'Change';
-
-  @override
-  String get workoutPlanDiffNoOtherPlans =>
-      'No other plans for this customer yet.';
-
-  @override
-  String get workoutPlanDiffEmpty =>
-      'No structural differences between these plans.';
-
-  @override
-  String get workoutPlanDiffLoadError => 'Couldn\'t load these plans.';
-
-  @override
-  String workoutPlanDiffSummaryDaysAdded(int count) {
-    return '$count days added';
-  }
-
-  @override
-  String workoutPlanDiffSummaryDaysRemoved(int count) {
-    return '$count days removed';
-  }
-
-  @override
-  String workoutPlanDiffSummaryDaysChanged(int count) {
-    return '$count days changed';
-  }
-
-  @override
-  String workoutPlanDiffSummaryExercisesAdded(int count) {
-    return '$count exercises added';
-  }
-
-  @override
-  String workoutPlanDiffSummaryExercisesRemoved(int count) {
-    return '$count exercises removed';
-  }
-
-  @override
-  String workoutPlanDiffSummaryExercisesChanged(int count) {
-    return '$count exercises changed';
-  }
-
-  @override
-  String get workoutPlanDiffBadgeAdded => 'Added';
-
-  @override
-  String get workoutPlanDiffBadgeRemoved => 'Removed';
-
-  @override
-  String get workoutPlanDiffBadgeChanged => 'Changed';
-
-  @override
-  String get workoutPlanDiffCoachingNoteLabel => 'Coaching note';
 
   @override
   String get customerProgressTitle => 'Training progress';
@@ -4478,177 +3927,9 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get backupImportSelectGroups => 'Choose what to import';
-
-  @override
-  String get backupImportPartialReplaceHint =>
-      'Deselected groups stay unchanged on this device.';
-
-  @override
-  String backupImportGroupCustomers(int count) {
-    return 'Clients and related data ($count)';
-  }
-
-  @override
-  String backupImportGroupPlans(int count) {
-    return 'Workout plans ($count)';
-  }
-
-  @override
-  String backupImportGroupExerciseLibrary(int count) {
-    return 'Exercise library ($count)';
-  }
-
-  @override
-  String backupImportGroupReminders(int count) {
-    return 'Reminders ($count)';
-  }
-
-  @override
-  String get backupImportGroupPreferences => 'Profile and preferences';
-
-  @override
   String get backupImportTypeConfirm =>
       'Type IMPORT to confirm replacing all data';
 
   @override
   String get backupImportTypeConfirmHint => 'IMPORT';
-
-  @override
-  String get releaseNotesTitle => 'What\'s new';
-
-  @override
-  String releaseNotesInstalledVersion(String version) {
-    return 'Installed version: $version';
-  }
-
-  @override
-  String releaseNotesSettingsSubtitle(String version) {
-    return 'Version $version';
-  }
-
-  @override
-  String get releaseNotesHighlightsLabel => 'Highlights';
-
-  @override
-  String get releaseNotesCurrentVersionBadge => 'Current';
-
-  @override
-  String get releaseNotesV1071 =>
-      'Coach hub: Diary and Stats cards on the dashboard; overflow menu on the full schedule';
-
-  @override
-  String get releaseNotesV1072 =>
-      'From customer profile: open diary filtered by customer';
-
-  @override
-  String get releaseNotesV1073 =>
-      'CSV progress export (adherence, PRs, measurements) from customer overview';
-
-  @override
-  String get releaseNotesV1074 =>
-      'Dedicated superset panel in workout builder (compact preview + editor)';
-
-  @override
-  String get releaseNotesV1075 =>
-      'Richer session log: reps and load per set in the session sheet';
-
-  @override
-  String get releaseNotesV1061 =>
-      'Backup: selective restore by category + export metadata (export date, entity counts)';
-
-  @override
-  String get releaseNotesV1062 =>
-      'Workout diary v2: date/status filters, navigable session detail';
-
-  @override
-  String get releaseNotesV1063 =>
-      'Coach stats: daily adherence chart + KPI CSV export';
-
-  @override
-  String get releaseNotesV1064 =>
-      'Presentation-split builder improvements (exercise sheet, training tab)';
-
-  @override
-  String get releaseNotesV1051 =>
-      'Session execution model (completed / skipped / planned) persisted locally';
-
-  @override
-  String get releaseNotesV1052 => 'Workout diary and coach stats (MVP)';
-
-  @override
-  String get releaseNotesV1053 =>
-      'Customer progress panel: 30-day adherence, recent PRs, 4-week strip';
-
-  @override
-  String get releaseNotesV1054 => 'Session reminders linked to plan calendar';
-
-  @override
-  String get releaseNotesV1055 =>
-      'Customer follow-up based on real execution data';
-
-  @override
-  String get releaseNotesV1041 =>
-      'Customer overview with real measurement metrics (sparkline, 30-day trend)';
-
-  @override
-  String get releaseNotesV1042 =>
-      'Exercise picker: recents and favorites in library';
-
-  @override
-  String get releaseNotesV1043 => 'Calendar session detail with real plan data';
-
-  @override
-  String get releaseNotesV1044 =>
-      'Single-occurrence session override (reschedule without changing the plan)';
-
-  @override
-  String get releaseNotesV1045 =>
-      'Plan lifecycle (draft, active, completed, archived)';
-
-  @override
-  String get releaseNotesV1031 =>
-      'Business data local-only (Drift); Supabase for authentication only';
-
-  @override
-  String get releaseNotesV1032 =>
-      'Removed obsolete cloud sync UX; tier 2/3 backfill tests';
-
-  @override
-  String get releaseNotesV1033 => 'Local prefs and coach profile repositories';
-
-  @override
-  String get releaseNotesV1034 => 'Modular offline store migration';
-
-  @override
-  String get releaseNotesV1021 => 'Workout plan template library';
-
-  @override
-  String get releaseNotesV1022 => 'Plan editor autosave + unsaved exit guard';
-
-  @override
-  String get releaseNotesV1023 => 'Plan export PDF / JSON / Excel';
-
-  @override
-  String get releaseNotesV1011 => 'Today dashboard and session schedule';
-
-  @override
-  String get releaseNotesV1012 =>
-      'Customer management, measurements, exercise records';
-
-  @override
-  String get releaseNotesV1013 =>
-      'Workout builder (weeks/days/exercises, basic supersets)';
-
-  @override
-  String get releaseNotesV1014 => 'Coach calendar and plan assignment';
-
-  @override
-  String get releaseNotesV1015 => 'Local notifications and reminders';
-
-  @override
-  String get releaseNotesV1016 => 'End-to-end IT/EN localization';
-
-  @override
-  String get releaseNotesV1017 => 'Account JSON backup export/import';
 }

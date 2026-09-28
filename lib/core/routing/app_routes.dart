@@ -67,7 +67,10 @@ List<RouteBase> buildAppRoutes() {
           parentNavigatorKey: appRootNavigatorKey,
           redirect: (context, state) {
             if (state.uri.path == '/dashboard/schedule') {
-              return '/dashboard/calendar';
+              final query = state.uri.query;
+              return query.isEmpty
+                  ? '/dashboard/calendar'
+                  : '/dashboard/calendar?$query';
             }
             return null;
           },
@@ -83,7 +86,12 @@ List<RouteBase> buildAppRoutes() {
     ),
     GoRoute(
       path: '/profile',
-      redirect: (context, state) => AppPaths.personalInfo,
+      redirect: (context, state) {
+        final query = state.uri.query;
+        return query.isEmpty
+            ? AppPaths.personalInfo
+            : '${AppPaths.personalInfo}?$query';
+      },
     ),
     GoRoute(
       path: AppPaths.subscription,
@@ -92,7 +100,26 @@ List<RouteBase> buildAppRoutes() {
     ),
     GoRoute(
       path: '/gym',
-      redirect: (context, state) => '/dashboard',
+      redirect: (context, state) {
+        final query = state.uri.query;
+        return query.isEmpty ? '/dashboard' : '/dashboard?$query';
+      },
+      routes: [
+        GoRoute(
+          path: 'session',
+          redirect: (context, state) {
+            final query = state.uri.query;
+            return query.isEmpty ? '/dashboard' : '/dashboard?$query';
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/plans/diff',
+      redirect: (context, state) {
+        final query = state.uri.query;
+        return query.isEmpty ? '/customers' : '/customers?$query';
+      },
     ),
     GoRoute(
       path: '/settings',
@@ -111,6 +138,16 @@ List<RouteBase> buildAppRoutes() {
             return query.isEmpty
                 ? AppPaths.subscription
                 : '${AppPaths.subscription}?$query';
+          },
+        ),
+        GoRoute(
+          path: 'release-notes',
+          parentNavigatorKey: appRootNavigatorKey,
+          redirect: (context, state) {
+            final query = state.uri.query;
+            return query.isEmpty
+                ? AppPaths.settings
+                : '${AppPaths.settings}?$query';
           },
         ),
       ],
@@ -246,7 +283,12 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'library',
           parentNavigatorKey: appRootNavigatorKey,
-          redirect: (_, __) => '/exercise-library',
+          redirect: (context, state) {
+            final query = state.uri.query;
+            return query.isEmpty
+                ? '/exercise-library'
+                : '/exercise-library?$query';
+          },
         ),
         GoRoute(
           path: 'diary',
@@ -266,7 +308,12 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'stats',
           parentNavigatorKey: appRootNavigatorKey,
-          redirect: (_, __) => '/workouts/diary',
+          redirect: (context, state) {
+            final query = state.uri.query;
+            return query.isEmpty
+                ? '/workouts/diary'
+                : '/workouts/diary?$query';
+          },
         ),
       ],
     ),

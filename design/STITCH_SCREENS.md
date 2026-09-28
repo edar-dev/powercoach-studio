@@ -17,7 +17,7 @@ Implementazione Flutter: `lib/core/ui/widgets/`, `lib/features/`, Material 3 (`S
 | 3 | Subscription Settings    | `1224a49f9c5849fcb205e965ebc0b9a4` | `lib/features/settings/presentation/screens/subscription_screen.dart` |
 | 4 | Forgot Password          | `3563377ad3864dfca42385fcd5ea0840` | `lib/features/auth/.../forgot_password_screen.dart` |
 | 5 | Login Page               | `3e212f412ed849a9b6bcfc0772cf15fd` | `lib/features/auth/presentation/screens/login_screen.dart` |
-| 6 | Updated Coach Profile    | `5863bd21319d467b828ad322f8670305` | `lib/features/auth/presentation/screens/profile_screen.dart` |
+| 6 | Updated Coach Profile    | `5863bd21319d467b828ad322f8670305` | `lib/features/settings/presentation/screens/personal_info_screen.dart` (legacy `/profile` → personal-info) |
 | 7 | Simplified Registration Page | `76b61a47b6324d31bfd4957cd921aaee` | `lib/features/auth/presentation/screens/registration_screen.dart` |
 | 8 | Simplified App Settings  | `8ab8a84172594c1c9911b5762e2a7257` | `lib/features/settings/presentation/screens/settings_screen.dart` |
 | 9 | Empty Customer List Page  | `3d09f0f5b58f4867990e02be11ffc7d2` | `lib/features/customers/.../customer_list_screen.dart` (empty state) |

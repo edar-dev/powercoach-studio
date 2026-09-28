@@ -44,7 +44,7 @@ In powercoach-studio: landing e home menzionano “Export to PDF” ma non c’�
 | **WorkoutPlanProvider** | Caricamento da API, stato corrente, undo/redo | `workout_plan_provider.dart` |
 | **WorkoutPlanRepository** | API per piani (get, save, list) | `workout_plan_repository_impl.dart` |
 
-In powercoach-studio: c’è il Workout Builder (mobility, multiset, superset, intuitive superset) con modello `WorkoutRoutine` (nome, mobilityItems, weeks/days/exercises) e salvataggio in SharedPreferences; non c’è editor “piano” con tab Description/Mobility/Weeks/PDF né route `/editor/...`.
+In powercoach-studio: c’è un unico Workout Builder (`/workouts/builder`, mobility optional, basic supersets) con modello `WorkoutRoutine` (nome, mobilityItems, weeks/days/exercises) persistito local-first (Drift); non c’è editor “piano” con tab Description/Mobility/Weeks/PDF né route `/editor/...`. Orphan builder variants (multiset / intuitive-superset) were removed.
 
 ---
 

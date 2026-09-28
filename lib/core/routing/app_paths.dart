@@ -3,6 +3,10 @@
 /// Every important screen must have a dedicated top-level path (see
 /// `.cursor/rules/15-dedicated-routes.mdc`). Prefer these constants over
 /// string literals when navigating or linking.
+///
+/// Removed surfaces (gym hub, plan-diff, coach stats, release notes) keep
+/// legacy URL redirects in [resolveAppRouteRedirect] / [buildAppRoutes] only —
+/// do not reintroduce path constants for those destinations.
 abstract final class AppPaths {
   static const subscription = '/subscription';
 

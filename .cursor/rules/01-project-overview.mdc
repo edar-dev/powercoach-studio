@@ -14,7 +14,7 @@ Multi-platform **Flutter/Dart** app (Android, iOS, web, Windows, macOS) for gym 
 | Language | Dart (SDK ^3.9.2), Flutter |
 | Auth | Supabase (`supabase_flutter ^2.5.0`) — session only |
 | Local DB | **Drift** + SQLite (`powercoach_offline.sqlite`) |
-| Local prefs | **SharedPreferences** (settings, drafts, pins, reminders) |
+| Local prefs | **SharedPreferences** (settings, drafts, pins, calendar reminder prefs) |
 | External API | None for business data (local-first; optional Stripe billing on web) |
 | Routing | `go_router ^17` — routes in `lib/core/routing/app_routes.dart`, shell in `lib/app.dart` |
 | Monitoring | `sentry_flutter` (opt-in via `SENTRY_DSN`, release builds) |

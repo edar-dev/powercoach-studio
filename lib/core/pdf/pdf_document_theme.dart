@@ -481,7 +481,7 @@ class PdfDocumentTheme {
     String? note,
   }) {
     final prescription = sanitizePdfText(content.prescription.trim());
-    final coachingNote =
+    final noteText =
         note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
     final isPyramid =
         prescription.contains('\n') || prescription.contains(' > ');
@@ -525,10 +525,10 @@ class PdfDocumentTheme {
                 textAlign: pw.TextAlign.center,
               ),
             ],
-            if (coachingNote.isNotEmpty) ...[
+            if (noteText.isNotEmpty) ...[
               pw.SizedBox(height: 1.5),
               pw.Text(
-                coachingNote,
+                noteText,
                 style: pw.TextStyle(
                   fontSize: denseCompactTableFontSize - 0.5,
                   fontStyle: pw.FontStyle.italic,

@@ -29,11 +29,13 @@ When `SENTRY_DSN` is set, release builds send errors and navigation traces to [S
 
 ## Local data
 
-- **Drift/SQLite** (`powercoach_offline.sqlite`): customers, workout plans, pending ops, sync metadata.
-- **SharedPreferences**: settings, drafts, exercise pins/recents, reminders, locale.
-- **Backup/restore**: JSON export/import via Settings — see `docs/` and `.cursor/rules/13-user-data-backup-json-compat.mdc`.
+- **Drift/SQLite** (`powercoach_offline.sqlite`): customers, workout plans, session executions, measurements, notes (local-first; no remote sync replay).
+- **SharedPreferences**: settings, drafts, exercise pins/recents, calendar reminder prefs, locale.
+- **Backup/restore**: JSON export/import via Settings — always restore-all (merge or replace); see `docs/` and `.cursor/rules/13-user-data-backup-json-compat.mdc`.
 
-Coach profile fields (display name, phone, bio, etc.) are stored locally per user, not in Supabase tables.
+Coach profile fields (display name, phone, bio, etc.) live under **Settings → Personal info** (`/settings/personal-info`; legacy `/profile` redirects there), stored locally per user — not in Supabase tables.
+
+Daily coach loop: **Today (dashboard) → log session → clients/plans → History (diary) → measurements → backup → Stripe billing**.
 
 ## Dev environment
 
@@ -59,7 +61,7 @@ Before opening a PR: `flutter analyze` and `flutter test test/`.
 
 ## Local notifications & reminders
 
-Scheduled client/session reminders use `flutter_local_notifications`. See **`docs/local-notifications-reminders.md`**.
+Calendar-linked session reminders use `flutter_local_notifications` (settings toggles under Settings). Manual per-client reminder store was removed. See **`docs/local-notifications-reminders.md`**.
 
 ## CI/CD
 
