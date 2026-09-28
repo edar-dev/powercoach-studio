@@ -4,9 +4,7 @@ import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../settings/data/user_preferences_repository.dart';
 import '../data/workout_routine_model.dart';
-import '../domain/density_block.dart';
 import '../domain/exercise_prescription_scope.dart';
-import '../domain/workout_density_block_mutations.dart';
 import '../domain/workout_exercise_mutations.dart';
 import '../domain/workout_phase_presets.dart';
 import 'workout_builder_session_controller.dart';
@@ -544,35 +542,15 @@ class WorkoutBuilderTrainingHandlers {
     int weekIndex,
     int dayIndex,
     String exerciseId,
-    String supersetGroupId, {
-    DensityBlockConfig? densityConfig,
-  }) {
+    String supersetGroupId,
+  ) {
     if (readOnly) return;
-    final updated = assignExerciseToDensityGroupInRoutine(
+    final updated = WorkoutSupersetActions.assignToSuperset(
       routine: _routine,
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exerciseId: exerciseId,
-      groupId: supersetGroupId,
-      densityConfig: densityConfig,
-    );
-    if (updated == null) return;
-    session.setRoutine(updated);
-  }
-
-  void setDensityBlock(
-    int weekIndex,
-    int dayIndex,
-    String groupId,
-    DensityBlockConfig config,
-  ) {
-    if (readOnly) return;
-    final updated = setDensityBlockInRoutine(
-      routine: _routine,
-      weekIndex: weekIndex,
-      dayIndex: dayIndex,
-      groupId: groupId,
-      config: config,
+      supersetGroupId: supersetGroupId,
     );
     if (updated == null) return;
     session.setRoutine(updated);
@@ -595,12 +573,6 @@ class WorkoutBuilderTrainingHandlers {
       }
     }
     final previousGroupId = exercise?.supersetGroupId;
-    final previousDensity =
-        (day != null &&
-            previousGroupId != null &&
-            previousGroupId.isNotEmpty)
-        ? resolveDensityBlock(day, previousGroupId)
-        : null;
     final updated = WorkoutSupersetActions.removeFromSuperset(
       routine: _routine,
       weekIndex: weekIndex,
@@ -619,7 +591,6 @@ class WorkoutBuilderTrainingHandlers {
         dayIndex,
         exerciseId,
         previousGroupId,
-        densityConfig: previousDensity,
       );
     });
   }

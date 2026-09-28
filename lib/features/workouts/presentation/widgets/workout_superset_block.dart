@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
-import 'density_block_l10n.dart';
 import 'workout_superset_actions.dart';
 import 'workout_superset_panel.dart';
 import 'workout_training_helpers.dart';
 
-/// Superset / circuit / EMOM group block in the workout training tab.
+/// Superset group block in the workout training tab.
 class WorkoutSupersetBlock extends StatelessWidget {
   const WorkoutSupersetBlock({
     super.key,
@@ -21,7 +19,6 @@ class WorkoutSupersetBlock extends StatelessWidget {
     required this.dayIndex,
     required this.exercises,
     this.supersetGroupId,
-    this.densityConfig,
     required this.expanded,
     required this.onExpandedChanged,
     required this.onAddExercise,
@@ -30,7 +27,6 @@ class WorkoutSupersetBlock extends StatelessWidget {
     required this.onMoveExerciseWithinSuperset,
     required this.onRemoveFromSuperset,
     required this.onUpdateExercise,
-    this.onSetDensityBlock,
   });
 
   final ThemeData theme;
@@ -40,7 +36,6 @@ class WorkoutSupersetBlock extends StatelessWidget {
   final int dayIndex;
   final List<Exercise> exercises;
   final String? supersetGroupId;
-  final DensityBlockConfig? densityConfig;
   final bool expanded;
   final ValueChanged<bool> onExpandedChanged;
   final VoidCallback onAddExercise;
@@ -63,7 +58,6 @@ class WorkoutSupersetBlock extends StatelessWidget {
     List<ExerciseSet>? setDetails,
   })
   onUpdateExercise;
-  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
 
   void _openEditor(BuildContext context) {
     final groupId = supersetGroupId;
@@ -81,7 +75,6 @@ class WorkoutSupersetBlock extends StatelessWidget {
       onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
       onRemoveFromSuperset: onRemoveFromSuperset,
       onUpdateExercise: onUpdateExercise,
-      onSetDensityBlock: onSetDensityBlock,
     );
   }
 
@@ -92,35 +85,15 @@ class WorkoutSupersetBlock extends StatelessWidget {
     final prescriptionSummary =
         lead != null ? supersetPrescriptionSummary(lead) : null;
     final namesSummary = exercises.map((e) => e.name).join(' · ');
-    final type = densityConfig?.type ?? DensityBlockType.superset;
-    final heading = switch (type) {
-      DensityBlockType.circuit => l10n.workoutBuilderCircuitHeading,
-      DensityBlockType.emom => l10n.workoutBuilderEmomHeading,
-      DensityBlockType.superset => l10n.workoutBuilderSuperSetHeading,
-    };
-    final manageLabel = switch (type) {
-      DensityBlockType.circuit => l10n.builderCircuitManage,
-      DensityBlockType.emom => l10n.builderEmomManage,
-      DensityBlockType.superset => l10n.builderSupersetManage,
-    };
-    final icon = switch (type) {
-      DensityBlockType.circuit => Icons.loop,
-      DensityBlockType.emom => Icons.timer_outlined,
-      DensityBlockType.superset => Icons.link,
-    };
-    final densitySubtitle = densityConfig == null
-        ? ''
-        : localizedDensityBlockSubtitle(l10n, densityConfig!);
-
     return WorkoutSupersetPanel(
       theme: theme,
       colorScheme: colorScheme,
       expanded: expanded,
       onExpandedChanged: onExpandedChanged,
-      heading: heading,
-      subtitle: densitySubtitle,
-      headingIcon: icon,
-      manageLabel: manageLabel,
+      heading: l10n.workoutBuilderSuperSetHeading,
+      subtitle: '',
+      headingIcon: Icons.link,
+      manageLabel: l10n.builderSupersetManage,
       prescriptionSummary: (prescriptionSummary != null &&
               prescriptionSummary.trim().isNotEmpty)
           ? prescriptionSummary

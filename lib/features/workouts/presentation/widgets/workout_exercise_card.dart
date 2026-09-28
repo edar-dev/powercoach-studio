@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
@@ -64,8 +63,7 @@ class WorkoutExerciseCard extends StatelessWidget {
   onUpdateSet;
   final void Function(int setIndex)? onRemoveSet;
   final List<({String id, String label})> supersetOptions;
-  final void Function(String groupId, {DensityBlockConfig? densityConfig})?
-  onAssignToSuperset;
+  final void Function(String groupId)? onAssignToSuperset;
   final VoidCallback? onRemoveFromSuperset;
 
   void _openEditDialog(BuildContext context, {bool focusNote = false}) {
@@ -241,16 +239,6 @@ class WorkoutExerciseCard extends StatelessWidget {
                       onAssignToSuperset!(
                         'ss_${DateTime.now().millisecondsSinceEpoch}',
                       );
-                    } else if (value == 'new_circuit') {
-                      onAssignToSuperset!(
-                        'ss_${DateTime.now().millisecondsSinceEpoch}',
-                        densityConfig: DensityBlockConfig.defaultCircuit,
-                      );
-                    } else if (value == 'new_emom') {
-                      onAssignToSuperset!(
-                        'ss_${DateTime.now().millisecondsSinceEpoch}',
-                        densityConfig: DensityBlockConfig.defaultEmom,
-                      );
                     } else if (value.startsWith('group:')) {
                       onAssignToSuperset!(value.substring(6));
                     } else if (value == 'remove_ss') {
@@ -286,16 +274,6 @@ class WorkoutExerciseCard extends StatelessWidget {
                         PopupMenuItem(
                           value: 'new',
                           child: Text(menuL10n.workoutBuilderNewSuperset),
-                        ),
-                      if (onAssignToSuperset != null)
-                        PopupMenuItem(
-                          value: 'new_circuit',
-                          child: Text(menuL10n.workoutBuilderNewCircuit),
-                        ),
-                      if (onAssignToSuperset != null)
-                        PopupMenuItem(
-                          value: 'new_emom',
-                          child: Text(menuL10n.workoutBuilderNewEmom),
                         ),
                       ...supersetOptions.map(
                         (o) => PopupMenuItem(

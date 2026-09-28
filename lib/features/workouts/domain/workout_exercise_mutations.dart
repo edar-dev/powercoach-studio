@@ -1,7 +1,6 @@
 import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
-import 'workout_density_block_mutations.dart';
 
 const int kDefaultExerciseSetCount = 3;
 const String kDefaultExerciseReps = '10';
@@ -107,20 +106,13 @@ WorkoutRoutine? removeExerciseFromDayInRoutine({
   required int dayIndex,
   required String exerciseId,
 }) {
-  final updated = updateDayExercisesInRoutine(
+  return updateDayExercisesInRoutine(
     routine: routine,
     weekIndex: weekIndex,
     dayIndex: dayIndex,
     update: (exercises) =>
         exercises.where((e) => e.id != exerciseId).toList(),
   );
-  if (updated == null) return null;
-  return pruneOrphanDensityBlocksInRoutine(
-        routine: updated,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-      ) ??
-      updated;
 }
 
 WorkoutRoutine? moveExerciseInDayInRoutine({
@@ -317,7 +309,7 @@ WorkoutRoutine? assignExerciseToSupersetInRoutine({
   required String exerciseId,
   required String supersetGroupId,
 }) {
-  final updated = updateDayExercisesInRoutine(
+  return updateDayExercisesInRoutine(
     routine: routine,
     weekIndex: weekIndex,
     dayIndex: dayIndex,
@@ -329,13 +321,6 @@ WorkoutRoutine? assignExerciseToSupersetInRoutine({
         )
         .toList(),
   );
-  if (updated == null) return null;
-  return pruneOrphanDensityBlocksInRoutine(
-        routine: updated,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-      ) ??
-      updated;
 }
 
 WorkoutRoutine? removeExerciseFromSupersetInRoutine({
@@ -344,7 +329,7 @@ WorkoutRoutine? removeExerciseFromSupersetInRoutine({
   required int dayIndex,
   required String exerciseId,
 }) {
-  final updated = updateDayExercisesInRoutine(
+  return updateDayExercisesInRoutine(
     routine: routine,
     weekIndex: weekIndex,
     dayIndex: dayIndex,
@@ -355,11 +340,4 @@ WorkoutRoutine? removeExerciseFromSupersetInRoutine({
         )
         .toList(),
   );
-  if (updated == null) return null;
-  return pruneOrphanDensityBlocksInRoutine(
-        routine: updated,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-      ) ??
-      updated;
 }

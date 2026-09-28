@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
-import 'package:powercoach_studio/features/workouts/domain/density_block.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_routine_json_codec.dart';
 
 void main() {
@@ -83,65 +82,95 @@ void main() {
     expect(encodeDay(day).containsKey('coachingNote'), isFalse);
   });
 
-  test('round-trip preserves day densityBlocks', () {
-    final routine = WorkoutRoutine.empty().copyWith(
-      weeks: [
-        Week(
-          id: 'w1',
-          name: 'Week 1',
-          days: [
-            Day(
-              id: 'd1',
-              name: 'Day A',
-              exercises: const [
-                Exercise(
-                  id: 'e1',
-                  name: 'Squat',
-                  sets: '3',
-                  reps: '10',
-                  rpe: '',
-                  note: '',
-                  supersetGroupId: 'ss_123',
-                ),
-              ],
-              densityBlocks: const {
-                'ss_123': DensityBlockConfig(
-                  type: DensityBlockType.circuit,
-                  rounds: 3,
-                  restSeconds: 90,
-                ),
-              },
-            ),
-          ],
-        ),
-      ],
-    );
-    final jsonText = encodeWorkoutRoutineJson(routine);
-    final restored = decodeWorkoutRoutineJson(jsonText);
-    final day = restored.weeks.single.days.single;
-    expect(day.densityBlocks?['ss_123']?.type, DensityBlockType.circuit);
-    expect(day.densityBlocks?['ss_123']?.rounds, 3);
-    expect(day.densityBlocks?['ss_123']?.restSeconds, 90);
-  });
-
-  test('decodes legacy day JSON without densityBlocks as null', () {
+  test('decodeDay ignores legacy densityBlocks key', () {
     final legacyDayJson = {
       'id': 'd1',
       'name': 'Day A',
-      'exercises': <Map<String, dynamic>>[],
+      'exercises': [
+        {
+          'id': 'e1',
+          'name': 'Squat',
+          'sets': '3',
+          'reps': '10',
+          'rpe': '',
+          'note': '',
+          'supersetGroupId': 'ss_123',
+        },
+      ],
+      'densityBlocks': {
+        'ss_123': {
+          'type': 'circuit',
+          'rounds': 3,
+          'restSeconds': 90,
+        },
+      },
     };
     final day = decodeDay(legacyDayJson);
-    expect(day.densityBlocks, isNull);
+    expect(day.id, 'd1');
+    expect(day.exercises.single.supersetGroupId, 'ss_123');
+    expect(encodeDay(day).containsKey('densityBlocks'), isFalse);
   });
 
-  test('encodeDay omits empty densityBlocks map', () {
+  test('encodeDay never writes densityBlocks', () {
     const day = Day(
       id: 'd1',
       name: 'Day A',
       exercises: [],
-      densityBlocks: {},
     );
     expect(encodeDay(day).containsKey('densityBlocks'), isFalse);
+  });
+
+  test('round-trip drops legacy densityBlocks from envelope', () {
+    final payload = {
+      'schemaVersion': workoutRoutineJsonSchemaVersion,
+      'format': workoutRoutineJsonFormat,
+      'routine': {
+        'name': 'Plan',
+        'mobilitySections': <Map<String, dynamic>>[],
+        'mobilityItems': <Map<String, dynamic>>[],
+        'phases': [
+          {
+            'id': 'phase_default',
+            'name': 'General',
+            'weeks': [
+              {
+                'id': 'w1',
+                'name': 'Week 1',
+                'days': [
+                  {
+                    'id': 'd1',
+                    'name': 'Day A',
+                    'exercises': [
+                      {
+                        'id': 'e1',
+                        'name': 'Squat',
+                        'sets': '3',
+                        'reps': '10',
+                        'rpe': '',
+                        'note': '',
+                        'supersetGroupId': 'ss_123',
+                      },
+                    ],
+                    'densityBlocks': {
+                      'ss_123': {'type': 'emom', 'intervalSeconds': 60},
+                    },
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    };
+    final restored = decodeWorkoutRoutineJson(jsonEncode(payload));
+    final day = restored.weeks.single.days.single;
+    expect(day.exercises.single.supersetGroupId, 'ss_123');
+    final reencoded = encodeWorkoutRoutine(restored);
+    final reencodedDay =
+        (((reencoded['phases'] as List).first as Map)['weeks'] as List)
+                .first as Map;
+    final dayJson = (reencodedDay['days'] as List).first as Map;
+    expect(dayJson.containsKey('densityBlocks'), isFalse);
   });
 
   test('rejects unsupported schema version', () {

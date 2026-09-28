@@ -11,7 +11,6 @@ import '../../../core/pdf/pdf_mobility_format.dart';
 import '../../../core/pdf/pdf_plan_metadata.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
-import 'density_block.dart';
 
 /// PDF programming layout: per-week sections vs dense progression columns.
 enum WorkoutPdfLayout {
@@ -266,7 +265,6 @@ List<pw.Widget> _canonicalProgrammingWidgets(
                   ),
                 ...blocks.expand((item) => _tableRowsForBlock(
                       item,
-                      day,
                       labels,
                       dense: dense,
                     )),
@@ -288,7 +286,6 @@ List<pw.Widget> _canonicalProgrammingWidgets(
 
 Iterable<pw.TableRow> _tableRowsForBlock(
   Object item,
-  Day day,
   PdfExportLabels labels, {
   required bool dense,
 }) {
@@ -299,7 +296,7 @@ Iterable<pw.TableRow> _tableRowsForBlock(
   if (dense) {
     return group.expand((e) => _exerciseRows(e, labels, dense: dense));
   }
-  final headerLabel = densityBlockExportLabel(day, group, labels);
+  final headerLabel = labels.superset;
   return [
     pw.TableRow(
       decoration: pw.BoxDecoration(color: PdfDocumentTheme.supersetBg),
@@ -414,7 +411,6 @@ String _blockRowLabel(
   Object item, {
   required int rowNumber,
   required PdfExportLabels labels,
-  Day? day,
   bool dense = false,
 }) {
   final prefix = '$rowNumber. ';
@@ -433,9 +429,7 @@ String _blockRowLabel(
   final names = g
       .map((e) => dense ? resolveExerciseDisplayNameForPdf(e) : e.name)
       .join(joiner);
-  final tagLabel = day != null
-      ? densityBlockExportLabel(day, g, labels)
-      : labels.superset;
+  final tagLabel = labels.superset;
   final densityTag = dense ? '$tagLabel: ' : '';
   return '$prefix$densityTag$names';
 }
@@ -509,13 +503,6 @@ List<pw.Widget> _denseProgrammingWidgets(
     for (var r = 0; r < dayRows.length; r++) {
       final dayRow = dayRows[r];
       final block = dayRow.labelBlock;
-      Day? labelDay;
-      for (final w in weeks) {
-        if (d < w.days.length) {
-          labelDay = w.days[d];
-          break;
-        }
-      }
 
       final label = block == null
           ? ''
@@ -523,7 +510,6 @@ List<pw.Widget> _denseProgrammingWidgets(
               block,
               rowNumber: r + 1,
               labels: labels,
-              day: labelDay,
               dense: dense,
             );
 

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
-import 'density_block.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
 import 'session_execution.dart';
@@ -150,7 +149,7 @@ Exercise decodeExercise(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> encodeDay(Day day) {
-  final densityBlocks = encodeDensityBlocks(day.densityBlocks);
+  // Legacy `densityBlocks` keys are intentionally not written.
   return {
     'id': day.id,
     'name': day.name,
@@ -158,11 +157,11 @@ Map<String, dynamic> encodeDay(Day day) {
     if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
     if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
       'coachingNote': day.coachingNote!.trim(),
-    if (densityBlocks != null) 'densityBlocks': densityBlocks,
   };
 }
 
 Day decodeDay(Map<String, dynamic> json) => Day(
+  // Legacy `densityBlocks` keys are ignored on read (dropped, not crashed).
   id: json['id'] as String? ?? '',
   name: json['name'] as String? ?? 'Day',
   exercises: (json['exercises'] as List<dynamic>?)
@@ -171,7 +170,6 @@ Day decodeDay(Map<String, dynamic> json) => Day(
       [],
   scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
   coachingNote: json['coachingNote'] as String?,
-  densityBlocks: decodeDensityBlocks(json['densityBlocks']),
 );
 
 Map<String, dynamic> encodeWeek(Week week) => {

@@ -29,7 +29,6 @@ Week _cloneWeekDeep(Week source, {required String newWeekId, required String new
               .toList(),
           scheduledWeekday: day.scheduledWeekday,
           coachingNote: day.coachingNote,
-          densityBlocks: day.densityBlocks,
         ),
       )
       .toList();
@@ -347,9 +346,6 @@ WorkoutRoutine? cloneDayToTargetInRoutine({
   final newTargetDays = List<Day>.from(targetWeek.days);
   newTargetDays[targetDayIndex] = targetDay.copyWith(
     exercises: copiedExercises,
-    densityBlocks: sourceDay.densityBlocks,
-    clearDensityBlocks: sourceDay.densityBlocks == null ||
-        sourceDay.densityBlocks!.isEmpty,
   );
   return routine.replaceWeekAt(
     targetWeekIndex,
