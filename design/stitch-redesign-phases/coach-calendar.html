@@ -1,0 +1,611 @@
+<!-- PowerCoach Studio - Calendario Coach Dark Redesign -->
+<!DOCTYPE html>
+
+<html class="h-full bg-[#070b13] text-slate-100" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PowerCoach Studio - Calendario Sessioni &amp; Planning</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Custom Tailwind Configuration matching PowerCoach Design System -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            surface: {
+              darkest: '#070b13',
+              dark: '#0b1120',
+              card: '#0f172a',
+              cardHover: '#131d35',
+              border: '#1e293b',
+              borderLight: '#334155',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Global Custom Styles -->
+<style data-purpose="custom-scrollbar">
+    /* Subtle custom scrollbar for dark surfaces */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col antialiased bg-[#070b13] text-slate-200 text-sm overflow-x-hidden">
+<!-- BEGIN: TopGlobalNavbar -->
+<!-- Top Navigation Header identical to PowerCoach Studio Suite -->
+<header class="sticky top-0 z-50 bg-[#0b1120]/95 backdrop-blur border-b border-surface-border px-4 lg:px-6 py-2.5 flex items-center justify-between gap-4">
+<!-- Brand and Navigation Links -->
+<div class="flex items-center gap-8">
+<!-- Logo -->
+<a class="flex items-center gap-2.5 group focus:outline-none" href="#">
+<div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold shadow-lg shadow-blue-500/20 group-hover:bg-blue-500 transition-colors">
+<svg class="w-5 h-5 fill-current" viewbox="0 0 24 24">
+<path d="M13 2L3 14h7v8l11-13h-8z"></path>
+</svg>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-bold text-base tracking-tight text-white">PowerCoach</span>
+<span class="text-[10px] uppercase tracking-wider font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-0.5 rounded">STUDIO</span>
+</div>
+</a>
+<!-- Primary Navigation Links -->
+<nav aria-label="Navigazione Principale" class="hidden md:flex items-center space-x-1">
+<a class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card text-xs font-medium transition-colors" href="#">Dashboard</a>
+<a class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card text-xs font-medium transition-colors" href="#">Clienti</a>
+<a class="px-3 py-1.5 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/20 text-xs font-semibold flex items-center gap-1.5 shadow-sm shadow-blue-600/10" href="#">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+          Calendario
+        </a>
+<a class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card text-xs font-medium transition-colors" href="#">Programmi &amp; Mesocicli</a>
+<a class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card text-xs font-medium transition-colors" href="#">Libreria Esercizi</a>
+<a class="px-3 py-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card text-xs font-medium transition-colors" href="#">Analitiche &amp; Test</a>
+</nav>
+</div>
+<!-- Center/Right Search Bar, System Status and User Avatar -->
+<div class="flex items-center gap-3">
+<!-- Quick Command Search -->
+<div class="relative hidden sm:block w-48 lg:w-64">
+<input class="w-full bg-[#070b13] border border-surface-border rounded-lg pl-8 pr-8 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Ricerca rapida..." type="text"/>
+<svg class="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="absolute right-2 top-2 text-[10px] text-slate-500 bg-surface-card border border-surface-border px-1 rounded font-mono">⌘K</span>
+</div>
+<!-- Cloud Sync Status Pill -->
+<div class="hidden xl:flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full text-emerald-400 text-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="text-[11px] font-medium tracking-tight">Cloud Sync OK</span>
+</div>
+<!-- Notification Bell -->
+<button class="relative p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-surface-card transition-colors">
+<span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- Coach Profile Menu Pill -->
+<div class="flex items-center gap-2 pl-2 border-l border-surface-border">
+<div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-slate-200 text-center">
+          MC
+        </div>
+<div class="hidden 2xl:flex flex-col text-left leading-tight">
+<span class="text-xs font-semibold text-slate-200">Marco Coach</span>
+<span class="text-[10px] text-slate-500">Master Trainer</span>
+</div>
+</div>
+</div>
+</header>
+<!-- END: TopGlobalNavbar -->
+<!-- BEGIN: MainContentArea -->
+<main class="flex-1 flex flex-col p-4 lg:p-6 gap-4 overflow-y-auto">
+<!-- BEGIN: CalendarActionHeader -->
+<!-- Controls bar: Navigation, Views toggle, Filters & New Session CTA -->
+<section class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 bg-surface-dark border border-surface-border rounded-xl p-3.5">
+<!-- Date Navigation & Quick Actions -->
+<div class="flex flex-wrap items-center gap-3">
+<!-- Back Navigation button to match original layout -->
+<button class="p-2 rounded-lg bg-surface-card border border-surface-border hover:border-slate-600 text-slate-300 hover:text-white transition-colors" title="Torna alla dashboard">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<div class="h-5 w-px bg-surface-border"></div>
+<!-- Month Navigation Controls -->
+<div class="flex items-center gap-1 bg-surface-card border border-surface-border rounded-lg p-1">
+<button class="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors" title="Mese precedente">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<h1 class="px-3 text-sm font-semibold tracking-wide text-white capitalize min-w-[130px] text-center">
+            Settembre 2026
+          </h1>
+<button class="p-1 rounded hover:bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors" title="Mese successivo">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<!-- Button 'Oggi' -->
+<button class="px-3 py-1.5 text-xs font-medium rounded-lg bg-surface-card border border-surface-border hover:bg-slate-800 text-slate-300 transition-colors">
+          Oggi
+        </button>
+<!-- View Mode Switcher -->
+<div class="flex items-center bg-surface-card p-0.5 rounded-lg border border-surface-border">
+<button class="px-2.5 py-1 text-xs font-semibold rounded-md bg-blue-600 text-white shadow-sm">Mese</button>
+<button class="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-slate-200">Settimana</button>
+<button class="px-2.5 py-1 text-xs font-medium text-slate-400 hover:text-slate-200">Giorno</button>
+</div>
+</div>
+<!-- Secondary Filters & Primary Creation Button -->
+<div class="flex flex-wrap items-center gap-2.5">
+<!-- Filter Dropdown: Tipo Atleta / Stato -->
+<div class="relative">
+<select class="bg-surface-card border border-surface-border text-slate-300 text-xs rounded-lg pl-3 pr-8 py-1.5 focus:outline-none focus:border-blue-500 appearance-none cursor-pointer">
+<option>Tutti gli Atleti (18)</option>
+<option>Solo Schede Attive (14)</option>
+<option>Check-in in attesa (4)</option>
+</select>
+<svg class="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-2 pointer-events-none" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<!-- Primary Action: Assegna / Nuovo Workout -->
+<button class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-md shadow-blue-600/30 transition-all">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Aggiungi Sessione</span>
+</button>
+</div>
+</section>
+<!-- END: CalendarActionHeader -->
+<!-- BEGIN: CalendarGridAndSidebarWrapper -->
+<div class="flex-1 grid grid-cols-1 xl:grid-cols-12 gap-4 min-h-[640px]">
+<!-- BEGIN: MonthlyCalendarGrid -->
+<!-- Left side: 7-day responsive grid (approx 8.5 cols) -->
+<section class="xl:col-span-8 2xl:col-span-9 bg-surface-dark border border-surface-border rounded-xl flex flex-col overflow-hidden shadow-xl" data-purpose="monthly-grid-container">
+<!-- Day of the Week Headers (Lun - Dom) -->
+<div class="grid grid-cols-7 border-b border-surface-border bg-surface-card text-center text-xs font-medium text-slate-400 py-2.5">
+<span class="tracking-wide">Lun</span>
+<span class="tracking-wide">Mar</span>
+<span class="tracking-wide">Mer</span>
+<span class="tracking-wide">Gio</span>
+<span class="tracking-wide">Ven</span>
+<span class="tracking-wide text-slate-500">Sab</span>
+<span class="tracking-wide text-slate-500">Dom</span>
+</div>
+<!-- Calendar Month Days (5 rows x 7 days) -->
+<div class="flex-1 grid grid-cols-7 grid-rows-5 gap-px bg-surface-border">
+<!-- Row 1 -->
+<!-- 31 Ago (Previous Month) -->
+<div class="bg-surface-dark/60 p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-600 select-none">
+<span class="text-xs font-medium mb-1">31</span>
+</div>
+<!-- 1 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<div class="flex justify-between items-center mb-1">
+<span class="text-xs font-semibold text-slate-300">1</span>
+</div>
+<div class="space-y-1 overflow-hidden">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 truncate" title="Giulia Romano: Peaking W2">
+                Giulia R. <span class="text-emerald-400/70 text-[9px]">• Svolta</span>
+</div>
+</div>
+</div>
+<!-- 2 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">2</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 truncate">
+                Edoardo M. (Giorno A)
+              </div>
+</div>
+</div>
+<!-- 3 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">3</span>
+</div>
+<!-- 4 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">4</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 truncate">
+                Davide M. (Upper)
+              </div>
+</div>
+</div>
+<!-- 5 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">5</span>
+</div>
+<!-- 6 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">6</span>
+</div>
+<!-- Row 2 -->
+<!-- 7 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">7</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 truncate">
+                Alessandro B. (Fase 2)
+              </div>
+</div>
+</div>
+<!-- 8 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">8</span>
+</div>
+<!-- 9 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">9</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-amber-500/15 border border-amber-500/30 text-amber-300 truncate">
+                Matteo F. (Full Body)
+              </div>
+</div>
+</div>
+<!-- 10 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">10</span>
+</div>
+<!-- 11 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">11</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-purple-500/15 border border-purple-500/30 text-purple-300 truncate">
+                Check-in Misure (3)
+              </div>
+</div>
+</div>
+<!-- 12 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">12</span>
+</div>
+<!-- 13 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">13</span>
+</div>
+<!-- Row 3 -->
+<!-- 14 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">14</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 truncate">
+                Edoardo M. - Lower
+              </div>
+</div>
+</div>
+<!-- 15 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">15</span>
+</div>
+<!-- 16 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">16</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 truncate">
+                Giulia R. - Squat Test
+              </div>
+</div>
+</div>
+<!-- 17 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">17</span>
+</div>
+<!-- 18 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">18</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 truncate">
+                Davide M. - Braccia Focus
+              </div>
+</div>
+</div>
+<!-- 19 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">19</span>
+</div>
+<!-- 20 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">20</span>
+</div>
+<!-- Row 4 -->
+<!-- 21 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">21</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 truncate">
+                Edoardo M. (W2 Carico)
+              </div>
+</div>
+</div>
+<!-- 22 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">22</span>
+</div>
+<!-- 23 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">23</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 truncate">
+                Sofia C. (Test Anaerobico)
+              </div>
+</div>
+</div>
+<!-- 24 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">24</span>
+</div>
+<!-- 25 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">25</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 truncate">
+                Elena C. (Controllo Posturale)
+              </div>
+</div>
+</div>
+<!-- 26 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">26</span>
+</div>
+<!-- 27 Settembre (Weekend) -->
+<div class="bg-[#090e1a] p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-400">
+<span class="text-xs font-medium mb-1">27</span>
+</div>
+<!-- Row 5 -->
+<!-- 28 Settembre (SELECTED ACTIVE DAY - Highlights matching user snapshot) -->
+<div class="bg-blue-950/25 border-2 border-blue-500 relative p-1.5 lg:p-2 min-h-[105px] flex flex-col cursor-pointer transition-all shadow-inner">
+<div class="flex items-center justify-between mb-1.5">
+<!-- Active circular badge matching original snapshot design -->
+<span class="w-6 h-6 rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center shadow-md shadow-blue-500/40">
+                28
+              </span>
+<span class="text-[10px] uppercase font-semibold tracking-wider text-blue-400">Selezionato</span>
+</div>
+<!-- Events scheduled on the selected day -->
+<div class="space-y-1.5 mt-auto">
+<div class="px-1.5 py-0.5 text-[11px] font-medium rounded bg-blue-600/30 border border-blue-500/40 text-blue-200 truncate flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                Edoardo M. (Giorno B)
+              </div>
+<div class="px-1.5 py-0.5 text-[11px] font-medium rounded bg-amber-500/20 border border-amber-500/40 text-amber-200 truncate flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Check-in Peso Settimanale
+              </div>
+</div>
+</div>
+<!-- 29 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">29</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-purple-500/15 border border-purple-500/30 text-purple-300 truncate">
+                Giulia R. (Bench Press)
+              </div>
+</div>
+</div>
+<!-- 30 Settembre -->
+<div class="bg-surface-dark p-1.5 lg:p-2 min-h-[105px] flex flex-col group hover:bg-surface-card/40 transition-colors">
+<span class="text-xs font-semibold text-slate-300 mb-1">30</span>
+<div class="space-y-1">
+<div class="px-1.5 py-0.5 text-[11px] rounded bg-blue-500/15 border border-blue-500/30 text-blue-300 truncate">
+                Matteo F. (Full Body)
+              </div>
+</div>
+</div>
+<!-- 1 Ottobre (Next Month) -->
+<div class="bg-surface-dark/60 p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-600 select-none">
+<span class="text-xs font-medium mb-1">1</span>
+</div>
+<!-- 2 Ottobre (Next Month) -->
+<div class="bg-surface-dark/60 p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-600 select-none">
+<span class="text-xs font-medium mb-1">2</span>
+</div>
+<!-- 3 Ottobre (Next Month) -->
+<div class="bg-[#090e1a]/60 p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-700 select-none">
+<span class="text-xs font-medium mb-1">3</span>
+</div>
+<!-- 4 Ottobre (Next Month) -->
+<div class="bg-[#090e1a]/60 p-1.5 lg:p-2 min-h-[105px] flex flex-col text-slate-700 select-none">
+<span class="text-xs font-medium mb-1">4</span>
+</div>
+</div>
+<!-- Calendar Footer / Legend -->
+<footer class="p-3 bg-surface-card border-t border-surface-border flex flex-wrap items-center justify-between text-xs text-slate-400 gap-3">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded bg-blue-500"></span>
+              Workout Scheda
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded bg-emerald-500"></span>
+              Completato &amp; Verificato
+            </span>
+<span class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded bg-amber-500"></span>
+              Check-in / Scadenza
+            </span>
+</div>
+<span class="text-slate-500 text-[11px]">Fuso Orario: Europe/Rome (UTC+2)</span>
+</footer>
+</section>
+<!-- END: MonthlyCalendarGrid -->
+<!-- BEGIN: DaySummaryDrawerSidebar -->
+<!-- Right side: Dynamic breakdown drawer for 28 Settembre 2026 -->
+<aside class="xl:col-span-4 2xl:col-span-3 bg-surface-dark border border-surface-border rounded-xl flex flex-col overflow-hidden shadow-xl" data-purpose="day-summary-panel">
+<!-- Header of the selected day -->
+<div class="p-4 border-b border-surface-border bg-surface-card/60 flex items-center justify-between">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-base font-bold text-white tracking-tight">28 Settembre 2026</h2>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">Lunedì</span>
+</div>
+<p class="text-xs text-slate-400 mt-0.5">2 sessioni e 1 check-in registrati</p>
+</div>
+<button class="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors" title="Aggiungi slot a questa giornata">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+</div>
+<!-- List of Athletes and Workouts for Today -->
+<div class="flex-1 p-3.5 space-y-3.5 overflow-y-auto">
+<!-- Session Item 1: Edoardo Moretti -->
+<article class="p-3 bg-surface-card border border-surface-border rounded-lg hover:border-blue-500/40 transition-colors">
+<!-- Header: Time and Status -->
+<div class="flex items-center justify-between text-xs mb-2">
+<span class="flex items-center gap-1 font-mono text-blue-400 font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+                18:30 (Programmato)
+              </span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                In Attesa
+              </span>
+</div>
+<!-- Client Info & Session details -->
+<div class="flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-full bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs shrink-0">
+                EM
+              </div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xs font-semibold text-white hover:text-blue-400 cursor-pointer truncate">
+                  Edoardo Moretti
+                </h3>
+<p class="text-[11px] text-slate-400 truncate">Giorno B: Lower Power &amp; Jump Capacity</p>
+<div class="mt-1 flex items-center gap-2 text-[10px] text-slate-500">
+<span>6 Esercizi</span>
+<span>•</span>
+<span>~65 min stimati</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="mt-3 pt-2.5 border-t border-surface-border flex items-center gap-2">
+<button class="flex-1 py-1 px-2 rounded bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium text-center transition-colors">
+                Apri Scheda
+              </button>
+<button class="p-1 px-2.5 rounded bg-surface-dark border border-surface-border hover:border-slate-600 text-slate-300 text-xs transition-colors" title="Contatta via WhatsApp">
+                💬 Chat
+              </button>
+</div>
+</article>
+<!-- Session Item 2: Alessandro Bianchi -->
+<article class="p-3 bg-surface-card border border-surface-border rounded-lg hover:border-emerald-500/40 transition-colors">
+<!-- Header: Time and Status -->
+<div class="flex items-center justify-between text-xs mb-2">
+<span class="flex items-center gap-1 font-mono text-emerald-400 font-medium">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+                10:15 (Completato)
+              </span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                Svolto
+              </span>
+</div>
+<!-- Client Info & Session details -->
+<div class="flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-full bg-emerald-600/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0">
+                AB
+              </div>
+<div class="flex-1 min-w-0">
+<h3 class="text-xs font-semibold text-white hover:text-emerald-400 cursor-pointer truncate">
+                  Alessandro Bianchi
+                </h3>
+<p class="text-[11px] text-slate-400 truncate">Fase 2 - Intensificazione (Push Day)</p>
+<div class="mt-1 flex items-center gap-2 text-[10px] text-slate-500">
+<span class="text-emerald-400 font-medium">RPE medio: 8.5</span>
+<span>•</span>
+<span>Volume: 14.2 tonn</span>
+</div>
+</div>
+</div>
+<!-- Quick Action Buttons -->
+<div class="mt-3 pt-2.5 border-t border-surface-border flex items-center gap-2">
+<button class="flex-1 py-1 px-2 rounded bg-surface-dark border border-surface-border hover:border-slate-600 text-slate-300 text-xs font-medium text-center transition-colors">
+                Visualizza Log Workout
+              </button>
+</div>
+</article>
+<!-- Check-in Reminder Item -->
+<article class="p-3 bg-slate-900/60 border border-dashed border-amber-500/30 rounded-lg">
+<div class="flex items-center gap-2 text-xs font-semibold text-amber-400 mb-1">
+<svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Check-in Peso e Feedback</span>
+</div>
+<p class="text-[11px] text-slate-400 leading-snug">
+              Ricevuti 3 feedback su 4 previsti per la chiusura del microciclo di settembre.
+            </p>
+<button class="mt-2 text-xs text-blue-400 hover:text-blue-300 font-medium flex items-center gap-1">
+<span>Revisiona report atleti</span>
+<span>→</span>
+</button>
+</article>
+</div>
+<!-- Sidebar Footer Action -->
+<div class="p-3.5 border-t border-surface-border bg-surface-card/30">
+<button class="w-full py-2 px-3 rounded-lg border border-blue-500/30 hover:bg-blue-600/10 text-blue-400 text-xs font-semibold flex items-center justify-center gap-2 transition-colors">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Genera Report Giornaliero PDF</span>
+</button>
+</div>
+</aside>
+<!-- END: DaySummaryDrawerSidebar -->
+</div>
+<!-- END: CalendarGridAndSidebarWrapper -->
+</main>
+<!-- END: MainContentArea -->
+<!-- BEGIN: GlobalFooter -->
+<!-- Footer aligned with PowerCoach Studio system standards -->
+<footer class="bg-[#070b13] border-t border-surface-border px-4 lg:px-6 py-2.5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+<div class="flex items-center gap-2">
+<span>© 2026 PowerCoach Studio Pro. Tutti i diritti riservati.</span>
+<span class="text-slate-700">•</span>
+<span class="flex items-center gap-1 text-slate-400">
+<svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+        Crittografia End-to-End Dati Atleti
+      </span>
+</div>
+<div class="flex items-center gap-3">
+<span>Architettura Offline-First</span>
+<span class="text-slate-700">•</span>
+<span>Versione 2.4.1-rc</span>
+</div>
+</footer>
+<!-- END: GlobalFooter -->
+</body></html>
