@@ -16,6 +16,7 @@ void main() {
       );
       final nameController = TextEditingController(text: 'Plan A');
       final initialWeekController = TextEditingController(text: '3');
+      final notesController = TextEditingController(text: 'note');
       final coordinator = WorkoutBuilderRoutineCoordinator(
         builderSession: session,
         editorController: WorkoutEditorController(
@@ -26,18 +27,17 @@ void main() {
         draftStore: const SharedPrefsWorkoutDraftStore(),
         routineNameController: nameController,
         initialWeekController: initialWeekController,
-        phaseController: TextEditingController(text: 'Strength'),
-        tagsController: TextEditingController(text: 'tag'),
-        notesController: TextEditingController(text: 'note'),
+        notesController: notesController,
       );
 
       final editorSession = coordinator.editorSession(initialWeekNumber: 1);
       expect(editorSession.planName, 'Plan A');
       expect(editorSession.initialWeekNumber, 3);
-      expect(editorSession.phase, 'Strength');
+      expect(editorSession.notes, 'note');
 
       nameController.dispose();
       initialWeekController.dispose();
+      notesController.dispose();
     });
   });
 }

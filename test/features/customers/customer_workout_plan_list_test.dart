@@ -20,7 +20,10 @@ void main() {
     );
   }
 
-  WorkoutPlanApiModel buildPlan({String name = 'Plan A'}) {
+  WorkoutPlanApiModel buildPlan({
+    String name = 'Plan A',
+    String? archivedAt,
+  }) {
     final now = DateTime.now();
     final routine = WorkoutRoutine.empty().copyWith(
       startDate: DateTime(now.year, now.month, now.day),
@@ -34,30 +37,49 @@ void main() {
         ),
       ],
     );
+    final planData = Map<String, dynamic>.from(routine.toJson());
+    if (archivedAt != null) {
+      planData['archivedAt'] = archivedAt;
+    }
     return WorkoutPlanApiModel(
       id: 'p1',
       customerId: 'c1',
       userId: 'u1',
       name: name,
-      planData: jsonEncode(routine.toJson()),
+      planData: jsonEncode(planData),
       createdAt: now,
       updatedAt: now,
     );
   }
 
   group('WorkoutPlanLifecyclePill', () {
-    testWidgets('shows active status for scheduled plan', (tester) async {
+    testWidgets('hides chrome for non-archived plans', (tester) async {
       await tester.pumpWidget(
         wrap(WorkoutPlanLifecyclePill(plan: buildPlan())),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Active'), findsOneWidget);
+      expect(find.text('Active'), findsNothing);
+      expect(find.text('Archived'), findsNothing);
+      expect(find.text('Draft'), findsNothing);
+    });
+
+    testWidgets('shows archived status only', (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          WorkoutPlanLifecyclePill(
+            plan: buildPlan(archivedAt: '2026-05-15T00:00:00.000'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Archived'), findsOneWidget);
     });
   });
 
   group('CustomerWorkoutPlanFilterBar', () {
-    testWidgets('renders filter chips and invokes selection callback', (
+    testWidgets('renders All and Archived chips only by default', (
       tester,
     ) async {
       WorkoutPlanFilter? selected;
@@ -67,21 +89,19 @@ void main() {
             selectedFilter: WorkoutPlanFilter.all,
             onSearchQueryChanged: (_) {},
             onFilterChanged: (filter) => selected = filter,
-            filters: const [
-              WorkoutPlanFilter.all,
-              WorkoutPlanFilter.active,
-            ],
           ),
         ),
       );
       await tester.pumpAndSettle();
 
       expect(find.text('All'), findsOneWidget);
-      expect(find.text('Active'), findsOneWidget);
+      expect(find.text('Archived'), findsOneWidget);
+      expect(find.text('Active'), findsNothing);
+      expect(find.text('Scheduled'), findsNothing);
 
-      await tester.tap(find.text('Active'));
+      await tester.tap(find.text('Archived'));
       await tester.pump();
-      expect(selected, WorkoutPlanFilter.active);
+      expect(selected, WorkoutPlanFilter.archived);
     });
   });
 

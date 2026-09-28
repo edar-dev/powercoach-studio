@@ -64,7 +64,7 @@ void main() {
       expect(snapshot.calendarRemindersEnabled, isTrue);
       expect(snapshot.calendarReminderLeadHours, 12);
       expect(snapshot.workoutBuilderCompactAdd, isNull);
-      expect(snapshot.workoutBuilderIncludeMobilityDefault, isTrue);
+      expect(snapshot.workoutBuilderIncludeMobilityDefault, isFalse);
     });
   });
 
@@ -77,7 +77,10 @@ void main() {
       expect(await repository.getWorkoutBuilderCompactAdd(), isNull);
     });
 
-    test('include mobility default persists', () async {
+    test('include mobility default is off', () async {
+      expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isFalse);
+      await repository.setWorkoutBuilderIncludeMobilityDefault(true);
+      expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isTrue);
       await repository.setWorkoutBuilderIncludeMobilityDefault(false);
       expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isFalse);
     });

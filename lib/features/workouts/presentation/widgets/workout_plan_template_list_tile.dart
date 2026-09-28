@@ -13,8 +13,6 @@ class WorkoutPlanTemplateListTile extends StatelessWidget {
     required this.onTap,
     required this.onEdit,
     required this.onAssign,
-    required this.onDuplicate,
-    required this.onDelete,
     this.phase,
   });
 
@@ -25,8 +23,6 @@ class WorkoutPlanTemplateListTile extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onAssign;
-  final VoidCallback onDuplicate;
-  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -108,10 +104,6 @@ class WorkoutPlanTemplateListTile extends StatelessWidget {
                       onEdit();
                     case 'assign':
                       onAssign();
-                    case 'dup':
-                      onDuplicate();
-                    case 'del':
-                      onDelete();
                   }
                 },
                 itemBuilder: (ctx) => [
@@ -122,14 +114,6 @@ class WorkoutPlanTemplateListTile extends StatelessWidget {
                   PopupMenuItem(
                     value: 'assign',
                     child: Text(l10n.workoutTemplatesAssign),
-                  ),
-                  PopupMenuItem(
-                    value: 'dup',
-                    child: Text(l10n.workoutTemplatesDuplicate),
-                  ),
-                  PopupMenuItem(
-                    value: 'del',
-                    child: Text(l10n.workoutTemplatesDelete),
                   ),
                 ],
               ),

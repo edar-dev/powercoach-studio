@@ -22,8 +22,6 @@ class WorkoutBuilderScreenTabsConfig {
     required this.sectionTabController,
     required this.routineNameController,
     required this.initialWeekController,
-    required this.phaseController,
-    required this.tagsController,
     required this.notesController,
     required this.editorMode,
     required this.customerId,
@@ -55,8 +53,6 @@ class WorkoutBuilderScreenTabsConfig {
   final TabController sectionTabController;
   final TextEditingController routineNameController;
   final TextEditingController initialWeekController;
-  final TextEditingController phaseController;
-  final TextEditingController tagsController;
   final TextEditingController notesController;
   final bool editorMode;
   final String? customerId;
@@ -94,8 +90,6 @@ class WorkoutBuilderScreenTabsConfig {
       sectionTabController: sectionTabController,
       routineNameController: routineNameController,
       initialWeekController: initialWeekController,
-      phaseController: phaseController,
-      tagsController: tagsController,
       notesController: notesController,
       editorMode: editorMode,
       loading: loading,

@@ -142,7 +142,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       onSaveAsTemplate: () => _savePlanAsTemplate(plan),
       onArchive: () => _archivePlan(plan),
       onUnarchive: () => _unarchivePlan(plan),
-      onMarkCompleted: () => _markPlanCompleted(plan),
       onDelete: () => _deletePlan(plan),
     );
   }
@@ -367,24 +366,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     try {
       await _planRepo.unarchivePlan(plan.id);
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
-      if (!mounted) return;
-      await _loadPlans();
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutActionFailed),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
-  Future<void> _markPlanCompleted(WorkoutPlanApiModel plan) async {
-    final l10n = AppLocalizations.of(context);
-    try {
-      await _planRepo.markPlanCompleted(plan.id);
       if (!mounted) return;
       await _loadPlans();
     } catch (_) {

@@ -278,7 +278,7 @@ Map<String, dynamic> encodeWorkoutRoutine(WorkoutRoutine routine) => {
       routine.endDate!.day,
     ).toIso8601String(),
   if (routine.currentWeek != null) 'currentWeek': routine.currentWeek,
-  if (!routine.includesMobilityTab) 'includesMobilityTab': false,
+  'includesMobilityTab': routine.includesMobilityTab,
   if (routine.sessionCompletionByKey.isNotEmpty)
     'sessionCompletionByKey': routine.sessionCompletionByKey,
   if (routine.sessionSkippedByKey.isNotEmpty)
@@ -332,7 +332,16 @@ WorkoutRoutine decodeWorkoutRoutine(Map<String, dynamic> json) {
   }
 
   final currentWeek = (json['currentWeek'] as num?)?.toInt();
-  final includesMobilityTab = json['includesMobilityTab'] as bool? ?? true;
+  // New plans default off. Explicit true/false preserved. Legacy missing key:
+  // keep tab if mobility content exists, else default false.
+  final rawIncludes = json['includesMobilityTab'];
+  final bool includesMobilityTab;
+  if (rawIncludes is bool) {
+    includesMobilityTab = rawIncludes;
+  } else {
+    final hasSections = sectionsJson != null && sectionsJson.isNotEmpty;
+    includesMobilityTab = hasSections || items.isNotEmpty;
+  }
   final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
   final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
   final overrides = _parseSessionOverrides(json['sessionOverrides']);

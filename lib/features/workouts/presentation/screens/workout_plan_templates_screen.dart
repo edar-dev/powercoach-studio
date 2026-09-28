@@ -18,7 +18,6 @@ import '../workout_plan_display_helpers.dart';
 import '../workout_template_display_helpers.dart';
 import '../widgets/assign_template_customer_dialog.dart';
 import '../widgets/assign_template_start_date_dialog.dart';
-import '../widgets/workout_plan_name_prompt_dialog.dart';
 import '../widgets/workout_plan_template_list.dart';
 import '../widgets/workout_plan_template_list_tile.dart';
 import '../widgets/workout_plan_template_preview_content.dart';
@@ -201,72 +200,6 @@ class _WorkoutPlanTemplatesScreenState
     }
   }
 
-  Future<void> _duplicateTemplate(WorkoutPlanApiModel template) async {
-    final l10n = AppLocalizations.of(context);
-    final name = await showWorkoutPlanNamePromptDialog(
-      context,
-      title: l10n.workoutTemplatesDuplicateTitle,
-      nameLabel: l10n.workoutTemplatesDuplicateHint,
-      confirmLabel: l10n.workoutTemplatesDuplicate,
-      initialName: '${template.name} (2)',
-    );
-    if (name == null || name.isEmpty || !mounted) return;
-    try {
-      await _planRepo.createTemplateFromPlan(
-        sourcePlanId: template.id,
-        templateName: name,
-      );
-      if (!mounted) return;
-      await _load();
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutTemplatesDuplicateSnack),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (e, st) {
-      await Sentry.captureException(e, stackTrace: st);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
-  Future<void> _confirmDelete(WorkoutPlanApiModel template) async {
-    final l10n = AppLocalizations.of(context);
-    final ok = await showAppConfirmDialog(
-      context: context,
-      title: l10n.workoutTemplatesDeleteConfirmTitle,
-      message: l10n.workoutTemplatesDeleteConfirmMessage,
-      confirmLabel: l10n.workoutTemplatesDelete,
-      cancelLabel: l10n.customerCancel,
-      destructive: true,
-    );
-    if (!ok || !mounted) return;
-    try {
-      await _planRepo.delete(template.id);
-      if (!mounted) return;
-      await _load();
-    } catch (e, st) {
-      await Sentry.captureException(e, stackTrace: st);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutDeleteError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
   Future<void> _openTemplatePreview(WorkoutPlanApiModel template) async {
     final l10n = AppLocalizations.of(context);
     final summary = _summaryFor(template);
@@ -330,8 +263,6 @@ class _WorkoutPlanTemplatesScreenState
       onTap: () => _openTemplatePreview(template),
       onEdit: () => _openEditor(template),
       onAssign: () => _assignToCustomer(template),
-      onDuplicate: () => _duplicateTemplate(template),
-      onDelete: () => _confirmDelete(template),
     );
   }
 

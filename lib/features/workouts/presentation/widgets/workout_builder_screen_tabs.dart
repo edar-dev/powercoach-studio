@@ -26,8 +26,6 @@ class WorkoutBuilderScreenTabs {
     required this.sectionTabController,
     required this.routineNameController,
     required this.initialWeekController,
-    required this.phaseController,
-    required this.tagsController,
     required this.notesController,
     required this.editorMode,
     required this.loading,
@@ -69,8 +67,6 @@ class WorkoutBuilderScreenTabs {
   final TabController sectionTabController;
   final TextEditingController routineNameController;
   final TextEditingController initialWeekController;
-  final TextEditingController phaseController;
-  final TextEditingController tagsController;
   final TextEditingController notesController;
   final bool editorMode;
   final bool loading;
@@ -109,8 +105,6 @@ class WorkoutBuilderScreenTabs {
       routine: _routine,
       editorMode: editorMode,
       initialWeekController: initialWeekController,
-      phaseController: phaseController,
-      tagsController: tagsController,
       notesController: notesController,
       onPickStartDate: onPickStartDate,
       onPickEndDate: onPickEndDate,

@@ -4,10 +4,10 @@ import 'package:powercoach_studio/features/workouts/presentation/widgets/workout
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('WorkoutPlanTemplateListTile shows title and menu actions', (
+  testWidgets('WorkoutPlanTemplateListTile shows title edit and assign', (
     tester,
   ) async {
-    var duplicated = false;
+    var assigned = false;
     await tester.pumpWidget(
       MaterialApp(
         locale: const Locale('en'),
@@ -21,9 +21,7 @@ void main() {
             phase: 'Hypertrophy',
             onTap: () {},
             onEdit: () {},
-            onAssign: () {},
-            onDuplicate: () => duplicated = true,
-            onDelete: () {},
+            onAssign: () => assigned = true,
           ),
         ),
       ),
@@ -35,8 +33,10 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.more_vert));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Duplicate template'));
+    expect(find.text('Duplicate template'), findsNothing);
+    expect(find.text('Delete template'), findsNothing);
+    await tester.tap(find.text('Assign to client'));
     await tester.pump();
-    expect(duplicated, isTrue);
+    expect(assigned, isTrue);
   });
 }

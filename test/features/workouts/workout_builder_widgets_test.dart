@@ -209,18 +209,14 @@ void main() {
       expect(find.text('mer'), findsOneWidget);
     });
 
-    testWidgets('WorkoutPlanDetailsTab renders metadata and notifies changes', (
+    testWidgets('WorkoutPlanDetailsTab renders dates notes and notifies changes', (
       tester,
     ) async {
       var initialWeek = '';
       var metadataChanged = false;
       final initialWeekController = TextEditingController(text: '1');
-      final phaseController = TextEditingController(text: 'Strength');
-      final tagsController = TextEditingController(text: 'hypertrophy');
       final notesController = TextEditingController(text: 'Coach notes');
       addTearDown(initialWeekController.dispose);
-      addTearDown(phaseController.dispose);
-      addTearDown(tagsController.dispose);
       addTearDown(notesController.dispose);
 
       await tester.pumpWidget(
@@ -229,8 +225,6 @@ void main() {
             routine: WorkoutRoutine.empty(),
             editorMode: true,
             initialWeekController: initialWeekController,
-            phaseController: phaseController,
-            tagsController: tagsController,
             notesController: notesController,
             onPickStartDate: () {},
             onPickEndDate: () {},
@@ -243,6 +237,7 @@ void main() {
 
       expect(find.text('Data di inizio'), findsOneWidget);
       expect(find.text('Settimana iniziale'), findsOneWidget);
+      expect(find.text('Strength'), findsNothing);
 
       await tester.enterText(find.byType(TextField).first, '3');
       await tester.pump();
@@ -250,7 +245,7 @@ void main() {
 
       await tester.drag(find.byType(ListView), const Offset(0, -500));
       await tester.pump();
-      await tester.enterText(find.text('Strength'), 'Power');
+      await tester.enterText(find.text('Coach notes'), 'Updated notes');
       await tester.pump();
       expect(metadataChanged, isTrue);
     });

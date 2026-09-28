@@ -150,8 +150,6 @@ void main() {
         pdfHeader,
         useCustomPdfHeader = false,
         initialWeekNumber = 1,
-        phase,
-        tags,
         notes,
       }) async {
         createCalls.add({
@@ -188,8 +186,6 @@ void main() {
       draftStore: const SharedPrefsWorkoutDraftStore(),
       routineNameController: nameController,
       initialWeekController: initialWeekController,
-      phaseController: TextEditingController(),
-      tagsController: TextEditingController(),
       notesController: TextEditingController(),
     );
 

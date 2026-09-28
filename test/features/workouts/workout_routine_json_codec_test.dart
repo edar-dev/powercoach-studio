@@ -223,4 +223,52 @@ void main() {
     expect(restored.phases.single.name, kDefaultPhaseName);
     expect(restored.weeks.single.id, 'w1');
   });
+
+  test('empty routine defaults includesMobilityTab to false', () {
+    expect(WorkoutRoutine.empty().includesMobilityTab, isFalse);
+  });
+
+  test('decode preserves explicit includesMobilityTab true', () {
+    final restored = decodeWorkoutRoutine({
+      'name': 'With mobility',
+      'mobilitySections': <Map<String, dynamic>>[],
+      'mobilityItems': <Map<String, dynamic>>[],
+      'weeks': <Map<String, dynamic>>[],
+      'includesMobilityTab': true,
+    });
+    expect(restored.includesMobilityTab, isTrue);
+  });
+
+  test('decode missing key defaults false without mobility content', () {
+    final restored = decodeWorkoutRoutine({
+      'name': 'No mobility key',
+      'mobilitySections': <Map<String, dynamic>>[],
+      'mobilityItems': <Map<String, dynamic>>[],
+      'weeks': <Map<String, dynamic>>[],
+    });
+    expect(restored.includesMobilityTab, isFalse);
+  });
+
+  test('decode missing key keeps tab on when mobility sections present', () {
+    final restored = decodeWorkoutRoutine({
+      'name': 'Legacy mobility',
+      'mobilitySections': [
+        {'id': 'sec_1', 'name': 'Upper'},
+      ],
+      'mobilityItems': <Map<String, dynamic>>[],
+      'weeks': <Map<String, dynamic>>[],
+    });
+    expect(restored.includesMobilityTab, isTrue);
+  });
+
+  test('encode always writes includesMobilityTab', () {
+    final off = encodeWorkoutRoutine(
+      WorkoutRoutine.empty().copyWith(includesMobilityTab: false),
+    );
+    final on = encodeWorkoutRoutine(
+      WorkoutRoutine.empty().copyWith(includesMobilityTab: true),
+    );
+    expect(off['includesMobilityTab'], isFalse);
+    expect(on['includesMobilityTab'], isTrue);
+  });
 }

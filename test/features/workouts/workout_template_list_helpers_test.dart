@@ -10,6 +10,7 @@ WorkoutPlanApiModel _template({
   String? phase,
   String? tags,
   required List<Map<String, dynamic>> weeks,
+  List<Map<String, dynamic>>? phases,
   DateTime? updatedAt,
 }) {
   final now = DateTime(2026, 6, 15);
@@ -24,7 +25,7 @@ WorkoutPlanApiModel _template({
       'name': name,
       'mobilitySections': [],
       'mobilityItems': [],
-      'weeks': weeks,
+      if (phases != null) 'phases': phases else 'weeks': weeks,
     }),
     createdAt: now,
     updatedAt: updatedAt ?? now,
@@ -33,54 +34,72 @@ WorkoutPlanApiModel _template({
 
 void main() {
   group('summarizeTemplate', () {
-    test('counts weeks days and exercises', () {
+    test('counts weeks days and exercises; uses structured phase names', () {
       final plan = _template(
         id: 't1',
         name: 'Template A',
-        phase: 'Hypertrophy',
-        weeks: [
+        phase: 'FreeTextIgnored',
+        phases: [
           {
-            'id': 'w1',
-            'name': 'Week 1',
-            'days': [
+            'id': 'p1',
+            'name': 'Accumulo',
+            'weeks': [
               {
-                'id': 'd1',
-                'name': 'Day 1',
-                'exercises': [
-                  {'id': 'e1', 'name': 'Squat'},
-                  {'id': 'e2', 'name': 'Bench'},
+                'id': 'w1',
+                'name': 'Week 1',
+                'days': [
+                  {
+                    'id': 'd1',
+                    'name': 'Day 1',
+                    'exercises': [
+                      {'id': 'e1', 'name': 'Squat'},
+                      {'id': 'e2', 'name': 'Bench'},
+                    ],
+                  },
+                  {
+                    'id': 'd2',
+                    'name': 'Day 2',
+                    'exercises': [
+                      {'id': 'e3', 'name': 'Deadlift'},
+                    ],
+                  },
                 ],
               },
               {
-                'id': 'd2',
-                'name': 'Day 2',
-                'exercises': [
-                  {'id': 'e3', 'name': 'Deadlift'},
-                ],
-              },
-            ],
-          },
-          {
-            'id': 'w2',
-            'name': 'Week 2',
-            'days': [
-              {
-                'id': 'd3',
-                'name': 'Day 3',
-                'exercises': [
-                  {'id': 'e4', 'name': 'Pull-up'},
+                'id': 'w2',
+                'name': 'Week 2',
+                'days': [
+                  {
+                    'id': 'd3',
+                    'name': 'Day 3',
+                    'exercises': [
+                      {'id': 'e4', 'name': 'Pull-up'},
+                    ],
+                  },
                 ],
               },
             ],
           },
         ],
+        weeks: const [],
       );
 
       final summary = summarizeTemplate(plan);
       expect(summary.weekCount, 2);
       expect(summary.dayCount, 3);
       expect(summary.exerciseCount, 4);
-      expect(summary.phase, 'Hypertrophy');
+      expect(summary.phase, 'Accumulo');
+    });
+
+    test('drops free-text phase when no structured phases', () {
+      final plan = _template(
+        id: 't2',
+        name: 'Legacy',
+        phase: 'Hypertrophy',
+        weeks: const [],
+      );
+      final summary = summarizeTemplate(plan);
+      expect(summary.phase, isNull);
     });
   });
 

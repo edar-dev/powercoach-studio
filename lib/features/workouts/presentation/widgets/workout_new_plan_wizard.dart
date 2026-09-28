@@ -5,6 +5,7 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../settings/data/user_preferences_repository.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../domain/workout_routine_plan_encoder.dart';
 import '../../domain/workout_split_presets.dart';
@@ -81,12 +82,14 @@ class _WorkoutNewPlanWizardBodyState extends State<_WorkoutNewPlanWizardBody> {
 
     setState(() => _creating = true);
     try {
+      final includeMobility = await UserPreferencesRepository.instance
+          .getWorkoutBuilderIncludeMobilityDefault();
       final routine = buildWorkoutRoutineSkeleton(
         planName: name,
         weekCount: _weekCount,
         daysPerWeek: _daysPerWeek,
         preset: _preset,
-      );
+      ).copyWith(includesMobilityTab: includeMobility);
       final created = await widget.planRepo.create(
         customerId: widget.customerId,
         name: name,

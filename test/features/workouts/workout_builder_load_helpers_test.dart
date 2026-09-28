@@ -102,8 +102,6 @@ void main() {
 
       expect(snapshot.planId, 'plan-1');
       expect(snapshot.initialWeekNumber, 2);
-      expect(snapshot.phase, 'Hypertrophy');
-      expect(snapshot.tags, 'tag');
       expect(snapshot.notes, 'note');
       expect(snapshot.weekIndex, 0);
       expect(snapshot.dayIndex, 1);

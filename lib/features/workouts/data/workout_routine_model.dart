@@ -90,7 +90,7 @@ class WorkoutRoutine {
     this.startDate,
     this.endDate,
     this.currentWeek,
-    this.includesMobilityTab = true,
+    this.includesMobilityTab = false,
     this.sessionCompletionByKey = const {},
     this.sessionSkippedByKey = const {},
     this.sessionOverrides = const {},

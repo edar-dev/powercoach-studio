@@ -6,20 +6,14 @@ String buildWorkoutEditorSnapshot({
   required WorkoutRoutine routine,
   required String planName,
   required int initialWeekNumber,
-  String? phase,
-  String? tags,
   String? notes,
 }) {
-  final normalizedPhase = _normalizeOptionalText(phase);
-  final normalizedTags = _normalizeOptionalText(tags);
   final normalizedNotes = _normalizeOptionalText(notes);
 
   return jsonEncode({
     'routineFingerprint': buildWorkoutRoutineFingerprint(routine),
     'planName': planName.trim(),
     'initialWeekNumber': initialWeekNumber,
-    'phase': normalizedPhase,
-    'tags': normalizedTags,
     'notes': normalizedNotes,
   });
 }
@@ -41,6 +35,8 @@ bool isWorkoutEditorDirty({
 String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
   final buffer = StringBuffer()
     ..write(routine.name)
+    ..write('|imt:')
+    ..write(routine.includesMobilityTab)
     ..write('|cw:')
     ..write(routine.currentWeek)
     ..write('|sd:')

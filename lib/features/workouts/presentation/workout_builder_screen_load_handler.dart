@@ -10,8 +10,6 @@ class WorkoutBuilderEditorLoadApplication {
     required this.weekIndex,
     required this.dayIndex,
     required this.initialWeekNumber,
-    required this.phase,
-    required this.tags,
     required this.notes,
     required this.planCompleted,
     required this.planArchived,
@@ -24,8 +22,6 @@ class WorkoutBuilderEditorLoadApplication {
   final int weekIndex;
   final int dayIndex;
   final int initialWeekNumber;
-  final String phase;
-  final String tags;
   final String notes;
   final bool planCompleted;
   final bool planArchived;
@@ -55,8 +51,6 @@ class WorkoutBuilderEditorLoadApplication {
       weekIndex: result.weekIndex,
       dayIndex: result.dayIndex,
       initialWeekNumber: result.loadedInitialWeek,
-      phase: result.phase,
-      tags: result.tags,
       notes: result.notes,
       planCompleted: result.planCompleted,
       planArchived: result.planArchived,
@@ -74,8 +68,6 @@ class WorkoutBuilderEditorLoadApplication {
       weekIndex: 0,
       dayIndex: 0,
       initialWeekNumber: initialWeekNumber,
-      phase: '',
-      tags: '',
       notes: '',
       planCompleted: false,
       planArchived: false,

@@ -9,6 +9,7 @@ import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
 import '../../../dashboard/domain/plan_calendar_event.dart';
+import '../../../settings/data/user_preferences_repository.dart';
 import '../../data/workout_draft_store.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
@@ -52,8 +53,6 @@ class _WorkoutBuilderMobilityScreenState
     with SingleTickerProviderStateMixin {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
-  final _phaseController = TextEditingController();
-  final _tagsController = TextEditingController();
   final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
@@ -150,8 +149,6 @@ class _WorkoutBuilderMobilityScreenState
         sectionTabController: _sectionTabController,
         routineNameController: _routineNameController,
         initialWeekController: _initialWeekController,
-        phaseController: _phaseController,
-        tagsController: _tagsController,
         notesController: _notesController,
         editorMode: widget.editorMode,
         customerId: widget.customerId,
@@ -166,12 +163,7 @@ class _WorkoutBuilderMobilityScreenState
         onInitialWeekNumberChanged: (value) =>
             setState(() => _initialWeekNumber = value),
         onMetadataChanged: _onMetadataEdited,
-        onMarkCompleted:
-            _editorController.loadedPlanId != null &&
-                !_planCompleted &&
-                !_planArchived
-            ? _routineActions.markPlanCompletedFromEditor
-            : null,
+        onMarkCompleted: null,
         loadedPlanId: _editorController.loadedPlanId,
         showOnboardingCard: _showOnboardingCard,
         onDismissOnboarding: _dismissOnboarding,
@@ -285,8 +277,6 @@ class _WorkoutBuilderMobilityScreenState
       draftStore: _draftStore,
       routineNameController: _routineNameController,
       initialWeekController: _initialWeekController,
-      phaseController: _phaseController,
-      tagsController: _tagsController,
       notesController: _notesController,
     );
     _loadHandler = WorkoutBuilderScreenLoadHandler(
@@ -298,8 +288,6 @@ class _WorkoutBuilderMobilityScreenState
     );
     _routineNameController.addListener(_onMetadataEdited);
     _initialWeekController.addListener(_onMetadataEdited);
-    _phaseController.addListener(_onMetadataEdited);
-    _tagsController.addListener(_onMetadataEdited);
     _notesController.addListener(_onMetadataEdited);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -447,12 +435,19 @@ class _WorkoutBuilderMobilityScreenState
       _pendingSelectedWeekIndex = null;
       _pendingSelectedDayIndex = null;
     }
+    var blankRoutine = application.routine;
+    if (blankRoutine == null) {
+      final includeMobility = await UserPreferencesRepository.instance
+          .getWorkoutBuilderIncludeMobilityDefault();
+      if (!mounted) return;
+      blankRoutine = WorkoutRoutine.empty().copyWith(
+        includesMobilityTab: includeMobility,
+      );
+    }
     setState(() {
+      _builderSession.setRoutine(blankRoutine!);
       if (application.routine != null) {
-        _builderSession.setRoutine(application.routine!);
         _routineNameController.text = application.routine!.name;
-        _phaseController.text = application.phase;
-        _tagsController.text = application.tags;
         _notesController.text = application.notes;
         _initialWeekNumber = application.initialWeekNumber;
         _initialWeekController.text = application.initialWeekNumber.toString();
@@ -464,6 +459,7 @@ class _WorkoutBuilderMobilityScreenState
         _planArchived = application.planArchived;
       } else {
         _builderSession.selectWeek(0, resetDay: true);
+        _syncTabControllerLength();
       }
       _editorCustomer = application.customer;
       _loading = false;
@@ -494,14 +490,10 @@ class _WorkoutBuilderMobilityScreenState
     _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
     _initialWeekController.removeListener(_onMetadataEdited);
-    _phaseController.removeListener(_onMetadataEdited);
-    _tagsController.removeListener(_onMetadataEdited);
     _notesController.removeListener(_onMetadataEdited);
     _sectionTabController.dispose();
     _routineNameController.dispose();
     _initialWeekController.dispose();
-    _phaseController.dispose();
-    _tagsController.dispose();
     _notesController.dispose();
     super.dispose();
   }

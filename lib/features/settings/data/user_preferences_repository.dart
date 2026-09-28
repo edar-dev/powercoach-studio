@@ -13,7 +13,7 @@ class UserPreferences {
     required this.calendarRemindersEnabled,
     required this.calendarReminderLeadHours,
     this.workoutBuilderCompactAdd,
-    this.workoutBuilderIncludeMobilityDefault = true,
+    this.workoutBuilderIncludeMobilityDefault = false,
   });
 
   final String localeCode;
@@ -97,7 +97,7 @@ class UserPreferencesRepository {
   }
 
   Future<bool> getWorkoutBuilderIncludeMobilityDefault({
-    bool defaultValue = true,
+    bool defaultValue = false,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault) ??

@@ -11,8 +11,6 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Hypertrophy',
-      tags: 'upper',
       notes: 'intro block',
     );
 
@@ -20,8 +18,6 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Hypertrophy',
-      tags: 'upper',
       notes: 'intro block',
     );
 
@@ -37,13 +33,11 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Strength',
     );
     final current = buildWorkoutEditorSnapshot(
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 2,
-      phase: 'Strength',
     );
 
     expect(
@@ -149,4 +143,12 @@ void main() {
     );
   });
 
+  test('fingerprint detects includesMobilityTab changes', () {
+    final off = WorkoutRoutine.empty().copyWith(includesMobilityTab: false);
+    final on = WorkoutRoutine.empty().copyWith(includesMobilityTab: true);
+    expect(
+      buildWorkoutRoutineFingerprint(on),
+      isNot(buildWorkoutRoutineFingerprint(off)),
+    );
+  });
 }
