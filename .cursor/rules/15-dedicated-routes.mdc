@@ -34,7 +34,6 @@ Every **important full-page feature** must have its own **top-level GoRouter pat
 | Exercise library | `/exercise-library` | — |
 | Workout builder | `/workouts/builder` | — |
 | Workout diary (History) | `/workouts/diary` | — |
-| Plan templates | `/workouts/templates` | — |
 | Settings hub | `/settings` | — |
 | Personal info | `/settings/personal-info` | nested OK (settings sub-screen) |
 
@@ -49,9 +48,10 @@ Every **important full-page feature** must have its own **top-level GoRouter pat
 | `/dashboard/schedule` | `/dashboard/calendar` |
 | `/settings/release-notes` | `/settings` |
 | `/workouts/library` | `/exercise-library` |
+| `/workouts/templates` | `/workouts/builder` |
 | `/settings/subscription` | `/subscription` |
 
-Removed product surfaces (do **not** reintroduce as canonical routes): gym hub, plan-diff, coach stats, release notes, orphan builder variants (`multiset` / `superset` / `intuitive-superset`), density/EMOM chrome.
+Removed product surfaces (do **not** reintroduce as canonical routes): gym hub, plan-diff, coach stats, release notes, orphan builder variants (`multiset` / `superset` / `intuitive-superset`), density/EMOM chrome, workout plan templates library.
 
 **Important product surfaces** (subscription, paywall targets, primary feature hubs) use **top-level** paths. Secondary settings sub-pages may stay under `/settings/…` if they are not linked from paywalls or marketing.
 

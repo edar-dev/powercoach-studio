@@ -210,7 +210,6 @@ class WorkoutBuilderScreenTabs {
       showBottomNav: showBottomNav,
       onPopInvoked: onPopInvoked,
       onBack: onBack,
-      onOpenTemplates: () {},
       onImportJson: onImportJson,
       onExport: onExport,
       onSave: readOnly ? () async => true : onSave,

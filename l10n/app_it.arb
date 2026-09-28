@@ -1276,6 +1276,10 @@
   "workoutBuilderSandboxBanner": "Bozza locale — non assegnata a un cliente",
   "workoutBuilderSandboxBannerHint": "Salva su un cliente per usarla nel programma.",
   "workoutBuilderAssignToCustomer": "Assegna a cliente",
+  "workoutAssignCustomerTitle": "Scegli un cliente",
+  "workoutAssignCustomerSearchHint": "Cerca per nome…",
+  "workoutAssignCustomerNoMatch": "Nessun cliente corrisponde alla ricerca.",
+  "workoutAssignCustomersLoadError": "Impossibile caricare l'elenco clienti. Riprova.",
   "workoutBuilderAssignDraftSuccess": "Scheda assegnata al cliente.",
   "workoutBuilderLogSession": "Registra sessione",
   "workoutBuilderLogSessionSuccess": "Sessione registrata.",
@@ -1287,7 +1291,6 @@
   "workoutActionFailed": "Operazione non riuscita. Riprova.",
   "workoutPlansLoadError": "Impossibile caricare le schede del cliente.",
   "workoutDiaryLoadError": "Impossibile caricare il diario allenamenti.",
-  "workoutTemplateOpenPlanAction": "Apri piano",
   "measurementsEmpty": "Nessuna misura ancora",
   "measurementsEmptyHint": "Aggiungi una misura per tracciare 1RM, composizione corporea e circonferenze.",
   "measurementAdd": "Aggiungi misura",
@@ -1554,8 +1557,6 @@
   },
   "dashboardShortcutsTitle": "Scorciatoie di gestione",
   "dashboardShortcutLibrarySubtitle": "Esercizi e cartelle",
-  "dashboardShortcutTemplates": "Schede & template",
-  "dashboardShortcutTemplatesSubtitle": "Modelli pronti",
   "dashboardShortcutNewAthlete": "Nuovo atleta",
   "dashboardShortcutNewAthleteSubtitle": "Profilo e scheda",
   "dashboardShortcutSettingsSubtitle": "Backup e dati locali",
@@ -1622,61 +1623,6 @@
   "customerWorkoutsSortNameDesc": "Nome (Z-A)",
   "customerWorkoutsNoMatch": "Nessun piano corrisponde ai filtri selezionati.",
   "workoutLibraryTitle": "Libreria",
-  "workoutTemplatesTitle": "Template allenamento",
-  "workoutTemplatesEmpty": "Nessun template. Salva un piano cliente come template o creane uno qui.",
-  "workoutTemplatesNew": "Nuovo template",
-  "workoutTemplatesAssign": "Assegna a cliente",
-  "workoutTemplatesDuplicate": "Duplica template",
-  "workoutTemplatesEdit": "Modifica",
-  "workoutTemplatesDelete": "Elimina",
-  "workoutTemplatesAssignTitle": "Scegli un cliente",
-  "workoutTemplatesSaveAsTemplate": "Salva come template",
-  "workoutTemplatesSaveAsTemplateTitle": "Nome template",
-  "workoutTemplatesNameHint": "Nome",
-  "workoutTemplatesDuplicateTitle": "Duplica template",
-  "workoutTemplatesDuplicateHint": "Nome della copia",
-  "workoutTemplatesAssignedSnack": "Piano aggiunto al cliente.",
-  "workoutTemplatesDuplicateSnack": "Template creato.",
-  "workoutTemplatesDeleteConfirmTitle": "Eliminare il template?",
-  "workoutTemplatesDeleteConfirmMessage": "Il template verrà rimosso da questo dispositivo.",
-  "workoutTemplatesDrawerLabel": "Template allenamento",
-  "workoutTemplatesCustomersLoadError": "Impossibile caricare l'elenco clienti. Riprova.",
-  "workoutTemplatesSemanticList": "Elenco template allenamento",
-  "workoutTemplatesAssignSearchHint": "Cerca per nome…",
-  "workoutTemplatesAssignNoMatch": "Nessun cliente corrisponde alla ricerca.",
-  "workoutTemplatesSearchHint": "Cerca per nome, fase o tag",
-  "workoutTemplatesSortTitle": "Ordina template",
-  "workoutTemplatesSortNameAsc": "Nome (A-Z)",
-  "workoutTemplatesSortUpdatedDesc": "Ultima modifica",
-  "workoutTemplatesSortWeekCountDesc": "Più settimane",
-  "workoutTemplatesNoMatch": "Nessun template corrisponde alla ricerca.",
-  "workoutTemplatesPreviewTitle": "Anteprima template",
-  "workoutTemplatesPreviewEmpty": "Nessuna struttura disponibile per questo template.",
-  "workoutTemplatesStructureSummary": "{weeks} sett. · {days} giorni · {exercises} esercizi",
-  "@workoutTemplatesStructureSummary": {
-    "placeholders": {
-      "weeks": {
-        "type": "int"
-      },
-      "days": {
-        "type": "int"
-      },
-      "exercises": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesPreviewExercisesMore": "+{count} altri esercizi",
-  "@workoutTemplatesPreviewExercisesMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesAssignStartDate": "Data di inizio opzionale",
-  "workoutTemplatesAssignStartDateHint": "Tocca per scegliere una data di inizio",
-  "workoutTemplatesAssignStartDateSkip": "Salta",
   "workoutDiaryTitle": "Storico",
   "placeholderComingSoon": "In arrivo",
   "placeholderSectionNotImplemented": "Questa sezione non è ancora implementata.",

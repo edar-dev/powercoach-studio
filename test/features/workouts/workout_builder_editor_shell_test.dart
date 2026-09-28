@@ -60,7 +60,6 @@ class _ShellHarnessState extends State<_ShellHarness>
       showBottomNav: true,
       onPopInvoked: () async {},
       onBack: () async {},
-      onOpenTemplates: () {},
       onImportJson: () {},
       onExport: (_) {},
       onSave: () {},
@@ -74,8 +73,16 @@ void main() {
       routes: [
         GoRoute(path: '/', builder: (_, __) => child),
         GoRoute(
-          path: '/workouts/templates',
-          builder: (_, __) => const Scaffold(body: Text('Templates')),
+          path: '/workouts/builder',
+          builder: (_, __) => const Scaffold(body: Text('Builder')),
+        ),
+        GoRoute(
+          path: '/exercise-library',
+          builder: (_, __) => const Scaffold(body: Text('Library')),
+        ),
+        GoRoute(
+          path: '/settings/personal-info',
+          builder: (_, __) => const Scaffold(body: Text('Profile')),
         ),
       ],
     );

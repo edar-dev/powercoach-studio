@@ -5044,6 +5044,30 @@ abstract class AppLocalizations {
   /// **'Assign to client'**
   String get workoutBuilderAssignToCustomer;
 
+  /// No description provided for @workoutAssignCustomerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a client'**
+  String get workoutAssignCustomerTitle;
+
+  /// No description provided for @workoutAssignCustomerSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name…'**
+  String get workoutAssignCustomerSearchHint;
+
+  /// No description provided for @workoutAssignCustomerNoMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'No customers match your search.'**
+  String get workoutAssignCustomerNoMatch;
+
+  /// No description provided for @workoutAssignCustomersLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load the client list. Try again.'**
+  String get workoutAssignCustomersLoadError;
+
   /// No description provided for @workoutBuilderAssignDraftSuccess.
   ///
   /// In en, this message translates to:
@@ -5109,12 +5133,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not load the workout diary.'**
   String get workoutDiaryLoadError;
-
-  /// No description provided for @workoutTemplateOpenPlanAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Open plan'**
-  String get workoutTemplateOpenPlanAction;
 
   /// No description provided for @measurementsEmpty.
   ///
@@ -6022,18 +6040,6 @@ abstract class AppLocalizations {
   /// **'Exercises and folders'**
   String get dashboardShortcutLibrarySubtitle;
 
-  /// No description provided for @dashboardShortcutTemplates.
-  ///
-  /// In en, this message translates to:
-  /// **'Plans & templates'**
-  String get dashboardShortcutTemplates;
-
-  /// No description provided for @dashboardShortcutTemplatesSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Ready-made models'**
-  String get dashboardShortcutTemplatesSubtitle;
-
   /// No description provided for @dashboardShortcutNewAthlete.
   ///
   /// In en, this message translates to:
@@ -6285,216 +6291,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Library'**
   String get workoutLibraryTitle;
-
-  /// No description provided for @workoutTemplatesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout templates'**
-  String get workoutTemplatesTitle;
-
-  /// No description provided for @workoutTemplatesEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No templates yet. Save a client plan as a template or create one here.'**
-  String get workoutTemplatesEmpty;
-
-  /// No description provided for @workoutTemplatesNew.
-  ///
-  /// In en, this message translates to:
-  /// **'New template'**
-  String get workoutTemplatesNew;
-
-  /// No description provided for @workoutTemplatesAssign.
-  ///
-  /// In en, this message translates to:
-  /// **'Assign to client'**
-  String get workoutTemplatesAssign;
-
-  /// No description provided for @workoutTemplatesDuplicate.
-  ///
-  /// In en, this message translates to:
-  /// **'Duplicate template'**
-  String get workoutTemplatesDuplicate;
-
-  /// No description provided for @workoutTemplatesEdit.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit'**
-  String get workoutTemplatesEdit;
-
-  /// No description provided for @workoutTemplatesDelete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get workoutTemplatesDelete;
-
-  /// No description provided for @workoutTemplatesAssignTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose a client'**
-  String get workoutTemplatesAssignTitle;
-
-  /// No description provided for @workoutTemplatesSaveAsTemplate.
-  ///
-  /// In en, this message translates to:
-  /// **'Save as template'**
-  String get workoutTemplatesSaveAsTemplate;
-
-  /// No description provided for @workoutTemplatesSaveAsTemplateTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Template name'**
-  String get workoutTemplatesSaveAsTemplateTitle;
-
-  /// No description provided for @workoutTemplatesNameHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Name'**
-  String get workoutTemplatesNameHint;
-
-  /// No description provided for @workoutTemplatesDuplicateTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Duplicate template'**
-  String get workoutTemplatesDuplicateTitle;
-
-  /// No description provided for @workoutTemplatesDuplicateHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Name for the copy'**
-  String get workoutTemplatesDuplicateHint;
-
-  /// No description provided for @workoutTemplatesAssignedSnack.
-  ///
-  /// In en, this message translates to:
-  /// **'Plan added to the client.'**
-  String get workoutTemplatesAssignedSnack;
-
-  /// No description provided for @workoutTemplatesDuplicateSnack.
-  ///
-  /// In en, this message translates to:
-  /// **'Template created.'**
-  String get workoutTemplatesDuplicateSnack;
-
-  /// No description provided for @workoutTemplatesDeleteConfirmTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete template?'**
-  String get workoutTemplatesDeleteConfirmTitle;
-
-  /// No description provided for @workoutTemplatesDeleteConfirmMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'This template will be removed from this device.'**
-  String get workoutTemplatesDeleteConfirmMessage;
-
-  /// No description provided for @workoutTemplatesDrawerLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout templates'**
-  String get workoutTemplatesDrawerLabel;
-
-  /// No description provided for @workoutTemplatesCustomersLoadError.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not load the client list. Try again.'**
-  String get workoutTemplatesCustomersLoadError;
-
-  /// No description provided for @workoutTemplatesSemanticList.
-  ///
-  /// In en, this message translates to:
-  /// **'Workout templates list'**
-  String get workoutTemplatesSemanticList;
-
-  /// No description provided for @workoutTemplatesAssignSearchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by name…'**
-  String get workoutTemplatesAssignSearchHint;
-
-  /// No description provided for @workoutTemplatesAssignNoMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'No customers match your search.'**
-  String get workoutTemplatesAssignNoMatch;
-
-  /// No description provided for @workoutTemplatesSearchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by name, phase, or tag'**
-  String get workoutTemplatesSearchHint;
-
-  /// No description provided for @workoutTemplatesSortTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Sort templates'**
-  String get workoutTemplatesSortTitle;
-
-  /// No description provided for @workoutTemplatesSortNameAsc.
-  ///
-  /// In en, this message translates to:
-  /// **'Name (A-Z)'**
-  String get workoutTemplatesSortNameAsc;
-
-  /// No description provided for @workoutTemplatesSortUpdatedDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Last updated'**
-  String get workoutTemplatesSortUpdatedDesc;
-
-  /// No description provided for @workoutTemplatesSortWeekCountDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Most weeks'**
-  String get workoutTemplatesSortWeekCountDesc;
-
-  /// No description provided for @workoutTemplatesNoMatch.
-  ///
-  /// In en, this message translates to:
-  /// **'No templates match your search.'**
-  String get workoutTemplatesNoMatch;
-
-  /// No description provided for @workoutTemplatesPreviewTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Template preview'**
-  String get workoutTemplatesPreviewTitle;
-
-  /// No description provided for @workoutTemplatesPreviewEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'No structure available for this template.'**
-  String get workoutTemplatesPreviewEmpty;
-
-  /// No description provided for @workoutTemplatesStructureSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'{weeks} weeks · {days} days · {exercises} exercises'**
-  String workoutTemplatesStructureSummary(int weeks, int days, int exercises);
-
-  /// No description provided for @workoutTemplatesPreviewExercisesMore.
-  ///
-  /// In en, this message translates to:
-  /// **'+{count} more exercises'**
-  String workoutTemplatesPreviewExercisesMore(int count);
-
-  /// No description provided for @workoutTemplatesAssignStartDate.
-  ///
-  /// In en, this message translates to:
-  /// **'Optional start date'**
-  String get workoutTemplatesAssignStartDate;
-
-  /// No description provided for @workoutTemplatesAssignStartDateHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Tap to choose a start date'**
-  String get workoutTemplatesAssignStartDateHint;
-
-  /// No description provided for @workoutTemplatesAssignStartDateSkip.
-  ///
-  /// In en, this message translates to:
-  /// **'Skip'**
-  String get workoutTemplatesAssignStartDateSkip;
 
   /// No description provided for @workoutDiaryTitle.
   ///

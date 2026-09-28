@@ -30,11 +30,11 @@ class DashboardShortcutsSection extends StatelessWidget {
         path: '/exercise-library',
       ),
       _ShortcutItem(
-        icon: Icons.description_outlined,
+        icon: Icons.construction_outlined,
         iconTint: colorScheme.secondary,
-        title: l10n.dashboardShortcutTemplates,
-        subtitle: l10n.dashboardShortcutTemplatesSubtitle,
-        path: '/workouts/templates',
+        title: l10n.dashboardWorkoutBuilder,
+        subtitle: l10n.dashboardWorkoutBuilderDraft,
+        path: '/workouts/builder',
       ),
       _ShortcutItem(
         icon: Icons.person_add_alt_1_outlined,

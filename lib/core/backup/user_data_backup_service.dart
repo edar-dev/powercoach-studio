@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../constants/app_info.dart';
+import '../constants/workout_plan_template_scope.dart';
 import '../notifications/notification_scheduler_service.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../../features/auth/data/local_coach_profile_repository.dart';
@@ -24,7 +25,10 @@ class UserDataBackupService {
         await LocalCoachProfileRepository.instance.getProfile(accountUserId);
     final store = OfflineLocalStore.instance;
 
-    final entities = await store.listEntitiesJsonForBackup(accountUserId);
+    final entities = (await store.listEntitiesJsonForBackup(accountUserId))
+        // Data policy: omit retired template-scoped workout plans from export.
+        .where((e) => !isLegacyWorkoutPlanTemplateEntity(e))
+        .toList();
     // Manual ReminderStore reminders are no longer exported; keep empty list
     // for envelope backward compatibility. Calendar prefs live under preferences.
     const reminders = <Map<String, dynamic>>[];
@@ -65,9 +69,13 @@ class UserDataBackupService {
     }
 
     final store = OfflineLocalStore.instance;
+    // Data policy: skip template-scoped workout plans on import/restore.
+    final entities = parsed.entities
+        .where((e) => !isLegacyWorkoutPlanTemplateEntity(e))
+        .toList();
     await store.replaceUserOfflineFromBackup(
       userId: accountUserId,
-      entities: parsed.entities,
+      entities: entities,
     );
 
     final profile = parsed.profileJson == null
@@ -101,6 +109,8 @@ class UserDataBackupService {
 
     final store = OfflineLocalStore.instance;
     for (final raw in parsed.entities) {
+      // Data policy: skip template-scoped workout plans on merge restore.
+      if (isLegacyWorkoutPlanTemplateEntity(raw)) continue;
       final body = Map<String, dynamic>.from(raw)..remove('userId');
       if (!body.containsKey('type') || !body.containsKey('payload')) {
         continue;

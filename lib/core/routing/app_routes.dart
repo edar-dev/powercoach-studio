@@ -23,7 +23,7 @@ import 'package:powercoach_studio/features/settings/presentation/screens/subscri
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_entry_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/workout_plan_templates_screen.dart';
+import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
 
 List<RouteBase> buildAppRoutes() {
   return [
@@ -247,6 +247,14 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'editor',
           parentNavigatorKey: appRootNavigatorKey,
+          redirect: (context, state) {
+            // Legacy template-scope editor bookmarks → sandbox builder.
+            if (state.uri.queryParameters['customerId'] ==
+                kWorkoutPlanTemplateScopeId) {
+              return '/workouts/builder';
+            }
+            return null;
+          },
           builder: (context, state) {
             final customerId = state.uri.queryParameters['customerId'];
             return WorkoutBuilderMobilityScreen(
@@ -258,6 +266,13 @@ List<RouteBase> buildAppRoutes() {
             GoRoute(
               path: ':planId',
               parentNavigatorKey: appRootNavigatorKey,
+              redirect: (context, state) {
+                if (state.uri.queryParameters['customerId'] ==
+                    kWorkoutPlanTemplateScopeId) {
+                  return '/workouts/builder';
+                }
+                return null;
+              },
               builder: (context, state) {
                 final planId = state.pathParameters['planId'];
                 final customerId = state.uri.queryParameters['customerId'];
@@ -272,8 +287,8 @@ List<RouteBase> buildAppRoutes() {
         ),
         GoRoute(
           path: 'templates',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const WorkoutPlanTemplatesScreen(),
+          // Legacy bookmarks for removed template library.
+          redirect: (context, state) => '/workouts/builder',
         ),
         GoRoute(
           path: 'builder',

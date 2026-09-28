@@ -139,7 +139,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       onScheduleEmptyTap: () => _openWorkoutEditor(planId: plan.id),
       onCreateFollowUp: () => _createFollowUpWorkout(plan),
       onDuplicate: () => _duplicatePlan(plan),
-      onSaveAsTemplate: () => _savePlanAsTemplate(plan),
       onArchive: () => _archivePlan(plan),
       onUnarchive: () => _unarchivePlan(plan),
       onDelete: () => _deletePlan(plan),
@@ -219,41 +218,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
           ),
       ],
     );
-  }
-
-  Future<void> _savePlanAsTemplate(WorkoutPlanApiModel plan) async {
-    final l10n = AppLocalizations.of(context);
-    final name = await showWorkoutPlanNamePromptDialog(
-      context,
-      title: l10n.workoutTemplatesSaveAsTemplateTitle,
-      nameLabel: l10n.workoutTemplatesNameHint,
-      confirmLabel: l10n.workoutTemplatesSaveAsTemplate,
-      initialName: plan.name,
-    );
-    if (name == null || name.isEmpty || !mounted) return;
-    try {
-      await _planRepo.createTemplateFromPlan(
-        sourcePlanId: plan.id,
-        templateName: name,
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutTemplatesDuplicateSnack),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {

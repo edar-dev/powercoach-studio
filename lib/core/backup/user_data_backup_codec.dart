@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import '../constants/workout_plan_template_scope.dart';
 import '../settings/settings_prefs_keys.dart';
 import '../sync/offline_models.dart';
 import '../../features/workouts/domain/session_execution.dart';
@@ -214,6 +215,8 @@ List<Map<String, dynamic>> _parseEntityList(dynamic raw) {
     final m = item.cast<String, dynamic>();
     final id = m['id']?.toString() ?? '';
     if (id.isEmpty) throw UserBackupImportException('entity_missing_id');
+    // Data policy: drop retired template-scoped workout plans on import parse.
+    if (isLegacyWorkoutPlanTemplateEntity(m)) continue;
     out.add(m);
   }
   return out;

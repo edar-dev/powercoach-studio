@@ -6,7 +6,7 @@ import 'package:powercoach_studio/core/routing/app_paths.dart';
 ///
 /// Prefer this when leaving a route branch (e.g. `/dashboard` → `/workouts/*`,
 /// `/` → `/customers`) or when navigating between sibling routes under a parent
-/// shell without its own builder (e.g. `/workouts/templates` → `/workouts/editor`).
+/// shell without its own builder (e.g. `/workouts` → `/workouts/builder`).
 ///
 /// Use [navigatePush] only for child routes under the current branch when you
 /// need a return value or `pop` back to the parent (e.g. `/settings` →

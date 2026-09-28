@@ -77,6 +77,9 @@ String? resolveAppRouteRedirect(GoRouterState state) {
   if (path == '/workouts/stats') {
     return redirectPreservingQuery(state.uri, '/workouts/diary');
   }
+  if (path == '/workouts/templates') {
+    return redirectPreservingQuery(state.uri, '/workouts/builder');
+  }
   if (path == '/plans/diff' || path.startsWith('/plans/')) {
     return redirectPreservingQuery(state.uri, '/customers');
   }

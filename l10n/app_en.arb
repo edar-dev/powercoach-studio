@@ -1276,6 +1276,10 @@
   "workoutBuilderSandboxBanner": "Local draft — not assigned to a client",
   "workoutBuilderSandboxBannerHint": "Assign to a client to use it in their program.",
   "workoutBuilderAssignToCustomer": "Assign to client",
+  "workoutAssignCustomerTitle": "Choose a client",
+  "workoutAssignCustomerSearchHint": "Search by name…",
+  "workoutAssignCustomerNoMatch": "No customers match your search.",
+  "workoutAssignCustomersLoadError": "Could not load the client list. Try again.",
   "workoutBuilderAssignDraftSuccess": "Plan assigned to client.",
   "workoutBuilderLogSession": "Log session",
   "workoutBuilderLogSessionSuccess": "Session logged.",
@@ -1287,7 +1291,6 @@
   "workoutActionFailed": "Action failed. Please try again.",
   "workoutPlansLoadError": "Could not load this client's workout plans.",
   "workoutDiaryLoadError": "Could not load the workout diary.",
-  "workoutTemplateOpenPlanAction": "Open plan",
   "measurementsEmpty": "No measurements yet",
   "measurementsEmptyHint": "Add a measurement to track 1RM, body composition, and circumferences.",
   "measurementAdd": "Add measurement",
@@ -1554,8 +1557,6 @@
   },
   "dashboardShortcutsTitle": "Management shortcuts",
   "dashboardShortcutLibrarySubtitle": "Exercises and folders",
-  "dashboardShortcutTemplates": "Plans & templates",
-  "dashboardShortcutTemplatesSubtitle": "Ready-made models",
   "dashboardShortcutNewAthlete": "New athlete",
   "dashboardShortcutNewAthleteSubtitle": "Profile and plan",
   "dashboardShortcutSettingsSubtitle": "Backup and local data",
@@ -1622,61 +1623,6 @@
   "customerWorkoutsSortNameDesc": "Name (Z-A)",
   "customerWorkoutsNoMatch": "No plans match the selected filters.",
   "workoutLibraryTitle": "Library",
-  "workoutTemplatesTitle": "Workout templates",
-  "workoutTemplatesEmpty": "No templates yet. Save a client plan as a template or create one here.",
-  "workoutTemplatesNew": "New template",
-  "workoutTemplatesAssign": "Assign to client",
-  "workoutTemplatesDuplicate": "Duplicate template",
-  "workoutTemplatesEdit": "Edit",
-  "workoutTemplatesDelete": "Delete",
-  "workoutTemplatesAssignTitle": "Choose a client",
-  "workoutTemplatesSaveAsTemplate": "Save as template",
-  "workoutTemplatesSaveAsTemplateTitle": "Template name",
-  "workoutTemplatesNameHint": "Name",
-  "workoutTemplatesDuplicateTitle": "Duplicate template",
-  "workoutTemplatesDuplicateHint": "Name for the copy",
-  "workoutTemplatesAssignedSnack": "Plan added to the client.",
-  "workoutTemplatesDuplicateSnack": "Template created.",
-  "workoutTemplatesDeleteConfirmTitle": "Delete template?",
-  "workoutTemplatesDeleteConfirmMessage": "This template will be removed from this device.",
-  "workoutTemplatesDrawerLabel": "Workout templates",
-  "workoutTemplatesCustomersLoadError": "Could not load the client list. Try again.",
-  "workoutTemplatesSemanticList": "Workout templates list",
-  "workoutTemplatesAssignSearchHint": "Search by name…",
-  "workoutTemplatesAssignNoMatch": "No customers match your search.",
-  "workoutTemplatesSearchHint": "Search by name, phase, or tag",
-  "workoutTemplatesSortTitle": "Sort templates",
-  "workoutTemplatesSortNameAsc": "Name (A-Z)",
-  "workoutTemplatesSortUpdatedDesc": "Last updated",
-  "workoutTemplatesSortWeekCountDesc": "Most weeks",
-  "workoutTemplatesNoMatch": "No templates match your search.",
-  "workoutTemplatesPreviewTitle": "Template preview",
-  "workoutTemplatesPreviewEmpty": "No structure available for this template.",
-  "workoutTemplatesStructureSummary": "{weeks} weeks · {days} days · {exercises} exercises",
-  "@workoutTemplatesStructureSummary": {
-    "placeholders": {
-      "weeks": {
-        "type": "int"
-      },
-      "days": {
-        "type": "int"
-      },
-      "exercises": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesPreviewExercisesMore": "+{count} more exercises",
-  "@workoutTemplatesPreviewExercisesMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesAssignStartDate": "Optional start date",
-  "workoutTemplatesAssignStartDateHint": "Tap to choose a start date",
-  "workoutTemplatesAssignStartDateSkip": "Skip",
   "workoutDiaryTitle": "History",
   "placeholderComingSoon": "Coming soon",
   "placeholderSectionNotImplemented": "This section is not yet implemented.",

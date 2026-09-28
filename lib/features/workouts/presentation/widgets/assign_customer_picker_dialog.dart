@@ -3,28 +3,28 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/models/customer.dart';
 
-Future<Customer?> showAssignTemplateCustomerDialog(
+Future<Customer?> showAssignCustomerPickerDialog(
   BuildContext context, {
   required List<Customer> customers,
 }) {
   return showDialog<Customer>(
     context: context,
-    builder: (ctx) => AssignTemplateCustomerDialog(customers: customers),
+    builder: (ctx) => AssignCustomerPickerDialog(customers: customers),
   );
 }
 
-class AssignTemplateCustomerDialog extends StatefulWidget {
-  const AssignTemplateCustomerDialog({super.key, required this.customers});
+class AssignCustomerPickerDialog extends StatefulWidget {
+  const AssignCustomerPickerDialog({super.key, required this.customers});
 
   final List<Customer> customers;
 
   @override
-  State<AssignTemplateCustomerDialog> createState() =>
-      _AssignTemplateCustomerDialogState();
+  State<AssignCustomerPickerDialog> createState() =>
+      _AssignCustomerPickerDialogState();
 }
 
-class _AssignTemplateCustomerDialogState
-    extends State<AssignTemplateCustomerDialog> {
+class _AssignCustomerPickerDialogState
+    extends State<AssignCustomerPickerDialog> {
   final TextEditingController _queryController = TextEditingController();
   String _queryLower = '';
 
@@ -47,7 +47,7 @@ class _AssignTemplateCustomerDialogState
     final l10n = AppLocalizations.of(context);
     final filtered = _filtered;
     return AlertDialog(
-      title: Text(l10n.workoutTemplatesAssignTitle),
+      title: Text(l10n.workoutAssignCustomerTitle),
       content: SizedBox(
         width: double.maxFinite,
         height: 400,
@@ -57,7 +57,7 @@ class _AssignTemplateCustomerDialogState
             TextField(
               controller: _queryController,
               decoration: InputDecoration(
-                hintText: l10n.workoutTemplatesAssignSearchHint,
+                hintText: l10n.workoutAssignCustomerSearchHint,
                 prefixIcon: const Icon(Icons.search),
                 isDense: true,
               ),
@@ -70,7 +70,7 @@ class _AssignTemplateCustomerDialogState
               child: filtered.isEmpty
                   ? Center(
                       child: Text(
-                        l10n.workoutTemplatesAssignNoMatch,
+                        l10n.workoutAssignCustomerNoMatch,
                         textAlign: TextAlign.center,
                       ),
                     )

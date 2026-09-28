@@ -73,6 +73,7 @@ void main() {
         ('/dashboard/schedule', '/dashboard/calendar'),
         ('/settings/release-notes', AppPaths.settings),
         ('/workouts/library', '/exercise-library'),
+        ('/workouts/templates', '/workouts/builder'),
       ];
 
       for (final (path, target) in cases) {
@@ -129,6 +130,9 @@ String? _legacyRedirectTarget(Uri uri) {
   }
   if (path == '/workouts/stats') {
     return redirectPreservingQuery(uri, '/workouts/diary');
+  }
+  if (path == '/workouts/templates') {
+    return redirectPreservingQuery(uri, '/workouts/builder');
   }
   if (path == '/plans/diff' || path.startsWith('/plans/')) {
     return redirectPreservingQuery(uri, '/customers');

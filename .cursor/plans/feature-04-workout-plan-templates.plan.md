@@ -1,6 +1,7 @@
 ---
 name: feature-04-workout-plan-templates
 overview: Introdurre piani modello riusabili (senza cliente o con flag template), duplicazione rapida verso un cliente, e gestione libreria template nel builder o schermata dedicata.
+# OBSOLETE: workout plan templates product feature removed (UX deep simplification). Do not implement.
 todos:
   - id: domain-template-model
     content: Estendere WorkoutPlanApiModel o payload JSON con isTemplate templateSourceId; oppure OfflineEntityType dedicato templateWorkoutPlan

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/constants/workout_plan_template_scope.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'mobility_builder_controller.dart';
 import 'workout_builder_mobility_handlers.dart';
@@ -93,8 +92,7 @@ class WorkoutBuilderScreenTabsConfig {
       notesController: notesController,
       editorMode: editorMode,
       loading: loading,
-      hideExportMenu:
-          editorMode && customerId == kWorkoutPlanTemplateScopeId,
+      hideExportMenu: false,
       showsMobilityTab: showsMobilityTab,
       showBottomNav: !editorMode,
       planCompleted: planCompleted,

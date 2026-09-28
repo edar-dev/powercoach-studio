@@ -18,6 +18,7 @@ void main() {
     PathProviderPlatform.instance = FakePathProviderPlatform(
       prefix: 'powercoach_backup_service_test_',
     );
+    registerFakeMacOSNotificationsPlatform();
   });
 
   const uid = '__legacy__';

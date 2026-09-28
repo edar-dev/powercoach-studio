@@ -63,7 +63,6 @@ class _NewCustomerPlanEditorHarnessState extends State<_NewCustomerPlanEditorHar
       showBottomNav: false,
       onPopInvoked: () async {},
       onBack: () async {},
-      onOpenTemplates: () {},
       onImportJson: () {},
       onExport: (_) {},
       onSave: () {},

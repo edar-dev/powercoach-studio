@@ -2793,6 +2793,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderAssignToCustomer => 'Assign to client';
 
   @override
+  String get workoutAssignCustomerTitle => 'Choose a client';
+
+  @override
+  String get workoutAssignCustomerSearchHint => 'Search by name…';
+
+  @override
+  String get workoutAssignCustomerNoMatch => 'No customers match your search.';
+
+  @override
+  String get workoutAssignCustomersLoadError =>
+      'Could not load the client list. Try again.';
+
+  @override
   String get workoutBuilderAssignDraftSuccess => 'Plan assigned to client.';
 
   @override
@@ -2826,9 +2839,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutDiaryLoadError => 'Could not load the workout diary.';
-
-  @override
-  String get workoutTemplateOpenPlanAction => 'Open plan';
 
   @override
   String get measurementsEmpty => 'No measurements yet';
@@ -3331,12 +3341,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardShortcutLibrarySubtitle => 'Exercises and folders';
 
   @override
-  String get dashboardShortcutTemplates => 'Plans & templates';
-
-  @override
-  String get dashboardShortcutTemplatesSubtitle => 'Ready-made models';
-
-  @override
   String get dashboardShortcutNewAthlete => 'New athlete';
 
   @override
@@ -3471,120 +3475,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutLibraryTitle => 'Library';
-
-  @override
-  String get workoutTemplatesTitle => 'Workout templates';
-
-  @override
-  String get workoutTemplatesEmpty =>
-      'No templates yet. Save a client plan as a template or create one here.';
-
-  @override
-  String get workoutTemplatesNew => 'New template';
-
-  @override
-  String get workoutTemplatesAssign => 'Assign to client';
-
-  @override
-  String get workoutTemplatesDuplicate => 'Duplicate template';
-
-  @override
-  String get workoutTemplatesEdit => 'Edit';
-
-  @override
-  String get workoutTemplatesDelete => 'Delete';
-
-  @override
-  String get workoutTemplatesAssignTitle => 'Choose a client';
-
-  @override
-  String get workoutTemplatesSaveAsTemplate => 'Save as template';
-
-  @override
-  String get workoutTemplatesSaveAsTemplateTitle => 'Template name';
-
-  @override
-  String get workoutTemplatesNameHint => 'Name';
-
-  @override
-  String get workoutTemplatesDuplicateTitle => 'Duplicate template';
-
-  @override
-  String get workoutTemplatesDuplicateHint => 'Name for the copy';
-
-  @override
-  String get workoutTemplatesAssignedSnack => 'Plan added to the client.';
-
-  @override
-  String get workoutTemplatesDuplicateSnack => 'Template created.';
-
-  @override
-  String get workoutTemplatesDeleteConfirmTitle => 'Delete template?';
-
-  @override
-  String get workoutTemplatesDeleteConfirmMessage =>
-      'This template will be removed from this device.';
-
-  @override
-  String get workoutTemplatesDrawerLabel => 'Workout templates';
-
-  @override
-  String get workoutTemplatesCustomersLoadError =>
-      'Could not load the client list. Try again.';
-
-  @override
-  String get workoutTemplatesSemanticList => 'Workout templates list';
-
-  @override
-  String get workoutTemplatesAssignSearchHint => 'Search by name…';
-
-  @override
-  String get workoutTemplatesAssignNoMatch => 'No customers match your search.';
-
-  @override
-  String get workoutTemplatesSearchHint => 'Search by name, phase, or tag';
-
-  @override
-  String get workoutTemplatesSortTitle => 'Sort templates';
-
-  @override
-  String get workoutTemplatesSortNameAsc => 'Name (A-Z)';
-
-  @override
-  String get workoutTemplatesSortUpdatedDesc => 'Last updated';
-
-  @override
-  String get workoutTemplatesSortWeekCountDesc => 'Most weeks';
-
-  @override
-  String get workoutTemplatesNoMatch => 'No templates match your search.';
-
-  @override
-  String get workoutTemplatesPreviewTitle => 'Template preview';
-
-  @override
-  String get workoutTemplatesPreviewEmpty =>
-      'No structure available for this template.';
-
-  @override
-  String workoutTemplatesStructureSummary(int weeks, int days, int exercises) {
-    return '$weeks weeks · $days days · $exercises exercises';
-  }
-
-  @override
-  String workoutTemplatesPreviewExercisesMore(int count) {
-    return '+$count more exercises';
-  }
-
-  @override
-  String get workoutTemplatesAssignStartDate => 'Optional start date';
-
-  @override
-  String get workoutTemplatesAssignStartDateHint =>
-      'Tap to choose a start date';
-
-  @override
-  String get workoutTemplatesAssignStartDateSkip => 'Skip';
 
   @override
   String get workoutDiaryTitle => 'History';

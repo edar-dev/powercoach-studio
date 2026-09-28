@@ -50,16 +50,6 @@ class DashboardDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.bookmark_outline),
-              title: Text(
-                AppLocalizations.of(context).workoutTemplatesDrawerLabel,
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                if (context.mounted) navigateTo(context, '/workouts/templates');
-              },
-            ),
-            ListTile(
               leading: const Icon(Icons.library_books_outlined),
               title: Text(AppLocalizations.of(context).exerciseLibraryTitle),
               onTap: () {

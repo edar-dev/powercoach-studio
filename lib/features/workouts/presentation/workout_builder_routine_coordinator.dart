@@ -9,7 +9,7 @@ import '../data/workout_draft_store.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/workout_routine_plan_encoder.dart';
-import 'widgets/assign_template_customer_dialog.dart';
+import 'widgets/assign_customer_picker_dialog.dart';
 import 'workout_builder_editor_exit.dart';
 import 'workout_builder_load_helpers.dart';
 import 'workout_builder_session_controller.dart';
@@ -298,7 +298,7 @@ class WorkoutBuilderRoutineCoordinator {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.workoutTemplatesCustomersLoadError),
+          content: Text(l10n.workoutAssignCustomersLoadError),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -315,7 +315,7 @@ class WorkoutBuilderRoutineCoordinator {
       return;
     }
 
-    final chosen = await showAssignTemplateCustomerDialog(
+    final chosen = await showAssignCustomerPickerDialog(
       context,
       customers: customers,
     );

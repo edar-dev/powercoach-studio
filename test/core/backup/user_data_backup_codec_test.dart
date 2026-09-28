@@ -64,7 +64,7 @@ void main() {
     );
   });
 
-  test('parse keeps workout plan payload with template sentinel customerId', () {
+  test('parse drops workout plan with template sentinel customerId', () {
     final jsonText = jsonEncode(
       minimalEnvelope(
         entities: <Map<String, dynamic>>[
@@ -74,12 +74,26 @@ void main() {
             'name': 'Upper/Lower',
             'planData': '{}',
           },
+          <String, dynamic>{
+            'id': 'plan-customer-1',
+            'type': OfflineEntityType.workoutPlan.name,
+            'scopeId': 'cust-1',
+            'payload': <String, dynamic>{
+              'id': 'plan-customer-1',
+              'customerId': 'cust-1',
+              'name': 'Client plan',
+              'planData': '{}',
+            },
+            'updatedAt': DateTime.utc(2026, 1, 1).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
         ],
       ),
     );
     final parsed = parseUserBackupJson(jsonText, uid);
     expect(parsed.entities, hasLength(1));
-    expect(parsed.entities.single['customerId'], kWorkoutPlanTemplateScopeId);
+    expect(parsed.entities.single['id'], 'plan-customer-1');
   });
 
   test('parse applies notifications preference when present', () {

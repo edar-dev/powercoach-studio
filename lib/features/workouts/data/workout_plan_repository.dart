@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import '../../../core/constants/workout_plan_template_scope.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
@@ -19,24 +21,65 @@ class WorkoutPlanRepository {
 
   final OfflineRepositorySupport _offline;
 
-  /// All workout plans **except** templates ([kWorkoutPlanTemplateScopeId]).
-  Future<List<WorkoutPlanApiModel>> getAll() async {
-    final local = await _offline.readLocalEntities(
-      OfflineEntityType.workoutPlan,
-    );
-    return mapAndSortWorkoutPlans(local, excludeTemplateScope: true);
+  static bool _templatePurgeDone = false;
+
+  /// Reset one-shot template purge gate between tests.
+  @visibleForTesting
+  static void resetTemplatePurgeForTest() {
+    _templatePurgeDone = false;
   }
 
-  /// Reusable templates (sentinel [kWorkoutPlanTemplateScopeId] as `customerId` / scope).
-  Future<List<WorkoutPlanApiModel>> listTemplates() async {
-    final local = await _offline.readLocalEntities(
+  /// One-shot DELETE of leftover template-scoped workout plans (`__template__`).
+  ///
+  /// Data policy: stop writing template scope; keep excluding it from [getAll];
+  /// purge orphans rather than converting them to customer plans (no safe target).
+  Future<void> ensureTemplateScopedPlansPurged() async {
+    if (_templatePurgeDone) return;
+
+    final byScope = await _offline.readLocalEntities(
       OfflineEntityType.workoutPlan,
       scopeId: kWorkoutPlanTemplateScopeId,
     );
-    return mapAndSortWorkoutPlans(local);
+    final all = await _offline.readLocalEntities(OfflineEntityType.workoutPlan);
+    final toDelete = <String>{};
+    for (final entity in [...byScope, ...all]) {
+      final id = entity['id']?.toString();
+      if (id == null || id.isEmpty) continue;
+      if (entity['customerId']?.toString() == kWorkoutPlanTemplateScopeId) {
+        toDelete.add(id);
+      }
+    }
+    for (final id in toDelete) {
+      await _offline.markDeleted(OfflineEntityType.workoutPlan, id);
+    }
+    _templatePurgeDone = true;
+  }
+
+  Future<void> _ensureReady() => ensureTemplateScopedPlansPurged();
+
+  void _rejectTemplateScope(String customerId) {
+    if (customerId == kWorkoutPlanTemplateScopeId) {
+      throw ArgumentError.value(
+        customerId,
+        'customerId',
+        'template scope is no longer supported',
+      );
+    }
+  }
+
+  /// All workout plans **except** leftover template scope ([kWorkoutPlanTemplateScopeId]).
+  Future<List<WorkoutPlanApiModel>> getAll() async {
+    await _ensureReady();
+    final local = await _offline.readLocalEntities(
+      OfflineEntityType.workoutPlan,
+    );
+    // Defensive: keep excluding `__template__` even after purge.
+    return mapAndSortWorkoutPlans(local, excludeTemplateScope: true);
   }
 
   Future<List<WorkoutPlanApiModel>> getByCustomerId(String customerId) async {
+    await _ensureReady();
+    _rejectTemplateScope(customerId);
     final local = await _offline.readLocalEntities(
       OfflineEntityType.workoutPlan,
       scopeId: customerId,
@@ -45,12 +88,15 @@ class WorkoutPlanRepository {
   }
 
   Future<WorkoutPlanApiModel?> getById(String planId) async {
+    await _ensureReady();
     final local = await _offline.readLocalEntityById(
       OfflineEntityType.workoutPlan,
       planId,
     );
     if (local == null) return null;
-    return WorkoutPlanApiModel.fromJson(local);
+    final plan = WorkoutPlanApiModel.fromJson(local);
+    if (plan.customerId == kWorkoutPlanTemplateScopeId) return null;
+    return plan;
   }
 
   Future<WorkoutPlanApiModel> create({
@@ -65,6 +111,8 @@ class WorkoutPlanRepository {
     String? tags,
     String? notes,
   }) async {
+    await _ensureReady();
+    _rejectTemplateScope(customerId);
     final tempId = _offline.newTempId('workout');
     final now = DateTime.now();
     final body = <String, dynamic>{
@@ -153,68 +201,13 @@ class WorkoutPlanRepository {
     await _offline.markDeleted(OfflineEntityType.workoutPlan, planId);
   }
 
-  /// Creates a new template (no real customer).
-  Future<WorkoutPlanApiModel> createTemplate({
-    required String name,
-    required String planDataJson,
-    String? pdfHeader,
-    bool useCustomPdfHeader = false,
-    String? theme,
-    int initialWeekNumber = 1,
-    String? phase,
-    String? tags,
-    String? notes,
-  }) {
-    return create(
-      customerId: kWorkoutPlanTemplateScopeId,
-      name: name,
-      planDataJson: planDataJson,
-      pdfHeader: pdfHeader,
-      useCustomPdfHeader: useCustomPdfHeader,
-      theme: theme,
-      initialWeekNumber: initialWeekNumber,
-      phase: phase,
-      tags: tags,
-      notes: notes,
-    );
-  }
-
-  /// Deep-copies an existing plan (any customer or template) into a new template.
-  Future<WorkoutPlanApiModel> createTemplateFromPlan({
-    required String sourcePlanId,
-    required String templateName,
-  }) async {
-    final src = await getById(sourcePlanId);
-    if (src == null) {
-      throw StateError('workout_plan_not_found');
-    }
-    final planDataCopy = cloneWorkoutPlanDataJson(src.planData);
-    return createTemplate(
-      name: templateName.trim().isEmpty ? src.name : templateName.trim(),
-      planDataJson: planDataCopy,
-      pdfHeader: src.pdfHeader,
-      useCustomPdfHeader: src.useCustomPdfHeader,
-      theme: src.theme,
-      initialWeekNumber: src.initialWeekNumber,
-      phase: src.phase,
-      tags: src.tags,
-      notes: src.notes,
-    );
-  }
-
   /// Copies [sourcePlanId] into a **new** plan for [customerId] (new id, deep-copied `planData`).
   Future<WorkoutPlanApiModel> duplicateToCustomer({
     required String sourcePlanId,
     required String customerId,
     String? name,
   }) async {
-    if (customerId == kWorkoutPlanTemplateScopeId) {
-      throw ArgumentError.value(
-        customerId,
-        'customerId',
-        'Use createTemplateFromPlan for template scope',
-      );
-    }
+    _rejectTemplateScope(customerId);
     final src = await getById(sourcePlanId);
     if (src == null) {
       throw StateError('workout_plan_not_found');
