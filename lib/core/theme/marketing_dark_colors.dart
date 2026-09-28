@@ -41,6 +41,18 @@ abstract final class MarketingDarkColors {
 
   static const Color indigo = Color(0xFF818CF8);
   static const Color cyan = Color(0xFF22D3EE);
+  static const Color cyanBright = Color(0xFF06B6D4);
+  static const Color cyanHover = Color(0xFF0891B2);
+  static const Color cyanOn = Color(0xFF09101A);
+
+  /// Stitch redesign page canvases (settings/calendar/subscription blue family).
+  static const Color stitchPageBg = Color(0xFF070B13);
+  static const Color stitchPageBgAlt = Color(0xFF0B0F17);
+  static const Color stitchCard = Color(0xFF111B2E);
+  static const Color stitchCardElevated = Color(0xFF121927);
+  static const Color stitchInput = Color(0xFF131E33);
+  static const Color stitchBorder = Color(0xFF1E293B);
+  static const Color stitchBorderMuted = Color(0xFF334155);
 
   static const double radiusXl = 12;
   static const double radius2xl = 16;

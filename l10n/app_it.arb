@@ -1780,5 +1780,111 @@
     }
   },
   "backupImportTypeConfirm": "Digita IMPORT per confermare la sostituzione di tutti i dati",
-  "backupImportTypeConfirmHint": "IMPORT"
+  "backupImportTypeConfirmHint": "IMPORT",
+  "settingsHubTitle": "Impostazioni Profilo & Piattaforma",
+  "settingsHubSubtitle": "Gestisci la tua identità coach, preferenze notifiche, salvataggi locali e sincronizzazione dati.",
+  "settingsHubSyncPill": "Dati locali attivi",
+  "settingsNavPersonalInfo": "Informazioni personali",
+  "settingsNavSubscription": "Abbonamento",
+  "settingsNavNotifications": "Notifiche & Promemoria",
+  "settingsNavBackup": "Backup offline & Cloud",
+  "settingsNavLanguage": "Lingua e formato",
+  "settingsNavPrivacy": "Informativa Privacy",
+  "settingsNavTerms": "Termini di servizio",
+  "settingsProBadge": "PRO",
+  "settingsPersonalInfoCardTitle": "Informazioni Personali",
+  "settingsPersonalInfoCardSubtitle": "Questi dati compariranno sulle schede d'allenamento e nelle notifiche.",
+  "settingsProfileVerified": "Profilo verificato",
+  "settingsEmailVerified": "Verificata",
+  "settingsAvatarTitle": "Foto del profilo Coach",
+  "settingsAvatarHint": "Inserisci un URL immagine (JPG, PNG o WebP).",
+  "settingsUnsavedChanges": "Hai modifiche non salvate",
+  "settingsCancelChanges": "Annulla",
+  "settingsSaveChanges": "Salva modifiche",
+  "settingsNotificationsModuleTitle": "Notifiche & Promemoria",
+  "settingsBackupModuleTitle": "Backup offline & Cloud",
+  "workoutDiaryPageTitle": "Diario & Storico Allenamenti",
+  "workoutDiaryPageBadge": "Registro Sessioni Live",
+  "workoutDiaryPageSubtitle": "Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.",
+  "workoutDiaryExportAction": "Esporta",
+  "workoutDiaryRecordAction": "Registra sessione",
+  "workoutDiaryKpiSessions": "Sessioni completate",
+  "workoutDiaryKpiVolume": "Volume sollevato",
+  "workoutDiaryKpiVolumeUnit": "kg",
+  "workoutDiaryKpiCompliance": "Compliance",
+  "workoutDiaryKpiSkipped": "{count} saltate",
+  "@workoutDiaryKpiSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryFilterAthlete": "Filtra atleta",
+  "workoutDiaryShowingCount": "Mostrando {count} sessioni",
+  "@workoutDiaryShowingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryExercisesCount": "{count} esercizi",
+  "@workoutDiaryExercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiarySetsCount": "{count} serie",
+  "@workoutDiarySetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryVolumeLabel": "Volume: {kg} kg",
+  "@workoutDiaryVolumeLabel": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarToday": "Oggi",
+  "calendarViewMonth": "Mese",
+  "calendarViewWeek": "Settimana",
+  "calendarViewDay": "Giorno",
+  "calendarAddSession": "Aggiungi Sessione",
+  "calendarFilterAllAthletes": "Tutti gli atleti",
+  "calendarDaySummaryTitle": "Riepilogo giornata",
+  "calendarOpenSession": "Apri sessione",
+  "subscriptionPageTitle": "Gestione Abbonamento & Piani",
+  "subscriptionPageSubtitle": "Controlla il consumo del piano attuale, confronta i pacchetti e sblocca atleti illimitati con PowerCoach Pro.",
+  "subscriptionFreeLimitedBadge": "Piano Gratuito Limitato",
+  "subscriptionProActiveBadge": "Piano Pro Attivo",
+  "subscriptionPlanInUse": "Piano in uso",
+  "subscriptionFreeCoachLabel": "Gratuito (Free Coach)",
+  "subscriptionUsageClients": "Utilizzo Clienti Attivi",
+  "subscriptionSlotsRemaining": "Hai ancora {count} slot atleta gratuiti disponibili.",
+  "@subscriptionSlotsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionLimitAtFive": "Limite raggiunto a 5 clienti",
+  "subscriptionUpgradeHighlightTitle": "Sblocca Clienti Illimitati con Pro",
+  "subscriptionUpgradeHighlightBody": "Elimina le limitazioni sugli atleti ed esporta le schede in PDF/Excel.",
+  "subscriptionUpgradeHighlightCta": "Attiva Coach Pro",
+  "subscriptionRecommendedBadge": "RACCOMANDATO",
+  "subscriptionBillingMonthly": "Fatturazione Mensile",
+  "subscriptionBillingYearly": "Fatturazione Annuale",
+  "subscriptionSavePercent": "Risparmia 20%",
+  "subscriptionCompareCustomersUnlimited": "Illimitati",
+  "subscriptionCtaTitle": "Passa a PowerCoach Pro",
+  "subscriptionCtaNoLock": "Nessun vincolo: cancelli in qualsiasi momento"
 }

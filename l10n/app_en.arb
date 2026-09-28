@@ -1821,5 +1821,111 @@
     }
   },
   "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
-  "backupImportTypeConfirmHint": "IMPORT"
+  "backupImportTypeConfirmHint": "IMPORT",
+  "settingsHubTitle": "Profile & Platform Settings",
+  "settingsHubSubtitle": "Manage your coach identity, notification preferences, local backups, and data sync.",
+  "settingsHubSyncPill": "Local data active",
+  "settingsNavPersonalInfo": "Personal info",
+  "settingsNavSubscription": "Subscription",
+  "settingsNavNotifications": "Notifications & Reminders",
+  "settingsNavBackup": "Offline & Cloud backup",
+  "settingsNavLanguage": "Language & format",
+  "settingsNavPrivacy": "Privacy policy",
+  "settingsNavTerms": "Terms of service",
+  "settingsProBadge": "PRO",
+  "settingsPersonalInfoCardTitle": "Personal info",
+  "settingsPersonalInfoCardSubtitle": "These details appear on workout sheets and notifications.",
+  "settingsProfileVerified": "Verified profile",
+  "settingsEmailVerified": "Verified",
+  "settingsAvatarTitle": "Coach profile photo",
+  "settingsAvatarHint": "Enter an image URL (JPG, PNG, or WebP).",
+  "settingsUnsavedChanges": "You have unsaved changes",
+  "settingsCancelChanges": "Cancel",
+  "settingsSaveChanges": "Save changes",
+  "settingsNotificationsModuleTitle": "Notifications & Reminders",
+  "settingsBackupModuleTitle": "Offline & Cloud backup",
+  "workoutDiaryPageTitle": "Workout Diary & History",
+  "workoutDiaryPageBadge": "Live Session Log",
+  "workoutDiaryPageSubtitle": "Review session logs, monitor compliance, and check recorded training volume.",
+  "workoutDiaryExportAction": "Export",
+  "workoutDiaryRecordAction": "Log session",
+  "workoutDiaryKpiSessions": "Completed sessions",
+  "workoutDiaryKpiVolume": "Volume lifted",
+  "workoutDiaryKpiVolumeUnit": "kg",
+  "workoutDiaryKpiCompliance": "Compliance",
+  "workoutDiaryKpiSkipped": "{count} skipped",
+  "@workoutDiaryKpiSkipped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryFilterAthlete": "Filter athlete",
+  "workoutDiaryShowingCount": "Showing {count} sessions",
+  "@workoutDiaryShowingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryExercisesCount": "{count} exercises",
+  "@workoutDiaryExercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiarySetsCount": "{count} sets",
+  "@workoutDiarySetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryVolumeLabel": "Volume: {kg} kg",
+  "@workoutDiaryVolumeLabel": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "calendarToday": "Today",
+  "calendarViewMonth": "Month",
+  "calendarViewWeek": "Week",
+  "calendarViewDay": "Day",
+  "calendarAddSession": "Add Session",
+  "calendarFilterAllAthletes": "All athletes",
+  "calendarDaySummaryTitle": "Day summary",
+  "calendarOpenSession": "Open session",
+  "subscriptionPageTitle": "Subscription & Plans",
+  "subscriptionPageSubtitle": "Track your current plan usage, compare packages, and unlock unlimited athletes with PowerCoach Pro.",
+  "subscriptionFreeLimitedBadge": "Limited Free Plan",
+  "subscriptionProActiveBadge": "Pro Plan Active",
+  "subscriptionPlanInUse": "Current plan",
+  "subscriptionFreeCoachLabel": "Free (Free Coach)",
+  "subscriptionUsageClients": "Active client usage",
+  "subscriptionSlotsRemaining": "You still have {count} free athlete slots available.",
+  "@subscriptionSlotsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "subscriptionLimitAtFive": "Limit reached at 5 clients",
+  "subscriptionUpgradeHighlightTitle": "Unlock Unlimited Clients with Pro",
+  "subscriptionUpgradeHighlightBody": "Remove athlete caps and export workout sheets as PDF/Excel.",
+  "subscriptionUpgradeHighlightCta": "Activate Coach Pro",
+  "subscriptionRecommendedBadge": "RECOMMENDED",
+  "subscriptionBillingMonthly": "Monthly billing",
+  "subscriptionBillingYearly": "Yearly billing",
+  "subscriptionSavePercent": "Save 20%",
+  "subscriptionCompareCustomersUnlimited": "Unlimited",
+  "subscriptionCtaTitle": "Upgrade to PowerCoach Pro",
+  "subscriptionCtaNoLock": "No lock-in: cancel anytime with one click"
 }

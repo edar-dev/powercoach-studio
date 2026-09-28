@@ -3741,4 +3741,215 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupImportTypeConfirmHint => 'IMPORT';
+
+  @override
+  String get settingsHubTitle => 'Profile & Platform Settings';
+
+  @override
+  String get settingsHubSubtitle =>
+      'Manage your coach identity, notification preferences, local backups, and data sync.';
+
+  @override
+  String get settingsHubSyncPill => 'Local data active';
+
+  @override
+  String get settingsNavPersonalInfo => 'Personal info';
+
+  @override
+  String get settingsNavSubscription => 'Subscription';
+
+  @override
+  String get settingsNavNotifications => 'Notifications & Reminders';
+
+  @override
+  String get settingsNavBackup => 'Offline & Cloud backup';
+
+  @override
+  String get settingsNavLanguage => 'Language & format';
+
+  @override
+  String get settingsNavPrivacy => 'Privacy policy';
+
+  @override
+  String get settingsNavTerms => 'Terms of service';
+
+  @override
+  String get settingsProBadge => 'PRO';
+
+  @override
+  String get settingsPersonalInfoCardTitle => 'Personal info';
+
+  @override
+  String get settingsPersonalInfoCardSubtitle =>
+      'These details appear on workout sheets and notifications.';
+
+  @override
+  String get settingsProfileVerified => 'Verified profile';
+
+  @override
+  String get settingsEmailVerified => 'Verified';
+
+  @override
+  String get settingsAvatarTitle => 'Coach profile photo';
+
+  @override
+  String get settingsAvatarHint => 'Enter an image URL (JPG, PNG, or WebP).';
+
+  @override
+  String get settingsUnsavedChanges => 'You have unsaved changes';
+
+  @override
+  String get settingsCancelChanges => 'Cancel';
+
+  @override
+  String get settingsSaveChanges => 'Save changes';
+
+  @override
+  String get settingsNotificationsModuleTitle => 'Notifications & Reminders';
+
+  @override
+  String get settingsBackupModuleTitle => 'Offline & Cloud backup';
+
+  @override
+  String get workoutDiaryPageTitle => 'Workout Diary & History';
+
+  @override
+  String get workoutDiaryPageBadge => 'Live Session Log';
+
+  @override
+  String get workoutDiaryPageSubtitle =>
+      'Review session logs, monitor compliance, and check recorded training volume.';
+
+  @override
+  String get workoutDiaryExportAction => 'Export';
+
+  @override
+  String get workoutDiaryRecordAction => 'Log session';
+
+  @override
+  String get workoutDiaryKpiSessions => 'Completed sessions';
+
+  @override
+  String get workoutDiaryKpiVolume => 'Volume lifted';
+
+  @override
+  String get workoutDiaryKpiVolumeUnit => 'kg';
+
+  @override
+  String get workoutDiaryKpiCompliance => 'Compliance';
+
+  @override
+  String workoutDiaryKpiSkipped(int count) {
+    return '$count skipped';
+  }
+
+  @override
+  String get workoutDiaryFilterAthlete => 'Filter athlete';
+
+  @override
+  String workoutDiaryShowingCount(int count) {
+    return 'Showing $count sessions';
+  }
+
+  @override
+  String workoutDiaryExercisesCount(int count) {
+    return '$count exercises';
+  }
+
+  @override
+  String workoutDiarySetsCount(int count) {
+    return '$count sets';
+  }
+
+  @override
+  String workoutDiaryVolumeLabel(String kg) {
+    return 'Volume: $kg kg';
+  }
+
+  @override
+  String get calendarToday => 'Today';
+
+  @override
+  String get calendarViewMonth => 'Month';
+
+  @override
+  String get calendarViewWeek => 'Week';
+
+  @override
+  String get calendarViewDay => 'Day';
+
+  @override
+  String get calendarAddSession => 'Add Session';
+
+  @override
+  String get calendarFilterAllAthletes => 'All athletes';
+
+  @override
+  String get calendarDaySummaryTitle => 'Day summary';
+
+  @override
+  String get calendarOpenSession => 'Open session';
+
+  @override
+  String get subscriptionPageTitle => 'Subscription & Plans';
+
+  @override
+  String get subscriptionPageSubtitle =>
+      'Track your current plan usage, compare packages, and unlock unlimited athletes with PowerCoach Pro.';
+
+  @override
+  String get subscriptionFreeLimitedBadge => 'Limited Free Plan';
+
+  @override
+  String get subscriptionProActiveBadge => 'Pro Plan Active';
+
+  @override
+  String get subscriptionPlanInUse => 'Current plan';
+
+  @override
+  String get subscriptionFreeCoachLabel => 'Free (Free Coach)';
+
+  @override
+  String get subscriptionUsageClients => 'Active client usage';
+
+  @override
+  String subscriptionSlotsRemaining(int count) {
+    return 'You still have $count free athlete slots available.';
+  }
+
+  @override
+  String get subscriptionLimitAtFive => 'Limit reached at 5 clients';
+
+  @override
+  String get subscriptionUpgradeHighlightTitle =>
+      'Unlock Unlimited Clients with Pro';
+
+  @override
+  String get subscriptionUpgradeHighlightBody =>
+      'Remove athlete caps and export workout sheets as PDF/Excel.';
+
+  @override
+  String get subscriptionUpgradeHighlightCta => 'Activate Coach Pro';
+
+  @override
+  String get subscriptionRecommendedBadge => 'RECOMMENDED';
+
+  @override
+  String get subscriptionBillingMonthly => 'Monthly billing';
+
+  @override
+  String get subscriptionBillingYearly => 'Yearly billing';
+
+  @override
+  String get subscriptionSavePercent => 'Save 20%';
+
+  @override
+  String get subscriptionCompareCustomersUnlimited => 'Unlimited';
+
+  @override
+  String get subscriptionCtaTitle => 'Upgrade to PowerCoach Pro';
+
+  @override
+  String get subscriptionCtaNoLock =>
+      'No lock-in: cancel anytime with one click';
 }

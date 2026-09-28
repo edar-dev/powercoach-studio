@@ -3779,4 +3779,216 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get backupImportTypeConfirmHint => 'IMPORT';
+
+  @override
+  String get settingsHubTitle => 'Impostazioni Profilo & Piattaforma';
+
+  @override
+  String get settingsHubSubtitle =>
+      'Gestisci la tua identità coach, preferenze notifiche, salvataggi locali e sincronizzazione dati.';
+
+  @override
+  String get settingsHubSyncPill => 'Dati locali attivi';
+
+  @override
+  String get settingsNavPersonalInfo => 'Informazioni personali';
+
+  @override
+  String get settingsNavSubscription => 'Abbonamento';
+
+  @override
+  String get settingsNavNotifications => 'Notifiche & Promemoria';
+
+  @override
+  String get settingsNavBackup => 'Backup offline & Cloud';
+
+  @override
+  String get settingsNavLanguage => 'Lingua e formato';
+
+  @override
+  String get settingsNavPrivacy => 'Informativa Privacy';
+
+  @override
+  String get settingsNavTerms => 'Termini di servizio';
+
+  @override
+  String get settingsProBadge => 'PRO';
+
+  @override
+  String get settingsPersonalInfoCardTitle => 'Informazioni Personali';
+
+  @override
+  String get settingsPersonalInfoCardSubtitle =>
+      'Questi dati compariranno sulle schede d\'allenamento e nelle notifiche.';
+
+  @override
+  String get settingsProfileVerified => 'Profilo verificato';
+
+  @override
+  String get settingsEmailVerified => 'Verificata';
+
+  @override
+  String get settingsAvatarTitle => 'Foto del profilo Coach';
+
+  @override
+  String get settingsAvatarHint =>
+      'Inserisci un URL immagine (JPG, PNG o WebP).';
+
+  @override
+  String get settingsUnsavedChanges => 'Hai modifiche non salvate';
+
+  @override
+  String get settingsCancelChanges => 'Annulla';
+
+  @override
+  String get settingsSaveChanges => 'Salva modifiche';
+
+  @override
+  String get settingsNotificationsModuleTitle => 'Notifiche & Promemoria';
+
+  @override
+  String get settingsBackupModuleTitle => 'Backup offline & Cloud';
+
+  @override
+  String get workoutDiaryPageTitle => 'Diario & Storico Allenamenti';
+
+  @override
+  String get workoutDiaryPageBadge => 'Registro Sessioni Live';
+
+  @override
+  String get workoutDiaryPageSubtitle =>
+      'Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.';
+
+  @override
+  String get workoutDiaryExportAction => 'Esporta';
+
+  @override
+  String get workoutDiaryRecordAction => 'Registra sessione';
+
+  @override
+  String get workoutDiaryKpiSessions => 'Sessioni completate';
+
+  @override
+  String get workoutDiaryKpiVolume => 'Volume sollevato';
+
+  @override
+  String get workoutDiaryKpiVolumeUnit => 'kg';
+
+  @override
+  String get workoutDiaryKpiCompliance => 'Compliance';
+
+  @override
+  String workoutDiaryKpiSkipped(int count) {
+    return '$count saltate';
+  }
+
+  @override
+  String get workoutDiaryFilterAthlete => 'Filtra atleta';
+
+  @override
+  String workoutDiaryShowingCount(int count) {
+    return 'Mostrando $count sessioni';
+  }
+
+  @override
+  String workoutDiaryExercisesCount(int count) {
+    return '$count esercizi';
+  }
+
+  @override
+  String workoutDiarySetsCount(int count) {
+    return '$count serie';
+  }
+
+  @override
+  String workoutDiaryVolumeLabel(String kg) {
+    return 'Volume: $kg kg';
+  }
+
+  @override
+  String get calendarToday => 'Oggi';
+
+  @override
+  String get calendarViewMonth => 'Mese';
+
+  @override
+  String get calendarViewWeek => 'Settimana';
+
+  @override
+  String get calendarViewDay => 'Giorno';
+
+  @override
+  String get calendarAddSession => 'Aggiungi Sessione';
+
+  @override
+  String get calendarFilterAllAthletes => 'Tutti gli atleti';
+
+  @override
+  String get calendarDaySummaryTitle => 'Riepilogo giornata';
+
+  @override
+  String get calendarOpenSession => 'Apri sessione';
+
+  @override
+  String get subscriptionPageTitle => 'Gestione Abbonamento & Piani';
+
+  @override
+  String get subscriptionPageSubtitle =>
+      'Controlla il consumo del piano attuale, confronta i pacchetti e sblocca atleti illimitati con PowerCoach Pro.';
+
+  @override
+  String get subscriptionFreeLimitedBadge => 'Piano Gratuito Limitato';
+
+  @override
+  String get subscriptionProActiveBadge => 'Piano Pro Attivo';
+
+  @override
+  String get subscriptionPlanInUse => 'Piano in uso';
+
+  @override
+  String get subscriptionFreeCoachLabel => 'Gratuito (Free Coach)';
+
+  @override
+  String get subscriptionUsageClients => 'Utilizzo Clienti Attivi';
+
+  @override
+  String subscriptionSlotsRemaining(int count) {
+    return 'Hai ancora $count slot atleta gratuiti disponibili.';
+  }
+
+  @override
+  String get subscriptionLimitAtFive => 'Limite raggiunto a 5 clienti';
+
+  @override
+  String get subscriptionUpgradeHighlightTitle =>
+      'Sblocca Clienti Illimitati con Pro';
+
+  @override
+  String get subscriptionUpgradeHighlightBody =>
+      'Elimina le limitazioni sugli atleti ed esporta le schede in PDF/Excel.';
+
+  @override
+  String get subscriptionUpgradeHighlightCta => 'Attiva Coach Pro';
+
+  @override
+  String get subscriptionRecommendedBadge => 'RACCOMANDATO';
+
+  @override
+  String get subscriptionBillingMonthly => 'Fatturazione Mensile';
+
+  @override
+  String get subscriptionBillingYearly => 'Fatturazione Annuale';
+
+  @override
+  String get subscriptionSavePercent => 'Risparmia 20%';
+
+  @override
+  String get subscriptionCompareCustomersUnlimited => 'Illimitati';
+
+  @override
+  String get subscriptionCtaTitle => 'Passa a PowerCoach Pro';
+
+  @override
+  String get subscriptionCtaNoLock =>
+      'Nessun vincolo: cancelli in qualsiasi momento';
 }

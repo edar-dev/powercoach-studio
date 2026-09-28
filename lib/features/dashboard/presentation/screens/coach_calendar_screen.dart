@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
-import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../domain/calendar_event_loader.dart';
 import '../../domain/plan_calendar_event.dart';
-import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
+import '../widgets/coach_calendar_day_summary.dart';
+import '../widgets/coach_calendar_grid_card.dart';
+import '../widgets/coach_calendar_toolbar.dart';
 
 class CoachCalendarScreen extends StatefulWidget {
   const CoachCalendarScreen({super.key});
@@ -47,9 +50,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
     try {
       final customers = await _customerRepo.getAll();
       final plans = await _planRepo.getAll();
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       final l10n = AppLocalizations.of(context);
       final customerById = <String, String>{
         for (final customer in customers) customer.id: customer.name,
@@ -69,9 +70,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
         _loading = false;
       });
     } catch (error) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       setState(() {
         _events = const [];
         _loading = false;
@@ -99,9 +98,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
       );
       await _loadEvents();
     } catch (_) {
-      if (!mounted) {
-        return;
-      }
+      if (!mounted) return;
       showAppSnackBar(
         context,
         content: Text(AppLocalizations.of(context).calendarUpdateError),
@@ -110,179 +107,184 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
     }
   }
 
-  Color _eventColor(String customerId, ColorScheme colorScheme) {
-    final hash = customerId.hashCode.abs();
-    final palette = <Color>[
-      colorScheme.primary,
-      colorScheme.secondary,
-      colorScheme.tertiary,
-      colorScheme.primaryContainer,
-    ];
-    return palette[hash % palette.length];
+  Future<void> _toggleSkipped(PlanCalendarEvent event) async {
+    HapticFeedback.mediumImpact();
+    try {
+      await _sessionStatusService.setSessionStatus(
+        planId: event.planId,
+        weekIndex: event.weekIndex,
+        dayIndex: event.dayIndex,
+        status: event.status == PlanSessionStatus.skipped
+            ? PlanSessionStatus.planned
+            : PlanSessionStatus.skipped,
+      );
+      await _loadEvents();
+    } catch (_) {
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        content: Text(AppLocalizations.of(context).calendarUpdateError),
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+      );
+    }
+  }
+
+  void _openEvent(PlanCalendarEvent event) {
+    navigateTo(
+      context,
+      scheduleSessionDetailPath(
+        customerId: event.customerId,
+        planId: event.planId,
+        weekIndex: event.weekIndex,
+        dayIndex: event.dayIndex,
+        date: event.day,
+      ),
+    );
+  }
+
+  void _goToday() {
+    final today = calendarDayOnly(DateTime.now());
+    setState(() {
+      _selectedDay = today;
+      _focusedDay = today;
+    });
+    _loadEvents();
+  }
+
+  void _shiftMonth(int delta) {
+    final next = DateTime(_focusedDay.year, _focusedDay.month + delta, 1);
+    setState(() => _focusedDay = next);
+    _loadEvents();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
     final locale = l10n.localeName;
     final selectedDay = _selectedDay ?? calendarDayOnly(DateTime.now());
     final dayEvents = _eventsOnDay(selectedDay);
+    final monthLabel = DateFormat.yMMMM(locale).format(_focusedDay);
+    final isWide = MediaQuery.sizeOf(context).width >= 1100;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      appBar: AppBar(
-        title: Text(l10n.calendarTitle),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            context.pop();
-          },
-        ),
-      ),
-      body: _error != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(l10n.calendarLoadError, textAlign: TextAlign.center),
-                    const SizedBox(height: 16),
-                    FilledButton(
-                      onPressed: _loadEvents,
-                      child: Text(l10n.customersRetry),
-                    ),
-                  ],
+      backgroundColor: MarketingDarkColors.stitchPageBg,
+      body: SafeArea(
+        child: _error != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        l10n.calendarLoadError,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: MarketingDarkColors.slate300,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: MarketingDarkColors.brand,
+                        ),
+                        onPressed: _loadEvents,
+                        child: Text(l10n.customersRetry),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          : RefreshIndicator(
-              onRefresh: _loadEvents,
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-                children: [
-                  Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: TableCalendar<PlanCalendarEvent>(
-                        firstDay: DateTime.utc(2020, 1, 1),
-                        lastDay: DateTime.utc(2035, 12, 31),
+              )
+            : RefreshIndicator(
+                color: MarketingDarkColors.brandLight,
+                onRefresh: _loadEvents,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                  children: [
+                    CoachCalendarToolbar(
+                      monthLabel: monthLabel,
+                      onBack: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          navigateTo(context, '/dashboard');
+                        }
+                      },
+                      onPreviousMonth: () => _shiftMonth(-1),
+                      onNextMonth: () => _shiftMonth(1),
+                      onToday: _goToday,
+                      onAddSession: () => navigateTo(context, '/customers'),
+                    ),
+                    const SizedBox(height: 16),
+                    if (isWide)
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 8,
+                            child: CoachCalendarGridCard(
+                              focusedDay: _focusedDay,
+                              selectedDay: _selectedDay,
+                              locale: locale,
+                              eventsOnDay: _eventsOnDay,
+                              onDaySelected: (selected, focused) {
+                                setState(() {
+                                  _selectedDay = calendarDayOnly(selected);
+                                  _focusedDay = focused;
+                                });
+                              },
+                              onPageChanged: (focused) {
+                                _focusedDay = focused;
+                                _loadEvents();
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            flex: 4,
+                            child: CoachCalendarDaySummary(
+                              day: selectedDay,
+                              events: dayEvents,
+                              loading: _loading,
+                              onOpen: _openEvent,
+                              onToggleCompleted: _toggleCompleted,
+                              onToggleSkipped: _toggleSkipped,
+                            ),
+                          ),
+                        ],
+                      )
+                    else ...[
+                      CoachCalendarGridCard(
                         focusedDay: _focusedDay,
-                        selectedDayPredicate: (day) =>
-                            isSameDay(_selectedDay, day),
-                        eventLoader: _eventsOnDay,
-                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        selectedDay: _selectedDay,
                         locale: locale,
-                        calendarStyle: CalendarStyle(
-                          todayDecoration: BoxDecoration(
-                            color: colorScheme.primaryContainer,
-                            shape: BoxShape.circle,
-                          ),
-                          selectedDecoration: BoxDecoration(
-                            color: colorScheme.primary,
-                            shape: BoxShape.circle,
-                          ),
-                          markerDecoration: BoxDecoration(
-                            color: colorScheme.tertiary,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        headerStyle: HeaderStyle(
-                          titleCentered: true,
-                          formatButtonVisible: false,
-                        ),
-                        onDaySelected: (selectedDay, focusedDay) {
+                        eventsOnDay: _eventsOnDay,
+                        onDaySelected: (selected, focused) {
                           setState(() {
-                            _selectedDay = calendarDayOnly(selectedDay);
-                            _focusedDay = focusedDay;
+                            _selectedDay = calendarDayOnly(selected);
+                            _focusedDay = focused;
                           });
                         },
-                        onPageChanged: (focusedDay) {
-                          _focusedDay = focusedDay;
+                        onPageChanged: (focused) {
+                          _focusedDay = focused;
                           _loadEvents();
                         },
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    DateFormat.yMMMMd(locale).format(selectedDay),
-                    style: theme.textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  if (_loading)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Center(child: CircularProgressIndicator()),
-                    )
-                  else if (dayEvents.isEmpty)
-                    Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          l10n.calendarEmptyMonth,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.onSurfaceVariant,
-                          ),
-                        ),
+                      const SizedBox(height: 16),
+                      CoachCalendarDaySummary(
+                        day: selectedDay,
+                        events: dayEvents,
+                        loading: _loading,
+                        onOpen: _openEvent,
+                        onToggleCompleted: _toggleCompleted,
+                        onToggleSkipped: _toggleSkipped,
                       ),
-                    )
-                  else
-                    ...dayEvents.map((event) {
-                      final color = _eventColor(event.customerId, colorScheme);
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 12),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: color.withValues(alpha: 0.2),
-                            child: Icon(
-                              Icons.fitness_center,
-                              color: color,
-                              size: 20,
-                            ),
-                          ),
-                          title: Text(event.customerName),
-                          subtitle: Text(
-                            '${event.programName} · ${event.sessionLabel}',
-                          ),
-                          trailing: Checkbox(
-                            value:
-                                event.status == PlanSessionStatus.completed,
-                            onChanged: (value) =>
-                                _toggleCompleted(event, value ?? false),
-                          ),
-                          onTap: () {
-                            navigateTo(
-                              context,
-                              scheduleSessionDetailPath(
-                                customerId: event.customerId,
-                                planId: event.planId,
-                                weekIndex: event.weekIndex,
-                                dayIndex: event.dayIndex,
-                                date: event.day,
-                              ),
-                            );
-                          },
-                          onLongPress: () async {
-                            await _sessionStatusService.setSessionStatus(
-                              planId: event.planId,
-                              weekIndex: event.weekIndex,
-                              dayIndex: event.dayIndex,
-                              status: event.status == PlanSessionStatus.skipped
-                                  ? PlanSessionStatus.planned
-                                  : PlanSessionStatus.skipped,
-                            );
-                            await _loadEvents();
-                          },
-                        ),
-                      );
-                    }),
-                ],
+                    ],
+                  ],
+                ),
               ),
-            ),
+      ),
     );
   }
 }
