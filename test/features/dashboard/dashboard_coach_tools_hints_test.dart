@@ -25,7 +25,7 @@ void main() {
     );
   }
 
-  test('computeDashboardCoachToolsHints counts 30d sessions and 7d adherence', () {
+  test('computeDashboardCoachToolsHints counts 30d logged sessions', () {
     final now = DateTime(2026, 7, 8);
     final hints = computeDashboardCoachToolsHints(
       now: now,
@@ -49,6 +49,5 @@ void main() {
     );
 
     expect(hints.loggedSessions30d, 2);
-    expect(hints.adherence7dPercent, 50);
   });
 }

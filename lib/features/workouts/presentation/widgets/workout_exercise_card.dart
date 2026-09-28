@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
 
@@ -30,8 +28,6 @@ class WorkoutExerciseCard extends StatelessWidget {
     this.supersetOptions = const [],
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
-    this.progressionSuggestion,
-    this.onApplyProgressionSuggestion,
   });
 
   final ThemeData theme;
@@ -67,11 +63,8 @@ class WorkoutExerciseCard extends StatelessWidget {
   onUpdateSet;
   final void Function(int setIndex)? onRemoveSet;
   final List<({String id, String label})> supersetOptions;
-  final void Function(String groupId, {DensityBlockConfig? densityConfig})?
-  onAssignToSuperset;
+  final void Function(String groupId)? onAssignToSuperset;
   final VoidCallback? onRemoveFromSuperset;
-  final ExerciseProgressionSuggestion? progressionSuggestion;
-  final VoidCallback? onApplyProgressionSuggestion;
 
   void _openEditDialog(BuildContext context, {bool focusNote = false}) {
     if (onEdit == null) return;
@@ -246,16 +239,6 @@ class WorkoutExerciseCard extends StatelessWidget {
                       onAssignToSuperset!(
                         'ss_${DateTime.now().millisecondsSinceEpoch}',
                       );
-                    } else if (value == 'new_circuit') {
-                      onAssignToSuperset!(
-                        'ss_${DateTime.now().millisecondsSinceEpoch}',
-                        densityConfig: DensityBlockConfig.defaultCircuit,
-                      );
-                    } else if (value == 'new_emom') {
-                      onAssignToSuperset!(
-                        'ss_${DateTime.now().millisecondsSinceEpoch}',
-                        densityConfig: DensityBlockConfig.defaultEmom,
-                      );
                     } else if (value.startsWith('group:')) {
                       onAssignToSuperset!(value.substring(6));
                     } else if (value == 'remove_ss') {
@@ -291,16 +274,6 @@ class WorkoutExerciseCard extends StatelessWidget {
                         PopupMenuItem(
                           value: 'new',
                           child: Text(menuL10n.workoutBuilderNewSuperset),
-                        ),
-                      if (onAssignToSuperset != null)
-                        PopupMenuItem(
-                          value: 'new_circuit',
-                          child: Text(menuL10n.workoutBuilderNewCircuit),
-                        ),
-                      if (onAssignToSuperset != null)
-                        PopupMenuItem(
-                          value: 'new_emom',
-                          child: Text(menuL10n.workoutBuilderNewEmom),
                         ),
                       ...supersetOptions.map(
                         (o) => PopupMenuItem(
@@ -343,21 +316,6 @@ class WorkoutExerciseCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (progressionSuggestion != null &&
-                    (progressionSuggestion!.type ==
-                            ProgressionSuggestionType.increaseLoad ||
-                        progressionSuggestion!.type ==
-                            ProgressionSuggestionType.increaseReps))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: _ProgressionSuggestionChip(
-                      l10n: l10n,
-                      theme: theme,
-                      colorScheme: colorScheme,
-                      suggestion: progressionSuggestion!,
-                      onApply: onApplyProgressionSuggestion,
-                    ),
-                  ),
                 ...details.asMap().entries.map((entry) {
                   final i = entry.key;
                   final s = entry.value;
@@ -490,77 +448,6 @@ class WorkoutExerciseCard extends StatelessWidget {
             color: colorScheme.outlineVariant.withValues(alpha: 0.5),
           ),
       ],
-    );
-  }
-}
-
-class _ProgressionSuggestionChip extends StatelessWidget {
-  const _ProgressionSuggestionChip({
-    required this.l10n,
-    required this.theme,
-    required this.colorScheme,
-    required this.suggestion,
-    required this.onApply,
-  });
-
-  final AppLocalizations l10n;
-  final ThemeData theme;
-  final ColorScheme colorScheme;
-  final ExerciseProgressionSuggestion suggestion;
-  final VoidCallback? onApply;
-
-  String get _label {
-    if (suggestion.type == ProgressionSuggestionType.increaseReps &&
-        suggestion.suggestedReps != null) {
-      return l10n.workoutBuilderProgressionIncreaseReps(
-        suggestion.suggestedReps!,
-      );
-    }
-    if (suggestion.type == ProgressionSuggestionType.increaseLoad &&
-        suggestion.suggestedLoad != null) {
-      return l10n.workoutBuilderProgressionIncreaseLoad(
-        suggestion.suggestedLoad!,
-      );
-    }
-    return l10n.workoutBuilderProgressionIncreaseLoadGeneric;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: colorScheme.primaryContainer.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.trending_up,
-            size: 16,
-            color: colorScheme.onPrimaryContainer,
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              _label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onPrimaryContainer,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-          if (suggestion.isActionable && onApply != null)
-            TextButton(
-              style: TextButton.styleFrom(
-                minimumSize: const Size(0, 32),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-              ),
-              onPressed: onApply,
-              child: Text(l10n.workoutBuilderProgressionApply),
-            ),
-        ],
-      ),
     );
   }
 }

@@ -4,13 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
-import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../domain/session_execution_service.dart';
 import '../../domain/workout_diary_filter.dart';
+import '../../domain/workout_diary_metrics.dart';
+import '../widgets/workout_diary_filters_bar.dart';
+import '../widgets/workout_diary_header.dart';
+import '../widgets/workout_diary_kpi_row.dart';
+import '../widgets/workout_diary_timeline.dart';
 
 const _diaryPageSize = 50;
 
@@ -157,21 +161,36 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   Future<void> _showCustomerFilter(AppLocalizations l10n) async {
     final selected = await showModalBottomSheet<String?>(
       context: context,
+      backgroundColor: MarketingDarkColors.stitchCard,
       showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text(l10n.workoutDiaryFilterAll),
-              trailing: _filterCustomerId == null ? const Icon(Icons.check) : null,
+              title: Text(
+                l10n.workoutDiaryFilterAll,
+                style: const TextStyle(color: MarketingDarkColors.text),
+              ),
+              trailing: _filterCustomerId == null
+                  ? const Icon(
+                      Icons.check,
+                      color: MarketingDarkColors.cyanBright,
+                    )
+                  : null,
               onTap: () => Navigator.of(ctx).pop(''),
             ),
             ..._customers.map(
               (c) => ListTile(
-                title: Text(c.name),
+                title: Text(
+                  c.name,
+                  style: const TextStyle(color: MarketingDarkColors.text),
+                ),
                 trailing: _filterCustomerId == c.id
-                    ? const Icon(Icons.check)
+                    ? const Icon(
+                        Icons.check,
+                        color: MarketingDarkColors.cyanBright,
+                      )
                     : null,
                 onTap: () => Navigator.of(ctx).pop(c.id),
               ),
@@ -196,222 +215,169 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     );
   }
 
+  void _recordSession() {
+    HapticFeedback.selectionClick();
+    navigateTo(context, '/dashboard/calendar');
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final dateFormat = DateFormat.yMMMd(Localizations.localeOf(context).toString());
+    final locale = Localizations.localeOf(context).toString();
+    final dateFormat = DateFormat.yMMMMd(locale);
     final visible = _visibleEntries;
     final hasSessionFilter =
         _filterSessionKey != null && _filterSessionKey!.isNotEmpty;
+    final kpis = computeDiaryKpis(visible);
+    final groups = groupDiaryEntriesByDay(visible);
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      appBar: AppBar(
-        title: Text(l10n.workoutDiaryTitle),
-        actions: [
-          IconButton(
-            tooltip: l10n.workoutDiaryFilterAll,
-            icon: const Icon(Icons.filter_list),
-            onPressed: () => _showCustomerFilter(l10n),
-          ),
-        ],
-      ),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : _loadError != null
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.error_outline, size: 48, color: cs.error),
-                    const SizedBox(height: 16),
-                    Text(
-                      _loadError!,
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        color: cs.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    FilledButton(
-                      onPressed: () => _load(reset: true),
-                      child: Text(l10n.customersRetry),
-                    ),
-                  ],
+      backgroundColor: MarketingDarkColors.stitchPageBgAlt,
+      body: SafeArea(
+        child: _loading
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: MarketingDarkColors.cyanBright,
                 ),
-              ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (hasSessionFilter)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                    child: Material(
-                      color: cs.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(12),
-                      child: ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.filter_alt_outlined),
-                        title: Text(l10n.workoutDiarySessionFilterActive),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: () {
-                            setState(() => _filterSessionKey = null);
-                            _load(reset: true);
-                          },
+              )
+            : _loadError != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.error_outline,
+                        size: 48,
+                        color: Color(0xFFFB7185),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        _loadError!,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: MarketingDarkColors.slate400,
                         ),
                       ),
-                    ),
-                  ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        l10n.workoutDiaryFilterDate,
-                        style: theme.textTheme.labelLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      SegmentedButton<DiaryDateRange>(
-                        segments: [
-                          ButtonSegment(
-                            value: DiaryDateRange.last7,
-                            label: Text(l10n.coachStatsPeriod7d),
-                          ),
-                          ButtonSegment(
-                            value: DiaryDateRange.last30,
-                            label: Text(l10n.coachStatsPeriod30d),
-                          ),
-                          ButtonSegment(
-                            value: DiaryDateRange.all,
-                            label: Text(l10n.workoutDiaryFilterDateAll),
-                          ),
-                        ],
-                        selected: {_dateRange},
-                        onSelectionChanged: (values) {
-                          if (values.isEmpty) return;
-                          setState(() => _dateRange = values.first);
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        spacing: 8,
-                        children: [
-                          FilterChip(
-                            label: Text(l10n.workoutDiaryFilterStatusAll),
-                            selected: _statusFilter == DiaryStatusFilter.all,
-                            onSelected: (_) => setState(
-                              () => _statusFilter = DiaryStatusFilter.all,
-                            ),
-                          ),
-                          FilterChip(
-                            label: Text(l10n.sessionCompleted),
-                            selected:
-                                _statusFilter == DiaryStatusFilter.completed,
-                            onSelected: (_) => setState(
-                              () => _statusFilter = DiaryStatusFilter.completed,
-                            ),
-                          ),
-                          FilterChip(
-                            label: Text(l10n.sessionSkipped),
-                            selected:
-                                _statusFilter == DiaryStatusFilter.skipped,
-                            onSelected: (_) => setState(
-                              () => _statusFilter = DiaryStatusFilter.skipped,
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 24),
+                      FilledButton(
+                        style: FilledButton.styleFrom(
+                          backgroundColor: MarketingDarkColors.cyanBright,
+                          foregroundColor: MarketingDarkColors.cyanOn,
+                        ),
+                        onPressed: () => _load(reset: true),
+                        child: Text(l10n.customersRetry),
                       ),
                     ],
                   ),
                 ),
-                Expanded(
-                  child: visible.isEmpty
-                      ? Center(
+              )
+            : RefreshIndicator(
+                color: MarketingDarkColors.cyanBright,
+                onRefresh: () => _load(reset: true),
+                child: CustomScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      sliver: SliverToBoxAdapter(
+                        child: WorkoutDiaryHeader(onRecord: _recordSession),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                      sliver: SliverToBoxAdapter(
+                        child: WorkoutDiaryKpiRow(kpis: kpis),
+                      ),
+                    ),
+                    if (hasSessionFilter)
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        sliver: SliverToBoxAdapter(
+                          child: Material(
+                            color: MarketingDarkColors.stitchCard,
+                            borderRadius: BorderRadius.circular(12),
+                            child: ListTile(
+                              dense: true,
+                              leading: const Icon(
+                                Icons.filter_alt_outlined,
+                                color: MarketingDarkColors.cyanBright,
+                              ),
+                              title: Text(
+                                l10n.workoutDiarySessionFilterActive,
+                                style: const TextStyle(
+                                  color: MarketingDarkColors.text,
+                                ),
+                              ),
+                              trailing: IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  color: MarketingDarkColors.slate400,
+                                ),
+                                onPressed: () {
+                                  setState(() => _filterSessionKey = null);
+                                  _load(reset: true);
+                                },
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      sliver: SliverToBoxAdapter(
+                        child: WorkoutDiaryFiltersBar(
+                          dateRange: _dateRange,
+                          statusFilter: _statusFilter,
+                          customers: _customers,
+                          filterCustomerId: _filterCustomerId,
+                          visibleCount: visible.length,
+                          onDateRangeChanged: (value) {
+                            setState(() => _dateRange = value);
+                          },
+                          onStatusChanged: (value) {
+                            setState(() => _statusFilter = value);
+                          },
+                          onAthleteTap: () => _showCustomerFilter(l10n),
+                        ),
+                      ),
+                    ),
+                    if (visible.isEmpty)
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Center(
                           child: Padding(
                             padding: const EdgeInsets.all(32),
                             child: Text(
                               l10n.workoutDiaryEmpty,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.bodyLarge?.copyWith(
-                                color: cs.onSurfaceVariant,
+                                color: MarketingDarkColors.slate400,
                               ),
                             ),
                           ),
-                        )
-                      : RefreshIndicator(
-                          onRefresh: () => _load(reset: true),
-                          child: ListView.separated(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-                            itemCount: visible.length + (_loadingMore ? 1 : 0),
-                            separatorBuilder: (_, __) => const SizedBox(height: 8),
-                            itemBuilder: (context, index) {
-                              if (index >= visible.length) {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
-                              final entry = visible[index];
-                              final execution = entry.execution;
-                              final date =
-                                  execution.completedAt ?? execution.sessionDate;
-                              final completedCount = execution.exercises
-                                  .where((e) => e.completed)
-                                  .length;
-                              final totalExercises = execution.exercises.isEmpty
-                                  ? null
-                                  : execution.exercises.length;
-                              final isSkipped =
-                                  execution.status == PlanSessionStatus.skipped;
-
-                              return Card(
-                                elevation: 0,
-                                color: cs.surfaceContainerHighest,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(StitchM3Theme.radiusLg),
-                                ),
-                                child: ListTile(
-                                  onTap: () => _openEntry(entry),
-                                  title: Text(
-                                    '${dateFormat.format(date)} · ${_customerName(entry.customerId)}',
-                                    style: theme.textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    isSkipped
-                                        ? '${entry.planName} · ${l10n.sessionSkipped}'
-                                        : totalExercises == null
-                                        ? entry.planName
-                                        : '${entry.planName} · $completedCount/$totalExercises',
-                                  ),
-                                  trailing: Icon(
-                                    isSkipped
-                                        ? Icons.remove_circle_outline
-                                        : Icons.check_circle_outline,
-                                    color: isSkipped
-                                        ? cs.outline
-                                        : StitchM3Theme.success,
-                                  ),
-                                ),
-                              );
-                            },
+                        ),
+                      )
+                    else
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                        sliver: SliverToBoxAdapter(
+                          child: WorkoutDiaryTimeline(
+                            groups: groups,
+                            dateFormat: dateFormat,
+                            customerNameOf: _customerName,
+                            onOpenEntry: _openEntry,
+                            loadingMore: _loadingMore,
                           ),
                         ),
+                      ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+      ),
     );
   }
 }

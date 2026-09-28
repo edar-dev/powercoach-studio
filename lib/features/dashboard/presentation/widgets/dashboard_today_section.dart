@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
-import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
@@ -101,41 +100,22 @@ class DashboardTodaySection extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                FilledButton.icon(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    navigateTo(context, '/dashboard/schedule');
-                  },
-                  icon: const Icon(Icons.calendar_month_outlined, size: 18),
-                  label: Text(l10n.dashboardOpenAgenda),
-                  style: emptyActionsStyle.copyWith(
-                    backgroundColor:
-                        const WidgetStatePropertyAll(StitchM3Theme.accent),
-                    foregroundColor:
-                        const WidgetStatePropertyAll(Colors.white),
-                  ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: FilledButton.icon(
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  navigateTo(context, '/dashboard/calendar');
+                },
+                icon: const Icon(Icons.calendar_month_outlined, size: 18),
+                label: Text(l10n.dashboardOpenAgenda),
+                style: emptyActionsStyle.copyWith(
+                  backgroundColor:
+                      const WidgetStatePropertyAll(StitchM3Theme.accent),
+                  foregroundColor:
+                      const WidgetStatePropertyAll(Colors.white),
                 ),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    HapticFeedback.mediumImpact();
-                    navigateTo(context, AppPaths.gym);
-                  },
-                  icon: const Icon(Icons.fitness_center, size: 18),
-                  label: Text(l10n.gymModeAction),
-                  style: emptyActionsStyle.copyWith(
-                    foregroundColor:
-                        const WidgetStatePropertyAll(StitchM3Theme.accent),
-                    side: const WidgetStatePropertyAll(
-                      BorderSide(color: StitchM3Theme.accent),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ],
         ),

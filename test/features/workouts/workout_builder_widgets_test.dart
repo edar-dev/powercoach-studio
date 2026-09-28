@@ -209,72 +209,14 @@ void main() {
       expect(find.text('mer'), findsOneWidget);
     });
 
-    testWidgets(
-      'TrainingWeekDayPanel shows day coaching note and notifies tap',
-      (tester) async {
-        var tapped = false;
-        await tester.pumpWidget(
-          _wrap(
-            width: 720,
-            Builder(
-              builder: (context) {
-                final theme = Theme.of(context);
-                return TrainingWeekDayPanel(
-                  theme: theme,
-                  cs: theme.colorScheme,
-                  weeks: const [
-                    Week(
-                      id: 'w1',
-                      name: 'Week 1',
-                      days: [
-                        Day(
-                          id: 'd1',
-                          name: 'Day A',
-                          exercises: [],
-                          coachingNote: 'Focus on bracing',
-                        ),
-                      ],
-                    ),
-                  ],
-                  selectedWeekIndex: 0,
-                  selectedDayIndex: 0,
-                  onSelectWeek: (_) {},
-                  onSelectDay: (_) {},
-                  onNewWeek: () {},
-                  onCloneWeek: (_) {},
-                  onDeleteWeek: (_) {},
-                  onEditWeek: (_) {},
-                  onAddDay: (_) {},
-                  onEditDay: (_, _) {},
-                  onDeleteDay: (_, _) {},
-                  onUpdateScheduledWeekday: (_, _, _) {},
-                  onEditDayCoachingNote: (_, _) => tapped = true,
-                  exerciseListBuilder: (_, _, _, _) => const Text('Exercises'),
-                );
-              },
-            ),
-          ),
-        );
-
-        expect(find.text('Focus on bracing'), findsOneWidget);
-        await tester.tap(find.text('Focus on bracing'));
-        await tester.pump();
-        expect(tapped, isTrue);
-      },
-    );
-
-    testWidgets('WorkoutPlanDetailsTab renders metadata and notifies changes', (
+    testWidgets('WorkoutPlanDetailsTab renders dates notes and notifies changes', (
       tester,
     ) async {
       var initialWeek = '';
       var metadataChanged = false;
       final initialWeekController = TextEditingController(text: '1');
-      final phaseController = TextEditingController(text: 'Strength');
-      final tagsController = TextEditingController(text: 'hypertrophy');
       final notesController = TextEditingController(text: 'Coach notes');
       addTearDown(initialWeekController.dispose);
-      addTearDown(phaseController.dispose);
-      addTearDown(tagsController.dispose);
       addTearDown(notesController.dispose);
 
       await tester.pumpWidget(
@@ -283,8 +225,6 @@ void main() {
             routine: WorkoutRoutine.empty(),
             editorMode: true,
             initialWeekController: initialWeekController,
-            phaseController: phaseController,
-            tagsController: tagsController,
             notesController: notesController,
             onPickStartDate: () {},
             onPickEndDate: () {},
@@ -297,6 +237,7 @@ void main() {
 
       expect(find.text('Data di inizio'), findsOneWidget);
       expect(find.text('Settimana iniziale'), findsOneWidget);
+      expect(find.text('Strength'), findsNothing);
 
       await tester.enterText(find.byType(TextField).first, '3');
       await tester.pump();
@@ -304,7 +245,7 @@ void main() {
 
       await tester.drag(find.byType(ListView), const Offset(0, -500));
       await tester.pump();
-      await tester.enterText(find.text('Strength'), 'Power');
+      await tester.enterText(find.text('Coach notes'), 'Updated notes');
       await tester.pump();
       expect(metadataChanged, isTrue);
     });
@@ -339,7 +280,6 @@ void main() {
                 onRenameWeek: (_, __) {},
                 onAddDay: (_) {},
                 onRenameDay: (_, __, ___) {},
-                onSetDayCoachingNote: (_, __, ___) {},
                 onDeleteDay: (_, __) {},
                 onDuplicateExercise: (_, __, ___) {},
                 onRemoveExercise: (_, __, ___) {},
@@ -371,7 +311,7 @@ void main() {
                   note,
                 }) {},
                 onRemoveExerciseSet: (_, __, ___, ____) {},
-                onAssignToSuperset: (_, __, ___, ____, {densityConfig}) {},
+                onAssignToSuperset: (_, __, ___, ____) {},
                 onRemoveFromSuperset: (_, __, ___) {},
                 onAddExerciseToSuperset: (_, __, ___) {},
                 onSelectWeek: (_) {},
@@ -444,7 +384,6 @@ void main() {
                 onRenameWeek: (_, __) {},
                 onAddDay: (_) {},
                 onRenameDay: (_, __, ___) {},
-                onSetDayCoachingNote: (_, __, ___) {},
                 onDeleteDay: (_, __) {},
                 onDuplicateExercise: (_, __, ___) {},
                 onRemoveExercise: (_, __, ___) {},
@@ -476,7 +415,7 @@ void main() {
                   note,
                 }) {},
                 onRemoveExerciseSet: (_, __, ___, ____) {},
-                onAssignToSuperset: (_, __, ___, ____, {densityConfig}) {},
+                onAssignToSuperset: (_, __, ___, ____) {},
                 onRemoveFromSuperset: (_, __, ___) {},
                 onAddExerciseToSuperset: (_, __, ___) {},
                 onSelectWeek: (_) {},

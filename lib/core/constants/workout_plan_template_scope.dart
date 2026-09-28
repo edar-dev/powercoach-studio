@@ -1,5 +1,24 @@
-/// Sentinel [WorkoutPlanApiModel.customerId] (and Drift `scopeId`) for reusable workout **templates**.
+/// Legacy sentinel formerly used as [WorkoutPlanApiModel.customerId] / Drift
+/// `scopeId` for reusable workout templates.
 ///
-/// Real customers must never use this id. [WorkoutPlanRepository.getByCustomerId] scopes by id, so
-/// templates stay isolated from client plan lists.
+/// Templates are no longer a product feature. This constant remains only so we
+/// can: (1) exclude leftover rows from [getAll], (2) purge them on local load,
+/// and (3) skip them on backup import/export. Do not write new entities with
+/// this scope.
 const String kWorkoutPlanTemplateScopeId = '__template__';
+
+/// True when a backup/offline entity map is a retired template-scoped workout plan.
+bool isLegacyWorkoutPlanTemplateEntity(Map<String, dynamic> raw) {
+  if (raw['scopeId']?.toString() == kWorkoutPlanTemplateScopeId) {
+    return true;
+  }
+  if (raw['customerId']?.toString() == kWorkoutPlanTemplateScopeId) {
+    return true;
+  }
+  final payload = raw['payload'];
+  if (payload is Map &&
+      payload['customerId']?.toString() == kWorkoutPlanTemplateScopeId) {
+    return true;
+  }
+  return false;
+}

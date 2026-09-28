@@ -3,6 +3,10 @@
 /// Every important screen must have a dedicated top-level path (see
 /// `.cursor/rules/15-dedicated-routes.mdc`). Prefer these constants over
 /// string literals when navigating or linking.
+///
+/// Removed surfaces (gym hub, plan-diff, coach stats, release notes) keep
+/// legacy URL redirects in [resolveAppRouteRedirect] / [buildAppRoutes] only —
+/// do not reintroduce path constants for those destinations.
 abstract final class AppPaths {
   static const subscription = '/subscription';
 
@@ -11,9 +15,6 @@ abstract final class AppPaths {
 
   static const settings = '/settings';
 
-  /// Gym mode — full-page session runner for today's scheduled sessions.
-  static const gym = '/gym';
-
-  /// Plan version comparison (Plan A vs Plan B for the same customer).
-  static const planDiff = '/plans/diff';
+  /// Personal info (canonical destination for legacy `/profile`).
+  static const personalInfo = '/settings/personal-info';
 }

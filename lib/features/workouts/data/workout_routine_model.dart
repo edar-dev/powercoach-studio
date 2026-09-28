@@ -1,6 +1,5 @@
 // In-memory model for Workout Builder. Serializable via [workout_routine_json_codec.dart].
 
-import '../domain/density_block.dart';
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/session_execution.dart';
 import '../domain/workout_routine_json_codec.dart';
@@ -91,7 +90,7 @@ class WorkoutRoutine {
     this.startDate,
     this.endDate,
     this.currentWeek,
-    this.includesMobilityTab = true,
+    this.includesMobilityTab = false,
     this.sessionCompletionByKey = const {},
     this.sessionSkippedByKey = const {},
     this.sessionOverrides = const {},
@@ -428,8 +427,6 @@ class Day {
     required this.name,
     required this.exercises,
     this.scheduledWeekday,
-    this.coachingNote,
-    this.densityBlocks,
   });
 
   final String id;
@@ -438,14 +435,6 @@ class Day {
 
   /// Optional ISO weekday: 1=Mon ... 7=Sun.
   final int? scheduledWeekday;
-
-  /// Optional free-text coaching note for this specific day (e.g. focus,
-  /// cues, warmup instructions). Shown read-only in follow-ups/PDF export.
-  final String? coachingNote;
-
-  /// Optional density metadata keyed by [Exercise.supersetGroupId]
-  /// (circuit / EMOM / explicit superset). Absent for legacy supersets.
-  final Map<String, DensityBlockConfig>? densityBlocks;
 
   Map<String, dynamic> toJson() => encodeDay(this);
 
@@ -457,10 +446,6 @@ class Day {
     List<Exercise>? exercises,
     int? scheduledWeekday,
     bool clearScheduledWeekday = false,
-    String? coachingNote,
-    bool clearCoachingNote = false,
-    Map<String, DensityBlockConfig>? densityBlocks,
-    bool clearDensityBlocks = false,
   }) => Day(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -468,12 +453,6 @@ class Day {
     scheduledWeekday: clearScheduledWeekday
         ? null
         : (scheduledWeekday ?? this.scheduledWeekday),
-    coachingNote: clearCoachingNote
-        ? null
-        : (coachingNote ?? this.coachingNote),
-    densityBlocks: clearDensityBlocks
-        ? null
-        : (densityBlocks ?? this.densityBlocks),
   );
 }
 

@@ -1,12 +1,66 @@
 import 'dart:convert';
 
+/// Stored in Drift as [OfflineEntityType.index].
+///
+/// Schema v3 removed `exerciseRecord` (former index 3). Migration remaps
+/// `customExercise` 4→3 and `customerNote` 5→4 after deleting type=3 rows.
 enum OfflineEntityType {
   customer,
   workoutPlan,
   measurement,
-  exerciseRecord,
   customExercise,
   customerNote,
+}
+
+/// True when [name] matches a current [OfflineEntityType] value.
+///
+/// Legacy backup rows such as `exerciseRecord` return false and must be skipped.
+bool isKnownOfflineEntityTypeName(String? name) {
+  if (name == null || name.isEmpty) return false;
+  for (final type in OfflineEntityType.values) {
+    if (type.name == name) return true;
+  }
+  return false;
+}
+
+/// Parses a type from backup JSON (name) or legacy SharedPreferences (index).
+///
+/// Pre-v3 integer layout: `customer(0)`, `workoutPlan(1)`, `measurement(2)`,
+/// `exerciseRecord(3)` (removed → null), `customExercise(4)`, `customerNote(5)`.
+OfflineEntityType? tryParseOfflineEntityType(Object? rawType) {
+  if (rawType is int) {
+    return _parseLegacyTypeIndex(rawType);
+  }
+  final typeName = rawType?.toString() ?? '';
+  if (typeName.isEmpty) return null;
+  for (final candidate in OfflineEntityType.values) {
+    if (candidate.name == typeName) return candidate;
+  }
+  // Legacy SharedPreferences caches stored enum indexes as JSON numbers that
+  // decode as strings after some round-trips ("0", "1", …).
+  final asIndex = int.tryParse(typeName);
+  if (asIndex != null) return _parseLegacyTypeIndex(asIndex);
+  return null;
+}
+
+OfflineEntityType? _parseLegacyTypeIndex(int index) {
+  switch (index) {
+    case 0:
+      return OfflineEntityType.customer;
+    case 1:
+      return OfflineEntityType.workoutPlan;
+    case 2:
+      return OfflineEntityType.measurement;
+    case 3:
+      // Former OfflineEntityType.exerciseRecord — skip on read.
+      return null;
+    case 4:
+      return OfflineEntityType.customExercise;
+    case 5:
+      return OfflineEntityType.customerNote;
+    default:
+      return null;
+  }
 }
 
 enum OfflineOperationType {
@@ -55,12 +109,14 @@ class OfflineEntity {
       };
 
   static OfflineEntity fromJson(Map<String, dynamic> json) {
+    final rawType = json['type'];
+    final parsed = tryParseOfflineEntityType(rawType);
+    if (parsed == null) {
+      throw FormatException('Unknown offline entity type: $rawType');
+    }
     return OfflineEntity(
       id: json['id']?.toString() ?? '',
-      type: OfflineEntityType.values.firstWhere(
-        (v) => v.name == json['type'],
-        orElse: () => OfflineEntityType.customer,
-      ),
+      type: parsed,
       scopeId: json['scopeId']?.toString() ?? '',
       payload: (json['payload'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{},
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),

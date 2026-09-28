@@ -13,8 +13,6 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
     required this.routine,
     required this.editorMode,
     required this.initialWeekController,
-    required this.phaseController,
-    required this.tagsController,
     required this.notesController,
     required this.onPickStartDate,
     required this.onPickEndDate,
@@ -31,8 +29,6 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
   final WorkoutRoutine routine;
   final bool editorMode;
   final TextEditingController initialWeekController;
-  final TextEditingController phaseController;
-  final TextEditingController tagsController;
   final TextEditingController notesController;
   final VoidCallback onPickStartDate;
   final VoidCallback onPickEndDate;
@@ -121,25 +117,11 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
               onChanged: readOnly ? null : onIncludesMobilityTabChanged,
             ),
           ],
-          if (planCompleted || planArchived) ...[
+          if (planArchived) ...[
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                if (planArchived)
-                  Chip(
-                    label: Text(l10n.workoutPlanStatusArchived),
-                    avatar:
-                        const Icon(Icons.inventory_2_outlined, size: 18),
-                  ),
-                if (planCompleted)
-                  Chip(
-                    label: Text(l10n.workoutPlanStatusCompleted),
-                    avatar:
-                        const Icon(Icons.check_circle_outline, size: 18),
-                  ),
-              ],
+            Chip(
+              label: Text(l10n.workoutPlanStatusArchived),
+              avatar: const Icon(Icons.inventory_2_outlined, size: 18),
             ),
           ],
           _sectionDivider(cs),
@@ -254,42 +236,10 @@ class WorkoutPlanDetailsTab extends StatelessWidget {
                   },
           ),
         ],
-        if (onMarkCompleted != null) ...[
-          _sectionDivider(cs),
-          FilledButton.tonalIcon(
-            onPressed: onMarkCompleted,
-            icon: const Icon(Icons.flag_outlined),
-            label: Text(l10n.workoutPlanCompleteAction),
-          ),
-        ],
         if (editorMode) ...[
           _sectionDivider(cs),
           _sectionTitle(theme, cs, l10n.workoutBuilderDetailsMetadataSection),
           const SizedBox(height: 12),
-          _fieldLabel(theme, cs, l10n.workoutPlanPhaseLabel),
-          const SizedBox(height: 8),
-          TextField(
-            controller: phaseController,
-            readOnly: readOnly,
-            decoration: _fieldDecoration(
-              cs,
-              hint: l10n.workoutPlanPhaseHint,
-            ),
-            onChanged: (_) => onMetadataChanged?.call(),
-          ),
-          const SizedBox(height: 16),
-          _fieldLabel(theme, cs, l10n.workoutPlanTagsLabel),
-          const SizedBox(height: 8),
-          TextField(
-            controller: tagsController,
-            readOnly: readOnly,
-            decoration: _fieldDecoration(
-              cs,
-              hint: l10n.workoutPlanTagsHint,
-            ),
-            onChanged: (_) => onMetadataChanged?.call(),
-          ),
-          const SizedBox(height: 16),
           _fieldLabel(theme, cs, l10n.workoutPlanNotesLabel),
           const SizedBox(height: 8),
           TextField(

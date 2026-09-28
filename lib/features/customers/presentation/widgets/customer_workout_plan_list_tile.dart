@@ -22,8 +22,6 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
     this.onTap,
     this.onCreateFollowUp,
     this.onDuplicate,
-    this.onSaveAsTemplate,
-    this.onCompare,
     this.onArchive,
     this.onUnarchive,
     this.onMarkCompleted,
@@ -40,8 +38,6 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onCreateFollowUp;
   final VoidCallback? onDuplicate;
-  final VoidCallback? onSaveAsTemplate;
-  final VoidCallback? onCompare;
   final VoidCallback? onArchive;
   final VoidCallback? onUnarchive;
   final VoidCallback? onMarkCompleted;
@@ -99,8 +95,6 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
               ),
               if (onCreateFollowUp != null ||
                   onDuplicate != null ||
-                  onSaveAsTemplate != null ||
-                  onCompare != null ||
                   onArchive != null ||
                   onUnarchive != null ||
                   onMarkCompleted != null ||
@@ -120,10 +114,6 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
                         onCreateFollowUp?.call();
                       case 'duplicate':
                         onDuplicate?.call();
-                      case 'template':
-                        onSaveAsTemplate?.call();
-                      case 'compare':
-                        onCompare?.call();
                       case 'archive':
                         onArchive?.call();
                       case 'unarchive':
@@ -144,16 +134,6 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
                       PopupMenuItem(
                         value: 'duplicate',
                         child: Text(l10n.workoutDuplicateAction),
-                      ),
-                    if (onSaveAsTemplate != null)
-                      PopupMenuItem(
-                        value: 'template',
-                        child: Text(l10n.workoutTemplatesSaveAsTemplate),
-                      ),
-                    if (onCompare != null)
-                      PopupMenuItem(
-                        value: 'compare',
-                        child: Text(l10n.workoutPlanDiffCompareAction),
                       ),
                     if (onArchive != null && !isArchivedPlan(plan))
                       PopupMenuItem(

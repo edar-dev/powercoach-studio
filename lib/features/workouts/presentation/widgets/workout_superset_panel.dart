@@ -4,7 +4,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'workout_dashed_button.dart';
 
-/// Flat density group (superset / circuit / EMOM) for the session sheet.
+/// Flat superset group panel for the session sheet.
 class WorkoutSupersetPanel extends StatelessWidget {
   const WorkoutSupersetPanel({
     super.key,

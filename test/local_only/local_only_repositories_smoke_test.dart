@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
-import 'package:powercoach_studio/features/customers/data/customer_exercise_record_repository.dart';
 import 'package:powercoach_studio/features/customers/data/customer_measurement_repository.dart';
 import 'package:powercoach_studio/features/customers/data/customer_repository.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
@@ -103,9 +102,8 @@ void main() {
     expect(afterDelete.any((p) => p.id == created.id), isFalse);
   });
 
-  test('exercise library + records/measurements local smoke', () async {
+  test('exercise library + measurements local smoke', () async {
     final exerciseRepo = CustomExerciseRepository();
-    final recordsRepo = CustomerExerciseRecordRepository();
     final measurementsRepo = CustomerMeasurementRepository();
 
     final root = await exerciseRepo.create(<String, dynamic>{
@@ -135,31 +133,9 @@ void main() {
     );
     expect(updatedMeasurement.squat1RM, 130.0);
 
-    final record = await recordsRepo.create(customerId, <String, dynamic>{
-      'customExerciseId': root['id'],
-      'exerciseName': 'Squat',
-      'value': 100.0,
-      'unit': 'kg',
-      'recordedAt': '2026-04-18',
-    });
-    expect(record.customerId, customerId);
-
-    final allRecords = await recordsRepo.getByCustomerId(customerId);
-    expect(allRecords.any((r) => r.id == record.id), isTrue);
-
-    final updatedRecord = await recordsRepo.update(
-      customerId,
-      record.id,
-      <String, dynamic>{'value': 105.0},
-    );
-    expect(updatedRecord.value, 105.0);
-
-    await recordsRepo.delete(customerId, record.id);
     await measurementsRepo.delete(customerId, measurement.id);
 
-    final recordsAfterDelete = await recordsRepo.getByCustomerId(customerId);
     final measurementsAfterDelete = await measurementsRepo.getByCustomerId(customerId);
-    expect(recordsAfterDelete.any((r) => r.id == record.id), isFalse);
     expect(measurementsAfterDelete.any((m) => m.id == measurement.id), isFalse);
   });
 }

@@ -16,7 +16,6 @@ class WorkoutEditorAppBar extends StatelessWidget
     required this.saving,
     required this.showManualSaveButton,
     required this.onBack,
-    required this.onOpenTemplates,
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
@@ -32,7 +31,6 @@ class WorkoutEditorAppBar extends StatelessWidget
   final bool saving;
   final bool showManualSaveButton;
   final Future<void> Function() onBack;
-  final VoidCallback onOpenTemplates;
   final VoidCallback onImportJson;
   final void Function(String value) onExport;
   final VoidCallback onSave;
@@ -54,12 +52,6 @@ class WorkoutEditorAppBar extends StatelessWidget
         ),
       ),
       actions: [
-        if (!editorMode)
-          IconButton(
-            icon: const Icon(Icons.bookmark_outline),
-            tooltip: l10n.workoutTemplatesTitle,
-            onPressed: onOpenTemplates,
-          ),
         if (!loading)
           IconButton(
             icon: const Icon(Icons.upload_file),
@@ -77,7 +69,6 @@ class WorkoutEditorAppBar extends StatelessWidget
                 value: 'excel',
                 child: Text(l10n.workoutExportExcel),
               ),
-              PopupMenuItem(value: 'json', child: Text(l10n.workoutExportJson)),
             ],
           ),
         if (editorMode && !loading && saveStatusIndicator != null)

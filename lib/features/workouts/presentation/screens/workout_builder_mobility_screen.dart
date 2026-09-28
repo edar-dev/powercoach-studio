@@ -9,6 +9,7 @@ import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
 import '../../../dashboard/domain/plan_calendar_event.dart';
+import '../../../settings/data/user_preferences_repository.dart';
 import '../../data/workout_draft_store.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
@@ -23,24 +24,21 @@ import '../workout_builder_screen_routine_actions.dart';
 import '../workout_builder_screen_tabs_config.dart';
 import '../workout_builder_session_controller.dart';
 import '../workout_builder_training_handlers.dart';
-import '../workout_builder_variant.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
 import '../widgets/session_log_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 
-/// Workout Builder – Enhanced Mobility / Multi-set / Super Set / Intuitive Super Set.
+/// Workout Builder – training + optional mobility tab from [WorkoutRoutine.includesMobilityTab].
 /// When [editorMode] is true and [customerId] is set, loads/saves via API (workout plan for customer).
 class WorkoutBuilderMobilityScreen extends StatefulWidget {
   const WorkoutBuilderMobilityScreen({
     super.key,
-    this.variant = WorkoutBuilderVariant.mobility,
     this.customerId,
     this.planId,
     this.editorMode = false,
   });
 
-  final WorkoutBuilderVariant variant;
   final String? customerId;
   final String? planId;
   final bool editorMode;
@@ -55,8 +53,6 @@ class _WorkoutBuilderMobilityScreenState
     with SingleTickerProviderStateMixin {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
-  final _phaseController = TextEditingController();
-  final _tagsController = TextEditingController();
   final _notesController = TextEditingController();
   final _customerRepo = CustomerRepository();
   final _planRepo = WorkoutPlanRepository();
@@ -85,7 +81,6 @@ class _WorkoutBuilderMobilityScreenState
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
 
   bool get _showsMobilityTab =>
-      widget.variant.showsMobilityTab &&
       _builderSession.routine.includesMobilityTab;
 
   bool get _readOnly => _planArchived || _planCompleted;
@@ -154,8 +149,6 @@ class _WorkoutBuilderMobilityScreenState
         sectionTabController: _sectionTabController,
         routineNameController: _routineNameController,
         initialWeekController: _initialWeekController,
-        phaseController: _phaseController,
-        tagsController: _tagsController,
         notesController: _notesController,
         editorMode: widget.editorMode,
         customerId: widget.customerId,
@@ -170,12 +163,7 @@ class _WorkoutBuilderMobilityScreenState
         onInitialWeekNumberChanged: (value) =>
             setState(() => _initialWeekNumber = value),
         onMetadataChanged: _onMetadataEdited,
-        onMarkCompleted:
-            _editorController.loadedPlanId != null &&
-                !_planCompleted &&
-                !_planArchived
-            ? _routineActions.markPlanCompletedFromEditor
-            : null,
+        onMarkCompleted: null,
         loadedPlanId: _editorController.loadedPlanId,
         showOnboardingCard: _showOnboardingCard,
         onDismissOnboarding: _dismissOnboarding,
@@ -242,9 +230,6 @@ class _WorkoutBuilderMobilityScreenState
       plannedExercises: day.exercises,
       initialExercises: existing?.exercises,
       initialNotes: existing?.notes ?? '',
-      initialSessionRpe: existing?.sessionRpe,
-      initialPainLevel: existing?.painLevel,
-      initialPainLocation: existing?.painLocation,
     );
     if (logResult == null || !mounted) return;
 
@@ -256,9 +241,6 @@ class _WorkoutBuilderMobilityScreenState
         status: PlanSessionStatus.completed,
         exercises: logResult.exercises,
         notes: logResult.notes,
-        sessionRpe: logResult.sessionRpe,
-        painLevel: logResult.painLevel,
-        painLocation: logResult.painLocation,
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -295,8 +277,6 @@ class _WorkoutBuilderMobilityScreenState
       draftStore: _draftStore,
       routineNameController: _routineNameController,
       initialWeekController: _initialWeekController,
-      phaseController: _phaseController,
-      tagsController: _tagsController,
       notesController: _notesController,
     );
     _loadHandler = WorkoutBuilderScreenLoadHandler(
@@ -308,8 +288,6 @@ class _WorkoutBuilderMobilityScreenState
     );
     _routineNameController.addListener(_onMetadataEdited);
     _initialWeekController.addListener(_onMetadataEdited);
-    _phaseController.addListener(_onMetadataEdited);
-    _tagsController.addListener(_onMetadataEdited);
     _notesController.addListener(_onMetadataEdited);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -457,12 +435,19 @@ class _WorkoutBuilderMobilityScreenState
       _pendingSelectedWeekIndex = null;
       _pendingSelectedDayIndex = null;
     }
+    var blankRoutine = application.routine;
+    if (blankRoutine == null) {
+      final includeMobility = await UserPreferencesRepository.instance
+          .getWorkoutBuilderIncludeMobilityDefault();
+      if (!mounted) return;
+      blankRoutine = WorkoutRoutine.empty().copyWith(
+        includesMobilityTab: includeMobility,
+      );
+    }
     setState(() {
+      _builderSession.setRoutine(blankRoutine!);
       if (application.routine != null) {
-        _builderSession.setRoutine(application.routine!);
         _routineNameController.text = application.routine!.name;
-        _phaseController.text = application.phase;
-        _tagsController.text = application.tags;
         _notesController.text = application.notes;
         _initialWeekNumber = application.initialWeekNumber;
         _initialWeekController.text = application.initialWeekNumber.toString();
@@ -474,6 +459,7 @@ class _WorkoutBuilderMobilityScreenState
         _planArchived = application.planArchived;
       } else {
         _builderSession.selectWeek(0, resetDay: true);
+        _syncTabControllerLength();
       }
       _editorCustomer = application.customer;
       _loading = false;
@@ -504,14 +490,10 @@ class _WorkoutBuilderMobilityScreenState
     _editorController.dispose();
     _routineNameController.removeListener(_onMetadataEdited);
     _initialWeekController.removeListener(_onMetadataEdited);
-    _phaseController.removeListener(_onMetadataEdited);
-    _tagsController.removeListener(_onMetadataEdited);
     _notesController.removeListener(_onMetadataEdited);
     _sectionTabController.dispose();
     _routineNameController.dispose();
     _initialWeekController.dispose();
-    _phaseController.dispose();
-    _tagsController.dispose();
     _notesController.dispose();
     super.dispose();
   }

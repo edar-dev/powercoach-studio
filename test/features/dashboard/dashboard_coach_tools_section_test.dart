@@ -7,7 +7,7 @@ import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashbo
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('DashboardCoachToolsSection navigates to diary and stats', (
+  testWidgets('DashboardCoachToolsSection navigates to History', (
     tester,
   ) async {
     final router = GoRouter(
@@ -18,7 +18,6 @@ void main() {
           builder: (context, state) => DashboardCoachToolsSection(
             loadHints: () async => const DashboardCoachToolsHints(
               loggedSessions30d: 3,
-              adherence7dPercent: 85,
             ),
           ),
         ),
@@ -26,11 +25,6 @@ void main() {
           path: '/workouts/diary',
           builder: (context, state) =>
               const Scaffold(body: Text('Diary destination')),
-        ),
-        GoRoute(
-          path: '/workouts/stats',
-          builder: (context, state) =>
-              const Scaffold(body: Text('Stats destination')),
         ),
       ],
     );
@@ -46,18 +40,12 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('3 sessions (30d)'), findsOneWidget);
-    expect(find.text('85% adherence (7d)'), findsOneWidget);
+    expect(find.text('History'), findsOneWidget);
+    expect(find.text('Coach stats'), findsNothing);
 
-    await tester.tap(find.text('Workout diary'));
+    await tester.tap(find.text('History'));
     await tester.pumpAndSettle();
     expect(find.text('Diary destination'), findsOneWidget);
-
-    router.go('/');
-    await tester.pumpAndSettle();
-
-    await tester.tap(find.text('Coach stats'));
-    await tester.pumpAndSettle();
-    expect(find.text('Stats destination'), findsOneWidget);
   });
 
   test('workoutDiaryPath adds customerId query parameter', () {

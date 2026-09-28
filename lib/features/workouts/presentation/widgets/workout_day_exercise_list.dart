@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
-import '../../domain/exercise_progression_suggestions.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
 import 'session_exercise_editor_card.dart';
@@ -41,7 +39,6 @@ class WorkoutDayExerciseList extends StatefulWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
-    this.onSetDensityBlock,
   });
 
   final ThemeData theme;
@@ -52,7 +49,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
   final Day day;
   final void Function(int, int)? onAddExercise;
 
-  /// Session-edit bottom CTA: creates a new density/superset group.
+  /// Session-edit bottom CTA: creates a new superset group.
   final VoidCallback? onCreateSuperset;
 
   /// When true, renders Stitch session cards + dual bottom CTAs.
@@ -94,11 +91,9 @@ class WorkoutDayExerciseList extends StatefulWidget {
   })
   onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
-  final void Function(int, int, String, String, {DensityBlockConfig? densityConfig})
-  onAssignToSuperset;
+  final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
-  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
 
   @override
   State<WorkoutDayExerciseList> createState() => _WorkoutDayExerciseListState();
@@ -113,7 +108,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     super.initState();
     if (widget.sessionEditStyle && widget.day.exercises.isNotEmpty) {
       final first = widget.day.exercises.first;
-      // Expand first standalone exercise; density blocks stay collapsed.
+      // Expand first standalone exercise; supersets stay collapsed.
       if (first.supersetGroupId == null || first.supersetGroupId!.isEmpty) {
         _expandedExerciseId = first.id;
       }
@@ -250,9 +245,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           exercises.first.supersetGroupId != null
                       ? exercises.first.supersetGroupId!
                       : null;
-                  final densityConfig = groupId == null
-                      ? null
-                      : resolveDensityBlock(day, groupId);
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: WorkoutSupersetBlock(
@@ -263,7 +255,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                       dayIndex: dayIndex,
                       exercises: exercises,
                       supersetGroupId: groupId,
-                      densityConfig: densityConfig,
                       expanded:
                           groupId != null && groupId == _expandedSupersetId,
                       onExpandedChanged: (value) {
@@ -277,7 +268,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           widget.onMoveExerciseWithinSuperset,
                       onRemoveFromSuperset: widget.onRemoveFromSuperset,
                       onUpdateExercise: widget.onUpdateExercise,
-                      onSetDensityBlock: widget.onSetDensityBlock,
                     ),
                   );
                 },
@@ -300,10 +290,6 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final weekIndex = widget.weekIndex;
     final dayIndex = widget.dayIndex;
     final day = widget.day;
-    final suggestion = suggestExerciseProgression(
-      plannedExercise: ex,
-      executions: widget.session.routine.sessionExecutions.values.toList(),
-    );
     void onEdit(
       String name,
       String sets,
@@ -410,21 +396,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
               ).where((o) => o.id != ex.supersetGroupId).toList()
             : const [],
         onAssignToSuperset: canEdit
-            ? (groupId, {densityConfig}) => widget.onAssignToSuperset(
+            ? (groupId) => widget.onAssignToSuperset(
                   weekIndex,
                   dayIndex,
                   ex.id,
                   groupId,
-                  densityConfig: densityConfig,
                 )
             : null,
         onRemoveFromSuperset: canEdit && ex.supersetGroupId != null
             ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
-            : null,
-        progressionSuggestion: suggestion,
-        onApplyProgressionSuggestion: canEdit && suggestion.isActionable
-            ? () =>
-                _applyProgressionSuggestion(suggestion, ex, weekIndex, dayIndex)
             : null,
       );
     }
@@ -453,43 +433,16 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       supersetOptions: getSupersetGroupOptions(
         day,
       ).where((o) => o.id != ex.supersetGroupId).toList(),
-      onAssignToSuperset: (groupId, {densityConfig}) =>
+      onAssignToSuperset: (groupId) =>
           widget.onAssignToSuperset(
             weekIndex,
             dayIndex,
             ex.id,
             groupId,
-            densityConfig: densityConfig,
           ),
       onRemoveFromSuperset: ex.supersetGroupId != null
           ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
           : null,
-      progressionSuggestion: suggestion,
-      onApplyProgressionSuggestion: suggestion.isActionable
-          ? () => _applyProgressionSuggestion(suggestion, ex, weekIndex, dayIndex)
-          : null,
-    );
-  }
-
-  void _applyProgressionSuggestion(
-    ExerciseProgressionSuggestion suggestion,
-    Exercise ex,
-    int weekIndex,
-    int dayIndex,
-  ) {
-    final updatedSets = ex.effectiveSetDetails
-        .map(
-          (s) => s.copyWith(
-            reps: suggestion.suggestedReps,
-            rpe: suggestion.suggestedLoad,
-          ),
-        )
-        .toList();
-    widget.onUpdateExercise(
-      weekIndex,
-      dayIndex,
-      ex.id,
-      setDetails: updatedSets,
     );
   }
 }

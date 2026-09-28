@@ -7,8 +7,6 @@ import 'landing_app_preview.dart';
 class LandingHeroSection extends StatelessWidget {
   const LandingHeroSection({
     super.key,
-    required this.earlyAccessLabel,
-    required this.betaVersionLabel,
     required this.titlePrefix,
     required this.titleSuffix,
     required this.leadBefore,
@@ -25,8 +23,6 @@ class LandingHeroSection extends StatelessWidget {
     required this.onSecondary,
   });
 
-  final String earlyAccessLabel;
-  final String betaVersionLabel;
   final String titlePrefix;
   final String titleSuffix;
   final String leadBefore;
@@ -83,12 +79,6 @@ class LandingHeroSection extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(24, 40, 24, 48),
               child: Column(
                 children: [
-                  _AnnouncementPill(
-                    earlyAccess: earlyAccessLabel,
-                    betaVersion: betaVersionLabel,
-                    theme: theme,
-                  ),
-                  const SizedBox(height: 28),
                   ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 820),
                     child: Column(
@@ -276,92 +266,6 @@ class LandingHeroSection extends StatelessWidget {
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AnnouncementPill extends StatelessWidget {
-  const _AnnouncementPill({
-    required this.earlyAccess,
-    required this.betaVersion,
-    required this.theme,
-  });
-
-  final String earlyAccess;
-  final String betaVersion;
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(
-        color: LandingColors.surface.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(999),
-        border: Border.all(
-          color: LandingColors.brandMid.withValues(alpha: 0.3),
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 10,
-            height: 10,
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: LandingColors.brandLight.withValues(alpha: 0.35),
-                  ),
-                ),
-                Container(
-                  width: 6,
-                  height: 6,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: LandingColors.brandMid,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 10),
-          Text(
-            earlyAccess,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: LandingColors.brandSoft,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Text(
-              '|',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: LandingColors.textDim,
-              ),
-            ),
-          ),
-          Text(
-            betaVersion,
-            style: theme.textTheme.labelLarge?.copyWith(
-              color: LandingColors.slate300,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Icon(
-            Icons.open_in_new,
-            size: 14,
-            color: LandingColors.textMuted,
           ),
         ],
       ),

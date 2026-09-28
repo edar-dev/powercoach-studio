@@ -1,15 +1,13 @@
 import 'dart:convert';
 
 import '../constants/app_info.dart';
+import '../constants/workout_plan_template_scope.dart';
 import '../notifications/notification_scheduler_service.dart';
-import '../notifications/reminder.dart';
-import '../notifications/reminder_store.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../storage/offline_local_store.dart';
 import '../sync/offline_models.dart';
 import 'user_data_backup_codec.dart';
-import 'backup_entity_groups.dart';
 
 /// Builds and restores full offline user snapshots (JSON envelope v1).
 class UserDataBackupService {
@@ -27,8 +25,13 @@ class UserDataBackupService {
         await LocalCoachProfileRepository.instance.getProfile(accountUserId);
     final store = OfflineLocalStore.instance;
 
-    final entities = await store.listEntitiesJsonForBackup(accountUserId);
-    final reminders = await ReminderStore.instance.exportMaps();
+    final entities = (await store.listEntitiesJsonForBackup(accountUserId))
+        // Data policy: omit retired template-scoped workout plans from export.
+        .where((e) => !isLegacyWorkoutPlanTemplateEntity(e))
+        .toList();
+    // Manual ReminderStore reminders are no longer exported; keep empty list
+    // for envelope backward compatibility. Calendar prefs live under preferences.
+    const reminders = <Map<String, dynamic>>[];
     final counts = entityCountsFromBackupEntities(
       entities,
       reminders: reminders.length,
@@ -55,83 +58,64 @@ class UserDataBackupService {
 
   /// Replace-local snapshot for [accountUserId] with parsed backup (destructive).
   ///
-  /// When [groups] is a strict subset of [kAllBackupEntityGroups], only the
-  /// selected slices are replaced; other local data stays intact.
-  ///
-  /// Legacy `pendingOperations` / `syncMeta` in the envelope are ignored.
+  /// Always restores all entity types. Legacy `pendingOperations` / `syncMeta` /
+  /// `reminders` / `exerciseRecord` rows in the envelope are ignored.
   Future<void> restoreParsed(
     ParsedUserBackup parsed,
-    String accountUserId, {
-    Set<BackupEntityGroup> groups = kAllBackupEntityGroups,
-  }) async {
+    String accountUserId,
+  ) async {
     if (accountUserId.isEmpty) {
       throw StateError('accountUserId required');
     }
-    if (groups.isEmpty) return;
 
     final store = OfflineLocalStore.instance;
-    final fullReplace = groups.containsAll(kAllBackupEntityGroups);
+    // Data policy: skip template-scoped workout plans on import/restore.
+    final entities = parsed.entities
+        .where((e) => !isLegacyWorkoutPlanTemplateEntity(e))
+        .toList();
+    await store.replaceUserOfflineFromBackup(
+      userId: accountUserId,
+      entities: entities,
+    );
 
-    if (fullReplace) {
-      await store.replaceUserOfflineFromBackup(
-        userId: accountUserId,
-        entities: parsed.entities,
+    final profile = parsed.profileJson == null
+        ? const LocalUserProfileData()
+        : LocalUserProfileData.fromJson(parsed.profileJson!);
+    await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
+    await UserPreferencesRepository.instance
+        .applyFromBackupMap(parsed.preferences.raw);
+    if (parsed.preferences.raw.isEmpty) {
+      await UserPreferencesRepository.instance.setNotificationsEnabled(
+        parsed.notificationsEnabled,
       );
-    } else {
-      final entityTypes = entityTypesForBackupGroups(groups);
-      if (entityTypes.isNotEmpty) {
-        await store.deleteEntitiesForUserByTypes(accountUserId, entityTypes);
-        final entities = filterBackupEntities(parsed.entities, groups);
-        for (final raw in entities) {
-          await store.upsertEntityForUser(accountUserId, raw);
-        }
-      }
     }
-
-    if (groups.contains(BackupEntityGroup.preferences)) {
-      final profile = parsed.profileJson == null
-          ? const LocalUserProfileData()
-          : LocalUserProfileData.fromJson(parsed.profileJson!);
-      await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
-      await UserPreferencesRepository.instance
-          .applyFromBackupMap(parsed.preferences.raw);
-      if (parsed.preferences.raw.isEmpty) {
-        await UserPreferencesRepository.instance.setNotificationsEnabled(
-          parsed.notificationsEnabled,
-        );
-      }
-    }
-
-    if (groups.contains(BackupEntityGroup.reminders)) {
-      await ReminderStore.instance.replaceFromMaps(parsed.reminders);
-    }
-
-    if (groups.contains(BackupEntityGroup.preferences) ||
-        groups.contains(BackupEntityGroup.reminders)) {
-      await NotificationSchedulerService.instance
-          .syncWithNotificationPreference();
-    }
+    await NotificationSchedulerService.instance
+        .syncWithNotificationPreference();
   }
 
   BackupPreviewCounts previewCounts(ParsedUserBackup parsed) =>
       previewCountsFromBackup(parsed);
 
   /// Merge backup entities by id, keeping the row with the newest [updatedAt].
+  ///
+  /// Always merges all known entity types (legacy `exerciseRecord` skipped).
   Future<void> mergeRestore(
     ParsedUserBackup parsed,
-    String accountUserId, {
-    Set<BackupEntityGroup> groups = kAllBackupEntityGroups,
-  }) async {
+    String accountUserId,
+  ) async {
     if (accountUserId.isEmpty) {
       throw StateError('accountUserId required');
     }
-    if (groups.isEmpty) return;
 
     final store = OfflineLocalStore.instance;
-    final entities = filterBackupEntities(parsed.entities, groups);
-    for (final raw in entities) {
+    for (final raw in parsed.entities) {
+      // Data policy: skip template-scoped workout plans on merge restore.
+      if (isLegacyWorkoutPlanTemplateEntity(raw)) continue;
       final body = Map<String, dynamic>.from(raw)..remove('userId');
       if (!body.containsKey('type') || !body.containsKey('payload')) {
+        continue;
+      }
+      if (!isKnownOfflineEntityTypeName(body['type']?.toString())) {
         continue;
       }
       final incoming = OfflineEntity.fromJson(body);
@@ -142,41 +126,19 @@ class UserDataBackupService {
       }
     }
 
-    if (groups.contains(BackupEntityGroup.preferences) &&
-        parsed.profileJson != null) {
+    if (parsed.profileJson != null) {
       final profile = LocalUserProfileData.fromJson(parsed.profileJson!);
       await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
     }
 
-    if (groups.contains(BackupEntityGroup.preferences)) {
-      await UserPreferencesRepository.instance
-          .applyFromBackupMap(parsed.preferences.raw);
-      if (parsed.preferences.raw.isEmpty) {
-        await UserPreferencesRepository.instance.setNotificationsEnabled(
-          parsed.notificationsEnabled,
-        );
-      }
-    }
-
-    if (groups.contains(BackupEntityGroup.reminders) &&
-        parsed.reminders.isNotEmpty) {
-      final existing = await ReminderStore.instance.loadAll();
-      final byId = {for (final r in existing) r.id: r};
-      for (final raw in parsed.reminders) {
-        final reminder = Reminder.tryFromJson(raw);
-        if (reminder != null) {
-          byId[reminder.id] = reminder;
-        }
-      }
-      await ReminderStore.instance.replaceFromMaps(
-        byId.values.map((r) => r.toJson()).toList(),
+    await UserPreferencesRepository.instance
+        .applyFromBackupMap(parsed.preferences.raw);
+    if (parsed.preferences.raw.isEmpty) {
+      await UserPreferencesRepository.instance.setNotificationsEnabled(
+        parsed.notificationsEnabled,
       );
     }
-
-    if (groups.contains(BackupEntityGroup.preferences) ||
-        groups.contains(BackupEntityGroup.reminders)) {
-      await NotificationSchedulerService.instance
-          .syncWithNotificationPreference();
-    }
+    await NotificationSchedulerService.instance
+        .syncWithNotificationPreference();
   }
 }

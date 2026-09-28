@@ -33,7 +33,6 @@ class TrainingPhaseDayCard extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final weekdayLabel = _weekdayChipLabel(context, l10n, day.scheduledWeekday);
-    final coaching = day.coachingNote?.trim();
     final exercises = day.exercises;
     final preview = exercises.take(previewExerciseLimit).toList();
     final remaining = exercises.length - preview.length;
@@ -113,12 +112,6 @@ class TrainingPhaseDayCard extends StatelessWidget {
                             value: 'rename',
                             child: Text(l10n.workoutBuilderRenameDayTitle),
                           ),
-                          PopupMenuItem(
-                            value: 'note',
-                            child: Text(
-                              l10n.workoutBuilderDayCoachingNoteTitle,
-                            ),
-                          ),
                         ],
                         if (onUpdateScheduledWeekday != null) ...[
                           PopupMenuItem(
@@ -157,27 +150,6 @@ class TrainingPhaseDayCard extends StatelessWidget {
               if (_hasCustomSessionTitle(day)) ...[
                 Text(
                   day.name.trim(),
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                if (coaching != null && coaching.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    coaching,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: cs.onSurfaceVariant,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-                const SizedBox(height: 12),
-              ] else if (coaching != null && coaching.isNotEmpty) ...[
-                Text(
-                  coaching,
                   style: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

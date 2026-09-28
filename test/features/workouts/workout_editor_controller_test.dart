@@ -42,16 +42,12 @@ void main() {
       WorkoutRoutine? routine,
       String planName = 'Plan A',
       int initialWeekNumber = 1,
-      String? phase,
-      String? tags,
       String? notes,
     }) {
       return WorkoutEditorSession(
         routine: routine ?? WorkoutRoutine.empty().copyWith(name: planName),
         planName: planName,
         initialWeekNumber: initialWeekNumber,
-        phase: phase,
-        tags: tags,
         notes: notes,
       );
     }
@@ -77,8 +73,6 @@ void main() {
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
-              phase,
-              tags,
               notes,
             }) async {
               final created = plan(
@@ -86,8 +80,6 @@ void main() {
                 name: name,
                 planData: planDataJson,
                 initialWeekNumber: initialWeekNumber,
-                phase: phase,
-                tags: tags,
                 notes: notes,
               );
               createCalls.add({
@@ -95,8 +87,6 @@ void main() {
                 'name': name,
                 'planDataJson': planDataJson,
                 'initialWeekNumber': initialWeekNumber,
-                'phase': phase,
-                'tags': tags,
                 'notes': notes,
               });
               plans[created.id] = created;
@@ -108,8 +98,6 @@ void main() {
               name,
               planDataJson,
               initialWeekNumber,
-              phase,
-              tags,
               notes,
             }) async {
               final existing = plans[planId]!;
@@ -118,8 +106,6 @@ void main() {
                 'name': name,
                 'planDataJson': planDataJson,
                 'initialWeekNumber': initialWeekNumber,
-                'phase': phase,
-                'tags': tags,
                 'notes': notes,
               });
               final updated = plan(
@@ -128,8 +114,6 @@ void main() {
                 planData: planDataJson ?? existing.planData,
                 initialWeekNumber:
                     initialWeekNumber ?? existing.initialWeekNumber,
-                phase: phase ?? existing.phase,
-                tags: tags ?? existing.tags,
                 notes: notes ?? existing.notes,
               );
               plans[planId] = updated;
@@ -164,8 +148,6 @@ void main() {
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
-              phase,
-              tags,
               notes,
             }) async {
               final created = plan(
@@ -173,8 +155,6 @@ void main() {
                 name: name,
                 planData: planDataJson,
                 initialWeekNumber: initialWeekNumber,
-                phase: phase,
-                tags: tags,
                 notes: notes,
               );
               plans[created.id] = created;
@@ -186,8 +166,6 @@ void main() {
               name,
               planDataJson,
               initialWeekNumber,
-              phase,
-              tags,
               notes,
             }) async {
               final existing = plans[planId]!;
@@ -197,8 +175,6 @@ void main() {
                 planData: planDataJson ?? existing.planData,
                 initialWeekNumber:
                     initialWeekNumber ?? existing.initialWeekNumber,
-                phase: phase ?? existing.phase,
-                tags: tags ?? existing.tags,
                 notes: notes ?? existing.notes,
               );
               plans[planId] = updated;
@@ -235,8 +211,6 @@ void main() {
                 pdfHeader,
                 useCustomPdfHeader = false,
                 initialWeekNumber = 1,
-                phase,
-                tags,
                 notes,
               }) async {
                 final created = plan(
@@ -253,8 +227,6 @@ void main() {
                 name,
                 planDataJson,
                 initialWeekNumber,
-                phase,
-                tags,
                 notes,
               }) async {
                 final existing = plans[planId]!;
@@ -313,13 +285,13 @@ void main() {
         loadedInitialWeekNumber: 1,
       );
       controller.notifyContentChanged(
-        session: session(planName: 'Plan A', phase: 'Strength'),
+        session: session(planName: 'Plan A', notes: 'Strength'),
         editorMode: true,
         loading: false,
       );
 
       final outcome = await controller.save(
-        session: session(planName: 'Plan A', phase: 'Strength'),
+        session: session(planName: 'Plan A', notes: 'Strength'),
         customerId: 'cust-1',
       );
 
@@ -327,7 +299,7 @@ void main() {
       expect(controller.isDirty, isFalse);
       expect(controller.saveState, WorkoutEditorSaveState.saved);
       expect(updateCalls, hasLength(1));
-      expect(updateCalls.single['phase'], 'Strength');
+      expect(updateCalls.single['notes'], 'Strength');
     });
 
     test('save creates plan when no loaded plan id', () async {
@@ -386,8 +358,6 @@ void main() {
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
-              phase,
-              tags,
               notes,
             }) async => plan(id: 'created', name: name, planData: planDataJson),
         updatePlan:
@@ -396,8 +366,6 @@ void main() {
               name,
               planDataJson,
               initialWeekNumber,
-              phase,
-              tags,
               notes,
             }) async => plans[planId]!,
         autosaveDelay: const Duration(milliseconds: 30),
@@ -439,8 +407,6 @@ void main() {
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
-              phase,
-              tags,
               notes,
             }) async {
               createCalls.add({
@@ -482,8 +448,6 @@ void main() {
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
-              phase,
-              tags,
               notes,
             }) async => throw StateError('boom'),
         updatePlan:
@@ -492,8 +456,6 @@ void main() {
               name,
               planDataJson,
               initialWeekNumber,
-              phase,
-              tags,
               notes,
             }) async => throw StateError('boom'),
       );

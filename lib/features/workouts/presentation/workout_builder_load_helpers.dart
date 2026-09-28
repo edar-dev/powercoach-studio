@@ -29,8 +29,6 @@ class WorkoutBuilderEditorPlanSnapshot {
     required this.dayIndex,
     required this.planId,
     required this.initialWeekNumber,
-    this.phase = '',
-    this.tags = '',
     this.notes = '',
     required this.planCompleted,
     required this.planArchived,
@@ -41,8 +39,6 @@ class WorkoutBuilderEditorPlanSnapshot {
   final int dayIndex;
   final String planId;
   final int initialWeekNumber;
-  final String phase;
-  final String tags;
   final String notes;
   final bool planCompleted;
   final bool planArchived;
@@ -87,8 +83,6 @@ WorkoutBuilderEditorPlanSnapshot buildEditorPlanSnapshot(
     dayIndex: selection.dayIndex,
     planId: plan.id,
     initialWeekNumber: plan.initialWeekNumber,
-    phase: plan.phase ?? '',
-    tags: plan.tags ?? '',
     notes: plan.notes ?? '',
     planCompleted: completedAtForPlan(plan) != null,
     planArchived: isArchivedPlan(plan),

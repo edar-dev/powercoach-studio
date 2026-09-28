@@ -2,6 +2,10 @@
 
 > Documento di riferimento per coach flow, attriti e backlog miglioramenti.  
 > Aggiornato: 2026-07-19 · Collegato a [workout-builder-ux-roadmap.plan.md](../.cursor/plans/workout-builder-ux-roadmap.plan.md)
+>
+> **Status (UX deep simplification):** orphan builder routes (`multiset` / `superset` / `intuitive-superset`), `WorkoutBuilderVariant` extras, density/EMOM chrome, and plan-diff were **removed**. Single builder at `/workouts/builder` remains; basic supersets stay. Treat sections below about ghost variants as historical backlog, not current product.
+>
+> **Templates removed:** the reusable coach workout templates library (`/workouts/templates`, save-as-template, `__template__` scope writes) is **gone**. Keep customer plans, Nuova scheda (blank + duplicate), sandbox builder, and assign-draft-to-customer. Legacy `/workouts/templates` redirects to `/workouts/builder`.
 
 ---
 
@@ -31,14 +35,14 @@ QA manuale: [workout-builder-qa-checklist.md](./workout-builder-qa-checklist.md)
 
 Altre entry sullo stesso cliente: tile piano recente; **Vedi tutti** → `CustomerWorkoutsScreen` (search, filtri, FAB, menu azioni).
 
-### Percorso B — Template → cliente
+### Percorso B — Template → cliente ~~(rimosso)~~
+
+> **Obsolete:** la libreria template non esiste più. Usare Nuova scheda (vuota / duplica) o il sandbox builder + assegna a cliente.
 
 | Step | Dove | Cosa succede |
 |------|------|--------------|
-| 1 | `/workouts/templates` | Libreria template |
-| 2 | Preview → **Assegna** | Dialog cliente + data inizio |
-| 3 | `duplicateToCustomer` | Snackbar; **non** apre editor |
-| 4 | Coach cerca piano sotto cliente | Nessun deep link al piano creato |
+| ~~1~~ | ~~`/workouts/templates`~~ | ~~Libreria template~~ → redirect `/workouts/builder` |
+| ~~2–4~~ | — | Flusso prodotto rimosso |
 
 ### Percorso C — Builder standalone (non legato al cliente)
 
@@ -63,7 +67,7 @@ Entry points
 ├── CustomerDetailOverviewTab / CustomerWorkoutsScreen
 │     → customerWorkoutEditorPath → WorkoutBuilderMobilityScreen
 ├── Dashboard → /workouts/builder (standalone)
-├── WorkoutPlanTemplatesScreen → assign (no editor)
+├── ~~WorkoutPlanTemplatesScreen~~ (removed) → assign-draft lives on sandbox builder
 └── Route orfane: /workouts/builder/{multiset|superset|intuitive-superset}
 
 WorkoutBuilderMobilityScreen

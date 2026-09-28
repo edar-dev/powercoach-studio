@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
-import 'density_block.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
 import 'session_execution.dart';
@@ -150,19 +149,17 @@ Exercise decodeExercise(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> encodeDay(Day day) {
-  final densityBlocks = encodeDensityBlocks(day.densityBlocks);
+  // Legacy `densityBlocks` / `coachingNote` keys are intentionally not written.
   return {
     'id': day.id,
     'name': day.name,
     'exercises': day.exercises.map(encodeExercise).toList(),
     if (day.scheduledWeekday != null) 'scheduledWeekday': day.scheduledWeekday,
-    if (day.coachingNote != null && day.coachingNote!.trim().isNotEmpty)
-      'coachingNote': day.coachingNote!.trim(),
-    if (densityBlocks != null) 'densityBlocks': densityBlocks,
   };
 }
 
 Day decodeDay(Map<String, dynamic> json) => Day(
+  // Legacy `densityBlocks` / `coachingNote` keys are ignored on read.
   id: json['id'] as String? ?? '',
   name: json['name'] as String? ?? 'Day',
   exercises: (json['exercises'] as List<dynamic>?)
@@ -170,8 +167,6 @@ Day decodeDay(Map<String, dynamic> json) => Day(
           .toList() ??
       [],
   scheduledWeekday: _parseScheduledWeekday(json['scheduledWeekday']),
-  coachingNote: json['coachingNote'] as String?,
-  densityBlocks: decodeDensityBlocks(json['densityBlocks']),
 );
 
 Map<String, dynamic> encodeWeek(Week week) => {
@@ -283,7 +278,7 @@ Map<String, dynamic> encodeWorkoutRoutine(WorkoutRoutine routine) => {
       routine.endDate!.day,
     ).toIso8601String(),
   if (routine.currentWeek != null) 'currentWeek': routine.currentWeek,
-  if (!routine.includesMobilityTab) 'includesMobilityTab': false,
+  'includesMobilityTab': routine.includesMobilityTab,
   if (routine.sessionCompletionByKey.isNotEmpty)
     'sessionCompletionByKey': routine.sessionCompletionByKey,
   if (routine.sessionSkippedByKey.isNotEmpty)
@@ -337,7 +332,16 @@ WorkoutRoutine decodeWorkoutRoutine(Map<String, dynamic> json) {
   }
 
   final currentWeek = (json['currentWeek'] as num?)?.toInt();
-  final includesMobilityTab = json['includesMobilityTab'] as bool? ?? true;
+  // New plans default off. Explicit true/false preserved. Legacy missing key:
+  // keep tab if mobility content exists, else default false.
+  final rawIncludes = json['includesMobilityTab'];
+  final bool includesMobilityTab;
+  if (rawIncludes is bool) {
+    includesMobilityTab = rawIncludes;
+  } else {
+    final hasSections = sectionsJson != null && sectionsJson.isNotEmpty;
+    includesMobilityTab = hasSections || items.isNotEmpty;
+  }
   final completionByKey = _parseBoolMap(json['sessionCompletionByKey']);
   final skippedByKey = _parseBoolMap(json['sessionSkippedByKey']);
   final overrides = _parseSessionOverrides(json['sessionOverrides']);

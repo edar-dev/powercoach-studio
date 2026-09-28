@@ -69,7 +69,7 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
     }
   }
 
-  Future<void> _send() async {
+  Future<void> _addNote() async {
     final l10n = AppLocalizations.of(context);
     final body = _composerController.text;
     try {
@@ -116,15 +116,6 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.pop(),
         ),
-        actions: [
-          IconButton(
-            tooltip: l10n.customerNotesAttachPhoto,
-            onPressed: () {
-              showAppSnackBar(context, content: Text(l10n.customerNotesAttachSoon));
-            },
-            icon: const Icon(Icons.attach_file),
-          ),
-        ],
       ),
       body: Column(
         children: [
@@ -132,29 +123,27 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
           SafeArea(
             top: false,
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-              child: Row(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _composerController,
-                      minLines: 1,
-                      maxLines: 4,
-                      maxLength: ClientNoteMessage.maxBodyLength,
-                      decoration: InputDecoration(
-                        hintText: l10n.customerNotesHint,
-                        counterText: '',
-                        border: const OutlineInputBorder(),
-                      ),
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (_) => _send(),
+                  TextField(
+                    controller: _composerController,
+                    minLines: 2,
+                    maxLines: 4,
+                    maxLength: ClientNoteMessage.maxBodyLength,
+                    decoration: InputDecoration(
+                      hintText: l10n.customerNotesHint,
+                      counterText: '',
+                      border: const OutlineInputBorder(),
                     ),
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _addNote(),
                   ),
-                  const SizedBox(width: 8),
-                  IconButton.filled(
-                    tooltip: l10n.customerNotesSend,
-                    onPressed: _send,
-                    icon: const Icon(Icons.send),
+                  const SizedBox(height: 8),
+                  FilledButton(
+                    onPressed: _addNote,
+                    child: Text(l10n.customerNotesSend),
                   ),
                 ],
               ),
@@ -210,42 +199,29 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
     final locale = l10n.localeName;
     return Semantics(
       label: l10n.customerNotesTitle,
-      child: ListView.builder(
-        reverse: true,
+      child: ListView.separated(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
         itemCount: _messages.length,
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
-          final message = _messages[_messages.length - 1 - index];
-          final timestamp = DateFormat.yMMMd(locale).add_jm().format(message.createdAt);
-          return Align(
-            alignment: Alignment.centerRight,
-            child: Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              constraints: const BoxConstraints(maxWidth: 320),
-              decoration: BoxDecoration(
-                color: colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(16),
+          final message = _messages[index];
+          final timestamp =
+              DateFormat.yMMMd(locale).add_jm().format(message.createdAt);
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                message.body,
+                style: theme.textTheme.bodyMedium,
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    message.body,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onPrimaryContainer,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    timestamp,
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: colorScheme.onPrimaryContainer.withValues(alpha: 0.8),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 4),
+              Text(
+                timestamp,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
+            ],
           );
         },
       ),

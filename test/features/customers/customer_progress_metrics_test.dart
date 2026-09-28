@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powercoach_studio/features/customers/data/models/customer_exercise_record.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_metrics.dart';
 import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
@@ -43,7 +42,6 @@ void main() {
     final snapshot = CustomerProgressMetrics.build(
       customerId: 'c1',
       plans: const [],
-      exerciseRecords: const [],
       allExecutions: const [],
       now: now,
     );
@@ -51,23 +49,10 @@ void main() {
     expect(snapshot.adherencePercent, isNull);
   });
 
-  test('build computes adherence and recent PR highlights', () {
+  test('build computes adherence from session executions', () {
     final snapshot = CustomerProgressMetrics.build(
       customerId: 'c1',
       plans: [plan('p1')],
-      exerciseRecords: [
-        CustomerExerciseRecord(
-          id: 'r1',
-          customerId: 'c1',
-          customExerciseId: 'ex-squat',
-          exerciseName: 'Squat',
-          value: 120,
-          unit: 'kg',
-          recordedAt: DateTime(2026, 6, 1),
-          createdAt: t,
-          updatedAt: t,
-        ),
-      ],
       allExecutions: [
         execution(
           status: PlanSessionStatus.completed,
@@ -85,8 +70,6 @@ void main() {
     expect(snapshot.adherencePercent, closeTo(0.5, 0.001));
     expect(snapshot.completedSessions30d, 1);
     expect(snapshot.skippedSessions30d, 1);
-    expect(snapshot.recentPrs, hasLength(1));
-    expect(snapshot.recentPrs.first.exerciseName, 'Squat');
     expect(snapshot.lastSessionDate, DateTime(2026, 6, 14));
   });
 }

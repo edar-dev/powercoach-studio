@@ -1,14 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer_measurement.dart';
 import 'package:powercoach_studio/features/customers/domain/measurement_metric.dart';
-import 'package:powercoach_studio/features/customers/domain/measurement_period_compare.dart';
 import 'package:powercoach_studio/features/customers/domain/measurement_series_builder.dart';
 
 CustomerMeasurement _measurement({
   required String id,
   required DateTime date,
   double? bodyFatPercent,
-  double? waistCm,
+  double? muscleMassKg,
 }) {
   final stamp = DateTime(2026, 1, 1);
   return CustomerMeasurement(
@@ -17,7 +16,7 @@ CustomerMeasurement _measurement({
     userId: 'u1',
     measurementDate: date,
     bodyFatPercent: bodyFatPercent,
-    waistCm: waistCm,
+    muscleMassKg: muscleMassKg,
     createdAt: stamp,
     updatedAt: stamp,
   );
@@ -39,31 +38,26 @@ void main() {
       expect(points.first.date, DateTime(2026, 1, 1));
       expect(points.last.value, 18);
     });
-  });
 
-  group('MeasurementPeriodCompare', () {
-    test('computes averages for recent and previous 30-day windows', () {
-      final reference = DateTime(2026, 5, 31);
-      final delta = MeasurementPeriodCompare.compareLast30Days(
+    test('builds muscle mass series', () {
+      final points = MeasurementSeriesBuilder.buildSeries(
         [
           _measurement(
-            id: 'recent',
-            date: DateTime(2026, 5, 20),
-            waistCm: 80,
+            id: 'a',
+            date: DateTime(2026, 5, 1),
+            muscleMassKg: 38,
           ),
           _measurement(
-            id: 'previous',
-            date: DateTime(2026, 4, 20),
-            waistCm: 90,
+            id: 'b',
+            date: DateTime(2026, 5, 15),
+            muscleMassKg: 39,
           ),
         ],
-        MeasurementMetric.waistCm,
-        referenceDate: reference,
+        MeasurementMetric.muscleMassKg,
       );
 
-      expect(delta.recentAverage, 80);
-      expect(delta.previousAverage, 90);
-      expect(delta.percentChange, closeTo(-11.111, 0.01));
+      expect(points, hasLength(2));
+      expect(points.last.value, 39);
     });
   });
 }

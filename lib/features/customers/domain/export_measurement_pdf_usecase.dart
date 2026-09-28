@@ -54,9 +54,9 @@ Future<ExportArtifact> exportMeasurementsToPdf(
                 _headerCell(labels.measurementDate),
                 _headerCell(labels.measurementBodyFat, center: true),
                 _headerCell(labels.measurementMuscleMass, center: true),
-                _headerCell(labels.measurementWaist, center: true),
                 _headerCell(labels.measurementSquat, center: true),
                 _headerCell(labels.measurementBench, center: true),
+                _headerCell(labels.measurementDeadlift, center: true),
               ],
             ),
             ...sorted.map(
@@ -74,15 +74,15 @@ Future<ExportArtifact> exportMeasurementsToPdf(
                     center: true,
                   ),
                   _bodyCell(
-                    _formatNumber(measurement.waistCm, labels),
-                    center: true,
-                  ),
-                  _bodyCell(
                     _formatNumber(measurement.squat1RM, labels),
                     center: true,
                   ),
                   _bodyCell(
                     _formatNumber(measurement.benchPress1RM, labels),
+                    center: true,
+                  ),
+                  _bodyCell(
+                    _formatNumber(measurement.deadlift1RM, labels),
                     center: true,
                   ),
                 ],

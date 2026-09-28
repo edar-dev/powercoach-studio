@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_phase_presets.dart';
 import '../workout_builder_session_controller.dart';
@@ -34,7 +33,6 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
-    required this.onSetDayCoachingNote,
     required this.onDeleteDay,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
@@ -47,7 +45,6 @@ class WorkoutTrainingTab extends StatelessWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
-    this.onSetDensityBlock,
     required this.onSelectWeek,
     required this.onSelectDay,
     required this.onUpdateScheduledWeekday,
@@ -78,7 +75,6 @@ class WorkoutTrainingTab extends StatelessWidget {
   final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
-  final void Function(int, int, String) onSetDayCoachingNote;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
@@ -113,17 +109,9 @@ class WorkoutTrainingTab extends StatelessWidget {
   })
   onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
-  final void Function(
-    int,
-    int,
-    String,
-    String, {
-    DensityBlockConfig? densityConfig,
-  })
-  onAssignToSuperset;
+  final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
-  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
   final void Function(int weekIndex, int dayIndex, int? weekday)
@@ -206,7 +194,6 @@ class WorkoutTrainingTab extends StatelessWidget {
         onRenameWeek: onRenameWeek,
         onAddDay: onAddDay,
         onRenameDay: onRenameDay,
-        onSetDayCoachingNote: onSetDayCoachingNote,
         onDeleteDay: onDeleteDay,
         onDuplicateExercise: onDuplicateExercise,
         onRemoveExercise: onRemoveExercise,
@@ -219,7 +206,6 @@ class WorkoutTrainingTab extends StatelessWidget {
         onAssignToSuperset: onAssignToSuperset,
         onRemoveFromSuperset: onRemoveFromSuperset,
         onAddExerciseToSuperset: onAddExerciseToSuperset,
-        onSetDensityBlock: onSetDensityBlock,
         onSelectWeek: onSelectWeek,
         onSelectDay: onSelectDay,
         onUpdateScheduledWeekday: onUpdateScheduledWeekday,
@@ -257,7 +243,6 @@ class _PhaseTrainingBody extends StatefulWidget {
     required this.onRenameWeek,
     required this.onAddDay,
     required this.onRenameDay,
-    required this.onSetDayCoachingNote,
     required this.onDeleteDay,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
@@ -270,7 +255,6 @@ class _PhaseTrainingBody extends StatefulWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
-    this.onSetDensityBlock,
     required this.onSelectWeek,
     required this.onSelectDay,
     required this.onUpdateScheduledWeekday,
@@ -303,7 +287,6 @@ class _PhaseTrainingBody extends StatefulWidget {
   final void Function(int, String) onRenameWeek;
   final void Function(int) onAddDay;
   final void Function(int, int, String) onRenameDay;
-  final void Function(int, int, String) onSetDayCoachingNote;
   final void Function(int, int) onDeleteDay;
   final void Function(int, int, Exercise) onDuplicateExercise;
   final void Function(int, int, String) onRemoveExercise;
@@ -338,17 +321,9 @@ class _PhaseTrainingBody extends StatefulWidget {
   })
   onUpdateExerciseSet;
   final void Function(int, int, String, int) onRemoveExerciseSet;
-  final void Function(
-    int,
-    int,
-    String,
-    String, {
-    DensityBlockConfig? densityConfig,
-  })
-  onAssignToSuperset;
+  final void Function(int, int, String, String) onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
-  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
   final void Function(int) onSelectWeek;
   final void Function(int) onSelectDay;
   final void Function(int weekIndex, int dayIndex, int? weekday)
@@ -452,14 +427,6 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
           (name) => widget.onRenameDay(weekIndex, index, name),
         );
       },
-      onEditDayNote: (weekIndex, index) {
-        final day = liveDay(weekIndex, index);
-        showEditDayCoachingNoteDialog(
-          context,
-          day.coachingNote ?? '',
-          (note) => widget.onSetDayCoachingNote(weekIndex, index, note),
-        );
-      },
       onDeleteDay: (weekIndex, index) =>
           widget.onDeleteDay(weekIndex, index),
       onCloneDayToTarget: widget.onCloneDayToTarget,
@@ -474,7 +441,6 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
       onAssignToSuperset: widget.onAssignToSuperset,
       onRemoveFromSuperset: widget.onRemoveFromSuperset,
       onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
-      onSetDensityBlock: widget.onSetDensityBlock,
       readOnly: widget.readOnly,
       editorMode: widget.editorMode,
       planId: widget.planId,
@@ -591,18 +557,6 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
                     widget.globalWeekOffset + wi,
                     dayIndex,
                     name,
-                  ),
-                );
-              },
-              onEditDayNote: (dayIndex) {
-                final day = weeks[wi].days[dayIndex];
-                showEditDayCoachingNoteDialog(
-                  context,
-                  day.coachingNote ?? '',
-                  (note) => widget.onSetDayCoachingNote(
-                    widget.globalWeekOffset + wi,
-                    dayIndex,
-                    note,
                   ),
                 );
               },
@@ -738,7 +692,6 @@ class _WeekBlock extends StatelessWidget {
     required this.onDeleteWeek,
     required this.onRenameWeek,
     required this.onRenameDay,
-    required this.onEditDayNote,
     required this.onDeleteDay,
     required this.onUpdateScheduledWeekday,
     this.readOnly = false,
@@ -759,7 +712,6 @@ class _WeekBlock extends StatelessWidget {
   final VoidCallback onDeleteWeek;
   final VoidCallback onRenameWeek;
   final void Function(int dayIndex) onRenameDay;
-  final void Function(int dayIndex) onEditDayNote;
   final void Function(int dayIndex) onDeleteDay;
   final void Function(int weekIndex, int dayIndex, int? weekday)
   onUpdateScheduledWeekday;
@@ -1011,8 +963,6 @@ class _WeekBlock extends StatelessWidget {
                           switch (action) {
                             case 'rename':
                               onRenameDay(index);
-                            case 'note':
-                              onEditDayNote(index);
                             case 'delete':
                               onDeleteDay(index);
                           }

@@ -10,8 +10,6 @@ class PdfExportLabels {
     required this.colNotes,
     required this.mobilityFallback,
     required this.superset,
-    required this.circuit,
-    required this.emom,
     required this.dayNumber,
     required this.emptyValue,
     required this.footerDisclaimer,
@@ -20,9 +18,9 @@ class PdfExportLabels {
     required this.measurementDate,
     required this.measurementBodyFat,
     required this.measurementMuscleMass,
-    required this.measurementWaist,
     required this.measurementSquat,
     required this.measurementBench,
+    required this.measurementDeadlift,
     required this.exportGenerating,
     required this.measurementRecordCount,
     required this.denseWeekShort,
@@ -46,8 +44,6 @@ class PdfExportLabels {
   final String colNotes;
   final String mobilityFallback;
   final String superset;
-  final String circuit;
-  final String emom;
   final String Function(int dayIndex) dayNumber;
   final String emptyValue;
   final String footerDisclaimer;
@@ -56,9 +52,9 @@ class PdfExportLabels {
   final String measurementDate;
   final String measurementBodyFat;
   final String measurementMuscleMass;
-  final String measurementWaist;
   final String measurementSquat;
   final String measurementBench;
+  final String measurementDeadlift;
   final String exportGenerating;
   final String Function(int count) measurementRecordCount;
   final String Function(int weekIndex) denseWeekShort;

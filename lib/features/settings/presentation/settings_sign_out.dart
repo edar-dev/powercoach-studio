@@ -6,7 +6,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/notifications/notification_scheduler_service.dart';
-import '../../../../core/notifications/reminder_store.dart';
 import '../../../../core/storage/offline_local_store.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'settings_backup_handler.dart';
@@ -18,8 +17,6 @@ Future<void> executeSignOut(BuildContext context) async {
       NotificationSchedulerService.instance.supportsLocalNotifications) {
     await NotificationSchedulerService.instance.cancelAllScheduled();
   }
-  // Always clear reminder prefs so web sign-out matches Drift wipe.
-  await ReminderStore.instance.clear();
   final uid = SupabaseBootstrap.currentUser?.id;
   if (uid != null) {
     await OfflineLocalStore.instance.wipeForUser(uid);

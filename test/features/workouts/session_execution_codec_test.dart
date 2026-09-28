@@ -32,45 +32,32 @@ void main() {
     expect(restored.exercises.first.sets.first.load, '100');
   });
 
-  test('SessionExecution round-trips check-in fields', () {
-    final original = SessionExecution(
-      sessionKey: '1-2',
-      weekIndex: 1,
-      dayIndex: 2,
-      sessionDate: DateTime(2026, 6, 10),
-      status: PlanSessionStatus.completed,
-      sessionRpe: 8,
-      painLevel: 3,
-      painLocation: 'left knee',
-    );
-
-    final restored = SessionExecution.fromJson(original.toJson());
-    expect(restored.sessionRpe, 8);
-    expect(restored.painLevel, 3);
-    expect(restored.painLocation, 'left knee');
-  });
-
-  test('legacy SessionExecution JSON without check-in fields decodes as null', () {
+  test('legacy SessionExecution check-in fields are ignored on read', () {
     final restored = SessionExecution.fromJson({
-      'sessionKey': '0-0',
-      'weekIndex': 0,
-      'dayIndex': 0,
-      'sessionDate': '2026-06-01',
+      'sessionKey': '1-2',
+      'weekIndex': 1,
+      'dayIndex': 2,
+      'sessionDate': '2026-06-10',
       'status': 'completed',
+      'sessionRpe': 8,
+      'painLevel': 3,
+      'painLocation': 'left knee',
+      'notes': 'ok',
     });
-    expect(restored.sessionRpe, isNull);
-    expect(restored.painLevel, isNull);
-    expect(restored.painLocation, isNull);
+    final json = restored.toJson();
+    expect(json.containsKey('sessionRpe'), isFalse);
+    expect(json.containsKey('painLevel'), isFalse);
+    expect(json.containsKey('painLocation'), isFalse);
+    expect(restored.notes, 'ok');
   });
 
-  test('toJson omits blank pain location and null check-in fields', () {
+  test('toJson does not write check-in fields', () {
     final execution = SessionExecution(
       sessionKey: '0-0',
       weekIndex: 0,
       dayIndex: 0,
       sessionDate: DateTime(2026, 6, 1),
       status: PlanSessionStatus.completed,
-      painLocation: '   ',
     );
     final json = execution.toJson();
     expect(json.containsKey('sessionRpe'), isFalse);

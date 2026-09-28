@@ -11,6 +11,8 @@ typedef WorkoutFollowUpDraft = ({
   bool applyExecutedLoads,
 });
 
+/// Slim follow-up dialog: name + optional start date.
+/// When executions exist, applied loads default on without toggle chrome.
 Future<WorkoutFollowUpDraft?> showWorkoutFollowUpDialog(
   BuildContext context, {
   required WorkoutPlanApiModel plan,
@@ -20,11 +22,11 @@ Future<WorkoutFollowUpDraft?> showWorkoutFollowUpDialog(
   final executions = await executionService.listForPlan(plan.id);
   if (!context.mounted) return null;
   final completedCount = countCompletedExecutions(executions);
+  final applyExecutedLoads = completedCount > 0;
   final controller = TextEditingController(
     text: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
   );
   DateTime? selectedStartDate;
-  var applyExecutedLoads = completedCount > 0;
   try {
     if (!context.mounted) return null;
     return await showDialog<WorkoutFollowUpDraft>(
@@ -82,26 +84,6 @@ Future<WorkoutFollowUpDraft?> showWorkoutFollowUpDialog(
                   });
                 },
               ),
-              if (completedCount > 0)
-                CheckboxListTile(
-                  contentPadding: EdgeInsets.zero,
-                  value: applyExecutedLoads,
-                  onChanged: (v) =>
-                      setDialogState(() => applyExecutedLoads = v ?? false),
-                  title: Text(l10n.workoutFollowUpFromExecution),
-                  subtitle: Text(
-                    l10n.workoutFollowUpFromExecutionHint(completedCount),
-                  ),
-                  controlAffinity: ListTileControlAffinity.leading,
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    l10n.workoutFollowUpNoExecutionData,
-                    style: Theme.of(ctx).textTheme.bodySmall,
-                  ),
-                ),
             ],
           ),
           actions: [
@@ -116,7 +98,7 @@ Future<WorkoutFollowUpDraft?> showWorkoutFollowUpDialog(
                 Navigator.of(ctx).pop((
                   name: name,
                   startDate: selectedStartDate,
-                  applyExecutedLoads: completedCount > 0 && applyExecutedLoads,
+                  applyExecutedLoads: applyExecutedLoads,
                 ));
               },
               child: Text(l10n.workoutFollowUpCreateAction),

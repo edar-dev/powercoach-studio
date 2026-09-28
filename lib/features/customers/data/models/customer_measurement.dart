@@ -1,5 +1,6 @@
 /// Customer measurement model (local-first payload).
-/// 1RM (kg), skinfolds (mm), BIA, circumferences (cm).
+/// Kept fields: 1RM trio (kg), bodyFatPercent, muscleMassKg, notes.
+/// Legacy skinfolds / BIA / circumferences are ignored on read and never written.
 class CustomerMeasurement {
   const CustomerMeasurement({
     required this.id,
@@ -9,20 +10,8 @@ class CustomerMeasurement {
     this.squat1RM,
     this.benchPress1RM,
     this.deadlift1RM,
-    this.tricepsSkinfold,
-    this.bicepsSkinfold,
-    this.subscapularSkinfold,
-    this.iliacSkinfold,
-    this.abdominalSkinfold,
-    this.thighSkinfold,
     this.bodyFatPercent,
     this.muscleMassKg,
-    this.waterPercent,
-    this.fatMassKg,
-    this.chestCm,
-    this.waistCm,
-    this.armsCm,
-    this.thighsCm,
     this.notes,
     required this.createdAt,
     required this.updatedAt,
@@ -36,26 +25,15 @@ class CustomerMeasurement {
   final double? squat1RM;
   final double? benchPress1RM;
   final double? deadlift1RM;
-  final double? tricepsSkinfold;
-  final double? bicepsSkinfold;
-  final double? subscapularSkinfold;
-  final double? iliacSkinfold;
-  final double? abdominalSkinfold;
-  final double? thighSkinfold;
   final double? bodyFatPercent;
   final double? muscleMassKg;
-  final double? waterPercent;
-  final double? fatMassKg;
-  final double? chestCm;
-  final double? waistCm;
-  final double? armsCm;
-  final double? thighsCm;
   final String? notes;
   final DateTime createdAt;
   final DateTime updatedAt;
   final int rowVersion;
 
   static CustomerMeasurement fromJson(Map<String, dynamic> json) {
+    // Legacy keys (skinfolds, BIA, circumferences) are intentionally ignored.
     return CustomerMeasurement(
       id: json['id']?.toString() ?? '',
       customerId: json['customerId']?.toString() ?? '',
@@ -64,20 +42,8 @@ class CustomerMeasurement {
       squat1RM: _toDouble(json['squat1RM']),
       benchPress1RM: _toDouble(json['benchPress1RM']),
       deadlift1RM: _toDouble(json['deadlift1RM']),
-      tricepsSkinfold: _toDouble(json['tricepsSkinfold']),
-      bicepsSkinfold: _toDouble(json['bicepsSkinfold']),
-      subscapularSkinfold: _toDouble(json['subscapularSkinfold']),
-      iliacSkinfold: _toDouble(json['iliacSkinfold']),
-      abdominalSkinfold: _toDouble(json['abdominalSkinfold']),
-      thighSkinfold: _toDouble(json['thighSkinfold']),
       bodyFatPercent: _toDouble(json['bodyFatPercent']),
       muscleMassKg: _toDouble(json['muscleMassKg']),
-      waterPercent: _toDouble(json['waterPercent']),
-      fatMassKg: _toDouble(json['fatMassKg']),
-      chestCm: _toDouble(json['chestCm']),
-      waistCm: _toDouble(json['waistCm']),
-      armsCm: _toDouble(json['armsCm']),
-      thighsCm: _toDouble(json['thighsCm']),
       notes: json['notes'] as String?,
       createdAt: _parseDateTime(json['createdAt']),
       updatedAt: _parseDateTime(json['updatedAt']),
@@ -115,20 +81,8 @@ class CustomerMeasurement {
       'squat1RM': squat1RM,
       'benchPress1RM': benchPress1RM,
       'deadlift1RM': deadlift1RM,
-      'tricepsSkinfold': tricepsSkinfold,
-      'bicepsSkinfold': bicepsSkinfold,
-      'subscapularSkinfold': subscapularSkinfold,
-      'iliacSkinfold': iliacSkinfold,
-      'abdominalSkinfold': abdominalSkinfold,
-      'thighSkinfold': thighSkinfold,
       'bodyFatPercent': bodyFatPercent,
       'muscleMassKg': muscleMassKg,
-      'waterPercent': waterPercent,
-      'fatMassKg': fatMassKg,
-      'chestCm': chestCm,
-      'waistCm': waistCm,
-      'armsCm': armsCm,
-      'thighsCm': thighsCm,
       'notes': notes?.trim().isEmpty ?? true ? null : notes,
     };
   }

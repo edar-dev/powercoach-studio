@@ -26,8 +26,6 @@ class WorkoutBuilderScreenTabs {
     required this.sectionTabController,
     required this.routineNameController,
     required this.initialWeekController,
-    required this.phaseController,
-    required this.tagsController,
     required this.notesController,
     required this.editorMode,
     required this.loading,
@@ -69,8 +67,6 @@ class WorkoutBuilderScreenTabs {
   final TabController sectionTabController;
   final TextEditingController routineNameController;
   final TextEditingController initialWeekController;
-  final TextEditingController phaseController;
-  final TextEditingController tagsController;
   final TextEditingController notesController;
   final bool editorMode;
   final bool loading;
@@ -109,8 +105,6 @@ class WorkoutBuilderScreenTabs {
       routine: _routine,
       editorMode: editorMode,
       initialWeekController: initialWeekController,
-      phaseController: phaseController,
-      tagsController: tagsController,
       notesController: notesController,
       onPickStartDate: onPickStartDate,
       onPickEndDate: onPickEndDate,
@@ -165,7 +159,6 @@ class WorkoutBuilderScreenTabs {
       onRenameWeek: trainingHandlers.renameWeek,
       onAddDay: trainingHandlers.addDayToWeek,
       onRenameDay: trainingHandlers.renameDay,
-      onSetDayCoachingNote: trainingHandlers.setDayCoachingNote,
       onDeleteDay: trainingHandlers.deleteDay,
       onDuplicateExercise: trainingHandlers.duplicateExercise,
       onRemoveExercise: trainingHandlers.removeExercise,
@@ -178,7 +171,6 @@ class WorkoutBuilderScreenTabs {
       onAssignToSuperset: trainingHandlers.assignToSuperset,
       onRemoveFromSuperset: trainingHandlers.removeFromSuperset,
       onAddExerciseToSuperset: trainingHandlers.addExerciseToSuperset,
-      onSetDensityBlock: trainingHandlers.setDensityBlock,
       onSelectWeek: (i) => builderSession.selectWeek(i, resetDay: true),
       onSelectDay: (i) => builderSession.selectDay(i),
       onUpdateScheduledWeekday: trainingHandlers.setDayScheduledWeekday,
@@ -218,7 +210,6 @@ class WorkoutBuilderScreenTabs {
       showBottomNav: showBottomNav,
       onPopInvoked: onPopInvoked,
       onBack: onBack,
-      onOpenTemplates: () {},
       onImportJson: onImportJson,
       onExport: onExport,
       onSave: readOnly ? () async => true : onSave,

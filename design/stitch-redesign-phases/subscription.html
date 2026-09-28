@@ -1,0 +1,455 @@
+<!-- PowerCoach Studio - Gestione Abbonamento Dark Redesign -->
+<!DOCTYPE html>
+
+<html class="h-full bg-slate-950 text-slate-100 antialiased" lang="it"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>PowerCoach Studio - Abbonamento &amp; Piani</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554',
+            },
+            slate: {
+              850: '#0f172a',
+              900: '#0b1120',
+              950: '#060a12',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-enhancements">
+    /* Subtle glowing backdrops and gradients */
+    .glow-effect {
+      background: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.15) 0%, rgba(6, 10, 18, 0) 70%);
+    }
+    .card-border-glow {
+      box-shadow: 0 0 25px -5px rgba(37, 99, 235, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-full flex flex-col bg-slate-950 font-sans selection:bg-brand-600 selection:text-white pb-20">
+<!-- BEGIN: MainHeader -->
+<header class="sticky top-0 z-50 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16">
+<!-- Logo and App Identity -->
+<div class="flex items-center gap-8">
+<a class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" href="#">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-700 via-brand-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-brand-600/30">
+<svg class="w-5 h-5 text-white transform -rotate-12 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"></path>
+</svg>
+</div>
+<div class="leading-none">
+<span class="text-lg font-bold tracking-tight text-white flex items-center gap-1.5">
+                PowerCoach
+                <span class="text-xs font-semibold px-1.5 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20">Studio</span>
+</span>
+</div>
+</a>
+<!-- Main Navigation Links -->
+<nav aria-label="Navigazione principale" class="hidden md:flex items-center space-x-1">
+<a class="px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition-colors" href="#">Dashboard</a>
+<a class="px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition-colors" href="#">Clienti</a>
+<a class="px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition-colors" href="#">Schede Allenamento</a>
+<a class="px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-900 transition-colors" href="#">Analisi &amp; Pliche</a>
+<a class="px-3 py-2 rounded-lg text-sm font-semibold text-brand-400 bg-brand-500/10 border border-brand-500/20" href="#">Abbonamento</a>
+</nav>
+</div>
+<!-- Global Search, Back to Settings & Profile -->
+<div class="flex items-center gap-3">
+<!-- Quick Search Trigger -->
+<button aria-label="Cerca nel gestionale" class="hidden sm:flex items-center gap-3 px-3 py-1.5 text-xs text-slate-400 bg-slate-900/90 hover:bg-slate-850 border border-slate-800 rounded-lg transition-colors focus:ring-2 focus:ring-brand-500 focus:outline-none" type="button">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Cerca cliente o esercizio...</span>
+<kbd class="font-sans px-1.5 py-0.5 text-[10px] uppercase font-semibold text-slate-400 bg-slate-800 border border-slate-700 rounded">⌘K</kbd>
+</button>
+<!-- Back to Settings Link -->
+<a class="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors" href="#">
+<svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M10 19l-7-7m0 0l7-7m-7 7h18" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="hidden lg:inline">Torna alle Impostazioni</span>
+</a>
+<!-- User Avatar Menu -->
+<div class="flex items-center gap-2 pl-2 border-l border-slate-800">
+<div class="w-8 h-8 rounded-full ring-2 ring-brand-500/30 bg-slate-800 flex items-center justify-center font-bold text-xs text-brand-400">
+              MC
+            </div>
+<div class="hidden xl:block text-left text-xs leading-none">
+<span class="block font-semibold text-slate-200">Marco Conti</span>
+<span class="text-slate-500 text-[11px]">Free Coach</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- END: MainHeader -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-10 glow-effect">
+<!-- BEGIN: PageHeader -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800/80 pb-6" data-purpose="page-header">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-400 mr-1.5 animate-pulse"></span>
+            Piano Gratuito Limitato
+          </span>
+<span class="text-slate-500 text-xs">• Account ID: #PC-84920</span>
+</div>
+<h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Gestione Abbonamento &amp; Piani</h1>
+<p class="text-sm text-slate-400 mt-1 max-w-2xl">
+          Controlla il consumo del tuo piano attuale, confronta i pacchetti professionali e sblocca atleti illimitati con PowerCoach Pro.
+        </p>
+</div>
+<!-- Quick Status Badges -->
+<div class="flex items-center gap-3">
+<a class="text-xs font-medium text-brand-400 hover:text-brand-300 underline underline-offset-4 flex items-center gap-1" href="#tabella-piani">
+          Visualizza tabella comparativa
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</a>
+</div>
+</section>
+<!-- END: PageHeader -->
+<!-- BEGIN: CurrentPlanSection -->
+<section aria-labelledby="current-plan-title" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Left Card: Current Plan Overview -->
+<div class="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-7 shadow-xl relative overflow-hidden flex flex-col justify-between">
+<!-- Top Status Indicator -->
+<div class="flex flex-wrap items-start justify-between gap-4">
+<div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-semibold tracking-wider uppercase text-slate-400">Piano in uso</span>
+<span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/20 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                Pro Scaduto
+              </span>
+</div>
+<h2 class="text-3xl font-bold text-white mt-1" id="current-plan-title">Gratuito (Free Coach)</h2>
+<p class="text-sm text-slate-400 mt-1">
+              Il tuo periodo di prova Pro è terminato. Il tuo account è stato ridotto al piano gratuito con vincolo di 5 atleti.
+            </p>
+</div>
+<!-- Billing Info Box -->
+<div class="text-right bg-slate-950/60 border border-slate-800/80 rounded-xl px-4 py-2.5">
+<span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider block">Costo di rinnovo</span>
+<span class="text-xl font-bold text-white">0,00 € <span class="text-xs font-normal text-slate-400">/ mese</span></span>
+</div>
+</div>
+<!-- Usage Quota Progress -->
+<div class="mt-8 pt-6 border-t border-slate-800/70" data-purpose="usage-monitor">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-sm text-slate-200">Utilizzo Clienti Attivi</span>
+<span class="text-xs text-slate-400">(Slot assegnati nel mese)</span>
+</div>
+<div class="text-sm font-bold text-white">
+<span class="text-brand-400">1</span> <span class="text-slate-500 font-normal">/ 5 clienti attivi</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div aria-valuemax="100" aria-valuemin="0" aria-valuenow="20" class="w-full bg-slate-950 rounded-full h-3.5 p-0.5 border border-slate-800" role="progressbar">
+<div class="bg-gradient-to-r from-brand-600 to-brand-400 h-2.5 rounded-full transition-all duration-500" style="width: 20%;"></div>
+</div>
+<!-- Info notice below bar -->
+<div class="mt-3 flex items-center justify-between text-xs text-slate-400">
+<span class="flex items-center gap-1.5 text-slate-300">
+<svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+              Hai ancora <strong>4 slot atleta gratuiti</strong> disponibili.
+            </span>
+<span class="text-amber-400 font-medium hidden sm:inline">Limite raggiunto a 5 clienti</span>
+</div>
+</div>
+</div>
+<!-- Right Card: Quick Upgrade Highlight -->
+<div class="bg-gradient-to-b from-brand-950/60 to-slate-900 border border-brand-500/40 rounded-2xl p-6 sm:p-7 shadow-xl flex flex-col justify-between relative overflow-hidden card-border-glow">
+<div class="absolute -right-6 -bottom-6 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
+<div>
+<div class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-brand-500/20 text-brand-300 border border-brand-500/30 mb-3">
+            RACCOMANDATO PER PERSONAL TRAINER
+          </div>
+<h3 class="text-xl font-bold text-white">Sblocca Clienti Illimitati con Pro</h3>
+<p class="text-xs text-slate-300 mt-2 leading-relaxed">
+            Elimina le limitazioni sugli atleti, esporta le schede in formato PDF personalizzato con il tuo logo ed esegui stime 1RM automatiche.
+          </p>
+</div>
+<div class="mt-6 pt-5 border-t border-slate-800">
+<div class="flex items-baseline gap-1 mb-4">
+<span class="text-3xl font-extrabold text-white">12 €</span>
+<span class="text-xs text-slate-400 font-medium">/ mese (o 99 €/anno)</span>
+</div>
+<a class="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-brand-600 hover:bg-brand-500 active:bg-brand-700 transition shadow-lg shadow-brand-600/30" href="#piani-cta">
+            Attiva Coach Pro Subito
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</a>
+</div>
+</div>
+</section>
+<!-- END: CurrentPlanSection -->
+<!-- BEGIN: ComparisonTableSection -->
+<section aria-labelledby="confronto-titolo" class="pt-6" id="tabella-piani">
+<!-- Section Title & Monthly/Annual Billing Switch -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+<div>
+<h2 class="text-xl font-bold text-white" id="confronto-titolo">Cosa include ogni piano</h2>
+<p class="text-xs sm:text-sm text-slate-400 mt-0.5">Scegli la flessibilità mensile o massimizza il margine con il piano annuale</p>
+</div>
+<!-- Billing Cycle Toggle Switch -->
+<div class="flex items-center gap-3 bg-slate-900 p-1.5 rounded-xl border border-slate-800 self-start sm:self-auto" data-purpose="billing-toggle">
+<button class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-800 text-white shadow-sm transition" type="button">
+            Fatturazione Mensile
+          </button>
+<button class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition flex items-center gap-1.5" type="button">
+<span>Fatturazione Annuale</span>
+<span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+              Risparmia 20%
+            </span>
+</button>
+</div>
+</div>
+<!-- Comparison Matrix Table -->
+<div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+<div class="overflow-x-auto">
+<table class="w-full text-left text-sm border-collapse" id="pricing-matrix">
+<thead>
+<tr class="border-b border-slate-800 bg-slate-950/70">
+<th class="py-4 px-6 text-xs font-semibold text-slate-400 uppercase tracking-wider w-2/5" scope="col">
+                  Funzionalità &amp; Servizi
+                </th>
+<!-- Plan 1: Free -->
+<th class="py-4 px-4 text-center w-1/5" scope="col">
+<div class="font-bold text-white text-base">Gratuito</div>
+<div class="text-xs text-slate-400 font-normal mt-0.5">0 € / sempre</div>
+</th>
+<!-- Plan 2: Pro -->
+<th class="py-4 px-4 text-center w-1/5 bg-brand-950/30 border-x border-brand-500/20" scope="col">
+<div class="inline-flex items-center gap-1 text-xs font-semibold text-brand-400 bg-brand-500/10 px-2 py-0.5 rounded-full mb-1">
+                    Più Scelto
+                  </div>
+<div class="font-bold text-white text-base">Coach Pro</div>
+<div class="text-xs text-brand-300 font-semibold mt-0.5">12 € / mese</div>
+</th>
+<!-- Plan 3: Studio Team -->
+<th class="py-4 px-4 text-center w-1/5" scope="col">
+<div class="font-bold text-white text-base">Studio Team</div>
+<div class="text-xs text-slate-400 font-normal mt-0.5">29 € / mese</div>
+</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-800/80">
+<!-- Row 1: Client Limits -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Clienti attivi gestibili
+                  <span class="block text-xs text-slate-400 font-normal">Numero massimo di atleti con schede attive contemporanee</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-300 font-medium">Fino a 5</td>
+<td class="py-4 px-4 text-center text-brand-300 font-bold bg-brand-950/20 border-x border-brand-500/20">
+                  Illimitati
+                </td>
+<td class="py-4 px-4 text-center text-slate-300 font-medium">Illimitati (multi-coach)</td>
+</tr>
+<!-- Row 2: CSV Export -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Export CSV progressi &amp; log carichi
+                  <span class="block text-xs text-slate-400 font-normal">Dati storici allenamenti ed esportazione per analisi fogli di calcolo</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-600 font-bold">—</td>
+<td class="py-4 px-4 text-center bg-brand-950/20 border-x border-brand-500/20">
+<svg class="w-5 h-5 text-brand-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+<td class="py-4 px-4 text-center">
+<svg class="w-5 h-5 text-emerald-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 3: PDF / Excel Workouts -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Export PDF &amp; Excel schede allenamento
+                  <span class="block text-xs text-slate-400 font-normal">Schede stampabili e formattate per smartphone con tabelle carichi</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-600 font-bold">—</td>
+<td class="py-4 px-4 text-center bg-brand-950/20 border-x border-brand-500/20">
+<svg class="w-5 h-5 text-brand-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+<td class="py-4 px-4 text-center">
+<svg class="w-5 h-5 text-emerald-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 4: 1RM and Bodyfat calculation -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Calcolo 1RM, RPE e Analisi Plicometrica
+                  <span class="block text-xs text-slate-400 font-normal">Formule automatiche Brzycki/Epley, Pollock 3/7 punti e circonferenze</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-400 text-xs">Formule Base</td>
+<td class="py-4 px-4 text-center bg-brand-950/20 border-x border-brand-500/20">
+<svg class="w-5 h-5 text-brand-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+<td class="py-4 px-4 text-center">
+<svg class="w-5 h-5 text-emerald-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 5: Cloud Sync and Devices -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Sincronizzazione Cloud Multi-Device
+                  <span class="block text-xs text-slate-400 font-normal">Accesso contemporaneo e backup istantaneo da Tablet, PC e Smartphone</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-400 text-xs">Solo 1 dispositivo</td>
+<td class="py-4 px-4 text-center bg-brand-950/20 border-x border-brand-500/20">
+<svg class="w-5 h-5 text-brand-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+<td class="py-4 px-4 text-center">
+<svg class="w-5 h-5 text-emerald-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+</tr>
+<!-- Row 6: Multi-Coach & Studio Team -->
+<tr class="hover:bg-slate-850/50 transition-colors">
+<td class="py-4 px-6 font-medium text-slate-200">
+                  Accesso Multi-Coach &amp; Branding Personalizzato
+                  <span class="block text-xs text-slate-400 font-normal">Logo dello studio su app cliente, ruoli staff e condivisione atleti</span>
+</td>
+<td class="py-4 px-4 text-center text-slate-600 font-bold">—</td>
+<td class="py-4 px-4 text-center text-slate-600 font-bold bg-brand-950/20 border-x border-brand-500/20">—</td>
+<td class="py-4 px-4 text-center">
+<svg class="w-5 h-5 text-emerald-400 mx-auto" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill-rule="evenodd"></path>
+</svg>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- END: ComparisonTableSection -->
+<!-- BEGIN: UpgradeActionSection -->
+<section aria-labelledby="cta-titolo" class="pt-6" id="piani-cta">
+<div class="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl relative">
+<div class="max-w-3xl mx-auto text-center">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-brand-600/10 text-brand-400 border border-brand-500/20 mb-3">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+            Nessun vincolo: cancelli in qualsiasi momento con un click
+          </div>
+<h2 class="text-2xl sm:text-3xl font-bold text-white tracking-tight" id="cta-titolo">Passa a PowerCoach Pro</h2>
+<p class="text-sm sm:text-base text-slate-300 mt-2">
+            Porta il tuo coaching a un livello superiore. Segui più atleti, esporta programmi professionali e gestisci carichi e 1RM senza intoppi.
+          </p>
+<!-- Upgrade CTA Buttons -->
+<div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+<!-- Monthly Option -->
+<button class="w-full sm:w-auto flex-1 max-w-sm inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-brand-600 hover:bg-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-400 shadow-lg shadow-brand-600/30 transition transform hover:-translate-y-0.5" type="button">
+<span>Pro — 12 € / mese</span>
+<span class="text-xs font-medium text-brand-200">(Fatturato ogni mese)</span>
+</button>
+<!-- Annual Option (Best Value) -->
+<button class="w-full sm:w-auto flex-1 max-w-sm inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl font-bold text-sm text-slate-100 bg-slate-800/90 hover:bg-slate-750 hover:text-white border border-brand-500/40 focus:outline-none focus:ring-2 focus:ring-brand-400 shadow-md transition transform hover:-translate-y-0.5" type="button">
+<span>Pro — 99 € / anno</span>
+<span class="text-[11px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">2 Mesi Gratis</span>
+</button>
+</div>
+<!-- Trust Badges & Guarantee -->
+<div class="mt-8 pt-6 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
+<div class="flex items-center gap-1.5">
+<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Transazioni protette con crittografia SSL a 256-bit</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-semibold text-slate-300">Metodi supportati:</span>
+<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">Stripe</span>
+<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">Carta di Credito / Debito</span>
+<span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-medium">PayPal</span>
+</div>
+<div class="flex items-center gap-1">
+<svg class="w-4 h-4 text-brand-400" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Fattura automatica scaricabile in formato PDF</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: UpgradeActionSection -->
+<!-- BEGIN: FAQNotice -->
+<section class="text-center pt-2">
+<p class="text-xs text-slate-500">
+        Hai bisogno di una soluzione personalizzata per una palestra con più di 5 coach? 
+        <a class="text-brand-400 hover:underline" href="#">Contatta il nostro supporto commerciale</a>.
+      </p>
+</section>
+<!-- END: FAQNotice -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: MinimalFooter -->
+<footer class="mt-auto border-t border-slate-900 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-8 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<span>© 2025 PowerCoach Studio Inc. Tutti i diritti riservati.</span>
+</div>
+<div class="flex items-center space-x-4">
+<a class="hover:text-slate-400 transition-colors" href="#">Termini di Servizio</a>
+<a class="hover:text-slate-400 transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-slate-400 transition-colors" href="#">Sicurezza Dati</a>
+<a class="hover:text-slate-400 transition-colors" href="#">Assistenza</a>
+</div>
+</footer>
+<!-- END: MinimalFooter -->
+</body></html>

@@ -28,7 +28,16 @@ class OfflineMigration {
       await db.batch((b) {
         for (final item in list) {
           if (item is! Map) continue;
-          final e = OfflineEntity.fromJson(item.cast<String, dynamic>());
+          final body = item.cast<String, dynamic>();
+          // Skip removed/unknown types (e.g. legacy exerciseRecord index 3 or
+          // name) and malformed rows so one bad entry cannot abort migration.
+          // Type may be a legacy int index — do not use name-only checks here.
+          final OfflineEntity e;
+          try {
+            e = OfflineEntity.fromJson(body);
+          } catch (_) {
+            continue;
+          }
           final rowUid = e.payload['userId']?.toString();
           final effectiveUid =
               (rowUid != null && rowUid.isNotEmpty) ? rowUid : uid;

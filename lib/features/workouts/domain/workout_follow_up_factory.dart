@@ -45,6 +45,7 @@ WorkoutRoutine prepareFollowUpRoutine({
     startDate: resolvedStart,
     endDate: null,
     currentWeek: 1,
+    includesMobilityTab: cloned.includesMobilityTab,
     sessionCompletionByKey: const {},
     sessionSkippedByKey: const {},
     sessionOverrides: const {},

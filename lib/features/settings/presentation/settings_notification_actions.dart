@@ -71,12 +71,17 @@ Future<void> toggleSettingsNotifications({
     await preferences.setNotificationsEnabled(true);
     if (!context.mounted) return;
     onChanged(true);
+    // cancelAll + calendar reschedule (does not depend on ReminderStore)
     await NotificationSchedulerService.instance.syncWithNotificationPreference();
+    if (await CalendarReminderScheduler.instance.isEnabled()) {
+      await CalendarReminderScheduler.instance.rescheduleUpcoming();
+    }
   } else {
     await preferences.setNotificationsEnabled(false);
     if (!context.mounted) return;
     onChanged(false);
     await NotificationSchedulerService.instance.cancelAllScheduled();
+    // Calendar prefs remain; re-enable restores via sync + reschedule above.
   }
 }
 

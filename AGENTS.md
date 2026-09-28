@@ -10,7 +10,8 @@
 - **Supabase:** authentication session only — no table CRUD for customers, workouts, or coach profile fields.
 - **No GymBlog.API**, no `GYMBLOG_API_URL`, no remote sync replay unless an approved plan explicitly reintroduces it.
 - **No third-party workout APIs** (Hevy and similar integrations were removed; do not reintroduce without an approved plan).
-- **Backup/restore:** JSON export/import is the official multi-device path (`UserDataBackupService`).
+- **Backup/restore:** JSON export/import is the official multi-device path (`UserDataBackupService`). Restore is always full (merge or replace-all); selective entity-group restore was removed.
+- **Removed product surfaces (do not reintroduce without a plan):** gym hub, plan-diff, coach stats, release notes, density/EMOM blocks, progression chips, session check-in RPE/pain, Day coaching notes, manual ReminderStore, exercise PR records, Hevy.
 
 ## CI / Flutter version
 - CI pins **Flutter 3.35.6** (`.flutter-version`, GitHub Actions, Codemagic).

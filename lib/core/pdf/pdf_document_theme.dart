@@ -219,22 +219,6 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget dayCoachingNote(String text, {bool dense = false}) {
-    final safe = sanitizePdfText(text);
-    if (safe.isEmpty) return pw.SizedBox();
-    return pw.Padding(
-      padding: pw.EdgeInsets.only(bottom: dense ? 3 : 6),
-      child: pw.Text(
-        safe,
-        style: pw.TextStyle(
-          fontSize: dense ? denseDayFontSize - 0.5 : dayFontSize - 1,
-          fontStyle: pw.FontStyle.italic,
-          color: textMuted,
-        ),
-      ),
-    );
-  }
-
   static pw.Widget buildPageFooter(
     pw.Context context,
     PdfExportLabels labels,
@@ -497,7 +481,7 @@ class PdfDocumentTheme {
     String? note,
   }) {
     final prescription = sanitizePdfText(content.prescription.trim());
-    final coachingNote =
+    final noteText =
         note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
     final isPyramid =
         prescription.contains('\n') || prescription.contains(' > ');
@@ -541,10 +525,10 @@ class PdfDocumentTheme {
                 textAlign: pw.TextAlign.center,
               ),
             ],
-            if (coachingNote.isNotEmpty) ...[
+            if (noteText.isNotEmpty) ...[
               pw.SizedBox(height: 1.5),
               pw.Text(
-                coachingNote,
+                noteText,
                 style: pw.TextStyle(
                   fontSize: denseCompactTableFontSize - 0.5,
                   fontStyle: pw.FontStyle.italic,

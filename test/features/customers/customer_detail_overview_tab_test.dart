@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
-import 'package:powercoach_studio/features/customers/data/models/customer_exercise_record.dart';
 import 'package:powercoach_studio/features/customers/presentation/widgets/customer_detail_overview_tab.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -32,7 +31,6 @@ void main() {
             goalLabel: customer.goals!,
             measurements: const [],
             measurementsLoading: false,
-            exerciseRecords: const <CustomerExerciseRecord>[],
             progressSnapshot: null,
             progressLoading: false,
             workoutPlans: const [],

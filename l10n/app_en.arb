@@ -238,7 +238,6 @@
   "forgotPasswordError": "Could not send reset email. Try again.",
   "headerProfile": "Profile",
   "profileTitle": "Profile",
-  "profileComingSoon": "Profile page coming soon.",
   "profileDisplayName": "Display name",
   "profileEmail": "Email",
   "profilePhone": "Phone",
@@ -321,27 +320,8 @@
   "subscriptionCompareProgressExport": "Progress CSV export",
   "subscriptionCompareWorkoutExport": "Workout PDF/Excel export",
   "subscriptionCompareNotIncluded": "—",
-  "subscriptionPromoHint": "Have an invite code? Enter it below.",
-  "subscriptionPromoCardTitle": "Get Pro with an invite",
-  "subscriptionPromoCardSubtitle": "During early access, Pro is free with an invite code.",
-  "subscriptionPromoCodeLabel": "Invite code",
-  "subscriptionPromoCodeHint": "e.g. POWERCOACH-2026",
-  "subscriptionPromoCodeEmpty": "Enter an invite code.",
-  "subscriptionPromoRedeemButton": "Activate Pro",
-  "subscriptionPromoRedeemSuccess": "Pro activated. Enjoy!",
-  "subscriptionPromoRedeemError": "Could not activate the code. Try again.",
-  "subscriptionPromoAlreadyPro": "You already have Pro access.",
-  "subscriptionPromoProActiveHint": "Your Pro access is active via invite code.",
   "subscriptionStatusPromoActive": "Pro (invite)",
   "subscriptionStatusPromoActiveDetail": "Pro access activated with an invite code.",
-  "subscriptionCouponRequestIntro": "Don't have a code? You can request Pro access.",
-  "subscriptionCouponRequestButton": "Request invite code",
-  "subscriptionCouponRequestMessageLabel": "Message (optional)",
-  "subscriptionCouponRequestMessageHint": "e.g. how many clients you coach, how you use the app…",
-  "subscriptionCouponRequestSubmit": "Send request",
-  "subscriptionCouponRequestSuccess": "Request sent. We'll reply by email.",
-  "subscriptionCouponRequestError": "Could not send the request. Try again.",
-  "subscriptionCouponRequestPending": "You already have a pending request. We'll reply by email.",
   "subscriptionBillingDetailsTitle": "Billing",
   "subscriptionBillingCycleLabel": "Billing cycle",
   "subscriptionBillingAmountLabel": "Amount",
@@ -442,22 +422,6 @@
   "settingsNotificationsDescription": "Local reminders for sessions and clients",
   "settingsNotificationPermissionDenied": "Notifications are disabled. Enable them in system settings to turn this on.",
   "reminderWebNotSupported": "Reminders are not supported in the web version of the app.",
-  "reminderPlatformNotSupported": "Reminders are not supported on this platform.",
-  "reminderEnableNotificationsFirst": "Turn on notifications in Settings first.",
-  "reminderPastTimeError": "Choose a time in the future.",
-  "reminderSaved": "Reminder saved.",
-  "reminderScheduleError": "Could not schedule the reminder. Try again.",
-  "reminderNotificationTitle": "Reminder: {customerName}",
-  "@reminderNotificationTitle": {
-    "placeholders": {
-      "customerName": {
-        "type": "String"
-      }
-    }
-  },
-  "reminderNotificationBody": "Scheduled client reminder",
-  "reminderDashboardSessionTitle": "Session reminder",
-  "customerReminderAction": "Set reminder",
   "settingsLanguageDescription": "App language",
   "settingsLanguageItalian": "Italiano",
   "settingsLanguageEnglish": "English",
@@ -735,7 +699,6 @@
   "workoutExport": "Export",
   "workoutExportPdf": "Export to PDF",
   "workoutExportExcel": "Export to Excel",
-  "workoutExportJson": "Export JSON",
   "workoutImportJson": "Import JSON",
   "workoutImportJsonSuccess": "Workout imported from JSON file.",
   "workoutImportJsonError": "Invalid or unsupported JSON file.",
@@ -757,8 +720,6 @@
   "pdfColNotes": "Notes",
   "pdfMobilitySection": "Mobility",
   "pdfSuperset": "Superset",
-  "pdfCircuit": "Circuit",
-  "pdfEmom": "EMOM",
   "pdfDayNumber": "Day {day}",
   "@pdfDayNumber": {
     "placeholders": {
@@ -876,10 +837,6 @@
   "workoutRoutineEndDatePlaceholder": "Tap to choose",
   "workoutRoutineCurrentWeek": "Current week",
   "workoutRoutineCurrentWeekHint": "Select week",
-  "workoutPlanPhaseLabel": "Phase",
-  "workoutPlanPhaseHint": "e.g. Hypertrophy, Strength, Deload",
-  "workoutPlanTagsLabel": "Tags",
-  "workoutPlanTagsHint": "e.g. upper body, shoulder rehab",
   "workoutPlanNotesLabel": "Plan notes",
   "workoutPlanNotesHint": "Internal notes for this plan",
   "workoutBuilderDetailsOptionsSection": "Options",
@@ -910,11 +867,7 @@
   "workoutPlanArchiveAction": "Archive",
   "workoutPlanUnarchiveAction": "Unarchive",
   "workoutPlanCompleteAction": "Mark completed",
-  "workoutPlanDiffCompareAction": "Compare with…",
   "workoutPlanStatusArchived": "Archived",
-  "workoutPlanStatusCompleted": "Completed",
-  "workoutPlanStatusActive": "Active",
-  "workoutPlanStatusDraft": "Draft",
   "mobilityAddExercise": "Add mobility exercise",
   "mobilityCreateNew": "Create new",
   "mobilityFromMobilityLibrary": "From mobility library",
@@ -924,30 +877,7 @@
   "mobilitySubtitle": "Subtitle",
   "customerDetailOverview": "Overview",
   "customerDetailMeasurements": "Measurements",
-  "customerDetailRecords": "Records",
-  "recordsEmpty": "No exercise records yet.",
-  "recordsEmptyHint": "Log a value for a custom exercise (e.g. 1RM, reps) and add updates over time.",
-  "recordAdd": "Add record",
-  "recordAddUpdate": "Add update",
-  "recordValue": "Value",
-  "recordUnit": "Unit",
-  "recordDate": "Date",
-  "recordNote": "Note (optional)",
-  "recordUnitKg": "kg",
-  "recordUnitReps": "reps",
-  "recordUnitSec": "sec",
-  "recordUnitMin": "min",
-  "recordUnitOther": "Other",
-  "recordDeleteConfirm": "Delete this record?",
-  "recordSaved": "Record saved.",
-  "recordSaveError": "Could not save record.",
-  "recordDeleted": "Record deleted.",
-  "recordDeleteError": "Could not delete record.",
-  "recordSelectExercise": "Select exercise",
   "recordSearchExerciseHint": "Search by name...",
-  "recordDeleteButton": "Delete record",
-  "workoutBuilderClientRecord": "Client record",
-  "workoutBuilderNoExerciseRecord": "No record for this exercise.",
   "workoutBuilderLoadPercentGuideTitle": "Typical powerlifting intensities",
   "workoutBuilderLoadPercentGuideIntroMass": "Load for each percentage of the latest record.",
   "workoutBuilderLoadPercentGuideIntroReps": "Approximate reps per set at each % of your logged max (guideline).",
@@ -1060,7 +990,6 @@
   "workoutBuilderCouldNotCreateExercise": "Could not create exercise. Try again or add without saving to library.",
   "workoutBuilderEnterNameOrSelect": "Enter a name or select an exercise.",
   "workoutBuilderSelectLibraryExercise": "Select an exercise from the library, or type the exact name.",
-  "workoutBuilderMultiSetBlockHeader": "Sets (Set × Reps + Load)",
   "workoutBuilderSetLabel": "Set",
   "workoutBuilderSetsLabel": "Sets",
   "workoutBuilderRepsLabel": "Reps",
@@ -1093,13 +1022,17 @@
   "workoutPhaseNumbered": "Phase {n}",
   "@workoutPhaseNumbered": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseWeeksCount": "{count, plural, =0{0 Weeks} =1{1 Week} other{{count} Weeks}}",
   "@workoutPhaseWeeksCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseObjectiveLabel": "Objective",
@@ -1110,14 +1043,18 @@
   "workoutPhaseFrequencyValue": "{count, plural, =0{0 sessions/wk} =1{1 session/wk} other{{count} sessions/wk}}",
   "@workoutPhaseFrequencyValue": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseProgressLabel": "Progress",
   "workoutPhaseProgressValue": "{percent}%",
   "@workoutPhaseProgressValue": {
     "placeholders": {
-      "percent": { "type": "int" }
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseAddWeek": "Add week to phase",
@@ -1126,27 +1063,35 @@
   "workoutPhaseCreateSessionForWeek": "Create a new session for Week {n}",
   "@workoutPhaseCreateSessionForWeek": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseAddDay": "Add Day",
   "workoutPhaseMoreExercises": "+{count} more",
   "@workoutPhaseMoreExercises": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseNoExercisesYet": "No exercises yet",
   "workoutPhaseSetsTotal": "{count, plural, =0{0 sets total} =1{1 set total} other{{count} sets total}}",
   "@workoutPhaseSetsTotal": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseWeeksCountShort": "{count, plural, =0{0 wks} =1{1 wk} other{{count} wks}}",
   "@workoutPhaseWeeksCountShort": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutPhaseExpandWeek": "Expand week",
@@ -1168,24 +1113,23 @@
   "workoutPhasePresetCustom": "Custom…",
   "workoutPhaseRemoved": "Phase removed",
   "workoutBuilderSuperSetHeading": "SUPER SET",
-  "workoutBuilderCircuitHeading": "CIRCUIT",
-  "workoutBuilderEmomHeading": "EMOM",
   "builderSupersetPanelTitle": "Manage superset",
-  "builderCircuitPanelTitle": "Manage circuit",
-  "builderEmomPanelTitle": "Manage EMOM",
   "builderSupersetAddExercise": "Add exercise to superset",
-  "builderDensityAddExercise": "Add exercise to group",
   "workoutBuilderAssignedPlanBadge": "Assigned plan · {customerName}",
   "@workoutBuilderAssignedPlanBadge": {
     "placeholders": {
-      "customerName": { "type": "String" }
+      "customerName": {
+        "type": "String"
+      }
     }
   },
   "workoutBuilderSessionEmptyTitle": "No exercises in this session",
   "workoutSessionEditTitleWithDay": "Edit Session · {dayName}",
   "@workoutSessionEditTitleWithDay": {
     "placeholders": {
-      "dayName": { "type": "String" }
+      "dayName": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionSaveChanges": "Save changes",
@@ -1194,7 +1138,9 @@
   "workoutSessionAssignedPlanPill": "Assigned plan: {customerName}",
   "@workoutSessionAssignedPlanPill": {
     "placeholders": {
-      "customerName": { "type": "String" }
+      "customerName": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionMetricExercises": "Exercises",
@@ -1202,7 +1148,9 @@
   "workoutSessionMetricSetsCount": "{count} sets",
   "@workoutSessionMetricSetsCount": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "workoutSessionMetricEstimatedVolume": "Estimated volume",
@@ -1211,7 +1159,9 @@
   "workoutSessionVolumeKg": "{kg} kg",
   "@workoutSessionVolumeKg": {
     "placeholders": {
-      "kg": { "type": "String" }
+      "kg": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionAddFromLibrary": "Add exercise from library",
@@ -1222,7 +1172,9 @@
   "workoutSessionTechnicalNotesForAthlete": "Technical notes for athlete ({name}):",
   "@workoutSessionTechnicalNotesForAthlete": {
     "placeholders": {
-      "name": { "type": "String" }
+      "name": {
+        "type": "String"
+      }
     }
   },
   "workoutSessionSavedHint": "Saved",
@@ -1230,7 +1182,9 @@
   "workoutSessionDuplicateLastSetN": "Duplicate last set (Set {n})",
   "@workoutSessionDuplicateLastSetN": {
     "placeholders": {
-      "n": { "type": "int" }
+      "n": {
+        "type": "int"
+      }
     }
   },
   "workoutSessionColSet": "SET",
@@ -1240,54 +1194,9 @@
   "builderSupersetEmpty": "No exercises in this superset.",
   "builderSupersetPrescriptionLabel": "Prescription (lead exercise)",
   "builderSupersetManage": "Manage",
-  "builderCircuitManage": "Manage",
-  "builderEmomManage": "Manage",
   "workoutBuilderDeleteDayMenu": "Delete day",
   "workoutBuilderNewSuperset": "New superset",
-  "workoutBuilderNewCircuit": "New circuit",
-  "workoutBuilderNewEmom": "New EMOM",
   "workoutBuilderRemoveFromSuperset": "Remove from superset",
-  "densityRoundsLabel": "Rounds",
-  "densityRestSecondsLabel": "Rest (seconds)",
-  "densityIntervalSecondsLabel": "Interval (seconds)",
-  "densityDurationMinutesLabel": "Duration (minutes)",
-  "densityBlockTypeLabel": "Type",
-  "densityBlockTypeSuperset": "Superset",
-  "densityBlockTypeCircuit": "Circuit",
-  "densityBlockTypeEmom": "EMOM",
-  "densityBlockSave": "Save density",
-  "densityCircuitRounds": "{rounds} rounds",
-  "@densityCircuitRounds": {
-    "placeholders": {
-      "rounds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityCircuitRest": "{seconds}s rest",
-  "@densityCircuitRest": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityEmomInterval": "EMOM {seconds}s",
-  "@densityEmomInterval": {
-    "placeholders": {
-      "seconds": {
-        "type": "int"
-      }
-    }
-  },
-  "densityEmomDuration": "{minutes} min",
-  "@densityEmomDuration": {
-    "placeholders": {
-      "minutes": {
-        "type": "int"
-      }
-    }
-  },
   "workoutBuilderTabTraining": "Training",
   "workoutBuilderTabMobility": "Mobility",
   "workoutBuilderTabDetails": "Details",
@@ -1329,7 +1238,6 @@
   "workoutBuilderNavLibrary": "Library",
   "workoutBuilderNavBuilder": "Builder",
   "workoutBuilderNavDiary": "Diary",
-  "workoutBuilderNavStats": "Stats",
   "workoutBuilderWeeksLabel": "Weeks",
   "workoutBuilderDaysLabel": "Days",
   "workoutBuilderCalendarWeekdayLabel": "Calendar weekday",
@@ -1354,34 +1262,10 @@
   "customerNewWorkoutSheetTitle": "New workout plan",
   "customerNewWorkoutBlank": "Blank plan",
   "customerNewWorkoutBlankHint": "Start from scratch in the builder",
-  "customerNewWorkoutFromTemplate": "From template library",
-  "customerNewWorkoutFromTemplateHint": "Use a saved template",
   "customerNewWorkoutDuplicateExisting": "Duplicate existing plan",
   "customerNewWorkoutDuplicateExistingHint": "Copy one of this client's plans",
   "customerNewWorkoutNoPlansToDuplicate": "No plans to duplicate for this client.",
   "customerNewWorkoutDuplicatePickTitle": "Choose a plan to duplicate",
-  "customerNewWorkoutGuided": "Guided setup",
-  "customerNewWorkoutGuidedHint": "Name, weeks, days, and a preset split",
-  "workoutNewPlanWizardTitle": "Guided plan setup",
-  "workoutNewPlanWizardBack": "Back",
-  "workoutNewPlanWizardNext": "Next",
-  "workoutNewPlanWizardCreate": "Create plan",
-  "workoutNewPlanWizardNameRequired": "Enter a name for the plan.",
-  "workoutNewPlanWizardNameLabel": "Plan name",
-  "workoutNewPlanWizardStepNameTitle": "What should this plan be called?",
-  "workoutNewPlanWizardStepNameHint": "e.g. Summer hypertrophy, Pre-comp, Mesocycle 1…",
-  "workoutNewPlanWizardStepWeeksTitle": "How many weeks?",
-  "workoutNewPlanWizardStepWeeksHint": "You can add or remove weeks later in the builder.",
-  "workoutNewPlanWizardStepDaysTitle": "How many days per week?",
-  "workoutNewPlanWizardStepDaysHint": "Choose how many training slots you want each week.",
-  "workoutNewPlanWizardStepPresetTitle": "Which split template?",
-  "workoutNewPlanWizardStepPresetHint": "We create empty named days you can rename anytime.",
-  "workoutNewPlanWizardPresetFullBody": "Full body",
-  "workoutNewPlanWizardPresetFullBodyHint": "Day A/B/C… full-body sessions",
-  "workoutNewPlanWizardPresetUpperLower": "Upper / Lower",
-  "workoutNewPlanWizardPresetUpperLowerHint": "Alternate upper and lower days",
-  "workoutNewPlanWizardPresetPpl": "Push / Pull / Legs",
-  "workoutNewPlanWizardPresetPplHint": "Push, pull, and legs rotation",
   "workoutPdfPreviewTitle": "PDF preview",
   "workoutPdfPreviewMessage": "Your PDF is ready. Open a preview in a new tab or download it.",
   "workoutPdfPreviewOpen": "Open preview",
@@ -1392,39 +1276,21 @@
   "workoutBuilderSandboxBanner": "Local draft — not assigned to a client",
   "workoutBuilderSandboxBannerHint": "Assign to a client to use it in their program.",
   "workoutBuilderAssignToCustomer": "Assign to client",
+  "workoutAssignCustomerTitle": "Choose a client",
+  "workoutAssignCustomerSearchHint": "Search by name…",
+  "workoutAssignCustomerNoMatch": "No customers match your search.",
+  "workoutAssignCustomersLoadError": "Could not load the client list. Try again.",
   "workoutBuilderAssignDraftSuccess": "Plan assigned to client.",
   "workoutBuilderLogSession": "Log session",
   "workoutBuilderLogSessionSuccess": "Session logged.",
   "workoutBuilderCloneDayToTarget": "Duplicate to…",
   "workoutBuilderCloneDayTargetTitle": "Duplicate day to",
-  "workoutBuilderDayCoachingNoteTitle": "Coaching note",
-  "workoutBuilderDayCoachingNoteLabel": "Note for this day",
-  "workoutBuilderDayCoachingNoteHint": "e.g. focus, cues, warmup instructions",
-  "workoutBuilderProgressionIncreaseLoad": "Suggestion: bump load to {value}",
-  "@workoutBuilderProgressionIncreaseLoad": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "workoutBuilderProgressionIncreaseLoadGeneric": "Suggestion: consider a small load bump",
-  "workoutBuilderProgressionIncreaseReps": "Suggestion: aim for {value} reps",
-  "@workoutBuilderProgressionIncreaseReps": {
-    "placeholders": {
-      "value": {
-        "type": "String"
-      }
-    }
-  },
-  "workoutBuilderProgressionApply": "Apply",
   "workoutBuilderReadOnlyBanner": "Read-only — duplicate the plan to edit it.",
   "planScheduleEmptyHint": "Set start date",
   "workoutBuilderEmptyDayCta": "Add exercise",
   "workoutActionFailed": "Action failed. Please try again.",
   "workoutPlansLoadError": "Could not load this client's workout plans.",
   "workoutDiaryLoadError": "Could not load the workout diary.",
-  "workoutTemplateOpenPlanAction": "Open plan",
   "measurementsEmpty": "No measurements yet",
   "measurementsEmptyHint": "Add a measurement to track 1RM, body composition, and circumferences.",
   "measurementAdd": "Add measurement",
@@ -1442,14 +1308,8 @@
   "measurementBodyComp": "Body composition",
   "measurementFormSubtitle": "Update 1RM loads, skinfolds, and body metrics",
   "measurementDeltaUnchanged": "Unchanged",
-  "measurementSkinfolds": "Skinfolds (mm)",
   "measurementBodyFat": "Body fat %",
   "measurementMuscleMass": "Muscle mass (kg)",
-  "measurementCircumferences": "Circumferences (cm)",
-  "measurementChest": "Chest",
-  "measurementWaist": "Waist",
-  "measurementArms": "Arms",
-  "measurementThighs": "Thighs",
   "measurementNotes": "Notes",
   "measurementSaved": "Measurement saved.",
   "measurementSaveError": "Could not save measurement.",
@@ -1460,31 +1320,6 @@
   "measurementHistoryMetricLabel": "Metric",
   "measurementHistoryNoMetricData": "No values recorded for this metric yet.",
   "measurementHistoryLoadError": "Could not load measurement history.",
-  "measurementHistoryCompareTitle": "Period comparison",
-  "measurementHistoryCompareSubtitle": "Last 30 days vs previous 30 days",
-  "measurementHistoryCompareRecent": "Last 30 days",
-  "measurementHistoryComparePrevious": "Previous 30 days",
-  "measurementHistoryCompareInsufficient": "Add more measurements to compare periods.",
-  "measurementHistoryCompareNoData": "No data",
-  "measurementHistoryCompareDelta": "{metric} change: {delta}",
-  "@measurementHistoryCompareDelta": {
-    "placeholders": {
-      "metric": {
-        "type": "String"
-      },
-      "delta": {
-        "type": "String"
-      }
-    }
-  },
-  "measurementHistoryCompareSampleCount": "{count} samples",
-  "@measurementHistoryCompareSampleCount": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
   "measurementHistoryOpen": "View history",
   "measurementHistoryOpenFull": "Open full history",
   "measurementHistoryRange30d": "30d",
@@ -1509,8 +1344,6 @@
   "customerNotesEmptyBody": "Message cannot be empty.",
   "customerNotesSendError": "Could not save the note.",
   "customerNotesLoadError": "Could not load notes.",
-  "customerNotesAttachPhoto": "Attach photo",
-  "customerNotesAttachSoon": "Photo attachments will arrive in a later update.",
   "measurementExportCsv": "Export CSV",
   "measurementExportPdf": "Export PDF",
   "measurementExportSuccess": "Download started.",
@@ -1618,26 +1451,16 @@
   "dashboardWorkoutBuilder": "Workout Builder",
   "dashboardSessionTitle": "Session",
   "dashboardDetailHint": "Details are based on the selected workout plan start date.",
-  "dashboardReminderTooltip": "Set reminder",
   "dashboardSectionToday": "Today",
   "dashboardSectionAttention": "Needs attention",
   "dashboardSectionStalePlans": "Plans to refresh",
   "dashboardSectionCustomersNoPlan": "Clients without a program",
   "dashboardCoachToolsTitle": "Coach tools",
-  "dashboardDiaryAction": "Workout diary",
-  "dashboardStatsAction": "Coach stats",
+  "dashboardDiaryAction": "History",
   "dashboardDiarySubtitle": "{count} sessions (30d)",
   "@dashboardDiarySubtitle": {
     "placeholders": {
       "count": {
-        "type": "int"
-      }
-    }
-  },
-  "dashboardStatsSubtitle": "{percent}% adherence (7d)",
-  "@dashboardStatsSubtitle": {
-    "placeholders": {
-      "percent": {
         "type": "int"
       }
     }
@@ -1703,12 +1526,14 @@
   "dashboardMetricWeeklyUpdates": "Weekly updates",
   "dashboardMetricCoachAttention": "Coach attention",
   "dashboardMetricAlertsSuffix": "alerts",
-  "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the agenda or gym mode.",
+  "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the calendar.",
   "dashboardOpenAgenda": "Open agenda",
   "dashboardCoachToolsAvailable": "{count} tools available",
   "@dashboardCoachToolsAvailable": {
     "placeholders": {
-      "count": { "type": "int" }
+      "count": {
+        "type": "int"
+      }
     }
   },
   "dashboardAttentionLocalHint": "Your data stays stored on this device.",
@@ -1717,19 +1542,21 @@
   "dashboardStaleWindowBadge": "{days}-day window",
   "@dashboardStaleWindowBadge": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "dashboardNoStalePlansHint": "No programs older than the {days}-day refresh window.",
   "@dashboardNoStalePlansHint": {
     "placeholders": {
-      "days": { "type": "int" }
+      "days": {
+        "type": "int"
+      }
     }
   },
   "dashboardShortcutsTitle": "Management shortcuts",
   "dashboardShortcutLibrarySubtitle": "Exercises and folders",
-  "dashboardShortcutTemplates": "Plans & templates",
-  "dashboardShortcutTemplatesSubtitle": "Ready-made models",
   "dashboardShortcutNewAthlete": "New athlete",
   "dashboardShortcutNewAthleteSubtitle": "Profile and plan",
   "dashboardShortcutSettingsSubtitle": "Backup and local data",
@@ -1786,12 +1613,7 @@
   "workoutsAssignHint": "Assign a workout to this customer from the customer detail screen.",
   "customerWorkoutsSearchHint": "Search by name, phase, or tag",
   "customerWorkoutsFilterAll": "All",
-  "customerWorkoutsFilterActive": "Active",
-  "customerWorkoutsFilterScheduled": "Scheduled",
-  "customerWorkoutsFilterUnscheduled": "Unscheduled",
-  "customerWorkoutsFilterEnded": "Ended",
   "customerWorkoutsFilterArchived": "Archived",
-  "customerWorkoutsFilterStale": "Needs update",
   "customerWorkoutsSortTitle": "Sort by",
   "customerWorkoutsSortStartDateDesc": "Start date (newest)",
   "customerWorkoutsSortStartDateAsc": "Start date (oldest)",
@@ -1801,63 +1623,7 @@
   "customerWorkoutsSortNameDesc": "Name (Z-A)",
   "customerWorkoutsNoMatch": "No plans match the selected filters.",
   "workoutLibraryTitle": "Library",
-  "workoutTemplatesTitle": "Workout templates",
-  "workoutTemplatesEmpty": "No templates yet. Save a client plan as a template or create one here.",
-  "workoutTemplatesNew": "New template",
-  "workoutTemplatesAssign": "Assign to client",
-  "workoutTemplatesDuplicate": "Duplicate template",
-  "workoutTemplatesEdit": "Edit",
-  "workoutTemplatesDelete": "Delete",
-  "workoutTemplatesAssignTitle": "Choose a client",
-  "workoutTemplatesSaveAsTemplate": "Save as template",
-  "workoutTemplatesSaveAsTemplateTitle": "Template name",
-  "workoutTemplatesNameHint": "Name",
-  "workoutTemplatesDuplicateTitle": "Duplicate template",
-  "workoutTemplatesDuplicateHint": "Name for the copy",
-  "workoutTemplatesAssignedSnack": "Plan added to the client.",
-  "workoutTemplatesDuplicateSnack": "Template created.",
-  "workoutTemplatesDeleteConfirmTitle": "Delete template?",
-  "workoutTemplatesDeleteConfirmMessage": "This template will be removed from this device.",
-  "workoutTemplatesDrawerLabel": "Workout templates",
-  "workoutTemplatesCustomersLoadError": "Could not load the client list. Try again.",
-  "workoutTemplatesSemanticList": "Workout templates list",
-  "workoutTemplatesAssignSearchHint": "Search by name…",
-  "workoutTemplatesAssignNoMatch": "No customers match your search.",
-  "workoutTemplatesSearchHint": "Search by name, phase, or tag",
-  "workoutTemplatesSortTitle": "Sort templates",
-  "workoutTemplatesSortNameAsc": "Name (A-Z)",
-  "workoutTemplatesSortUpdatedDesc": "Last updated",
-  "workoutTemplatesSortWeekCountDesc": "Most weeks",
-  "workoutTemplatesNoMatch": "No templates match your search.",
-  "workoutTemplatesPreviewTitle": "Template preview",
-  "workoutTemplatesPreviewEmpty": "No structure available for this template.",
-  "workoutTemplatesStructureSummary": "{weeks} weeks · {days} days · {exercises} exercises",
-  "@workoutTemplatesStructureSummary": {
-    "placeholders": {
-      "weeks": {
-        "type": "int"
-      },
-      "days": {
-        "type": "int"
-      },
-      "exercises": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesPreviewExercisesMore": "+{count} more exercises",
-  "@workoutTemplatesPreviewExercisesMore": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutTemplatesAssignStartDate": "Optional start date",
-  "workoutTemplatesAssignStartDateHint": "Tap to choose a start date",
-  "workoutTemplatesAssignStartDateSkip": "Skip",
-  "workoutDiaryTitle": "Workout diary",
-  "workoutStatsTitle": "Stats",
+  "workoutDiaryTitle": "History",
   "placeholderComingSoon": "Coming soon",
   "placeholderSectionNotImplemented": "This section is not yet implemented.",
   "placeholderBackToBuilder": "Back to Builder",
@@ -1890,28 +1656,8 @@
   "updatedJustNow": "Just now",
   "workoutDiaryEmpty": "No logged sessions yet. Mark a session complete from the schedule to start your diary.",
   "workoutDiaryFilterAll": "All clients",
-  "coachStatsTitle": "Coach stats",
-  "coachStatsAdherence": "Adherence",
-  "coachStatsCompletedSessions": "Completed sessions",
-  "coachStatsSkippedSessions": "Skipped sessions",
-  "coachStatsActiveClients": "Active clients",
   "coachStatsPeriod7d": "Last 7 days",
   "coachStatsPeriod30d": "Last 30 days",
-  "coachStatsChartTitle": "Completed sessions by day",
-  "coachStatsChartEmpty": "No completed sessions in this period.",
-  "coachStatsChartDaySummary": "{date}: {count} completed",
-  "@coachStatsChartDaySummary": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      },
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "coachStatsExportCsv": "Export CSV",
-  "coachStatsExportCsvSubject": "PowerCoach coach stats",
   "workoutDiaryFilterDate": "Date range",
   "workoutDiaryFilterDateAll": "All time",
   "workoutDiaryFilterStatusAll": "All statuses",
@@ -1937,107 +1683,6 @@
   },
   "sessionLogExpandSets": "Show sets",
   "sessionLogCollapseSets": "Hide sets",
-  "sessionLogCheckInTitle": "How did it go? (optional)",
-  "sessionLogRpeLabel": "Session RPE (1-10)",
-  "sessionLogPainLabel": "Pain level (0-10)",
-  "sessionLogPainLocationHint": "Where? (optional)",
-  "sessionLogRpeChipLabel": "RPE {value}/10",
-  "@sessionLogRpeChipLabel": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "sessionLogPainChipLabel": "Pain {value}/10",
-  "@sessionLogPainChipLabel": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      }
-    }
-  },
-  "sessionLogPainChipLabelWithLocation": "Pain {value}/10 · {location}",
-  "@sessionLogPainChipLabelWithLocation": {
-    "placeholders": {
-      "value": {
-        "type": "int"
-      },
-      "location": {
-        "type": "String"
-      }
-    }
-  },
-  "gymModeTitle": "Gym mode",
-  "gymModeAction": "Open gym mode",
-  "gymModeEmptyToday": "No sessions scheduled for today.",
-  "gymModeRunnerTitle": "Session",
-  "gymModeCoachingNoteLabel": "Coaching note",
-  "gymModeSaveAndComplete": "Save & complete",
-  "gymModeSaving": "Saving…",
-  "gymModeLogSuccess": "Session saved",
-  "gymModeTimerStart": "Start",
-  "gymModeTimerReset": "Reset",
-  "workoutPlanDiffTitle": "Plan comparison",
-  "workoutPlanDiffPickPlanBTitle": "Choose a plan to compare",
-  "workoutPlanDiffPlanALabel": "Plan A (current)",
-  "workoutPlanDiffPlanBLabel": "Plan B",
-  "workoutPlanDiffChangePlanB": "Change",
-  "workoutPlanDiffNoOtherPlans": "No other plans for this customer yet.",
-  "workoutPlanDiffEmpty": "No structural differences between these plans.",
-  "workoutPlanDiffLoadError": "Couldn't load these plans.",
-  "workoutPlanDiffSummaryDaysAdded": "{count} days added",
-  "@workoutPlanDiffSummaryDaysAdded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryDaysRemoved": "{count} days removed",
-  "@workoutPlanDiffSummaryDaysRemoved": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryDaysChanged": "{count} days changed",
-  "@workoutPlanDiffSummaryDaysChanged": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesAdded": "{count} exercises added",
-  "@workoutPlanDiffSummaryExercisesAdded": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesRemoved": "{count} exercises removed",
-  "@workoutPlanDiffSummaryExercisesRemoved": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffSummaryExercisesChanged": "{count} exercises changed",
-  "@workoutPlanDiffSummaryExercisesChanged": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "workoutPlanDiffBadgeAdded": "Added",
-  "workoutPlanDiffBadgeRemoved": "Removed",
-  "workoutPlanDiffBadgeChanged": "Changed",
-  "workoutPlanDiffCoachingNoteLabel": "Coaching note",
   "customerProgressTitle": "Training progress",
   "customerProgressAdherence": "Adherence (30 days)",
   "customerProgressLastSession": "Last session",
@@ -2175,93 +1820,112 @@
       }
     }
   },
-  "backupImportSelectGroups": "Choose what to import",
-  "backupImportPartialReplaceHint": "Deselected groups stay unchanged on this device.",
-  "backupImportGroupCustomers": "Clients and related data ({count})",
-  "@backupImportGroupCustomers": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupPlans": "Workout plans ({count})",
-  "@backupImportGroupPlans": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupExerciseLibrary": "Exercise library ({count})",
-  "@backupImportGroupExerciseLibrary": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupReminders": "Reminders ({count})",
-  "@backupImportGroupReminders": {
-    "placeholders": {
-      "count": {
-        "type": "int"
-      }
-    }
-  },
-  "backupImportGroupPreferences": "Profile and preferences",
   "backupImportTypeConfirm": "Type IMPORT to confirm replacing all data",
   "backupImportTypeConfirmHint": "IMPORT",
-  "releaseNotesTitle": "What's new",
-  "releaseNotesInstalledVersion": "Installed version: {version}",
-  "@releaseNotesInstalledVersion": {
+  "settingsHubTitle": "Profile & Platform Settings",
+  "settingsHubSubtitle": "Manage your coach identity, notification preferences, and local or cloud backups.",
+  "settingsHubSyncPill": "Local data active",
+  "settingsNavPersonalInfo": "Personal info",
+  "settingsNavSubscription": "Subscription",
+  "settingsNavNotifications": "Notifications & Reminders",
+  "settingsNavBackup": "Offline & Cloud backup",
+  "settingsNavLanguage": "Language & format",
+  "settingsNavPrivacy": "Privacy policy",
+  "settingsNavTerms": "Terms of service",
+  "settingsProBadge": "PRO",
+  "settingsPersonalInfoCardTitle": "Personal info",
+  "settingsPersonalInfoCardSubtitle": "These details appear on workout sheets and notifications.",
+  "settingsProfileVerified": "Verified profile",
+  "settingsEmailVerified": "Verified",
+  "settingsAvatarTitle": "Coach profile photo",
+  "settingsAvatarHint": "Enter an image URL (JPG, PNG, or WebP).",
+  "settingsUnsavedChanges": "You have unsaved changes",
+  "settingsCancelChanges": "Cancel",
+  "settingsSaveChanges": "Save changes",
+  "settingsNotificationsModuleTitle": "Notifications & Reminders",
+  "settingsBackupModuleTitle": "Offline & Cloud backup",
+  "workoutDiaryPageTitle": "Workout Diary & History",
+  "workoutDiaryPageBadge": "Live Session Log",
+  "workoutDiaryPageSubtitle": "Review session logs, monitor compliance, and check recorded training volume.",
+  "workoutDiaryExportAction": "Export",
+  "workoutDiaryRecordAction": "Log session",
+  "workoutDiaryKpiSessions": "Completed sessions",
+  "workoutDiaryKpiVolume": "Volume lifted",
+  "workoutDiaryKpiVolumeUnit": "kg",
+  "workoutDiaryKpiCompliance": "Compliance",
+  "workoutDiaryKpiSkipped": "{count} skipped",
+  "@workoutDiaryKpiSkipped": {
     "placeholders": {
-      "version": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryFilterAthlete": "Filter athlete",
+  "workoutDiaryShowingCount": "Showing {count} sessions",
+  "@workoutDiaryShowingCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryExercisesCount": "{count} exercises",
+  "@workoutDiaryExercisesCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiarySetsCount": "{count} sets",
+  "@workoutDiarySetsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "workoutDiaryVolumeLabel": "Volume: {kg} kg",
+  "@workoutDiaryVolumeLabel": {
+    "placeholders": {
+      "kg": {
         "type": "String"
       }
     }
   },
-  "releaseNotesSettingsSubtitle": "Version {version}",
-  "@releaseNotesSettingsSubtitle": {
+  "calendarToday": "Today",
+  "calendarViewMonth": "Month",
+  "calendarViewWeek": "Week",
+  "calendarViewDay": "Day",
+  "calendarAddSession": "Add Session",
+  "calendarFilterAllAthletes": "All athletes",
+  "calendarDaySummaryTitle": "Day summary",
+  "calendarOpenSession": "Open session",
+  "subscriptionPageTitle": "Subscription & Plans",
+  "subscriptionPageSubtitle": "Track your current plan usage, compare packages, and unlock unlimited athletes with PowerCoach Pro.",
+  "subscriptionFreeLimitedBadge": "Limited Free Plan",
+  "subscriptionProActiveBadge": "Pro Plan Active",
+  "subscriptionPlanInUse": "Current plan",
+  "subscriptionFreeCoachLabel": "Free (Free Coach)",
+  "subscriptionUsageClients": "Active client usage",
+  "subscriptionSlotsRemaining": "You still have {count} free athlete slots available.",
+  "@subscriptionSlotsRemaining": {
     "placeholders": {
-      "version": {
-        "type": "String"
+      "count": {
+        "type": "int"
       }
     }
   },
-  "releaseNotesHighlightsLabel": "Highlights",
-  "releaseNotesCurrentVersionBadge": "Current",
-  "releaseNotesV1071": "Coach hub: Diary and Stats cards on the dashboard; overflow menu on the full schedule",
-  "releaseNotesV1072": "From customer profile: open diary filtered by customer",
-  "releaseNotesV1073": "CSV progress export (adherence, PRs, measurements) from customer overview",
-  "releaseNotesV1074": "Dedicated superset panel in workout builder (compact preview + editor)",
-  "releaseNotesV1075": "Richer session log: reps and load per set in the session sheet",
-  "releaseNotesV1061": "Backup: selective restore by category + export metadata (export date, entity counts)",
-  "releaseNotesV1062": "Workout diary v2: date/status filters, navigable session detail",
-  "releaseNotesV1063": "Coach stats: daily adherence chart + KPI CSV export",
-  "releaseNotesV1064": "Presentation-split builder improvements (exercise sheet, training tab)",
-  "releaseNotesV1051": "Session execution model (completed / skipped / planned) persisted locally",
-  "releaseNotesV1052": "Workout diary and coach stats (MVP)",
-  "releaseNotesV1053": "Customer progress panel: 30-day adherence, recent PRs, 4-week strip",
-  "releaseNotesV1054": "Session reminders linked to plan calendar",
-  "releaseNotesV1055": "Customer follow-up based on real execution data",
-  "releaseNotesV1041": "Customer overview with real measurement metrics (sparkline, 30-day trend)",
-  "releaseNotesV1042": "Exercise picker: recents and favorites in library",
-  "releaseNotesV1043": "Calendar session detail with real plan data",
-  "releaseNotesV1044": "Single-occurrence session override (reschedule without changing the plan)",
-  "releaseNotesV1045": "Plan lifecycle (draft, active, completed, archived)",
-  "releaseNotesV1031": "Business data local-only (Drift); Supabase for authentication only",
-  "releaseNotesV1032": "Removed obsolete cloud sync UX; tier 2/3 backfill tests",
-  "releaseNotesV1033": "Local prefs and coach profile repositories",
-  "releaseNotesV1034": "Modular offline store migration",
-  "releaseNotesV1021": "Workout plan template library",
-  "releaseNotesV1022": "Plan editor autosave + unsaved exit guard",
-  "releaseNotesV1023": "Plan export PDF / JSON / Excel",
-  "releaseNotesV1011": "Today dashboard and session schedule",
-  "releaseNotesV1012": "Customer management, measurements, exercise records",
-  "releaseNotesV1013": "Workout builder (weeks/days/exercises, basic supersets)",
-  "releaseNotesV1014": "Coach calendar and plan assignment",
-  "releaseNotesV1015": "Local notifications and reminders",
-  "releaseNotesV1016": "End-to-end IT/EN localization",
-  "releaseNotesV1017": "Account JSON backup export/import"
+  "subscriptionLimitAtFive": "Limit reached at 5 clients",
+  "subscriptionUpgradeHighlightTitle": "Unlock Unlimited Clients with Pro",
+  "subscriptionUpgradeHighlightBody": "Remove athlete caps and export workout sheets as PDF/Excel.",
+  "subscriptionUpgradeHighlightCta": "Activate Coach Pro",
+  "subscriptionRecommendedBadge": "RECOMMENDED",
+  "subscriptionBillingMonthly": "Monthly billing",
+  "subscriptionBillingYearly": "Yearly billing",
+  "subscriptionSavePercent": "Save 20%",
+  "subscriptionCompareCustomersUnlimited": "Unlimited",
+  "subscriptionCtaTitle": "Upgrade to PowerCoach Pro",
+  "subscriptionCtaNoLock": "No lock-in: cancel anytime with one click"
 }

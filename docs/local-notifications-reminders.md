@@ -1,4 +1,4 @@
-# Local notifications & reminders (Feature 02)
+# Local notifications & calendar reminders
 
 PowerCoach Studio uses [`flutter_local_notifications`](https://pub.dev/packages/flutter_local_notifications) with [`timezone`](https://pub.dev/packages/timezone) for **UTC-based** `zonedSchedule` (inexact alarms on Android to avoid sensitive `SCHEDULE_EXACT_ALARM` requirements where possible).
 
@@ -9,36 +9,36 @@ PowerCoach Studio uses [`flutter_local_notifications`](https://pub.dev/packages/
 | **Android** | `POST_NOTIFICATIONS` (API 33+), reminder channel `powercoach_reminders`, `AndroidScheduleMode.inexactAllowWhileIdle`. |
 | **iOS** | Runtime permission for alert/badge/sound. |
 | **macOS** | Same plugin path as iOS where supported. |
-| **Web** | **Not supported** — the Settings toggle is disabled; creating reminders from the customer sheet shows a localized message. |
+| **Web** | **Not supported** — calendar reminder toggles in Settings are disabled with a localized message. |
 | **Windows** | Plugin support is limited; scheduling is gated the same way as unsupported targets. |
 
 ## User flows
 
-1. **Settings → Notifications**  
-   When turning **on**, the OS permission dialog runs. If the user denies, the switch stays off and a snackbar explains next steps. When turning **off**, pending OS notifications for this app are cancelled (see `NotificationSchedulerService.cancelAllScheduled`).
+1. **Settings → Calendar reminders**  
+   When enabling, the OS permission dialog runs. Lead-time hours control how far ahead of a planned session the notification fires. When turning **off**, pending OS notifications for this app are cancelled (see `NotificationSchedulerService.cancelAllScheduled`).
 
-2. **Customer detail → ⋮ → Set reminder**  
-   Pick date and time; a `Reminder` is stored in `SharedPreferences` and scheduled if notifications are enabled.
+2. **Plan calendar events**  
+   Reminders are derived from scheduled plan sessions (calendar path). There is **no** manual per-client ReminderStore / “Set reminder” sheet anymore.
 
 3. **Tap notification**  
-   Payload is a GoRouter path (e.g. `/customers/{id}`). Navigation uses `appRootNavigatorKey` + `GoRouter.go`.
+   Payload is a GoRouter path (e.g. `/customers/{id}` or schedule detail). Navigation uses `appRootNavigatorKey` + `GoRouter.go`.
 
 4. **Sign out**  
-   Cancels all scheduled local notifications and clears the reminder list from the device (privacy on shared devices).
+   Cancels all scheduled local notifications (privacy on shared devices).
 
 ## Backup / restore
 
-User backup JSON (v1) includes an optional top-level **`reminders`** array (additive). Import restores reminders then calls `syncWithNotificationPreference()`.
+User backup JSON may still include a legacy top-level **`reminders`** array; import **ignores** those rows. Calendar reminder **preferences** (enabled + lead hours) are restored via `preferences`.
 
 ## Manual QA checklist
 
-- [ ] **Android**: enable toggle → grant permission → create reminder 2 min ahead → notification fires → tap opens customer.
-- [ ] **Android**: deny permission → toggle stays off, message shown.
+- [ ] **Android**: enable calendar reminders → grant permission → schedule a session soon → notification fires → tap opens the right screen.
+- [ ] **Android**: deny permission → toggle stays off / message shown.
 - [ ] **iOS**: same happy path as Android.
-- [ ] **Web**: toggle disabled; customer reminder action shows “not supported on web”.
-- [ ] **Logout**: pending reminders cleared; no stale notifications after re-login with another account (same device).
+- [ ] **Web**: calendar reminder UI shows “not supported on web”.
+- [ ] **Logout**: pending notifications cleared.
 
 ## Tests
 
-- `test/core/notifications/reminder_test.dart` — stable id + JSON.
-- `test/core/backup/user_data_backup_codec_test.dart` — optional `reminders` in envelope.
+- `test/core/notifications/calendar_reminder_scheduler_test.dart` — calendar scheduling.
+- `test/core/backup/user_data_backup_codec_test.dart` — prefs + legacy `reminders` tolerance.

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../customers/data/models/customer_exercise_record.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
@@ -10,7 +9,6 @@ import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_picker_index_helpers.dart';
 import 'exercise_add_create_new_fields.dart';
 import 'exercise_add_library_picker.dart';
-import 'exercise_add_load_percent_tools.dart';
 import 'exercise_add_set_rows_editor.dart';
 import 'exercise_add_sheet_loader.dart';
 import 'exercise_add_sheet_save_handler.dart';
@@ -62,16 +60,12 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
   final _noteController = TextEditingController();
   final List<SetEditControllers> _setControllers = [];
   bool _saving = false;
-  List<CustomerExerciseRecord> _recordsForExercise = [];
-  bool _loadingRecords = false;
   final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
   String _librarySearchText = '';
   String? _librarySelectionError;
   String? _nameValidationError;
 
   bool get _apiConfigured => true;
-  bool get _hasCustomerContext =>
-      widget.customerId != null && widget.customerId!.isNotEmpty;
 
   @override
   void initState() {
@@ -135,39 +129,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
     }
   }
 
-  Future<void> _loadRecordsForExercise(String? customExerciseId) async {
-    final customerId = widget.customerId;
-    if (customerId == null || customExerciseId == null || !_apiConfigured) {
-      if (mounted) {
-        setState(() {
-          _recordsForExercise = [];
-          _loadingRecords = false;
-        });
-      }
-      return;
-    }
-    setState(() => _loadingRecords = true);
-    try {
-      final list = await _loader.loadCustomerRecords(
-        customerId: customerId,
-        customExerciseId: customExerciseId,
-      );
-      if (mounted) {
-        setState(() {
-          _recordsForExercise = list;
-          _loadingRecords = false;
-        });
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() {
-          _recordsForExercise = [];
-          _loadingRecords = false;
-        });
-      }
-    }
-  }
-
   void _onExerciseSelected(CustomExerciseItem exercise) {
     setState(() {
       _selectedExercise = exercise;
@@ -177,7 +138,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
       );
       _librarySelectionError = null;
     });
-    _loadRecordsForExercise(exercise.id);
   }
 
   void _onLibrarySearchTextChanged(String text) {
@@ -318,13 +278,6 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
                   onExerciseSelected: _onExerciseSelected,
                   onSearchTextChanged: _onLibrarySearchTextChanged,
                   selectionErrorText: _librarySelectionError,
-                  customerRecordPanel:
-                      _hasCustomerContext && _selectedExercise != null
-                      ? ExerciseAddCustomerRecordPanel(
-                          loading: _loadingRecords,
-                          records: _recordsForExercise,
-                        )
-                      : null,
                 )
               else
                 ExerciseAddCreateNewFields(

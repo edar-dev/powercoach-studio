@@ -14,18 +14,8 @@ String workoutPlanFilterLabel(AppLocalizations l10n, WorkoutPlanFilter filter) {
   switch (filter) {
     case WorkoutPlanFilter.all:
       return l10n.customerWorkoutsFilterAll;
-    case WorkoutPlanFilter.active:
-      return l10n.customerWorkoutsFilterActive;
     case WorkoutPlanFilter.archived:
       return l10n.customerWorkoutsFilterArchived;
-    case WorkoutPlanFilter.scheduled:
-      return l10n.customerWorkoutsFilterScheduled;
-    case WorkoutPlanFilter.unscheduled:
-      return l10n.customerWorkoutsFilterUnscheduled;
-    case WorkoutPlanFilter.ended:
-      return l10n.customerWorkoutsFilterEnded;
-    case WorkoutPlanFilter.stale:
-      return l10n.customerWorkoutsFilterStale;
   }
 }
 

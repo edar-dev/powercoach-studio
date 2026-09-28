@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../../data/workout_routine_model.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import '../workout_builder_session_controller.dart';
 import 'exercise_library_pick_panel.dart';
 import 'workout_builder_superset_editor_sheet.dart';
 
-/// Superset/multiset exercise actions extracted from the builder screen (phase 3).
+/// Superset exercise actions extracted from the builder screen (phase 3).
+/// Orphan multiset/intuitive-superset builder variants were removed; basic
+/// `supersetGroupId` linking remains.
 class WorkoutSupersetActions {
   const WorkoutSupersetActions._();
 
@@ -47,8 +48,6 @@ class WorkoutSupersetActions {
       List<ExerciseSet>? setDetails,
     })
     onUpdateExercise,
-    void Function(int weekIndex, int dayIndex, String groupId, DensityBlockConfig config)?
-    onSetDensityBlock,
   }) {
     return showWorkoutBuilderSupersetEditorSheet(
       context: context,
@@ -63,7 +62,6 @@ class WorkoutSupersetActions {
       onMoveExerciseWithinSuperset: onMoveExerciseWithinSuperset,
       onRemoveFromSuperset: onRemoveFromSuperset,
       onUpdateExercise: onUpdateExercise,
-      onSetDensityBlock: onSetDensityBlock,
     );
   }
 
@@ -82,7 +80,7 @@ class WorkoutSupersetActions {
     if (dayIndex < 0 || dayIndex >= routine.weeks[weekIndex].days.length) {
       return;
     }
-    // Pick-only library panel (useRootNavigator) so session/density sheets stay open.
+    // Pick-only library panel (useRootNavigator) so session/superset sheets stay open.
     showExerciseLibraryPickPanel(
       context: context,
       theme: theme,

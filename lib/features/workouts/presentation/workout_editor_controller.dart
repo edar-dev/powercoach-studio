@@ -16,16 +16,12 @@ class WorkoutEditorSession {
     required this.routine,
     required this.planName,
     required this.initialWeekNumber,
-    this.phase,
-    this.tags,
     this.notes,
   });
 
   final WorkoutRoutine routine;
   final String planName;
   final int initialWeekNumber;
-  final String? phase;
-  final String? tags;
   final String? notes;
 }
 
@@ -53,8 +49,6 @@ typedef WorkoutEditorPlanCreator =
       String? pdfHeader,
       bool useCustomPdfHeader,
       int initialWeekNumber,
-      String? phase,
-      String? tags,
       String? notes,
     });
 typedef WorkoutEditorPlanUpdater =
@@ -63,8 +57,6 @@ typedef WorkoutEditorPlanUpdater =
       String? name,
       String? planDataJson,
       int? initialWeekNumber,
-      String? phase,
-      String? tags,
       String? notes,
     });
 
@@ -92,8 +84,6 @@ class WorkoutEditorController extends ChangeNotifier {
              pdfHeader,
              useCustomPdfHeader = false,
              initialWeekNumber = 1,
-             phase,
-             tags,
              notes,
            }) {
              return planRepo!.create(
@@ -103,8 +93,6 @@ class WorkoutEditorController extends ChangeNotifier {
                pdfHeader: pdfHeader,
                useCustomPdfHeader: useCustomPdfHeader,
                initialWeekNumber: initialWeekNumber,
-               phase: phase,
-               tags: tags,
                notes: notes,
              );
            }),
@@ -115,8 +103,6 @@ class WorkoutEditorController extends ChangeNotifier {
              name,
              planDataJson,
              initialWeekNumber,
-             phase,
-             tags,
              notes,
            }) {
              return planRepo!.update(
@@ -124,8 +110,6 @@ class WorkoutEditorController extends ChangeNotifier {
                name: name,
                planDataJson: planDataJson,
                initialWeekNumber: initialWeekNumber,
-               phase: phase,
-               tags: tags,
                notes: notes,
              );
            });
@@ -253,8 +237,6 @@ class WorkoutEditorController extends ChangeNotifier {
     final savedInitialWeek = session.initialWeekNumber >= 1
         ? session.initialWeekNumber
         : initialWeekNumber;
-    final phase = _normalizeOptionalText(session.phase);
-    final tags = _normalizeOptionalText(session.tags);
     final notes = _normalizeOptionalText(session.notes);
 
     try {
@@ -269,8 +251,6 @@ class WorkoutEditorController extends ChangeNotifier {
             existingPlanData: existingPlan?.planData,
           ),
           initialWeekNumber: savedInitialWeek,
-          phase: phase,
-          tags: tags,
           notes: notes,
         );
       } else {
@@ -281,8 +261,6 @@ class WorkoutEditorController extends ChangeNotifier {
           pdfHeader: pdfHeader,
           useCustomPdfHeader: useCustomPdfHeader,
           initialWeekNumber: savedInitialWeek,
-          phase: phase,
-          tags: tags,
           notes: notes,
         );
         createdPlanId = created.id;
@@ -295,8 +273,6 @@ class WorkoutEditorController extends ChangeNotifier {
           routine: toSave,
           planName: toSave.name,
           initialWeekNumber: savedInitialWeek,
-          phase: phase,
-          tags: tags,
           notes: notes,
         ),
       );
@@ -350,8 +326,6 @@ class WorkoutEditorController extends ChangeNotifier {
       initialWeekNumber: session.initialWeekNumber >= 1
           ? session.initialWeekNumber
           : initialWeekNumber,
-      phase: session.phase,
-      tags: session.tags,
       notes: session.notes,
     );
   }

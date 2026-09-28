@@ -18,11 +18,6 @@ class CustomerWorkoutPlanFilterBar extends StatelessWidget {
   static const List<WorkoutPlanFilter> _defaultFilters = [
     WorkoutPlanFilter.all,
     WorkoutPlanFilter.archived,
-    WorkoutPlanFilter.active,
-    WorkoutPlanFilter.scheduled,
-    WorkoutPlanFilter.unscheduled,
-    WorkoutPlanFilter.ended,
-    WorkoutPlanFilter.stale,
   ];
 
   final WorkoutPlanFilter selectedFilter;

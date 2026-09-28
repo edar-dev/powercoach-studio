@@ -110,14 +110,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     }
   }
 
-  void _openPlanDiff(WorkoutPlanApiModel plan) {
-    navigateTo(
-      context,
-      planDiffPath(customerId: widget.customerId, planIdA: plan.id),
-    );
-  }
-
-  Future<void> _openNewWorkoutSheet() async {
+  void _openNewWorkoutSheet() async {
     HapticFeedback.mediumImpact();
     await showCustomerNewWorkoutSheet(
       context,
@@ -146,11 +139,8 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       onScheduleEmptyTap: () => _openWorkoutEditor(planId: plan.id),
       onCreateFollowUp: () => _createFollowUpWorkout(plan),
       onDuplicate: () => _duplicatePlan(plan),
-      onSaveAsTemplate: () => _savePlanAsTemplate(plan),
-      onCompare: _plans.length > 1 ? () => _openPlanDiff(plan) : null,
       onArchive: () => _archivePlan(plan),
       onUnarchive: () => _unarchivePlan(plan),
-      onMarkCompleted: () => _markPlanCompleted(plan),
       onDelete: () => _deletePlan(plan),
     );
   }
@@ -228,41 +218,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
           ),
       ],
     );
-  }
-
-  Future<void> _savePlanAsTemplate(WorkoutPlanApiModel plan) async {
-    final l10n = AppLocalizations.of(context);
-    final name = await showWorkoutPlanNamePromptDialog(
-      context,
-      title: l10n.workoutTemplatesSaveAsTemplateTitle,
-      nameLabel: l10n.workoutTemplatesNameHint,
-      confirmLabel: l10n.workoutTemplatesSaveAsTemplate,
-      initialName: plan.name,
-    );
-    if (name == null || name.isEmpty || !mounted) return;
-    try {
-      await _planRepo.createTemplateFromPlan(
-        sourcePlanId: plan.id,
-        templateName: name,
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutTemplatesDuplicateSnack),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
-      );
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
   }
 
   Future<void> _createFollowUpWorkout(WorkoutPlanApiModel plan) async {
@@ -375,24 +330,6 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     try {
       await _planRepo.unarchivePlan(plan.id);
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
-      if (!mounted) return;
-      await _loadPlans();
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutActionFailed),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
-  }
-
-  Future<void> _markPlanCompleted(WorkoutPlanApiModel plan) async {
-    final l10n = AppLocalizations.of(context);
-    try {
-      await _planRepo.markPlanCompleted(plan.id);
       if (!mounted) return;
       await _loadPlans();
     } catch (_) {

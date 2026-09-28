@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../customers/presentation/widgets/customer_reminder_sheet.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../../settings/presentation/backup_onboarding_prompt.dart';
@@ -135,18 +134,10 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: l10n.dashboardReminderTooltip,
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              showDashboardReminderComposer(context);
-            },
-          ),
-          IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/profile');
+              navigateTo(context, AppPaths.personalInfo);
             },
           ),
         ],
@@ -213,7 +204,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           actionLabel: l10n.dashboardSeeAll,
                           onAction: () {
                             HapticFeedback.mediumImpact();
-                            navigateTo(context, '/dashboard/schedule');
+                            navigateTo(context, '/dashboard/calendar');
                           },
                         ),
                         const SizedBox(height: 12),
@@ -224,17 +215,6 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           snapshot: snap,
                           loading: _loading,
                         ),
-                        if (snap.todayItems.isNotEmpty) ...[
-                          const SizedBox(height: 12),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              HapticFeedback.mediumImpact();
-                              navigateTo(context, AppPaths.gym);
-                            },
-                            icon: const Icon(Icons.fitness_center),
-                            label: Text(l10n.gymModeAction),
-                          ),
-                        ],
                       ],
                     ),
                   ),

@@ -8,7 +8,6 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../data/workout_routine_model.dart';
-import '../../domain/density_block.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/library_exercise_name_enrichment.dart';
 import '../../domain/workout_exercise_mutations.dart';
@@ -45,7 +44,6 @@ Future<void> showTrainingSessionEditSheet({
   required int globalWeekIndex,
   required int dayIndex,
   required void Function(int weekIndex, int dayIndex) onRenameDay,
-  required void Function(int weekIndex, int dayIndex) onEditDayNote,
   required void Function(int weekIndex, int dayIndex) onDeleteDay,
   void Function(int weekIndex, int dayIndex)? onCloneDayToTarget,
   required void Function(int, int, Exercise) onDuplicateExercise,
@@ -85,13 +83,10 @@ Future<void> showTrainingSessionEditSheet({
     int,
     int,
     String,
-    String, {
-    DensityBlockConfig? densityConfig,
-  })
+    String)
   onAssignToSuperset,
   required void Function(int, int, String) onRemoveFromSuperset,
   required void Function(int, int, String) onAddExerciseToSuperset,
-  void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock,
   bool readOnly = false,
   bool editorMode = false,
   String? planId,
@@ -140,8 +135,6 @@ Future<void> showTrainingSessionEditSheet({
               dayIndex: located.dayIndex,
               onRenameDay: () =>
                   onRenameDay(located.weekIndex, located.dayIndex),
-              onEditDayNote: () =>
-                  onEditDayNote(located.weekIndex, located.dayIndex),
               onDeleteDay: () {
                 Navigator.of(routeContext).maybePop();
                 onDeleteDay(located.weekIndex, located.dayIndex);
@@ -158,7 +151,6 @@ Future<void> showTrainingSessionEditSheet({
               onAssignToSuperset: onAssignToSuperset,
               onRemoveFromSuperset: onRemoveFromSuperset,
               onAddExerciseToSuperset: onAddExerciseToSuperset,
-              onSetDensityBlock: onSetDensityBlock,
               readOnly: readOnly,
               editorMode: editorMode,
               planId: planId,
@@ -289,7 +281,6 @@ class TrainingSessionEditBody extends StatefulWidget {
     required this.globalWeekIndex,
     required this.dayIndex,
     required this.onRenameDay,
-    required this.onEditDayNote,
     required this.onDeleteDay,
     this.onCloneDayToTarget,
     required this.onDuplicateExercise,
@@ -303,7 +294,6 @@ class TrainingSessionEditBody extends StatefulWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
-    this.onSetDensityBlock,
     this.readOnly = false,
     this.editorMode = false,
     this.planId,
@@ -321,7 +311,6 @@ class TrainingSessionEditBody extends StatefulWidget {
   final int globalWeekIndex;
   final int dayIndex;
   final VoidCallback onRenameDay;
-  final VoidCallback onEditDayNote;
   final VoidCallback onDeleteDay;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final void Function(int, int, Exercise) onDuplicateExercise;
@@ -361,13 +350,10 @@ class TrainingSessionEditBody extends StatefulWidget {
     int,
     int,
     String,
-    String, {
-    DensityBlockConfig? densityConfig,
-  })
+    String)
   onAssignToSuperset;
   final void Function(int, int, String) onRemoveFromSuperset;
   final void Function(int, int, String) onAddExerciseToSuperset;
-  final void Function(int, int, String, DensityBlockConfig)? onSetDensityBlock;
   final bool readOnly;
   final bool editorMode;
   final String? planId;
@@ -438,7 +424,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     );
   }
 
-  void _createSupersetOrCircuit() {
+  void _createSuperset() {
     if (widget.readOnly || widget.day.exercises.isEmpty) return;
     final target = widget.day.exercises.firstWhere(
       (e) => e.supersetGroupId == null || e.supersetGroupId!.isEmpty,
@@ -497,7 +483,6 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     final onLogSession = widget.onLogSession;
     final onClose = widget.onClose;
     final onRenameDay = widget.onRenameDay;
-    final onEditDayNote = widget.onEditDayNote;
     final onDeleteDay = widget.onDeleteDay;
     final onCloneDayToTarget = widget.onCloneDayToTarget;
     final onDuplicateExercise = widget.onDuplicateExercise;
@@ -511,7 +496,6 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     final onAssignToSuperset = widget.onAssignToSuperset;
     final onRemoveFromSuperset = widget.onRemoveFromSuperset;
     final onAddExerciseToSuperset = widget.onAddExerciseToSuperset;
-    final onSetDensityBlock = widget.onSetDensityBlock;
 
     final l10n = AppLocalizations.of(context);
     final isDesktop = AppBreakpoints.isDesktop(context);
@@ -571,7 +555,6 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                       onClose:
                           onClose ?? () => Navigator.of(context).maybePop(),
                       onRename: readOnly ? null : onRenameDay,
-                      onEditDayNote: readOnly ? null : onEditDayNote,
                       onLogSession: readOnly || onLogSession == null
                           ? null
                           : onLogSession,
@@ -608,7 +591,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                             ? null
                             : (w, d) => _openLibraryPicker(context),
                         onCreateSuperset:
-                            readOnly ? null : _createSupersetOrCircuit,
+                            readOnly ? null : _createSuperset,
                         onDuplicateExercise: onDuplicateExercise,
                         onRemoveExercise: onRemoveExercise,
                         onMoveExercise: onMoveExercise,
@@ -621,8 +604,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                         onAssignToSuperset: onAssignToSuperset,
                         onRemoveFromSuperset: onRemoveFromSuperset,
                         onAddExerciseToSuperset: onAddExerciseToSuperset,
-                        onSetDensityBlock: onSetDensityBlock,
-                      ),
+                                ),
                     ),
                     _SessionEditFooter(
                       theme: theme,
@@ -655,7 +637,6 @@ class _SessionEditHeader extends StatelessWidget {
     required this.showClone,
     required this.onClose,
     this.onRename,
-    this.onEditDayNote,
     this.onLogSession,
     this.onClone,
     required this.onHistory,
@@ -676,7 +657,6 @@ class _SessionEditHeader extends StatelessWidget {
   final bool showClone;
   final VoidCallback onClose;
   final VoidCallback? onRename;
-  final VoidCallback? onEditDayNote;
   final VoidCallback? onLogSession;
   final VoidCallback? onClone;
   final VoidCallback onHistory;
@@ -746,17 +726,6 @@ class _SessionEditHeader extends StatelessWidget {
                               tooltip: l10n.workoutBuilderRenameDayTitle,
                               onPressed: onRename,
                               icon: const Icon(Icons.edit_outlined, size: 18),
-                              visualDensity: VisualDensity.compact,
-                              constraints: const BoxConstraints(
-                                minWidth: 36,
-                                minHeight: 36,
-                              ),
-                            ),
-                          if (onEditDayNote != null)
-                            IconButton(
-                              tooltip: l10n.workoutBuilderDayCoachingNoteTitle,
-                              onPressed: onEditDayNote,
-                              icon: const Icon(Icons.notes_outlined, size: 18),
                               visualDensity: VisualDensity.compact,
                               constraints: const BoxConstraints(
                                 minWidth: 36,

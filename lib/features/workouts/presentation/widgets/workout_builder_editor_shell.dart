@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_bottom_nav.dart';
@@ -29,7 +28,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.showBottomNav,
     required this.onPopInvoked,
     required this.onBack,
-    required this.onOpenTemplates,
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
@@ -58,7 +56,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final bool showBottomNav;
   final Future<void> Function() onPopInvoked;
   final Future<void> Function() onBack;
-  final VoidCallback onOpenTemplates;
   final VoidCallback onImportJson;
   final void Function(String value) onExport;
   final VoidCallback onSave;
@@ -117,10 +114,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           onBack: () async {
             HapticFeedback.mediumImpact();
             await onBack();
-          },
-          onOpenTemplates: () {
-            HapticFeedback.mediumImpact();
-            navigateTo(context, '/workouts/templates');
           },
           onImportJson: onImportJson,
           onExport: onExport,

@@ -132,34 +132,6 @@ class CustomerProgressPanel extends StatelessWidget {
                   weekLabelBuilder: (index) =>
                       _weekLabel(l10n, index, snapshot.last4Weeks.length),
                 ),
-                if (snapshot.recentPrs.isNotEmpty) ...[
-                  const SizedBox(height: 20),
-                  Text(
-                    l10n.customerProgressRecentPrs,
-                    style: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: MarketingDarkColors.slate300,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ...snapshot.recentPrs.map(
-                    (pr) => Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: Text(
-                        l10n.customerProgressPrLine(
-                          pr.exerciseName,
-                          _formatPrValue(pr.value),
-                          pr.unit,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: MarketingDarkColors.text,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ],
             ),
     );
@@ -183,13 +155,6 @@ class CustomerProgressPanel extends StatelessWidget {
     final weeksAgo = total - 1 - index;
     if (weeksAgo == 0) return l10n.customerProgressThisWeek;
     return l10n.customerProgressWeeksAgo(weeksAgo);
-  }
-
-  String _formatPrValue(double value) {
-    if (value == value.roundToDouble()) {
-      return value.toInt().toString();
-    }
-    return value.toString();
   }
 }
 

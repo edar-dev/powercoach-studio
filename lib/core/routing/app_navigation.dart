@@ -6,7 +6,7 @@ import 'package:powercoach_studio/core/routing/app_paths.dart';
 ///
 /// Prefer this when leaving a route branch (e.g. `/dashboard` → `/workouts/*`,
 /// `/` → `/customers`) or when navigating between sibling routes under a parent
-/// shell without its own builder (e.g. `/workouts/templates` → `/workouts/editor`).
+/// shell without its own builder (e.g. `/workouts` → `/workouts/builder`).
 ///
 /// Use [navigatePush] only for child routes under the current branch when you
 /// need a return value or `pop` back to the parent (e.g. `/settings` →
@@ -109,43 +109,6 @@ String scheduleSessionDetailPath({
       'day': '$dayIndex',
       if (date != null)
         'date': DateTime(date.year, date.month, date.day).toIso8601String(),
-    },
-  ).toString();
-}
-
-/// Gym mode runner for a specific plan/week/day slot.
-String gymSessionPath({
-  required String customerId,
-  required String planId,
-  required int weekIndex,
-  required int dayIndex,
-  DateTime? date,
-}) {
-  return Uri(
-    path: '${AppPaths.gym}/session',
-    queryParameters: {
-      'customerId': customerId,
-      'planId': planId,
-      'week': '$weekIndex',
-      'day': '$dayIndex',
-      if (date != null)
-        'date': DateTime(date.year, date.month, date.day).toIso8601String(),
-    },
-  ).toString();
-}
-
-/// Plan version comparison for [customerId]; [planIdB] omitted shows a picker.
-String planDiffPath({
-  required String customerId,
-  required String planIdA,
-  String? planIdB,
-}) {
-  return Uri(
-    path: AppPaths.planDiff,
-    queryParameters: {
-      'customerId': customerId,
-      'planIdA': planIdA,
-      if (planIdB != null && planIdB.isNotEmpty) 'planIdB': planIdB,
     },
   ).toString();
 }

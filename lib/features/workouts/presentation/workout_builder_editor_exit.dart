@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -41,15 +40,8 @@ void navigateBackFromWorkoutBuilder({
   required bool editorMode,
   String? customerId,
 }) {
-  if (editorMode &&
-      customerId != null &&
-      customerId.isNotEmpty &&
-      customerId != kWorkoutPlanTemplateScopeId) {
+  if (editorMode && customerId != null && customerId.isNotEmpty) {
     navigateBack(context, fallback: customerWorkoutsPath(customerId));
-    return;
-  }
-  if (editorMode && customerId == kWorkoutPlanTemplateScopeId) {
-    navigateBack(context, fallback: '/workouts/templates');
     return;
   }
   // Standalone builder lives at /workouts/builder with parent /workouts — popping

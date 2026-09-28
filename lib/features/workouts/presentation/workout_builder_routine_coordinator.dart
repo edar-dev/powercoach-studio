@@ -9,7 +9,7 @@ import '../data/workout_draft_store.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/workout_routine_plan_encoder.dart';
-import 'widgets/assign_template_customer_dialog.dart';
+import 'widgets/assign_customer_picker_dialog.dart';
 import 'workout_builder_editor_exit.dart';
 import 'workout_builder_load_helpers.dart';
 import 'workout_builder_session_controller.dart';
@@ -26,8 +26,6 @@ class WorkoutBuilderRoutineCoordinator {
     required this.draftStore,
     required this.routineNameController,
     required this.initialWeekController,
-    required this.phaseController,
-    required this.tagsController,
     required this.notesController,
   });
 
@@ -38,8 +36,6 @@ class WorkoutBuilderRoutineCoordinator {
   final WorkoutDraftStore draftStore;
   final TextEditingController routineNameController;
   final TextEditingController initialWeekController;
-  final TextEditingController phaseController;
-  final TextEditingController tagsController;
   final TextEditingController notesController;
 
   WorkoutEditorSession editorSession({required int initialWeekNumber}) {
@@ -52,8 +48,6 @@ class WorkoutBuilderRoutineCoordinator {
       routine: builderSession.routine,
       planName: routineNameController.text,
       initialWeekNumber: resolvedInitialWeek,
-      phase: phaseController.text,
-      tags: tagsController.text,
       notes: notesController.text,
     );
   }
@@ -63,8 +57,6 @@ class WorkoutBuilderRoutineCoordinator {
         routine: builderSession.routine,
         planName: routineNameController.text,
         initialWeekNumber: initialWeekNumber,
-        phase: phaseController.text,
-        tags: tagsController.text,
         notes: notesController.text,
       );
 
@@ -85,8 +77,6 @@ class WorkoutBuilderRoutineCoordinator {
     WorkoutRoutine? loadedRoutine;
     var weekIndex = 0;
     var dayIndex = 0;
-    var phase = '';
-    var tags = '';
     var notes = '';
     var planCompleted = false;
     var planArchived = false;
@@ -104,8 +94,6 @@ class WorkoutBuilderRoutineCoordinator {
         loadedRoutine = snapshot.routine;
         weekIndex = snapshot.weekIndex;
         dayIndex = snapshot.dayIndex;
-        phase = snapshot.phase;
-        tags = snapshot.tags;
         notes = snapshot.notes;
         planCompleted = snapshot.planCompleted;
         planArchived = snapshot.planArchived;
@@ -123,8 +111,6 @@ class WorkoutBuilderRoutineCoordinator {
       routine: loadedRoutine,
       weekIndex: weekIndex,
       dayIndex: dayIndex,
-      phase: phase,
-      tags: tags,
       notes: notes,
       planCompleted: planCompleted,
       planArchived: planArchived,
@@ -312,7 +298,7 @@ class WorkoutBuilderRoutineCoordinator {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.workoutTemplatesCustomersLoadError),
+          content: Text(l10n.workoutAssignCustomersLoadError),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -329,7 +315,7 @@ class WorkoutBuilderRoutineCoordinator {
       return;
     }
 
-    final chosen = await showAssignTemplateCustomerDialog(
+    final chosen = await showAssignCustomerPickerDialog(
       context,
       customers: customers,
     );
@@ -347,8 +333,6 @@ class WorkoutBuilderRoutineCoordinator {
         pdfHeader: chosen.pdfHeader,
         useCustomPdfHeader: chosen.useCustomPdfHeader,
         initialWeekNumber: session.initialWeekNumber,
-        phase: session.phase,
-        tags: session.tags,
         notes: session.notes,
       );
       if (!context.mounted) return;
@@ -421,8 +405,6 @@ class WorkoutBuilderEditorLoadResult {
     this.routine,
     required this.weekIndex,
     required this.dayIndex,
-    this.phase = '',
-    this.tags = '',
     this.notes = '',
     this.planCompleted = false,
     this.planArchived = false,
@@ -434,8 +416,6 @@ class WorkoutBuilderEditorLoadResult {
   final WorkoutRoutine? routine;
   final int weekIndex;
   final int dayIndex;
-  final String phase;
-  final String tags;
   final String notes;
   final bool planCompleted;
   final bool planArchived;

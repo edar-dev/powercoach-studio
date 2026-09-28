@@ -13,9 +13,6 @@ Future<SessionLogResult?> showSessionLogSheet({
   required List<Exercise> plannedExercises,
   List<ExecutedExercise>? initialExercises,
   String initialNotes = '',
-  int? initialSessionRpe,
-  int? initialPainLevel,
-  String? initialPainLocation,
 }) async {
   return showModalBottomSheet<SessionLogResult>(
     context: context,
@@ -25,9 +22,6 @@ Future<SessionLogResult?> showSessionLogSheet({
       plannedExercises: plannedExercises,
       initialExercises: initialExercises,
       initialNotes: initialNotes,
-      initialSessionRpe: initialSessionRpe,
-      initialPainLevel: initialPainLevel,
-      initialPainLocation: initialPainLocation,
     ),
   );
 }
@@ -38,17 +32,11 @@ class SessionLogSheetBody extends StatelessWidget {
     required this.plannedExercises,
     this.initialExercises,
     this.initialNotes = '',
-    this.initialSessionRpe,
-    this.initialPainLevel,
-    this.initialPainLocation,
   });
 
   final List<Exercise> plannedExercises;
   final List<ExecutedExercise>? initialExercises;
   final String initialNotes;
-  final int? initialSessionRpe;
-  final int? initialPainLevel;
-  final String? initialPainLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -65,9 +53,6 @@ class SessionLogSheetBody extends StatelessWidget {
             plannedExercises: plannedExercises,
             initialExercises: initialExercises,
             initialNotes: initialNotes,
-            initialSessionRpe: initialSessionRpe,
-            initialPainLevel: initialPainLevel,
-            initialPainLocation: initialPainLocation,
             title: l10n.sessionLogTitle,
             saveLabel: l10n.sessionLogSave,
             expandableList: true,

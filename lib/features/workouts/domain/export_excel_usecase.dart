@@ -5,7 +5,6 @@ import 'package:excel/excel.dart';
 import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/workout_routine_model.dart';
-import 'density_block.dart';
 
 /// Exports [WorkoutRoutine] to an .xlsx file. Layout: plan name, then for each week/day
 /// a table with columns Exercise, Sets, Reps, Load/RPE, Notes.
@@ -64,7 +63,7 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(
         } else {
           final group = item as List<Exercise>;
           sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value =
-              TextCellValue(densityBlockExportLabel(day, group, labels));
+              TextCellValue(labels.superset);
           row += 1;
           for (final ex in group) {
             final details = ex.effectiveSetDetails;

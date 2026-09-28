@@ -1,5 +1,4 @@
 import '../../workouts/data/workout_plan_repository.dart';
-import '../../workouts/domain/coach_stats_loader.dart';
 import '../../workouts/domain/session_execution_service.dart';
 import 'plan_calendar_event.dart';
 
@@ -7,11 +6,9 @@ import 'plan_calendar_event.dart';
 class DashboardCoachToolsHints {
   const DashboardCoachToolsHints({
     required this.loggedSessions30d,
-    this.adherence7dPercent,
   });
 
   final int loggedSessions30d;
-  final int? adherence7dPercent;
 }
 
 DashboardCoachToolsHints computeDashboardCoachToolsHints({
@@ -34,19 +31,7 @@ DashboardCoachToolsHints computeDashboardCoachToolsHints({
     logged30++;
   }
 
-  final stats = CoachStatsLoader.computeCoachStats(
-    entries: entries,
-    periodDays: 7,
-    now: clock,
-  );
-  final adherence = stats.adherenceRate == null
-      ? null
-      : (stats.adherenceRate! * 100).round();
-
-  return DashboardCoachToolsHints(
-    loggedSessions30d: logged30,
-    adherence7dPercent: adherence,
-  );
+  return DashboardCoachToolsHints(loggedSessions30d: logged30);
 }
 
 Future<DashboardCoachToolsHints> loadDashboardCoachToolsHints({

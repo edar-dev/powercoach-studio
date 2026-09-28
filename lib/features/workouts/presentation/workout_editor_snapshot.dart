@@ -1,26 +1,19 @@
 import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
-import '../domain/density_block.dart';
 
 String buildWorkoutEditorSnapshot({
   required WorkoutRoutine routine,
   required String planName,
   required int initialWeekNumber,
-  String? phase,
-  String? tags,
   String? notes,
 }) {
-  final normalizedPhase = _normalizeOptionalText(phase);
-  final normalizedTags = _normalizeOptionalText(tags);
   final normalizedNotes = _normalizeOptionalText(notes);
 
   return jsonEncode({
     'routineFingerprint': buildWorkoutRoutineFingerprint(routine),
     'planName': planName.trim(),
     'initialWeekNumber': initialWeekNumber,
-    'phase': normalizedPhase,
-    'tags': normalizedTags,
     'notes': normalizedNotes,
   });
 }
@@ -42,6 +35,8 @@ bool isWorkoutEditorDirty({
 String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
   final buffer = StringBuffer()
     ..write(routine.name)
+    ..write('|imt:')
+    ..write(routine.includesMobilityTab)
     ..write('|cw:')
     ..write(routine.currentWeek)
     ..write('|sd:')
@@ -65,10 +60,6 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
         ..write(day.name)
         ..write(',')
         ..write(day.scheduledWeekday ?? '')
-        ..write(',')
-        ..write(day.coachingNote ?? '')
-        ..write(',')
-        ..write(serializeDensityBlocksFingerprint(day.densityBlocks))
         ..write(')');
       for (final exercise in day.exercises) {
         buffer
@@ -169,12 +160,6 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
       ..write(execution.notes)
       ..write(',')
       ..write(execution.exercises.length)
-      ..write(',')
-      ..write(execution.sessionRpe ?? '')
-      ..write(',')
-      ..write(execution.painLevel ?? '')
-      ..write(',')
-      ..write(execution.painLocation ?? '')
       ..write(';');
   }
 

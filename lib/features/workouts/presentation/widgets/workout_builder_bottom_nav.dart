@@ -21,8 +21,12 @@ class WorkoutBuilderBottomNav extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final items = [
       (Icons.add_circle, l10n.workoutBuilderNavBuilder, '/workouts/builder'),
-      (Icons.library_books, l10n.workoutTemplatesTitle, '/workouts/templates'),
-      (Icons.person, l10n.profileTitle, '/profile'),
+      (
+        Icons.fitness_center_outlined,
+        l10n.workoutBuilderNavLibrary,
+        '/exercise-library',
+      ),
+      (Icons.person, l10n.profileTitle, '/settings/personal-info'),
     ];
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),

@@ -96,33 +96,6 @@ void main() {
       expect(snapshot.sbdDelta, 10);
     });
 
-    test('showSecondaryTrend requires at least two recent samples', () {
-      final snapshot = CustomerOverviewMetrics.build(
-        customer: _customer(),
-        measurements: [
-          _measurement(
-            date: DateTime(2026, 5, 10),
-            muscleMassKg: 39,
-          ),
-        ],
-        muscleMassLabel: 'Muscle Mass',
-        bodyFatLabel: 'Body fat',
-      );
-
-      expect(snapshot.showSecondaryTrend, isFalse);
-    });
-
-    test('formatTrendPercent includes sign', () {
-      expect(
-        CustomerOverviewMetrics.formatTrendPercent(2.34),
-        '+2.3%',
-      );
-      expect(
-        CustomerOverviewMetrics.formatTrendPercent(-1.2),
-        '-1.2%',
-      );
-    });
-
     test('empty measurements shows no sparkline', () {
       final snapshot = CustomerOverviewMetrics.build(
         customer: _customer(weightKg: 75),
@@ -134,6 +107,25 @@ void main() {
       expect(snapshot.hasMeasurements, isFalse);
       expect(snapshot.sparklinePoints, isEmpty);
       expect(snapshot.secondaryValue, isNull);
+    });
+
+    test('fromJson ignores legacy rich measurement fields', () {
+      final m = CustomerMeasurement.fromJson({
+        'id': 'm1',
+        'customerId': 'c1',
+        'userId': 'u1',
+        'measurementDate': '2026-05-01',
+        'bodyFatPercent': 15,
+        'waistCm': 80,
+        'chestCm': 100,
+        'tricepsSkinfold': 12,
+        'waterPercent': 55,
+        'createdAt': '2026-05-01T00:00:00.000',
+        'updatedAt': '2026-05-01T00:00:00.000',
+      });
+      expect(m.bodyFatPercent, 15);
+      expect(m.toCreateBody().containsKey('waistCm'), isFalse);
+      expect(m.toCreateBody().containsKey('tricepsSkinfold'), isFalse);
     });
   });
 }

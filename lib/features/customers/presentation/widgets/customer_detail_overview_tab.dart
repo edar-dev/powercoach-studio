@@ -4,7 +4,6 @@ import 'package:powercoach_studio/core/billing/plan_gate.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
-import 'package:powercoach_studio/features/customers/data/models/customer_exercise_record.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer_measurement.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_overview_metrics.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_export_labels_l10n.dart';
@@ -27,7 +26,6 @@ class CustomerDetailOverviewTab extends StatelessWidget {
     required this.goalLabel,
     required this.measurements,
     required this.measurementsLoading,
-    required this.exerciseRecords,
     required this.progressSnapshot,
     required this.progressLoading,
     required this.workoutPlans,
@@ -43,7 +41,6 @@ class CustomerDetailOverviewTab extends StatelessWidget {
   final String goalLabel;
   final List<CustomerMeasurement> measurements;
   final bool measurementsLoading;
-  final List<CustomerExerciseRecord> exerciseRecords;
   final CustomerProgressSnapshot? progressSnapshot;
   final bool progressLoading;
   final List<WorkoutPlanApiModel> workoutPlans;
@@ -105,7 +102,6 @@ class CustomerDetailOverviewTab extends StatelessWidget {
                   completedSessions30d: 0,
                   skippedSessions30d: 0,
                   lastSessionDate: null,
-                  recentPrs: [],
                   last4Weeks: [],
                   hasAnyData: false,
                 ),
@@ -183,7 +179,6 @@ class CustomerDetailOverviewTab extends StatelessWidget {
             muscleMassLabel: l10n.customerMuscleMass,
             bodyFatLabel: l10n.measurementBodyFat,
           ),
-          exerciseRecords: exerciseRecords,
           labels: l10n.toCustomerProgressExportLabels(),
         ),
       ),

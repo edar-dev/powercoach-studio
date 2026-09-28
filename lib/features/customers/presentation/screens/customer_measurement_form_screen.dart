@@ -41,7 +41,6 @@ class _CustomerMeasurementFormScreenState
   final _muscleMassController = TextEditingController();
   final _notesController = TextEditingController();
   bool _saving = false;
-  bool _showAnthropometrics = false;
   CustomerMeasurement? _previous;
 
   @override
@@ -211,9 +210,6 @@ class _CustomerMeasurementFormScreenState
         _previous?.deadlift1RM,
       ),
       sbdTotal: _liveSbd,
-      showAnthropometrics: _showAnthropometrics,
-      onToggleAnthropometrics: () =>
-          setState(() => _showAnthropometrics = !_showAnthropometrics),
     );
 
     final shell = _FormShell(
@@ -451,8 +447,6 @@ class _FormBody extends StatelessWidget {
     required this.benchDelta,
     required this.deadliftDelta,
     required this.sbdTotal,
-    required this.showAnthropometrics,
-    required this.onToggleAnthropometrics,
   });
 
   final GlobalKey<FormState> formKey;
@@ -470,8 +464,6 @@ class _FormBody extends StatelessWidget {
   final String? benchDelta;
   final String? deadliftDelta;
   final double? sbdTotal;
-  final bool showAnthropometrics;
-  final VoidCallback onToggleAnthropometrics;
 
   @override
   Widget build(BuildContext context) {
@@ -674,39 +666,6 @@ class _FormBody extends StatelessWidget {
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
           ),
           const SizedBox(height: 12),
-          Theme(
-            data: Theme.of(context).copyWith(
-              dividerColor: Colors.transparent,
-            ),
-            child: ExpansionTile(
-              initiallyExpanded: showAnthropometrics,
-              onExpansionChanged: (_) => onToggleAnthropometrics(),
-              tilePadding: EdgeInsets.zero,
-              title: Text(
-                l10n.measurementCircumferences,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: MarketingDarkColors.slate300,
-                ),
-              ),
-              iconColor: MarketingDarkColors.slate400,
-              collapsedIconColor: MarketingDarkColors.slate500,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Text(
-                    l10n.measurementSkinfolds,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: MarketingDarkColors.slate500,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 8),
           CustomerCreationDarkField(
             label: l10n.measurementNotes,
             controller: notesController,

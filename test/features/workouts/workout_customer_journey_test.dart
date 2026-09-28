@@ -63,7 +63,6 @@ class _NewCustomerPlanEditorHarnessState extends State<_NewCustomerPlanEditorHar
       showBottomNav: false,
       onPopInvoked: () async {},
       onBack: () async {},
-      onOpenTemplates: () {},
       onImportJson: () {},
       onExport: (_) {},
       onSave: () {},
@@ -150,8 +149,6 @@ void main() {
         pdfHeader,
         useCustomPdfHeader = false,
         initialWeekNumber = 1,
-        phase,
-        tags,
         notes,
       }) async {
         createCalls.add({
@@ -188,8 +185,6 @@ void main() {
       draftStore: const SharedPrefsWorkoutDraftStore(),
       routineNameController: nameController,
       initialWeekController: initialWeekController,
-      phaseController: TextEditingController(),
-      tagsController: TextEditingController(),
       notesController: TextEditingController(),
     );
 

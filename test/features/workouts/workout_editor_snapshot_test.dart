@@ -11,8 +11,6 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Hypertrophy',
-      tags: 'upper',
       notes: 'intro block',
     );
 
@@ -20,8 +18,6 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Hypertrophy',
-      tags: 'upper',
       notes: 'intro block',
     );
 
@@ -37,13 +33,11 @@ void main() {
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 1,
-      phase: 'Strength',
     );
     final current = buildWorkoutEditorSnapshot(
       routine: routine,
       planName: 'Plan A',
       initialWeekNumber: 2,
-      phase: 'Strength',
     );
 
     expect(
@@ -149,69 +143,12 @@ void main() {
     );
   });
 
-  test('routine fingerprint detects day coaching note changes', () {
-    final baseline = WorkoutRoutine.empty().copyWith(
-      weeks: [
-        const Week(
-          id: 'w1',
-          name: 'Week 1',
-          days: [Day(id: 'd1', name: 'Day 1', exercises: [])],
-        ),
-      ],
-    );
-    final updated = baseline.copyWith(
-      weeks: [
-        const Week(
-          id: 'w1',
-          name: 'Week 1',
-          days: [
-            Day(
-              id: 'd1',
-              name: 'Day 1',
-              exercises: [],
-              coachingNote: 'Warm up thoroughly',
-            ),
-          ],
-        ),
-      ],
-    );
-
+  test('fingerprint detects includesMobilityTab changes', () {
+    final off = WorkoutRoutine.empty().copyWith(includesMobilityTab: false);
+    final on = WorkoutRoutine.empty().copyWith(includesMobilityTab: true);
     expect(
-      buildWorkoutRoutineFingerprint(updated),
-      isNot(buildWorkoutRoutineFingerprint(baseline)),
-    );
-  });
-
-  test('routine fingerprint detects check-in RPE/pain changes', () {
-    final baseline = WorkoutRoutine.empty().copyWith(
-      sessionExecutions: {
-        '0-0': SessionExecution(
-          sessionKey: '0-0',
-          weekIndex: 0,
-          dayIndex: 0,
-          sessionDate: DateTime(2026, 6, 1),
-          status: PlanSessionStatus.completed,
-        ),
-      },
-    );
-    final updated = baseline.copyWith(
-      sessionExecutions: {
-        '0-0': SessionExecution(
-          sessionKey: '0-0',
-          weekIndex: 0,
-          dayIndex: 0,
-          sessionDate: DateTime(2026, 6, 1),
-          status: PlanSessionStatus.completed,
-          sessionRpe: 8,
-          painLevel: 2,
-          painLocation: 'left knee',
-        ),
-      },
-    );
-
-    expect(
-      buildWorkoutRoutineFingerprint(updated),
-      isNot(buildWorkoutRoutineFingerprint(baseline)),
+      buildWorkoutRoutineFingerprint(on),
+      isNot(buildWorkoutRoutineFingerprint(off)),
     );
   });
 }

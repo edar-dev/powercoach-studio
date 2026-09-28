@@ -16,11 +16,6 @@ enum WorkoutPlanSort {
 enum WorkoutPlanFilter {
   all,
   archived,
-  active,
-  scheduled,
-  unscheduled,
-  ended,
-  stale,
 }
 
 DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
@@ -116,16 +111,6 @@ bool matchesWorkoutPlanFilter(
       return true;
     case WorkoutPlanFilter.archived:
       return isArchivedPlan(plan);
-    case WorkoutPlanFilter.active:
-      return isActivePlan(plan, now: now);
-    case WorkoutPlanFilter.scheduled:
-      return hasScheduledStart(plan);
-    case WorkoutPlanFilter.unscheduled:
-      return !hasScheduledStart(plan);
-    case WorkoutPlanFilter.ended:
-      return isEndedPlan(plan, now: now);
-    case WorkoutPlanFilter.stale:
-      return isStalePlan(plan, staleDays: staleDays, now: now);
   }
 }
 

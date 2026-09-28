@@ -37,43 +37,6 @@ void main() {
   final today = DateTime(2026, 6, 15);
 
   group('filterWorkoutPlans', () {
-    test('active includes scheduled plans within date window', () {
-      final plans = [
-        _plan(id: '1', name: 'Active', startDate: '2026-06-01', endDate: '2026-06-30'),
-        _plan(id: '2', name: 'Ended', startDate: '2026-05-01', endDate: '2026-05-31'),
-        _plan(id: '3', name: 'Future', startDate: '2026-07-01'),
-      ];
-      final filtered = filterWorkoutPlans(
-        plans,
-        WorkoutPlanFilter.active,
-        now: today,
-      );
-      expect(filtered.map((p) => p.id), ['1']);
-    });
-
-    test('unscheduled excludes plans with startDate', () {
-      final plans = [
-        _plan(id: '1', name: 'No date'),
-        _plan(id: '2', name: 'With date', startDate: '2026-06-01'),
-      ];
-      final filtered = filterWorkoutPlans(plans, WorkoutPlanFilter.unscheduled, now: today);
-      expect(filtered.map((p) => p.id), ['1']);
-    });
-
-    test('stale uses updatedAt threshold', () {
-      final plans = [
-        _plan(id: '1', name: 'Fresh', updatedAt: DateTime(2026, 6, 10)),
-        _plan(id: '2', name: 'Old', updatedAt: DateTime(2026, 5, 1)),
-      ];
-      final filtered = filterWorkoutPlans(
-        plans,
-        WorkoutPlanFilter.stale,
-        staleDays: 14,
-        now: today,
-      );
-      expect(filtered.map((p) => p.id), ['2']);
-    });
-
     test('archived filter returns only archived plans', () {
       final plans = [
         _plan(id: '1', name: 'Active', startDate: '2026-06-01'),
@@ -98,6 +61,24 @@ void main() {
       ];
       final filtered = filterWorkoutPlans(plans, WorkoutPlanFilter.all);
       expect(filtered.map((p) => p.id), ['1']);
+    });
+
+    test('isActivePlan helper still classifies date windows', () {
+      final active = _plan(
+        id: '1',
+        name: 'Active',
+        startDate: '2026-06-01',
+        endDate: '2026-06-30',
+      );
+      final ended = _plan(
+        id: '2',
+        name: 'Ended',
+        startDate: '2026-05-01',
+        endDate: '2026-05-31',
+      );
+      expect(isActivePlan(active, now: today), isTrue);
+      expect(isActivePlan(ended, now: today), isFalse);
+      expect(isEndedPlan(ended, now: today), isTrue);
     });
   });
 
