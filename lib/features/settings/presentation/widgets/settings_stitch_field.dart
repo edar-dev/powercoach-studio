@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
 
 /// Uppercase label + dark filled input matching Stitch settings HTML.
 class SettingsStitchField extends StatelessWidget {
@@ -12,10 +14,13 @@ class SettingsStitchField extends StatelessWidget {
     this.readOnly = false,
     this.requiredMark = false,
     this.maxLines = 1,
+    this.maxLength,
     this.keyboardType,
     this.textInputAction,
     this.suffix,
     this.helper,
+    this.focusNode,
+    this.mobileStyle = false,
   });
 
   final String label;
@@ -24,17 +29,35 @@ class SettingsStitchField extends StatelessWidget {
   final bool readOnly;
   final bool requiredMark;
   final int maxLines;
+  final int? maxLength;
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final Widget? suffix;
   final String? helper;
+  final FocusNode? focusNode;
+  final bool mobileStyle;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final labelColor = mobileStyle
+        ? StitchMobileColors.onSurfaceVariant
+        : MarketingDarkColors.slate300;
+    final fill = mobileStyle
+        ? StitchMobileColors.surfaceContainerLow
+        : MarketingDarkColors.stitchInput;
+    final textColor =
+        mobileStyle ? StitchMobileColors.onSurface : MarketingDarkColors.text;
+    final radius = mobileStyle
+        ? StitchMobileColors.radiusLg
+        : MarketingDarkColors.radiusXl;
     final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
-      borderSide: const BorderSide(color: MarketingDarkColors.stitchBorderMuted),
+      borderRadius: BorderRadius.circular(radius),
+      borderSide: BorderSide(
+        color: mobileStyle
+            ? Colors.transparent
+            : MarketingDarkColors.stitchBorderMuted,
+      ),
     );
 
     return Column(
@@ -45,14 +68,15 @@ class SettingsStitchField extends StatelessWidget {
             Expanded(
               child: Text.rich(
                 TextSpan(
-                  text: label.toUpperCase(),
+                  text: mobileStyle ? label : label.toUpperCase(),
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: MarketingDarkColors.slate300,
+                    color: labelColor,
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.8,
+                    letterSpacing: mobileStyle ? 0 : 0.8,
+                    fontSize: mobileStyle ? 11 : null,
                   ),
                   children: [
-                    if (requiredMark)
+                    if (requiredMark && !mobileStyle)
                       const TextSpan(
                         text: ' *',
                         style: TextStyle(
@@ -60,11 +84,20 @@ class SettingsStitchField extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
+                    if (helper != null && mobileStyle)
+                      TextSpan(
+                        text: ' $helper',
+                        style: const TextStyle(
+                          color: StitchMobileColors.tertiary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
-            if (helper != null)
+            if (helper != null && !mobileStyle)
               Text(
                 helper!,
                 style: theme.textTheme.labelSmall?.copyWith(
@@ -72,40 +105,54 @@ class SettingsStitchField extends StatelessWidget {
                   fontSize: 11,
                 ),
               ),
+            if (suffix != null && !mobileStyle) suffix!,
           ],
         ),
         const SizedBox(height: 8),
         TextFormField(
           controller: controller,
+          focusNode: focusNode,
           readOnly: readOnly,
           maxLines: maxLines,
+          maxLength: maxLength,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: MarketingDarkColors.text,
-          ),
+          inputFormatters: maxLength == null
+              ? null
+              : [LengthLimitingTextInputFormatter(maxLength)],
+          style: theme.textTheme.bodyMedium?.copyWith(color: textColor),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: theme.textTheme.bodyMedium?.copyWith(
-              color: MarketingDarkColors.slate500,
+              color: mobileStyle
+                  ? StitchMobileColors.outline
+                  : MarketingDarkColors.slate500,
             ),
             filled: true,
-            fillColor: MarketingDarkColors.stitchInput,
+            fillColor: fill,
+            counterStyle: mobileStyle
+                ? theme.textTheme.labelSmall?.copyWith(
+                    color: StitchMobileColors.onSurfaceVariant,
+                    fontSize: 11,
+                  )
+                : null,
             contentPadding: EdgeInsets.fromLTRB(
-              16,
-              maxLines > 1 ? 14 : 12,
-              suffix == null ? 16 : 8,
-              maxLines > 1 ? 14 : 12,
+              mobileStyle ? 14 : 16,
+              maxLines > 1 ? 14 : (mobileStyle ? 14 : 12),
+              suffix == null ? (mobileStyle ? 14 : 16) : 8,
+              maxLines > 1 ? 14 : (mobileStyle ? 14 : 12),
             ),
             border: border,
             enabledBorder: border,
             focusedBorder: border.copyWith(
-              borderSide: const BorderSide(
-                color: MarketingDarkColors.brandMid,
+              borderSide: BorderSide(
+                color: mobileStyle
+                    ? StitchMobileColors.primaryContainer
+                    : MarketingDarkColors.brandMid,
                 width: 1.5,
               ),
             ),
-            suffixIcon: suffix == null
+            suffixIcon: suffix == null || mobileStyle
                 ? null
                 : Padding(
                     padding: const EdgeInsets.only(right: 8),

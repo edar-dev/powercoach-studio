@@ -5641,7 +5641,7 @@ abstract class AppLocalizations {
   /// No description provided for @calendarTitle.
   ///
   /// In en, this message translates to:
-  /// **'Calendar'**
+  /// **'Coach Calendar'**
   String get calendarTitle;
 
   /// No description provided for @calendarEmptyMonth.
@@ -6747,13 +6747,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsHubTitle.
   ///
   /// In en, this message translates to:
-  /// **'Profile & Platform Settings'**
+  /// **'Settings & Profile'**
   String get settingsHubTitle;
 
   /// No description provided for @settingsHubSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Manage your coach identity, notification preferences, and local or cloud backups.'**
+  /// **'Manage operational credentials, athlete channels, and offline-first policies.'**
   String get settingsHubSubtitle;
 
   /// No description provided for @settingsHubSyncPill.
@@ -6813,13 +6813,13 @@ abstract class AppLocalizations {
   /// No description provided for @settingsPersonalInfoCardTitle.
   ///
   /// In en, this message translates to:
-  /// **'Personal info'**
+  /// **'Personal Data & Bio'**
   String get settingsPersonalInfoCardTitle;
 
   /// No description provided for @settingsPersonalInfoCardSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'These details appear on workout sheets and notifications.'**
+  /// **'Visible to athletes'**
   String get settingsPersonalInfoCardSubtitle;
 
   /// No description provided for @settingsProfileVerified.
@@ -6846,6 +6846,36 @@ abstract class AppLocalizations {
   /// **'Enter an image URL (JPG, PNG, or WebP).'**
   String get settingsAvatarHint;
 
+  /// No description provided for @settingsChangePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Change photo'**
+  String get settingsChangePhoto;
+
+  /// No description provided for @settingsPhoneWhatsAppLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'WhatsApp contact'**
+  String get settingsPhoneWhatsAppLabel;
+
+  /// No description provided for @settingsBioCoachLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach bio & philosophy'**
+  String get settingsBioCoachLabel;
+
+  /// No description provided for @settingsFullNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Full name'**
+  String get settingsFullNameLabel;
+
+  /// No description provided for @settingsOfficialEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Official email'**
+  String get settingsOfficialEmailLabel;
+
   /// No description provided for @settingsUnsavedChanges.
   ///
   /// In en, this message translates to:
@@ -6870,16 +6900,58 @@ abstract class AppLocalizations {
   /// **'Notifications & Reminders'**
   String get settingsNotificationsModuleTitle;
 
+  /// No description provided for @settingsSessionRemindersTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Session notifications'**
+  String get settingsSessionRemindersTitle;
+
+  /// No description provided for @settingsSessionRemindersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Alert before a scheduled workout'**
+  String get settingsSessionRemindersSubtitle;
+
   /// No description provided for @settingsBackupModuleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Offline & Cloud backup'**
+  /// **'Backup & Sync'**
   String get settingsBackupModuleTitle;
+
+  /// No description provided for @settingsOfflineReadyPill.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Ready'**
+  String get settingsOfflineReadyPill;
+
+  /// No description provided for @settingsBackupExportLocalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Export JSON backup (Local)'**
+  String get settingsBackupExportLocalTitle;
+
+  /// No description provided for @settingsBackupExportLocalSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'All athlete logs'**
+  String get settingsBackupExportLocalSubtitle;
+
+  /// No description provided for @settingsBackupDownloadAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Download'**
+  String get settingsBackupDownloadAction;
+
+  /// No description provided for @settingsCloudSyncSnapshot.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync snapshot to Supabase'**
+  String get settingsCloudSyncSnapshot;
 
   /// No description provided for @workoutDiaryPageTitle.
   ///
   /// In en, this message translates to:
-  /// **'Workout Diary & History'**
+  /// **'Diary & History'**
   String get workoutDiaryPageTitle;
 
   /// No description provided for @workoutDiaryPageBadge.
@@ -6894,6 +6966,12 @@ abstract class AppLocalizations {
   /// **'Review session logs, monitor compliance, and check recorded training volume.'**
   String get workoutDiaryPageSubtitle;
 
+  /// No description provided for @workoutDiaryLiveSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Local data active'**
+  String get workoutDiaryLiveSync;
+
   /// No description provided for @workoutDiaryExportAction.
   ///
   /// In en, this message translates to:
@@ -6903,19 +6981,25 @@ abstract class AppLocalizations {
   /// No description provided for @workoutDiaryRecordAction.
   ///
   /// In en, this message translates to:
-  /// **'Log session'**
+  /// **'Log Session'**
   String get workoutDiaryRecordAction;
+
+  /// No description provided for @workoutDiarySeeExerciseLog.
+  ///
+  /// In en, this message translates to:
+  /// **'See Exercise Log'**
+  String get workoutDiarySeeExerciseLog;
 
   /// No description provided for @workoutDiaryKpiSessions.
   ///
   /// In en, this message translates to:
-  /// **'Completed sessions'**
+  /// **'Completed'**
   String get workoutDiaryKpiSessions;
 
   /// No description provided for @workoutDiaryKpiVolume.
   ///
   /// In en, this message translates to:
-  /// **'Volume lifted'**
+  /// **'Load Volume'**
   String get workoutDiaryKpiVolume;
 
   /// No description provided for @workoutDiaryKpiVolumeUnit.
@@ -6923,6 +7007,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'kg'**
   String get workoutDiaryKpiVolumeUnit;
+
+  /// No description provided for @workoutDiaryKpiVolumeTonsUnit.
+  ///
+  /// In en, this message translates to:
+  /// **'tons'**
+  String get workoutDiaryKpiVolumeTonsUnit;
 
   /// No description provided for @workoutDiaryKpiCompliance.
   ///
@@ -6942,6 +7032,12 @@ abstract class AppLocalizations {
   /// **'Filter athlete'**
   String get workoutDiaryFilterAthlete;
 
+  /// No description provided for @workoutDiaryFilterStatusAllShort.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get workoutDiaryFilterStatusAllShort;
+
   /// No description provided for @workoutDiaryShowingCount.
   ///
   /// In en, this message translates to:
@@ -6953,6 +7049,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{count} exercises'**
   String workoutDiaryExercisesCount(int count);
+
+  /// No description provided for @workoutDiaryExercisesMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get workoutDiaryExercisesMetric;
+
+  /// No description provided for @workoutDiarySetsMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Sets'**
+  String get workoutDiarySetsMetric;
+
+  /// No description provided for @workoutDiaryVolumeMetric.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get workoutDiaryVolumeMetric;
 
   /// No description provided for @workoutDiarySetsCount.
   ///
@@ -6990,16 +7104,40 @@ abstract class AppLocalizations {
   /// **'Day'**
   String get calendarViewDay;
 
+  /// No description provided for @calendarViewMonthShort.
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get calendarViewMonthShort;
+
+  /// No description provided for @calendarViewWeekShort.
+  ///
+  /// In en, this message translates to:
+  /// **'W'**
+  String get calendarViewWeekShort;
+
+  /// No description provided for @calendarViewDayShort.
+  ///
+  /// In en, this message translates to:
+  /// **'D'**
+  String get calendarViewDayShort;
+
   /// No description provided for @calendarAddSession.
   ///
   /// In en, this message translates to:
   /// **'Add Session'**
   String get calendarAddSession;
 
+  /// No description provided for @calendarAddSessionShort.
+  ///
+  /// In en, this message translates to:
+  /// **'+ Session'**
+  String get calendarAddSessionShort;
+
   /// No description provided for @calendarFilterAllAthletes.
   ///
   /// In en, this message translates to:
-  /// **'All athletes'**
+  /// **'All Athletes'**
   String get calendarFilterAllAthletes;
 
   /// No description provided for @calendarDaySummaryTitle.
@@ -7011,8 +7149,44 @@ abstract class AppLocalizations {
   /// No description provided for @calendarOpenSession.
   ///
   /// In en, this message translates to:
-  /// **'Open session'**
+  /// **'Open Sheet'**
   String get calendarOpenSession;
+
+  /// No description provided for @calendarLegendWorkout.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout'**
+  String get calendarLegendWorkout;
+
+  /// No description provided for @calendarLegendCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get calendarLegendCompleted;
+
+  /// No description provided for @calendarLegendCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in'**
+  String get calendarLegendCheckin;
+
+  /// No description provided for @calendarSessionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No sessions} one{{count} session} other{{count} sessions}}'**
+  String calendarSessionsCount(int count);
+
+  /// No description provided for @calendarStatusWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get calendarStatusWaiting;
+
+  /// No description provided for @calendarStatusScheduled.
+  ///
+  /// In en, this message translates to:
+  /// **'Scheduled'**
+  String get calendarStatusScheduled;
 
   /// No description provided for @subscriptionPageTitle.
   ///
@@ -7023,25 +7197,25 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionPageSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Track your current plan usage, compare packages, and unlock unlimited athletes with PowerCoach Pro.'**
+  /// **'Unlock the full analytical potential for your athletes with no lock-in.'**
   String get subscriptionPageSubtitle;
 
   /// No description provided for @subscriptionFreeLimitedBadge.
   ///
   /// In en, this message translates to:
-  /// **'Limited Free Plan'**
+  /// **'Free Plan'**
   String get subscriptionFreeLimitedBadge;
 
   /// No description provided for @subscriptionProActiveBadge.
   ///
   /// In en, this message translates to:
-  /// **'Pro Plan Active'**
+  /// **'Pro Plan'**
   String get subscriptionProActiveBadge;
 
   /// No description provided for @subscriptionPlanInUse.
   ///
   /// In en, this message translates to:
-  /// **'Current plan'**
+  /// **'Current status'**
   String get subscriptionPlanInUse;
 
   /// No description provided for @subscriptionFreeCoachLabel.
@@ -7056,6 +7230,12 @@ abstract class AppLocalizations {
   /// **'Active client usage'**
   String get subscriptionUsageClients;
 
+  /// No description provided for @subscriptionUsageClientsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {max} clients'**
+  String subscriptionUsageClientsCount(int current, int max);
+
   /// No description provided for @subscriptionSlotsRemaining.
   ///
   /// In en, this message translates to:
@@ -7068,10 +7248,34 @@ abstract class AppLocalizations {
   /// **'Limit reached at 5 clients'**
   String get subscriptionLimitAtFive;
 
+  /// No description provided for @subscriptionRenewCostLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Renewal cost'**
+  String get subscriptionRenewCostLabel;
+
+  /// No description provided for @subscriptionRenewPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'/ month'**
+  String get subscriptionRenewPerMonth;
+
+  /// No description provided for @subscriptionRenewPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'/ year'**
+  String get subscriptionRenewPerYear;
+
+  /// No description provided for @subscriptionProExpiredBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro Expired'**
+  String get subscriptionProExpiredBadge;
+
   /// No description provided for @subscriptionUpgradeHighlightTitle.
   ///
   /// In en, this message translates to:
-  /// **'Unlock Unlimited Clients with Pro'**
+  /// **'Upgrade to Coach Pro'**
   String get subscriptionUpgradeHighlightTitle;
 
   /// No description provided for @subscriptionUpgradeHighlightBody.
@@ -7083,25 +7287,25 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionUpgradeHighlightCta.
   ///
   /// In en, this message translates to:
-  /// **'Activate Coach Pro'**
+  /// **'Activate Coach Pro Now'**
   String get subscriptionUpgradeHighlightCta;
 
   /// No description provided for @subscriptionRecommendedBadge.
   ///
   /// In en, this message translates to:
-  /// **'RECOMMENDED'**
+  /// **'Recommended for you'**
   String get subscriptionRecommendedBadge;
 
   /// No description provided for @subscriptionBillingMonthly.
   ///
   /// In en, this message translates to:
-  /// **'Monthly billing'**
+  /// **'Monthly'**
   String get subscriptionBillingMonthly;
 
   /// No description provided for @subscriptionBillingYearly.
   ///
   /// In en, this message translates to:
-  /// **'Yearly billing'**
+  /// **'Yearly -20%'**
   String get subscriptionBillingYearly;
 
   /// No description provided for @subscriptionSavePercent.
@@ -7110,11 +7314,65 @@ abstract class AppLocalizations {
   /// **'Save 20%'**
   String get subscriptionSavePercent;
 
+  /// No description provided for @subscriptionPriceMonthlyAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'€12'**
+  String get subscriptionPriceMonthlyAmount;
+
+  /// No description provided for @subscriptionPriceYearlyAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'€99'**
+  String get subscriptionPriceYearlyAmount;
+
+  /// No description provided for @subscriptionFeatureUnlimitedClients.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited clients & active plans'**
+  String get subscriptionFeatureUnlimitedClients;
+
+  /// No description provided for @subscriptionFeaturePdfLogo.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF export with logo'**
+  String get subscriptionFeaturePdfLogo;
+
+  /// No description provided for @subscriptionFeatureMetrics.
+  ///
+  /// In en, this message translates to:
+  /// **'1RM, skinfolds'**
+  String get subscriptionFeatureMetrics;
+
+  /// No description provided for @subscriptionFeatureCloudSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud Sync'**
+  String get subscriptionFeatureCloudSync;
+
   /// No description provided for @subscriptionCompareCustomersUnlimited.
   ///
   /// In en, this message translates to:
   /// **'Unlimited'**
   String get subscriptionCompareCustomersUnlimited;
+
+  /// No description provided for @subscriptionCompareFreeSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'5 athletes · basic metrics · 1 device'**
+  String get subscriptionCompareFreeSummary;
+
+  /// No description provided for @subscriptionCompareProPopular.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach Pro · Popular'**
+  String get subscriptionCompareProPopular;
+
+  /// No description provided for @subscriptionCompareProSummary.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited · PDF/CSV · multi-device'**
+  String get subscriptionCompareProSummary;
 
   /// No description provided for @subscriptionCtaTitle.
   ///

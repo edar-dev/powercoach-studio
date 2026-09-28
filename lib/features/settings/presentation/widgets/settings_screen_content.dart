@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/locale/app_locale_controller.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../backup_onboarding_dialog.dart';
@@ -46,6 +47,7 @@ class SettingsScreenContent extends StatelessWidget {
     required this.isSaving,
     required this.onCancelChanges,
     required this.onSaveProfile,
+    this.subscriptionPlanIsPro = false,
   });
 
   final AppLocalizations l10n;
@@ -79,21 +81,26 @@ class SettingsScreenContent extends StatelessWidget {
   final bool isSaving;
   final VoidCallback onCancelChanges;
   final VoidCallback onSaveProfile;
+  final bool subscriptionPlanIsPro;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final desktop = Breakpoints.isDesktop(context);
+    final phone = !Breakpoints.isTabletOrWider(context);
     final languageTrailing =
         AppLocaleController.instance.locale.languageCode.toUpperCase();
 
-    final header = _SettingsHubHeader(l10n: l10n);
+    final header = _SettingsHubHeader(l10n: l10n, phone: phone);
     final nav = SettingsHubNav(
       active: activeSection,
       languageTrailing: languageTrailing,
       onSelect: onSectionSelected,
       horizontal: !desktop,
     );
+    final edge = phone ? 16.0 : 24.0;
+    final bottomPad = isDirty ? (phone ? 120.0 : 88.0) : (phone ? 32.0 : 24.0);
+
     final mainColumn = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -111,10 +118,10 @@ class SettingsScreenContent extends StatelessWidget {
             loadError: profileLoadError,
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: phone ? 16 : 24),
         LayoutBuilder(
           builder: (context, constraints) {
-            final sideBySide = constraints.maxWidth >= 720;
+            final sideBySide = !phone && constraints.maxWidth >= 720;
             final notifications = KeyedSubtree(
               key: notificationsKey,
               child: SettingsNotificationsModule(
@@ -139,7 +146,7 @@ class SettingsScreenContent extends StatelessWidget {
               return Column(
                 children: [
                   notifications,
-                  const SizedBox(height: 16),
+                  SizedBox(height: phone ? 16 : 16),
                   backup,
                 ],
               );
@@ -154,13 +161,115 @@ class SettingsScreenContent extends StatelessWidget {
             );
           },
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: phone ? 16 : 24),
+        if (phone) ...[
+          // Compact language / legal access without hub sidebar.
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.language,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsNavLanguage,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: Text(
+              languageTrailing,
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: StitchMobileColors.outline,
+              ),
+            ),
+            onTap: () => onSectionSelected(SettingsHubSection.language),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.credit_card_outlined,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsNavSubscription,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: subscriptionPlanIsPro
+                ? Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: StitchMobileColors.primaryContainer.withValues(
+                        alpha: 0.2,
+                      ),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      l10n.settingsProBadge,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: StitchMobileColors.primary,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 10,
+                      ),
+                    ),
+                  )
+                : Text(
+                    l10n.subscriptionPlanFree,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: StitchMobileColors.outline,
+                    ),
+                  ),
+            onTap: () => onSectionSelected(SettingsHubSection.subscription),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.privacy_tip_outlined,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsLegalPrivacy,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.open_in_new,
+              size: 16,
+              color: StitchMobileColors.outline,
+            ),
+            onTap: () => onSectionSelected(SettingsHubSection.privacy),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.description_outlined,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsLegalTerms,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.open_in_new,
+              size: 16,
+              color: StitchMobileColors.outline,
+            ),
+            onTap: () => onSectionSelected(SettingsHubSection.terms),
+          ),
+        ],
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton(
             onPressed: onSignOut,
             style: TextButton.styleFrom(
-              foregroundColor: theme.colorScheme.error,
+              foregroundColor: phone
+                  ? StitchMobileColors.error
+                  : theme.colorScheme.error,
             ),
             child: Text(
               l10n.profileSignOut,
@@ -170,24 +279,30 @@ class SettingsScreenContent extends StatelessWidget {
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,
-          leading: const Icon(
+          leading: Icon(
             Icons.person_off_outlined,
-            color: MarketingDarkColors.slate400,
+            color: phone
+                ? StitchMobileColors.outline
+                : MarketingDarkColors.slate400,
           ),
           title: Text(
             l10n.settingsLegalAccountDeletion,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: MarketingDarkColors.slate400,
+              color: phone
+                  ? StitchMobileColors.onSurfaceVariant
+                  : MarketingDarkColors.slate400,
             ),
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.open_in_new,
             size: 16,
-            color: MarketingDarkColors.slate500,
+            color: phone
+                ? StitchMobileColors.outline
+                : MarketingDarkColors.slate500,
           ),
           onTap: openAccountDeletionInfo,
         ),
-        SizedBox(height: isDirty ? 88 : 24),
+        SizedBox(height: bottomPad),
       ],
     );
 
@@ -197,16 +312,16 @@ class SettingsScreenContent extends StatelessWidget {
           controller: scrollController,
           slivers: [
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+              padding: EdgeInsets.fromLTRB(edge, phone ? 8 : 24, edge, 8),
               sliver: SliverToBoxAdapter(child: header),
             ),
-            if (!desktop)
+            if (!desktop && !phone)
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+                padding: EdgeInsets.fromLTRB(edge, 0, edge, 16),
                 sliver: SliverToBoxAdapter(child: nav),
               ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+              padding: EdgeInsets.fromLTRB(edge, 0, edge, phone ? 16 : 24),
               sliver: SliverToBoxAdapter(
                 child: desktop
                     ? Row(
@@ -240,13 +355,80 @@ class SettingsScreenContent extends StatelessWidget {
 }
 
 class _SettingsHubHeader extends StatelessWidget {
-  const _SettingsHubHeader({required this.l10n});
+  const _SettingsHubHeader({required this.l10n, required this.phone});
 
   final AppLocalizations l10n;
+  final bool phone;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if (phone) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l10n.settingsHubTitle,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      color: StitchMobileColors.onSurface,
+                      fontWeight: FontWeight.w700,
+                      fontSize: StitchMobileColors.headlineSize,
+                      letterSpacing: -0.2,
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: StitchMobileColors.surfaceContainerHigh,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: StitchMobileColors.tertiary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        l10n.settingsHubSyncPill,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchMobileColors.tertiary,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              l10n.settingsHubSubtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: StitchMobileColors.onSurfaceVariant,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Wrap(

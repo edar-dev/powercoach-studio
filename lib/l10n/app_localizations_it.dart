@@ -3145,7 +3145,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardUntitledWorkout => 'Workout senza titolo';
 
   @override
-  String get calendarTitle => 'Calendario';
+  String get calendarTitle => 'Calendario Coach';
 
   @override
   String get calendarEmptyMonth => 'Nessuna sessione in questo giorno.';
@@ -3781,11 +3781,11 @@ class AppLocalizationsIt extends AppLocalizations {
   String get backupImportTypeConfirmHint => 'IMPORT';
 
   @override
-  String get settingsHubTitle => 'Impostazioni Profilo & Piattaforma';
+  String get settingsHubTitle => 'Impostazioni & Profilo';
 
   @override
   String get settingsHubSubtitle =>
-      'Gestisci la tua identità coach, preferenze notifiche e salvataggi locali o cloud.';
+      'Gestisci le credenziali operative, canali atleti e policy offline-first.';
 
   @override
   String get settingsHubSyncPill => 'Dati locali attivi';
@@ -3815,11 +3815,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsProBadge => 'PRO';
 
   @override
-  String get settingsPersonalInfoCardTitle => 'Informazioni Personali';
+  String get settingsPersonalInfoCardTitle => 'Dati Personali & Bio';
 
   @override
-  String get settingsPersonalInfoCardSubtitle =>
-      'Questi dati compariranno sulle schede d\'allenamento e nelle notifiche.';
+  String get settingsPersonalInfoCardSubtitle => 'Visibile agli atleti';
 
   @override
   String get settingsProfileVerified => 'Profilo verificato';
@@ -3835,6 +3834,21 @@ class AppLocalizationsIt extends AppLocalizations {
       'Inserisci un URL immagine (JPG, PNG o WebP).';
 
   @override
+  String get settingsChangePhoto => 'Cambia foto';
+
+  @override
+  String get settingsPhoneWhatsAppLabel => 'Recapito WhatsApp';
+
+  @override
+  String get settingsBioCoachLabel => 'Bio Coach & Filosofia';
+
+  @override
+  String get settingsFullNameLabel => 'Nome Completo';
+
+  @override
+  String get settingsOfficialEmailLabel => 'Email Ufficiale';
+
+  @override
   String get settingsUnsavedChanges => 'Hai modifiche non salvate';
 
   @override
@@ -3847,10 +3861,32 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsNotificationsModuleTitle => 'Notifiche & Promemoria';
 
   @override
-  String get settingsBackupModuleTitle => 'Backup offline & Cloud';
+  String get settingsSessionRemindersTitle => 'Notifiche sessioni';
 
   @override
-  String get workoutDiaryPageTitle => 'Diario & Storico Allenamenti';
+  String get settingsSessionRemindersSubtitle =>
+      'Avviso prima dell\'allenamento pianificato';
+
+  @override
+  String get settingsBackupModuleTitle => 'Backup & Sincronizzazione';
+
+  @override
+  String get settingsOfflineReadyPill => 'Offline Ready';
+
+  @override
+  String get settingsBackupExportLocalTitle => 'Esporta backup JSON (Locale)';
+
+  @override
+  String get settingsBackupExportLocalSubtitle => 'Tutti i log atleti';
+
+  @override
+  String get settingsBackupDownloadAction => 'Download';
+
+  @override
+  String get settingsCloudSyncSnapshot => 'Sincronizza snapshot su Supabase';
+
+  @override
+  String get workoutDiaryPageTitle => 'Diario & Storico';
 
   @override
   String get workoutDiaryPageBadge => 'Registro Sessioni Live';
@@ -3860,19 +3896,28 @@ class AppLocalizationsIt extends AppLocalizations {
       'Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.';
 
   @override
+  String get workoutDiaryLiveSync => 'Dati locali attivi';
+
+  @override
   String get workoutDiaryExportAction => 'Esporta';
 
   @override
-  String get workoutDiaryRecordAction => 'Registra sessione';
+  String get workoutDiaryRecordAction => 'Registra Sessione';
 
   @override
-  String get workoutDiaryKpiSessions => 'Sessioni completate';
+  String get workoutDiarySeeExerciseLog => 'Vedi Log Esercizi';
 
   @override
-  String get workoutDiaryKpiVolume => 'Volume sollevato';
+  String get workoutDiaryKpiSessions => 'Completate';
+
+  @override
+  String get workoutDiaryKpiVolume => 'Volume Carico';
 
   @override
   String get workoutDiaryKpiVolumeUnit => 'kg';
+
+  @override
+  String get workoutDiaryKpiVolumeTonsUnit => 'tonn';
 
   @override
   String get workoutDiaryKpiCompliance => 'Compliance';
@@ -3886,6 +3931,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutDiaryFilterAthlete => 'Filtra atleta';
 
   @override
+  String get workoutDiaryFilterStatusAllShort => 'Tutti';
+
+  @override
   String workoutDiaryShowingCount(int count) {
     return 'Mostrando $count sessioni';
   }
@@ -3894,6 +3942,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String workoutDiaryExercisesCount(int count) {
     return '$count esercizi';
   }
+
+  @override
+  String get workoutDiaryExercisesMetric => 'Esercizi';
+
+  @override
+  String get workoutDiarySetsMetric => 'Serie';
+
+  @override
+  String get workoutDiaryVolumeMetric => 'Volume';
 
   @override
   String workoutDiarySetsCount(int count) {
@@ -3918,38 +3975,82 @@ class AppLocalizationsIt extends AppLocalizations {
   String get calendarViewDay => 'Giorno';
 
   @override
+  String get calendarViewMonthShort => 'M';
+
+  @override
+  String get calendarViewWeekShort => 'S';
+
+  @override
+  String get calendarViewDayShort => 'G';
+
+  @override
   String get calendarAddSession => 'Aggiungi Sessione';
 
   @override
-  String get calendarFilterAllAthletes => 'Tutti gli atleti';
+  String get calendarAddSessionShort => '+ Sessione';
+
+  @override
+  String get calendarFilterAllAthletes => 'Tutti gli Atleti';
 
   @override
   String get calendarDaySummaryTitle => 'Riepilogo giornata';
 
   @override
-  String get calendarOpenSession => 'Apri sessione';
+  String get calendarOpenSession => 'Apri Scheda';
 
   @override
-  String get subscriptionPageTitle => 'Gestione Abbonamento & Piani';
+  String get calendarLegendWorkout => 'Workout';
+
+  @override
+  String get calendarLegendCompleted => 'Completato';
+
+  @override
+  String get calendarLegendCheckin => 'Check-in';
+
+  @override
+  String calendarSessionsCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count sessioni',
+      one: '$count sessione',
+      zero: 'Nessuna sessione',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get calendarStatusWaiting => 'In Attesa';
+
+  @override
+  String get calendarStatusScheduled => 'In programma';
+
+  @override
+  String get subscriptionPageTitle => 'Abbonamento & Piani';
 
   @override
   String get subscriptionPageSubtitle =>
-      'Controlla il consumo del piano attuale, confronta i pacchetti e sblocca atleti illimitati con PowerCoach Pro.';
+      'Sblocca il pieno potenziale analitico per i tuoi atleti senza vincoli.';
 
   @override
-  String get subscriptionFreeLimitedBadge => 'Piano Gratuito Limitato';
+  String get subscriptionFreeLimitedBadge => 'Piano Gratuito';
 
   @override
-  String get subscriptionProActiveBadge => 'Piano Pro Attivo';
+  String get subscriptionProActiveBadge => 'Piano Pro';
 
   @override
-  String get subscriptionPlanInUse => 'Piano in uso';
+  String get subscriptionPlanInUse => 'Stato Attuale';
 
   @override
   String get subscriptionFreeCoachLabel => 'Gratuito (Free Coach)';
 
   @override
   String get subscriptionUsageClients => 'Utilizzo Clienti Attivi';
+
+  @override
+  String subscriptionUsageClientsCount(int current, int max) {
+    return '$current / $max clienti';
+  }
 
   @override
   String subscriptionSlotsRemaining(int count) {
@@ -3960,30 +4061,71 @@ class AppLocalizationsIt extends AppLocalizations {
   String get subscriptionLimitAtFive => 'Limite raggiunto a 5 clienti';
 
   @override
-  String get subscriptionUpgradeHighlightTitle =>
-      'Sblocca Clienti Illimitati con Pro';
+  String get subscriptionRenewCostLabel => 'Costo di rinnovo';
+
+  @override
+  String get subscriptionRenewPerMonth => '/ mese';
+
+  @override
+  String get subscriptionRenewPerYear => '/ anno';
+
+  @override
+  String get subscriptionProExpiredBadge => 'Pro Scaduto';
+
+  @override
+  String get subscriptionUpgradeHighlightTitle => 'Passa a Coach Pro';
 
   @override
   String get subscriptionUpgradeHighlightBody =>
       'Elimina le limitazioni sugli atleti ed esporta le schede in PDF/Excel.';
 
   @override
-  String get subscriptionUpgradeHighlightCta => 'Attiva Coach Pro';
+  String get subscriptionUpgradeHighlightCta => 'Attiva Coach Pro Subito';
 
   @override
-  String get subscriptionRecommendedBadge => 'RACCOMANDATO';
+  String get subscriptionRecommendedBadge => 'Consigliato per te';
 
   @override
-  String get subscriptionBillingMonthly => 'Fatturazione Mensile';
+  String get subscriptionBillingMonthly => 'Mensile';
 
   @override
-  String get subscriptionBillingYearly => 'Fatturazione Annuale';
+  String get subscriptionBillingYearly => 'Annuale -20%';
 
   @override
   String get subscriptionSavePercent => 'Risparmia 20%';
 
   @override
+  String get subscriptionPriceMonthlyAmount => '12 €';
+
+  @override
+  String get subscriptionPriceYearlyAmount => '99 €';
+
+  @override
+  String get subscriptionFeatureUnlimitedClients =>
+      'Clienti & schede attive illimitate';
+
+  @override
+  String get subscriptionFeaturePdfLogo => 'Export PDF logo';
+
+  @override
+  String get subscriptionFeatureMetrics => '1RM, pliche';
+
+  @override
+  String get subscriptionFeatureCloudSync => 'Cloud Sync';
+
+  @override
   String get subscriptionCompareCustomersUnlimited => 'Illimitati';
+
+  @override
+  String get subscriptionCompareFreeSummary =>
+      '5 atleti · metriche base · 1 device';
+
+  @override
+  String get subscriptionCompareProPopular => 'Coach Pro · Popolare';
+
+  @override
+  String get subscriptionCompareProSummary =>
+      'Illimitati · PDF/CSV · multi-device';
 
   @override
   String get subscriptionCtaTitle => 'Passa a PowerCoach Pro';

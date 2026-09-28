@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../domain/session_execution_service.dart';
 import 'workout_diary_session_card.dart';
 
@@ -24,50 +27,76 @@ class WorkoutDiaryTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final phone = !Breakpoints.isTabletOrWider(context);
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
     final children = <Widget>[];
+    final today = DateUtils.dateOnly(DateTime.now());
 
     for (var i = 0; i < groups.length; i++) {
       final group = groups[i];
-      children.add(
-        Padding(
-          padding: EdgeInsets.only(top: i == 0 ? 0 : 8, bottom: 12),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: MarketingDarkColors.surface800.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(
-                    color: MarketingDarkColors.stitchBorderMuted.withValues(
-                      alpha: 0.6,
+      final day = DateUtils.dateOnly(group.key);
+      final isToday = day == today;
+
+      if (phone) {
+        final label = isToday
+            ? '${l10n.calendarToday} · ${DateFormat('d MMMM', l10n.localeName).format(group.key)}'
+            : dateFormat.format(group.key);
+        children.add(
+          Padding(
+            padding: EdgeInsets.only(top: i == 0 ? 0 : 8, bottom: 12),
+            child: Text(
+              label,
+              style: const TextStyle(
+                color: StitchMobileColors.onSurface,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        );
+      } else {
+        children.add(
+          Padding(
+            padding: EdgeInsets.only(top: i == 0 ? 0 : 8, bottom: 12),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: MarketingDarkColors.surface800.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                      color: MarketingDarkColors.stitchBorderMuted.withValues(
+                        alpha: 0.6,
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    dateFormat.format(group.key).toUpperCase(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: MarketingDarkColors.slate400,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.6,
                     ),
                   ),
                 ),
-                child: Text(
-                  dateFormat.format(group.key).toUpperCase(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: MarketingDarkColors.slate400,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.6,
+                const SizedBox(width: 12),
+                const Expanded(
+                  child: Divider(
+                    color: MarketingDarkColors.stitchBorder,
+                    height: 1,
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              const Expanded(
-                child: Divider(
-                  color: MarketingDarkColors.stitchBorder,
-                  height: 1,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      }
+
       for (final entry in group.value) {
         children.add(
           Padding(
@@ -84,11 +113,13 @@ class WorkoutDiaryTimeline extends StatelessWidget {
 
     if (loadingMore) {
       children.add(
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Center(
             child: CircularProgressIndicator(
-              color: MarketingDarkColors.cyanBright,
+              color: phone
+                  ? StitchMobileColors.primary
+                  : MarketingDarkColors.cyanBright,
             ),
           ),
         ),

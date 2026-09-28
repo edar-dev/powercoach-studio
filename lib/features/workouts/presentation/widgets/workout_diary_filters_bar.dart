@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../domain/workout_diary_filter.dart';
@@ -9,6 +11,259 @@ import '../../domain/workout_diary_filter.dart';
 class WorkoutDiaryFiltersBar extends StatelessWidget {
   const WorkoutDiaryFiltersBar({
     super.key,
+    required this.dateRange,
+    required this.statusFilter,
+    required this.customers,
+    required this.filterCustomerId,
+    required this.visibleCount,
+    required this.onDateRangeChanged,
+    required this.onStatusChanged,
+    required this.onAthleteTap,
+  });
+
+  final DiaryDateRange dateRange;
+  final DiaryStatusFilter statusFilter;
+  final List<Customer> customers;
+  final String? filterCustomerId;
+  final int visibleCount;
+  final ValueChanged<DiaryDateRange> onDateRangeChanged;
+  final ValueChanged<DiaryStatusFilter> onStatusChanged;
+  final VoidCallback onAthleteTap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Breakpoints.isTabletOrWider(context)) {
+      return _PhoneFilters(
+        dateRange: dateRange,
+        statusFilter: statusFilter,
+        customers: customers,
+        filterCustomerId: filterCustomerId,
+        onDateRangeChanged: onDateRangeChanged,
+        onStatusChanged: onStatusChanged,
+        onAthleteTap: onAthleteTap,
+      );
+    }
+    return _DesktopFilters(
+      dateRange: dateRange,
+      statusFilter: statusFilter,
+      customers: customers,
+      filterCustomerId: filterCustomerId,
+      visibleCount: visibleCount,
+      onDateRangeChanged: onDateRangeChanged,
+      onStatusChanged: onStatusChanged,
+      onAthleteTap: onAthleteTap,
+    );
+  }
+}
+
+class _PhoneFilters extends StatelessWidget {
+  const _PhoneFilters({
+    required this.dateRange,
+    required this.statusFilter,
+    required this.customers,
+    required this.filterCustomerId,
+    required this.onDateRangeChanged,
+    required this.onStatusChanged,
+    required this.onAthleteTap,
+  });
+
+  final DiaryDateRange dateRange;
+  final DiaryStatusFilter statusFilter;
+  final List<Customer> customers;
+  final String? filterCustomerId;
+  final ValueChanged<DiaryDateRange> onDateRangeChanged;
+  final ValueChanged<DiaryStatusFilter> onStatusChanged;
+  final VoidCallback onAthleteTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    String athleteLabel = l10n.workoutDiaryFilterAll;
+    if (filterCustomerId != null) {
+      for (final c in customers) {
+        if (c.id == filterCustomerId) {
+          athleteLabel = c.name;
+          break;
+        }
+      }
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Material(
+          color: StitchMobileColors.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+          child: InkWell(
+            onTap: onAthleteTap,
+            borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      athleteLabel,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: StitchMobileColors.onSurface,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: StitchMobileColors.onSurfaceVariant,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 32,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _PhoneDatePill(
+                label: l10n.coachStatsPeriod30d,
+                selected: dateRange == DiaryDateRange.last30,
+                onTap: () => onDateRangeChanged(DiaryDateRange.last30),
+              ),
+              const SizedBox(width: 6),
+              _PhoneDatePill(
+                label: l10n.coachStatsPeriod7d,
+                selected: dateRange == DiaryDateRange.last7,
+                onTap: () => onDateRangeChanged(DiaryDateRange.last7),
+              ),
+              const SizedBox(width: 6),
+              _PhoneDatePill(
+                label: l10n.workoutDiaryFilterDateAll,
+                selected: dateRange == DiaryDateRange.all,
+                onTap: () => onDateRangeChanged(DiaryDateRange.all),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 8),
+        SizedBox(
+          height: 28,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _PhoneStatusChip(
+                label: l10n.workoutDiaryFilterStatusAllShort,
+                selected: statusFilter == DiaryStatusFilter.all,
+                onTap: () => onStatusChanged(DiaryStatusFilter.all),
+              ),
+              const SizedBox(width: 6),
+              _PhoneStatusChip(
+                label: l10n.sessionCompleted,
+                selected: statusFilter == DiaryStatusFilter.completed,
+                onTap: () => onStatusChanged(DiaryStatusFilter.completed),
+              ),
+              const SizedBox(width: 6),
+              _PhoneStatusChip(
+                label: l10n.sessionSkipped,
+                selected: statusFilter == DiaryStatusFilter.skipped,
+                onTap: () => onStatusChanged(DiaryStatusFilter.skipped),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PhoneDatePill extends StatelessWidget {
+  const _PhoneDatePill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected
+          ? StitchMobileColors.primaryContainer
+          : StitchMobileColors.surfaceContainerHigh,
+      borderRadius: BorderRadius.circular(999),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          height: 32,
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected
+                  ? StitchMobileColors.onPrimaryContainer
+                  : StitchMobileColors.onSurface,
+              fontSize: 12,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PhoneStatusChip extends StatelessWidget {
+  const _PhoneStatusChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected
+          ? StitchMobileColors.surfaceContainer
+          : StitchMobileColors.surfaceContainerLow,
+      borderRadius: BorderRadius.circular(6),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          height: 28,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: selected
+                  ? StitchMobileColors.primary
+                  : StitchMobileColors.onSurface,
+              fontSize: 11,
+              fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DesktopFilters extends StatelessWidget {
+  const _DesktopFilters({
     required this.dateRange,
     required this.statusFilter,
     required this.customers,

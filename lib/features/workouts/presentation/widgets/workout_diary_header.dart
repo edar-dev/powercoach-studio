@@ -3,11 +3,98 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Page header for the Stitch diary redesign (badge, title, record CTA).
 class WorkoutDiaryHeader extends StatelessWidget {
   const WorkoutDiaryHeader({super.key, required this.onRecord});
+
+  final VoidCallback onRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Breakpoints.isTabletOrWider(context)) {
+      return _PhoneHeader(onRecord: onRecord);
+    }
+    return _DesktopHeader(onRecord: onRecord);
+  }
+}
+
+class _PhoneHeader extends StatelessWidget {
+  const _PhoneHeader({required this.onRecord});
+
+  final VoidCallback onRecord;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          l10n.workoutDiaryPageTitle,
+          style: const TextStyle(
+            color: StitchMobileColors.onSurface,
+            fontSize: StitchMobileColors.headlineSize,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: const BoxDecoration(
+                color: StitchMobileColors.tertiary,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              l10n.workoutDiaryLiveSync,
+              style: const TextStyle(
+                color: StitchMobileColors.onSurfaceVariant,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 48,
+          child: Material(
+            color: StitchMobileColors.primaryContainer,
+            borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.selectionClick();
+                onRecord();
+              },
+              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+              child: Center(
+                child: Text(
+                  '+ ${l10n.workoutDiaryRecordAction}',
+                  style: const TextStyle(
+                    color: StitchMobileColors.onPrimaryContainer,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DesktopHeader extends StatelessWidget {
+  const _DesktopHeader({required this.onRecord});
 
   final VoidCallback onRecord;
 
