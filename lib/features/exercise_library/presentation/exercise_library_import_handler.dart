@@ -9,6 +9,7 @@ import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../data/default_exercise_catalog.dart';
 import '../data/import_file_reader.dart';
+import '../domain/default_exercise_catalog_seeder.dart';
 import '../domain/exercise_catalog_source.dart';
 import '../domain/exercise_library_import_service.dart';
 import '../presentation/widgets/exercise_library_import_source_sheet.dart';
@@ -47,6 +48,7 @@ class ExerciseLibraryImportHandler {
 
   Future<void> importDefaultCatalog() async {
     final l10n = AppLocalizations.of(context);
+    await DefaultExerciseCatalogSeeder.clearAutoSeedSuppression();
     await _importAndNotify(
       buildDefaultExerciseCatalogJson(),
       l10n: l10n,

@@ -34,6 +34,14 @@ class PinnedExercisesStore {
     await _save(ids);
   }
 
+  Future<void> removeIds(Iterable<String> ids) async {
+    final remove = ids.where((id) => id.trim().isNotEmpty).toSet();
+    if (remove.isEmpty) return;
+    final current = await getPinnedIds();
+    current.removeAll(remove);
+    await _save(current);
+  }
+
   Future<void> _save(Set<String> ids) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(

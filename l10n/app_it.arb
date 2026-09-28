@@ -503,6 +503,19 @@
   "exerciseLibraryEmptyMobility": "Nessun esercizio di mobilità ancora.",
   "exerciseLibraryEmptyMobilityHint": "Aggiungi esercizi di mobilità per usarli nelle routine di mobilità.",
   "exerciseLibraryExportEmpty": "Niente da esportare. Aggiungi prima degli esercizi.",
+  "exerciseLibraryClearAll": "Svuota libreria",
+  "exerciseLibraryClearAllTitle": "Svuotare tutta la libreria?",
+  "exerciseLibraryClearAllMessage": "Verranno rimossi tutti gli esercizi e quelli di mobilità. I piani di allenamento non vengono cancellati. Questa azione non può essere annullata.",
+  "exerciseLibraryClearAllConfirm": "Svuota",
+  "exerciseLibraryClearAllEmpty": "Niente da rimuovere.",
+  "exerciseLibraryClearAllSuccessCount": "Rimossi {count} esercizi.",
+  "@exerciseLibraryClearAllSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "exerciseLibraryImportInvalidFormat": "File non valido. Usa un array JSON di esercizi.",
   "exerciseLibraryImportSuccess": "Importazione completata.",
   "exerciseLibraryImportSuccessCount": "Importazione completata: {count} elementi.",

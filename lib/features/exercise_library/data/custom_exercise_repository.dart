@@ -190,4 +190,14 @@ class CustomExerciseRepository {
   Future<void> delete(String id) async {
     await _offline.markDeleted(OfflineEntityType.customExercise, id);
   }
+
+  /// Soft-deletes all library custom exercises (strength + mobility).
+  /// Returns the number of entities marked deleted.
+  Future<int> deleteAll() async {
+    final items = await listFlat();
+    for (final item in items) {
+      await delete(item.id);
+    }
+    return items.length;
+  }
 }
