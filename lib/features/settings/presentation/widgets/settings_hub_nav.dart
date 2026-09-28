@@ -208,7 +208,7 @@ class _SidebarNavButton extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: MarketingDarkColors.stitchBorder,
+                    color: MarketingDarkColors.stitchCardElevated,
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(color: MarketingDarkColors.stitchBorderMuted),
                   ),

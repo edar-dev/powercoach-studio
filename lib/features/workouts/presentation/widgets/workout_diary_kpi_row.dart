@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/workout_diary_metrics.dart';
 
@@ -13,8 +15,12 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final phone = !Breakpoints.isTabletOrWider(context);
+
     final volumeValue = kpis.hasParsableVolume
-        ? '${formatVolumeKg(kpis.volumeKg)} ${l10n.workoutDiaryKpiVolumeUnit}'
+        ? phone && kpis.volumeKg >= 1000
+            ? '${(kpis.volumeKg / 1000).toStringAsFixed(1)} ${l10n.workoutDiaryKpiVolumeTonsUnit}'
+            : '${formatVolumeKg(kpis.volumeKg)} ${l10n.workoutDiaryKpiVolumeUnit}'
         : kpis.setCount > 0
         ? l10n.workoutDiarySetsCount(kpis.setCount)
         : l10n.workoutDiaryExercisesCount(kpis.exerciseCount);
@@ -24,6 +30,34 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
     final complianceHint = kpis.skippedCount > 0
         ? l10n.workoutDiaryKpiSkipped(kpis.skippedCount)
         : null;
+
+    if (phone) {
+      return GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
+        childAspectRatio: 1.55,
+        children: [
+          _PhoneKpiCard(
+            label: l10n.workoutDiaryKpiSessions,
+            value: '${kpis.completedCount}',
+          ),
+          _PhoneKpiCard(
+            label: l10n.workoutDiaryKpiVolume,
+            value: volumeValue,
+            valueColor: StitchMobileColors.secondary,
+          ),
+          _PhoneKpiCard(
+            label: l10n.workoutDiaryKpiCompliance,
+            value: complianceValue,
+            valueColor: StitchMobileColors.primary,
+            hint: complianceHint,
+          ),
+        ],
+      );
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -80,6 +114,66 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _PhoneKpiCard extends StatelessWidget {
+  const _PhoneKpiCard({
+    required this.label,
+    required this.value,
+    this.valueColor,
+    this.hint,
+  });
+
+  final String label;
+  final String value;
+  final Color? valueColor;
+  final String? hint;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              color: StitchMobileColors.onSurfaceVariant,
+              fontSize: 11,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: valueColor ?? StitchMobileColors.onSurface,
+              fontSize: StitchMobileColors.metricSize,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          if (hint != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              hint!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: StitchMobileColors.onSurfaceVariant,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ],
+      ),
     );
   }
 }

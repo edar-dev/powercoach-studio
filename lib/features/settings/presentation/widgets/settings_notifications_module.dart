@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Notifications toggles module for the settings hub.
@@ -25,6 +27,120 @@ class SettingsNotificationsModule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final phone = !Breakpoints.isTabletOrWider(context);
+    return phone ? _buildPhone(context) : _buildDesktop(context);
+  }
+
+  Widget _buildPhone(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.settingsNotificationsModuleTitle,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: StitchMobileColors.onSurface,
+              fontWeight: FontWeight.w600,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: StitchMobileColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.settingsSessionRemindersTitle,
+                        style: theme.textTheme.labelLarge?.copyWith(
+                          color: StitchMobileColors.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.settingsSessionRemindersSubtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: StitchMobileColors.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Switch.adaptive(
+                  value: calendarRemindersEnabled && notificationsEnabled,
+                  onChanged: kIsWeb
+                      ? null
+                      : (value) async {
+                          if (value && !notificationsEnabled) {
+                            onNotificationsToggle(true);
+                          }
+                          onCalendarRemindersToggle(value);
+                        },
+                  activeThumbColor: StitchMobileColors.onPrimaryContainer,
+                  activeTrackColor: StitchMobileColors.primaryContainer,
+                ),
+              ],
+            ),
+          ),
+          if (calendarRemindersEnabled && notificationsEnabled) ...[
+            const SizedBox(height: 10),
+            Material(
+              color: StitchMobileColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+              child: InkWell(
+                onTap: kIsWeb ? null : onPickCalendarLeadHours,
+                borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 12,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.settingsCalendarReminderLeadHours(
+                            calendarReminderLeadHours,
+                          ),
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: StitchMobileColors.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: StitchMobileColors.outline,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktop(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
@@ -89,7 +205,8 @@ class SettingsNotificationsModule extends StatelessWidget {
               borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
               child: InkWell(
                 onTap: kIsWeb ? null : onPickCalendarLeadHours,
-                borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
+                borderRadius:
+                    BorderRadius.circular(MarketingDarkColors.radiusXl),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 14,

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/billing/entitlement_models.dart';
 import '../../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../../core/ui/breakpoints.dart';
 import '../../../../../l10n/app_localizations.dart';
 
 /// Pro upgrade highlight card (right column of subscription hero).
@@ -12,14 +14,175 @@ class SubscriptionUpgradeCard extends StatelessWidget {
     required this.busy,
     required this.yearly,
     required this.onCheckoutStarted,
+    this.onYearlyChanged,
   });
 
   final bool busy;
   final bool yearly;
   final Future<void> Function(BillingInterval interval) onCheckoutStarted;
+  final ValueChanged<bool>? onYearlyChanged;
 
   @override
   Widget build(BuildContext context) {
+    final phone = !Breakpoints.isTabletOrWider(context);
+    return phone ? _buildPhone(context) : _buildDesktop(context);
+  }
+
+  Widget _buildPhone(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final bullets = [
+      l10n.subscriptionFeatureUnlimitedClients,
+      l10n.subscriptionFeaturePdfLogo,
+      l10n.subscriptionFeatureMetrics,
+      l10n.subscriptionFeatureCloudSync,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+              decoration: BoxDecoration(
+                color: StitchMobileColors.primaryContainer.withValues(
+                  alpha: 0.2,
+                ),
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                l10n.subscriptionRecommendedBadge,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: StitchMobileColors.primary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            l10n.subscriptionUpgradeHighlightTitle,
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: StitchMobileColors.onSurface,
+              fontWeight: FontWeight.w700,
+              fontSize: StitchMobileColors.headlineSize,
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (onYearlyChanged != null)
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: StitchMobileColors.surfaceContainerLowest,
+                borderRadius:
+                    BorderRadius.circular(StitchMobileColors.radiusXl),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _PhoneBillingTab(
+                      label: l10n.subscriptionBillingMonthly,
+                      selected: !yearly,
+                      onTap: () => onYearlyChanged!(false),
+                    ),
+                  ),
+                  Expanded(
+                    child: _PhoneBillingTab(
+                      label: l10n.subscriptionBillingYearly,
+                      selected: yearly,
+                      onTap: () => onYearlyChanged!(true),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 16),
+          Center(
+            child: Text.rich(
+              TextSpan(
+                text: yearly
+                    ? l10n.subscriptionPriceYearlyAmount
+                    : l10n.subscriptionPriceMonthlyAmount,
+                style: theme.textTheme.displaySmall?.copyWith(
+                  color: StitchMobileColors.onSurface,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 30,
+                ),
+                children: [
+                  TextSpan(
+                    text: yearly
+                        ? ' ${l10n.subscriptionRenewPerYear}'
+                        : ' ${l10n.subscriptionRenewPerMonth}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: StitchMobileColors.onSurfaceVariant,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          for (final bullet in bullets)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '✓ $bullet',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: StitchMobileColors.onSurface,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+          const SizedBox(height: 8),
+          if (!kIsWeb)
+            Text(
+              l10n.subscriptionWebOnlyHint,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: StitchMobileColors.onSurfaceVariant,
+              ),
+            )
+          else
+            SizedBox(
+              height: 48,
+              child: FilledButton(
+                onPressed: busy
+                    ? null
+                    : () => onCheckoutStarted(
+                          yearly
+                              ? BillingInterval.yearly
+                              : BillingInterval.monthly,
+                        ),
+                style: FilledButton.styleFrom(
+                  backgroundColor: StitchMobileColors.primaryContainer,
+                  foregroundColor: StitchMobileColors.onPrimaryContainer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(StitchMobileColors.radiusLg),
+                  ),
+                ),
+                child: Text(
+                  l10n.subscriptionUpgradeHighlightCta,
+                  style: const TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktop(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final priceLabel = yearly
@@ -138,6 +301,47 @@ class SubscriptionUpgradeCard extends StatelessWidget {
               ),
             ),
         ],
+      ),
+    );
+  }
+}
+
+class _PhoneBillingTab extends StatelessWidget {
+  const _PhoneBillingTab({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Material(
+      color: selected
+          ? StitchMobileColors.surfaceContainerHigh
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: selected
+                  ? StitchMobileColors.onSurface
+                  : StitchMobileColors.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
+          ),
+        ),
       ),
     );
   }

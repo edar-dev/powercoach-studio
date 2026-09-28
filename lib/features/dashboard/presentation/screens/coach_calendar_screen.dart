@@ -5,9 +5,12 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
+import '../../../customers/data/models/customer.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
 import '../../../workouts/domain/plan_session_status_service.dart';
 import '../../domain/calendar_event_loader.dart';
@@ -32,6 +35,8 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   List<PlanCalendarEvent> _events = const [];
+  List<Customer> _customers = const [];
+  String? _filterCustomerId;
   bool _loading = true;
   String? _error;
 
@@ -67,6 +72,9 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
       );
       setState(() {
         _events = events;
+        _customers = customers
+            .where((c) => !c.isArchived)
+            .toList(growable: false);
         _loading = false;
       });
     } catch (error) {
@@ -79,9 +87,15 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
     }
   }
 
+  List<PlanCalendarEvent> get _filteredEvents {
+    final id = _filterCustomerId;
+    if (id == null || id.isEmpty) return _events;
+    return _events.where((e) => e.customerId == id).toList(growable: false);
+  }
+
   List<PlanCalendarEvent> _eventsOnDay(DateTime day) {
     final normalized = calendarDayOnly(day);
-    return _events
+    return _filteredEvents
         .where((event) => calendarDayOnly(event.day) == normalized)
         .toList();
   }
@@ -157,6 +171,8 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
     _loadEvents();
   }
 
+  void _addSession() => navigateTo(context, '/customers');
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -165,10 +181,13 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
     final selectedDay = _selectedDay ?? calendarDayOnly(DateTime.now());
     final dayEvents = _eventsOnDay(selectedDay);
     final monthLabel = DateFormat.yMMMM(locale).format(_focusedDay);
+    final phone = !Breakpoints.isTabletOrWider(context);
     final isWide = MediaQuery.sizeOf(context).width >= 1100;
 
     return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBg,
+      backgroundColor: phone
+          ? StitchMobileColors.surface
+          : MarketingDarkColors.stitchPageBg,
       body: SafeArea(
         child: _error != null
             ? Center(
@@ -181,13 +200,20 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                         l10n.calendarLoadError,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
-                          color: MarketingDarkColors.slate300,
+                          color: phone
+                              ? StitchMobileColors.onSurfaceVariant
+                              : MarketingDarkColors.slate300,
                         ),
                       ),
                       const SizedBox(height: 16),
                       FilledButton(
                         style: FilledButton.styleFrom(
-                          backgroundColor: MarketingDarkColors.brand,
+                          backgroundColor: phone
+                              ? StitchMobileColors.primaryContainer
+                              : MarketingDarkColors.brand,
+                          foregroundColor: phone
+                              ? StitchMobileColors.onPrimary
+                              : Colors.white,
                         ),
                         onPressed: _loadEvents,
                         child: Text(l10n.customersRetry),
@@ -197,11 +223,22 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                 ),
               )
             : RefreshIndicator(
-                color: MarketingDarkColors.brandLight,
+                color: phone
+                    ? StitchMobileColors.primary
+                    : MarketingDarkColors.brandLight,
                 onRefresh: _loadEvents,
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
+                  padding: EdgeInsets.fromLTRB(
+                    StitchMobileColors.marginMobile,
+                    phone ? 8 : 16,
+                    StitchMobileColors.marginMobile,
+                    24,
+                  ),
                   children: [
+                    if (phone) ...[
+                      CoachCalendarPhoneHeader(onAddSession: _addSession),
+                      const SizedBox(height: 12),
+                    ],
                     CoachCalendarToolbar(
                       monthLabel: monthLabel,
                       onBack: () {
@@ -214,10 +251,15 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
                       onPreviousMonth: () => _shiftMonth(-1),
                       onNextMonth: () => _shiftMonth(1),
                       onToday: _goToday,
-                      onAddSession: () => navigateTo(context, '/customers'),
+                      onAddSession: _addSession,
+                      customers: phone ? _customers : const [],
+                      filterCustomerId: _filterCustomerId,
+                      onFilterCustomer: phone
+                          ? (id) => setState(() => _filterCustomerId = id)
+                          : null,
                     ),
                     const SizedBox(height: 16),
-                    if (isWide)
+                    if (!phone && isWide)
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

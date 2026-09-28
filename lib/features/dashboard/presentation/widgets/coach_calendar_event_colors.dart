@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../domain/plan_calendar_event.dart';
 
 /// Stable palette color for a calendar event (by status, then customer).
@@ -20,4 +21,16 @@ Color coachCalendarEventColor(PlanCalendarEvent event) {
   ];
   final hash = event.customerId.hashCode.abs();
   return palette[hash % palette.length];
+}
+
+/// Phone Stitch legend / dot colors (workout / completed / check-in-mapped).
+///
+/// Planned → workout (`primaryContainer`), completed → tertiary,
+/// skipped → secondary (no check-in model; maps third legend slot).
+Color coachCalendarPhoneEventColor(PlanCalendarEvent event) {
+  return switch (event.status) {
+    PlanSessionStatus.completed => StitchMobileColors.tertiary,
+    PlanSessionStatus.skipped => StitchMobileColors.secondary,
+    PlanSessionStatus.planned => StitchMobileColors.primaryContainer,
+  };
 }

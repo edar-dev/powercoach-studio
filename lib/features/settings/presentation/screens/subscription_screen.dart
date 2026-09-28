@@ -11,6 +11,7 @@ import '../../../../core/billing/entitlement_repository.dart';
 import '../../../../core/billing/plan_usage.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -204,28 +205,41 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final isPro = entitlement.isPro;
     final isStripePro = isPro && entitlement.isStripeBilling;
     final desktop = Breakpoints.isDesktop(context);
+    final phone = !Breakpoints.isTabletOrWider(context);
 
     return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBg,
-      appBar: StitchSecondaryAppBar(
-        title: l10n.settingsSubscriptionTitle,
-        onBack: () => navigateBackFromSubscription(context),
-      ),
-      body: _isLoading
+      backgroundColor: phone
+          ? StitchMobileColors.surface
+          : MarketingDarkColors.stitchPageBg,
+      appBar: phone
+          ? null
+          : StitchSecondaryAppBar(
+              title: l10n.settingsSubscriptionTitle,
+              onBack: () => navigateBackFromSubscription(context),
+            ),
+      body: SafeArea(
+        bottom: false,
+        child: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
               onRefresh: _load,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(24, 24, 24, 48),
+                padding: EdgeInsets.fromLTRB(
+                  phone ? 16 : 24,
+                  phone ? 16 : 24,
+                  phone ? 16 : 24,
+                  phone ? 80 : 48,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     _SubscriptionPageHeader(
                       isPro: isPro,
-                      onViewCompare: _scrollToCompare,
+                      phone: phone,
+                      onViewCompare: phone ? null : _scrollToCompare,
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: phone ? 24 : 24),
                     if (desktop && !isPro)
                       IntrinsicHeight(
                         child: Row(
@@ -249,6 +263,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                                 busy: _busy,
                                 yearly: _yearly,
                                 onCheckoutStarted: _startCheckout,
+                                onYearlyChanged: (v) =>
+                                    setState(() => _yearly = v),
                               ),
                             ),
                           ],
@@ -270,10 +286,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           busy: _busy,
                           yearly: _yearly,
                           onCheckoutStarted: _startCheckout,
+                          onYearlyChanged: (v) => setState(() => _yearly = v),
                         ),
                       ],
                     ],
-                    const SizedBox(height: 32),
+                    SizedBox(height: phone ? 24 : 32),
                     KeyedSubtree(
                       key: _compareKey,
                       child: SubscriptionPlanCompareCard(
@@ -294,14 +311,19 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       OutlinedButton(
                         onPressed: _busy ? null : () => _openPortal(),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: MarketingDarkColors.slate300,
-                          side: const BorderSide(
-                            color: MarketingDarkColors.stitchBorderMuted,
+                          foregroundColor: phone
+                              ? StitchMobileColors.onSurfaceVariant
+                              : MarketingDarkColors.slate300,
+                          side: BorderSide(
+                            color: phone
+                                ? StitchMobileColors.outline
+                                    .withValues(alpha: 0.4)
+                                : MarketingDarkColors.stitchBorderMuted,
                           ),
                         ),
                         child: Text(l10n.subscriptionManage),
                       ),
-                    ] else if (!isPro) ...[
+                    ] else if (!isPro && !phone) ...[
                       const SizedBox(height: 28),
                       _SubscriptionCtaBanner(
                         busy: _busy,
@@ -312,6 +334,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 ),
               ),
             ),
+      ),
     );
   }
 }
@@ -319,16 +342,77 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
 class _SubscriptionPageHeader extends StatelessWidget {
   const _SubscriptionPageHeader({
     required this.isPro,
-    required this.onViewCompare,
+    required this.phone,
+    this.onViewCompare,
   });
 
   final bool isPro;
-  final VoidCallback onViewCompare;
+  final bool phone;
+  final VoidCallback? onViewCompare;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+
+    if (phone) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () => navigateBackFromSubscription(context),
+                icon: const Icon(Icons.arrow_back),
+                color: StitchMobileColors.onSurface,
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(
+                  minWidth: StitchMobileColors.touchMin,
+                  minHeight: StitchMobileColors.touchMin,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  l10n.subscriptionPageTitle,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    color: StitchMobileColors.onSurface,
+                    fontWeight: FontWeight.w700,
+                    fontSize: StitchMobileColors.headlineSize,
+                  ),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: StitchMobileColors.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  isPro
+                      ? l10n.subscriptionProActiveBadge
+                      : l10n.subscriptionFreeLimitedBadge,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: StitchMobileColors.outline,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.subscriptionPageSubtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: StitchMobileColors.onSurfaceVariant,
+              fontSize: 13,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -388,15 +472,17 @@ class _SubscriptionPageHeader extends StatelessWidget {
             color: MarketingDarkColors.slate400,
           ),
         ),
-        const SizedBox(height: 8),
-        TextButton(
-          onPressed: onViewCompare,
-          style: TextButton.styleFrom(
-            foregroundColor: MarketingDarkColors.brandLight,
-            padding: EdgeInsets.zero,
+        if (onViewCompare != null) ...[
+          const SizedBox(height: 8),
+          TextButton(
+            onPressed: onViewCompare,
+            style: TextButton.styleFrom(
+              foregroundColor: MarketingDarkColors.brandLight,
+              padding: EdgeInsets.zero,
+            ),
+            child: Text(l10n.subscriptionCompareTitle),
           ),
-          child: Text(l10n.subscriptionCompareTitle),
-        ),
+        ],
       ],
     );
   }

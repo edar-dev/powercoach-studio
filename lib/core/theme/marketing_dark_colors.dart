@@ -45,14 +45,14 @@ abstract final class MarketingDarkColors {
   static const Color cyanHover = Color(0xFF0891B2);
   static const Color cyanOn = Color(0xFF09101A);
 
-  /// Stitch redesign page canvases (settings/calendar/subscription blue family).
-  static const Color stitchPageBg = Color(0xFF070B13);
-  static const Color stitchPageBgAlt = Color(0xFF0B0F17);
-  static const Color stitchCard = Color(0xFF111B2E);
-  static const Color stitchCardElevated = Color(0xFF121927);
-  static const Color stitchInput = Color(0xFF131E33);
-  static const Color stitchBorder = Color(0xFF1E293B);
-  static const Color stitchBorderMuted = Color(0xFF334155);
+  /// Stitch redesign page canvases — aligned with [StitchMobileColors] M3 tokens.
+  static const Color stitchPageBg = Color(0xFF0F131C);
+  static const Color stitchPageBgAlt = Color(0xFF0A0E16);
+  static const Color stitchCard = Color(0xFF1C2028);
+  static const Color stitchCardElevated = Color(0xFF262A33);
+  static const Color stitchInput = Color(0xFF181C24);
+  static const Color stitchBorder = Color(0xFF8C909F);
+  static const Color stitchBorderMuted = Color(0xFF31353E);
 
   static const double radiusXl = 12;
   static const double radius2xl = 16;

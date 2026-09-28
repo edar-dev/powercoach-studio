@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 
 /// Backup export/import/cloud module for the settings hub.
@@ -20,6 +22,159 @@ class SettingsBackupModule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final phone = !Breakpoints.isTabletOrWider(context);
+    return phone ? _buildPhone(context) : _buildDesktop(context);
+  }
+
+  Widget _buildPhone(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.settingsBackupModuleTitle,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: StitchMobileColors.onSurface,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              Text(
+                l10n.settingsOfflineReadyPill,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: StitchMobileColors.tertiary,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: StitchMobileColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.settingsBackupExportLocalTitle,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchMobileColors.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        l10n.settingsBackupExportLocalSubtitle,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: StitchMobileColors.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Material(
+                  color: StitchMobileColors.surfaceContainerHigh,
+                  borderRadius:
+                      BorderRadius.circular(StitchMobileColors.radiusLg),
+                  child: InkWell(
+                    onTap: onExportBackup,
+                    borderRadius:
+                        BorderRadius.circular(StitchMobileColors.radiusLg),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      child: Text(
+                        l10n.settingsBackupDownloadAction,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchMobileColors.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 44,
+            child: FilledButton(
+              onPressed: onUploadCloudBackup,
+              style: FilledButton.styleFrom(
+                backgroundColor: StitchMobileColors.surfaceContainerHigh,
+                foregroundColor: StitchMobileColors.onSurface,
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(StitchMobileColors.radiusLg),
+                ),
+              ),
+              child: Text(
+                l10n.settingsCloudSyncSnapshot,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              TextButton(
+                onPressed: onImportBackup,
+                style: TextButton.styleFrom(
+                  foregroundColor: StitchMobileColors.onSurfaceVariant,
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 36),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(l10n.settingsBackupImport),
+              ),
+              const SizedBox(width: 12),
+              TextButton(
+                onPressed: onRestoreCloudBackup,
+                style: TextButton.styleFrom(
+                  foregroundColor: StitchMobileColors.onSurfaceVariant,
+                  padding: EdgeInsets.zero,
+                  minimumSize: const Size(0, 36),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text(l10n.settingsCloudBackupRestore),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktop(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 

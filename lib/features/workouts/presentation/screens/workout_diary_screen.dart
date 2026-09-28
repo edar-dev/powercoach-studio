@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
@@ -159,9 +161,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       );
 
   Future<void> _showCustomerFilter(AppLocalizations l10n) async {
+    final phone = !Breakpoints.isTabletOrWider(context);
     final selected = await showModalBottomSheet<String?>(
       context: context,
-      backgroundColor: MarketingDarkColors.stitchCard,
+      backgroundColor: phone
+          ? StitchMobileColors.surfaceContainer
+          : MarketingDarkColors.stitchCard,
       showDragHandle: true,
       builder: (ctx) => SafeArea(
         child: Column(
@@ -170,12 +175,18 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
             ListTile(
               title: Text(
                 l10n.workoutDiaryFilterAll,
-                style: const TextStyle(color: MarketingDarkColors.text),
+                style: TextStyle(
+                  color: phone
+                      ? StitchMobileColors.onSurface
+                      : MarketingDarkColors.text,
+                ),
               ),
               trailing: _filterCustomerId == null
-                  ? const Icon(
+                  ? Icon(
                       Icons.check,
-                      color: MarketingDarkColors.cyanBright,
+                      color: phone
+                          ? StitchMobileColors.primary
+                          : MarketingDarkColors.cyanBright,
                     )
                   : null,
               onTap: () => Navigator.of(ctx).pop(''),
@@ -184,12 +195,18 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
               (c) => ListTile(
                 title: Text(
                   c.name,
-                  style: const TextStyle(color: MarketingDarkColors.text),
+                  style: TextStyle(
+                    color: phone
+                        ? StitchMobileColors.onSurface
+                        : MarketingDarkColors.text,
+                  ),
                 ),
                 trailing: _filterCustomerId == c.id
-                    ? const Icon(
+                    ? Icon(
                         Icons.check,
-                        color: MarketingDarkColors.cyanBright,
+                        color: phone
+                            ? StitchMobileColors.primary
+                            : MarketingDarkColors.cyanBright,
                       )
                     : null,
                 onTap: () => Navigator.of(ctx).pop(c.id),
@@ -231,14 +248,19 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
         _filterSessionKey != null && _filterSessionKey!.isNotEmpty;
     final kpis = computeDiaryKpis(visible);
     final groups = groupDiaryEntriesByDay(visible);
+    final phone = !Breakpoints.isTabletOrWider(context);
 
     return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBgAlt,
+      backgroundColor: phone
+          ? StitchMobileColors.surface
+          : MarketingDarkColors.stitchPageBgAlt,
       body: SafeArea(
         child: _loading
-            ? const Center(
+            ? Center(
                 child: CircularProgressIndicator(
-                  color: MarketingDarkColors.cyanBright,
+                  color: phone
+                      ? StitchMobileColors.primary
+                      : MarketingDarkColors.cyanBright,
                 ),
               )
             : _loadError != null
@@ -248,24 +270,32 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.error_outline,
                         size: 48,
-                        color: Color(0xFFFB7185),
+                        color: phone
+                            ? StitchMobileColors.error
+                            : const Color(0xFFFB7185),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         _loadError!,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
-                          color: MarketingDarkColors.slate400,
+                          color: phone
+                              ? StitchMobileColors.onSurfaceVariant
+                              : MarketingDarkColors.slate400,
                         ),
                       ),
                       const SizedBox(height: 24),
                       FilledButton(
                         style: FilledButton.styleFrom(
-                          backgroundColor: MarketingDarkColors.cyanBright,
-                          foregroundColor: MarketingDarkColors.cyanOn,
+                          backgroundColor: phone
+                              ? StitchMobileColors.primaryContainer
+                              : MarketingDarkColors.cyanBright,
+                          foregroundColor: phone
+                              ? StitchMobileColors.onPrimaryContainer
+                              : MarketingDarkColors.cyanOn,
                         ),
                         onPressed: () => _load(reset: true),
                         child: Text(l10n.customersRetry),
@@ -275,20 +305,32 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                 ),
               )
             : RefreshIndicator(
-                color: MarketingDarkColors.cyanBright,
+                color: phone
+                    ? StitchMobileColors.primary
+                    : MarketingDarkColors.cyanBright,
                 onRefresh: () => _load(reset: true),
                 child: CustomScrollView(
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      padding: EdgeInsets.fromLTRB(
+                        StitchMobileColors.marginMobile,
+                        phone ? 12 : 16,
+                        StitchMobileColors.marginMobile,
+                        0,
+                      ),
                       sliver: SliverToBoxAdapter(
                         child: WorkoutDiaryHeader(onRecord: _recordSession),
                       ),
                     ),
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+                      padding: EdgeInsets.fromLTRB(
+                        StitchMobileColors.marginMobile,
+                        phone ? 8 : 20,
+                        StitchMobileColors.marginMobile,
+                        0,
+                      ),
                       sliver: SliverToBoxAdapter(
                         child: WorkoutDiaryKpiRow(kpis: kpis),
                       ),
@@ -298,24 +340,32 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                         sliver: SliverToBoxAdapter(
                           child: Material(
-                            color: MarketingDarkColors.stitchCard,
+                            color: phone
+                                ? StitchMobileColors.surfaceContainer
+                                : MarketingDarkColors.stitchCard,
                             borderRadius: BorderRadius.circular(12),
                             child: ListTile(
                               dense: true,
-                              leading: const Icon(
+                              leading: Icon(
                                 Icons.filter_alt_outlined,
-                                color: MarketingDarkColors.cyanBright,
+                                color: phone
+                                    ? StitchMobileColors.primary
+                                    : MarketingDarkColors.cyanBright,
                               ),
                               title: Text(
                                 l10n.workoutDiarySessionFilterActive,
-                                style: const TextStyle(
-                                  color: MarketingDarkColors.text,
+                                style: TextStyle(
+                                  color: phone
+                                      ? StitchMobileColors.onSurface
+                                      : MarketingDarkColors.text,
                                 ),
                               ),
                               trailing: IconButton(
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.close,
-                                  color: MarketingDarkColors.slate400,
+                                  color: phone
+                                      ? StitchMobileColors.onSurfaceVariant
+                                      : MarketingDarkColors.slate400,
                                 ),
                                 onPressed: () {
                                   setState(() => _filterSessionKey = null);
@@ -327,7 +377,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                         ),
                       ),
                     SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                      padding: EdgeInsets.fromLTRB(
+                        StitchMobileColors.marginMobile,
+                        phone ? 8 : 16,
+                        StitchMobileColors.marginMobile,
+                        0,
+                      ),
                       sliver: SliverToBoxAdapter(
                         child: WorkoutDiaryFiltersBar(
                           dateRange: _dateRange,
@@ -355,7 +410,9 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                               l10n.workoutDiaryEmpty,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.bodyLarge?.copyWith(
-                                color: MarketingDarkColors.slate400,
+                                color: phone
+                                    ? StitchMobileColors.onSurfaceVariant
+                                    : MarketingDarkColors.slate400,
                               ),
                             ),
                           ),
@@ -363,7 +420,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                       )
                     else
                       SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                        padding: EdgeInsets.fromLTRB(
+                          StitchMobileColors.marginMobile,
+                          phone ? 12 : 16,
+                          StitchMobileColors.marginMobile,
+                          32,
+                        ),
                         sliver: SliverToBoxAdapter(
                           child: WorkoutDiaryTimeline(
                             groups: groups,

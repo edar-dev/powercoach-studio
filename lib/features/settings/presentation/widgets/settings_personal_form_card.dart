@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'settings_stitch_field.dart';
 
 /// Personal info card used on the settings hub and dedicated personal-info route.
-class SettingsPersonalFormCard extends StatelessWidget {
+class SettingsPersonalFormCard extends StatefulWidget {
   const SettingsPersonalFormCard({
     super.key,
     required this.formKey,
@@ -29,8 +31,17 @@ class SettingsPersonalFormCard extends StatelessWidget {
   final bool emailVerified;
   final String? loadError;
 
+  @override
+  State<SettingsPersonalFormCard> createState() =>
+      _SettingsPersonalFormCardState();
+}
+
+class _SettingsPersonalFormCardState extends State<SettingsPersonalFormCard> {
+  final _avatarFocusNode = FocusNode();
+  static const _bioMaxLength = 200;
+
   String get _initials {
-    final parts = displayNameController.text
+    final parts = widget.displayNameController.text
         .trim()
         .split(RegExp(r'\s+'))
         .where((p) => p.isNotEmpty)
@@ -44,7 +55,146 @@ class SettingsPersonalFormCard extends StatelessWidget {
   }
 
   @override
+  void dispose() {
+    _avatarFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _focusAvatarField() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _avatarFocusNode.requestFocus();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final phone = !Breakpoints.isTabletOrWider(context);
+    if (phone) {
+      return _buildPhone(context);
+    }
+    return _buildDesktop(context);
+  }
+
+  Widget _buildPhone(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Form(
+      key: widget.formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _PhoneProfileHero(
+            initials: _initials,
+            displayNameController: widget.displayNameController,
+            websiteController: widget.websiteController,
+            emailVerified: widget.emailVerified,
+            onChangePhoto: _focusAvatarField,
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: StitchMobileColors.surfaceContainer,
+              borderRadius:
+                  BorderRadius.circular(StitchMobileColors.radiusXl),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        l10n.settingsPersonalInfoCardTitle,
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: StitchMobileColors.onSurface,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      l10n.settingsPersonalInfoCardSubtitle,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: StitchMobileColors.onSurfaceVariant,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 14),
+                if (widget.loadError != null) ...[
+                  Text(
+                    l10n.profileLoadError,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: StitchMobileColors.error,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
+                SettingsStitchField(
+                  label: l10n.settingsFullNameLabel,
+                  controller: widget.displayNameController,
+                  requiredMark: true,
+                  textInputAction: TextInputAction.next,
+                  mobileStyle: true,
+                ),
+                const SizedBox(height: 14),
+                SettingsStitchField(
+                  label: l10n.settingsOfficialEmailLabel,
+                  controller: widget.emailController,
+                  readOnly: true,
+                  requiredMark: true,
+                  mobileStyle: true,
+                  helper: widget.emailVerified
+                      ? l10n.settingsEmailVerified
+                      : null,
+                ),
+                const SizedBox(height: 14),
+                SettingsStitchField(
+                  label: l10n.settingsPhoneWhatsAppLabel,
+                  controller: widget.phoneController,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  mobileStyle: true,
+                ),
+                const SizedBox(height: 14),
+                SettingsStitchField(
+                  label: l10n.settingsBioCoachLabel,
+                  controller: widget.bioController,
+                  maxLines: 3,
+                  maxLength: _bioMaxLength,
+                  textInputAction: TextInputAction.newline,
+                  mobileStyle: true,
+                ),
+                const SizedBox(height: 14),
+                SettingsStitchField(
+                  label: l10n.profileAvatarUrl,
+                  controller: widget.avatarUrlController,
+                  focusNode: _avatarFocusNode,
+                  keyboardType: TextInputType.url,
+                  textInputAction: TextInputAction.next,
+                  mobileStyle: true,
+                ),
+                const SizedBox(height: 14),
+                SettingsStitchField(
+                  label: l10n.profileWebsite,
+                  controller: widget.websiteController,
+                  keyboardType: TextInputType.url,
+                  textInputAction: TextInputAction.next,
+                  mobileStyle: true,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktop(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
 
@@ -58,7 +208,7 @@ class SettingsPersonalFormCard extends StatelessWidget {
         ),
       ),
       child: Form(
-        key: formKey,
+        key: widget.formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -86,7 +236,7 @@ class SettingsPersonalFormCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (emailVerified)
+                if (widget.emailVerified)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -96,7 +246,8 @@ class SettingsPersonalFormCard extends StatelessWidget {
                       color: MarketingDarkColors.brand.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(
-                        color: MarketingDarkColors.brandMid.withValues(alpha: 0.2),
+                        color: MarketingDarkColors.brandMid
+                            .withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -127,21 +278,21 @@ class SettingsPersonalFormCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ListenableBuilder(
-                  listenable: displayNameController,
+                  listenable: widget.displayNameController,
                   builder: (context, _) {
                     return Container(
                       width: 88,
                       height: 88,
                       decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(MarketingDarkColors.radius2xl),
+                        borderRadius: BorderRadius.circular(
+                          MarketingDarkColors.radius2xl,
+                        ),
                         gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            MarketingDarkColors.brand,
-                            Color(0xFF2563EB),
-                            Color(0xFF4338CA),
+                            StitchMobileColors.primaryContainer,
+                            StitchMobileColors.secondary,
                           ],
                         ),
                       ),
@@ -191,7 +342,7 @@ class SettingsPersonalFormCard extends StatelessWidget {
             const SizedBox(height: 20),
             const Divider(height: 1, color: MarketingDarkColors.stitchBorder),
             const SizedBox(height: 20),
-            if (loadError != null) ...[
+            if (widget.loadError != null) ...[
               Text(
                 l10n.profileLoadError,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -206,25 +357,24 @@ class SettingsPersonalFormCard extends StatelessWidget {
                 final fields = <Widget>[
                   SettingsStitchField(
                     label: l10n.profileDisplayName,
-                    controller: displayNameController,
+                    controller: widget.displayNameController,
                     requiredMark: true,
                     textInputAction: TextInputAction.next,
                   ),
                   SettingsStitchField(
                     label: l10n.profileEmail,
-                    controller: emailController,
+                    controller: widget.emailController,
                     readOnly: true,
                     requiredMark: true,
-                    suffix: emailVerified
+                    suffix: widget.emailVerified
                         ? Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 8,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: MarketingDarkColors.emerald.withValues(
-                                alpha: 0.1,
-                              ),
+                              color: MarketingDarkColors.emerald
+                                  .withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(6),
                               border: Border.all(
                                 color: MarketingDarkColors.emeraldBorder,
@@ -254,19 +404,20 @@ class SettingsPersonalFormCard extends StatelessWidget {
                   ),
                   SettingsStitchField(
                     label: l10n.profilePhone,
-                    controller: phoneController,
+                    controller: widget.phoneController,
                     keyboardType: TextInputType.phone,
                     textInputAction: TextInputAction.next,
                   ),
                   SettingsStitchField(
                     label: l10n.profileAvatarUrl,
-                    controller: avatarUrlController,
+                    controller: widget.avatarUrlController,
+                    focusNode: _avatarFocusNode,
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
                   ),
                   SettingsStitchField(
                     label: l10n.profileWebsite,
-                    controller: websiteController,
+                    controller: widget.websiteController,
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
                   ),
@@ -281,8 +432,9 @@ class SettingsPersonalFormCard extends StatelessWidget {
                       ],
                       SettingsStitchField(
                         label: l10n.profileBio,
-                        controller: bioController,
+                        controller: widget.bioController,
                         maxLines: 4,
+                        maxLength: _bioMaxLength,
                         textInputAction: TextInputAction.newline,
                       ),
                     ],
@@ -311,8 +463,9 @@ class SettingsPersonalFormCard extends StatelessWidget {
                     const SizedBox(height: 20),
                     SettingsStitchField(
                       label: l10n.profileBio,
-                      controller: bioController,
+                      controller: widget.bioController,
                       maxLines: 4,
+                      maxLength: _bioMaxLength,
                       textInputAction: TextInputAction.newline,
                     ),
                     const SizedBox(height: 20),
@@ -323,6 +476,187 @@ class SettingsPersonalFormCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PhoneProfileHero extends StatelessWidget {
+  const _PhoneProfileHero({
+    required this.initials,
+    required this.displayNameController,
+    required this.websiteController,
+    required this.emailVerified,
+    required this.onChangePhoto,
+  });
+
+  final String initials;
+  final TextEditingController displayNameController;
+  final TextEditingController websiteController;
+  final bool emailVerified;
+  final VoidCallback onChangePhoto;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListenableBuilder(
+            listenable: displayNameController,
+            builder: (context, _) {
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          StitchMobileColors.primaryContainer,
+                          StitchMobileColors.secondary,
+                        ],
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      initials,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        color: StitchMobileColors.onSurface,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 22,
+                      ),
+                    ),
+                  ),
+                  if (emailVerified)
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 16,
+                        height: 16,
+                        decoration: const BoxDecoration(
+                          color: StitchMobileColors.tertiary,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ListenableBuilder(
+                  listenable: displayNameController,
+                  builder: (context, _) {
+                    final name = displayNameController.text.trim().isEmpty
+                        ? '—'
+                        : displayNameController.text.trim();
+                    return Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: StitchMobileColors.onSurface,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        if (emailVerified) ...[
+                          const SizedBox(width: 6),
+                          const Text(
+                            '✓',
+                            style: TextStyle(
+                              color: StitchMobileColors.secondary,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+                ListenableBuilder(
+                  listenable: websiteController,
+                  builder: (context, _) {
+                    final title = websiteController.text.trim();
+                    if (title.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: StitchMobileColors.secondary,
+                          fontSize: 12,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Material(
+                    color: StitchMobileColors.surfaceContainerHigh,
+                    borderRadius:
+                        BorderRadius.circular(StitchMobileColors.radiusLg),
+                    child: InkWell(
+                      onTap: onChangePhoto,
+                      borderRadius:
+                          BorderRadius.circular(StitchMobileColors.radiusLg),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        child: Text(
+                          l10n.settingsChangePhoto,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: StitchMobileColors.onSurface,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

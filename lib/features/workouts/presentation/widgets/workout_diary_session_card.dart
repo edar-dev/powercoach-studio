@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_mobile_colors.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../domain/session_execution_service.dart';
@@ -10,6 +12,212 @@ import '../../domain/workout_diary_metrics.dart';
 class WorkoutDiarySessionCard extends StatelessWidget {
   const WorkoutDiarySessionCard({
     super.key,
+    required this.entry,
+    required this.customerName,
+    required this.onTap,
+  });
+
+  final SessionExecutionEntry entry;
+  final String customerName;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!Breakpoints.isTabletOrWider(context)) {
+      return _PhoneCard(
+        entry: entry,
+        customerName: customerName,
+        onTap: onTap,
+      );
+    }
+    return _DesktopCard(
+      entry: entry,
+      customerName: customerName,
+      onTap: onTap,
+    );
+  }
+}
+
+class _PhoneCard extends StatelessWidget {
+  const _PhoneCard({
+    required this.entry,
+    required this.customerName,
+    required this.onTap,
+  });
+
+  final SessionExecutionEntry entry;
+  final String customerName;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final execution = entry.execution;
+    final isSkipped = execution.status == PlanSessionStatus.skipped;
+    final metrics = computeSessionMetrics(execution);
+    final statusLabel = isSkipped
+        ? l10n.sessionSkipped
+        : l10n.sessionCompleted;
+    final statusColor = isSkipped
+        ? StitchMobileColors.error
+        : StitchMobileColors.tertiary;
+    final title = entry.planName.trim().isEmpty
+        ? customerName
+        : entry.planName;
+    final volumeText = metrics.hasParsableVolume
+        ? '${formatVolumeKg(metrics.volumeKg)} kg'
+        : '—';
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: StitchMobileColors.surfaceContainer,
+        borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: statusColor.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Text(
+                  statusLabel,
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  customerName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: StitchMobileColors.onSurfaceVariant,
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Text(
+            title,
+            style: const TextStyle(
+              color: StitchMobileColors.onSurface,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (!isSkipped) ...[
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: StitchMobileColors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: _MetricCell(
+                      label: l10n.workoutDiaryExercisesMetric,
+                      value: '${metrics.exerciseCount}',
+                    ),
+                  ),
+                  Expanded(
+                    child: _MetricCell(
+                      label: l10n.workoutDiarySetsMetric,
+                      value: '${metrics.setCount}',
+                    ),
+                  ),
+                  Expanded(
+                    child: _MetricCell(
+                      label: l10n.workoutDiaryVolumeMetric,
+                      value: volumeText,
+                      valueColor: StitchMobileColors.secondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 12),
+          SizedBox(
+            height: 44,
+            child: Material(
+              color: StitchMobileColors.surfaceContainerHighest,
+              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+              child: InkWell(
+                onTap: onTap,
+                borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
+                child: Center(
+                  child: Text(
+                    l10n.workoutDiarySeeExerciseLog,
+                    style: const TextStyle(
+                      color: StitchMobileColors.onSurface,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MetricCell extends StatelessWidget {
+  const _MetricCell({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: StitchMobileColors.onSurfaceVariant,
+            fontSize: 11,
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            color: valueColor ?? StitchMobileColors.onSurface,
+            fontSize: 13,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _DesktopCard extends StatelessWidget {
+  const _DesktopCard({
     required this.entry,
     required this.customerName,
     required this.onTap,
