@@ -1,7 +1,6 @@
 import '../data/models/customer.dart';
 import '../data/models/customer_measurement.dart';
 import 'measurement_metric.dart';
-import 'measurement_period_compare.dart';
 import 'measurement_series_builder.dart';
 
 /// Display-ready metrics for the customer overview tab.
@@ -18,7 +17,6 @@ class CustomerOverviewSnapshot {
     required this.secondaryLabel,
     required this.secondaryValue,
     required this.secondaryUnit,
-    required this.secondaryTrend,
     required this.sparklinePoints,
     required this.sparklineMetric,
     required this.lastMeasurementDate,
@@ -36,17 +34,10 @@ class CustomerOverviewSnapshot {
   final String secondaryLabel;
   final double? secondaryValue;
   final String secondaryUnit;
-  final MeasurementPeriodDelta? secondaryTrend;
   final List<MeasurementChartPoint> sparklinePoints;
   final MeasurementMetric? sparklineMetric;
   final DateTime? lastMeasurementDate;
   final bool hasMeasurements;
-
-  bool get showSecondaryTrend {
-    final trend = secondaryTrend;
-    if (trend == null) return false;
-    return trend.percentChange != null && trend.recentCount >= 2;
-  }
 }
 
 class CustomerOverviewMetrics {
@@ -85,23 +76,13 @@ class CustomerOverviewMetrics {
     final secondaryUnit =
         secondaryMetric == MeasurementMetric.bodyFatPercent ? '%' : 'kg';
 
-    MeasurementPeriodDelta? secondaryTrend;
-    if (secondaryMetric != null) {
-      secondaryTrend = MeasurementPeriodCompare.compareLast30Days(
-        measurements,
-        secondaryMetric,
-      );
-    }
-
     MeasurementMetric? sparklineMetric;
-    if (measurements.any(
-      (m) => m.muscleMassKg != null,
-    )) {
+    if (measurements.any((m) => m.muscleMassKg != null)) {
       sparklineMetric = MeasurementMetric.muscleMassKg;
     } else if (measurements.any((m) => m.bodyFatPercent != null)) {
       sparklineMetric = MeasurementMetric.bodyFatPercent;
-    } else if (measurements.any((m) => m.waistCm != null)) {
-      sparklineMetric = MeasurementMetric.waistCm;
+    } else if (measurements.any((m) => m.squat1RM != null)) {
+      sparklineMetric = MeasurementMetric.squat1RM;
     }
 
     final sparklinePoints = sparklineMetric == null
@@ -120,7 +101,6 @@ class CustomerOverviewMetrics {
       secondaryLabel: secondaryLabel,
       secondaryValue: secondaryValue,
       secondaryUnit: secondaryUnit,
-      secondaryTrend: secondaryTrend,
       sparklinePoints: sparklinePoints,
       sparklineMetric: sparklineMetric,
       lastMeasurementDate: lastDate,
@@ -168,11 +148,6 @@ class CustomerOverviewMetrics {
       return series;
     }
     return series.sublist(series.length - 8);
-  }
-
-  static String formatTrendPercent(double percent) {
-    final sign = percent > 0 ? '+' : '';
-    return '$sign${percent.toStringAsFixed(1)}%';
   }
 
   static String formatAbsoluteDelta(double delta, {required String unit}) {

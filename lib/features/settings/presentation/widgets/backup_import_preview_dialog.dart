@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../core/backup/backup_entity_groups.dart';
 import '../../../../core/backup/user_data_backup_codec.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// User choice when importing a backup file.
+/// User choice when importing a backup file (always restores all entity types).
 class BackupImportDecision {
   const BackupImportDecision({
     required this.replaceAll,
-    required this.selectedGroups,
   });
 
   final bool replaceAll;
-  final Set<BackupEntityGroup> selectedGroups;
 }
 
 /// Preview merge vs replace-all before restoring a backup.
@@ -38,13 +35,6 @@ class BackupImportPreviewDialog extends StatefulWidget {
 
 class _BackupImportPreviewDialogState extends State<BackupImportPreviewDialog> {
   var _replaceAll = false;
-  late Set<BackupEntityGroup> _selectedGroups;
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedGroups = {...kAllBackupEntityGroups};
-  }
 
   String? _metadataLine(AppLocalizations l10n) {
     final exportedAt = widget.exportedAt;
@@ -60,22 +50,11 @@ class _BackupImportPreviewDialogState extends State<BackupImportPreviewDialog> {
     );
   }
 
-  void _toggleGroup(BackupEntityGroup group, bool? value) {
-    setState(() {
-      if (value == true) {
-        _selectedGroups.add(group);
-      } else {
-        _selectedGroups.remove(group);
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = widget.l10n;
     final counts = widget.counts;
     final metadata = _metadataLine(l10n);
-    final canImport = _selectedGroups.isNotEmpty;
 
     return AlertDialog(
       title: Text(l10n.backupImportPreviewTitle),
@@ -94,51 +73,6 @@ class _BackupImportPreviewDialogState extends State<BackupImportPreviewDialog> {
                 counts.plans,
                 counts.executions,
               ),
-            ),
-            const SizedBox(height: 16),
-            Text(l10n.backupImportSelectGroups),
-            const SizedBox(height: 8),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value: _selectedGroups.contains(BackupEntityGroup.customers),
-              onChanged: (value) =>
-                  _toggleGroup(BackupEntityGroup.customers, value),
-              title: Text(
-                l10n.backupImportGroupCustomers(counts.customersGroupTotal),
-              ),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value: _selectedGroups.contains(BackupEntityGroup.workoutPlans),
-              onChanged: (value) =>
-                  _toggleGroup(BackupEntityGroup.workoutPlans, value),
-              title: Text(l10n.backupImportGroupPlans(counts.plans)),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value:
-                  _selectedGroups.contains(BackupEntityGroup.exerciseLibrary),
-              onChanged: (value) =>
-                  _toggleGroup(BackupEntityGroup.exerciseLibrary, value),
-              title: Text(
-                l10n.backupImportGroupExerciseLibrary(counts.exerciseLibrary),
-              ),
-            ),
-            CheckboxListTile(
-              contentPadding: EdgeInsets.zero,
-              controlAffinity: ListTileControlAffinity.leading,
-              value: _selectedGroups.contains(BackupEntityGroup.preferences),
-              onChanged: (value) =>
-                  _toggleGroup(BackupEntityGroup.preferences, value),
-              title: Text(l10n.backupImportGroupPreferences),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.backupImportPartialReplaceHint,
-              style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: 16),
             SegmentedButton<bool>(
@@ -166,14 +100,9 @@ class _BackupImportPreviewDialogState extends State<BackupImportPreviewDialog> {
           child: Text(l10n.exerciseLibraryCancel),
         ),
         FilledButton(
-          onPressed: canImport
-              ? () => Navigator.of(context).pop(
-                    BackupImportDecision(
-                      replaceAll: _replaceAll,
-                      selectedGroups: {..._selectedGroups},
-                    ),
-                  )
-              : null,
+          onPressed: () => Navigator.of(context).pop(
+            BackupImportDecision(replaceAll: _replaceAll),
+          ),
           child: Text(l10n.backupImportConfirm),
         ),
       ],

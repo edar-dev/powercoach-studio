@@ -304,7 +304,6 @@ BackupPreviewCounts entityCountsFromBackupEntities(
     if (type == OfflineEntityType.customer.name) {
       customers++;
     } else if (type == OfflineEntityType.measurement.name ||
-        type == OfflineEntityType.exerciseRecord.name ||
         type == OfflineEntityType.customerNote.name) {
       customerRecords++;
     }

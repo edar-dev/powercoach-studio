@@ -18,9 +18,9 @@ class PdfExportLabels {
     required this.measurementDate,
     required this.measurementBodyFat,
     required this.measurementMuscleMass,
-    required this.measurementWaist,
     required this.measurementSquat,
     required this.measurementBench,
+    required this.measurementDeadlift,
     required this.exportGenerating,
     required this.measurementRecordCount,
     required this.denseWeekShort,
@@ -52,9 +52,9 @@ class PdfExportLabels {
   final String measurementDate;
   final String measurementBodyFat;
   final String measurementMuscleMass;
-  final String measurementWaist;
   final String measurementSquat;
   final String measurementBench;
+  final String measurementDeadlift;
   final String exportGenerating;
   final String Function(int count) measurementRecordCount;
   final String Function(int weekIndex) denseWeekShort;

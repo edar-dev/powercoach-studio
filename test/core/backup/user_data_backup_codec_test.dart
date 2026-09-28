@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:powercoach_studio/core/backup/backup_entity_groups.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
 import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
+import 'package:powercoach_studio/core/sync/offline_models.dart';
 
 void main() {
   const uid = 'user-111';
@@ -247,33 +247,10 @@ void main() {
     expect(parsed.entityCounts?['customers'], 2);
   });
 
-  test('filterBackupEntities keeps only selected groups', () {
-    final entities = <Map<String, dynamic>>[
-      <String, dynamic>{
-        'id': 'c1',
-        'type': 'customer',
-        'scopeId': 'c1',
-        'payload': <String, dynamic>{'id': 'c1'},
-        'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
-        'deleted': false,
-        'localOnly': false,
-      },
-      <String, dynamic>{
-        'id': 'e1',
-        'type': 'customExercise',
-        'scopeId': 'global',
-        'payload': <String, dynamic>{'id': 'e1'},
-        'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
-        'deleted': false,
-        'localOnly': false,
-      },
-    ];
-    final filtered = filterBackupEntities(
-      entities,
-      {BackupEntityGroup.customers},
-    );
-    expect(filtered, hasLength(1));
-    expect(filtered.single['type'], 'customer');
+  test('isKnownOfflineEntityTypeName rejects legacy exerciseRecord', () {
+    expect(isKnownOfflineEntityTypeName('customer'), isTrue);
+    expect(isKnownOfflineEntityTypeName('customExercise'), isTrue);
+    expect(isKnownOfflineEntityTypeName('exerciseRecord'), isFalse);
   });
 
   test('entityCountsFromBackupEntities counts library and customer records', () {
@@ -282,6 +259,7 @@ void main() {
         <String, dynamic>{'id': 'c1', 'type': 'customer'},
         <String, dynamic>{'id': 'n1', 'type': 'customerNote'},
         <String, dynamic>{'id': 'x1', 'type': 'customExercise'},
+        <String, dynamic>{'id': 'legacy', 'type': 'exerciseRecord'},
       ],
       reminders: 2,
     );

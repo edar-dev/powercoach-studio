@@ -10,11 +10,9 @@ import '../../data/models/customer_measurement.dart';
 import '../../domain/export_measurement_csv_usecase.dart';
 import '../../domain/export_measurement_pdf_usecase.dart';
 import '../../domain/measurement_metric.dart';
-import '../../domain/measurement_period_compare.dart';
 import '../../domain/measurement_series_builder.dart';
 import '../customer_measurement_history_export.dart';
 import '../widgets/measurement_history_chart.dart';
-import '../widgets/measurement_history_period_compare_card.dart';
 
 class CustomerMeasurementHistoryScreen extends StatefulWidget {
   const CustomerMeasurementHistoryScreen({
@@ -244,17 +242,6 @@ class _CustomerMeasurementHistoryScreenState
             selectedMetric,
             range: _range,
           );
-    final periodDelta = selectedMetric == null
-        ? const MeasurementPeriodDelta(
-            recentAverage: null,
-            previousAverage: null,
-            recentCount: 0,
-            previousCount: 0,
-          )
-        : MeasurementPeriodCompare.compareLast30Days(
-            _measurements,
-            selectedMetric,
-          );
 
     return RefreshIndicator(
       color: MarketingDarkColors.brandLight,
@@ -357,12 +344,6 @@ class _CustomerMeasurementHistoryScreenState
                 dark: true,
               ),
             ),
-          const SizedBox(height: 16),
-          MeasurementHistoryPeriodCompareCard(
-            delta: periodDelta,
-            metricLabel: selectedMetric?.label(l10n) ?? '',
-            dark: true,
-          ),
         ],
       ),
     );

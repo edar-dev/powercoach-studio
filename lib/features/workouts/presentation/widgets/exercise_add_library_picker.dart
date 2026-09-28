@@ -19,7 +19,6 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
     required this.onExerciseSelected,
     this.onSearchTextChanged,
     this.selectionErrorText,
-    this.customerRecordPanel,
   });
 
   final List<CustomExerciseItem> exerciseOptions;
@@ -33,7 +32,6 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
   final ValueChanged<CustomExerciseItem> onExerciseSelected;
   final ValueChanged<String>? onSearchTextChanged;
   final String? selectionErrorText;
-  final Widget? customerRecordPanel;
 
   String _displayName(CustomExerciseItem exercise) {
     return exercisePickerDisplayName(exercise, parentNameById);
@@ -130,10 +128,6 @@ class ExerciseAddLibraryPicker extends StatelessWidget {
             ),
           ),
         ),
-        if (customerRecordPanel != null) ...[
-          const SizedBox(height: 10),
-          customerRecordPanel!,
-        ],
         const SizedBox(height: 12),
       ],
     );

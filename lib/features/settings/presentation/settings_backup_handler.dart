@@ -251,7 +251,6 @@ class SettingsBackupHandler {
       ),
     );
     if (decision == null || !context.mounted) return;
-    if (decision.selectedGroups.isEmpty) return;
 
     if (decision.replaceAll) {
       final typed = await showDialog<bool>(
@@ -298,13 +297,11 @@ class SettingsBackupHandler {
         await UserDataBackupService.instance.restoreParsed(
           parsed,
           uid,
-          groups: decision.selectedGroups,
         );
       } else {
         await UserDataBackupService.instance.mergeRestore(
           parsed,
           uid,
-          groups: decision.selectedGroups,
         );
       }
       await onPreferencesReloaded();

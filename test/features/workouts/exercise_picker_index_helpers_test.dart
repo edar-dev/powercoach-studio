@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_item.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
-import 'package:powercoach_studio/features/workouts/domain/exercise_load_percent_helpers.dart';
 import 'package:powercoach_studio/features/workouts/domain/exercise_picker_index_helpers.dart';
 import 'package:powercoach_studio/features/workouts/domain/library_exercise_name_enrichment.dart';
 
@@ -21,18 +20,6 @@ CustomExerciseItem _item({
 }
 
 void main() {
-  group('exercise load percent helpers', () {
-    test('detects mass units', () {
-      expect(isMassBasedExerciseRecordUnit('kg'), isTrue);
-      expect(isMassBasedExerciseRecordUnit('reps'), isFalse);
-    });
-
-    test('formats rounded loads', () {
-      expect(formatExerciseLoadForDisplay(75.0), '75');
-      expect(formatExerciseLoadForDisplay(82.55), '82.6');
-    });
-  });
-
   group('exercise picker index helpers', () {
     test('builds depth and parent name maps', () {
       final index = buildExercisePickerIndex([

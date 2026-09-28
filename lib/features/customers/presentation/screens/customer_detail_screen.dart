@@ -5,10 +5,8 @@ import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
-import '../../data/customer_exercise_record_repository.dart';
 import '../../data/customer_measurement_repository.dart';
 import '../../data/models/customer.dart';
-import '../../data/models/customer_exercise_record.dart';
 import '../../data/models/customer_measurement.dart';
 import '../../domain/customer_progress_metrics.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
@@ -19,7 +17,6 @@ import '../widgets/customer_detail_app_bars.dart';
 import '../widgets/customer_detail_error_body.dart';
 import '../widgets/customer_detail_measurements_tab.dart';
 import '../widgets/customer_detail_overview_tab.dart';
-import '../widgets/customer_detail_records_tab.dart';
 import '../widgets/customer_new_workout_sheet.dart';
 import '../widgets/customer_workout_plans_body.dart';
 
@@ -38,17 +35,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
   final CustomerDetailDataLoader _loader = CustomerDetailDataLoader();
   final CustomerMeasurementRepository _measurementRepo =
       CustomerMeasurementRepository();
-  final CustomerExerciseRecordRepository _recordRepo =
-      CustomerExerciseRecordRepository();
 
   Customer? _customer;
   bool _loading = true;
   String? _error;
   List<CustomerMeasurement> _measurements = [];
   bool _measurementsLoading = false;
-  List<CustomerExerciseRecord> _records = [];
-  Map<String, String> _exerciseNameById = <String, String>{};
-  bool _recordsLoading = false;
   List<WorkoutPlanApiModel> _workoutPlans = [];
   bool _workoutPlansLoading = false;
   CustomerProgressSnapshot? _progressSnapshot;
@@ -59,7 +51,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     SupabaseBootstrap.refreshTick.addListener(_onAuthRefresh);
     _load();
   }
@@ -128,30 +120,12 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
     }
   }
 
-  Future<void> _loadRecords() async {
-    setState(() => _recordsLoading = true);
-    try {
-      final result = await _loader.loadRecords(widget.customerId);
-      if (mounted) {
-        setState(() {
-          _records = result.records;
-          _exerciseNameById = result.names;
-          _recordsLoading = false;
-        });
-        _loadProgress();
-      }
-    } catch (_) {
-      if (mounted) setState(() => _recordsLoading = false);
-    }
-  }
-
   Future<void> _loadProgress() async {
     setState(() => _progressLoading = true);
     try {
       final snapshot = await _loader.loadProgress(
         customerId: widget.customerId,
         plans: _workoutPlans,
-        records: _records,
       );
       if (!mounted) return;
       setState(() {
@@ -180,7 +154,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
           _error = null;
         });
         _loadMeasurements();
-        _loadRecords();
         _loadWorkoutPlans();
         _loadUnreadNotes();
       }
@@ -253,7 +226,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
               goalLabel: goalLabel,
               measurements: _measurements,
               measurementsLoading: _measurementsLoading,
-              exerciseRecords: _records,
               progressSnapshot: _progressSnapshot,
               progressLoading: _progressLoading,
               workoutPlans: _workoutPlans,
@@ -287,14 +259,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
               measurementRepo: _measurementRepo,
               onReload: _loadMeasurements,
               customerName: c.name,
-            ),
-            CustomerDetailRecordsTab(
-              customerId: widget.customerId,
-              records: _records,
-              exerciseNameById: _exerciseNameById,
-              loading: _recordsLoading,
-              recordRepo: _recordRepo,
-              onReload: _loadRecords,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),

@@ -1,5 +1,3 @@
-import '../../../customers/data/customer_exercise_record_repository.dart';
-import '../../../customers/data/models/customer_exercise_record.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/pinned_exercises_store.dart';
@@ -27,16 +25,13 @@ class ExerciseAddSheetPickerData {
 class ExerciseAddSheetLoader {
   ExerciseAddSheetLoader({
     CustomExerciseRepository? customExerciseRepo,
-    CustomerExerciseRecordRepository? recordRepo,
     RecentExercisesStore? recentStore,
     PinnedExercisesStore? pinnedStore,
   })  : _customExerciseRepo = customExerciseRepo ?? CustomExerciseRepository(),
-        _recordRepo = recordRepo ?? CustomerExerciseRecordRepository(),
         _recentStore = recentStore ?? RecentExercisesStore.instance,
         _pinnedStore = pinnedStore ?? PinnedExercisesStore.instance;
 
   final CustomExerciseRepository _customExerciseRepo;
-  final CustomerExerciseRecordRepository _recordRepo;
   final RecentExercisesStore _recentStore;
   final PinnedExercisesStore _pinnedStore;
 
@@ -69,17 +64,5 @@ class ExerciseAddSheetLoader {
       exerciseDepth: Map<String, int>.from(index.depthById),
       exerciseParentName: Map<String, String>.from(index.parentNameById),
     );
-  }
-
-  Future<List<CustomerExerciseRecord>> loadCustomerRecords({
-    required String customerId,
-    required String customExerciseId,
-  }) async {
-    final list = await _recordRepo.getByCustomerId(
-      customerId,
-      customExerciseId: customExerciseId,
-    );
-    list.sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
-    return list;
   }
 }

@@ -258,6 +258,8 @@ class OfflineLocalStore {
   }
 
   /// Replaces all Drift entity rows for [userId] (backup restore, full replace).
+  ///
+  /// Skips unknown / legacy types (e.g. former `exerciseRecord`) without crashing.
   Future<void> replaceUserOfflineFromBackup({
     required String userId,
     required List<Map<String, dynamic>> entities,
@@ -268,6 +270,9 @@ class OfflineLocalStore {
       await _deleteUserOfflineData(db, userId);
       for (final raw in entities) {
         final body = Map<String, dynamic>.from(raw)..remove('userId');
+        if (!isKnownOfflineEntityTypeName(body['type']?.toString())) {
+          continue;
+        }
         final e = OfflineEntity.fromJson(body);
         await db.into(db.localEntities).insert(
               LocalEntitiesCompanion.insert(

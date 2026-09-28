@@ -1,12 +1,26 @@
 import 'dart:convert';
 
+/// Stored in Drift as [OfflineEntityType.index].
+///
+/// Schema v3 removed `exerciseRecord` (former index 3). Migration remaps
+/// `customExercise` 4→3 and `customerNote` 5→4 after deleting type=3 rows.
 enum OfflineEntityType {
   customer,
   workoutPlan,
   measurement,
-  exerciseRecord,
   customExercise,
   customerNote,
+}
+
+/// True when [name] matches a current [OfflineEntityType] value.
+///
+/// Legacy backup rows such as `exerciseRecord` return false and must be skipped.
+bool isKnownOfflineEntityTypeName(String? name) {
+  if (name == null || name.isEmpty) return false;
+  for (final type in OfflineEntityType.values) {
+    if (type.name == name) return true;
+  }
+  return false;
 }
 
 enum OfflineOperationType {
@@ -55,12 +69,20 @@ class OfflineEntity {
       };
 
   static OfflineEntity fromJson(Map<String, dynamic> json) {
+    final typeName = json['type']?.toString() ?? '';
+    OfflineEntityType? parsed;
+    for (final candidate in OfflineEntityType.values) {
+      if (candidate.name == typeName) {
+        parsed = candidate;
+        break;
+      }
+    }
+    if (parsed == null) {
+      throw FormatException('Unknown offline entity type: $typeName');
+    }
     return OfflineEntity(
       id: json['id']?.toString() ?? '',
-      type: OfflineEntityType.values.firstWhere(
-        (v) => v.name == json['type'],
-        orElse: () => OfflineEntityType.customer,
-      ),
+      type: parsed,
       scopeId: json['scopeId']?.toString() ?? '',
       payload: (json['payload'] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{},
       updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),

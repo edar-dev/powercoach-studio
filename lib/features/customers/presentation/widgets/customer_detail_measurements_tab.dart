@@ -254,7 +254,6 @@ class _CustomerDetailMeasurementsTabState
   String _unitSuffix(MeasurementMetric metric) {
     return switch (metric) {
       MeasurementMetric.bodyFatPercent => '%',
-      MeasurementMetric.waistCm || MeasurementMetric.chestCm => ' cm',
       _ => ' kg',
     };
   }

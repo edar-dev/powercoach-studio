@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../core/export/export_artifact.dart';
-import '../data/models/customer_exercise_record.dart';
 import '../data/models/customer_measurement.dart';
 import 'customer_overview_metrics.dart';
 import 'customer_progress_export_labels.dart';
@@ -16,10 +15,8 @@ class CustomerProgressExportInput {
     required this.progress,
     required this.measurements,
     this.overview,
-    this.exerciseRecords = const [],
     this.exportedAt,
     this.maxMeasurements = 10,
-    this.maxPersonalRecords = 10,
     this.labels,
   });
 
@@ -27,10 +24,8 @@ class CustomerProgressExportInput {
   final CustomerProgressSnapshot progress;
   final List<CustomerMeasurement> measurements;
   final CustomerOverviewSnapshot? overview;
-  final List<CustomerExerciseRecord> exerciseRecords;
   final DateTime? exportedAt;
   final int maxMeasurements;
-  final int maxPersonalRecords;
   final CustomerProgressExportLabels? labels;
 }
 
@@ -49,7 +44,6 @@ String buildCustomerProgressCsv(CustomerProgressExportInput input) {
     final narrative = buildCustomerProgressNarrative(
       labels: labels,
       progress: input.progress,
-      topPr: _topPersonalRecordHighlight(input),
     );
     if (narrative.isNotEmpty) {
       lines.add(narrative);
@@ -70,13 +64,6 @@ String buildCustomerProgressCsv(CustomerProgressExportInput input) {
     '',
     'section,week_index,adherence',
     ..._weeklyRows(input.progress.last4Weeks, labels: labels),
-    '',
-    'section,exercise,value,unit,date',
-    ..._personalRecordRows(
-      progress: input.progress,
-      exerciseRecords: input.exerciseRecords,
-      maxPersonalRecords: input.maxPersonalRecords,
-    ),
     '',
     'section,measurement,value,unit,date',
     ..._measurementRows(
@@ -139,53 +126,6 @@ String _weeklyAdherenceLabel(
   return dot.completed! ? labels.weeklyCompleted : labels.weeklyMissed;
 }
 
-CustomerPrHighlight? _topPersonalRecordHighlight(
-  CustomerProgressExportInput input,
-) {
-  if (input.exerciseRecords.isNotEmpty) {
-    final sorted = List<CustomerExerciseRecord>.from(input.exerciseRecords)
-      ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
-    final record = sorted.first;
-    return CustomerPrHighlight(
-      exerciseName: record.displayName,
-      value: record.value,
-      unit: record.unit,
-      recordedAt: record.recordedAt,
-    );
-  }
-  if (input.progress.recentPrs.isNotEmpty) {
-    return input.progress.recentPrs.first;
-  }
-  return null;
-}
-
-List<String> _personalRecordRows({
-  required CustomerProgressSnapshot progress,
-  required List<CustomerExerciseRecord> exerciseRecords,
-  required int maxPersonalRecords,
-}) {
-  if (exerciseRecords.isNotEmpty) {
-    final sorted = List<CustomerExerciseRecord>.from(exerciseRecords)
-      ..sort((a, b) => b.recordedAt.compareTo(a.recordedAt));
-    return sorted
-        .take(maxPersonalRecords)
-        .map(
-          (record) =>
-              'pr,${_escapeCsv(record.displayName)},${record.value},'
-              '${_escapeCsv(record.unit)},${_formatDate(record.recordedAt)}',
-        )
-        .toList();
-  }
-
-  return progress.recentPrs
-      .map(
-        (pr) =>
-            'pr,${_escapeCsv(pr.exerciseName)},${pr.value},'
-            '${_escapeCsv(pr.unit)},${_formatDate(pr.recordedAt)}',
-      )
-      .toList();
-}
-
 List<String> _measurementRows({
   required CustomerOverviewSnapshot? overview,
   required List<CustomerMeasurement> measurements,
@@ -205,7 +145,6 @@ List<String> _measurementRows({
     final date = _formatDate(measurement.measurementDate);
     _appendMeasurementMetric(rows, 'body_fat_percent', measurement.bodyFatPercent, '%', date);
     _appendMeasurementMetric(rows, 'muscle_mass_kg', measurement.muscleMassKg, 'kg', date);
-    _appendMeasurementMetric(rows, 'waist_cm', measurement.waistCm, 'cm', date);
     _appendMeasurementMetric(rows, 'bench_press_1rm', measurement.benchPress1RM, 'kg', date);
     _appendMeasurementMetric(rows, 'squat_1rm', measurement.squat1RM, 'kg', date);
     _appendMeasurementMetric(rows, 'deadlift_1rm', measurement.deadlift1RM, 'kg', date);
@@ -234,11 +173,4 @@ String _formatDate(DateTime date) {
   final m = date.month.toString().padLeft(2, '0');
   final d = date.day.toString().padLeft(2, '0');
   return '$y-$m-$d';
-}
-
-String _escapeCsv(String value) {
-  if (value.contains(',') || value.contains('"') || value.contains('\n')) {
-    return '"${value.replaceAll('"', '""')}"';
-  }
-  return value;
 }
