@@ -29,8 +29,15 @@ void main() {
       ),
     );
 
+    // First frame schedules post-frame bootstrap; then await loading.
     await tester.pump();
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 100));
+    // Prefer bounded pumps over pumpAndSettle (hub may keep transient work).
+    for (var i = 0; i < 20; i++) {
+      if (find.text('Esporta backup').evaluate().isNotEmpty) break;
+      await tester.pump(const Duration(milliseconds: 50));
+    }
 
     expect(find.text('Backup offline & Cloud'), findsAtLeastNWidgets(1));
     expect(find.text('Esporta backup'), findsOneWidget);

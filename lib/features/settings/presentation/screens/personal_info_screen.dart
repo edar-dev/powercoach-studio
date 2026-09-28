@@ -55,7 +55,11 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
     ]) {
       c.addListener(_onFieldChanged);
     }
-    _loadProfile();
+    // Defer InheritedWidget lookups (l10n) until after the first frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _loadProfile();
+    });
   }
 
   @override

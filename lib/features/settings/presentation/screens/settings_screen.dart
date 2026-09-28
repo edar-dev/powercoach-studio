@@ -77,7 +77,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ]) {
       c.addListener(_onFieldChanged);
     }
-    _bootstrap();
+    // Defer InheritedWidget lookups (l10n) until after the first frame.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _bootstrap();
+    });
   }
 
   @override
