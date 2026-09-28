@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import '../data/workout_plan_api_model.dart';
+import '../data/workout_routine_model.dart';
 import 'workout_plan_query_helpers.dart';
 
 enum TemplateSort { nameAsc, updatedDesc, weekCountDesc }
@@ -22,6 +23,7 @@ class TemplateSummary {
 }
 
 /// Prefer structured [Phase] names from planData; drop free-text plan.phase chip.
+/// Ignores a lone synthetic default General phase (legacy flat weeks decode).
 String? structuredPhaseSummaryFromPlanData(String planData) {
   try {
     final routine = planDataToRoutine(planData);
@@ -30,6 +32,12 @@ String? structuredPhaseSummaryFromPlanData(String planData) {
         .where((n) => n.isNotEmpty)
         .toList();
     if (names.isEmpty) return null;
+    if (names.length == 1 &&
+        routine.phases.length == 1 &&
+        routine.phases.single.id == kDefaultPhaseId &&
+        names.single == kDefaultPhaseName) {
+      return null;
+    }
     return names.join(' · ');
   } catch (_) {
     return null;
