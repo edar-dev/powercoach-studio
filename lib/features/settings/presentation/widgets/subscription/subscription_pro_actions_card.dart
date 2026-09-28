@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:powercoach_studio/core/billing/billing_checkout.dart';
-import 'package:powercoach_studio/core/billing/entitlement_models.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
+import '../../../../../core/billing/billing_checkout.dart';
+import '../../../../../core/billing/entitlement_models.dart';
+import '../../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../../l10n/app_localizations.dart';
 
 class SubscriptionProActionsCard extends StatelessWidget {
@@ -22,75 +22,72 @@ class SubscriptionProActionsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final showSwitchToYearly =
         entitlement.billingInterval == BillingInterval.monthly;
 
-    return Card(
-      elevation: 0,
-      color: cs.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        side: BorderSide(color: cs.outline),
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: MarketingDarkColors.stitchCardElevated,
+        borderRadius: BorderRadius.circular(MarketingDarkColors.radius2xl),
+        border: Border.all(color: MarketingDarkColors.stitchBorder),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              l10n.subscriptionProActionsTitle,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.subscriptionProActionsTitle,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
             ),
-            const SizedBox(height: 12),
+          ),
+          const SizedBox(height: 12),
+          _ActionTile(
+            icon: Icons.credit_card_outlined,
+            label: l10n.subscriptionProActionPaymentMethod,
+            onTap: busy ? null : () => onPortalOpened(PortalFlow.paymentMethod),
+          ),
+          if (showSwitchToYearly)
             _ActionTile(
-              icon: Icons.credit_card_outlined,
-              label: l10n.subscriptionProActionPaymentMethod,
-              onTap: busy ? null : () => onPortalOpened(PortalFlow.paymentMethod),
-            ),
-            if (showSwitchToYearly)
-              _ActionTile(
-                icon: Icons.calendar_month_outlined,
-                label: l10n.subscriptionProActionSwitchYearly,
-                subtitle: l10n.subscriptionProActionSwitchYearlyHint,
-                onTap: busy
-                    ? null
-                    : () => onPortalOpened(PortalFlow.subscriptionUpdate),
-              )
-            else if (entitlement.billingInterval == BillingInterval.yearly)
-              _ActionTile(
-                icon: Icons.calendar_month_outlined,
-                label: l10n.subscriptionProActionSwitchMonthly,
-                onTap: busy
-                    ? null
-                    : () => onPortalOpened(PortalFlow.subscriptionUpdate),
-              ),
-            _ActionTile(
-              icon: Icons.receipt_long_outlined,
-              label: l10n.subscriptionProActionInvoices,
-              onTap: busy ? null : () => onPortalOpened(PortalFlow.defaultFlow),
-            ),
-            _ActionTile(
-              icon: Icons.cancel_outlined,
-              label: l10n.subscriptionProActionCancel,
-              destructive: true,
+              icon: Icons.calendar_month_outlined,
+              label: l10n.subscriptionProActionSwitchYearly,
+              subtitle: l10n.subscriptionProActionSwitchYearlyHint,
               onTap: busy
                   ? null
-                  : () => onPortalOpened(PortalFlow.subscriptionCancel),
+                  : () => onPortalOpened(PortalFlow.subscriptionUpdate),
+            )
+          else if (entitlement.billingInterval == BillingInterval.yearly)
+            _ActionTile(
+              icon: Icons.calendar_month_outlined,
+              label: l10n.subscriptionProActionSwitchMonthly,
+              onTap: busy
+                  ? null
+                  : () => onPortalOpened(PortalFlow.subscriptionUpdate),
             ),
-            if (!kIsWeb) ...[
-              const SizedBox(height: 8),
-              Text(
-                l10n.subscriptionWebOnlyHint,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
+          _ActionTile(
+            icon: Icons.receipt_long_outlined,
+            label: l10n.subscriptionProActionInvoices,
+            onTap: busy ? null : () => onPortalOpened(PortalFlow.defaultFlow),
+          ),
+          _ActionTile(
+            icon: Icons.cancel_outlined,
+            label: l10n.subscriptionProActionCancel,
+            destructive: true,
+            onTap: busy
+                ? null
+                : () => onPortalOpened(PortalFlow.subscriptionCancel),
+          ),
+          if (!kIsWeb) ...[
+            const SizedBox(height: 8),
+            Text(
+              l10n.subscriptionWebOnlyHint,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: MarketingDarkColors.slate400,
               ),
-            ],
+            ),
           ],
-        ),
+        ],
       ),
     );
   }
@@ -114,7 +111,7 @@ class _ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final color = destructive ? cs.error : cs.onSurface;
+    final color = destructive ? cs.error : MarketingDarkColors.slate300;
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -125,10 +122,14 @@ class _ActionTile extends StatelessWidget {
           : Text(
               subtitle!,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: cs.onSurfaceVariant,
+                    color: MarketingDarkColors.slate500,
                   ),
             ),
-      trailing: Icon(Icons.open_in_new, color: cs.onSurfaceVariant, size: 18),
+      trailing: Icon(
+        Icons.open_in_new,
+        color: MarketingDarkColors.slate500,
+        size: 18,
+      ),
       onTap: onTap,
     );
   }
