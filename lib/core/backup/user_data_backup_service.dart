@@ -8,6 +8,7 @@ import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../storage/offline_local_store.dart';
 import '../sync/offline_models.dart';
 import 'user_data_backup_codec.dart';
+import 'material_write_notifier.dart';
 
 /// Builds and restores full offline user snapshots (JSON envelope v1).
 class UserDataBackupService {
@@ -64,6 +65,15 @@ class UserDataBackupService {
     ParsedUserBackup parsed,
     String accountUserId,
   ) async {
+    await MaterialWriteNotifier.runSuppressed(
+      () => _restoreParsedUnsuppressed(parsed, accountUserId),
+    );
+  }
+
+  Future<void> _restoreParsedUnsuppressed(
+    ParsedUserBackup parsed,
+    String accountUserId,
+  ) async {
     if (accountUserId.isEmpty) {
       throw StateError('accountUserId required');
     }
@@ -81,7 +91,10 @@ class UserDataBackupService {
     final profile = parsed.profileJson == null
         ? const LocalUserProfileData()
         : LocalUserProfileData.fromJson(parsed.profileJson!);
-    await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
+    await LocalCoachProfileRepository.instance.saveProfile(
+      accountUserId,
+      profile,
+    );
     await UserPreferencesRepository.instance
         .applyFromBackupMap(parsed.preferences.raw);
     if (parsed.preferences.raw.isEmpty) {
@@ -100,6 +113,15 @@ class UserDataBackupService {
   ///
   /// Always merges all known entity types (legacy `exerciseRecord` skipped).
   Future<void> mergeRestore(
+    ParsedUserBackup parsed,
+    String accountUserId,
+  ) async {
+    await MaterialWriteNotifier.runSuppressed(
+      () => _mergeRestoreUnsuppressed(parsed, accountUserId),
+    );
+  }
+
+  Future<void> _mergeRestoreUnsuppressed(
     ParsedUserBackup parsed,
     String accountUserId,
   ) async {
@@ -128,7 +150,10 @@ class UserDataBackupService {
 
     if (parsed.profileJson != null) {
       final profile = LocalUserProfileData.fromJson(parsed.profileJson!);
-      await LocalCoachProfileRepository.instance.saveProfile(accountUserId, profile);
+      await LocalCoachProfileRepository.instance.saveProfile(
+        accountUserId,
+        profile,
+      );
     }
 
     await UserPreferencesRepository.instance

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/backup/material_write_notifier.dart';
 import '../../../core/settings/settings_prefs_keys.dart';
 
 class PinnedExercisesStore {
@@ -42,11 +43,17 @@ class PinnedExercisesStore {
     await _save(current);
   }
 
+  /// Replaces the pinned set (backup restore). Empty [ids] clears pins.
+  Future<void> replaceAll(Set<String> ids) async {
+    await _save(ids);
+  }
+
   Future<void> _save(Set<String> ids) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       SettingsPrefsKeys.pinnedExerciseIdsJson,
       jsonEncode(ids.toList()),
     );
+    MaterialWriteNotifier.notify();
   }
 }

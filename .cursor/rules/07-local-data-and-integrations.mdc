@@ -16,7 +16,9 @@ Business data is **local-first**. Use these entry points:
 | Feature `*Store` / `*Repository` classes | Feature-specific reads/writes |
 | `SharedPreferences` | Settings, drafts, exercise pins |
 | `UserDataBackupService` | JSON backup export/import |
-| `CloudBackupRepository` | Optional Supabase Storage snapshots of the backup JSON (opt-in, not sync) |
+| `CloudBackupRepository` | Supabase Storage snapshots of the backup JSON (manual + automatic) |
+| `CloudSnapshotScheduler` | Debounced automatic cloud snapshot uploads |
+| `SyncOnOpenService` | Merge newer cloud snapshots on open |
 
 Always scope reads/writes by authenticated Supabase `userId`.
 
@@ -26,19 +28,26 @@ await store.ensureReady(userId);
 // use store methods — never raw Supabase for business CRUD
 ```
 
-## Cloud backup snapshots (allowed, opt-in)
+## Cloud backup snapshots (allowed)
 
 `CloudBackupRepository` (`lib/core/backup/cloud_backup_repository.dart`) may upload/list/download/delete
 the same JSON envelope as `UserDataBackupService` to the private `user-backups` Supabase Storage bucket,
-scoped per user via RLS. This is a **manual snapshot**, not sync: no automatic upload, no merge, no
-conflict resolution. See `docs/sync-strategy.md` ("Cloud snapshots != sync").
+scoped per user via RLS.
+
+Allowed modes (approved web-persistence plan):
+
+- **Manual** upload/restore from Settings
+- **Automatic** debounced uploads via `CloudSnapshotScheduler` when auto cloud backup is enabled
+- **Sync-on-open merge** via `SyncOnOpenService` (newer `updatedAt` wins) when local data is non-empty
+- **Empty-local recovery** replace-all from the newest cloud snapshot
+
+This is **not** GymBlog live sync / outbox replay. See `docs/sync-strategy.md`.
 
 ## Do not add
 
 - GymBlog.API client or `GYMBLOG_API_URL` wiring
-- Remote sync replay without an approved plan (see `.cursor/plans/local-first-ux-v1.plan.md`)
+- Remote sync replay / `SyncOrchestrator` without an approved plan
 - Direct Supabase table CRUD for coach/client/workout data
-- Automatic/background cloud backup uploads (cloud snapshots stay explicit, user-triggered)
 - Third-party workout app integrations (e.g. Hevy) without an approved plan
 
 ## Agent deny-list (do not reintroduce without approved plan)

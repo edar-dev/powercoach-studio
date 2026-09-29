@@ -8,9 +8,10 @@ const kCloudBackupMaxSnapshots = 5;
 
 /// Optional Supabase Storage snapshots of the local backup JSON envelope.
 ///
-/// This is **not** live sync: uploads happen only when the coach explicitly
-/// taps "save to cloud" (or chooses to upload before signing out). See
-/// `docs/sync-strategy.md` ("Cloud snapshots != sync").
+/// Uploads may be triggered manually from Settings or automatically by the
+/// debounced cloud snapshot scheduler after material writes (when auto cloud
+/// backup is enabled). Sync-on-open merge pulls a newer cloud snapshot when
+/// local data is non-empty. See `docs/sync-strategy.md`.
 class CloudBackupRepository {
   CloudBackupRepository({CloudBackupStorage? storage})
     : _storage =

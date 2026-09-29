@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/backup/material_write_notifier.dart';
 import '../../../core/settings/settings_prefs_keys.dart';
 
 class RecentExercisesStore {
@@ -45,11 +46,21 @@ class RecentExercisesStore {
     await _save(next);
   }
 
+  /// Replaces the recent list (backup restore). Empty [ids] clears recents.
+  Future<void> replaceAll(List<String> ids) async {
+    final next = ids.where((id) => id.trim().isNotEmpty).toList();
+    if (next.length > maxEntries) {
+      next.removeRange(maxEntries, next.length);
+    }
+    await _save(next);
+  }
+
   Future<void> _save(List<String> ids) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       SettingsPrefsKeys.recentExerciseIdsJson,
       jsonEncode(ids),
     );
+    MaterialWriteNotifier.notify();
   }
 }

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../backup/material_write_notifier.dart';
+
 class LocalUserProfileData {
   const LocalUserProfileData({
     this.displayName = '',
@@ -68,5 +70,6 @@ class LocalUserProfileStore {
     if (userId.isEmpty) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_keyForUser(userId), jsonEncode(data.toJson()));
+    MaterialWriteNotifier.notify();
   }
 }

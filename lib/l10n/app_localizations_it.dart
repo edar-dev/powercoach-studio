@@ -1131,6 +1131,57 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsCloudBackupDeleted => 'Backup cloud eliminato.';
 
   @override
+  String get settingsAutoCloudBackupToggle => 'Backup cloud automatico';
+
+  @override
+  String get settingsAutoCloudBackupHint =>
+      'Dopo le modifiche, carica uno snapshot su Supabase Storage (con debounce).';
+
+  @override
+  String get settingsStoragePersistHint =>
+      'Il browser può cancellare i dati locali. Attiva il backup cloud automatico e esporta periodicamente.';
+
+  @override
+  String settingsBackupLastSuccess(String timestamp) {
+    return 'Ultimo backup: $timestamp';
+  }
+
+  @override
+  String settingsBackupLastCloud(String timestamp) {
+    return 'Ultimo backup cloud automatico: $timestamp';
+  }
+
+  @override
+  String settingsBackupLastError(String message) {
+    return 'Ultimo errore cloud: $message';
+  }
+
+  @override
+  String settingsCloudLastSync(String timestamp) {
+    return 'Ultima sync cloud: $timestamp';
+  }
+
+  @override
+  String get settingsCloudSyncNow => 'Sincronizza da cloud';
+
+  @override
+  String get settingsCloudSyncSuccess =>
+      'Dati cloud uniti su questo dispositivo.';
+
+  @override
+  String get cloudRecoveryTitle => 'Ripristina ultimo backup cloud?';
+
+  @override
+  String get cloudRecoveryMessage =>
+      'Non ci sono clienti o schede sul dispositivo, ma esistono snapshot cloud. Vuoi ripristinare l’ultimo backup?';
+
+  @override
+  String get cloudRecoveryRestore => 'Ripristina';
+
+  @override
+  String get cloudRecoveryNotNow => 'Non ora';
+
+  @override
   String get settingsLegalSectionTitle => 'Legale e privacy';
 
   @override

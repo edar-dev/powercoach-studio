@@ -452,6 +452,39 @@
   "settingsCloudBackupListEmpty": "Nessun backup cloud disponibile.",
   "settingsCloudBackupDeleteTooltip": "Elimina questo backup cloud",
   "settingsCloudBackupDeleted": "Backup cloud eliminato.",
+  "settingsAutoCloudBackupToggle": "Backup cloud automatico",
+  "settingsAutoCloudBackupHint": "Dopo le modifiche, carica uno snapshot su Supabase Storage (con debounce).",
+  "settingsStoragePersistHint": "Il browser può cancellare i dati locali. Attiva il backup cloud automatico e esporta periodicamente.",
+  "settingsBackupLastSuccess": "Ultimo backup: {timestamp}",
+  "@settingsBackupLastSuccess": {
+    "placeholders": {
+      "timestamp": { "type": "String" }
+    }
+  },
+  "settingsBackupLastCloud": "Ultimo backup cloud automatico: {timestamp}",
+  "@settingsBackupLastCloud": {
+    "placeholders": {
+      "timestamp": { "type": "String" }
+    }
+  },
+  "settingsBackupLastError": "Ultimo errore cloud: {message}",
+  "@settingsBackupLastError": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "settingsCloudLastSync": "Ultima sync cloud: {timestamp}",
+  "@settingsCloudLastSync": {
+    "placeholders": {
+      "timestamp": { "type": "String" }
+    }
+  },
+  "settingsCloudSyncNow": "Sincronizza da cloud",
+  "settingsCloudSyncSuccess": "Dati cloud uniti su questo dispositivo.",
+  "cloudRecoveryTitle": "Ripristina ultimo backup cloud?",
+  "cloudRecoveryMessage": "Non ci sono clienti o schede sul dispositivo, ma esistono snapshot cloud. Vuoi ripristinare l’ultimo backup?",
+  "cloudRecoveryRestore": "Ripristina",
+  "cloudRecoveryNotNow": "Non ora",
   "settingsLegalSectionTitle": "Legale e privacy",
   "settingsLegalPrivacy": "Informativa privacy",
   "settingsLegalTerms": "Termini di servizio",

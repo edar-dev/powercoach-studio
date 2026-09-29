@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/auth/supabase_bootstrap.dart';
+import '../../../../core/backup/auto_cloud_snapshot_store.dart';
+import '../../../../core/backup/backup_activity_store.dart';
+import '../../../../core/backup/web_persistence_coordinator.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
@@ -50,6 +53,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _dirty = false;
   String? _profileLoadError;
   SettingsHubSection _activeSection = SettingsHubSection.personalInfo;
+
+  bool _autoCloudEnabled = false;
+  bool _showStoragePersistHint = false;
+  DateTime? _lastBackupAt;
+  DateTime? _lastAutoCloudAt;
+  DateTime? _lastCloudSyncAt;
+  String? _lastAutoCloudError;
 
   String _savedDisplayName = '';
   String _savedPhone = '';
@@ -104,7 +114,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Future<void> _bootstrap() async {
-    await Future.wait([_loadPreferences(), _loadProfile()]);
+    await Future.wait([
+      _loadPreferences(),
+      _loadProfile(),
+      _loadBackupStatus(),
+    ]);
     if (mounted) setState(() => _loading = false);
   }
 
@@ -116,6 +130,71 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _calendarRemindersEnabled = snapshot.calendarRemindersEnabled;
       _calendarReminderLeadHours = snapshot.calendarReminderLeadHours;
     });
+  }
+
+  Future<void> _loadBackupStatus() async {
+    final user = SupabaseBootstrap.currentUser;
+    final autoStore = AutoCloudSnapshotStore.instance;
+    final enabled = await autoStore.isAutoEnabled();
+    DateTime? lastBackup;
+    DateTime? lastAuto;
+    DateTime? lastSync;
+    String? lastError;
+    var showHint = false;
+    if (user != null) {
+      lastBackup =
+          await BackupActivityStore.instance.lastSuccessfulBackupAt(user.id);
+      lastAuto = await autoStore.lastSuccessAt(user.id);
+      lastSync = await autoStore.lastCloudSyncAt(user.id);
+      lastError = await autoStore.lastError(user.id);
+      showHint = await WebPersistenceCoordinator.instance
+          .shouldShowStoragePersistHint(user.id);
+    }
+    if (!mounted) return;
+    setState(() {
+      _autoCloudEnabled = enabled;
+      _lastBackupAt = lastBackup;
+      _lastAutoCloudAt = lastAuto;
+      _lastCloudSyncAt = lastSync;
+      _lastAutoCloudError = lastError;
+      _showStoragePersistHint = showHint;
+    });
+  }
+
+  String? _formatTimestamp(DateTime? value) {
+    if (value == null) return null;
+    final local = value.toLocal();
+    final y = local.year.toString().padLeft(4, '0');
+    final m = local.month.toString().padLeft(2, '0');
+    final d = local.day.toString().padLeft(2, '0');
+    final hh = local.hour.toString().padLeft(2, '0');
+    final mm = local.minute.toString().padLeft(2, '0');
+    return '$y-$m-$d $hh:$mm';
+  }
+
+  Future<void> _onAutoCloudToggle(bool enabled) async {
+    await AutoCloudSnapshotStore.instance.setAutoEnabled(enabled);
+    if (!mounted) return;
+    setState(() => _autoCloudEnabled = enabled);
+  }
+
+  Future<void> _onPullCloudSync() async {
+    final l10n = AppLocalizations.of(context);
+    final previousError = _lastAutoCloudError;
+    final synced = await WebPersistenceCoordinator.instance.pullCloudSync();
+    if (!mounted) return;
+    await _loadBackupStatus();
+    if (!mounted) return;
+    if (synced) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.settingsCloudSyncSuccess)),
+      );
+    } else if (_lastAutoCloudError != null &&
+        _lastAutoCloudError != previousError) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.settingsCloudBackupErrorGeneric)),
+      );
+    }
   }
 
   Future<void> _loadProfile() async {
@@ -319,6 +398,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               onUploadCloudBackup: () => _backupHandler.uploadCloudBackup(l10n),
               onRestoreCloudBackup: () =>
                   _backupHandler.restoreFromCloudBackup(l10n),
+              autoCloudEnabled: _autoCloudEnabled,
+              onAutoCloudToggle: _onAutoCloudToggle,
+              showStoragePersistHint: _showStoragePersistHint,
+              lastBackupAtLabel: _formatTimestamp(_lastBackupAt),
+              lastAutoCloudAtLabel: _formatTimestamp(_lastAutoCloudAt),
+              lastCloudSyncAtLabel: _formatTimestamp(_lastCloudSyncAt),
+              lastErrorLabel: _lastAutoCloudError,
+              onPullCloudSync: _onPullCloudSync,
               onSignOut: () => performSettingsSignOut(
                 context,
                 onPreferencesReloaded: _loadPreferences,

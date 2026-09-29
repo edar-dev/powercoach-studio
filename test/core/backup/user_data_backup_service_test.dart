@@ -3,8 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_service.dart';
+import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
+import 'package:powercoach_studio/features/exercise_library/data/pinned_exercises_store.dart';
+import 'package:powercoach_studio/features/exercise_library/data/recent_exercises_store.dart';
+import 'package:powercoach_studio/features/settings/data/user_preferences_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
@@ -344,5 +348,24 @@ void main() {
       OfflineEntityType.customer,
     );
     expect(customers.map((e) => e.id), contains('c1'));
+  });
+
+  test('export/import round-trips pinned and recent exercise ids', () async {
+    registerFakeMacOSNotificationsPlatform();
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    await PinnedExercisesStore.instance.replaceAll({'ex-a', 'ex-b'});
+    await RecentExercisesStore.instance.replaceAll(['ex-b', 'ex-c']);
+
+    final map = await UserDataBackupService.instance.buildExportMap(uid);
+    final prefs = map['preferences'] as Map<String, dynamic>;
+    expect(prefs[SettingsPrefsKeys.pinnedExerciseIdsJson], isNotNull);
+    expect(prefs[SettingsPrefsKeys.recentExerciseIdsJson], isNotNull);
+
+    await PinnedExercisesStore.instance.replaceAll({});
+    await RecentExercisesStore.instance.replaceAll([]);
+
+    await UserPreferencesRepository.instance.applyFromBackupMap(prefs);
+    expect(await PinnedExercisesStore.instance.getPinnedIds(), {'ex-a', 'ex-b'});
+    expect(await RecentExercisesStore.instance.getRecentIds(), ['ex-b', 'ex-c']);
   });
 }

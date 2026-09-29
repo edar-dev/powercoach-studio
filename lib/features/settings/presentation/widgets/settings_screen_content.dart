@@ -42,6 +42,14 @@ class SettingsScreenContent extends StatelessWidget {
     required this.onImportBackup,
     required this.onUploadCloudBackup,
     required this.onRestoreCloudBackup,
+    this.autoCloudEnabled = false,
+    this.onAutoCloudToggle,
+    this.showStoragePersistHint = false,
+    this.lastBackupAtLabel,
+    this.lastAutoCloudAtLabel,
+    this.lastCloudSyncAtLabel,
+    this.lastErrorLabel,
+    this.onPullCloudSync,
     required this.onSignOut,
     required this.isDirty,
     required this.isSaving,
@@ -76,6 +84,14 @@ class SettingsScreenContent extends StatelessWidget {
   final VoidCallback onImportBackup;
   final VoidCallback onUploadCloudBackup;
   final VoidCallback onRestoreCloudBackup;
+  final bool autoCloudEnabled;
+  final ValueChanged<bool>? onAutoCloudToggle;
+  final bool showStoragePersistHint;
+  final String? lastBackupAtLabel;
+  final String? lastAutoCloudAtLabel;
+  final String? lastCloudSyncAtLabel;
+  final String? lastErrorLabel;
+  final VoidCallback? onPullCloudSync;
   final VoidCallback onSignOut;
   final bool isDirty;
   final bool isSaving;
@@ -140,6 +156,14 @@ class SettingsScreenContent extends StatelessWidget {
                 onImportBackup: onImportBackup,
                 onUploadCloudBackup: onUploadCloudBackup,
                 onRestoreCloudBackup: onRestoreCloudBackup,
+                autoCloudEnabled: autoCloudEnabled,
+                onAutoCloudToggle: onAutoCloudToggle,
+                showStoragePersistHint: showStoragePersistHint,
+                lastBackupAtLabel: lastBackupAtLabel,
+                lastAutoCloudAtLabel: lastAutoCloudAtLabel,
+                lastCloudSyncAtLabel: lastCloudSyncAtLabel,
+                lastErrorLabel: lastErrorLabel,
+                onPullCloudSync: onPullCloudSync,
               ),
             );
             if (!sideBySide) {

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/backup/auto_cloud_snapshot_store.dart';
 import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/notifications/notification_scheduler_service.dart';
 import '../../../../core/storage/offline_local_store.dart';
@@ -21,6 +22,7 @@ Future<void> executeSignOut(BuildContext context) async {
   if (uid != null) {
     await OfflineLocalStore.instance.wipeForUser(uid);
     await BackupActivityStore.instance.clearForUser(uid);
+    await AutoCloudSnapshotStore.instance.clearForUser(uid);
   }
   await Supabase.instance.client.auth.signOut();
   if (context.mounted) context.go('/');
