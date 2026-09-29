@@ -503,6 +503,19 @@
   "exerciseLibraryEmptyMobility": "No mobility exercises yet.",
   "exerciseLibraryEmptyMobilityHint": "Add mobility exercises to use them in mobility routines.",
   "exerciseLibraryExportEmpty": "Nothing to export. Add exercises first.",
+  "exerciseLibraryClearAll": "Clear library",
+  "exerciseLibraryClearAllTitle": "Clear the entire library?",
+  "exerciseLibraryClearAllMessage": "All exercises and mobility exercises will be removed. Workout plans are not deleted. This cannot be undone.",
+  "exerciseLibraryClearAllConfirm": "Clear",
+  "exerciseLibraryClearAllEmpty": "Nothing to clear.",
+  "exerciseLibraryClearAllSuccessCount": "Removed {count} exercises.",
+  "@exerciseLibraryClearAllSuccessCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "exerciseLibraryImportInvalidFormat": "Invalid file. Use a JSON array of exercises.",
   "exerciseLibraryImportSuccess": "Import completed successfully.",
   "exerciseLibraryImportSuccessCount": "Import completed: {count} items.",

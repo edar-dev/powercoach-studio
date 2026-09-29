@@ -1287,6 +1287,27 @@ class AppLocalizationsEn extends AppLocalizations {
       'Nothing to export. Add exercises first.';
 
   @override
+  String get exerciseLibraryClearAll => 'Clear library';
+
+  @override
+  String get exerciseLibraryClearAllTitle => 'Clear the entire library?';
+
+  @override
+  String get exerciseLibraryClearAllMessage =>
+      'All exercises and mobility exercises will be removed. Workout plans are not deleted. This cannot be undone.';
+
+  @override
+  String get exerciseLibraryClearAllConfirm => 'Clear';
+
+  @override
+  String get exerciseLibraryClearAllEmpty => 'Nothing to clear.';
+
+  @override
+  String exerciseLibraryClearAllSuccessCount(int count) {
+    return 'Removed $count exercises.';
+  }
+
+  @override
   String get exerciseLibraryImportInvalidFormat =>
       'Invalid file. Use a JSON array of exercises.';
 

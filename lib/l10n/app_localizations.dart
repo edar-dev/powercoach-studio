@@ -2402,6 +2402,42 @@ abstract class AppLocalizations {
   /// **'Nothing to export. Add exercises first.'**
   String get exerciseLibraryExportEmpty;
 
+  /// No description provided for @exerciseLibraryClearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear library'**
+  String get exerciseLibraryClearAll;
+
+  /// No description provided for @exerciseLibraryClearAllTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear the entire library?'**
+  String get exerciseLibraryClearAllTitle;
+
+  /// No description provided for @exerciseLibraryClearAllMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'All exercises and mobility exercises will be removed. Workout plans are not deleted. This cannot be undone.'**
+  String get exerciseLibraryClearAllMessage;
+
+  /// No description provided for @exerciseLibraryClearAllConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear'**
+  String get exerciseLibraryClearAllConfirm;
+
+  /// No description provided for @exerciseLibraryClearAllEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing to clear.'**
+  String get exerciseLibraryClearAllEmpty;
+
+  /// No description provided for @exerciseLibraryClearAllSuccessCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Removed {count} exercises.'**
+  String exerciseLibraryClearAllSuccessCount(int count);
+
   /// No description provided for @exerciseLibraryImportInvalidFormat.
   ///
   /// In en, this message translates to:

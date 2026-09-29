@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
 import '../../domain/exercise_library_tree_helpers.dart';
+import '../exercise_library_clear_handler.dart';
 import '../exercise_library_crud_handler.dart';
 import '../exercise_library_export_handler.dart';
 import '../exercise_library_import_handler.dart';
@@ -46,6 +48,13 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   ExerciseLibraryExportHandler get _exportHandler => ExerciseLibraryExportHandler(
         context: context,
         exerciseRepo: _exerciseRepo,
+      );
+
+  ExerciseLibraryClearHandler get _clearHandler => ExerciseLibraryClearHandler(
+        context: context,
+        exerciseRepo: _exerciseRepo,
+        pinnedStore: _pinnedStore,
+        onReload: _load,
       );
 
   @override
@@ -139,15 +148,43 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.upload_file),
-            onPressed: _loading ? null : _import,
-            tooltip: l10n.exerciseLibraryImport,
-          ),
-          IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: _loading ? null : _export,
-            tooltip: l10n.exerciseLibraryExport,
+          PopupMenuButton<String>(
+            enabled: !_loading,
+            icon: const Icon(Icons.more_vert),
+            color: MarketingDarkColors.surface800,
+            onSelected: (value) {
+              if (value == 'import') {
+                _import();
+              } else if (value == 'export') {
+                _export();
+              } else if (value == 'clear') {
+                _clearHandler.confirmAndClear();
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'import',
+                child: Text(
+                  l10n.exerciseLibraryImport,
+                  style: const TextStyle(color: MarketingDarkColors.text),
+                ),
+              ),
+              PopupMenuItem(
+                value: 'export',
+                child: Text(
+                  l10n.exerciseLibraryExport,
+                  style: const TextStyle(color: MarketingDarkColors.text),
+                ),
+              ),
+              const PopupMenuDivider(),
+              PopupMenuItem(
+                value: 'clear',
+                child: Text(
+                  l10n.exerciseLibraryClearAll,
+                  style: const TextStyle(color: StitchM3Theme.danger),
+                ),
+              ),
+            ],
           ),
         ],
         bottom: PreferredSize(

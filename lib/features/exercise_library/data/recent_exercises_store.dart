@@ -34,6 +34,18 @@ class RecentExercisesStore {
     if (ids.length > maxEntries) {
       ids.removeRange(maxEntries, ids.length);
     }
+    await _save(ids);
+  }
+
+  Future<void> removeIds(Iterable<String> ids) async {
+    final remove = ids.where((id) => id.trim().isNotEmpty).toSet();
+    if (remove.isEmpty) return;
+    final current = await getRecentIds();
+    final next = current.where((id) => !remove.contains(id)).toList();
+    await _save(next);
+  }
+
+  Future<void> _save(List<String> ids) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
       SettingsPrefsKeys.recentExerciseIdsJson,

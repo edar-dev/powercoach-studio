@@ -1,10 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_item.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_repository.dart';
 import 'package:powercoach_studio/features/exercise_library/data/default_exercise_catalog.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/default_exercise_catalog_seeder.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_library_import_service.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_catalog_source.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class _FakeRepo extends CustomExerciseRepository {
   final List<Map<String, dynamic>> stored = [];
@@ -44,6 +46,10 @@ class _FakeRepo extends CustomExerciseRepository {
 }
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+  });
+
   group('DefaultExerciseCatalogSeeder', () {
     test('imports default catalog when powercoach source is empty', () async {
       final repo = _FakeRepo();
@@ -83,6 +89,29 @@ void main() {
       final count = await seeder.ensureSeeded();
       expect(count, 0);
       expect(repo.stored, hasLength(1));
+    });
+
+    test('skips import when auto-seed is suppressed after clear', () async {
+      await DefaultExerciseCatalogSeeder.markAutoSeedSuppressed();
+      final prefs = await SharedPreferences.getInstance();
+      expect(
+        prefs.getBool(SettingsPrefsKeys.exerciseLibrarySkipAutoSeed),
+        isTrue,
+      );
+
+      final repo = _FakeRepo();
+      final seeder = DefaultExerciseCatalogSeeder(
+        exerciseRepo: repo,
+        importService: ExerciseLibraryImportService(exerciseRepo: repo),
+      );
+
+      final count = await seeder.ensureSeeded();
+      expect(count, 0);
+      expect(repo.stored, isEmpty);
+
+      await DefaultExerciseCatalogSeeder.clearAutoSeedSuppression();
+      final afterClear = await seeder.ensureSeeded();
+      expect(afterClear, defaultExerciseCatalogNodeCount());
     });
   });
 }

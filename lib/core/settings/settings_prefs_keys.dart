@@ -10,6 +10,11 @@ abstract final class SettingsPrefsKeys {
   /// JSON list of pinned custom exercise IDs.
   static const pinnedExerciseIdsJson = 'pinned_exercise_ids_json_v1';
 
+  /// When true, skip auto-seeding the default PowerCoach catalog after an
+  /// intentional library clear (until the user imports the default catalog).
+  static const exerciseLibrarySkipAutoSeed =
+      'exercise_library_skip_auto_seed_v1';
+
   /// When true, schedule reminders before planned calendar sessions.
   static const calendarRemindersEnabled = 'settings_calendar_reminders_enabled';
 
