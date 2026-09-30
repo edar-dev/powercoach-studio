@@ -7,6 +7,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/entitlement_refresh_coordinator.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
+import 'package:powercoach_studio/core/backup/cloud_snapshot_scheduler.dart';
+import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
@@ -118,6 +120,7 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
         await SupabaseBootstrap.ensureInitialized();
         _logStartupStep('Supabase init completed', _bootstrapWatch);
         EntitlementRefreshCoordinator.instance.start();
+        WebPersistenceCoordinator.instance.start();
         if (SupabaseBootstrap.currentUser != null) {
           unawaited(EntitlementRepository.instance.refresh());
         }
@@ -162,6 +165,10 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
     if (state == AppLifecycleState.resumed) {
       unawaited(CalendarReminderScheduler.instance.rescheduleUpcoming());
       EntitlementRefreshCoordinator.instance.onAppResumed();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      unawaited(CloudSnapshotScheduler.instance.flushNow());
     }
   }
 

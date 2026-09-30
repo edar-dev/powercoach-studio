@@ -8,6 +8,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../../settings/presentation/backup_onboarding_prompt.dart';
+import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
 import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/backup_reminder_banner.dart';
@@ -70,8 +71,29 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     });
     if (!_backupOnboardingScheduled && widget.loadSnapshot == null) {
       _backupOnboardingScheduled = true;
+      final restored = await WebPersistenceCoordinator.instance
+          .maybeShowCloudRecoveryIfNeeded(context);
+      if (!mounted) return;
+      if (restored) {
+        // Reload stats after replace-all restore so the dashboard is not empty.
+        await _reloadStatsAfterRecovery();
+        if (!mounted) return;
+      }
       await maybeShowBackupOnboardingIfNeeded(context);
     }
+  }
+
+  Future<void> _reloadStatsAfterRecovery() async {
+    final l10n = AppLocalizations.of(context);
+    final snap = await _loader.load(
+      unknownClientLabel: l10n.dashboardUnknownClient,
+      untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
+    );
+    if (!mounted) return;
+    setState(() {
+      _snapshot = snap;
+      _loading = false;
+    });
   }
 
   @override

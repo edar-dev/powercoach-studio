@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/backup/material_write_notifier.dart';
 import '../../../core/settings/settings_prefs_keys.dart';
+import '../../exercise_library/data/pinned_exercises_store.dart';
+import '../../exercise_library/data/recent_exercises_store.dart';
 
 /// Default hours before a session when calendar reminders fire.
 const kDefaultCalendarReminderLeadHours = 24;
@@ -43,6 +48,7 @@ class UserPreferencesRepository {
   Future<void> setLocaleCode(String code) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(SettingsPrefsKeys.appLocaleCode, code);
+    MaterialWriteNotifier.notify();
   }
 
   Future<bool> getNotificationsEnabled({bool defaultValue = true}) async {
@@ -53,6 +59,7 @@ class UserPreferencesRepository {
   Future<void> setNotificationsEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsPrefsKeys.notificationsEnabled, enabled);
+    MaterialWriteNotifier.notify();
   }
 
   Future<bool> getCalendarRemindersEnabled({bool defaultValue = false}) async {
@@ -64,6 +71,7 @@ class UserPreferencesRepository {
   Future<void> setCalendarRemindersEnabled(bool enabled) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(SettingsPrefsKeys.calendarRemindersEnabled, enabled);
+    MaterialWriteNotifier.notify();
   }
 
   Future<int> getCalendarReminderLeadHours({
@@ -77,6 +85,7 @@ class UserPreferencesRepository {
   Future<void> setCalendarReminderLeadHours(int hours) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt(SettingsPrefsKeys.calendarReminderLeadHours, hours);
+    MaterialWriteNotifier.notify();
   }
 
   Future<bool?> getWorkoutBuilderCompactAdd() async {
@@ -91,9 +100,11 @@ class UserPreferencesRepository {
     final prefs = await SharedPreferences.getInstance();
     if (enabled == null) {
       await prefs.remove(SettingsPrefsKeys.workoutBuilderCompactAdd);
+      MaterialWriteNotifier.notify();
       return;
     }
     await prefs.setBool(SettingsPrefsKeys.workoutBuilderCompactAdd, enabled);
+    MaterialWriteNotifier.notify();
   }
 
   Future<bool> getWorkoutBuilderIncludeMobilityDefault({
@@ -110,6 +121,7 @@ class UserPreferencesRepository {
       SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault,
       enabled,
     );
+    MaterialWriteNotifier.notify();
   }
 
   Future<UserPreferences> loadAll() async {
@@ -139,6 +151,15 @@ class UserPreferencesRepository {
     if (prefs.workoutBuilderCompactAdd != null) {
       map[SettingsPrefsKeys.workoutBuilderCompactAdd] =
           prefs.workoutBuilderCompactAdd;
+    }
+
+    final pinned = await PinnedExercisesStore.instance.getPinnedIds();
+    if (pinned.isNotEmpty) {
+      map[SettingsPrefsKeys.pinnedExerciseIdsJson] = jsonEncode(pinned.toList());
+    }
+    final recent = await RecentExercisesStore.instance.getRecentIds();
+    if (recent.isNotEmpty) {
+      map[SettingsPrefsKeys.recentExerciseIdsJson] = jsonEncode(recent);
     }
     return map;
   }
@@ -181,5 +202,44 @@ class UserPreferencesRepository {
     if (mobility is bool) {
       await setWorkoutBuilderIncludeMobilityDefault(mobility);
     }
+
+    if (prefs.containsKey(SettingsPrefsKeys.pinnedExerciseIdsJson)) {
+      final raw = prefs[SettingsPrefsKeys.pinnedExerciseIdsJson];
+      final ids = _parseIdList(raw);
+      if (ids != null) {
+        await PinnedExercisesStore.instance.replaceAll(ids.toSet());
+      }
+    }
+
+    if (prefs.containsKey(SettingsPrefsKeys.recentExerciseIdsJson)) {
+      final raw = prefs[SettingsPrefsKeys.recentExerciseIdsJson];
+      final ids = _parseIdList(raw);
+      if (ids != null) {
+        await RecentExercisesStore.instance.replaceAll(ids);
+      }
+    }
+  }
+
+  List<String>? _parseIdList(Object? raw) {
+    if (raw is List) {
+      return raw
+          .map((e) => e?.toString() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList();
+    }
+    if (raw is String && raw.isNotEmpty) {
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is List) {
+          return decoded
+              .map((e) => e?.toString() ?? '')
+              .where((id) => id.isNotEmpty)
+              .toList();
+        }
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 }

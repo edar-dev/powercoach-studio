@@ -13,17 +13,128 @@ class SettingsBackupModule extends StatelessWidget {
     required this.onImportBackup,
     required this.onUploadCloudBackup,
     required this.onRestoreCloudBackup,
+    this.autoCloudEnabled = false,
+    this.onAutoCloudToggle,
+    this.showStoragePersistHint = false,
+    this.lastBackupAtLabel,
+    this.lastAutoCloudAtLabel,
+    this.lastCloudSyncAtLabel,
+    this.lastErrorLabel,
+    this.onPullCloudSync,
   });
 
   final VoidCallback onExportBackup;
   final VoidCallback onImportBackup;
   final VoidCallback onUploadCloudBackup;
   final VoidCallback onRestoreCloudBackup;
+  final bool autoCloudEnabled;
+  final ValueChanged<bool>? onAutoCloudToggle;
+  final bool showStoragePersistHint;
+  final String? lastBackupAtLabel;
+  final String? lastAutoCloudAtLabel;
+  final String? lastCloudSyncAtLabel;
+  final String? lastErrorLabel;
+  final VoidCallback? onPullCloudSync;
 
   @override
   Widget build(BuildContext context) {
     final phone = !Breakpoints.isTabletOrWider(context);
     return phone ? _buildPhone(context) : _buildDesktop(context);
+  }
+
+  Widget _statusBlock(BuildContext context, {required bool phone}) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final muted = phone
+        ? StitchMobileColors.onSurfaceVariant
+        : MarketingDarkColors.slate400;
+    final onSurface =
+        phone ? StitchMobileColors.onSurface : Colors.white;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (showStoragePersistHint) ...[
+          Text(
+            l10n.settingsStoragePersistHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: phone
+                  ? StitchMobileColors.tertiary
+                  : MarketingDarkColors.amber,
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+        if (onAutoCloudToggle != null) ...[
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              l10n.settingsAutoCloudBackupToggle,
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            subtitle: Text(
+              l10n.settingsAutoCloudBackupHint,
+              style: theme.textTheme.bodySmall?.copyWith(color: muted),
+            ),
+            value: autoCloudEnabled,
+            onChanged: onAutoCloudToggle,
+          ),
+          const SizedBox(height: 4),
+        ],
+        if (lastBackupAtLabel != null)
+          Text(
+            l10n.settingsBackupLastSuccess(lastBackupAtLabel!),
+            style: theme.textTheme.bodySmall?.copyWith(color: muted),
+          ),
+        if (lastAutoCloudAtLabel != null) ...[
+          const SizedBox(height: 2),
+          Text(
+            l10n.settingsBackupLastCloud(lastAutoCloudAtLabel!),
+            style: theme.textTheme.bodySmall?.copyWith(color: muted),
+          ),
+        ],
+        if (lastCloudSyncAtLabel != null) ...[
+          const SizedBox(height: 2),
+          Text(
+            l10n.settingsCloudLastSync(lastCloudSyncAtLabel!),
+            style: theme.textTheme.bodySmall?.copyWith(color: muted),
+          ),
+        ],
+        if (lastErrorLabel != null && lastErrorLabel!.isNotEmpty) ...[
+          const SizedBox(height: 2),
+          Text(
+            l10n.settingsBackupLastError(lastErrorLabel!),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: phone
+                  ? StitchMobileColors.error
+                  : const Color(0xFFF43F5E),
+            ),
+          ),
+        ],
+        if (onPullCloudSync != null) ...[
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: onPullCloudSync,
+              icon: const Icon(Icons.cloud_sync_outlined, size: 18),
+              label: Text(l10n.settingsCloudSyncNow),
+              style: TextButton.styleFrom(
+                foregroundColor: phone
+                    ? StitchMobileColors.onSurfaceVariant
+                    : MarketingDarkColors.brandLight,
+                padding: EdgeInsets.zero,
+                minimumSize: const Size(0, 36),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
   }
 
   Widget _buildPhone(BuildContext context) {
@@ -61,6 +172,8 @@ class SettingsBackupModule extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 10),
+          _statusBlock(context, phone: true),
           const SizedBox(height: 14),
           Container(
             padding: const EdgeInsets.all(12),
@@ -216,6 +329,8 @@ class SettingsBackupModule extends StatelessWidget {
               color: MarketingDarkColors.slate400,
             ),
           ),
+          const SizedBox(height: 12),
+          _statusBlock(context, phone: false),
           const SizedBox(height: 16),
           _ActionRow(
             icon: Icons.download_outlined,

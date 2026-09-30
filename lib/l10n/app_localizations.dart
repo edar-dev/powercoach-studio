@@ -2096,6 +2096,84 @@ abstract class AppLocalizations {
   /// **'Cloud backup deleted.'**
   String get settingsCloudBackupDeleted;
 
+  /// No description provided for @settingsAutoCloudBackupToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Automatic cloud backup'**
+  String get settingsAutoCloudBackupToggle;
+
+  /// No description provided for @settingsAutoCloudBackupHint.
+  ///
+  /// In en, this message translates to:
+  /// **'After edits, upload a snapshot to Supabase Storage (debounced).'**
+  String get settingsAutoCloudBackupHint;
+
+  /// No description provided for @settingsStoragePersistHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The browser may clear local data. Enable automatic cloud backup and export regularly.'**
+  String get settingsStoragePersistHint;
+
+  /// No description provided for @settingsBackupLastSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Last backup: {timestamp}'**
+  String settingsBackupLastSuccess(String timestamp);
+
+  /// No description provided for @settingsBackupLastCloud.
+  ///
+  /// In en, this message translates to:
+  /// **'Last automatic cloud backup: {timestamp}'**
+  String settingsBackupLastCloud(String timestamp);
+
+  /// No description provided for @settingsBackupLastError.
+  ///
+  /// In en, this message translates to:
+  /// **'Last cloud error: {message}'**
+  String settingsBackupLastError(String message);
+
+  /// No description provided for @settingsCloudLastSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Last cloud sync: {timestamp}'**
+  String settingsCloudLastSync(String timestamp);
+
+  /// No description provided for @settingsCloudSyncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync from cloud'**
+  String get settingsCloudSyncNow;
+
+  /// No description provided for @settingsCloudSyncSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Cloud data merged into this device.'**
+  String get settingsCloudSyncSuccess;
+
+  /// No description provided for @cloudRecoveryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore latest cloud backup?'**
+  String get cloudRecoveryTitle;
+
+  /// No description provided for @cloudRecoveryMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'There are no clients or workout plans on this device, but cloud snapshots exist. Restore the latest backup?'**
+  String get cloudRecoveryMessage;
+
+  /// No description provided for @cloudRecoveryRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore'**
+  String get cloudRecoveryRestore;
+
+  /// No description provided for @cloudRecoveryNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get cloudRecoveryNotNow;
+
   /// No description provided for @settingsLegalSectionTitle.
   ///
   /// In en, this message translates to:

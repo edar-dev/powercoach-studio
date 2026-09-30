@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../sync/offline_models.dart';
+import '../backup/material_write_notifier.dart';
 import 'app_database.dart';
 import 'offline_migration.dart';
 
@@ -124,6 +125,7 @@ class OfflineLocalStore {
             localOnly: Value(entity.localOnly),
           ),
         );
+    MaterialWriteNotifier.notify();
   }
 
   /// Inserts or updates an entity row for an explicit [userId] (backup restore).

@@ -1119,6 +1119,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsCloudBackupDeleted => 'Cloud backup deleted.';
 
   @override
+  String get settingsAutoCloudBackupToggle => 'Automatic cloud backup';
+
+  @override
+  String get settingsAutoCloudBackupHint =>
+      'After edits, upload a snapshot to Supabase Storage (debounced).';
+
+  @override
+  String get settingsStoragePersistHint =>
+      'The browser may clear local data. Enable automatic cloud backup and export regularly.';
+
+  @override
+  String settingsBackupLastSuccess(String timestamp) {
+    return 'Last backup: $timestamp';
+  }
+
+  @override
+  String settingsBackupLastCloud(String timestamp) {
+    return 'Last automatic cloud backup: $timestamp';
+  }
+
+  @override
+  String settingsBackupLastError(String message) {
+    return 'Last cloud error: $message';
+  }
+
+  @override
+  String settingsCloudLastSync(String timestamp) {
+    return 'Last cloud sync: $timestamp';
+  }
+
+  @override
+  String get settingsCloudSyncNow => 'Sync from cloud';
+
+  @override
+  String get settingsCloudSyncSuccess => 'Cloud data merged into this device.';
+
+  @override
+  String get cloudRecoveryTitle => 'Restore latest cloud backup?';
+
+  @override
+  String get cloudRecoveryMessage =>
+      'There are no clients or workout plans on this device, but cloud snapshots exist. Restore the latest backup?';
+
+  @override
+  String get cloudRecoveryRestore => 'Restore';
+
+  @override
+  String get cloudRecoveryNotNow => 'Not now';
+
+  @override
   String get settingsLegalSectionTitle => 'Legal & privacy';
 
   @override
