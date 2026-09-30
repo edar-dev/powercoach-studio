@@ -27,6 +27,8 @@ void main() {
     expect(isProtectedAppPath('/workouts/editor/plan-1'), isTrue);
     expect(isProtectedAppPath('/workouts/templates'), isTrue);
     expect(isProtectedAppPath('/workouts/builder'), isTrue);
+    expect(isProtectedAppPath('/workouts/diary'), isTrue);
+    expect(isProtectedAppPath('/workouts/diary/plan-1/0-0'), isTrue);
     expect(isProtectedAppPath('/settings'), isTrue);
     expect(isProtectedAppPath('/settings/personal-info'), isTrue);
     expect(isProtectedAppPath('/subscription'), isTrue);
@@ -72,6 +74,7 @@ void main() {
         ('/workouts/stats', '/workouts/diary'),
         ('/dashboard/schedule', '/dashboard/calendar'),
         ('/settings/release-notes', AppPaths.settings),
+        ('/settings/subscription', AppPaths.subscription),
         ('/workouts/library', '/exercise-library'),
         ('/workouts/templates', '/workouts/builder'),
       ];
@@ -108,12 +111,17 @@ void main() {
         _legacyRedirectTarget(Uri.parse('/settings/release-notes?v=1')),
         '${AppPaths.settings}?v=1',
       );
+      expect(
+        _legacyRedirectTarget(Uri.parse('/settings/subscription?src=banner')),
+        '${AppPaths.subscription}?src=banner',
+      );
     });
   });
 }
 
-/// Mirrors legacy branches in [resolveAppRouteRedirect] for unit testing
-/// without Supabase auth bootstrap.
+/// Mirrors legacy branches in [resolveAppRouteRedirect] and GoRouter nested
+/// redirects (e.g. `/settings/subscription` in [buildAppRoutes]) for unit
+/// testing without Supabase auth bootstrap.
 String? _legacyRedirectTarget(Uri uri) {
   final path = uri.path;
   if (path == '/workouts/library') {
@@ -139,6 +147,11 @@ String? _legacyRedirectTarget(Uri uri) {
   }
   if (path == '/settings/release-notes') {
     return redirectPreservingQuery(uri, AppPaths.settings);
+  }
+  // GoRouter nested redirect under /settings (app_routes.dart), not
+  // resolveAppRouteRedirect — mirrored here for bookmark coverage.
+  if (path == AppPaths.subscriptionLegacy || path == '/settings/subscription') {
+    return redirectPreservingQuery(uri, AppPaths.subscription);
   }
   return null;
 }
