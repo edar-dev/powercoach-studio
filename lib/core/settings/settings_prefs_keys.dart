@@ -41,7 +41,8 @@ abstract final class SettingsPrefsKeys {
   /// Last automatic cloud snapshot error message (per user suffix).
   static const autoCloudSnapshotLastError = 'auto_cloud_snapshot_last_error_v1';
 
-  /// ISO8601 timestamp of the last successful automatic cloud snapshot.
+  /// ISO8601 timestamp of the last successful cloud snapshot upload
+  /// (automatic scheduler or manual Settings upload).
   static const autoCloudSnapshotLastAt = 'auto_cloud_snapshot_last_at_v1';
 
   /// When true, the web storage-persist hint was dismissed in Settings.

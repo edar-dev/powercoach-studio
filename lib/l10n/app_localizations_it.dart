@@ -1155,7 +1155,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String settingsBackupLastCloud(String timestamp) {
-    return 'Ultimo backup cloud automatico: $timestamp';
+    return 'Ultimo backup cloud: $timestamp';
   }
 
   @override

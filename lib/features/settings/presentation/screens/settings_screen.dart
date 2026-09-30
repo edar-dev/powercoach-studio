@@ -194,6 +194,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadBackupStatus();
   }
 
+  Future<void> _onExportBackup() async {
+    final l10n = AppLocalizations.of(context);
+    await _backupHandler.exportBackup(l10n);
+    if (!mounted) return;
+    await _loadBackupStatus();
+  }
+
   Future<void> _onPullCloudSync() async {
     final l10n = AppLocalizations.of(context);
     final previousError = _lastAutoCloudError;
@@ -409,7 +416,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onSelected: (hours) =>
                         setState(() => _calendarReminderLeadHours = hours),
                   ),
-              onExportBackup: () => _backupHandler.exportBackup(l10n),
+              onExportBackup: _onExportBackup,
               onImportBackup: () => _backupHandler.importBackup(l10n),
               onUploadCloudBackup: _onUploadCloudBackup,
               onRestoreCloudBackup: () =>

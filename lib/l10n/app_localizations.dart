@@ -2135,7 +2135,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupLastCloud.
   ///
   /// In en, this message translates to:
-  /// **'Last automatic cloud backup: {timestamp}'**
+  /// **'Last cloud backup: {timestamp}'**
   String settingsBackupLastCloud(String timestamp);
 
   /// No description provided for @settingsBackupLastError.

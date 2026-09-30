@@ -463,7 +463,7 @@
       "timestamp": { "type": "String" }
     }
   },
-  "settingsBackupLastCloud": "Ultimo backup cloud automatico: {timestamp}",
+  "settingsBackupLastCloud": "Ultimo backup cloud: {timestamp}",
   "@settingsBackupLastCloud": {
     "placeholders": {
       "timestamp": { "type": "String" }

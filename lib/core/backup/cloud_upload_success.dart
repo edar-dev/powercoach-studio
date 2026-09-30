@@ -4,7 +4,7 @@ import 'backup_activity_store.dart';
 /// Marks a successful cloud snapshot upload in both activity and auto stores.
 ///
 /// Used by manual Settings upload and [CloudSnapshotScheduler] so
-/// "Last backup" and "Last automatic cloud backup" stay aligned.
+/// "Last backup" and "Last cloud backup" stay aligned in Settings.
 Future<void> markCloudSnapshotUploadSuccess(
   String userId, {
   DateTime? at,
