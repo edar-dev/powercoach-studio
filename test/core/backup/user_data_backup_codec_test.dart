@@ -42,7 +42,13 @@ void main() {
     final jsonText = jsonEncode(minimalEnvelope(accountUserId: 'other'));
     expect(
       () => parseUserBackupJson(jsonText, uid),
-      throwsA(isA<UserBackupImportException>()),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'wrong_account',
+        ),
+      ),
     );
   });
 
@@ -50,8 +56,143 @@ void main() {
     final jsonText = jsonEncode(minimalEnvelope(schemaVersion: 99));
     expect(
       () => parseUserBackupJson(jsonText, uid),
-      throwsA(isA<UserBackupImportException>()),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'unsupported_schema',
+        ),
+      ),
     );
+  });
+
+  test('parse rejects missing schemaVersion as unsupported_schema', () {
+    final envelope = minimalEnvelope()..remove('schemaVersion');
+    final jsonText = jsonEncode(envelope);
+    expect(
+      () => parseUserBackupJson(jsonText, uid),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'unsupported_schema',
+        ),
+      ),
+    );
+  });
+
+  test('truncated or invalid JSON string throws FormatException (codec does not wrap)', () {
+    // jsonDecode throws FormatException; parseUserBackupJson does not catch it.
+    expect(
+      () => parseUserBackupJson('{not-valid-json', uid),
+      throwsA(isA<FormatException>()),
+    );
+    expect(
+      () => parseUserBackupJson('{"schemaVersion":', uid),
+      throwsA(isA<FormatException>()),
+    );
+  });
+
+  test('parse rejects JSON array root as invalid_root', () {
+    expect(
+      () => parseUserBackupJson('[]', uid),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'invalid_root',
+        ),
+      ),
+    );
+  });
+
+  test('parse rejects entities that are not a list', () {
+    for (final entities in <Object>['not-a-list', <String, dynamic>{'a': 1}]) {
+      final jsonText = jsonEncode(<String, dynamic>{
+        'schemaVersion': kUserBackupSchemaVersion,
+        'exportFormat': kUserBackupExportFormat,
+        'accountUserId': uid,
+        'entities': entities,
+      });
+      expect(
+        () => parseUserBackupJson(jsonText, uid),
+        throwsA(
+          isA<UserBackupImportException>().having(
+            (e) => e.message,
+            'message',
+            'entities_not_list',
+          ),
+        ),
+        reason: 'entities=$entities',
+      );
+    }
+  });
+
+  test('parse rejects entity missing id', () {
+    final jsonText = jsonEncode(
+      minimalEnvelope(
+        entities: <Map<String, dynamic>>[
+          <String, dynamic>{
+            'type': OfflineEntityType.customer.name,
+            'scopeId': 'c1',
+            'payload': <String, dynamic>{'name': 'No id'},
+            'updatedAt': DateTime.utc(2026, 1, 1).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
+        ],
+      ),
+    );
+    expect(
+      () => parseUserBackupJson(jsonText, uid),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'entity_missing_id',
+        ),
+      ),
+    );
+  });
+
+  test('parse keeps unknown preference keys in preferences.raw (forward-compat)', () {
+    final jsonText = jsonEncode({
+      ...minimalEnvelope(),
+      'preferences': <String, dynamic>{
+        'settings_notifications_enabled': true,
+        'future_pref_key_v9': 'keep-me',
+        'another_unknown': 42,
+      },
+    });
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.preferences.raw['future_pref_key_v9'], 'keep-me');
+    expect(parsed.preferences.raw['another_unknown'], 42);
+  });
+
+  test('parse preserves reminder extra fields; non-list reminders yield empty list', () {
+    final withExtras = jsonEncode({
+      ...minimalEnvelope(),
+      'reminders': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'id': 'r1',
+          'title': 'T',
+          'body': 'B',
+          'scheduledAtUtc': DateTime.utc(2030, 1, 2, 12).toIso8601String(),
+          'customerId': 'c1',
+          'extraFutureField': true,
+        },
+      ],
+    });
+    final parsedExtras = parseUserBackupJson(withExtras, uid);
+    expect(parsedExtras.reminders, hasLength(1));
+    expect(parsedExtras.reminders.single['extraFutureField'], isTrue);
+
+    // Codec tolerates wrong reminders shapes (returns []) rather than throwing.
+    final nonList = jsonEncode({
+      ...minimalEnvelope(),
+      'reminders': <String, dynamic>{'not': 'a-list'},
+    });
+    expect(parseUserBackupJson(nonList, uid).reminders, isEmpty);
   });
 
   test('parse rejects wrong exportFormat', () {
@@ -60,7 +201,13 @@ void main() {
     );
     expect(
       () => parseUserBackupJson(jsonText, uid),
-      throwsA(isA<UserBackupImportException>()),
+      throwsA(
+        isA<UserBackupImportException>().having(
+          (e) => e.message,
+          'message',
+          'wrong_format',
+        ),
+      ),
     );
   });
 

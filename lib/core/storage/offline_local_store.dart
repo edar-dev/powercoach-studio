@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../sync/offline_models.dart';
@@ -19,6 +20,15 @@ class OfflineLocalStore {
   AppDatabase? _db;
   bool _migrationChecked = false;
   late final OfflineMigration _migration;
+
+  /// Closes the cached Drift connection so tests can reopen on the same path.
+  @visibleForTesting
+  Future<void> debugCloseForTest() async {
+    final db = _db;
+    _db = null;
+    _migrationChecked = false;
+    if (db != null) await db.close();
+  }
 
   String _currentUserId() {
     try {

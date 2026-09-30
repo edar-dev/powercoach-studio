@@ -19,3 +19,23 @@ class FakePathProviderPlatform extends PathProviderPlatform {
   @override
   Future<String?> getApplicationDocumentsPath() async => _createTempDir();
 }
+
+/// Stable docs/tmp paths for close/reopen Drift round-trip tests.
+///
+/// Unlike [FakePathProviderPlatform], paths do not change across calls so the
+/// same SQLite file is reused after [OfflineLocalStore.debugCloseForTest].
+class StableFakePathProvider extends PathProviderPlatform {
+  StableFakePathProvider({String prefix = 'powercoach_stable_'})
+      : temporaryPath = Directory.systemTemp.createTempSync('${prefix}tmp_').path,
+        documentsPath =
+            Directory.systemTemp.createTempSync('${prefix}docs_').path;
+
+  final String temporaryPath;
+  final String documentsPath;
+
+  @override
+  Future<String?> getTemporaryPath() async => temporaryPath;
+
+  @override
+  Future<String?> getApplicationDocumentsPath() async => documentsPath;
+}
