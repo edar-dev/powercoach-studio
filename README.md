@@ -74,7 +74,7 @@ Calendar-linked session reminders use `flutter_local_notifications` (settings to
 
 PR quality checks run on **GitHub Actions only** (Codemagic `pr_quality_gate` removed to avoid duplicate work).
 
-**[Code quality (SonarQube Cloud Free)](docs/sonar-quality.md)** — free-tier static analysis on PRs/`main`; job skips until `SONAR_TOKEN` is configured.
+**[Code quality (SonarQube Cloud Free)](docs/sonar-quality.md)** — CI scanner (`sonar.sources=lib`) on PRs/`main` when `SONAR_TOKEN` is set; turn **Automatic Analysis OFF** in Sonar (it ignores `sonar-project.properties` and does not analyze Dart).
 
 ## Codemagic CI/CD
 
