@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -32,7 +34,7 @@ Future<void> showCustomerNewWorkoutSheet(
 
   switch (choice) {
     case CustomerNewWorkoutChoice.blank:
-      HapticFeedback.mediumImpact();
+      unawaited(HapticFeedback.mediumImpact());
       navigateTo(context, customerWorkoutEditorPath(customerId));
     case CustomerNewWorkoutChoice.duplicateExisting:
       await _duplicateExistingPlan(

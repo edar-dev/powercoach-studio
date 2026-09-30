@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
@@ -80,7 +82,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
           _workoutPlans = list;
           _workoutPlansLoading = false;
         });
-        _loadProgress();
+        unawaited(_loadProgress());
       }
     } catch (_) {
       if (!mounted) return;
@@ -153,9 +155,9 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
           _loading = false;
           _error = null;
         });
-        _loadMeasurements();
-        _loadWorkoutPlans();
-        _loadUnreadNotes();
+        unawaited(_loadMeasurements());
+        unawaited(_loadWorkoutPlans());
+        unawaited(_loadUnreadNotes());
       }
     } catch (e) {
       if (mounted) {

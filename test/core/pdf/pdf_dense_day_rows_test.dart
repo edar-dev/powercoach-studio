@@ -7,7 +7,7 @@ import 'package:powercoach_studio/features/workouts/domain/exercise_prescription
 void main() {
   test('buildDenseDayRows aligns exercises by customExerciseId across weeks', () {
     final weeks = [
-      Week(
+      const Week(
         id: 'w1',
         name: 'S1',
         days: [
@@ -15,7 +15,7 @@ void main() {
             id: 'd1',
             name: 'Day 1',
             exercises: [
-              const Exercise(
+              Exercise(
                 id: 'e1',
                 name: 'Squat',
                 sets: '1',
@@ -27,7 +27,7 @@ void main() {
           ),
         ],
       ),
-      Week(
+      const Week(
         id: 'w2',
         name: 'S2',
         days: [
@@ -35,7 +35,7 @@ void main() {
             id: 'd2',
             name: 'Day 1',
             exercises: [
-              const Exercise(
+              Exercise(
                 id: 'e2',
                 name: 'Squat (Barbell)',
                 sets: '1',

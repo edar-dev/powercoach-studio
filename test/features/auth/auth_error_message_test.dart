@@ -8,7 +8,7 @@ void main() {
   test('registrationErrorMessage maps duplicate email', () async {
     final l10n = await AppLocalizations.delegate.load(const Locale('it'));
     final message = registrationErrorMessage(
-      AuthException('User already registered'),
+      const AuthException('User already registered'),
       l10n,
     );
     expect(message, l10n.registrationErrorAlreadyRegistered);

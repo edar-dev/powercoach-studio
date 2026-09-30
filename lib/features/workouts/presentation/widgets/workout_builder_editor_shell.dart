@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -112,7 +114,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           saving: saving,
           showManualSaveButton: showManualSaveButton,
           onBack: () async {
-            HapticFeedback.mediumImpact();
+            unawaited(HapticFeedback.mediumImpact());
             await onBack();
           },
           onImportJson: onImportJson,

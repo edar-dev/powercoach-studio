@@ -198,7 +198,7 @@ void main() {
     test('addExerciseToSupersetInRoutine inserts after group', () {
       final routine = routineWithOneExercise().copyWith(
         weeks: [
-          Week(
+          const Week(
             id: 'w1',
             name: 'Week 1',
             days: [
@@ -206,7 +206,7 @@ void main() {
                 id: 'd1',
                 name: 'Day A',
                 exercises: [
-                  const Exercise(
+                  Exercise(
                     id: 'e1',
                     name: 'A',
                     sets: '3',
@@ -214,7 +214,7 @@ void main() {
                     rpe: '',
                     supersetGroupId: 'ss1',
                   ),
-                  const Exercise(
+                  Exercise(
                     id: 'e2',
                     name: 'B',
                     sets: '3',
@@ -275,7 +275,7 @@ void main() {
     test('updateExerciseSetInRoutine edits a set line', () {
       final routine = routineWithOneExercise().copyWith(
         weeks: [
-          Week(
+          const Week(
             id: 'w1',
             name: 'Week 1',
             days: [
@@ -283,7 +283,7 @@ void main() {
                 id: 'd1',
                 name: 'Day A',
                 exercises: [
-                  const Exercise(
+                  Exercise(
                     id: 'e1',
                     name: 'Squat',
                     sets: '1',
@@ -323,7 +323,7 @@ void main() {
     test('removeExerciseSetInRoutine keeps at least one set', () {
       final routine = routineWithOneExercise().copyWith(
         weeks: [
-          Week(
+          const Week(
             id: 'w1',
             name: 'Week 1',
             days: [
@@ -331,7 +331,7 @@ void main() {
                 id: 'd1',
                 name: 'Day A',
                 exercises: [
-                  const Exercise(
+                  Exercise(
                     id: 'e1',
                     name: 'Squat',
                     sets: '1',
@@ -363,7 +363,7 @@ void main() {
     test('removeExerciseSetInRoutine removes valid set index', () {
       final routine = routineWithOneExercise().copyWith(
         weeks: [
-          Week(
+          const Week(
             id: 'w1',
             name: 'Week 1',
             days: [
@@ -371,7 +371,7 @@ void main() {
                 id: 'd1',
                 name: 'Day A',
                 exercises: [
-                  const Exercise(
+                  Exercise(
                     id: 'e1',
                     name: 'Squat',
                     sets: '2',

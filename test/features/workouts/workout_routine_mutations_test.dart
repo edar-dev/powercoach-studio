@@ -129,7 +129,7 @@ void main() {
           week.copyWith(
             days: [
               ...week.days,
-              Day(id: 'd2', name: 'Day 2', exercises: const []),
+              const Day(id: 'd2', name: 'Day 2', exercises: []),
             ],
           ),
         ],

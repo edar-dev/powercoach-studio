@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -122,7 +124,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
   }
 
   Future<void> _toggleSkipped(PlanCalendarEvent event) async {
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     try {
       await _sessionStatusService.setSessionStatus(
         planId: event.planId,

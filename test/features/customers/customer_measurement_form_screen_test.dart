@@ -8,11 +8,11 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      MaterialApp(
-        locale: const Locale('it'),
+      const MaterialApp(
+        locale: Locale('it'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const CustomerMeasurementFormScreen(
+        home: CustomerMeasurementFormScreen(
           customerId: 'c1',
           customerName: 'Edoardo Rossi',
         ),

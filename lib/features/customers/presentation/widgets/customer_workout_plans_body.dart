@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -111,7 +113,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
   }
 
   void _openNewWorkoutSheet() async {
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     await showCustomerNewWorkoutSheet(
       context,
       customerId: widget.customerId,
@@ -286,7 +288,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     try {
       await _planRepo.delete(plan.id);
       if (!mounted) return;
-      _loadPlans();
+      unawaited(_loadPlans());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(l10n.workoutDeletedMessage),
