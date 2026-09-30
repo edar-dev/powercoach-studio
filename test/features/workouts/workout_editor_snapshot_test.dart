@@ -105,7 +105,7 @@ void main() {
     );
     final updated = baseline.copyWith(
       weeks: [
-        Week(
+        const Week(
           id: 'w1',
           name: 'Week 1',
           days: [
@@ -113,7 +113,7 @@ void main() {
               id: 'd1',
               name: 'Day 1',
               exercises: [
-                const Exercise(
+                Exercise(
                   id: 'e1',
                   name: 'Squat',
                   sets: '1',

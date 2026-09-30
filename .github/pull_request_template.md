@@ -6,6 +6,11 @@
 - Main files/modules touched:
 - Out of scope (explicitly not changed):
 
+## Architecture
+- [ ] Local-first / no Supabase table CRUD for business data
+- [ ] Path via `AppPaths` / dedicated routes for full-page features
+- [ ] No secrets in logs
+
 ## Validation
 - [ ] `flutter analyze`
 - [ ] Relevant tests executed (`flutter test ...`)

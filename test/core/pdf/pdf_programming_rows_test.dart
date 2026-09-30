@@ -5,14 +5,14 @@ import 'package:powercoach_studio/features/workouts/domain/workout_routine_json_
 
 void main() {
   test('bench press pyramid collapses to one compact multiline row', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
       sets: '7',
       reps: '1x5 77.5 | 1x4 82.5',
       rpe: '',
       note: 'Fermo 1-2"',
-      setDetails: const [
+      setDetails: [
         ExerciseSet(reps: '5', rpe: '77.5'),
         ExerciseSet(reps: '4', rpe: '82.5'),
         ExerciseSet(reps: '3', rpe: '85'),
@@ -35,14 +35,14 @@ void main() {
   });
 
   test('dense table content splits prescription and note on separate lines', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e1',
       name: 'Squat (Barbell)',
       sets: '1',
       reps: '4x3 102.5',
       rpe: '',
       note: 'Low Bar',
-      setDetails: const [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
+      setDetails: [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
     );
 
     final content = formatDenseBlockContent(exercise);
@@ -54,7 +54,7 @@ void main() {
     const set = ExerciseSet(reps: '1x5@7');
     expect(set.displayText, '1x5@7');
 
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'legacy_dl',
       name: 'Conventional Deadlift (Barbell)',
       sets: '1',
@@ -66,42 +66,42 @@ void main() {
   });
 
   test('dense token avoids double at for RPE sets', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
       sets: '1',
       reps: '1',
       rpe: '@7',
       note: '',
-      setDetails: const [ExerciseSet(reps: '1', rpe: '@7')],
+      setDetails: [ExerciseSet(reps: '1', rpe: '@7')],
     );
 
     expect(formatDenseTablePrescription(exercise), '@7');
   });
 
   test('dense token keeps space between scheme and load', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e2',
       name: 'Squat (Barbell)',
       sets: '1',
       reps: '3x3 100',
       rpe: '',
       note: '',
-      setDetails: const [ExerciseSet(sets: '3', reps: '3', rpe: '100')],
+      setDetails: [ExerciseSet(sets: '3', reps: '3', rpe: '100')],
     );
 
     expect(formatDenseTablePrescription(exercise), '3x3 100');
   });
 
   test('dense bench press pyramid uses arrow notation', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
       sets: '7',
       reps: '1x5 77.5 | 1x4 82.5',
       rpe: '',
       note: 'Fermo 1-2"',
-      setDetails: const [
+      setDetails: [
         ExerciseSet(reps: '5', rpe: '77.5'),
         ExerciseSet(reps: '4', rpe: '82.5'),
         ExerciseSet(reps: '3', rpe: '85'),
@@ -114,14 +114,14 @@ void main() {
   });
 
   test('dense pyramid wraps long chains in pairs on new lines', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
       sets: '7',
       reps: '',
       rpe: '',
       note: '',
-      setDetails: const [
+      setDetails: [
         ExerciseSet(reps: '5', rpe: '77.5'),
         ExerciseSet(reps: '4', rpe: '82.5'),
         ExerciseSet(reps: '3', rpe: '85'),
@@ -142,14 +142,14 @@ void main() {
   });
 
   test('dense pyramid keeps up to four tokens on one line', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e3',
       name: 'Incline DB Press',
       sets: '4',
       reps: '',
       rpe: '',
       note: '',
-      setDetails: const [
+      setDetails: [
         ExerciseSet(reps: '12', rpe: ''),
         ExerciseSet(reps: '10', rpe: ''),
         ExerciseSet(reps: '8', rpe: ''),
@@ -187,14 +187,14 @@ void main() {
   });
 
   test('single structured set uses sets x reps x load columns', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e2',
       name: 'Squat (Barbell)',
       sets: '1',
       reps: '4x3 102.5',
       rpe: '',
       note: 'Low Bar',
-      setDetails: const [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
+      setDetails: [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
     );
 
     final rows = buildProgrammingSetRows(exercise);
@@ -207,14 +207,14 @@ void main() {
   });
 
   test('dense single structured set collapses prescription column', () {
-    final exercise = Exercise(
+    final exercise = const Exercise(
       id: 'e2',
       name: 'Squat (Barbell)',
       sets: '1',
       reps: '4x3 102.5',
       rpe: '',
       note: 'Low Bar',
-      setDetails: const [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
+      setDetails: [ExerciseSet(sets: '4', reps: '3', rpe: '102.5')],
     );
 
     final rows = buildProgrammingSetRows(exercise, dense: true);

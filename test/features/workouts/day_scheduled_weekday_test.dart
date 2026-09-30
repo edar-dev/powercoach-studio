@@ -19,10 +19,10 @@ void main() {
     test('hydrateScheduledWeekdays fills missing weekdays', () {
       final routine = WorkoutRoutine.empty().copyWith(
         weeks: [
-          Week(
+          const Week(
             id: 'w1',
             name: 'S1',
-            days: const [
+            days: [
               Day(id: 'd1', name: 'A', exercises: []),
               Day(id: 'd2', name: 'B', exercises: [], scheduledWeekday: 5),
             ],

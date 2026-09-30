@@ -22,7 +22,7 @@ void main() {
     'shows set note inline and hides exercise note placeholder',
     (tester) async {
       var expanded = true;
-      final exercise = Exercise(
+      final exercise = const Exercise(
         id: 'ex1',
         name: 'Good Morning',
         sets: '3',
@@ -30,7 +30,7 @@ void main() {
         rpe: '@9',
         note: '',
         setDetails: [
-          const ExerciseSet(
+          ExerciseSet(
             sets: '3',
             reps: '5',
             rpe: '@9',
@@ -68,14 +68,14 @@ void main() {
     'collapsed shows prescription; expanded hides header duplicate',
     (tester) async {
       var expanded = false;
-      final exercise = Exercise(
+      final exercise = const Exercise(
         id: 'ex1',
         name: 'Good Morning',
         sets: '3',
         reps: '5',
         rpe: '@9',
         setDetails: [
-          const ExerciseSet(sets: '3', reps: '5', rpe: '@9'),
+          ExerciseSet(sets: '3', reps: '5', rpe: '@9'),
         ],
       );
 
@@ -111,7 +111,7 @@ void main() {
   testWidgets(
     'shows exercise-level note when present',
     (tester) async {
-      final exercise = Exercise(
+      final exercise = const Exercise(
         id: 'ex1',
         name: 'Squat',
         sets: '3',
@@ -119,7 +119,7 @@ void main() {
         rpe: '@8',
         note: 'Brace hard',
         setDetails: [
-          const ExerciseSet(sets: '3', reps: '5', rpe: '@8'),
+          ExerciseSet(sets: '3', reps: '5', rpe: '@8'),
         ],
       );
 

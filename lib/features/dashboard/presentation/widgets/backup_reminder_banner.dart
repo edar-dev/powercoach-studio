@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -58,7 +60,7 @@ class _BackupReminderBannerState extends State<BackupReminderBanner> {
   }
 
   Future<void> _snooze() async {
-    HapticFeedback.mediumImpact();
+    unawaited(HapticFeedback.mediumImpact());
     final uid = SupabaseBootstrap.currentUser?.id;
     if (uid != null && uid.isNotEmpty) {
       await BackupActivityStore.instance.snoozeReminder(uid);
@@ -99,8 +101,8 @@ class _BackupReminderBannerState extends State<BackupReminderBanner> {
                 ],
               ),
               border: Border.all(color: _BackupBannerColors.border),
-              boxShadow: [
-                const BoxShadow(
+              boxShadow: const [
+                BoxShadow(
                   color: Color(0x66042F2A),
                   blurRadius: 16,
                   offset: Offset(0, 6),

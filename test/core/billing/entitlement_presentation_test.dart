@@ -49,7 +49,7 @@ void main() {
 
     test('promo pro shows invite status', () async {
       final l10n = await loadL10n();
-      final entitlement = Entitlement(
+      final entitlement = const Entitlement(
         plan: BillingPlan.pro,
         subscriptionPlan: BillingPlan.pro,
         status: BillingStatus.active,
@@ -64,7 +64,7 @@ void main() {
 
     test('past due uses warning status', () async {
       final l10n = await loadL10n();
-      final entitlement = Entitlement(
+      final entitlement = const Entitlement(
         plan: BillingPlan.pro,
         subscriptionPlan: BillingPlan.pro,
         status: BillingStatus.pastDue,

@@ -88,7 +88,7 @@ void main() {
           ],
         ),
       ];
-      final day = Day(
+      final day = const Day(
         id: 'd1',
         name: 'Giorno 1',
         exercises: [
