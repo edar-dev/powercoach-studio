@@ -67,12 +67,14 @@ Calendar-linked session reminders use `flutter_local_notifications` (settings to
 
 | Trigger | Pipeline | Output |
 |---------|----------|--------|
-| PR → `main` | GitHub **Flutter CI** (`.github/workflows/flutter-ci.yml`) | analyze + `test/` |
+| PR → `main` | GitHub **Flutter CI** (`.github/workflows/flutter-ci.yml`) | analyze + `test/` (+ Sonar when `SONAR_TOKEN` is set) |
 | Push → `main` | GitHub **Vercel Deploy** | web production |
 | Push → `main` | Codemagic **`android_release`** | signed APK + AAB |
 | Tag `v*` | Codemagic **`android_play_store`** | Play internal track |
 
 PR quality checks run on **GitHub Actions only** (Codemagic `pr_quality_gate` removed to avoid duplicate work).
+
+**[Code quality (SonarQube Cloud Free)](docs/sonar-quality.md)** — free-tier static analysis on PRs/`main`; job skips until `SONAR_TOKEN` is configured.
 
 ## Codemagic CI/CD
 

@@ -46,3 +46,28 @@ jobs:
 
       - name: Unit and widget tests
         run: flutter test test/ --no-pub
+
+  # SonarQube Cloud Free scan (informational). Skips when SONAR_TOKEN is unset
+  # so CI stays green before the human secret/setup steps. Quality Gate is not
+  # a required branch-protection check in this first release.
+  sonar:
+    name: SonarQube Cloud
+    needs: analyze
+    if: ${{ secrets.SONAR_TOKEN != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter app
+        uses: ./.github/actions/setup-flutter-app
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
