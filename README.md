@@ -76,6 +76,8 @@ PR quality checks run on **GitHub Actions only** (Codemagic `pr_quality_gate` re
 
 **[Code quality (SonarQube Cloud Free)](docs/sonar-quality.md)** — CI scanner (`sonar.sources=lib`) on PRs/`main` when `SONAR_TOKEN` is set; turn **Automatic Analysis OFF** in Sonar (it ignores `sonar-project.properties` and does not analyze Dart).
 
+**[Quality & security](docs/quality-security.md)** — Dependabot, pinned Actions SHAs, `SECURITY.md`, and the human GitHub Security / required-checks checklist.
+
 ## Codemagic CI/CD
 
 Two Android workflows in `codemagic.yaml` (Flutter **3.35.6**):
