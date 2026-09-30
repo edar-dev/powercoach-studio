@@ -1,0 +1,20 @@
+# Dependabot: Actions + pub weekly updates (supply-chain baseline).
+# Keep open-PR limit modest so review stays tractable.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 6
+    groups:
+      github-actions-patch:
+        applies-to: version-updates
+        update-types:
+          - patch
+
+  - package-ecosystem: pub
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 6
