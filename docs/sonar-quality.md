@@ -29,7 +29,19 @@ Strategy in this repo:
 
 After a successful **CI** scan, check **LOC in the Sonar UI**. If still above 50k, exclude additional non-critical paths until under the limit — **without** upgrading to a paid plan.
 
-Coverage upload (`coverage/lcov.info`) is configured as an optional path in `sonar-project.properties` but is **not** generated in CI yet (keeps the first release fast).
+Coverage upload (`coverage/lcov.info`) is configured as an optional path in `sonar-project.properties` but is **not** generated in CI yet (keeps the first release fast). **Do not fake coverage** (empty/stub `lcov.info`) to pass the gate.
+
+## Quality Gate: disable Coverage on New Code (required now)
+
+PR Quality Gate failures on **Coverage on New Code ≥ 80%** are expected until CI uploads real coverage. Remove that condition from the Sonar Quality Gate:
+
+1. Open [SonarQube Cloud](https://sonarcloud.io/) → org **edar-dev** → project **powercoach-studio**.
+2. **Quality Gates** (org/project admin) → open the gate used by this project (often **Sonar way** or a custom copy).
+3. Find condition **Coverage on New Code** (threshold e.g. ≥ 80%).
+4. **Delete** / **Disable** that condition (recommended until coverage is wired).
+5. Save. Re-run the PR analysis (or push an empty commit) so the gate re-evaluates without coverage.
+
+Keep other new-code conditions (bugs, vulnerabilities, etc.) as desired. Re-enable Coverage on New Code only after a follow-up adds `flutter test --coverage` + `coverage/lcov.info` upload in the `sonar` CI job.
 
 ## Required human steps (Edoardo) — fix the sticky 438
 
@@ -91,8 +103,9 @@ In the SonarQube Cloud project dashboard:
 - **Passed / Failed** reflects conditions on new code (bugs, vulnerabilities, coverage thresholds if enabled, duplication, etc.).
 - On PRs (with the GitHub App connected): decoration shows new issues introduced by the change.
 - Until the gate is made required in GitHub branch protection, a failed gate is a **signal for review**, not a merge blocker.
+- If the gate fails only on **Coverage on New Code**, see [disable Coverage on New Code](#quality-gate-disable-coverage-on-new-code-required-now) — coverage is not uploaded yet.
 
-Suggested follow-up (out of this initial PR): after 1–2 weeks of baseline, tighten conditions (e.g. no new bugs/vulns on new code) and optionally mark the check required.
+Suggested follow-ups: after a clean baseline, tighten non-coverage conditions (e.g. no new bugs/vulns) and optionally mark the check required; later wire `flutter test --coverage` + lcov upload before re-enabling Coverage on New Code.
 
 ## Related files
 
