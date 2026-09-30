@@ -40,7 +40,7 @@ Workflow: `.github/workflows/flutter-ci.yml` → job `sonar`.
 
 - Runs **after** `analyze` (`needs: analyze`). The job itself always schedules (GitHub forbids `secrets.*` in job-level `if` except `GITHUB_TOKEN`).
 - **Skip if no token:** first step “Detect Sonar token” sets `skip=true/false` from env `SONAR_TOKEN`; checkout, Flutter setup, and scan run only when `steps.detect.outputs.skip != 'true'`. Without a secret the job succeeds quickly (no Flutter install).
-- Uses `SonarSource/sonarqube-scan-action@v5` (composite; required for Dart).
+- Uses `SonarSource/sonarqube-scan-action` pinned to a **full commit SHA** (comment `# v5.3.2`, current `v5` tag) — required for Sonar GitHub Actions security rating (`githubactions:S7637`); do not use a floating tag.
 - Checkout uses `fetch-depth: 0` for blame/new-code detection.
 - Reuses `./.github/actions/setup-flutter-app` so `pub get` is available to the Dart analyzer.
 - First release: **scan without coverage** (no `flutter test --coverage`).
