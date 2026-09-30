@@ -20,7 +20,7 @@ Coverage upload (`coverage/lcov.info`) is configured as an optional path in `son
 
 ## Human setup (Edoardo)
 
-Do these once; CI stays green without them because the `sonar` job is skipped when the secret is missing.
+Do these once; CI stays green without them because heavy Sonar steps are skipped when the secret is missing.
 
 1. **Signup** for [SonarQube Cloud Free](https://www.sonarsource.com/products/sonarcloud/) (GitHub login recommended).
 2. **Import** GitHub organization `edar-dev` and project/repo `powercoach-studio`.
@@ -38,11 +38,11 @@ Do these once; CI stays green without them because the `sonar` job is skipped wh
 
 Workflow: `.github/workflows/flutter-ci.yml` → job `sonar`.
 
-- Runs **after** `analyze` (`needs: analyze`).
+- Runs **after** `analyze` (`needs: analyze`). The job itself always schedules (GitHub forbids `secrets.*` in job-level `if` except `GITHUB_TOKEN`).
+- **Skip if no token:** first step “Detect Sonar token” sets `skip=true/false` from env `SONAR_TOKEN`; checkout, Flutter setup, and scan run only when `steps.detect.outputs.skip != 'true'`. Without a secret the job succeeds quickly (no Flutter install).
 - Uses `SonarSource/sonarqube-scan-action@v5` (composite; required for Dart).
 - Checkout uses `fetch-depth: 0` for blame/new-code detection.
 - Reuses `./.github/actions/setup-flutter-app` so `pub get` is available to the Dart analyzer.
-- **Skip if no token:** `if: secrets.SONAR_TOKEN != ''`.
 - First release: **scan without coverage** (no `flutter test --coverage`).
 - Job fails only if the scanner fails; do **not** make the Sonar Quality Gate a required branch-protection check until a clean baseline exists.
 
