@@ -59,7 +59,11 @@ export function corsHeaders(origin: string | null): HeadersInit {
 export function readBillingEnv(name: string): string {
   const raw = Deno.env.get(name);
   if (!raw) throw new Error(`Missing ${name}`);
-  const value = raw.trim().replace(/\.+$/, '');
+  // Avoid `/\\.+$/` (Sonar typescript:S8786 super-linear regex warning).
+  let value = raw.trim();
+  while (value.endsWith('.')) {
+    value = value.slice(0, -1);
+  }
   if (!value) throw new Error(`Missing ${name}`);
   return value;
 }

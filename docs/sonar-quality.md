@@ -10,11 +10,13 @@ Strategy in this repo:
 
 | Setting | Value | Why |
 |---------|-------|-----|
-| `sonar.sources` | `lib` | Only business Dart sources |
+| `sonar.sources` | `lib` | Only business Dart sources (**CI scanner**) |
 | `sonar.tests` | `test` | Tests are not counted as source LOC |
-| `sonar.exclusions` | `**/*.g.dart`, `**/*.freezed.dart`, `**/l10n/**`, `**/*.mocks.dart` | Drop generated Drift/Freezed, l10n, mocks |
+| `sonar.exclusions` | generated + `design/**` + Drift web worker assets | Drop Drift/Freezed/l10n/mocks, Stitch HTML mockups, vendored `web/drift_worker.js` / `sqlite3.wasm` |
 
-After the first successful scan, check **LOC in the Sonar UI**. If still above 50k, exclude additional non-critical paths (helpers, large string tables) until under the limit — **without** upgrading to a paid plan.
+**Automatic Analysis note:** SonarQube Cloud Automatic Analysis **ignores** `sonar.sources` / `sonar.tests` and scopes the whole repo. Exclusions above are required so design mockups and the minified Drift worker do not dominate bugs/vulns/LOC. After the first scan with these exclusions, expect ~400 noise findings (HTML labels, JS switch-fallthrough in the worker) to disappear.
+
+After a successful scan, check **LOC in the Sonar UI**. If still above 50k, exclude additional non-critical paths until under the limit — **without** upgrading to a paid plan.
 
 Coverage upload (`coverage/lcov.info`) is configured as an optional path in `sonar-project.properties` but is **not** generated in CI yet (keeps the first release fast).
 
