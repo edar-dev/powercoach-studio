@@ -455,13 +455,15 @@
   "settingsAutoCloudBackupToggle": "Backup cloud automatico",
   "settingsAutoCloudBackupHint": "Dopo le modifiche, carica uno snapshot su Supabase Storage (con debounce).",
   "settingsStoragePersistHint": "Il browser può cancellare i dati locali. Attiva il backup cloud automatico e esporta periodicamente.",
+  "settingsStoragePersistHintDismiss": "Nascondi",
+  "settingsStoragePersistHintDismissSemantic": "Nascondi avviso persistenza storage",
   "settingsBackupLastSuccess": "Ultimo backup: {timestamp}",
   "@settingsBackupLastSuccess": {
     "placeholders": {
       "timestamp": { "type": "String" }
     }
   },
-  "settingsBackupLastCloud": "Ultimo backup cloud automatico: {timestamp}",
+  "settingsBackupLastCloud": "Ultimo backup cloud: {timestamp}",
   "@settingsBackupLastCloud": {
     "placeholders": {
       "timestamp": { "type": "String" }
@@ -480,6 +482,7 @@
     }
   },
   "settingsCloudSyncNow": "Sincronizza da cloud",
+  "settingsCloudSyncNowHint": "Scarica dati cloud più recenti su questo dispositivo.",
   "settingsCloudSyncSuccess": "Dati cloud uniti su questo dispositivo.",
   "cloudRecoveryTitle": "Ripristina ultimo backup cloud?",
   "cloudRecoveryMessage": "Non ci sono clienti o schede sul dispositivo, ma esistono snapshot cloud. Vuoi ripristinare l’ultimo backup?",

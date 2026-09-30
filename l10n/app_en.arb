@@ -455,13 +455,15 @@
   "settingsAutoCloudBackupToggle": "Automatic cloud backup",
   "settingsAutoCloudBackupHint": "After edits, upload a snapshot to Supabase Storage (debounced).",
   "settingsStoragePersistHint": "The browser may clear local data. Enable automatic cloud backup and export regularly.",
+  "settingsStoragePersistHintDismiss": "Dismiss",
+  "settingsStoragePersistHintDismissSemantic": "Dismiss storage persist hint",
   "settingsBackupLastSuccess": "Last backup: {timestamp}",
   "@settingsBackupLastSuccess": {
     "placeholders": {
       "timestamp": { "type": "String" }
     }
   },
-  "settingsBackupLastCloud": "Last automatic cloud backup: {timestamp}",
+  "settingsBackupLastCloud": "Last cloud backup: {timestamp}",
   "@settingsBackupLastCloud": {
     "placeholders": {
       "timestamp": { "type": "String" }
@@ -480,6 +482,7 @@
     }
   },
   "settingsCloudSyncNow": "Sync from cloud",
+  "settingsCloudSyncNowHint": "Pull newer cloud data onto this device.",
   "settingsCloudSyncSuccess": "Cloud data merged into this device.",
   "cloudRecoveryTitle": "Restore latest cloud backup?",
   "cloudRecoveryMessage": "There are no clients or workout plans on this device, but cloud snapshots exist. Restore the latest backup?",

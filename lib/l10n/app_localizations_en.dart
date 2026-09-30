@@ -1130,13 +1130,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'The browser may clear local data. Enable automatic cloud backup and export regularly.';
 
   @override
+  String get settingsStoragePersistHintDismiss => 'Dismiss';
+
+  @override
+  String get settingsStoragePersistHintDismissSemantic =>
+      'Dismiss storage persist hint';
+
+  @override
   String settingsBackupLastSuccess(String timestamp) {
     return 'Last backup: $timestamp';
   }
 
   @override
   String settingsBackupLastCloud(String timestamp) {
-    return 'Last automatic cloud backup: $timestamp';
+    return 'Last cloud backup: $timestamp';
   }
 
   @override
@@ -1151,6 +1158,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsCloudSyncNow => 'Sync from cloud';
+
+  @override
+  String get settingsCloudSyncNowHint =>
+      'Pull newer cloud data onto this device.';
 
   @override
   String get settingsCloudSyncSuccess => 'Cloud data merged into this device.';

@@ -9,6 +9,7 @@ import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/backup/backup_path_reader.dart';
 import '../../../../core/backup/cloud_backup_repository.dart';
 import '../../../../core/backup/cloud_backup_storage.dart';
+import '../../../../core/backup/cloud_upload_success.dart';
 import '../../../../core/backup/user_data_backup_codec.dart';
 import '../../../../core/backup/user_data_backup_service.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -87,7 +88,7 @@ class SettingsBackupHandler {
         uid,
       );
       await _cloudBackupRepository.upload(uid, json);
-      await BackupActivityStore.instance.markBackupSuccess(uid);
+      await markCloudSnapshotUploadSuccess(uid);
       if (!context.mounted) return;
       showAppSnackBar(
         context,

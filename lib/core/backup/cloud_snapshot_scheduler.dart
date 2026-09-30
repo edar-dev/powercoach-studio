@@ -7,6 +7,7 @@ import '../platform/web_online_status.dart';
 import 'auto_cloud_snapshot_store.dart';
 import 'backup_activity_store.dart';
 import 'cloud_backup_repository.dart';
+import 'cloud_upload_success.dart';
 import 'material_write_notifier.dart';
 import 'user_data_backup_service.dart';
 
@@ -103,8 +104,11 @@ class CloudSnapshotScheduler {
           ? await exportJson(userId)
           : await _backupService.buildExportJsonPretty(userId);
       await _cloudBackupRepository.upload(userId, json);
-      await _activityStore.markBackupSuccess(userId);
-      await _autoStore.markSuccess(userId);
+      await markCloudSnapshotUploadSuccess(
+        userId,
+        activityStore: _activityStore,
+        autoStore: _autoStore,
+      );
       debugPrint('CloudSnapshotScheduler: upload ok for $userId');
     } catch (e, stack) {
       debugPrint('CloudSnapshotScheduler: upload failed: $e\n$stack');

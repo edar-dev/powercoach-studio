@@ -16,6 +16,7 @@ class SettingsBackupModule extends StatelessWidget {
     this.autoCloudEnabled = false,
     this.onAutoCloudToggle,
     this.showStoragePersistHint = false,
+    this.onDismissStoragePersistHint,
     this.lastBackupAtLabel,
     this.lastAutoCloudAtLabel,
     this.lastCloudSyncAtLabel,
@@ -30,6 +31,7 @@ class SettingsBackupModule extends StatelessWidget {
   final bool autoCloudEnabled;
   final ValueChanged<bool>? onAutoCloudToggle;
   final bool showStoragePersistHint;
+  final VoidCallback? onDismissStoragePersistHint;
   final String? lastBackupAtLabel;
   final String? lastAutoCloudAtLabel;
   final String? lastCloudSyncAtLabel;
@@ -55,13 +57,40 @@ class SettingsBackupModule extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (showStoragePersistHint) ...[
-          Text(
-            l10n.settingsStoragePersistHint,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: phone
-                  ? StitchMobileColors.tertiary
-                  : MarketingDarkColors.amber,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  l10n.settingsStoragePersistHint,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: phone
+                        ? StitchMobileColors.tertiary
+                        : MarketingDarkColors.amber,
+                  ),
+                ),
+              ),
+              if (onDismissStoragePersistHint != null) ...[
+                const SizedBox(width: 4),
+                Semantics(
+                  button: true,
+                  label: l10n.settingsStoragePersistHintDismissSemantic,
+                  child: TextButton(
+                    onPressed: onDismissStoragePersistHint,
+                    style: TextButton.styleFrom(
+                      foregroundColor: phone
+                          ? StitchMobileColors.onSurfaceVariant
+                          : MarketingDarkColors.slate400,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      minimumSize: const Size(0, 36),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    child: Text(l10n.settingsStoragePersistHintDismiss),
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 10),
         ],
@@ -130,6 +159,13 @@ class SettingsBackupModule extends StatelessWidget {
                 minimumSize: const Size(0, 36),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
+            ),
+          ),
+          Text(
+            l10n.settingsCloudSyncNowHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: muted,
+              fontSize: 11,
             ),
           ),
         ],

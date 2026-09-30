@@ -2114,6 +2114,18 @@ abstract class AppLocalizations {
   /// **'The browser may clear local data. Enable automatic cloud backup and export regularly.'**
   String get settingsStoragePersistHint;
 
+  /// No description provided for @settingsStoragePersistHintDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss'**
+  String get settingsStoragePersistHintDismiss;
+
+  /// No description provided for @settingsStoragePersistHintDismissSemantic.
+  ///
+  /// In en, this message translates to:
+  /// **'Dismiss storage persist hint'**
+  String get settingsStoragePersistHintDismissSemantic;
+
   /// No description provided for @settingsBackupLastSuccess.
   ///
   /// In en, this message translates to:
@@ -2123,7 +2135,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsBackupLastCloud.
   ///
   /// In en, this message translates to:
-  /// **'Last automatic cloud backup: {timestamp}'**
+  /// **'Last cloud backup: {timestamp}'**
   String settingsBackupLastCloud(String timestamp);
 
   /// No description provided for @settingsBackupLastError.
@@ -2143,6 +2155,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sync from cloud'**
   String get settingsCloudSyncNow;
+
+  /// No description provided for @settingsCloudSyncNowHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Pull newer cloud data onto this device.'**
+  String get settingsCloudSyncNowHint;
 
   /// No description provided for @settingsCloudSyncSuccess.
   ///
