@@ -11,14 +11,15 @@ runs:
   using: composite
   steps:
     - name: Setup Flutter
-      uses: subosito/flutter-action@v2
+      # Pin full commit SHA (not floating @v2) for supply-chain safety.
+      uses: subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e # v2.21.0
       with:
         flutter-version: ${{ inputs.flutter-version }}
         channel: stable
         cache: true
 
     - name: Cache Dart tooling
-      uses: actions/cache@v4
+      uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
       with:
         path: .dart_tool
         key: dart-tool-${{ runner.os }}-${{ hashFiles('pubspec.lock', 'pubspec.yaml', 'lib/**', 'web/index.html', 'web/manifest.json') }}
@@ -40,4 +41,5 @@ runs:
 
     - name: Resolve Flutter dependencies
       shell: bash
-      run: flutter pub get
+      # Enforce pubspec.lock (Sonar githubactions:S8550).
+      run: flutter pub get --enforce-lockfile

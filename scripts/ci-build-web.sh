@@ -12,12 +12,14 @@ if [[ -z "${SUPABASE_URL:-}" && -f .vercel/.env.production.local ]]; then
   set +a
 fi
 
+# Enforce HTTPS-only redirects (Sonar shell:S6506).
+CURL_SECURE=(curl --proto '=https' --tlsv1.2 -fsSL)
 if [[ ! -f web/sqlite3.wasm ]]; then
-  curl -fsSL -o web/sqlite3.wasm \
+  "${CURL_SECURE[@]}" -o web/sqlite3.wasm \
     "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-2.9.4/sqlite3.wasm"
 fi
 if [[ ! -f web/drift_worker.js ]]; then
-  curl -fsSL -o web/drift_worker.js \
+  "${CURL_SECURE[@]}" -o web/drift_worker.js \
     "https://github.com/simolus3/drift/releases/download/drift-2.31.0/drift_worker.js"
 fi
 

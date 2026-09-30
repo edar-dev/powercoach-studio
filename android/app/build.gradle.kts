@@ -61,6 +61,14 @@ android {
             } else {
                 signingConfigs.getByName("debug")
             }
+            // R8 / resource shrinking for release (Sonar kotlin:S7204).
+            // Dart AOT obfuscation remains via `flutter build ... --obfuscate`.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }
