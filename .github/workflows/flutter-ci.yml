@@ -46,3 +46,43 @@ jobs:
 
       - name: Unit and widget tests
         run: flutter test test/ --no-pub
+
+  # SonarQube Cloud Free scan (informational). Job always runs after analyze so
+  # the workflow validates; checkout/Flutter/scan skip when SONAR_TOKEN is unset
+  # (secrets cannot be used in job-level `if`). Quality Gate is not a required
+  # branch-protection check in this first release.
+  sonar:
+    name: SonarQube Cloud
+    needs: analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect Sonar token
+        id: detect
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN unset — skipping Sonar scan"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Checkout
+        if: steps.detect.outputs.skip != 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Flutter app
+        if: steps.detect.outputs.skip != 'true'
+        uses: ./.github/actions/setup-flutter-app
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+
+      - name: SonarQube Scan
+        if: steps.detect.outputs.skip != 'true'
+        uses: SonarSource/sonarqube-scan-action@2f77a1ec69fb1d595b06f35ab27e97605bdef703 # v5.3.2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: https://sonarcloud.io
