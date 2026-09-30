@@ -91,6 +91,15 @@ In the SonarQube Cloud project dashboard:
 - **Passed / Failed** reflects conditions on new code (bugs, vulnerabilities, coverage thresholds if enabled, duplication, etc.).
 - On PRs (with the GitHub App connected): decoration shows new issues introduced by the change.
 - Until the gate is made required in GitHub branch protection, a failed gate is a **signal for review**, not a merge blocker.
+- **Do not** add “SonarCloud Code Analysis” as a required status check while the gate still fails on expected conditions (see coverage below).
+
+### Coverage on New Code (keep off until lcov upload)
+
+CI does **not** generate or upload `coverage/lcov.info` yet. Any Quality Gate condition that requires coverage on new code (default often ≥ 80%) will fail on real Dart PRs even when the scanner job is green — as seen on [#136](https://github.com/edar-dev/powercoach-studio/pull/136) (const-only / `dart:S7112`).
+
+**Until CI uploads coverage:** in SonarQube Cloud → **Quality Gate** (project or org default), remove or soften **Coverage on New Code**. Do not invent fake coverage files to silence the gate.
+
+After `flutter test --coverage` + lcov upload is wired in the `sonar` job, re-enable a coverage condition and optionally make the gate a required check.
 
 Suggested follow-up (out of this initial PR): after 1–2 weeks of baseline, tighten conditions (e.g. no new bugs/vulns on new code) and optionally mark the check required.
 
