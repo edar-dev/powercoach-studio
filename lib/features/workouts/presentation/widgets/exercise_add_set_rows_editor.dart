@@ -16,15 +16,16 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
   final VoidCallback onAddSet;
   final ValueChanged<int> onRemoveSet;
 
+  static const InputDecoration _denseDecoration = InputDecoration(
+    isDense: true,
+    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+  );
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final canRemove = setControllers.length > 1;
-    final denseDecoration = const InputDecoration(
-      isDense: true,
-      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -40,7 +41,7 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
                   flex: 1,
                   child: TextField(
                     controller: c.sets,
-                    decoration: denseDecoration.copyWith(
+                    decoration: _denseDecoration.copyWith(
                       labelText: l10n.workoutBuilderSetLabel,
                       hintText: '1',
                     ),
@@ -52,7 +53,7 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
                   flex: 1,
                   child: TextField(
                     controller: c.reps,
-                    decoration: denseDecoration.copyWith(
+                    decoration: _denseDecoration.copyWith(
                       labelText: l10n.workoutBuilderRepsLabel,
                       hintText: '3',
                     ),
@@ -64,7 +65,7 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
                   flex: 2,
                   child: TextField(
                     controller: c.load,
-                    decoration: denseDecoration.copyWith(
+                    decoration: _denseDecoration.copyWith(
                       labelText: l10n.workoutBuilderLoadLabel,
                       hintText: '75kg',
                     ),
