@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Internationalization
-  intl: any
+  intl: 0.20.3
 
   # Auth & routing
   supabase_flutter: ^2.5.0
