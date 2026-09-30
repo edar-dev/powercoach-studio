@@ -62,7 +62,7 @@ class SettingsBackupHandler {
       await Share.share(
         json,
         subject: name,
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
       );
       await BackupActivityStore.instance.markBackupSuccess(uid);
       if (!context.mounted) return;

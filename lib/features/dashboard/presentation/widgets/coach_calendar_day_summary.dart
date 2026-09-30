@@ -425,7 +425,7 @@ class _DesktopDaySummary extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: MarketingDarkColors.surface.withValues(alpha: 0.6),
-              border: Border(
+              border: const Border(
                 bottom: BorderSide(color: MarketingDarkColors.stitchBorder),
               ),
             ),

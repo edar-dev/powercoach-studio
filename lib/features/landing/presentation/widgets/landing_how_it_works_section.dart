@@ -25,7 +25,7 @@ class LandingHowItWorksSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 56),
       decoration: BoxDecoration(
         color: LandingColors.surfaceSubtle.withValues(alpha: 0.4),
-        border: Border.symmetric(
+        border: const Border.symmetric(
           vertical: BorderSide(color: LandingColors.border),
         ),
       ),

@@ -203,7 +203,7 @@ Phase decodePhase(Map<String, dynamic> json) => Phase(
 );
 
 List<Week> defaultWorkoutWeeks() => [
-  Week(
+  const Week(
     id: 'w1',
     name: 'WEEK 1: ACCLIMATION',
     days: [
@@ -211,7 +211,7 @@ List<Week> defaultWorkoutWeeks() => [
         id: 'd1',
         name: 'DAY 1 - Lower Body Push',
         exercises: [
-          const Exercise(
+          Exercise(
             id: 'e1',
             name: 'Barbell Back Squat',
             sets: '3',
@@ -219,7 +219,7 @@ List<Week> defaultWorkoutWeeks() => [
             rpe: '@8',
             note: '',
           ),
-          const Exercise(
+          Exercise(
             id: 'e2',
             name: 'Leg Press',
             sets: '3',

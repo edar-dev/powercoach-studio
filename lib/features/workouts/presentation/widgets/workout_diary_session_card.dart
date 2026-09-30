@@ -347,7 +347,7 @@ class _DesktopCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Icon(
+                  const Icon(
                     Icons.chevron_right,
                     color: MarketingDarkColors.slate400,
                   ),

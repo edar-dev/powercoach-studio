@@ -289,7 +289,7 @@ class _WeekMenuButton extends StatelessWidget {
         label: displayWeekName(weeks[weekIndex].name),
         outlined: true,
         accent: true,
-        trailing: Icon(
+        trailing: const Icon(
           Icons.arrow_drop_down,
           color: StitchM3Theme.accent,
           size: 20,

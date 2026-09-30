@@ -110,7 +110,7 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
                   color: StitchM3Theme.accent.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.fitness_center,
                   color: StitchM3Theme.accent,
                   size: 24,
@@ -134,7 +134,7 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
                   },
                   child: Text(
                     l10n.customerViewAll,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: StitchM3Theme.accent,
                       fontWeight: FontWeight.w700,
                     ),

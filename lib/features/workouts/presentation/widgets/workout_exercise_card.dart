@@ -167,7 +167,7 @@ class WorkoutExerciseCard extends StatelessWidget {
                         ),
                         if (linked) ...[
                           const SizedBox(width: 6),
-                          Icon(
+                          const Icon(
                             Icons.link,
                             size: 16,
                             color: StitchM3Theme.accent,
@@ -403,7 +403,7 @@ class WorkoutExerciseCard extends StatelessWidget {
                     alignment: Alignment.centerLeft,
                     child: TextButton.icon(
                       onPressed: onAddSet,
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.add,
                         size: 16,
                         color: StitchM3Theme.accent,

@@ -48,7 +48,7 @@ class ExerciseLibraryExportHandler {
       await Share.share(
         json,
         subject: name,
-        sharePositionOrigin: Rect.fromLTWH(0, 0, 1, 1),
+        sharePositionOrigin: const Rect.fromLTWH(0, 0, 1, 1),
       );
     } catch (e) {
       if (context.mounted) {

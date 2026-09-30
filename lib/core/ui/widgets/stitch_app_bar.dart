@@ -31,7 +31,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       title: Row(
         children: [
-          _LogoBadge(logoAsset: _logoAsset),
+          const _LogoBadge(logoAsset: _logoAsset),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
