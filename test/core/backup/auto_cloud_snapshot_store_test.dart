@@ -48,4 +48,22 @@ void main() {
     await store.markCloudSyncSuccess('u1', at: at);
     expect(await store.lastCloudSyncAt('u1'), at);
   });
+
+  test('dismissStoragePersistHint round-trips and clearForUser clears it',
+      () async {
+    final store = AutoCloudSnapshotStore(defaultEnabledOnWeb: true);
+    expect(await store.isStoragePersistHintDismissed('u1'), isFalse);
+
+    await store.dismissStoragePersistHint('u1');
+    expect(await store.isStoragePersistHintDismissed('u1'), isTrue);
+    expect(
+      (await SharedPreferences.getInstance()).getBool(
+        '${SettingsPrefsKeys.storagePersistedHintDismissed}_u1',
+      ),
+      isTrue,
+    );
+
+    await store.clearForUser('u1');
+    expect(await store.isStoragePersistHintDismissed('u1'), isFalse);
+  });
 }

@@ -45,6 +45,7 @@ class SettingsScreenContent extends StatelessWidget {
     this.autoCloudEnabled = false,
     this.onAutoCloudToggle,
     this.showStoragePersistHint = false,
+    this.onDismissStoragePersistHint,
     this.lastBackupAtLabel,
     this.lastAutoCloudAtLabel,
     this.lastCloudSyncAtLabel,
@@ -87,6 +88,7 @@ class SettingsScreenContent extends StatelessWidget {
   final bool autoCloudEnabled;
   final ValueChanged<bool>? onAutoCloudToggle;
   final bool showStoragePersistHint;
+  final VoidCallback? onDismissStoragePersistHint;
   final String? lastBackupAtLabel;
   final String? lastAutoCloudAtLabel;
   final String? lastCloudSyncAtLabel;
@@ -159,6 +161,7 @@ class SettingsScreenContent extends StatelessWidget {
                 autoCloudEnabled: autoCloudEnabled,
                 onAutoCloudToggle: onAutoCloudToggle,
                 showStoragePersistHint: showStoragePersistHint,
+                onDismissStoragePersistHint: onDismissStoragePersistHint,
                 lastBackupAtLabel: lastBackupAtLabel,
                 lastAutoCloudAtLabel: lastAutoCloudAtLabel,
                 lastCloudSyncAtLabel: lastCloudSyncAtLabel,

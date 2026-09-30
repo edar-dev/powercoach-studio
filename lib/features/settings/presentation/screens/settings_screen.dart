@@ -178,6 +178,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() => _autoCloudEnabled = enabled);
   }
 
+  Future<void> _onDismissStoragePersistHint() async {
+    final user = SupabaseBootstrap.currentUser;
+    if (user != null) {
+      await AutoCloudSnapshotStore.instance.dismissStoragePersistHint(user.id);
+    }
+    if (!mounted) return;
+    setState(() => _showStoragePersistHint = false);
+  }
+
+  Future<void> _onUploadCloudBackup() async {
+    final l10n = AppLocalizations.of(context);
+    await _backupHandler.uploadCloudBackup(l10n);
+    if (!mounted) return;
+    await _loadBackupStatus();
+  }
+
   Future<void> _onPullCloudSync() async {
     final l10n = AppLocalizations.of(context);
     final previousError = _lastAutoCloudError;
@@ -395,12 +411,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
               onExportBackup: () => _backupHandler.exportBackup(l10n),
               onImportBackup: () => _backupHandler.importBackup(l10n),
-              onUploadCloudBackup: () => _backupHandler.uploadCloudBackup(l10n),
+              onUploadCloudBackup: _onUploadCloudBackup,
               onRestoreCloudBackup: () =>
                   _backupHandler.restoreFromCloudBackup(l10n),
               autoCloudEnabled: _autoCloudEnabled,
               onAutoCloudToggle: _onAutoCloudToggle,
               showStoragePersistHint: _showStoragePersistHint,
+              onDismissStoragePersistHint: _onDismissStoragePersistHint,
               lastBackupAtLabel: _formatTimestamp(_lastBackupAt),
               lastAutoCloudAtLabel: _formatTimestamp(_lastAutoCloudAt),
               lastCloudSyncAtLabel: _formatTimestamp(_lastCloudSyncAt),

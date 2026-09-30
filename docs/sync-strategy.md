@@ -43,6 +43,7 @@ Supabase Storage bucket (max 5 per user, oldest pruned).
 (default **on** on web when unset), `CloudSnapshotScheduler` debounces (~90s)
 after material local writes (`OfflineLocalStore.upsertEntity`, profile, exported
 preferences, pins/recents) and flushes on app pause / web `beforeunload`.
+Upload on unload is best-effort — browsers may not allow reliable async upload.
 
 **Empty-local recovery:** after login, if there are no non-deleted customers and
 no non-deleted workout plans **and** cloud snapshots exist, the dashboard shows

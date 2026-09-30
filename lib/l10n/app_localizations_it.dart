@@ -1142,6 +1142,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Il browser può cancellare i dati locali. Attiva il backup cloud automatico e esporta periodicamente.';
 
   @override
+  String get settingsStoragePersistHintDismiss => 'Nascondi';
+
+  @override
+  String get settingsStoragePersistHintDismissSemantic =>
+      'Nascondi avviso persistenza storage';
+
+  @override
   String settingsBackupLastSuccess(String timestamp) {
     return 'Ultimo backup: $timestamp';
   }
@@ -1163,6 +1170,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsCloudSyncNow => 'Sincronizza da cloud';
+
+  @override
+  String get settingsCloudSyncNowHint =>
+      'Scarica dati cloud più recenti su questo dispositivo.';
 
   @override
   String get settingsCloudSyncSuccess =>
