@@ -21,9 +21,9 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final canRemove = setControllers.length > 1;
-    final denseDecoration = InputDecoration(
+    final denseDecoration = const InputDecoration(
       isDense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
     );
 
     return Column(
@@ -97,7 +97,7 @@ class ExerciseAddSetRowsEditor extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: onAddSet,
-            icon: Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
+            icon: const Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
             label: Text(
               l10n.workoutBuilderAddSet,
               style: theme.textTheme.labelMedium?.copyWith(

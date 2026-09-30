@@ -47,13 +47,13 @@ class LandingAppPreview extends StatelessWidget {
                 color: LandingColors.surfaceElevated,
                 child: Row(
                   children: [
-                    _Dot(const Color(0xFFF43F5E)),
+                    const _Dot(Color(0xFFF43F5E)),
                     const SizedBox(width: 6),
-                    _Dot(const Color(0xFFF59E0B)),
+                    const _Dot(Color(0xFFF59E0B)),
                     const SizedBox(width: 6),
-                    _Dot(const Color(0xFF10B981)),
+                    const _Dot(Color(0xFF10B981)),
                     const SizedBox(width: 12),
-                    Text(
+                    const Text(
                       'coach-studio.app',
                       style: TextStyle(
                         fontSize: 11,

@@ -125,7 +125,7 @@ class _ActionTile extends StatelessWidget {
                     color: MarketingDarkColors.slate500,
                   ),
             ),
-      trailing: Icon(
+      trailing: const Icon(
         Icons.open_in_new,
         color: MarketingDarkColors.slate500,
         size: 18,

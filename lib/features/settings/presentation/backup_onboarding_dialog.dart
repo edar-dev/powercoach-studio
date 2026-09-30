@@ -69,7 +69,7 @@ class _BackupProtectDialog extends StatelessWidget {
               color: MarketingDarkColors.borderMuted.withValues(alpha: 0.8),
             ),
             boxShadow: [
-              BoxShadow(
+              const BoxShadow(
                 color: _BackupProtectColors.borderGlow,
                 blurRadius: 28,
                 spreadRadius: -4,
@@ -96,7 +96,7 @@ class _BackupProtectDialog extends StatelessWidget {
                       height: 120,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(999),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                           colors: [
                             _BackupProtectColors.glowBlue,
                             _BackupProtectColors.glowCyan,
@@ -459,7 +459,7 @@ class _ActionFooter extends StatelessWidget {
 
     final settingsLink = TextButton.icon(
       onPressed: onOpenSettings,
-      icon: Icon(
+      icon: const Icon(
         Icons.settings_outlined,
         size: 16,
         color: MarketingDarkColors.slate500,

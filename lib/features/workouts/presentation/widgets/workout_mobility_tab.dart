@@ -94,7 +94,7 @@ class WorkoutMobilityTab extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
+                        const Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
                         const SizedBox(width: 4),
                         Text(
                           l10n.workoutBuilderSectionHeading,

@@ -100,10 +100,10 @@ class _BackupReminderBannerState extends State<BackupReminderBanner> {
               ),
               border: Border.all(color: _BackupBannerColors.border),
               boxShadow: [
-                BoxShadow(
-                  color: const Color(0x66042F2A),
+                const BoxShadow(
+                  color: Color(0x66042F2A),
                   blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  offset: Offset(0, 6),
                 ),
               ],
             ),

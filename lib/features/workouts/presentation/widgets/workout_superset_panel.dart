@@ -45,7 +45,7 @@ class WorkoutSupersetPanel extends StatelessWidget {
     final prescription = prescriptionSummary?.trim() ?? '';
 
     return DecoratedBox(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           left: BorderSide(color: StitchM3Theme.accent, width: 3),
         ),

@@ -753,7 +753,7 @@ class _SessionEditHeader extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.person_outline,
                                 size: 14,
                                 color: StitchM3Theme.accent,
