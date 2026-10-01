@@ -76,7 +76,7 @@ class _AssignCustomerPickerDialogState
                     )
                   : ListView.separated(
                       itemCount: filtered.length,
-                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      separatorBuilder: (_, _) => const Divider(height: 1),
                       itemBuilder: (ctx, i) {
                         final c = filtered[i];
                         return ListTile(

@@ -58,7 +58,7 @@ class ExerciseLibraryCrudHandler {
                 'description': description,
               if (selectedParentId != null && selectedParentId.isNotEmpty)
                 'parentId': selectedParentId,
-              if (sortOrder != null) 'sortOrder': sortOrder,
+              'sortOrder': ?sortOrder,
               'isMobility': isMobility,
             });
             if (sheetContext.mounted) {

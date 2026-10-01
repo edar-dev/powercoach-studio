@@ -612,7 +612,7 @@ class WorkoutBuilderTrainingHandlers {
           height: 320,
           child: ListView.separated(
             itemCount: targets.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final target = targets[index];
               return ListTile(
