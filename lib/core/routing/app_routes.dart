@@ -293,7 +293,7 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'builder',
           parentNavigatorKey: appRootNavigatorKey,
-          builder: (_, __) => const WorkoutBuilderMobilityScreen(),
+          builder: (_, _) => const WorkoutBuilderMobilityScreen(),
         ),
         GoRoute(
           path: 'library',

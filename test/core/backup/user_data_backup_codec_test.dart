@@ -22,7 +22,7 @@ void main() {
       'entities': entities ?? <Map<String, dynamic>>[],
       'pendingOperations': <Map<String, dynamic>>[],
       'syncMeta': <Map<String, dynamic>>[],
-      if (extraTopLevel != null) 'futureProof': extraTopLevel,
+      'futureProof': ?extraTopLevel,
     };
   }
 

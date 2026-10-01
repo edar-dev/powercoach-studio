@@ -68,7 +68,7 @@ class _LogoBadge extends StatelessWidget {
       child: Image.asset(
         logoAsset,
         fit: BoxFit.contain,
-        errorBuilder: (_, __, ___) => _FallbackLogoBadge(),
+        errorBuilder: (_, _, _) => _FallbackLogoBadge(),
       ),
     );
   }

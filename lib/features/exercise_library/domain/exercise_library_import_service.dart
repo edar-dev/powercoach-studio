@@ -38,7 +38,7 @@ class ExerciseLibraryImportService {
         final created = await _exerciseRepo.create(<String, dynamic>{
           'name': name,
           'description': item['description']?.toString(),
-          if (parentId != null) 'parentId': parentId,
+          'parentId': ?parentId,
           'sortOrder': item['sortOrder'],
           'isMobility': itemIsMobility,
           'catalogSource': catalogSource,

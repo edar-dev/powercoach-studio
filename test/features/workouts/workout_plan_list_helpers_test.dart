@@ -17,9 +17,9 @@ WorkoutPlanApiModel _plan({
     'mobilitySections': [],
     'mobilityItems': [],
     'weeks': [],
-    if (startDate != null) 'startDate': startDate,
-    if (endDate != null) 'endDate': endDate,
-    if (archivedAt != null) 'archivedAt': archivedAt,
+    'startDate': ?startDate,
+    'endDate': ?endDate,
+    'archivedAt': ?archivedAt,
   };
   final now = DateTime(2026, 6, 15);
   return WorkoutPlanApiModel(

@@ -82,7 +82,7 @@ Future<void> _duplicateExistingPlan(
     bodyBuilder: (sheetContext) => ListView.separated(
       shrinkWrap: true,
       itemCount: plans.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, _) => const Divider(height: 1),
       itemBuilder: (ctx, index) {
         final plan = plans[index];
         final title = plan.name.trim().isEmpty

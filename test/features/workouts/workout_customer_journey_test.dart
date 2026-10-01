@@ -201,7 +201,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/customers/:customerId/workouts/new',
-          builder: (_, __) => _SaveNewPlanHarness(coordinator: coordinator),
+          builder: (_, _) => _SaveNewPlanHarness(coordinator: coordinator),
         ),
         GoRoute(
           path: '/customers/:customerId/workouts/:planId',

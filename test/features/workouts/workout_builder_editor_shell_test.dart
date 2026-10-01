@@ -71,18 +71,18 @@ void main() {
   Widget app(Widget child) {
     final router = GoRouter(
       routes: [
-        GoRoute(path: '/', builder: (_, __) => child),
+        GoRoute(path: '/', builder: (_, _) => child),
         GoRoute(
           path: '/workouts/builder',
-          builder: (_, __) => const Scaffold(body: Text('Builder')),
+          builder: (_, _) => const Scaffold(body: Text('Builder')),
         ),
         GoRoute(
           path: '/exercise-library',
-          builder: (_, __) => const Scaffold(body: Text('Library')),
+          builder: (_, _) => const Scaffold(body: Text('Library')),
         ),
         GoRoute(
           path: '/settings/personal-info',
-          builder: (_, __) => const Scaffold(body: Text('Profile')),
+          builder: (_, _) => const Scaffold(body: Text('Profile')),
         ),
       ],
     );

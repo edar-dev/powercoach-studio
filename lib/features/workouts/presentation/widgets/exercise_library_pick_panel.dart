@@ -304,7 +304,7 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
                 )
               : ListView.separated(
                   itemCount: filtered.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final exercise = filtered[index];
                     return ListTile(

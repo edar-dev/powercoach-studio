@@ -10,7 +10,7 @@ void main() {
       routes: [
         GoRoute(
           path: '/dashboard',
-          builder: (_, __) => const Scaffold(body: Text('dashboard')),
+          builder: (_, _) => const Scaffold(body: Text('dashboard')),
         ),
         GoRoute(
           path: '/workouts/builder',

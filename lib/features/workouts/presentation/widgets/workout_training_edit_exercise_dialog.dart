@@ -210,7 +210,7 @@ void showEditExerciseDialog(
                 Expanded(
                   child: ValueListenableBuilder<bool>(
                     valueListenable: modalSaving,
-                    builder: (_, saving, __) => FilledButton(
+                    builder: (_, saving, _) => FilledButton(
                       onPressed: saving
                           ? null
                           : () {

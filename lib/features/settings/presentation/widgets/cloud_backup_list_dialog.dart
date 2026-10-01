@@ -65,7 +65,7 @@ class _CloudBackupListDialogState extends State<CloudBackupListDialog> {
                 child: ListView.separated(
                   shrinkWrap: true,
                   itemCount: _backups.length,
-                  separatorBuilder: (_, __) => const Divider(height: 1),
+                  separatorBuilder: (_, _) => const Divider(height: 1),
                   itemBuilder: (context, index) {
                     final backup = _backups[index];
                     final isDeleting = _deletingPaths.contains(backup.path);
