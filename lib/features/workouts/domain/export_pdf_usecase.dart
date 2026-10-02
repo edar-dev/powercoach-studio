@@ -651,6 +651,7 @@ List<pw.Widget> _denseProgrammingWidgets(
 
     out.add(
       pw.Inseparable(
+        canSpan: true,
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
