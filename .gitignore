@@ -42,6 +42,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# Manual PDF visual QA samples (written by test/core/pdf/pdf_sample_generation_test.dart)
+/test/artifacts/
+
 # Symbolication related
 app.*.symbols
 
