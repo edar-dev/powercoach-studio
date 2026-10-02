@@ -6,6 +6,10 @@ import 'package:share_plus/share_plus.dart';
 
 import 'export_artifact.dart';
 
+Future<void> shareExportArtifactImpl(ExportArtifact artifact) async {
+  await _shareExportArtifactViaTempFile(artifact);
+}
+
 Future<void> downloadExportArtifactImpl(ExportArtifact artifact) async {
   // Mobile: share-first (system share sheet). Desktop: Downloads when available.
   if (Platform.isIOS || Platform.isAndroid) {

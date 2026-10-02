@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
+  printing
   sentry_flutter
   share_plus
   sqlite3_flutter_libs

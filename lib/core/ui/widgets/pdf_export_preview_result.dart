@@ -2,5 +2,6 @@
 enum PdfExportPreviewResult {
   cancelled,
   previewOpened,
+  shared,
   downloaded,
 }

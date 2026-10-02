@@ -6,3 +6,11 @@ import 'export_share_stub.dart'
 Future<void> downloadExportArtifact(ExportArtifact artifact) {
   return downloadExportArtifactImpl(artifact);
 }
+
+Future<void> shareExportArtifact(ExportArtifact artifact) {
+  return shareExportArtifactImpl(artifact);
+}
+
+Future<void> saveExportArtifactToDownloads(ExportArtifact artifact) {
+  return saveExportArtifactToDownloadsImpl(artifact);
+}
