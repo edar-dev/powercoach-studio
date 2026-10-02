@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:shared_preferences/shared_preferences.dart';
