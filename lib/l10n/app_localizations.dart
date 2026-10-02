@@ -3341,8 +3341,56 @@ abstract class AppLocalizations {
   /// No description provided for @workoutPdfSheetSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Choose the document layout. The PDF uses your coach header and print-friendly tables.'**
+  /// **'Pick a preset. You can still toggle mobility and customize the layout.'**
   String get workoutPdfSheetSubtitle;
+
+  /// No description provided for @workoutPdfPresetGym.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym'**
+  String get workoutPdfPresetGym;
+
+  /// No description provided for @workoutPdfPresetGymDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Dense layout for the gym floor. All weeks. Mobility off by default.'**
+  String get workoutPdfPresetGymDescription;
+
+  /// No description provided for @workoutPdfPresetFull.
+  ///
+  /// In en, this message translates to:
+  /// **'Full'**
+  String get workoutPdfPresetFull;
+
+  /// No description provided for @workoutPdfPresetFullDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Full layout by week, including mobility when available.'**
+  String get workoutPdfPresetFullDescription;
+
+  /// No description provided for @workoutPdfPresetWeek1.
+  ///
+  /// In en, this message translates to:
+  /// **'Week 1 only'**
+  String get workoutPdfPresetWeek1;
+
+  /// No description provided for @workoutPdfPresetWeek1Description.
+  ///
+  /// In en, this message translates to:
+  /// **'Dense layout for the first week only.'**
+  String get workoutPdfPresetWeek1Description;
+
+  /// No description provided for @workoutPdfPersonalizeLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize layout'**
+  String get workoutPdfPersonalizeLayout;
+
+  /// No description provided for @workoutPdfPersonalizeLayoutHide.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide layout options'**
+  String get workoutPdfPersonalizeLayoutHide;
 
   /// No description provided for @pdfBrandName.
   ///

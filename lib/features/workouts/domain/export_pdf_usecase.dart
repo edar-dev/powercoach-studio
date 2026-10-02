@@ -11,6 +11,9 @@ import '../../../core/pdf/pdf_mobility_format.dart';
 import '../../../core/pdf/pdf_plan_metadata.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
+import 'filter_routine_weeks.dart';
+
+export 'filter_routine_weeks.dart';
 
 /// PDF programming layout: per-week sections vs dense progression columns.
 enum WorkoutPdfLayout {
@@ -24,6 +27,9 @@ enum WorkoutPdfLayout {
 
 /// Generates a PDF from [WorkoutRoutine].
 /// Returns an in-memory artifact for sharing (works on web and native).
+///
+/// When [weekIndices] is non-null and non-empty, only those weeks (0-based)
+/// are included. Invalid filters fall back to the full routine.
 Future<ExportArtifact> exportWorkoutRoutineToPdf(
   WorkoutRoutine routine, {
   required PdfExportLabels labels,
@@ -31,14 +37,16 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
   PdfPlanMetadata? planMetadata,
   WorkoutPdfLayout layout = WorkoutPdfLayout.dense,
   bool includeMobility = true,
+  List<int>? weekIndices,
 }) async {
+  final filtered = filterRoutineWeeks(routine, weekIndices);
   final generatedAt = DateTime.now();
   final doc = pw.Document();
   final dense = layout == WorkoutPdfLayout.dense;
 
   final programming = layout == WorkoutPdfLayout.canonical
-      ? _canonicalProgrammingWidgets(routine, labels, dense: dense)
-      : _denseProgrammingWidgets(routine, labels);
+      ? _canonicalProgrammingWidgets(filtered, labels, dense: dense)
+      : _denseProgrammingWidgets(filtered, labels);
 
   doc.addPage(
     pw.MultiPage(
@@ -46,13 +54,13 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
       margin: pw.EdgeInsets.all(PdfDocumentTheme.pageMarginFor(dense: dense)),
       header: (context) {
         if (dense && context.pageNumber > 1) {
-          final weekHints = routine.weeks
+          final weekHints = filtered.weeks
               .asMap()
               .keys
               .map((i) => labels.denseWeekShort(i + 1))
               .join('  ');
           return PdfDocumentTheme.buildRunningHeader(
-            routine.name,
+            filtered.name,
             subtitle: weekHints,
           );
         }
@@ -62,7 +70,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
             if (coachHeader != null && coachHeader.hasContent)
               PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
             PdfDocumentTheme.buildDocumentTitle(
-              routine.name,
+              filtered.name,
               dense: dense,
               coachHeader: coachHeader,
             ),
@@ -78,10 +86,10 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
                   dense: dense,
                 ),
             ],
-            if (dense && routine.weeks.length > 1) ...[
+            if (dense && filtered.weeks.length > 1) ...[
               PdfDocumentTheme.buildDenseWeekLegend(
                 labels,
-                routine.weeks.asMap().entries.map((entry) {
+                filtered.weeks.asMap().entries.map((entry) {
                   final name = entry.value.name.trim();
                   return name.isNotEmpty
                       ? name
@@ -104,7 +112,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
       ),
       build: (context) => [
         if (includeMobility) ...[
-          ..._mobilityWidgets(routine, labels, dense: dense),
+          ..._mobilityWidgets(filtered, labels, dense: dense),
           pw.NewPage(),
         ],
         ...programming,

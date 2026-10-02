@@ -118,6 +118,7 @@ class WorkoutBuilderScreenRoutineActions {
           _routine,
           layout: options.layout,
           includeMobility: options.includeMobility,
+          weekIndices: options.weekIndices,
         );
       },
     );
