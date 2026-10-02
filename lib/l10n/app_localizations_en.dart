@@ -1814,7 +1814,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutPdfSheetSubtitle =>
-      'Choose the document layout. The PDF uses your coach header and print-friendly tables.';
+      'Pick a preset. You can still toggle mobility and customize the layout.';
+
+  @override
+  String get workoutPdfPresetGym => 'Gym';
+
+  @override
+  String get workoutPdfPresetGymDescription =>
+      'Dense layout for the gym floor. All weeks. Mobility off by default.';
+
+  @override
+  String get workoutPdfPresetFull => 'Full';
+
+  @override
+  String get workoutPdfPresetFullDescription =>
+      'Full layout by week, including mobility when available.';
+
+  @override
+  String get workoutPdfPresetWeek1 => 'Week 1 only';
+
+  @override
+  String get workoutPdfPresetWeek1Description =>
+      'Dense layout for the first week only.';
+
+  @override
+  String get workoutPdfPersonalizeLayout => 'Customize layout';
+
+  @override
+  String get workoutPdfPersonalizeLayoutHide => 'Hide layout options';
 
   @override
   String get pdfBrandName => 'PowerCoach Studio';

@@ -1832,7 +1832,34 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutPdfSheetSubtitle =>
-      'Scegli il layout del documento. Il PDF usa intestazione coach e tabelle ottimizzate per la stampa.';
+      'Scegli un preset. Puoi ancora attivare la mobilità e personalizzare il layout.';
+
+  @override
+  String get workoutPdfPresetGym => 'Palestra';
+
+  @override
+  String get workoutPdfPresetGymDescription =>
+      'Layout denso per la palestra. Tutte le settimane. Mobilità disattivata di default.';
+
+  @override
+  String get workoutPdfPresetFull => 'Completo';
+
+  @override
+  String get workoutPdfPresetFullDescription =>
+      'Layout completo per settimana, con mobilità se presente.';
+
+  @override
+  String get workoutPdfPresetWeek1 => 'Solo settimana 1';
+
+  @override
+  String get workoutPdfPresetWeek1Description =>
+      'Layout denso solo per la prima settimana.';
+
+  @override
+  String get workoutPdfPersonalizeLayout => 'Personalizza layout';
+
+  @override
+  String get workoutPdfPersonalizeLayoutHide => 'Nascondi opzioni layout';
 
   @override
   String get pdfBrandName => 'PowerCoach Studio';

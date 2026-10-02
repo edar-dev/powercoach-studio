@@ -79,6 +79,7 @@ class WorkoutBuilderExportActions {
     WorkoutRoutine routine, {
     required WorkoutPdfLayout layout,
     required bool includeMobility,
+    List<int>? weekIndices,
   }) async {
     if (!await PlanGate.requirePro(context, feature: PaywallFeature.workoutExport)) {
       return;
@@ -104,6 +105,7 @@ class WorkoutBuilderExportActions {
         planMetadata: planMetadata,
         layout: layout,
         includeMobility: includeMobility,
+        weekIndices: weekIndices,
       );
       if (!context.mounted) return;
       hidePdfExportProgressDialog(context);
