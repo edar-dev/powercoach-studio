@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels.dart';
 import 'package:powercoach_studio/core/storage/local_user_profile_store.dart';
@@ -65,6 +68,7 @@ void main() {
       customer: _customer(useCustom: true, header: 'My Gym PT'),
       profile: const LocalUserProfileData(displayName: 'John'),
       authEmail: 'coach@test.com',
+      brand: const PdfBrandData(studioName: 'Studio Brand'),
     );
     expect(info.leftLine, 'My Gym PT');
     expect(info.centerLine, 'Coach: John');
@@ -79,5 +83,51 @@ void main() {
     );
     expect(info.leftLine, 'PowerCoach Studio');
     expect(info.rightLine, 'a@b.com');
+  });
+
+  test('prefers studioName over bio and product brand', () {
+    final info = buildPdfCoachHeader(
+      labels: _labels(),
+      profile: const LocalUserProfileData(bio: 'Coach bio'),
+      brand: const PdfBrandData(studioName: 'Studio Force'),
+    );
+    expect(info.leftLine, 'Studio Force');
+  });
+
+  test('white-label hides product brand when no studio/bio', () {
+    final info = buildPdfCoachHeader(
+      labels: _labels(),
+      brand: const PdfBrandData(hidePowerCoachBranding: true),
+    );
+    expect(info.leftLine, isEmpty);
+    expect(info.hideProductBranding, isTrue);
+  });
+
+  test('attaches logo bytes, accent, and disclaimer from brand', () {
+    final logo = Uint8List.fromList([9, 8, 7]);
+    final info = buildPdfCoachHeader(
+      labels: _labels(),
+      brand: const PdfBrandData(
+        studioName: 'S',
+        accentColorArgb: 0xFF112233,
+        disclaimer: 'Private use only',
+        hidePowerCoachBranding: true,
+      ),
+      logoBytes: logo,
+    );
+    expect(info.logoBytes, logo);
+    expect(info.hasLogo, isTrue);
+    expect(info.accentColorArgb, 0xFF112233);
+    expect(info.disclaimer, 'Private use only');
+    expect(info.hideProductBranding, isTrue);
+  });
+
+  test('customer override still wins over studioName', () {
+    final info = buildPdfCoachHeader(
+      labels: _labels(),
+      customer: _customer(useCustom: true, header: 'Client Gym'),
+      brand: const PdfBrandData(studioName: 'Studio Force'),
+    );
+    expect(info.leftLine, 'Client Gym');
   });
 }

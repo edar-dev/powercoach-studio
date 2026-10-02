@@ -29,11 +29,14 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
   final _goalsController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
+  final _pdfHeaderController = TextEditingController();
   final CustomerRepository _repo = CustomerRepository();
   bool _loading = true;
   bool _saving = false;
+  bool _useCustomPdfHeader = false;
   String? _loadError;
   int _rowVersion = 1;
+  Customer? _loaded;
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     _goalsController.dispose();
     _heightController.dispose();
     _weightController.dispose();
+    _pdfHeaderController.dispose();
     super.dispose();
   }
 
@@ -69,7 +73,10 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
         _goalsController.text = c.goals ?? '';
         _heightController.text = c.heightCm != null ? c.heightCm!.round().toString() : '';
         _weightController.text = c.weightKg != null ? c.weightKg.toString() : '';
+        _pdfHeaderController.text = c.pdfHeader ?? '';
         setState(() {
+          _loaded = c;
+          _useCustomPdfHeader = c.useCustomPdfHeader;
           _rowVersion = c.rowVersion;
           _loading = false;
           _loadError = null;
@@ -98,23 +105,29 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
     final colorScheme = theme.colorScheme;
 
     setState(() => _saving = true);
+    final existing = _loaded;
     final customer = Customer(
       id: widget.customerId,
       userId: user.id,
       name: _nameController.text.trim(),
       email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
       phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-      dateOfBirth: null,
+      dateOfBirth: existing?.dateOfBirth,
       heightCm: double.tryParse(_heightController.text.trim()),
       weightKg: double.tryParse(_weightController.text.trim()),
       notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
       goals: _goalsController.text.trim().isEmpty ? null : _goalsController.text.trim(),
-      pdfHeader: null,
-      useCustomPdfHeader: false,
-      isFavorite: false,
-      isArchived: false,
-      lastPlanUpdateDate: null,
-      createdAt: DateTime.now(),
+      pdfHeader: _useCustomPdfHeader
+          ? (_pdfHeaderController.text.trim().isEmpty
+              ? null
+              : _pdfHeaderController.text.trim())
+          : null,
+      useCustomPdfHeader:
+          _useCustomPdfHeader && _pdfHeaderController.text.trim().isNotEmpty,
+      isFavorite: existing?.isFavorite ?? false,
+      isArchived: existing?.isArchived ?? false,
+      lastPlanUpdateDate: existing?.lastPlanUpdateDate,
+      createdAt: existing?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
       rowVersion: _rowVersion,
     );
@@ -279,6 +292,28 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
+                const SizedBox(height: 24),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  value: _useCustomPdfHeader,
+                  onChanged: (v) => setState(() => _useCustomPdfHeader = v),
+                  title: Text(l10n.customerUseCustomPdfHeader),
+                  subtitle: Text(l10n.customerUseCustomPdfHeaderSubtitle),
+                ),
+                if (_useCustomPdfHeader) ...[
+                  const SizedBox(height: 8),
+                  _formLabel(context, l10n.customerPdfHeaderLabel),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _pdfHeaderController,
+                    textInputAction: TextInputAction.done,
+                    decoration: _inputDecoration(
+                      context,
+                      prefixIcon: Icons.badge_outlined,
+                      hint: l10n.customerPdfHeaderHint,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 32),
                 FilledButton(
                   onPressed: _saving ? null : _submit,

@@ -30,8 +30,10 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
   final _notesController = TextEditingController();
   final _heightController = TextEditingController();
   final _weightController = TextEditingController();
+  final _pdfHeaderController = TextEditingController();
   bool _saving = false;
   bool _prefillApplied = false;
+  bool _useCustomPdfHeader = false;
   DateTime? _dateOfBirth;
   int? _selectedGoalIndex;
   int _experienceIndex = 1; // intermediate default (Stitch)
@@ -59,6 +61,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     _notesController.dispose();
     _heightController.dispose();
     _weightController.dispose();
+    _pdfHeaderController.dispose();
     super.dispose();
   }
 
@@ -175,8 +178,13 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
         weightKg: double.tryParse(_weightController.text.trim()),
         notes: _composeNotes(l10n),
         goals: _composeGoals(l10n),
-        pdfHeader: null,
-        useCustomPdfHeader: false,
+        pdfHeader: _useCustomPdfHeader
+            ? (_pdfHeaderController.text.trim().isEmpty
+                ? null
+                : _pdfHeaderController.text.trim())
+            : null,
+        useCustomPdfHeader: _useCustomPdfHeader &&
+            _pdfHeaderController.text.trim().isNotEmpty,
         isFavorite: false,
         isArchived: false,
         lastPlanUpdateDate: null,
@@ -470,6 +478,43 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
                             hint: l10n.customerNotesHintCreation,
                           ),
                         ),
+                        const SizedBox(height: 28),
+                        CustomerCreationSectionTitle(
+                          title: l10n.customerPdfHeaderSection,
+                        ),
+                        const SizedBox(height: 8),
+                        SwitchListTile(
+                          contentPadding: EdgeInsets.zero,
+                          value: _useCustomPdfHeader,
+                          onChanged: (v) =>
+                              setState(() => _useCustomPdfHeader = v),
+                          title: Text(
+                            l10n.customerUseCustomPdfHeader,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: MarketingDarkColors.slate300,
+                            ),
+                          ),
+                          subtitle: Text(
+                            l10n.customerUseCustomPdfHeaderSubtitle,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: MarketingDarkColors.slate500,
+                            ),
+                          ),
+                          activeThumbColor: MarketingDarkColors.brand,
+                        ),
+                        if (_useCustomPdfHeader) ...[
+                          const SizedBox(height: 8),
+                          CustomerCreationDarkField(
+                            label: l10n.customerPdfHeaderLabel,
+                            controller: _pdfHeaderController,
+                            hint: l10n.customerPdfHeaderHint,
+                            prefixIcon: Icons.badge_outlined,
+                            textInputAction: TextInputAction.done,
+                          ),
+                        ],
                       ],
                     ),
                   ),

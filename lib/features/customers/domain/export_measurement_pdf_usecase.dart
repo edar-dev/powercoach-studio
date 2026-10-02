@@ -27,15 +27,22 @@ Future<ExportArtifact> exportMeasurementsToPdf(
         children: [
           if (coachHeader != null && coachHeader.hasContent)
             PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
-          PdfDocumentTheme.buildDocumentTitle(title),
+          PdfDocumentTheme.buildDocumentTitle(
+            title,
+            coachHeader: coachHeader,
+          ),
           PdfDocumentTheme.buildSubtitle(
             labels.measurementRecordCount(sorted.length),
           ),
           pw.SizedBox(height: 16),
         ],
       ),
-      footer: (context) =>
-          PdfDocumentTheme.buildPageFooter(context, labels, generatedAt),
+      footer: (context) => PdfDocumentTheme.buildPageFooter(
+        context,
+        labels,
+        generatedAt,
+        coachHeader: coachHeader,
+      ),
       build: (context) => [
         pw.Table(
           border: pw.TableBorder.all(color: PdfDocumentTheme.border, width: 0.5),

@@ -5,6 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 
 enum SettingsHubSection {
   personalInfo,
+  pdfBrand,
   subscription,
   notifications,
   backup,
@@ -36,6 +37,11 @@ class SettingsHubNav extends StatelessWidget {
         section: SettingsHubSection.personalInfo,
         label: l10n.settingsNavPersonalInfo,
         icon: Icons.person_outline,
+      ),
+      _NavItem(
+        section: SettingsHubSection.pdfBrand,
+        label: l10n.settingsNavPdfBrand,
+        icon: Icons.picture_as_pdf_outlined,
       ),
       _NavItem(
         section: SettingsHubSection.subscription,

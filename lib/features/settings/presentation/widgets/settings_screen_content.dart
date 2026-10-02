@@ -214,6 +214,25 @@ class SettingsScreenContent extends StatelessWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(
+              Icons.picture_as_pdf_outlined,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsNavPdfBrand,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              size: 16,
+              color: StitchMobileColors.outline,
+            ),
+            onTap: () => onSectionSelected(SettingsHubSection.pdfBrand),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
               Icons.credit_card_outlined,
               color: StitchMobileColors.onSurfaceVariant,
             ),

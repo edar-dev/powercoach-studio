@@ -3877,6 +3877,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsNavPersonalInfo => 'Informazioni personali';
 
   @override
+  String get settingsNavPdfBrand => 'Brand PDF';
+
+  @override
   String get settingsNavSubscription => 'Abbonamento';
 
   @override
@@ -4216,4 +4219,85 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get subscriptionCtaNoLock =>
       'Nessun vincolo: cancelli in qualsiasi momento';
+
+  @override
+  String get pdfBrandSettingsTitle => 'Brand kit PDF';
+
+  @override
+  String get pdfBrandSettingsSubtitle =>
+      'Personalizza intestazione, colori e disclaimer degli export PDF.';
+
+  @override
+  String get pdfBrandStudioNameLabel => 'Nome studio';
+
+  @override
+  String get pdfBrandStudioNameHint => 'es. Studio Forza Roma';
+
+  @override
+  String get pdfBrandAccentLabel => 'Colore accento';
+
+  @override
+  String get pdfBrandAccentDefault => 'Default';
+
+  @override
+  String get pdfBrandAccentHexHint => '#0D59F2';
+
+  @override
+  String get pdfBrandDisclaimerLabel => 'Disclaimer a piè di pagina';
+
+  @override
+  String get pdfBrandDisclaimerHint =>
+      'Testo personalizzato nel footer del PDF';
+
+  @override
+  String get pdfBrandWhiteLabelLabel => 'Nascondi branding PowerCoach';
+
+  @override
+  String get pdfBrandWhiteLabelSubtitle =>
+      'Rimuove il nome prodotto di default da header e disclaimer';
+
+  @override
+  String get pdfBrandLogoLabel => 'Logo PDF';
+
+  @override
+  String get pdfBrandLogoLocalHint =>
+      'Il logo resta su questo dispositivo e non è incluso nel backup.';
+
+  @override
+  String get pdfBrandLogoPick => 'Carica logo';
+
+  @override
+  String get pdfBrandLogoReplace => 'Sostituisci logo';
+
+  @override
+  String get pdfBrandLogoRemove => 'Rimuovi logo';
+
+  @override
+  String get pdfBrandLogoPickError => 'Impossibile leggere il file selezionato';
+
+  @override
+  String get pdfBrandLogoTooLarge =>
+      'Logo troppo grande (max circa 1,5 MB; su web limite più basso)';
+
+  @override
+  String get pdfBrandSavedMessage => 'Brand PDF salvato';
+
+  @override
+  String get pdfBrandSaveError => 'Salvataggio brand PDF non riuscito';
+
+  @override
+  String get customerPdfHeaderSection => 'Header PDF';
+
+  @override
+  String get customerUseCustomPdfHeader => 'Header PDF personalizzato';
+
+  @override
+  String get customerUseCustomPdfHeaderSubtitle =>
+      'Sostituisce il nome studio solo per questo cliente';
+
+  @override
+  String get customerPdfHeaderLabel => 'Testo header PDF';
+
+  @override
+  String get customerPdfHeaderHint => 'es. Scheda di Mario — Studio Alpha';
 }

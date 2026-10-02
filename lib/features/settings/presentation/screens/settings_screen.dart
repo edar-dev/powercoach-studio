@@ -7,6 +7,7 @@ import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/backup/web_persistence_coordinator.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
@@ -320,6 +321,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     switch (section) {
       case SettingsHubSection.subscription:
         navigateToSubscription(context);
+        return;
+      case SettingsHubSection.pdfBrand:
+        navigatePush(context, AppPaths.pdfBrand);
         return;
       case SettingsHubSection.language:
         showSettingsLanguagePicker(context: context, l10n: AppLocalizations.of(context));
