@@ -96,6 +96,7 @@ class WorkoutBuilderExportActions {
         routine: resolved,
         labels: labels,
         clientName: customer?.name,
+        weekIndices: weekIndices,
       );
       final artifact = await exportWorkoutRoutineToPdf(
         resolved,
