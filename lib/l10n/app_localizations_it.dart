@@ -2913,6 +2913,35 @@ class AppLocalizationsIt extends AppLocalizations {
       'Anteprima PDF aperta in una nuova scheda.';
 
   @override
+  String get pdfExportPostGenerateTitle => 'PDF pronto';
+
+  @override
+  String get pdfExportPostGenerateMessage =>
+      'Il PDF è pronto. Anteprima, condividi o salvalo.';
+
+  @override
+  String get pdfExportActionPreview => 'Anteprima';
+
+  @override
+  String get pdfExportActionShare => 'Condividi';
+
+  @override
+  String get pdfExportActionSave => 'Salva';
+
+  @override
+  String get pdfExportPreviewOpened => 'Anteprima PDF aperta.';
+
+  @override
+  String get pdfExportSharedSuccess => 'PDF condiviso.';
+
+  @override
+  String get pdfExportSavedSuccess => 'PDF salvato in Download.';
+
+  @override
+  String get pdfExportSaveUnavailable =>
+      'Cartella Download non disponibile su questo dispositivo. Usa Condividi.';
+
+  @override
   String get customerTabWorkouts => 'Workout';
 
   @override

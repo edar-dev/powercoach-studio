@@ -118,6 +118,7 @@ class _CustomerMeasurementHistoryScreenState
                     context: context,
                     l10n: l10n,
                     showProgress: true,
+                    deliverPdfWithActionSheet: true,
                     export: () async {
                       final header =
                           await resolveCustomerMeasurementPdfCoachHeader(
@@ -129,6 +130,7 @@ class _CustomerMeasurementHistoryScreenState
                         l10n.measurementHistoryExportPdfTitle(baseName),
                         labels: labels,
                         coachHeader: header,
+                        clientOrCoachName: baseName,
                       );
                     },
                   );

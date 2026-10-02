@@ -2885,6 +2885,35 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutPdfPreviewOpened => 'PDF preview opened in a new tab.';
 
   @override
+  String get pdfExportPostGenerateTitle => 'PDF ready';
+
+  @override
+  String get pdfExportPostGenerateMessage =>
+      'Your PDF is ready. Preview it, share it, or save it.';
+
+  @override
+  String get pdfExportActionPreview => 'Preview';
+
+  @override
+  String get pdfExportActionShare => 'Share';
+
+  @override
+  String get pdfExportActionSave => 'Save';
+
+  @override
+  String get pdfExportPreviewOpened => 'PDF preview opened.';
+
+  @override
+  String get pdfExportSharedSuccess => 'PDF shared.';
+
+  @override
+  String get pdfExportSavedSuccess => 'PDF saved to Downloads.';
+
+  @override
+  String get pdfExportSaveUnavailable =>
+      'Downloads folder is not available on this device. Use Share instead.';
+
+  @override
   String get customerTabWorkouts => 'Workout';
 
   @override

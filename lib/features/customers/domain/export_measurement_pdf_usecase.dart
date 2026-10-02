@@ -2,6 +2,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../../core/export/export_artifact.dart';
+import '../../../core/export/export_filename.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
@@ -12,6 +13,7 @@ Future<ExportArtifact> exportMeasurementsToPdf(
   String title, {
   required PdfExportLabels labels,
   PdfCoachHeaderInfo? coachHeader,
+  String? clientOrCoachName,
 }) async {
   final sorted = List<CustomerMeasurement>.from(measurements)
     ..sort((a, b) => a.measurementDate.compareTo(b.measurementDate));
@@ -102,11 +104,15 @@ Future<ExportArtifact> exportMeasurementsToPdf(
   );
 
   final bytes = await doc.save();
-  final sanitized = title.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
-  final base = sanitized.isEmpty ? 'measurements' : sanitized;
+  final filename = buildSmartPdfFilename(
+    documentSlug: title,
+    clientOrCoachName: clientOrCoachName,
+    generatedOn: generatedAt,
+    fallbackDocumentSlug: 'measurements',
+  );
   return ExportArtifact(
     bytes: bytes,
-    filename: '${base}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+    filename: filename,
     mimeType: 'application/pdf',
   );
 }

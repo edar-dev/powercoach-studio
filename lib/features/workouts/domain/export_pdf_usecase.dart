@@ -2,6 +2,7 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import '../../../core/export/export_artifact.dart';
+import '../../../core/export/export_filename.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
 import '../../../core/pdf/pdf_dense_day_rows.dart';
 import '../../../core/pdf/pdf_document_theme.dart';
@@ -38,6 +39,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
   WorkoutPdfLayout layout = WorkoutPdfLayout.dense,
   bool includeMobility = true,
   List<int>? weekIndices,
+  String? clientOrCoachName,
 }) async {
   final filtered = filterRoutineWeeks(routine, weekIndices);
   final generatedAt = DateTime.now();
@@ -121,11 +123,15 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
   );
 
   final bytes = await doc.save();
-  final sanitizedName = routine.name.replaceAll(RegExp(r'[^\w\s-]'), '').trim();
-  final sanitized = sanitizedName.isEmpty ? 'workout_plan' : sanitizedName;
+  final filename = buildSmartPdfFilename(
+    documentSlug: filtered.name,
+    clientOrCoachName: clientOrCoachName,
+    generatedOn: generatedAt,
+    fallbackDocumentSlug: 'workout_plan',
+  );
   return ExportArtifact(
     bytes: bytes,
-    filename: '${sanitized}_${DateTime.now().millisecondsSinceEpoch}.pdf',
+    filename: filename,
     mimeType: 'application/pdf',
   );
 }

@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/export/export_artifact.dart';
 import '../../../../core/export/export_share.dart';
+import '../../../../core/export/pdf_export_delivery.dart';
 import '../../../../core/pdf/pdf_brand_store.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
@@ -20,6 +21,7 @@ Future<void> shareCustomerMeasurementExport({
   required AppLocalizations l10n,
   required Future<ExportArtifact> Function() export,
   bool showProgress = false,
+  bool deliverPdfWithActionSheet = false,
 }) async {
   final labels = l10n.toPdfExportLabels();
   if (showProgress) {
@@ -30,6 +32,16 @@ Future<void> shareCustomerMeasurementExport({
   }
   try {
     final artifact = await export();
+    if (!context.mounted) return;
+    if (deliverPdfWithActionSheet &&
+        artifact.mimeType == 'application/pdf') {
+      await presentPdfExportArtifact(
+        context,
+        artifact: artifact,
+        l10n: l10n,
+      );
+      return;
+    }
     await downloadExportArtifact(artifact);
     if (!context.mounted) return;
     showAppSnackBar(context, content: Text(l10n.measurementExportSuccess));

@@ -5194,6 +5194,60 @@ abstract class AppLocalizations {
   /// **'PDF preview opened in a new tab.'**
   String get workoutPdfPreviewOpened;
 
+  /// No description provided for @pdfExportPostGenerateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF ready'**
+  String get pdfExportPostGenerateTitle;
+
+  /// No description provided for @pdfExportPostGenerateMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your PDF is ready. Preview it, share it, or save it.'**
+  String get pdfExportPostGenerateMessage;
+
+  /// No description provided for @pdfExportActionPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get pdfExportActionPreview;
+
+  /// No description provided for @pdfExportActionShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get pdfExportActionShare;
+
+  /// No description provided for @pdfExportActionSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get pdfExportActionSave;
+
+  /// No description provided for @pdfExportPreviewOpened.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF preview opened.'**
+  String get pdfExportPreviewOpened;
+
+  /// No description provided for @pdfExportSharedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF shared.'**
+  String get pdfExportSharedSuccess;
+
+  /// No description provided for @pdfExportSavedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF saved to Downloads.'**
+  String get pdfExportSavedSuccess;
+
+  /// No description provided for @pdfExportSaveUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Downloads folder is not available on this device. Use Share instead.'**
+  String get pdfExportSaveUnavailable;
+
   /// No description provided for @customerTabWorkouts.
   ///
   /// In en, this message translates to:
