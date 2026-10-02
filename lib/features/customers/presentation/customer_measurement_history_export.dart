@@ -4,12 +4,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../../../core/export/export_artifact.dart';
 import '../../../../core/export/export_share.dart';
+import '../../../../core/pdf/pdf_brand_store.dart';
 import '../../../../core/pdf/pdf_coach_header.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
 import '../../auth/data/local_coach_profile_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import 'package:powercoach_studio/core/ui/widgets/pdf_export_progress_dialog.dart';
+
+import '../data/customer_repository.dart';
+import '../data/models/customer.dart';
 
 Future<void> shareCustomerMeasurementExport({
   required BuildContext context,
@@ -45,15 +49,33 @@ Future<void> shareCustomerMeasurementExport({
 }
 
 Future<PdfCoachHeaderInfo> resolveCustomerMeasurementPdfCoachHeader(
-  BuildContext context,
-) async {
+  BuildContext context, {
+  String? customerId,
+  Customer? customer,
+}) async {
   final labels = AppLocalizations.of(context).toPdfExportLabels();
   final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
   final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
   final email = Supabase.instance.client.auth.currentUser?.email;
+  final brand = await PdfBrandStore.instance.read(uid);
+  final logoBytes = await PdfBrandStore.instance.loadLogoBytes(uid);
+
+  Customer? resolved = customer;
+  final id = customerId?.trim() ?? '';
+  if (resolved == null && id.isNotEmpty) {
+    try {
+      resolved = await CustomerRepository().getById(id);
+    } catch (_) {
+      resolved = null;
+    }
+  }
+
   return buildPdfCoachHeader(
     labels: labels,
+    customer: resolved,
     profile: profile,
     authEmail: email,
+    brand: brand,
+    logoBytes: logoBytes,
   );
 }

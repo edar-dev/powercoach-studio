@@ -61,7 +61,11 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
           children: [
             if (coachHeader != null && coachHeader.hasContent)
               PdfDocumentTheme.buildCoachHeaderBand(coachHeader),
-            PdfDocumentTheme.buildDocumentTitle(routine.name, dense: dense),
+            PdfDocumentTheme.buildDocumentTitle(
+              routine.name,
+              dense: dense,
+              coachHeader: coachHeader,
+            ),
             if (planMetadata != null) ...[
               if (planMetadata.hasClient)
                 PdfDocumentTheme.buildPlanSubtitle(
@@ -96,6 +100,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
         generatedAt,
         dense: dense,
         showDisclaimer: !dense || context.pageNumber == context.pagesCount,
+        coachHeader: coachHeader,
       ),
       build: (context) => [
         if (includeMobility) ...[

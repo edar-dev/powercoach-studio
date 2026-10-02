@@ -6900,6 +6900,12 @@ abstract class AppLocalizations {
   /// **'Personal info'**
   String get settingsNavPersonalInfo;
 
+  /// No description provided for @settingsNavPdfBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF brand'**
+  String get settingsNavPdfBrand;
+
   /// No description provided for @settingsNavSubscription.
   ///
   /// In en, this message translates to:
@@ -7517,6 +7523,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No lock-in: cancel anytime with one click'**
   String get subscriptionCtaNoLock;
+
+  /// No description provided for @pdfBrandSettingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF brand kit'**
+  String get pdfBrandSettingsTitle;
+
+  /// No description provided for @pdfBrandSettingsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Customize PDF export header, accent color, and disclaimer.'**
+  String get pdfBrandSettingsSubtitle;
+
+  /// No description provided for @pdfBrandStudioNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio name'**
+  String get pdfBrandStudioNameLabel;
+
+  /// No description provided for @pdfBrandStudioNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Force Studio Rome'**
+  String get pdfBrandStudioNameHint;
+
+  /// No description provided for @pdfBrandAccentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent color'**
+  String get pdfBrandAccentLabel;
+
+  /// No description provided for @pdfBrandAccentDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get pdfBrandAccentDefault;
+
+  /// No description provided for @pdfBrandAccentHexHint.
+  ///
+  /// In en, this message translates to:
+  /// **'#0D59F2'**
+  String get pdfBrandAccentHexHint;
+
+  /// No description provided for @pdfBrandDisclaimerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Footer disclaimer'**
+  String get pdfBrandDisclaimerLabel;
+
+  /// No description provided for @pdfBrandDisclaimerHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom text shown in the PDF footer'**
+  String get pdfBrandDisclaimerHint;
+
+  /// No description provided for @pdfBrandWhiteLabelLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide PowerCoach branding'**
+  String get pdfBrandWhiteLabelLabel;
+
+  /// No description provided for @pdfBrandWhiteLabelSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes the default product name from header and disclaimer'**
+  String get pdfBrandWhiteLabelSubtitle;
+
+  /// No description provided for @pdfBrandLogoLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF logo'**
+  String get pdfBrandLogoLabel;
+
+  /// No description provided for @pdfBrandLogoLocalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'The logo stays on this device and is not included in backups.'**
+  String get pdfBrandLogoLocalHint;
+
+  /// No description provided for @pdfBrandLogoPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload logo'**
+  String get pdfBrandLogoPick;
+
+  /// No description provided for @pdfBrandLogoReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace logo'**
+  String get pdfBrandLogoReplace;
+
+  /// No description provided for @pdfBrandLogoRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove logo'**
+  String get pdfBrandLogoRemove;
+
+  /// No description provided for @pdfBrandLogoPickError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not read the selected file'**
+  String get pdfBrandLogoPickError;
+
+  /// No description provided for @pdfBrandLogoTooLarge.
+  ///
+  /// In en, this message translates to:
+  /// **'Logo too large (max about 1.5 MB; lower limit on web)'**
+  String get pdfBrandLogoTooLarge;
+
+  /// No description provided for @pdfBrandSavedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF brand saved'**
+  String get pdfBrandSavedMessage;
+
+  /// No description provided for @pdfBrandSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save PDF brand'**
+  String get pdfBrandSaveError;
+
+  /// No description provided for @customerPdfHeaderSection.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF header'**
+  String get customerPdfHeaderSection;
+
+  /// No description provided for @customerUseCustomPdfHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom PDF header'**
+  String get customerUseCustomPdfHeader;
+
+  /// No description provided for @customerUseCustomPdfHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Overrides the studio name for this client only'**
+  String get customerUseCustomPdfHeaderSubtitle;
+
+  /// No description provided for @customerPdfHeaderLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF header text'**
+  String get customerPdfHeaderLabel;
+
+  /// No description provided for @customerPdfHeaderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. Mario\'s plan — Alpha Studio'**
+  String get customerPdfHeaderHint;
 }
 
 class _AppLocalizationsDelegate

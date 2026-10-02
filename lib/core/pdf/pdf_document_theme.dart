@@ -49,27 +49,59 @@ class PdfDocumentTheme {
   static final PdfColor supersetBg = PdfColor.fromHex('#E8EEFE');
   static final PdfColor footerMuted = PdfColor.fromHex('#9CA3AF');
 
+  static PdfColor accentFor(PdfCoachHeaderInfo? info) {
+    return pdfColorFromArgb(info?.accentColorArgb) ?? accent;
+  }
+
+  static PdfColor? pdfColorFromArgb(int? argb) {
+    if (argb == null) return null;
+    final a = ((argb >> 24) & 0xFF) / 255.0;
+    final r = ((argb >> 16) & 0xFF) / 255.0;
+    final g = ((argb >> 8) & 0xFF) / 255.0;
+    final b = (argb & 0xFF) / 255.0;
+    return PdfColor(r, g, b, a);
+  }
+
   static pw.Widget buildCoachHeaderBand(PdfCoachHeaderInfo info) {
     if (!info.hasContent) return pw.SizedBox();
+    final barColor = accentFor(info);
+    final textRow = pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Expanded(child: _metaCell(info.leftLine, align: pw.TextAlign.left)),
+        if (info.centerLine != null)
+          pw.Expanded(
+            child: _metaCell(info.centerLine!, align: pw.TextAlign.center),
+          ),
+        if (info.rightLine != null)
+          pw.Expanded(
+            child: _metaCell(info.rightLine!, align: pw.TextAlign.right),
+          ),
+      ],
+    );
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
-        pw.Row(
-          crossAxisAlignment: pw.CrossAxisAlignment.start,
-          children: [
-            pw.Expanded(child: _metaCell(info.leftLine, align: pw.TextAlign.left)),
-            if (info.centerLine != null)
-              pw.Expanded(
-                child: _metaCell(info.centerLine!, align: pw.TextAlign.center),
+        if (info.hasLogo)
+          pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            children: [
+              pw.Container(
+                width: 36,
+                height: 36,
+                margin: const pw.EdgeInsets.only(right: 10),
+                child: pw.Image(
+                  pw.MemoryImage(info.logoBytes!),
+                  fit: pw.BoxFit.contain,
+                ),
               ),
-            if (info.rightLine != null)
-              pw.Expanded(
-                child: _metaCell(info.rightLine!, align: pw.TextAlign.right),
-              ),
-          ],
-        ),
+              pw.Expanded(child: textRow),
+            ],
+          )
+        else
+          textRow,
         pw.SizedBox(height: 6),
-        pw.Container(height: 2, color: accent),
+        pw.Container(height: 2, color: barColor),
         pw.SizedBox(height: 10),
       ],
     );
@@ -106,15 +138,23 @@ class PdfDocumentTheme {
     );
   }
 
-  static pw.Widget buildDocumentTitle(String title, {bool dense = false}) {
+  static pw.Widget buildDocumentTitle(
+    String title, {
+    bool dense = false,
+    int? accentColorArgb,
+    PdfCoachHeaderInfo? coachHeader,
+  }) {
     final safe = sanitizePdfText(title);
+    final barColor =
+        pdfColorFromArgb(accentColorArgb ?? coachHeader?.accentColorArgb) ??
+            accent;
     return pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.center,
       children: [
         pw.Container(
           width: dense ? 3 : 4,
           height: dense ? 22 : 28,
-          color: accent,
+          color: barColor,
         ),
         pw.SizedBox(width: dense ? 8 : 10),
         pw.Expanded(
@@ -225,10 +265,28 @@ class PdfDocumentTheme {
     DateTime generatedAt, {
     bool dense = false,
     bool showDisclaimer = true,
+    String? disclaimerOverride,
+    bool hideProductBranding = false,
+    PdfCoachHeaderInfo? coachHeader,
   }) {
     final dateStr = _formatDate(generatedAt);
     final footerSize = dense ? denseFooterFontSize : footerFontSize;
     final topPadding = dense ? 6.0 : 12.0;
+    final custom = (disclaimerOverride ?? coachHeader?.disclaimer)?.trim() ?? '';
+    final whiteLabel =
+        hideProductBranding || (coachHeader?.hideProductBranding ?? false);
+    final String? disclaimerText;
+    final bool renderDisclaimer;
+    if (custom.isNotEmpty) {
+      disclaimerText = custom;
+      renderDisclaimer = showDisclaimer;
+    } else if (whiteLabel) {
+      disclaimerText = null;
+      renderDisclaimer = false;
+    } else {
+      disclaimerText = labels.footerDisclaimer;
+      renderDisclaimer = showDisclaimer;
+    }
     return pw.Container(
       padding: pw.EdgeInsets.only(top: topPadding),
       decoration: pw.BoxDecoration(
@@ -251,10 +309,10 @@ class PdfDocumentTheme {
               ),
             ],
           ),
-          if (showDisclaimer) ...[
+          if (renderDisclaimer && disclaimerText != null) ...[
             pw.SizedBox(height: dense ? 4 : 6),
             pw.Text(
-              sanitizePdfText(labels.footerDisclaimer),
+              sanitizePdfText(disclaimerText),
               style: pw.TextStyle(fontSize: footerSize, color: footerMuted),
               textAlign: pw.TextAlign.center,
             ),

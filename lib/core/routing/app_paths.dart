@@ -17,4 +17,7 @@ abstract final class AppPaths {
 
   /// Personal info (canonical destination for legacy `/profile`).
   static const personalInfo = '/settings/personal-info';
+
+  /// PDF brand kit (studio name, accent, logo, disclaimer).
+  static const pdfBrand = '/settings/pdf-brand';
 }

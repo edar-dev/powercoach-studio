@@ -122,6 +122,7 @@ class _CustomerMeasurementHistoryScreenState
                       final header =
                           await resolveCustomerMeasurementPdfCoachHeader(
                             context,
+                            customerId: widget.customerId,
                           );
                       return exportMeasurementsToPdf(
                         _measurements,

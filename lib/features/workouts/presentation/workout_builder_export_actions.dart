@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
 import 'package:powercoach_studio/core/billing/plan_gate.dart';
+import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels_l10n.dart';
 import 'package:powercoach_studio/core/pdf/pdf_plan_metadata.dart';
@@ -62,11 +63,15 @@ class WorkoutBuilderExportActions {
     final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
     final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
     final email = Supabase.instance.client.auth.currentUser?.email;
+    final brand = await PdfBrandStore.instance.read(uid);
+    final logoBytes = await PdfBrandStore.instance.loadLogoBytes(uid);
     return buildPdfCoachHeader(
       labels: labels,
       customer: customer,
       profile: profile,
       authEmail: email,
+      brand: brand,
+      logoBytes: logoBytes,
     );
   }
 
