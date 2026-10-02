@@ -631,9 +631,11 @@ class PdfDocumentTheme {
     PdfExportLabels labels, {
     bool dense = false,
     bool prescriptionColumns = false,
+    bool repeat = true,
   }) {
     if (prescriptionColumns) {
       return pw.TableRow(
+        repeat: repeat,
         decoration: pw.BoxDecoration(color: tableHeaderBg),
         children: [
           tableCell(labels.colExercise, isHeader: true, dense: dense),
@@ -647,6 +649,7 @@ class PdfDocumentTheme {
       );
     }
     return pw.TableRow(
+      repeat: repeat,
       decoration: pw.BoxDecoration(color: tableHeaderBg),
       children: [
         tableCell(labels.colExercise, isHeader: true, paddingV: dense ? 3 : 5, dense: dense),

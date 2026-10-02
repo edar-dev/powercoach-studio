@@ -3,6 +3,42 @@ import 'pdf_coaching_note.dart';
 import 'pdf_exercise_name.dart';
 import 'pdf_text_sanitize.dart';
 
+/// Normalizes load/RPE strings for PDF cells so float noise never prints.
+///
+/// Examples: `62.99999999999999kg` → `63kg`, `77.5` stays, `@7` unchanged.
+String formatPdfLoad(String raw) {
+  final text = sanitizePdfText(raw);
+  if (text.isEmpty) return '';
+  return text.replaceAllMapped(RegExp(r'\d+\.\d+'), (match) {
+    final token = match.group(0)!;
+    final value = double.tryParse(token);
+    if (value == null) return token;
+    return formatPdfNumber(value);
+  });
+}
+
+/// Formats a numeric load/RPE value for PDF display (trim float noise).
+String formatPdfNumber(double value) {
+  final asInt = value.round();
+  if ((value - asInt).abs() < 1e-6) {
+    return asInt.toString();
+  }
+  final oneDecimal = (value * 10).round() / 10.0;
+  if ((value - oneDecimal).abs() < 1e-6) {
+    if ((oneDecimal - oneDecimal.roundToDouble()).abs() < 1e-9) {
+      return oneDecimal.round().toString();
+    }
+    return oneDecimal.toStringAsFixed(1);
+  }
+  final twoDecimal = (value * 100).round() / 100.0;
+  final fixed = twoDecimal.toStringAsFixed(2);
+  if (fixed.endsWith('0')) {
+    final one = twoDecimal.toStringAsFixed(1);
+    return one.endsWith('.0') ? twoDecimal.round().toString() : one;
+  }
+  return fixed;
+}
+
 /// One rendered row in the workout programming PDF table.
 class PdfProgrammingSetRow {
   const PdfProgrammingSetRow({
@@ -118,7 +154,7 @@ List<PdfProgrammingSetRow> buildProgrammingSetRows(
       exercise: exercise.name,
       sets: exercise.sets,
       reps: exercise.reps,
-      load: exercise.rpe,
+      load: formatPdfLoad(exercise.rpe),
       notes: exercise.note,
     ),
   ];
@@ -142,13 +178,13 @@ String formatExercisePrescriptionCompact(
 
   if (details.isNotEmpty && details.first.displayText.isNotEmpty) {
     final n = includeExerciseNote ? e.note.trim() : '';
-    final d0 = sanitizePdfText(details.first.displayText);
+    final d0 = formatPdfLoad(details.first.displayText);
     return n.isEmpty ? d0 : '$d0 - ${sanitizePdfText(n)}';
   }
 
   final sets = e.sets.trim();
   final reps = e.reps.trim();
-  final rpe = e.rpe.trim();
+  final rpe = formatPdfLoad(e.rpe);
   final note = includeExerciseNote ? e.note.trim() : '';
   String line;
   if (sets.isNotEmpty && reps.isNotEmpty) {
@@ -165,12 +201,12 @@ String formatExercisePrescriptionCompact(
 String _compactSetFragment(ExerciseSet s, {required Exercise exercise}) {
   if (s.displayText.isNotEmpty) {
     final n = s.note.trim();
-    final display = sanitizePdfText(s.displayText);
+    final display = formatPdfLoad(s.displayText);
     return n.isEmpty ? display : '$display (${sanitizePdfText(n)})';
   }
   final sets = s.sets.trim();
   final reps = s.reps.trim();
-  final load = s.rpe.trim();
+  final load = formatPdfLoad(s.rpe);
   final n = s.note.trim();
   final core = sets.isNotEmpty && reps.isNotEmpty
       ? '${sets}x$reps${load.isNotEmpty ? ' $load' : ''}'
@@ -215,8 +251,8 @@ String _repsForSet(ExerciseSet set, {String fallback = ''}) {
 
 String _loadForSet(ExerciseSet set, {String fallback = ''}) {
   final load = set.rpe.trim();
-  if (load.isNotEmpty) return sanitizePdfText(load);
-  return sanitizePdfText(fallback);
+  if (load.isNotEmpty) return formatPdfLoad(load);
+  return formatPdfLoad(fallback);
 }
 
 String _notesForSet(ExerciseSet set, Exercise exercise, bool includeExerciseNote) {
@@ -289,11 +325,11 @@ String _joinDensePyramidTokens(List<String> tokens) {
 String _compactDenseSetToken(ExerciseSet set) {
   final display = set.displayText.trim();
   if (display.isNotEmpty) {
-    return _compactFromDisplayText(sanitizePdfText(display));
+    return _compactFromDisplayText(formatPdfLoad(display));
   }
   final sets = set.sets.trim();
   final reps = set.reps.trim();
-  final load = sanitizePdfText(set.rpe.trim());
+  final load = formatPdfLoad(set.rpe);
   if (load.startsWith('@')) return load;
   if (sets.isNotEmpty && reps.isNotEmpty && load.isNotEmpty) {
     if (sets == '1') return '$reps@$load';
@@ -316,7 +352,7 @@ String _compactFromDisplayText(String display) {
 
   final oneSet = RegExp(r'^1x(\S+)\s+(.+)$').firstMatch(display);
   if (oneSet != null) {
-    final load = oneSet.group(2)!;
+    final load = formatPdfLoad(oneSet.group(2)!);
     if (load.startsWith('@')) return load;
     return '${oneSet.group(1)}@$load';
   }
@@ -326,7 +362,7 @@ String _compactFromDisplayText(String display) {
     final rest = multi.group(3)?.trim() ?? '';
     final core = '${multi.group(1)}x${multi.group(2)}';
     if (rest.isEmpty) return core;
-    return '$core $rest';
+    return '$core ${formatPdfLoad(rest)}';
   }
 
   return display;

@@ -264,4 +264,36 @@ void main() {
     expect(rows.first.load, '77.5\n82.5');
     expect(rows.first.reps, '5\n4');
   });
+
+  group('formatPdfLoad', () {
+    test('strips float noise from kg loads', () {
+      expect(formatPdfLoad('62.99999999999999kg'), '63kg');
+      expect(formatPdfLoad('${90 * 0.7}kg'), '63kg');
+    });
+
+    test('preserves intentional one-decimal loads', () {
+      expect(formatPdfLoad('77.5'), '77.5');
+      expect(formatPdfLoad('82.5kg'), '82.5kg');
+    });
+
+    test('preserves non-numeric RPE tokens', () {
+      expect(formatPdfLoad('@7'), '@7');
+      expect(formatPdfLoad('bw'), 'bw');
+    });
+
+    test('normalizes near-integer loads in programming rows', () {
+      const exercise = Exercise(
+        id: 'e1',
+        name: 'Squat',
+        sets: '1',
+        reps: '5',
+        rpe: '',
+        setDetails: [
+          ExerciseSet(reps: '5', rpe: '62.99999999999999kg'),
+        ],
+      );
+      final rows = buildProgrammingSetRows(exercise);
+      expect(rows.single.load, '63kg');
+    });
+  });
 }

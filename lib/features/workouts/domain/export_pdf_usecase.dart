@@ -113,10 +113,8 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
         coachHeader: coachHeader,
       ),
       build: (context) => [
-        if (includeMobility) ...[
+        if (includeMobility)
           ..._mobilityWidgets(filtered, labels, dense: dense),
-          pw.NewPage(),
-        ],
         ...programming,
       ],
     ),
@@ -246,46 +244,49 @@ List<pw.Widget> _canonicalProgrammingWidgets(
           ? day.name.trim()
           : labels.dayNumber(entry.key + 1);
       final blocks = partitionExercisesBySuperset(day.exercises);
+      final columnWidths = dense
+          ? const {
+              0: pw.FlexColumnWidth(2.1),
+              1: pw.FlexColumnWidth(2.4),
+              2: pw.FlexColumnWidth(1.5),
+            }
+          : const {
+              0: pw.FlexColumnWidth(2.2),
+              1: pw.FlexColumnWidth(0.38),
+              2: pw.FlexColumnWidth(0.55),
+              3: pw.FlexColumnWidth(0.82),
+              4: pw.FlexColumnWidth(1.55),
+            };
 
       dayWidgets.add(
-        pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-          children: [
-            PdfDocumentTheme.dayTitle(dayTitle, dense: dense),
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: PdfDocumentTheme.border,
-                width: dense ? 0.35 : 0.5,
-              ),
-              columnWidths: dense
-                  ? const {
-                      0: pw.FlexColumnWidth(2.1),
-                      1: pw.FlexColumnWidth(2.4),
-                      2: pw.FlexColumnWidth(1.5),
-                    }
-                  : const {
-                      0: pw.FlexColumnWidth(2.2),
-                      1: pw.FlexColumnWidth(0.38),
-                      2: pw.FlexColumnWidth(0.55),
-                      3: pw.FlexColumnWidth(0.82),
-                      4: pw.FlexColumnWidth(1.55),
-                    },
-              children: [
-                if (entry.key == 0)
+        pw.Inseparable(
+          canSpan: true,
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              PdfDocumentTheme.dayTitle(dayTitle, dense: dense),
+              pw.Table(
+                border: pw.TableBorder.all(
+                  color: PdfDocumentTheme.border,
+                  width: dense ? 0.35 : 0.5,
+                ),
+                columnWidths: columnWidths,
+                children: [
                   PdfDocumentTheme.programmingHeaderRow(
                     labels,
                     dense: dense,
                     prescriptionColumns: dense,
                   ),
-                ...blocks.expand((item) => _tableRowsForBlock(
-                      item,
-                      labels,
-                      dense: dense,
-                    )),
-              ],
-            ),
-            pw.SizedBox(height: dense ? 5 : 10),
-          ],
+                  ...blocks.expand((item) => _tableRowsForBlock(
+                        item,
+                        labels,
+                        dense: dense,
+                      )),
+                ],
+              ),
+              pw.SizedBox(height: dense ? 5 : 10),
+            ],
+          ),
         ),
       );
     }
@@ -310,19 +311,47 @@ Iterable<pw.TableRow> _tableRowsForBlock(
   if (dense) {
     return group.expand((e) => _exerciseRows(e, labels, dense: dense));
   }
-  final headerLabel = labels.superset;
+  if (group.isEmpty) return const [];
+
+  // Canonical supersets: linked names like dense, no dash fillers in Rx cols.
+  final names = group.map((e) => e.name.trim()).where((n) => n.isNotEmpty);
+  final headerLabel = names.isEmpty
+      ? labels.superset
+      : '${labels.superset}: ${names.join(' + ')}';
   return [
     pw.TableRow(
       decoration: pw.BoxDecoration(color: PdfDocumentTheme.supersetBg),
       children: [
         PdfDocumentTheme.tableCell(headerLabel, isSuperset: true, dense: dense),
-        PdfDocumentTheme.tableCell('', isSuperset: true, dense: dense),
-        PdfDocumentTheme.tableCell('', isSuperset: true, dense: dense),
-        PdfDocumentTheme.tableCell('', isSuperset: true, dense: dense),
-        PdfDocumentTheme.tableCell('', isSuperset: true, dense: dense),
+        PdfDocumentTheme.tableCell(
+          '',
+          isSuperset: true,
+          dense: dense,
+          blankIfEmpty: true,
+        ),
+        PdfDocumentTheme.tableCell(
+          '',
+          isSuperset: true,
+          dense: dense,
+          blankIfEmpty: true,
+        ),
+        PdfDocumentTheme.tableCell(
+          '',
+          isSuperset: true,
+          dense: dense,
+          blankIfEmpty: true,
+        ),
+        PdfDocumentTheme.tableCell(
+          '',
+          isSuperset: true,
+          dense: dense,
+          blankIfEmpty: true,
+        ),
       ],
     ),
-    ...group.expand((e) => _exerciseRows(e, labels, dense: dense)),
+    ...group.expand(
+      (e) => _exerciseRows(e, labels, dense: dense, inSuperset: true),
+    ),
   ];
 }
 
@@ -330,6 +359,7 @@ Iterable<pw.TableRow> _exerciseRows(
   Exercise e,
   PdfExportLabels labels, {
   required bool dense,
+  bool inSuperset = false,
 }) {
   final rows = buildProgrammingSetRows(e, dense: dense);
   return rows.map((row) {
@@ -364,9 +394,10 @@ Iterable<pw.TableRow> _exerciseRows(
       );
     }
 
+    final highlight = row.isGrouped || inSuperset;
     return pw.TableRow(
       decoration: pw.BoxDecoration(
-        color: row.isGrouped ? PdfDocumentTheme.exerciseGroupBg : null,
+        color: highlight ? PdfDocumentTheme.exerciseGroupBg : null,
         border: pw.Border(
           bottom: pw.BorderSide(
             color: PdfDocumentTheme.border,
@@ -377,7 +408,7 @@ Iterable<pw.TableRow> _exerciseRows(
       children: [
         PdfDocumentTheme.programmingExerciseCell(
           row.exercise,
-          highlight: row.isGrouped,
+          highlight: highlight,
           emptyPlaceholder: labels.emptyValue,
           dense: dense,
         ),
@@ -462,10 +493,6 @@ List<pw.Widget> _denseProgrammingWidgets(
   for (var d = 0; d < daySlots; d++) {
     if (!weeks.any((w) => d < w.days.length)) continue;
 
-    if (d > 0) {
-      out.add(pw.NewPage());
-    }
-
     final dayTitle = () {
       for (final w in weeks) {
         if (d < w.days.length) {
@@ -478,7 +505,6 @@ List<pw.Widget> _denseProgrammingWidgets(
 
     final dayRows = buildDenseDayRows(weeks: weeks, dayIndex: d);
     if (dayRows.isEmpty) {
-      out.add(pw.SizedBox(height: 4));
       continue;
     }
 
@@ -509,6 +535,7 @@ List<pw.Widget> _denseProgrammingWidgets(
 
     final tableRows = <pw.TableRow>[
       pw.TableRow(
+        repeat: true,
         decoration: pw.BoxDecoration(color: PdfDocumentTheme.tableHeaderBg),
         children: headerCells,
       ),
