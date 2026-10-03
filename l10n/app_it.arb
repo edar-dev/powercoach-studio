@@ -1852,6 +1852,7 @@
   "settingsHubSyncPill": "Dati locali attivi",
   "settingsNavPersonalInfo": "Informazioni personali",
   "settingsNavPdfBrand": "Brand PDF",
+  "settingsNavDataHealth": "Salute dati",
   "settingsNavSubscription": "Abbonamento",
   "settingsNavNotifications": "Notifiche & Promemoria",
   "settingsNavBackup": "Backup offline & Cloud",
@@ -2030,6 +2031,47 @@
   "pdfBrandLogoTooLarge": "Logo troppo grande (max circa 1,5 MB; su web limite più basso)",
   "pdfBrandSavedMessage": "Brand PDF salvato",
   "pdfBrandSaveError": "Salvataggio brand PDF non riuscito",
+  "dataHealthTitle": "Salute dati",
+  "dataHealthSubtitle": "Analizza i dati locali per problemi di integrità. La riparazione sicura rimuove solo id orfani da pin e recenti.",
+  "dataHealthScanAction": "Analizza",
+  "dataHealthRescanAction": "Rianalizza",
+  "dataHealthNoIssues": "Nessun problema trovato",
+  "dataHealthFindingsCount": "{count} risultati",
+  "@dataHealthFindingsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dataHealthClearOrphanPrefs": "Pulisci pin e recenti orfani",
+  "dataHealthClearOrphanPrefsConfirmTitle": "Pulire gli id esercizio orfani?",
+  "dataHealthClearOrphanPrefsConfirmMessage": "Rimuove solo gli id esercizio orfani dalle liste pin e recenti. Schede e altre entità non vengono eliminate.",
+  "dataHealthClearedOrphansSnack": "Rimossi {count} id esercizio orfani",
+  "@dataHealthClearedOrphansSnack": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dataHealthScanFailed": "Impossibile analizzare i dati locali",
+  "dataHealthRepairFailed": "Impossibile pulire pin e recenti orfani",
+  "dataHealthNotSignedIn": "Accedi per analizzare i dati locali di questo account.",
+  "dataHealthScannedMeta": "{count} entità · {timestamp}",
+  "@dataHealthScannedMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "timestamp": {
+        "type": "String"
+      }
+    }
+  },
+  "dataHealthSeverityError": "Errore",
+  "dataHealthSeverityWarning": "Avviso",
+  "dataHealthSeverityInfo": "Info",
   "customerPdfHeaderSection": "Header PDF",
   "customerUseCustomPdfHeader": "Header PDF personalizzato",
   "customerUseCustomPdfHeaderSubtitle": "Sostituisce il nome studio solo per questo cliente",

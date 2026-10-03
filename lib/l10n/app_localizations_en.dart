@@ -3897,6 +3897,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsNavPdfBrand => 'PDF brand';
 
   @override
+  String get settingsNavDataHealth => 'Data health';
+
+  @override
   String get settingsNavSubscription => 'Subscription';
 
   @override
@@ -4299,6 +4302,68 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfBrandSaveError => 'Could not save PDF brand';
+
+  @override
+  String get dataHealthTitle => 'Data health';
+
+  @override
+  String get dataHealthSubtitle =>
+      'Scan local data for integrity issues. Safe repair clears orphan pin and recent exercise ids only.';
+
+  @override
+  String get dataHealthScanAction => 'Scan';
+
+  @override
+  String get dataHealthRescanAction => 'Rescan';
+
+  @override
+  String get dataHealthNoIssues => 'No issues found';
+
+  @override
+  String dataHealthFindingsCount(int count) {
+    return '$count findings';
+  }
+
+  @override
+  String get dataHealthClearOrphanPrefs => 'Clear orphan pins & recents';
+
+  @override
+  String get dataHealthClearOrphanPrefsConfirmTitle =>
+      'Clear orphan exercise ids?';
+
+  @override
+  String get dataHealthClearOrphanPrefsConfirmMessage =>
+      'Removes orphan exercise ids from pinned and recent lists only. Workout plans and other entities are not deleted.';
+
+  @override
+  String dataHealthClearedOrphansSnack(int count) {
+    return 'Cleared $count orphan exercise ids';
+  }
+
+  @override
+  String get dataHealthScanFailed => 'Could not scan local data';
+
+  @override
+  String get dataHealthRepairFailed =>
+      'Could not clear orphan pins and recents';
+
+  @override
+  String get dataHealthNotSignedIn =>
+      'Sign in to scan local data for this account.';
+
+  @override
+  String dataHealthScannedMeta(int count, String timestamp) {
+    return '$count entities · $timestamp';
+  }
+
+  @override
+  String get dataHealthSeverityError => 'Error';
+
+  @override
+  String get dataHealthSeverityWarning => 'Warning';
+
+  @override
+  String get dataHealthSeverityInfo => 'Info';
 
   @override
   String get customerPdfHeaderSection => 'PDF header';
