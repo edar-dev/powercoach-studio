@@ -41,16 +41,34 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if ! command -v dart >/dev/null 2>&1; then
+resolve_dart() {
+  if command -v dart >/dev/null 2>&1; then
+    command -v dart
+    return 0
+  fi
+  if command -v flutter >/dev/null 2>&1; then
+    local flutter_bin
+    flutter_bin="$(command -v flutter)"
+    local sibling
+    sibling="$(cd "$(dirname "${flutter_bin}")" && pwd)/dart"
+    if [[ -x "${sibling}" ]]; then
+      echo "${sibling}"
+      return 0
+    fi
+  fi
+  return 1
+}
+
+DART_BIN="$(resolve_dart)" || {
   echo "error: dart not found. Install Dart SDK (or Flutter SDK), then retry." >&2
   exit 1
-fi
+}
 
 cd "${REPO_ROOT}"
 
 if [[ "${REFRESH_REGISTRY}" -eq 1 ]]; then
   echo "Refreshing registry fixture..."
-  dart run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.json
+  "${DART_BIN}" run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.json
 fi
 
 if [[ "${LIVE}" -eq 1 ]]; then
@@ -59,4 +77,4 @@ else
   echo "Dry-run ingest (no Docker / credentials required)..."
 fi
 
-dart run tool/openmetadata/ingestion/ingest_from_registry.dart "${PASSTHROUGH[@]+"${PASSTHROUGH[@]}"}"
+"${DART_BIN}" run tool/openmetadata/ingestion/ingest_from_registry.dart "${PASSTHROUGH[@]+"${PASSTHROUGH[@]}"}"
