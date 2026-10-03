@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/remote/cloud_save_error_message.dart';
 import '../../../core/ui/widgets/app_sheet.dart';
 import '../../../core/ui/widgets/app_snackbar.dart';
 import '../data/custom_exercise_repository.dart';
@@ -63,7 +64,8 @@ class ExerciseLibraryClearHandler {
       );
     } catch (e) {
       if (!context.mounted) return;
-      showAppSnackBar(context, content: Text(e.toString()));
+      final msg = tryCloudSaveErrorMessage(e, l10n) ?? e.toString();
+      showAppSnackBar(context, content: Text(msg));
     }
   }
 }

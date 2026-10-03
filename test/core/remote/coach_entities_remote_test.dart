@@ -1,8 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:powercoach_studio/core/backup/local_data_probe.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_exceptions.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_remote.dart';
+import 'package:powercoach_studio/core/remote/coach_entities_sync_coordinator.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
 import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
@@ -233,6 +235,42 @@ void main() {
         ),
       );
       expect(fake.upsertCalls, 0);
+    });
+
+    test('defers pull when remote empty and local coach data exists', () async {
+      final fake = FakeCoachEntitiesRemote();
+      await OfflineLocalStore.instance.upsertEntity(
+        OfflineEntity(
+          id: 'local-c',
+          type: OfflineEntityType.customer,
+          scopeId: userId,
+          payload: <String, dynamic>{'id': 'local-c', 'userId': userId},
+          updatedAt: DateTime.utc(2026, 9, 1),
+        ),
+      );
+
+      final coordinator = CoachEntitiesSyncCoordinator(
+        remote: fake,
+        support: OfflineRepositorySupport(
+          remote: fake,
+          resolveUserId: () => userId,
+          isOnline: () => true,
+        ),
+        localProbe: LocalDataProbe(),
+      );
+
+      expect(await coordinator.shouldDeferPullForMigration(userId), isTrue);
+
+      fake.seed(
+        OfflineEntity(
+          id: 'remote-c',
+          type: OfflineEntityType.customer,
+          scopeId: userId,
+          payload: <String, dynamic>{'id': 'remote-c'},
+          updatedAt: DateTime.utc(2026, 10, 1),
+        ),
+      );
+      expect(await coordinator.shouldDeferPullForMigration(userId), isFalse);
     });
   });
 }

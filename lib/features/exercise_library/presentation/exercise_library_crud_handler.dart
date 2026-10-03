@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import '../../../core/remote/cloud_save_error_message.dart';
+import '../../../core/ui/widgets/app_sheet.dart';
 import '../data/custom_exercise_item.dart';
 import '../data/custom_exercise_repository.dart';
 import '../domain/exercise_library_tree_helpers.dart';
@@ -67,9 +68,10 @@ class ExerciseLibraryCrudHandler {
             }
           } catch (e) {
             if (sheetContext.mounted) {
+              final msg = tryCloudSaveErrorMessage(e, l10n) ?? e.toString();
               ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(e.toString()),
+                  content: Text(msg),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -113,9 +115,10 @@ class ExerciseLibraryCrudHandler {
             }
           } catch (e) {
             if (sheetContext.mounted) {
+              final msg = tryCloudSaveErrorMessage(e, l10n) ?? e.toString();
               ScaffoldMessenger.of(sheetContext).showSnackBar(
                 SnackBar(
-                  content: Text(e.toString()),
+                  content: Text(msg),
                   behavior: SnackBarBehavior.floating,
                 ),
               );
@@ -158,9 +161,10 @@ class ExerciseLibraryCrudHandler {
       onReload();
     } catch (e) {
       if (context.mounted) {
+        final msg = tryCloudSaveErrorMessage(e, l10n) ?? e.toString();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(e.toString()),
+            content: Text(msg),
             behavior: SnackBarBehavior.floating,
           ),
         );

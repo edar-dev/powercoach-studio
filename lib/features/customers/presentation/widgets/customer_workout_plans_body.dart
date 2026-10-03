@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
@@ -300,7 +301,9 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.workoutDeleteError),
+          content: Text(
+            tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutDeleteError,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
