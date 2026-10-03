@@ -1180,6 +1180,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String get cloudRecoveryNotNow => 'Not now';
 
   @override
+  String get coachEntitiesMigrationTitle =>
+      'Upload your coach data to the cloud';
+
+  @override
+  String get coachEntitiesMigrationMessage =>
+      'Your clients and workout plans are still only on this device. We will upload them to your account so they stay available across devices.';
+
+  @override
+  String get coachEntitiesMigrationPreparing => 'Preparing upload…';
+
+  @override
+  String coachEntitiesMigrationProgress(int done, int total) {
+    return 'Uploading $done of $total…';
+  }
+
+  @override
+  String get coachEntitiesMigrationSuccess =>
+      'Coach data uploaded to the cloud.';
+
+  @override
+  String get coachEntitiesMigrationFailure =>
+      'Could not upload your coach data.';
+
+  @override
+  String coachEntitiesMigrationFailureDetail(String error) {
+    return 'Error: $error';
+  }
+
+  @override
+  String get coachEntitiesMigrationRetry => 'Retry';
+
+  @override
   String get settingsLegalSectionTitle => 'Legal & privacy';
 
   @override

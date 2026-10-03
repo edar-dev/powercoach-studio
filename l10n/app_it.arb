@@ -488,6 +488,25 @@
   "cloudRecoveryMessage": "Non ci sono clienti o schede sul dispositivo, ma esistono snapshot cloud. Vuoi ripristinare l’ultimo backup?",
   "cloudRecoveryRestore": "Ripristina",
   "cloudRecoveryNotNow": "Non ora",
+  "coachEntitiesMigrationTitle": "Carica i tuoi dati coach nel cloud",
+  "coachEntitiesMigrationMessage": "Clienti e schede sono ancora solo su questo dispositivo. Li caricheremo sul tuo account così restano disponibili su altri dispositivi.",
+  "coachEntitiesMigrationPreparing": "Preparazione caricamento…",
+  "coachEntitiesMigrationProgress": "Caricamento {done} di {total}…",
+  "@coachEntitiesMigrationProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "coachEntitiesMigrationSuccess": "Dati coach caricati nel cloud.",
+  "coachEntitiesMigrationFailure": "Impossibile caricare i dati coach.",
+  "coachEntitiesMigrationFailureDetail": "Errore: {error}",
+  "@coachEntitiesMigrationFailureDetail": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "coachEntitiesMigrationRetry": "Riprova",
   "settingsLegalSectionTitle": "Legale e privacy",
   "settingsLegalPrivacy": "Informativa privacy",
   "settingsLegalTerms": "Termini di servizio",

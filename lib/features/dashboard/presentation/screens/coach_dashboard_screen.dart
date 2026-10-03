@@ -71,6 +71,13 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     });
     if (!_backupOnboardingScheduled && widget.loadSnapshot == null) {
       _backupOnboardingScheduled = true;
+      final migrated = await WebPersistenceCoordinator.instance
+          .maybeRunCoachEntitiesMigrationIfNeeded(context);
+      if (!mounted) return;
+      if (migrated) {
+        await _reloadStatsAfterRecovery();
+        if (!mounted) return;
+      }
       final restored = await WebPersistenceCoordinator.instance
           .maybeShowCloudRecoveryIfNeeded(context);
       if (!mounted) return;

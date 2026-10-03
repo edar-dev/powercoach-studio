@@ -2192,6 +2192,54 @@ abstract class AppLocalizations {
   /// **'Not now'**
   String get cloudRecoveryNotNow;
 
+  /// No description provided for @coachEntitiesMigrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload your coach data to the cloud'**
+  String get coachEntitiesMigrationTitle;
+
+  /// No description provided for @coachEntitiesMigrationMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your clients and workout plans are still only on this device. We will upload them to your account so they stay available across devices.'**
+  String get coachEntitiesMigrationMessage;
+
+  /// No description provided for @coachEntitiesMigrationPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing upload…'**
+  String get coachEntitiesMigrationPreparing;
+
+  /// No description provided for @coachEntitiesMigrationProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading {done} of {total}…'**
+  String coachEntitiesMigrationProgress(int done, int total);
+
+  /// No description provided for @coachEntitiesMigrationSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach data uploaded to the cloud.'**
+  String get coachEntitiesMigrationSuccess;
+
+  /// No description provided for @coachEntitiesMigrationFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not upload your coach data.'**
+  String get coachEntitiesMigrationFailure;
+
+  /// No description provided for @coachEntitiesMigrationFailureDetail.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {error}'**
+  String coachEntitiesMigrationFailureDetail(String error);
+
+  /// No description provided for @coachEntitiesMigrationRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get coachEntitiesMigrationRetry;
+
   /// No description provided for @settingsLegalSectionTitle.
   ///
   /// In en, this message translates to:

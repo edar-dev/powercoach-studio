@@ -51,4 +51,13 @@ abstract final class SettingsPrefsKeys {
 
   /// ISO8601 timestamp of the last successful sync-on-open cloud merge.
   static const lastCloudSyncAt = 'last_cloud_sync_at_v1';
+
+  /// Prefix for per-user one-shot coach_entities local→remote migration flag.
+  /// Full key: `coach_entities_migration_v1_<userId>`.
+  static const coachEntitiesMigrationCompletePrefix =
+      'coach_entities_migration_v1_';
+
+  /// SharedPreferences key marking migration upload complete for [userId].
+  static String coachEntitiesMigrationCompleteKey(String userId) =>
+      '$coachEntitiesMigrationCompletePrefix$userId';
 }

@@ -53,8 +53,9 @@ Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** part o
 ### Migration (existing coaches)
 
 If remote is empty and the device (or backup) has non-deleted entities → **one-shot
-upload** (idempotent upsert on PK) with progress UI; mark complete in prefs per user.
-See migration UI in Settings / first-run gate.
+upload** (idempotent upsert on PK) with progress UI; mark complete in prefs per user
+(`coach_entities_migration_v1_<userId>`). The dashboard gate runs
+`CoachEntitiesMigrationService` after sign-in (before empty-local cloud recovery).
 
 ### Cloud Storage snapshots
 
@@ -82,9 +83,10 @@ safety net (manual + automatic scheduler). They are **not** a substitute for
 
 - `supabase/migrations/*_coach_entities.sql` — table, indexes, RLS
 - `lib/core/remote/coach_entities_remote.dart` — list/upsert/soft-delete/pull
+- `lib/core/remote/coach_entities_migration_service.dart` — one-shot local→remote upload
 - `lib/core/sync/offline_repository_support.dart` — remote-first helper + Drift cache
 - `lib/core/storage/offline_local_store.dart` — Drift cache
-- `lib/core/backup/user_data_backup_service.dart` — export / restore-to-remote
+- `lib/core/backup/user_data_backup_service.dart` — export / restore-to-remote (+ cache pull)
 - `lib/core/data_quality/` — soft-FK / orphan scans on pulled or backup JSON
 
 ### Data catalog & quality

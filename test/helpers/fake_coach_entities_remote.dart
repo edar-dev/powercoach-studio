@@ -8,9 +8,11 @@ class FakeCoachEntitiesRemote extends CoachEntitiesRemote {
 
   final Map<String, OfflineEntity> _byKey = <String, OfflineEntity>{};
   int upsertCalls = 0;
+  int upsertAllCalls = 0;
   int softDeleteCalls = 0;
   int pullCalls = 0;
   bool failNextWrite = false;
+  bool failNextUpsertAll = false;
   Object writeError = CoachEntitiesRemoteException('fake write failure');
 
   String _key(OfflineEntityType type, String id) => '${type.name}::$id';
@@ -91,6 +93,13 @@ class FakeCoachEntitiesRemote extends CoachEntitiesRemote {
 
   @override
   Future<void> upsertAll(List<OfflineEntity> entities) async {
+    upsertAllCalls++;
+    if (failNextUpsertAll) {
+      failNextUpsertAll = false;
+      final err = writeError;
+      if (err is Exception) throw err;
+      throw CoachEntitiesRemoteException('$err');
+    }
     for (final entity in entities) {
       await upsert(entity);
     }
