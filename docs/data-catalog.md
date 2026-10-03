@@ -103,5 +103,15 @@ this document + the Dart registry remain authoritative. Not used in CI.
 
 ## Data quality
 
-Scanners under `lib/core/data_quality/` (when present) should read soft-reference
-metadata from this registry rather than hard-coding FK field names.
+Read-only scanner: `lib/core/data_quality/` (driven by registry soft refs).
+
+```bash
+# Fixture / unit tests
+flutter test test/core/data_quality/
+
+# Report on a backup file (JSON or Markdown)
+dart run tool/data_quality_report.dart path/to/backup.json
+dart run tool/data_quality_report.dart path/to/backup.json --format markdown
+```
+
+Findings are report-only — no auto-delete or repair.

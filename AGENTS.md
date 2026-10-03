@@ -11,6 +11,7 @@
 - **No GymBlog.API**, no `GYMBLOG_API_URL`, no remote sync replay unless an approved plan explicitly reintroduces it.
 - **No third-party workout APIs** (Hevy and similar integrations were removed; do not reintroduce without an approved plan).
 - **Backup/restore:** JSON export/import is the official multi-device path (`UserDataBackupService`). Restore is always full (merge or replace-all); selective entity-group restore was removed.
+- **Data catalog:** in-repo registry at `lib/core/data_catalog/` — see `docs/data-catalog.md`. Optional OM spike under `tool/openmetadata/`. Read-only quality scanner: `lib/core/data_quality/`.
 - **Removed product surfaces (do not reintroduce without a plan):** gym hub, plan-diff, coach stats, release notes, density/EMOM blocks, progression chips, session check-in RPE/pain, Day coaching notes, manual ReminderStore, exercise PR records, Hevy.
 
 ## CI / Flutter version

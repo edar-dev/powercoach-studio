@@ -85,3 +85,11 @@ If remote sync returns, require a new approved plan before reintroducing:
 - `lib/core/backup/sync_on_open_service.dart` — merge when cloud is newer
 - `lib/core/backup/web_persistence_coordinator.dart` — persist + recovery + auth hooks
 - `lib/core/sync/offline_models.dart` / `offline_repository_support.dart` — local entity models
+
+### Data catalog & quality
+
+Entity shapes, soft FKs, and storage loci are documented in
+[`docs/data-catalog.md`](data-catalog.md) (source of truth:
+`lib/core/data_catalog/`). Optional local OpenMetadata spike:
+`tool/openmetadata/`. Read-only data-quality scanner:
+`lib/core/data_quality/` (`dart run tool/data_quality_report.dart <backup.json>`).
