@@ -54,7 +54,7 @@ void main() {
               ],
             },
           ],
-      ?'sessionExecutions': sessionExecutions,
+      'sessionExecutions': ?sessionExecutions,
     });
   }
 
