@@ -97,9 +97,10 @@ dart run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.j
 
 ## OpenMetadata spike (optional, local only)
 
-See [`tool/openmetadata/README.md`](../tool/openmetadata/README.md) for Docker
-Compose start/stop and custom ingestion from the registry JSON. OM is a viewer;
-this document + the Dart registry remain authoritative. Not used in CI.
+Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,down}.sh`
+(see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md)). OM is a
+viewer only; this document + the Dart registry remain authoritative. Not used
+in CI; never expose the default `admin`/`admin` stack publicly.
 
 ## Data quality
 
