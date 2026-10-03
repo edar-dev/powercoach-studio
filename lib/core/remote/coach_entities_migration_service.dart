@@ -66,14 +66,18 @@ class CoachEntitiesMigrationService {
   final bool Function() _isOnline;
   final Future<SharedPreferences> Function() _prefsLoader;
 
-  /// True when remote is empty, local has coach data, and prefs flag is unset.
+  /// True when local coach data still needs (or must retry) one-shot upload.
+  ///
+  /// Includes partial-failure retry: migration started, prefs not complete, and
+  /// remote may already contain some rows from earlier chunks.
   Future<bool> needsMigration(String userId) async {
     if (userId.isEmpty) return false;
     if (await isMigrationComplete(userId)) return false;
+    final hasLocal = await _localProbe.hasAnyNonDeletedEntities(userId);
+    if (!hasLocal) return false;
     final remoteEmpty = await _remote.isRemoteEmpty();
-    if (!remoteEmpty) return false;
-    final localEmpty = await _localProbe.isCoachDataEmpty(userId);
-    return !localEmpty;
+    if (remoteEmpty) return true;
+    return isMigrationStarted(userId);
   }
 
   Future<bool> isMigrationComplete(String userId) async {
@@ -81,6 +85,15 @@ class CoachEntitiesMigrationService {
     final prefs = await _prefsLoader();
     return prefs.getBool(
           SettingsPrefsKeys.coachEntitiesMigrationCompleteKey(userId),
+        ) ==
+        true;
+  }
+
+  Future<bool> isMigrationStarted(String userId) async {
+    if (userId.isEmpty) return false;
+    final prefs = await _prefsLoader();
+    return prefs.getBool(
+          SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
         ) ==
         true;
   }
@@ -119,6 +132,10 @@ class CoachEntitiesMigrationService {
       return;
     }
 
+    // Mark started before the first upsert so a mid-chunk failure cannot let
+    // login/resume pull replace Drift with a partial remote snapshot.
+    await markMigrationStarted(userId);
+
     const chunkSize = CoachEntitiesRemote.upsertChunkSize;
     for (var i = 0; i < entities.length; i += chunkSize) {
       final end = (i + chunkSize < entities.length)
@@ -142,12 +159,25 @@ class CoachEntitiesMigrationService {
   }
 
   @visibleForTesting
+  Future<void> markMigrationStarted(String userId) async {
+    if (userId.isEmpty) return;
+    final prefs = await _prefsLoader();
+    await prefs.setBool(
+      SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
+      true,
+    );
+  }
+
+  @visibleForTesting
   Future<void> markMigrationComplete(String userId) async {
     if (userId.isEmpty) return;
     final prefs = await _prefsLoader();
     await prefs.setBool(
       SettingsPrefsKeys.coachEntitiesMigrationCompleteKey(userId),
       true,
+    );
+    await prefs.remove(
+      SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
     );
   }
 
@@ -157,6 +187,9 @@ class CoachEntitiesMigrationService {
     final prefs = await _prefsLoader();
     await prefs.remove(
       SettingsPrefsKeys.coachEntitiesMigrationCompleteKey(userId),
+    );
+    await prefs.remove(
+      SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
     );
   }
 

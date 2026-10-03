@@ -72,7 +72,7 @@ void main() {
     expect(await service.needsMigration(userId), isFalse);
   });
 
-  test('needsMigration false when remote has data', () async {
+  test('needsMigration false when remote has data and never started', () async {
     await seedLocalCustomer();
     fake.seed(
       OfflineEntity(
@@ -84,6 +84,22 @@ void main() {
       ),
     );
     expect(await service.needsMigration(userId), isFalse);
+  });
+
+  test('needsMigration true for partial upload retry (started, remote not empty)',
+      () async {
+    await seedLocalCustomer();
+    await service.markMigrationStarted(userId);
+    fake.seed(
+      OfflineEntity(
+        id: 'partial-c',
+        type: OfflineEntityType.customer,
+        scopeId: userId,
+        payload: const <String, dynamic>{'id': 'partial-c'},
+        updatedAt: DateTime.utc(2026, 10, 1),
+      ),
+    );
+    expect(await service.needsMigration(userId), isTrue);
   });
 
   test('needsMigration false when local coach data empty', () async {
@@ -140,5 +156,20 @@ void main() {
 
     await service.runMigration(userId: userId);
     expect(fake.upsertAllCalls, before);
+  });
+
+  test('runMigration marks started before upsert so failure can retry safely',
+      () async {
+    await seedLocalCustomer();
+    fake.failNextUpsertAll = true;
+
+    await expectLater(
+      service.runMigration(userId: userId),
+      throwsA(isA<Object>()),
+    );
+
+    expect(await service.isMigrationStarted(userId), isTrue);
+    expect(await service.isMigrationComplete(userId), isFalse);
+    expect(await service.needsMigration(userId), isTrue);
   });
 }

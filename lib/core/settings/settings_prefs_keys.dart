@@ -60,4 +60,12 @@ abstract final class SettingsPrefsKeys {
   /// SharedPreferences key marking migration upload complete for [userId].
   static String coachEntitiesMigrationCompleteKey(String userId) =>
       '$coachEntitiesMigrationCompletePrefix$userId';
+
+  /// Prefix for in-progress migration (set before first upsert; cleared on success).
+  /// Full key: `coach_entities_migration_started_v1_<userId>`.
+  static const coachEntitiesMigrationStartedPrefix =
+      'coach_entities_migration_started_v1_';
+
+  static String coachEntitiesMigrationStartedKey(String userId) =>
+      '$coachEntitiesMigrationStartedPrefix$userId';
 }

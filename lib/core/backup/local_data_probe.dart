@@ -31,6 +31,22 @@ class LocalDataProbe {
     return true;
   }
 
+  /// True when [userId] has any non-deleted known [OfflineEntityType] row.
+  ///
+  /// Broader than [isCoachDataEmpty] (customers/plans only) — used for
+  /// migration pull-defer so library-only coaches are not wiped.
+  Future<bool> hasAnyNonDeletedEntities(String userId) async {
+    if (userId.isEmpty) return false;
+    final entities = await _store.listEntitiesJsonForBackup(userId);
+    for (final raw in entities) {
+      if (raw['deleted'] == true) continue;
+      if (isKnownOfflineEntityTypeName(raw['type']?.toString())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /// Newest `updatedAt` across all local entities for [userId], or null.
   Future<DateTime?> maxEntityUpdatedAt(String userId) async {
     if (userId.isEmpty) return null;
