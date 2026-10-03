@@ -9,6 +9,7 @@ enum SettingsHubSection {
   subscription,
   notifications,
   backup,
+  dataHealth,
   language,
   privacy,
   terms,
@@ -58,6 +59,11 @@ class SettingsHubNav extends StatelessWidget {
         section: SettingsHubSection.backup,
         label: l10n.settingsNavBackup,
         icon: Icons.cloud_outlined,
+      ),
+      _NavItem(
+        section: SettingsHubSection.dataHealth,
+        label: l10n.settingsNavDataHealth,
+        icon: Icons.health_and_safety_outlined,
       ),
       _NavItem(
         section: SettingsHubSection.language,

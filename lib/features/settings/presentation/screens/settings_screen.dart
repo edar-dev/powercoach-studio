@@ -325,6 +325,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case SettingsHubSection.pdfBrand:
         navigatePush(context, AppPaths.pdfBrand);
         return;
+      case SettingsHubSection.dataHealth:
+        navigatePush(context, AppPaths.dataHealth);
+        return;
       case SettingsHubSection.language:
         showSettingsLanguagePicker(context: context, l10n: AppLocalizations.of(context));
         return;

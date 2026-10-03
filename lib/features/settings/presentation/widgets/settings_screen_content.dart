@@ -233,6 +233,25 @@ class SettingsScreenContent extends StatelessWidget {
           ListTile(
             contentPadding: EdgeInsets.zero,
             leading: const Icon(
+              Icons.health_and_safety_outlined,
+              color: StitchMobileColors.onSurfaceVariant,
+            ),
+            title: Text(
+              l10n.settingsNavDataHealth,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: StitchMobileColors.onSurface,
+              ),
+            ),
+            trailing: const Icon(
+              Icons.chevron_right,
+              size: 16,
+              color: StitchMobileColors.outline,
+            ),
+            onTap: () => onSectionSelected(SettingsHubSection.dataHealth),
+          ),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
               Icons.credit_card_outlined,
               color: StitchMobileColors.onSurfaceVariant,
             ),

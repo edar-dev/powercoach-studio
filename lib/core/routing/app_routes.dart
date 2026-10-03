@@ -17,6 +17,7 @@ import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_
 import 'package:powercoach_studio/features/dashboard/presentation/screens/schedule_detail_screen.dart';
 import 'package:powercoach_studio/features/exercise_library/presentation/screens/exercise_library_screen.dart';
 import 'package:powercoach_studio/features/landing/presentation/screens/landing_screen.dart';
+import 'package:powercoach_studio/features/settings/presentation/screens/data_health_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/pdf_brand_settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/personal_info_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
@@ -135,6 +136,11 @@ List<RouteBase> buildAppRoutes() {
           path: 'pdf-brand',
           parentNavigatorKey: appRootNavigatorKey,
           builder: (context, state) => const PdfBrandSettingsScreen(),
+        ),
+        GoRoute(
+          path: 'data-health',
+          parentNavigatorKey: appRootNavigatorKey,
+          builder: (context, state) => const DataHealthScreen(),
         ),
         GoRoute(
           path: 'subscription',

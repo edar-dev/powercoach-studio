@@ -20,4 +20,7 @@ abstract final class AppPaths {
 
   /// PDF brand kit (studio name, accent, logo, disclaimer).
   static const pdfBrand = '/settings/pdf-brand';
+
+  /// Local data health scan and safe preference orphan repair.
+  static const dataHealth = '/settings/data-health';
 }

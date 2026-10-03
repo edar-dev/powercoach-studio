@@ -3936,6 +3936,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsNavPdfBrand => 'Brand PDF';
 
   @override
+  String get settingsNavDataHealth => 'Salute dati';
+
+  @override
   String get settingsNavSubscription => 'Abbonamento';
 
   @override
@@ -4340,6 +4343,50 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pdfBrandSaveError => 'Salvataggio brand PDF non riuscito';
+
+  @override
+  String get dataHealthTitle => 'Salute dati';
+
+  @override
+  String get dataHealthSubtitle =>
+      'Analizza i dati locali per problemi di integrità. La riparazione sicura rimuove solo id orfani da pin e recenti.';
+
+  @override
+  String get dataHealthScanAction => 'Analizza';
+
+  @override
+  String get dataHealthRescanAction => 'Rianalizza';
+
+  @override
+  String get dataHealthNoIssues => 'Nessun problema trovato';
+
+  @override
+  String dataHealthFindingsCount(int count) {
+    return '$count risultati';
+  }
+
+  @override
+  String get dataHealthClearOrphanPrefs => 'Pulisci pin e recenti orfani';
+
+  @override
+  String get dataHealthClearOrphanPrefsConfirmTitle =>
+      'Pulire gli id esercizio orfani?';
+
+  @override
+  String get dataHealthClearOrphanPrefsConfirmMessage =>
+      'Rimuove solo gli id esercizio orfani dalle liste pin e recenti. Schede e altre entità non vengono eliminate.';
+
+  @override
+  String dataHealthClearedOrphansSnack(int count) {
+    return 'Rimossi $count id esercizio orfani';
+  }
+
+  @override
+  String get dataHealthScanFailed => 'Impossibile analizzare i dati locali';
+
+  @override
+  String get dataHealthNotSignedIn =>
+      'Accedi per analizzare i dati locali di questo account.';
 
   @override
   String get customerPdfHeaderSection => 'Header PDF';

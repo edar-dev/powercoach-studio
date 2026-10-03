@@ -7008,6 +7008,12 @@ abstract class AppLocalizations {
   /// **'PDF brand'**
   String get settingsNavPdfBrand;
 
+  /// No description provided for @settingsNavDataHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Data health'**
+  String get settingsNavDataHealth;
+
   /// No description provided for @settingsNavSubscription.
   ///
   /// In en, this message translates to:
@@ -7745,6 +7751,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not save PDF brand'**
   String get pdfBrandSaveError;
+
+  /// No description provided for @dataHealthTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Data health'**
+  String get dataHealthTitle;
+
+  /// No description provided for @dataHealthSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan local data for integrity issues. Safe repair clears orphan pin and recent exercise ids only.'**
+  String get dataHealthSubtitle;
+
+  /// No description provided for @dataHealthScanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get dataHealthScanAction;
+
+  /// No description provided for @dataHealthRescanAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Rescan'**
+  String get dataHealthRescanAction;
+
+  /// No description provided for @dataHealthNoIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'No issues found'**
+  String get dataHealthNoIssues;
+
+  /// No description provided for @dataHealthFindingsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} findings'**
+  String dataHealthFindingsCount(int count);
+
+  /// No description provided for @dataHealthClearOrphanPrefs.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear orphan pins & recents'**
+  String get dataHealthClearOrphanPrefs;
+
+  /// No description provided for @dataHealthClearOrphanPrefsConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear orphan exercise ids?'**
+  String get dataHealthClearOrphanPrefsConfirmTitle;
+
+  /// No description provided for @dataHealthClearOrphanPrefsConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Removes orphan exercise ids from pinned and recent lists only. Workout plans and other entities are not deleted.'**
+  String get dataHealthClearOrphanPrefsConfirmMessage;
+
+  /// No description provided for @dataHealthClearedOrphansSnack.
+  ///
+  /// In en, this message translates to:
+  /// **'Cleared {count} orphan exercise ids'**
+  String dataHealthClearedOrphansSnack(int count);
+
+  /// No description provided for @dataHealthScanFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not scan local data'**
+  String get dataHealthScanFailed;
+
+  /// No description provided for @dataHealthNotSignedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to scan local data for this account.'**
+  String get dataHealthNotSignedIn;
 
   /// No description provided for @customerPdfHeaderSection.
   ///

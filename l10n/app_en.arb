@@ -1893,6 +1893,7 @@
   "settingsHubSyncPill": "Local data active",
   "settingsNavPersonalInfo": "Personal info",
   "settingsNavPdfBrand": "PDF brand",
+  "settingsNavDataHealth": "Data health",
   "settingsNavSubscription": "Subscription",
   "settingsNavNotifications": "Notifications & Reminders",
   "settingsNavBackup": "Offline & Cloud backup",
@@ -2071,6 +2072,32 @@
   "pdfBrandLogoTooLarge": "Logo too large (max about 1.5 MB; lower limit on web)",
   "pdfBrandSavedMessage": "PDF brand saved",
   "pdfBrandSaveError": "Could not save PDF brand",
+  "dataHealthTitle": "Data health",
+  "dataHealthSubtitle": "Scan local data for integrity issues. Safe repair clears orphan pin and recent exercise ids only.",
+  "dataHealthScanAction": "Scan",
+  "dataHealthRescanAction": "Rescan",
+  "dataHealthNoIssues": "No issues found",
+  "dataHealthFindingsCount": "{count} findings",
+  "@dataHealthFindingsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dataHealthClearOrphanPrefs": "Clear orphan pins & recents",
+  "dataHealthClearOrphanPrefsConfirmTitle": "Clear orphan exercise ids?",
+  "dataHealthClearOrphanPrefsConfirmMessage": "Removes orphan exercise ids from pinned and recent lists only. Workout plans and other entities are not deleted.",
+  "dataHealthClearedOrphansSnack": "Cleared {count} orphan exercise ids",
+  "@dataHealthClearedOrphansSnack": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dataHealthScanFailed": "Could not scan local data",
+  "dataHealthNotSignedIn": "Sign in to scan local data for this account.",
   "customerPdfHeaderSection": "PDF header",
   "customerUseCustomPdfHeader": "Custom PDF header",
   "customerUseCustomPdfHeaderSubtitle": "Overrides the studio name for this client only",
