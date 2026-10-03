@@ -125,8 +125,9 @@ dart run tool/openmetadata/ingestion/ingest_from_registry.dart --live
 
 After dry-run or live ingest, the payload / UI should show:
 
-1. All **5** current Drift `OfflineEntityType` tables (`customer`, `workoutPlan`,
-   `measurement`, `customExercise`, `customerNote`) plus prefs buckets
+1. All **5** current coach entity types (`customer`, `workoutPlan`,
+   `measurement`, `customExercise`, `customerNote`) with cloud SoT locus
+   `supabaseCoachEntities` (+ Drift cache) plus prefs buckets
    (`userProfile`, `pdfBrand`, `userPreferences`, …).
 2. Lineage edges **`customer → workoutPlan`** and **`customer → measurement`**
    (from registry soft refs + `fixtures/sample_entities.json`).
@@ -146,4 +147,4 @@ After dry-run or live ingest, the payload / UI should show:
 ## Related docs
 
 - [`docs/data-catalog.md`](../../docs/data-catalog.md) — human catalog + Mermaid ER
-- [`docs/sync-strategy.md`](../../docs/sync-strategy.md) — local-first / backup path
+- [`docs/sync-strategy.md`](../../docs/sync-strategy.md) — cloud SoT / pull / migration

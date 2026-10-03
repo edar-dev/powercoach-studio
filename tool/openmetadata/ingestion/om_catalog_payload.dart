@@ -19,7 +19,12 @@ Map<String, dynamic> buildOpenMetadataPayload({
       'displayName': entry['displayName'],
       'description': entry['summary'],
       'locus': entry['locus'],
+      'cacheLocus': entry['cacheLocus'],
       'driftType': entry['driftType'],
+      'remoteTable': entry['remoteTable'],
+      'remoteRowFields': entry['remoteRowFields'],
+      'softDelete': entry['softDelete'],
+      'rlsNote': entry['rlsNote'],
       'includedInBackup': entry['includedInBackup'],
       'columns': fields
           .map(
@@ -73,29 +78,45 @@ Map<String, dynamic> buildOpenMetadataPayload({
           const [])
       .cast<Map<String, dynamic>>();
 
+  final coachEntities = registry['coachEntities'] as Map<String, dynamic>? ??
+      const <String, dynamic>{};
+
   return <String, dynamic>{
-    'schemaVersion': 1,
-    'exportFormat': 'powercoach_om_catalog_payload_v1',
+    'schemaVersion': 2,
+    'exportFormat': 'powercoach_om_catalog_payload_v2',
     'service': <String, dynamic>{
-      'name': 'powercoach_local',
-      'displayName': 'PowerCoach Local (spike)',
+      'name': 'powercoach_cloud',
+      'displayName': 'PowerCoach Cloud SoT (spike)',
       'serviceType': 'CustomDatabase',
       'description':
-          'Document-oriented local-first catalog mirrored from Dart registry.',
+          'Document-oriented catalog: Supabase coach_entities (SoT) + '
+          'Drift cache + SharedPreferences, mirrored from Dart registry.',
     },
     'database': <String, dynamic>{
-      'name': 'powercoach_offline',
-      'description': 'Logical DB for Drift LocalEntities + prefs buckets',
+      'name': 'powercoach_studio',
+      'description':
+          'Logical DB for public.coach_entities (SoT), Drift LocalEntities '
+          'cache, and prefs buckets',
     },
     'schema': <String, dynamic>{
-      'name': 'local_first',
-      'description': 'Soft-FK entity types and prefs buckets',
+      'name': 'cloud_sot',
+      'description':
+          'Soft-FK coach entity types (cloud SoT) and local prefs buckets',
     },
+    'coachEntities': coachEntities,
     'tables': tables,
     'lineageEdges': lineageEdges,
     'sampleEntities': sampleEntities['entities'] ?? const <dynamic>[],
     'expectedLineageEdges': expected,
     'acceptance': <String, dynamic>{
+      'requiresCoachEntityTypes': <String>[
+        'customer',
+        'workoutPlan',
+        'measurement',
+        'customExercise',
+        'customerNote',
+      ],
+      // Backward-compatible alias for older spike checks.
       'requiresDriftTypes': <String>[
         'customer',
         'workoutPlan',
@@ -112,6 +133,8 @@ Map<String, dynamic> buildOpenMetadataPayload({
         <String>['customer', 'workoutPlan'],
         <String>['customer', 'measurement'],
       ],
+      'requiresCloudSotLocus': 'supabaseCoachEntities',
+      'requiresCacheLocus': 'driftLocalEntities',
     },
   };
 }
