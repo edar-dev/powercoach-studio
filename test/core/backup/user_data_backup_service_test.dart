@@ -27,8 +27,12 @@ void main() {
 
   const uid = '__legacy__';
 
+  /// Drift-only restore path for legacy envelope tests (no Supabase).
+  late UserDataBackupService backup;
+
   setUp(() async {
     await OfflineLocalStore.instance.clear();
+    backup = UserDataBackupService();
   });
 
   ParsedUserBackup backupWith({
@@ -106,7 +110,7 @@ void main() {
       ),
     );
 
-    await UserDataBackupService.instance.mergeRestore(parsed, uid);
+    await backup.mergeRestore(parsed, uid);
 
     final customers = await store.readEntities(OfflineEntityType.customer);
     final exercises = await store.readEntities(OfflineEntityType.customExercise);
@@ -147,7 +151,7 @@ void main() {
       ),
     );
 
-    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+    await backup.restoreParsed(parsed, uid);
 
     final customers = await store.readEntities(OfflineEntityType.customer);
     final exercises = await store.readEntities(OfflineEntityType.customExercise);
@@ -183,7 +187,7 @@ void main() {
       reminders: const [],
     );
 
-    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+    await backup.restoreParsed(parsed, uid);
 
     final customers = await OfflineLocalStore.instance.readEntities(
       OfflineEntityType.customer,
@@ -246,7 +250,7 @@ void main() {
     );
 
     // No entity-group filter: replace swaps every known type in one call.
-    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+    await backup.restoreParsed(parsed, uid);
 
     final customers = await store.readEntities(OfflineEntityType.customer);
     final exercises = await store.readEntities(OfflineEntityType.customExercise);
@@ -282,7 +286,7 @@ void main() {
       ),
     );
 
-    await UserDataBackupService.instance.mergeRestore(parsed, uid);
+    await backup.mergeRestore(parsed, uid);
 
     final customers = await store.readEntities(OfflineEntityType.customer);
     final exercises = await store.readEntities(OfflineEntityType.customExercise);
@@ -298,7 +302,7 @@ void main() {
       'settings_calendar_reminder_lead_hours': 6,
       'workout_builder_include_mobility_default_v1': false,
     });
-    final map = await UserDataBackupService.instance.buildExportMap(uid);
+    final map = await backup.buildExportMap(uid);
     expect(map.containsKey('pendingOperations'), isFalse);
     expect(map.containsKey('syncMeta'), isFalse);
     final prefs = map['preferences'] as Map<String, dynamic>;
@@ -342,7 +346,7 @@ void main() {
       reminders: const [],
     );
 
-    await UserDataBackupService.instance.restoreParsed(parsed, uid);
+    await backup.restoreParsed(parsed, uid);
 
     final customers = await OfflineLocalStore.instance.readEntities(
       OfflineEntityType.customer,
@@ -356,7 +360,7 @@ void main() {
     await PinnedExercisesStore.instance.replaceAll({'ex-a', 'ex-b'});
     await RecentExercisesStore.instance.replaceAll(['ex-b', 'ex-c']);
 
-    final map = await UserDataBackupService.instance.buildExportMap(uid);
+    final map = await backup.buildExportMap(uid);
     final prefs = map['preferences'] as Map<String, dynamic>;
     expect(prefs[SettingsPrefsKeys.pinnedExerciseIdsJson], isNotNull);
     expect(prefs[SettingsPrefsKeys.recentExerciseIdsJson], isNotNull);

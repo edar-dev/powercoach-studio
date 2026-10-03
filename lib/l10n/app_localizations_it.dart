@@ -1193,6 +1193,37 @@ class AppLocalizationsIt extends AppLocalizations {
   String get cloudRecoveryNotNow => 'Non ora';
 
   @override
+  String get coachEntitiesMigrationTitle =>
+      'Carica i tuoi dati coach nel cloud';
+
+  @override
+  String get coachEntitiesMigrationMessage =>
+      'Clienti e schede sono ancora solo su questo dispositivo. Li caricheremo sul tuo account così restano disponibili su altri dispositivi.';
+
+  @override
+  String get coachEntitiesMigrationPreparing => 'Preparazione caricamento…';
+
+  @override
+  String coachEntitiesMigrationProgress(int done, int total) {
+    return 'Caricamento $done di $total…';
+  }
+
+  @override
+  String get coachEntitiesMigrationSuccess => 'Dati coach caricati nel cloud.';
+
+  @override
+  String get coachEntitiesMigrationFailure =>
+      'Impossibile caricare i dati coach.';
+
+  @override
+  String coachEntitiesMigrationFailureDetail(String error) {
+    return 'Errore: $error';
+  }
+
+  @override
+  String get coachEntitiesMigrationRetry => 'Riprova';
+
+  @override
   String get settingsLegalSectionTitle => 'Legale e privacy';
 
   @override

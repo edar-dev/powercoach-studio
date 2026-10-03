@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../auth/supabase_bootstrap.dart';
 import '../platform/web_storage_persistence.dart';
 import '../platform/web_unload_hooks.dart';
+import '../remote/coach_entities_migration_service.dart';
 import 'auto_cloud_snapshot_store.dart';
 import 'backup_activity_store.dart';
 import 'cloud_backup_repository.dart';
@@ -18,6 +19,7 @@ import 'sync_on_open_service.dart';
 import 'user_data_backup_codec.dart';
 import 'user_data_backup_service.dart';
 import '../../features/settings/presentation/cloud_recovery_dialog.dart';
+import '../../features/settings/presentation/coach_entities_migration_dialog.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Coordinates web storage persist, auto cloud snapshots, recovery, and
@@ -31,6 +33,7 @@ class WebPersistenceCoordinator {
     AutoCloudSnapshotStore? autoStore,
     BackupActivityStore? activityStore,
     UserDataBackupService? backupService,
+    CoachEntitiesMigrationService? migrationService,
     Future<void> Function()? requestPersist,
     Future<bool> Function()? isPersisted,
   }) : _cloudBackupRepository =
@@ -41,6 +44,8 @@ class WebPersistenceCoordinator {
        _autoStore = autoStore ?? AutoCloudSnapshotStore.instance,
        _activityStore = activityStore ?? BackupActivityStore.instance,
        _backupService = backupService ?? UserDataBackupService.instance,
+       _migrationService =
+           migrationService ?? CoachEntitiesMigrationService.instance,
        _requestPersist = requestPersist ?? requestPersistentStorage,
        _isPersisted = isPersisted ?? isStoragePersisted;
 
@@ -53,6 +58,7 @@ class WebPersistenceCoordinator {
   final AutoCloudSnapshotStore _autoStore;
   final BackupActivityStore _activityStore;
   final UserDataBackupService _backupService;
+  final CoachEntitiesMigrationService _migrationService;
   final Future<void> Function() _requestPersist;
   final Future<bool> Function() _isPersisted;
 
@@ -61,6 +67,7 @@ class WebPersistenceCoordinator {
   bool _storagePersisted = true;
   final Set<String> _recoverySnoozedUserIds = <String>{};
   final Set<String> _syncAttemptedUserIds = <String>{};
+  final Set<String> _migrationAttemptedUserIds = <String>{};
 
   bool get storagePersisted => _storagePersisted;
 
@@ -118,6 +125,48 @@ class WebPersistenceCoordinator {
     _scheduler.cancelPending();
     _recoverySnoozedUserIds.clear();
     _syncAttemptedUserIds.clear();
+    _migrationAttemptedUserIds.clear();
+  }
+
+  /// Runs one-shot local→cloud migration when remote is empty and local has data.
+  ///
+  /// Returns `true` when a migration dialog ran and succeeded.
+  Future<bool> maybeRunCoachEntitiesMigrationIfNeeded(
+    BuildContext context,
+  ) async {
+    final user = SupabaseBootstrap.currentUser;
+    if (user == null) return false;
+    if (_migrationAttemptedUserIds.contains(user.id)) return false;
+
+    try {
+      final needed = await _migrationService.needsMigration(user.id);
+      if (!needed) {
+        _migrationAttemptedUserIds.add(user.id);
+        return false;
+      }
+    } catch (e, stack) {
+      debugPrint(
+        'WebPersistenceCoordinator: migration probe failed: $e\n$stack',
+      );
+      return false;
+    }
+    if (!context.mounted) return false;
+
+    final ok = await showCoachEntitiesMigrationDialog(
+      context,
+      userId: user.id,
+      service: _migrationService,
+    );
+    if (ok) {
+      _migrationAttemptedUserIds.add(user.id);
+      if (context.mounted) {
+        final l10n = AppLocalizations.of(context);
+        ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+          SnackBar(content: Text(l10n.coachEntitiesMigrationSuccess)),
+        );
+      }
+    }
+    return ok;
   }
 
   void _onWebUnload() {

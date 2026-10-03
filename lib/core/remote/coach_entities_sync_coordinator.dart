@@ -6,29 +6,38 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../auth/supabase_bootstrap.dart';
 import '../backup/local_data_probe.dart';
 import '../sync/offline_repository_support.dart';
+import 'coach_entities_migration_service.dart';
 import 'coach_entities_remote.dart';
 
 /// Pulls cloud `coach_entities` into the Drift cache on sign-in and resume.
 ///
-/// Skips full-replace when the remote is empty and local coach data exists so
-/// the one-shot migration upload (PR3) can run without wiping Drift first.
+/// Skips full-replace when local data still awaits (or must retry) one-shot
+/// migration upload, so a partial remote snapshot cannot wipe Drift.
 class CoachEntitiesSyncCoordinator {
   CoachEntitiesSyncCoordinator({
     CoachEntitiesRemote? remote,
     OfflineRepositorySupport? support,
     LocalDataProbe? localProbe,
+    CoachEntitiesMigrationService? migration,
   }) : this._(
           remote: remote ?? CoachEntitiesRemote(),
           support: support,
           localProbe: localProbe ?? LocalDataProbe.instance,
+          migration: migration,
         );
 
   CoachEntitiesSyncCoordinator._({
     required CoachEntitiesRemote remote,
     OfflineRepositorySupport? support,
     required LocalDataProbe localProbe,
+    CoachEntitiesMigrationService? migration,
   })  : _remote = remote,
         _localProbe = localProbe,
+        _migration = migration ??
+            CoachEntitiesMigrationService(
+              remote: remote,
+              localProbe: localProbe,
+            ),
         _support = support ?? OfflineRepositorySupport(remote: remote);
 
   static final CoachEntitiesSyncCoordinator instance =
@@ -37,6 +46,7 @@ class CoachEntitiesSyncCoordinator {
   final CoachEntitiesRemote _remote;
   final OfflineRepositorySupport _support;
   final LocalDataProbe _localProbe;
+  final CoachEntitiesMigrationService _migration;
   StreamSubscription<AuthState>? _authSubscription;
   bool _started = false;
   bool _pullInFlight = false;
@@ -62,13 +72,22 @@ class CoachEntitiesSyncCoordinator {
     unawaited(pullIfSignedIn());
   }
 
-  /// True when pull must wait for one-shot local→remote migration.
+  /// True when pull must wait for one-shot local→remote migration (or retry).
+  ///
+  /// Defers when:
+  /// - remote empty + local entities, or
+  /// - migration started but not complete (partial upload) + local entities.
+  ///
+  /// Does **not** defer when remote already has data and migration was never
+  /// started on this device (multi-device: pull cloud SoT into cache).
   @visibleForTesting
   Future<bool> shouldDeferPullForMigration(String userId) async {
+    if (await _migration.isMigrationComplete(userId)) return false;
+    final hasLocal = await _localProbe.hasAnyNonDeletedEntities(userId);
+    if (!hasLocal) return false;
     final remoteEmpty = await _remote.isRemoteEmpty();
-    if (!remoteEmpty) return false;
-    final localEmpty = await _localProbe.isCoachDataEmpty(userId);
-    return !localEmpty;
+    if (remoteEmpty) return true;
+    return _migration.isMigrationStarted(userId);
   }
 
   Future<void> pullIfSignedIn() async {
@@ -80,8 +99,8 @@ class CoachEntitiesSyncCoordinator {
     try {
       if (await shouldDeferPullForMigration(user.id)) {
         debugPrint(
-          'CoachEntitiesSyncCoordinator: skip pull — remote empty, '
-          'local data present (awaiting migration upload)',
+          'CoachEntitiesSyncCoordinator: skip pull — awaiting migration '
+          '(remote empty or partial upload in progress)',
         );
         return;
       }

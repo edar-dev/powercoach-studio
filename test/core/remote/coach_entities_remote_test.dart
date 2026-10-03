@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/backup/local_data_probe.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_exceptions.dart';
+import 'package:powercoach_studio/core/remote/coach_entities_migration_service.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_remote.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_sync_coordinator.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
@@ -238,6 +239,7 @@ void main() {
     });
 
     test('defers pull when remote empty and local coach data exists', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
       final fake = FakeCoachEntitiesRemote();
       await OfflineLocalStore.instance.upsertEntity(
         OfflineEntity(
@@ -261,6 +263,7 @@ void main() {
 
       expect(await coordinator.shouldDeferPullForMigration(userId), isTrue);
 
+      // Multi-device: remote populated elsewhere, migration never started here.
       fake.seed(
         OfflineEntity(
           id: 'remote-c',
@@ -271,6 +274,51 @@ void main() {
         ),
       );
       expect(await coordinator.shouldDeferPullForMigration(userId), isFalse);
+    });
+
+    test('defers pull after partial migration (started, remote not empty)',
+        () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      final fake = FakeCoachEntitiesRemote();
+      await OfflineLocalStore.instance.upsertEntity(
+        OfflineEntity(
+          id: 'local-c',
+          type: OfflineEntityType.customer,
+          scopeId: userId,
+          payload: <String, dynamic>{'id': 'local-c', 'userId': userId},
+          updatedAt: DateTime.utc(2026, 9, 1),
+        ),
+      );
+      fake.seed(
+        OfflineEntity(
+          id: 'partial-c',
+          type: OfflineEntityType.customer,
+          scopeId: userId,
+          payload: <String, dynamic>{'id': 'partial-c'},
+          updatedAt: DateTime.utc(2026, 10, 1),
+        ),
+      );
+
+      final migration = CoachEntitiesMigrationService(
+        remote: fake,
+        localProbe: LocalDataProbe(),
+        resolveUserId: () => userId,
+        isOnline: () => true,
+      );
+      await migration.markMigrationStarted(userId);
+
+      final coordinator = CoachEntitiesSyncCoordinator(
+        remote: fake,
+        support: OfflineRepositorySupport(
+          remote: fake,
+          resolveUserId: () => userId,
+          isOnline: () => true,
+        ),
+        localProbe: LocalDataProbe(),
+        migration: migration,
+      );
+
+      expect(await coordinator.shouldDeferPullForMigration(userId), isTrue);
     });
   });
 }

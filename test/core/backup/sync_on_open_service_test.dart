@@ -13,6 +13,7 @@ import 'package:powercoach_studio/core/backup/local_data_probe.dart';
 import 'package:powercoach_studio/core/backup/material_write_notifier.dart';
 import 'package:powercoach_studio/core/backup/sync_on_open_service.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
+import 'package:powercoach_studio/core/backup/user_data_backup_service.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -124,6 +125,7 @@ void main() {
     );
     syncService = SyncOnOpenService(
       cloudBackupRepository: repo,
+      backupService: UserDataBackupService(),
       localDataProbe: LocalDataProbe(store: OfflineLocalStore.instance),
       autoStore: autoStore,
       activityStore: BackupActivityStore.instance,
