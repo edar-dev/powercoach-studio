@@ -1,54 +1,48 @@
 ---
-description: Local data persistence and integrations policy (replaces legacy GymBlog.API / Hevy rules)
-globs: lib/core/storage/**,lib/core/backup/**
+description: Cloud SoT coach entities + Drift cache + backup integrations (replaces legacy GymBlog.API / Hevy rules)
+globs: lib/core/storage/**,lib/core/backup/**,lib/core/remote/**
 alwaysApply: false
 ---
 
 # Local Data & Integrations
 
-## Local persistence
+## Cloud source of truth (approved)
 
-Business data is **local-first**. Use these entry points:
+Coach business entities are stored in Supabase `public.coach_entities` with RLS
+`user_id = auth.uid()`. Writes are **online-required** (no offline outbox in v1).
+Drift `LocalEntities` is a **cache** (full replace per type after successful pull).
 
 | Layer | Use for |
 |-------|---------|
-| `OfflineLocalStore` | Customers, workout plans, entities in Drift |
-| Feature `*Store` / `*Repository` classes | Feature-specific reads/writes |
-| `SharedPreferences` | Settings, drafts, exercise pins |
-| `UserDataBackupService` | JSON backup export/import |
+| `CoachEntitiesRemote` | Supabase list/upsert/soft-delete/pull for coach entities |
+| Feature `*Repository` classes | Feature APIs; remote-first writes, then update Drift cache |
+| `OfflineLocalStore` | Drift cache for customers, plans, and related entities |
+| `SharedPreferences` | Settings, drafts, exercise pins, PDF brand (not Postgres in v1) |
+| `UserDataBackupService` | JSON disaster-recovery export/import; restore writes to remote + cache |
 | `CloudBackupRepository` | Supabase Storage snapshots of the backup JSON (manual + automatic) |
 | `CloudSnapshotScheduler` | Debounced automatic cloud snapshot uploads |
-| `SyncOnOpenService` | Merge newer cloud snapshots on open |
+| `SyncOnOpenService` | Legacy snapshot merge helpers (entities pull is the live path) |
 
-Always scope reads/writes by authenticated Supabase `userId`.
+Always scope reads/writes by authenticated Supabase `userId`. Client uses **anon key + user JWT only** — never the service role.
 
 ```dart
-final store = OfflineLocalStore.instance;
-await store.ensureReady(userId);
-// use store methods — never raw Supabase for business CRUD
+// Writes: remote upsert/soft-delete first, then cache on success.
+// Reads: prefer Drift cache; pull on login/resume and replace per type.
 ```
 
-## Cloud backup snapshots (allowed)
+## Cloud backup snapshots (still allowed)
 
-`CloudBackupRepository` (`lib/core/backup/cloud_backup_repository.dart`) may upload/list/download/delete
-the same JSON envelope as `UserDataBackupService` to the private `user-backups` Supabase Storage bucket,
-scoped per user via RLS.
-
-Allowed modes (approved web-persistence plan):
-
-- **Manual** upload/restore from Settings
-- **Automatic** debounced uploads via `CloudSnapshotScheduler` when auto cloud backup is enabled
-- **Sync-on-open merge** via `SyncOnOpenService` (newer `updatedAt` wins) when local data is non-empty
-- **Empty-local recovery** replace-all from the newest cloud snapshot
-
-This is **not** GymBlog live sync / outbox replay. See `docs/sync-strategy.md`.
+`CloudBackupRepository` may upload/list/download/delete the same JSON envelope
+to the private `user-backups` bucket. This remains disaster recovery alongside
+live `coach_entities` CRUD. See `docs/sync-strategy.md`.
 
 ## Do not add
 
 - GymBlog.API client or `GYMBLOG_API_URL` wiring
-- Remote sync replay / `SyncOrchestrator` without an approved plan
-- Direct Supabase table CRUD for coach/client/workout data
+- Offline outbox / `SyncOrchestrator` remote replay without a new approved plan
+- Service-role keys in the Flutter app or bundled assets
 - Third-party workout app integrations (e.g. Hevy) without an approved plan
+- Sharing entities across coaches (RLS is per-owner only)
 
 ## Agent deny-list (do not reintroduce without approved plan)
 
@@ -57,5 +51,5 @@ This is **not** GymBlog live sync / outbox replay. See `docs/sync-strategy.md`.
 - `SyncOrchestrator` remote replay wired in `main.dart` bootstrap
 - `get_it` or a global DI container
 - Remote write paths via `PendingOperations` expecting server ACK
-- Supabase `.from('...')` CRUD for business entities
+- `SUPABASE_SERVICE_ROLE` (or any service-role secret) in the Flutter client
 - `lib/features/integrations/hevy/` or a `dio`-based Hevy (or similar) client

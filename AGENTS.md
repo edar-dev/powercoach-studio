@@ -6,13 +6,16 @@
 - Keep UX behavior stable unless the task explicitly asks for a behavior change.
 
 ## Architecture constraints (non-negotiable)
-- **Local-first:** business data in Drift/SQLite + SharedPreferences, scoped per authenticated Supabase `userId`.
-- **Supabase:** authentication session only — no table CRUD for customers, workouts, or coach profile fields.
-- **No GymBlog.API**, no `GYMBLOG_API_URL`, no remote sync replay unless an approved plan explicitly reintroduces it.
+- **Cloud SoT (coach entities):** business entities live in Supabase `public.coach_entities` (JSONB). Writes require an authenticated session and a successful remote upsert/soft-delete before the UI treats the change as saved. No offline outbox in v1.
+- **Drift = cache:** `OfflineLocalStore` / SQLite holds a per-user cache; after pull, replace cache per entity type. Reads may prefer cache then refresh.
+- **Prefs / PDF brand / pins:** stay on SharedPreferences (not Postgres) in v1.
+- **Supabase client:** anon key + user JWT only — never embed the service role in the app. RLS on `coach_entities` is `user_id = auth.uid()` for SELECT/INSERT/UPDATE/DELETE.
+- **No GymBlog.API**, no `GYMBLOG_API_URL`, no remote sync replay / outbox unless an approved plan explicitly reintroduces it.
 - **No third-party workout APIs** (Hevy and similar integrations were removed; do not reintroduce without an approved plan).
-- **Backup/restore:** JSON export/import is the official multi-device path (`UserDataBackupService`). Restore is always full (merge or replace-all); selective entity-group restore was removed.
-- **Data catalog:** in-repo registry at `lib/core/data_catalog/` — see `docs/data-catalog.md`. Optional OM spike under `tool/openmetadata/`. Read-only quality scanner: `lib/core/data_quality/`.
+- **Backup/restore:** JSON export/import remains disaster recovery; restore must write to Supabase and refresh Drift cache (see `docs/sync-strategy.md`).
+- **Data catalog:** in-repo registry at `lib/core/data_catalog/` — see `docs/data-catalog.md`. Optional OM spike under `tool/openmetadata/`. Read-only quality scanner: `lib/core/data_quality/` (run against pulled/backup data).
 - **Removed product surfaces (do not reintroduce without a plan):** gym hub, plan-diff, coach stats, release notes, density/EMOM blocks, progression chips, session check-in RPE/pain, Day coaching notes, manual ReminderStore, exercise PR records, Hevy.
+- **Entity types in `coach_entities`:** `customer`, `workoutPlan`, `measurement`, `customExercise`, `customerNote` (legacy `exerciseRecord` was removed from Drift and is not uploaded).
 
 ## CI / Flutter version
 - CI pins **Flutter 3.35.6** (`.flutter-version`, GitHub Actions, Codemagic).
