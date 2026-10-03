@@ -45,6 +45,9 @@ migrate_working_dir/
 # Manual PDF visual QA samples (written by test/core/pdf/pdf_sample_generation_test.dart)
 /test/artifacts/
 
+# OpenMetadata local spike volumes (tool/openmetadata)
+/tool/openmetadata/docker-volume/
+
 # Symbolication related
 app.*.symbols
 

@@ -95,6 +95,12 @@ dart run tool/dump_data_catalog.dart
 dart run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.json
 ```
 
+## OpenMetadata spike (optional, local only)
+
+See [`tool/openmetadata/README.md`](../tool/openmetadata/README.md) for Docker
+Compose start/stop and custom ingestion from the registry JSON. OM is a viewer;
+this document + the Dart registry remain authoritative. Not used in CI.
+
 ## Data quality
 
 Scanners under `lib/core/data_quality/` (when present) should read soft-reference

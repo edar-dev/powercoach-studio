@@ -1,0 +1,333 @@
+{
+  "schemaVersion": 1,
+  "exportFormat": "powercoach_data_catalog_v1",
+  "entries": [
+    {
+      "catalogId": "customer",
+      "displayName": "Customer",
+      "driftType": "customer",
+      "locus": "driftLocalEntities",
+      "summary": "Coach client record. scopeId is the authenticated coach userId.",
+      "scopeIdPattern": "userId",
+      "payloadFields": [
+        "id",
+        "userId",
+        "name",
+        "email",
+        "phone",
+        "dateOfBirth",
+        "heightCm",
+        "weightKg",
+        "notes",
+        "goals",
+        "pdfHeader",
+        "useCustomPdfHeader",
+        "isFavorite",
+        "isArchived",
+        "lastPlanUpdateDate",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "references": [],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/customers/data/models/customer.dart"
+    },
+    {
+      "catalogId": "workoutPlan",
+      "displayName": "Workout plan",
+      "driftType": "workoutPlan",
+      "locus": "driftLocalEntities",
+      "summary": "Client workout plan. scopeId is customerId. Nested planData holds weeks/days/exercises and session diary.",
+      "scopeIdPattern": "customerId",
+      "payloadFields": [
+        "id",
+        "customerId",
+        "userId",
+        "name",
+        "theme",
+        "initialWeekNumber",
+        "planData",
+        "pdfHeader",
+        "useCustomPdfHeader",
+        "phase",
+        "tags",
+        "notes",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/workouts/data/workout_plan_api_model.dart"
+    },
+    {
+      "catalogId": "measurement",
+      "displayName": "Measurement",
+      "driftType": "measurement",
+      "locus": "driftLocalEntities",
+      "summary": "Client body / strength measurement. scopeId is customerId.",
+      "scopeIdPattern": "customerId",
+      "payloadFields": [
+        "id",
+        "customerId",
+        "userId",
+        "measurementDate",
+        "squat1RM",
+        "benchPress1RM",
+        "deadlift1RM",
+        "bodyFatPercent",
+        "muscleMassKg",
+        "notes",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/customers/data/models/customer_measurement.dart"
+    },
+    {
+      "catalogId": "customExercise",
+      "displayName": "Custom exercise",
+      "driftType": "customExercise",
+      "locus": "driftLocalEntities",
+      "summary": "Coach exercise library node. scopeId is the constant \"library\". Optional parentId builds a folder tree.",
+      "scopeIdPattern": "library",
+      "payloadFields": [
+        "id",
+        "userId",
+        "name",
+        "description",
+        "parentId",
+        "sortOrder",
+        "isMobility",
+        "catalogSource",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "references": [
+        {
+          "fieldPath": "parentId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Self-referential library parent (orphan / cycle checks)."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/exercise_library/data/custom_exercise_item.dart"
+    },
+    {
+      "catalogId": "customerNote",
+      "displayName": "Customer note",
+      "driftType": "customerNote",
+      "locus": "driftLocalEntities",
+      "summary": "Per-message coaching note for a client. scopeId is customerId.",
+      "scopeIdPattern": "customerId",
+      "payloadFields": [
+        "id",
+        "customerId",
+        "authorUserId",
+        "body",
+        "createdAt",
+        "readAt",
+        "attachmentRef"
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/customers/domain/models/client_note_message.dart"
+    },
+    {
+      "catalogId": "planData",
+      "displayName": "Plan data (nested)",
+      "driftType": null,
+      "locus": "nestedJson",
+      "summary": "JSON string embedded in workoutPlan.planData: phases/weeks/days/exercises, mobility, and sessionExecutions diary.",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "name",
+        "mobilitySections",
+        "mobilityItems",
+        "phases",
+        "weeks",
+        "startDate",
+        "endDate",
+        "currentWeek",
+        "includesMobilityTab",
+        "sessionCompletionByKey",
+        "sessionSkippedByKey",
+        "sessionOverrides",
+        "sessionExecutions",
+        "archivedAt",
+        "completedAt"
+      ],
+      "references": [
+        {
+          "fieldPath": "mobilityItems[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Mobility item → library exercise."
+        },
+        {
+          "fieldPath": "exercises[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Training block exercise → library exercise."
+        },
+        {
+          "fieldPath": "sessionExecutions[].exercises[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Executed log exercise → library exercise."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "entities",
+      "prefsKeyPattern": null,
+      "sourcePath": "lib/features/workouts/domain/workout_routine_json_codec.dart"
+    },
+    {
+      "catalogId": "userProfile",
+      "displayName": "Coach user profile",
+      "driftType": null,
+      "locus": "sharedPreferences",
+      "summary": "Local coach profile fields (not Supabase profiles table CRUD).",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "displayName",
+        "phone",
+        "bio",
+        "avatarUrl",
+        "website",
+        "subscriptionPlan"
+      ],
+      "references": [],
+      "includedInBackup": true,
+      "backupKey": "localUserProfile",
+      "prefsKeyPattern": "local_user_profile_v1:$userId",
+      "sourcePath": "lib/core/storage/local_user_profile_store.dart"
+    },
+    {
+      "catalogId": "pdfBrand",
+      "displayName": "PDF brand kit",
+      "driftType": null,
+      "locus": "sharedPreferences",
+      "summary": "PDF studio branding + logo path/bytes. Device-local; not included in the user backup envelope.",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "studioName",
+        "accentColorArgb",
+        "disclaimer",
+        "hidePowerCoachBranding",
+        "logoRelativePath"
+      ],
+      "references": [],
+      "includedInBackup": false,
+      "backupKey": null,
+      "prefsKeyPattern": "pdf_brand_v1:$userId",
+      "sourcePath": "lib/core/pdf/pdf_brand_store.dart"
+    },
+    {
+      "catalogId": "userPreferences",
+      "displayName": "User preferences",
+      "driftType": null,
+      "locus": "sharedPreferences",
+      "summary": "Settings + pinned/recent exercise ids exported under backup `preferences`.",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "settings_notifications_enabled",
+        "app_locale_code",
+        "settings_calendar_reminders_enabled",
+        "settings_calendar_reminder_lead_hours",
+        "workout_builder_compact_add_v1",
+        "workout_builder_include_mobility_default_v1",
+        "pinned_exercise_ids_json_v1",
+        "recent_exercise_ids_json_v1"
+      ],
+      "references": [
+        {
+          "fieldPath": "pinned_exercise_ids_json_v1[]",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Pinned library exercise ids."
+        },
+        {
+          "fieldPath": "recent_exercise_ids_json_v1[]",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Recent library exercise ids."
+        }
+      ],
+      "includedInBackup": true,
+      "backupKey": "preferences",
+      "prefsKeyPattern": "see SettingsPrefsKeys + pin/recent stores",
+      "sourcePath": "lib/features/settings/data/user_preferences_repository.dart"
+    },
+    {
+      "catalogId": "workoutDraft",
+      "displayName": "Workout builder draft",
+      "driftType": null,
+      "locus": "sharedPreferences",
+      "summary": "In-progress workout builder draft. Not part of backup export.",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "workout_routine_draft"
+      ],
+      "references": [],
+      "includedInBackup": false,
+      "backupKey": null,
+      "prefsKeyPattern": "workout_routine_draft",
+      "sourcePath": "lib/features/workouts/data/workout_draft_store.dart"
+    },
+    {
+      "catalogId": "cloudBackupMeta",
+      "displayName": "Cloud backup metadata",
+      "driftType": null,
+      "locus": "sharedPreferences",
+      "summary": "Auto-snapshot / last-sync timestamps for cloud backup UX. Not part of the backup entity envelope.",
+      "scopeIdPattern": "",
+      "payloadFields": [
+        "auto_cloud_snapshot_*",
+        "last_cloud_sync_at_v1_$userId",
+        "backup_last_successful_at_v1_$userId"
+      ],
+      "references": [],
+      "includedInBackup": false,
+      "backupKey": null,
+      "prefsKeyPattern": "auto_cloud_snapshot_* / backup_last_successful_at_v1_*",
+      "sourcePath": "lib/core/backup/auto_cloud_snapshot_store.dart"
+    }
+  ]
+}

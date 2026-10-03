@@ -1,0 +1,77 @@
+{
+  "description": "Fixture graph for OpenMetadata lineage spike (customer → workoutPlan / measurement).",
+  "coachUserId": "coach_demo_1",
+  "entities": [
+    {
+      "id": "cust_1",
+      "type": "customer",
+      "scopeId": "coach_demo_1",
+      "payload": {
+        "id": "cust_1",
+        "userId": "coach_demo_1",
+        "name": "Ada Client"
+      }
+    },
+    {
+      "id": "plan_1",
+      "type": "workoutPlan",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "plan_1",
+        "customerId": "cust_1",
+        "userId": "coach_demo_1",
+        "name": "Hypertrophy A",
+        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}]}"
+      }
+    },
+    {
+      "id": "meas_1",
+      "type": "measurement",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "meas_1",
+        "customerId": "cust_1",
+        "userId": "coach_demo_1",
+        "measurementDate": "2026-01-15"
+      }
+    },
+    {
+      "id": "ex_root",
+      "type": "customExercise",
+      "scopeId": "library",
+      "payload": {
+        "id": "ex_root",
+        "userId": "coach_demo_1",
+        "name": "Library",
+        "parentId": null
+      }
+    },
+    {
+      "id": "note_1",
+      "type": "customerNote",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "note_1",
+        "customerId": "cust_1",
+        "authorUserId": "coach_demo_1",
+        "body": "Demo note"
+      }
+    }
+  ],
+  "expectedLineageEdges": [
+    {
+      "fromCatalogId": "customer",
+      "toCatalogId": "workoutPlan",
+      "fieldPath": "customerId",
+      "exampleFromId": "cust_1",
+      "exampleToId": "plan_1"
+    },
+    {
+      "fromCatalogId": "customer",
+      "toCatalogId": "measurement",
+      "fieldPath": "customerId",
+      "exampleFromId": "cust_1",
+      "exampleToId": "meas_1"
+    }
+  ]
+}

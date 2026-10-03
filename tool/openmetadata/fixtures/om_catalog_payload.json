@@ -1,0 +1,873 @@
+{
+  "schemaVersion": 1,
+  "exportFormat": "powercoach_om_catalog_payload_v1",
+  "service": {
+    "name": "powercoach_local",
+    "displayName": "PowerCoach Local (spike)",
+    "serviceType": "CustomDatabase",
+    "description": "Document-oriented local-first catalog mirrored from Dart registry."
+  },
+  "database": {
+    "name": "powercoach_offline",
+    "description": "Logical DB for Drift LocalEntities + prefs buckets"
+  },
+  "schema": {
+    "name": "local_first",
+    "description": "Soft-FK entity types and prefs buckets"
+  },
+  "tables": [
+    {
+      "name": "customer",
+      "displayName": "Customer",
+      "description": "Coach client record. scopeId is the authenticated coach userId.",
+      "locus": "driftLocalEntities",
+      "driftType": "customer",
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.id"
+        },
+        {
+          "name": "userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.userId"
+        },
+        {
+          "name": "name",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.name"
+        },
+        {
+          "name": "email",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.email"
+        },
+        {
+          "name": "phone",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.phone"
+        },
+        {
+          "name": "dateOfBirth",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.dateOfBirth"
+        },
+        {
+          "name": "heightCm",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.heightCm"
+        },
+        {
+          "name": "weightKg",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.weightKg"
+        },
+        {
+          "name": "notes",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.notes"
+        },
+        {
+          "name": "goals",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.goals"
+        },
+        {
+          "name": "pdfHeader",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.pdfHeader"
+        },
+        {
+          "name": "useCustomPdfHeader",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.useCustomPdfHeader"
+        },
+        {
+          "name": "isFavorite",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.isFavorite"
+        },
+        {
+          "name": "isArchived",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.isArchived"
+        },
+        {
+          "name": "lastPlanUpdateDate",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.lastPlanUpdateDate"
+        },
+        {
+          "name": "createdAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.createdAt"
+        },
+        {
+          "name": "updatedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.updatedAt"
+        },
+        {
+          "name": "rowVersion",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customer.rowVersion"
+        }
+      ],
+      "references": []
+    },
+    {
+      "name": "workoutPlan",
+      "displayName": "Workout plan",
+      "description": "Client workout plan. scopeId is customerId. Nested planData holds weeks/days/exercises and session diary.",
+      "locus": "driftLocalEntities",
+      "driftType": "workoutPlan",
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.id"
+        },
+        {
+          "name": "customerId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.customerId"
+        },
+        {
+          "name": "userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.userId"
+        },
+        {
+          "name": "name",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.name"
+        },
+        {
+          "name": "theme",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.theme"
+        },
+        {
+          "name": "initialWeekNumber",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.initialWeekNumber"
+        },
+        {
+          "name": "planData",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.planData"
+        },
+        {
+          "name": "pdfHeader",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.pdfHeader"
+        },
+        {
+          "name": "useCustomPdfHeader",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.useCustomPdfHeader"
+        },
+        {
+          "name": "phase",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.phase"
+        },
+        {
+          "name": "tags",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.tags"
+        },
+        {
+          "name": "notes",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.notes"
+        },
+        {
+          "name": "createdAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.createdAt"
+        },
+        {
+          "name": "updatedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.updatedAt"
+        },
+        {
+          "name": "rowVersion",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutPlan.rowVersion"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ]
+    },
+    {
+      "name": "measurement",
+      "displayName": "Measurement",
+      "description": "Client body / strength measurement. scopeId is customerId.",
+      "locus": "driftLocalEntities",
+      "driftType": "measurement",
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.id"
+        },
+        {
+          "name": "customerId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.customerId"
+        },
+        {
+          "name": "userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.userId"
+        },
+        {
+          "name": "measurementDate",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.measurementDate"
+        },
+        {
+          "name": "squat1RM",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.squat1RM"
+        },
+        {
+          "name": "benchPress1RM",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.benchPress1RM"
+        },
+        {
+          "name": "deadlift1RM",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.deadlift1RM"
+        },
+        {
+          "name": "bodyFatPercent",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.bodyFatPercent"
+        },
+        {
+          "name": "muscleMassKg",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.muscleMassKg"
+        },
+        {
+          "name": "notes",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.notes"
+        },
+        {
+          "name": "createdAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.createdAt"
+        },
+        {
+          "name": "updatedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.updatedAt"
+        },
+        {
+          "name": "rowVersion",
+          "dataType": "STRING",
+          "description": "Catalog field summary for measurement.rowVersion"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ]
+    },
+    {
+      "name": "customExercise",
+      "displayName": "Custom exercise",
+      "description": "Coach exercise library node. scopeId is the constant \"library\". Optional parentId builds a folder tree.",
+      "locus": "driftLocalEntities",
+      "driftType": "customExercise",
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.id"
+        },
+        {
+          "name": "userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.userId"
+        },
+        {
+          "name": "name",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.name"
+        },
+        {
+          "name": "description",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.description"
+        },
+        {
+          "name": "parentId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.parentId"
+        },
+        {
+          "name": "sortOrder",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.sortOrder"
+        },
+        {
+          "name": "isMobility",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.isMobility"
+        },
+        {
+          "name": "catalogSource",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.catalogSource"
+        },
+        {
+          "name": "createdAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.createdAt"
+        },
+        {
+          "name": "updatedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.updatedAt"
+        },
+        {
+          "name": "rowVersion",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customExercise.rowVersion"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "parentId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Self-referential library parent (orphan / cycle checks)."
+        }
+      ]
+    },
+    {
+      "name": "customerNote",
+      "displayName": "Customer note",
+      "description": "Per-message coaching note for a client. scopeId is customerId.",
+      "locus": "driftLocalEntities",
+      "driftType": "customerNote",
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.id"
+        },
+        {
+          "name": "customerId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.customerId"
+        },
+        {
+          "name": "authorUserId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.authorUserId"
+        },
+        {
+          "name": "body",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.body"
+        },
+        {
+          "name": "createdAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.createdAt"
+        },
+        {
+          "name": "readAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.readAt"
+        },
+        {
+          "name": "attachmentRef",
+          "dataType": "STRING",
+          "description": "Catalog field summary for customerNote.attachmentRef"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "customerId",
+          "targetCatalogId": "customer",
+          "optional": false,
+          "description": "Owning customer id (also mirrored in scopeId)."
+        }
+      ]
+    },
+    {
+      "name": "planData",
+      "displayName": "Plan data (nested)",
+      "description": "JSON string embedded in workoutPlan.planData: phases/weeks/days/exercises, mobility, and sessionExecutions diary.",
+      "locus": "nestedJson",
+      "driftType": null,
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "name",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.name"
+        },
+        {
+          "name": "mobilitySections",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.mobilitySections"
+        },
+        {
+          "name": "mobilityItems",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.mobilityItems"
+        },
+        {
+          "name": "phases",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.phases"
+        },
+        {
+          "name": "weeks",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.weeks"
+        },
+        {
+          "name": "startDate",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.startDate"
+        },
+        {
+          "name": "endDate",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.endDate"
+        },
+        {
+          "name": "currentWeek",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.currentWeek"
+        },
+        {
+          "name": "includesMobilityTab",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.includesMobilityTab"
+        },
+        {
+          "name": "sessionCompletionByKey",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.sessionCompletionByKey"
+        },
+        {
+          "name": "sessionSkippedByKey",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.sessionSkippedByKey"
+        },
+        {
+          "name": "sessionOverrides",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.sessionOverrides"
+        },
+        {
+          "name": "sessionExecutions",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.sessionExecutions"
+        },
+        {
+          "name": "archivedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.archivedAt"
+        },
+        {
+          "name": "completedAt",
+          "dataType": "STRING",
+          "description": "Catalog field summary for planData.completedAt"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "mobilityItems[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Mobility item → library exercise."
+        },
+        {
+          "fieldPath": "exercises[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Training block exercise → library exercise."
+        },
+        {
+          "fieldPath": "sessionExecutions[].exercises[].customExerciseId",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Executed log exercise → library exercise."
+        }
+      ]
+    },
+    {
+      "name": "userProfile",
+      "displayName": "Coach user profile",
+      "description": "Local coach profile fields (not Supabase profiles table CRUD).",
+      "locus": "sharedPreferences",
+      "driftType": null,
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "displayName",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.displayName"
+        },
+        {
+          "name": "phone",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.phone"
+        },
+        {
+          "name": "bio",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.bio"
+        },
+        {
+          "name": "avatarUrl",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.avatarUrl"
+        },
+        {
+          "name": "website",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.website"
+        },
+        {
+          "name": "subscriptionPlan",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userProfile.subscriptionPlan"
+        }
+      ],
+      "references": []
+    },
+    {
+      "name": "pdfBrand",
+      "displayName": "PDF brand kit",
+      "description": "PDF studio branding + logo path/bytes. Device-local; not included in the user backup envelope.",
+      "locus": "sharedPreferences",
+      "driftType": null,
+      "includedInBackup": false,
+      "columns": [
+        {
+          "name": "studioName",
+          "dataType": "STRING",
+          "description": "Catalog field summary for pdfBrand.studioName"
+        },
+        {
+          "name": "accentColorArgb",
+          "dataType": "STRING",
+          "description": "Catalog field summary for pdfBrand.accentColorArgb"
+        },
+        {
+          "name": "disclaimer",
+          "dataType": "STRING",
+          "description": "Catalog field summary for pdfBrand.disclaimer"
+        },
+        {
+          "name": "hidePowerCoachBranding",
+          "dataType": "STRING",
+          "description": "Catalog field summary for pdfBrand.hidePowerCoachBranding"
+        },
+        {
+          "name": "logoRelativePath",
+          "dataType": "STRING",
+          "description": "Catalog field summary for pdfBrand.logoRelativePath"
+        }
+      ],
+      "references": []
+    },
+    {
+      "name": "userPreferences",
+      "displayName": "User preferences",
+      "description": "Settings + pinned/recent exercise ids exported under backup `preferences`.",
+      "locus": "sharedPreferences",
+      "driftType": null,
+      "includedInBackup": true,
+      "columns": [
+        {
+          "name": "settings_notifications_enabled",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.settings_notifications_enabled"
+        },
+        {
+          "name": "app_locale_code",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.app_locale_code"
+        },
+        {
+          "name": "settings_calendar_reminders_enabled",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.settings_calendar_reminders_enabled"
+        },
+        {
+          "name": "settings_calendar_reminder_lead_hours",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.settings_calendar_reminder_lead_hours"
+        },
+        {
+          "name": "workout_builder_compact_add_v1",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.workout_builder_compact_add_v1"
+        },
+        {
+          "name": "workout_builder_include_mobility_default_v1",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.workout_builder_include_mobility_default_v1"
+        },
+        {
+          "name": "pinned_exercise_ids_json_v1",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.pinned_exercise_ids_json_v1"
+        },
+        {
+          "name": "recent_exercise_ids_json_v1",
+          "dataType": "STRING",
+          "description": "Catalog field summary for userPreferences.recent_exercise_ids_json_v1"
+        }
+      ],
+      "references": [
+        {
+          "fieldPath": "pinned_exercise_ids_json_v1[]",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Pinned library exercise ids."
+        },
+        {
+          "fieldPath": "recent_exercise_ids_json_v1[]",
+          "targetCatalogId": "customExercise",
+          "optional": true,
+          "description": "Recent library exercise ids."
+        }
+      ]
+    },
+    {
+      "name": "workoutDraft",
+      "displayName": "Workout builder draft",
+      "description": "In-progress workout builder draft. Not part of backup export.",
+      "locus": "sharedPreferences",
+      "driftType": null,
+      "includedInBackup": false,
+      "columns": [
+        {
+          "name": "workout_routine_draft",
+          "dataType": "STRING",
+          "description": "Catalog field summary for workoutDraft.workout_routine_draft"
+        }
+      ],
+      "references": []
+    },
+    {
+      "name": "cloudBackupMeta",
+      "displayName": "Cloud backup metadata",
+      "description": "Auto-snapshot / last-sync timestamps for cloud backup UX. Not part of the backup entity envelope.",
+      "locus": "sharedPreferences",
+      "driftType": null,
+      "includedInBackup": false,
+      "columns": [
+        {
+          "name": "auto_cloud_snapshot_*",
+          "dataType": "STRING",
+          "description": "Catalog field summary for cloudBackupMeta.auto_cloud_snapshot_*"
+        },
+        {
+          "name": "last_cloud_sync_at_v1_$userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for cloudBackupMeta.last_cloud_sync_at_v1_$userId"
+        },
+        {
+          "name": "backup_last_successful_at_v1_$userId",
+          "dataType": "STRING",
+          "description": "Catalog field summary for cloudBackupMeta.backup_last_successful_at_v1_$userId"
+        }
+      ],
+      "references": []
+    }
+  ],
+  "lineageEdges": [
+    {
+      "fromEntity": "customer",
+      "toEntity": "workoutPlan",
+      "fieldPath": "customerId",
+      "description": "Owning customer id (also mirrored in scopeId).",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customer",
+      "toEntity": "measurement",
+      "fieldPath": "customerId",
+      "description": "Owning customer id (also mirrored in scopeId).",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "customExercise",
+      "fieldPath": "parentId",
+      "description": "Self-referential library parent (orphan / cycle checks).",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customer",
+      "toEntity": "customerNote",
+      "fieldPath": "customerId",
+      "description": "Owning customer id (also mirrored in scopeId).",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "planData",
+      "fieldPath": "mobilityItems[].customExerciseId",
+      "description": "Mobility item → library exercise.",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "planData",
+      "fieldPath": "exercises[].customExerciseId",
+      "description": "Training block exercise → library exercise.",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "planData",
+      "fieldPath": "sessionExecutions[].exercises[].customExerciseId",
+      "description": "Executed log exercise → library exercise.",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "userPreferences",
+      "fieldPath": "pinned_exercise_ids_json_v1[]",
+      "description": "Pinned library exercise ids.",
+      "source": "registry.softReference"
+    },
+    {
+      "fromEntity": "customExercise",
+      "toEntity": "userPreferences",
+      "fieldPath": "recent_exercise_ids_json_v1[]",
+      "description": "Recent library exercise ids.",
+      "source": "registry.softReference"
+    }
+  ],
+  "sampleEntities": [
+    {
+      "id": "cust_1",
+      "type": "customer",
+      "scopeId": "coach_demo_1",
+      "payload": {
+        "id": "cust_1",
+        "userId": "coach_demo_1",
+        "name": "Ada Client"
+      }
+    },
+    {
+      "id": "plan_1",
+      "type": "workoutPlan",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "plan_1",
+        "customerId": "cust_1",
+        "userId": "coach_demo_1",
+        "name": "Hypertrophy A",
+        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}]}"
+      }
+    },
+    {
+      "id": "meas_1",
+      "type": "measurement",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "meas_1",
+        "customerId": "cust_1",
+        "userId": "coach_demo_1",
+        "measurementDate": "2026-01-15"
+      }
+    },
+    {
+      "id": "ex_root",
+      "type": "customExercise",
+      "scopeId": "library",
+      "payload": {
+        "id": "ex_root",
+        "userId": "coach_demo_1",
+        "name": "Library",
+        "parentId": null
+      }
+    },
+    {
+      "id": "note_1",
+      "type": "customerNote",
+      "scopeId": "cust_1",
+      "payload": {
+        "id": "note_1",
+        "customerId": "cust_1",
+        "authorUserId": "coach_demo_1",
+        "body": "Demo note"
+      }
+    }
+  ],
+  "expectedLineageEdges": [
+    {
+      "fromCatalogId": "customer",
+      "toCatalogId": "workoutPlan",
+      "fieldPath": "customerId",
+      "exampleFromId": "cust_1",
+      "exampleToId": "plan_1"
+    },
+    {
+      "fromCatalogId": "customer",
+      "toCatalogId": "measurement",
+      "fieldPath": "customerId",
+      "exampleFromId": "cust_1",
+      "exampleToId": "meas_1"
+    }
+  ],
+  "acceptance": {
+    "requiresDriftTypes": [
+      "customer",
+      "workoutPlan",
+      "measurement",
+      "customExercise",
+      "customerNote"
+    ],
+    "requiresPrefsBuckets": [
+      "userProfile",
+      "pdfBrand",
+      "userPreferences"
+    ],
+    "requiresLineage": [
+      [
+        "customer",
+        "workoutPlan"
+      ],
+      [
+        "customer",
+        "measurement"
+      ]
+    ]
+  }
+}
