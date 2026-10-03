@@ -7,4 +7,5 @@ abstract final class DataQualityRuleIds {
   static const String parentCycle = 'parent_cycle';
   static const String planDataDecode = 'plan_data_decode';
   static const String planDataEmptyWeeks = 'plan_data_empty_weeks';
+  static const String preferencesDecode = 'preferences_decode';
 }

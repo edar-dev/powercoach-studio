@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/data_quality/data_quality.dart';
+import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
 
 void main() {
@@ -496,6 +497,183 @@ void main() {
 
       expect(
         report.findings.any((f) => f.ruleId == DataQualityRuleIds.emptyId),
+        isTrue,
+      );
+    });
+  });
+
+  group('preferences orphans', () {
+    OfflineEntity libExercise(String id) => entity(
+          id: id,
+          type: OfflineEntityType.customExercise,
+          scopeId: 'library',
+          payload: <String, dynamic>{'id': id, 'name': id},
+        );
+
+    test('orphan pinned id → warning orphan_reference', () {
+      final report = scanner.scanBackupJson(<String, dynamic>{
+        'entities': [
+          <String, dynamic>{
+            'id': 'lib-1',
+            'type': 'customExercise',
+            'scopeId': 'library',
+            'payload': <String, dynamic>{'id': 'lib-1', 'name': 'Bench'},
+            'updatedAt': now.toIso8601String(),
+            'deleted': false,
+          },
+        ],
+        'preferences': <String, dynamic>{
+          SettingsPrefsKeys.pinnedExerciseIdsJson:
+              jsonEncode(<String>['ghost-pin']),
+        },
+      });
+
+      final orphans = report.findings
+          .where(
+            (f) =>
+                f.ruleId == DataQualityRuleIds.orphanReference &&
+                f.severity == DataQualitySeverity.warning &&
+                f.details?['fieldPath'] ==
+                    SettingsPrefsKeys.pinnedExerciseIdsJson &&
+                f.details?['source'] == 'preferences' &&
+                f.details?['targetId'] == 'ghost-pin',
+          )
+          .toList();
+      expect(orphans, hasLength(1));
+      expect(
+        orphans.single.details?['targetCatalogId'],
+        'customExercise',
+      );
+    });
+
+    test('orphan recent id → warning orphan_reference', () {
+      final report = scanner.scanBackupJson(<String, dynamic>{
+        'entities': const <dynamic>[],
+        'preferences': <String, dynamic>{
+          SettingsPrefsKeys.recentExerciseIdsJson:
+              jsonEncode(<String>['ghost-recent']),
+        },
+      });
+
+      expect(
+        report.findings.any(
+          (f) =>
+              f.ruleId == DataQualityRuleIds.orphanReference &&
+              f.severity == DataQualitySeverity.warning &&
+              f.details?['fieldPath'] ==
+                  SettingsPrefsKeys.recentExerciseIdsJson &&
+              f.details?['source'] == 'preferences' &&
+              f.details?['targetId'] == 'ghost-recent',
+        ),
+        isTrue,
+      );
+    });
+
+    test('valid pin/recent ids → no prefs findings', () {
+      final report = scanner.scanBackupJson(<String, dynamic>{
+        'entities': [
+          <String, dynamic>{
+            'id': 'lib-1',
+            'type': 'customExercise',
+            'scopeId': 'library',
+            'payload': <String, dynamic>{'id': 'lib-1', 'name': 'Bench'},
+            'updatedAt': now.toIso8601String(),
+            'deleted': false,
+          },
+          <String, dynamic>{
+            'id': 'lib-2',
+            'type': 'customExercise',
+            'scopeId': 'library',
+            'payload': <String, dynamic>{'id': 'lib-2', 'name': 'Squat'},
+            'updatedAt': now.toIso8601String(),
+            'deleted': false,
+          },
+        ],
+        'preferences': <String, dynamic>{
+          SettingsPrefsKeys.pinnedExerciseIdsJson:
+              jsonEncode(<String>['lib-1']),
+          SettingsPrefsKeys.recentExerciseIdsJson:
+              jsonEncode(<String>['lib-2', 'lib-1']),
+        },
+      });
+
+      expect(
+        report.findings.where(
+          (f) =>
+              f.details?['source'] == 'preferences' ||
+              f.ruleId == DataQualityRuleIds.preferencesDecode,
+        ),
+        isEmpty,
+      );
+    });
+
+    test('malformed pinned JSON string → preferences_decode, no throw', () {
+      final report = scanner.scanBackupJson(<String, dynamic>{
+        'entities': const <dynamic>[],
+        'preferences': <String, dynamic>{
+          SettingsPrefsKeys.pinnedExerciseIdsJson: 'not-a-json-list{',
+        },
+      });
+
+      expect(
+        report.findings.any(
+          (f) =>
+              f.ruleId == DataQualityRuleIds.preferencesDecode &&
+              f.severity == DataQualitySeverity.info &&
+              f.details?['fieldPath'] ==
+                  SettingsPrefsKeys.pinnedExerciseIdsJson &&
+              f.details?['source'] == 'preferences',
+        ),
+        isTrue,
+      );
+      expect(
+        report.findings.where(
+          (f) => f.ruleId == DataQualityRuleIds.orphanReference,
+        ),
+        isEmpty,
+      );
+    });
+
+    test('list form (not JSON string) for pinned works', () {
+      final report = scanner.scanBackupJson(<String, dynamic>{
+        'entities': const <dynamic>[],
+        'preferences': <String, dynamic>{
+          SettingsPrefsKeys.pinnedExerciseIdsJson: <String>['ghost-list'],
+        },
+      });
+
+      expect(
+        report.findings.any(
+          (f) =>
+              f.ruleId == DataQualityRuleIds.orphanReference &&
+              f.details?['fieldPath'] ==
+                  SettingsPrefsKeys.pinnedExerciseIdsJson &&
+              f.details?['targetId'] == 'ghost-list' &&
+              f.details?['source'] == 'preferences',
+        ),
+        isTrue,
+      );
+    });
+
+    test('scanEntities(preferences:) also reports orphans', () {
+      final report = scanner.scanEntities(
+        [libExercise('lib-ok')],
+        preferences: <String, dynamic>{
+          SettingsPrefsKeys.recentExerciseIdsJson:
+              jsonEncode(<String>['missing-live']),
+        },
+      );
+
+      expect(
+        report.findings.any(
+          (f) =>
+              f.ruleId == DataQualityRuleIds.orphanReference &&
+              f.severity == DataQualitySeverity.warning &&
+              f.details?['fieldPath'] ==
+                  SettingsPrefsKeys.recentExerciseIdsJson &&
+              f.details?['targetId'] == 'missing-live' &&
+              f.details?['source'] == 'preferences',
+        ),
         isTrue,
       );
     });
