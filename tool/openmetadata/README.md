@@ -4,8 +4,9 @@ Local-only OpenMetadata viewer for the PowerCoach **in-repo data catalog**.
 The Dart registry (`lib/core/data_catalog/`) remains the source of truth; OM is
 an optional ingestion target.
 
-> **LOCAL ONLY.** Default quickstart login is `admin` / `admin`. Never expose
-> this stack on a public network. Not used in CI. No production SaaS deploy.
+> **LOCAL ONLY.** Default quickstart UI login is `admin@open-metadata.org` /
+> `admin`. Never expose this stack on a public network. Not used in CI. No
+> production SaaS deploy.
 
 ## Prerequisites
 
@@ -21,7 +22,7 @@ Pinned stack: OpenMetadata **1.5.15** (`docker-compose.yml` from the upstream
 From the **repo root**:
 
 ```bash
-# Start stack (prints UI URL + admin/admin)
+# Start stack (prints UI URL + admin@open-metadata.org / admin)
 tool/openmetadata/scripts/up.sh
 
 # Wait until API is ready (or fail with clear status)
@@ -38,7 +39,7 @@ tool/openmetadata/scripts/down.sh
 # tool/openmetadata/scripts/down.sh --purge
 ```
 
-One-liner flow:
+One-liner flow (works out of the box after a fresh `up` + healthy API):
 
 ```bash
 tool/openmetadata/scripts/up.sh && \
@@ -59,20 +60,29 @@ tool/openmetadata/scripts/up.sh && \
 | Item | Value |
 |------|-------|
 | UI | http://localhost:8585 |
-| Login | `admin` / `admin` |
+| **UI login** | `admin@open-metadata.org` / `admin` |
 | Health endpoint | `http://localhost:8585/api/v1/system/version` |
+
+> **UI vs API login:** the browser form uses the email above with plaintext
+> `admin`. The REST login (`POST /api/v1/users/login`) requires the same email
+> and a **Base64-encoded** password (`admin` → `YWRtaW4=`). `ingest.sh --live`
+> does that encoding for you — pass plaintext via `OM_PASSWORD` if you override.
 
 ### Live ingest env overrides
 
 | Env | Default | Purpose |
 |-----|---------|---------|
 | `OM_BASE_URL` | `http://localhost:8585` | Server |
-| `OM_EMAIL` | `admin` | Quickstart user |
-| `OM_PASSWORD` | `admin` | Quickstart password |
+| `OM_EMAIL` | `admin@open-metadata.org` | Quickstart user (email, not bare `admin`) |
+| `OM_PASSWORD` | `admin` | Quickstart password (**plaintext**; ingest Base64-encodes for the API) |
 | `OM_HEALTH_TIMEOUT_SECS` | `180` | `health.sh --wait` timeout |
 | `OM_HEALTH_INTERVAL_SECS` | `5` | Poll interval while waiting |
 
 Dry-run needs **no** credentials and does **not** require Docker.
+
+Live ingest also resolves each table UUID (via create response or
+`GET /api/v1/tables/name/{fqn}`) before `PUT /api/v1/lineage`. OM 1.5.x rejects
+FQNs in `EntityReference.id`.
 
 ## Health check
 
@@ -131,6 +141,7 @@ After dry-run or live ingest, the payload / UI should show:
 | `fixtures/sample_entities.json` | Demo entity graph + expected lineage |
 | `fixtures/om_catalog_payload.json` | Generated dry-run payload (committed after dump) |
 | `ingestion/ingest_from_registry.dart` | Custom ingest (dry-run / `--live`) |
+| `ingestion/om_live_defaults.dart` | OM 1.5.15 login/lineage helpers |
 
 ## Related docs
 
