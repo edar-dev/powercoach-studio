@@ -1,95 +1,94 @@
-# Sync strategy (v4)
+# Sync strategy (v5 — cloud SoT)
 
-## Decision: local-first excellence (Option A — 2026-07)
+## Decision: Supabase full CRUD (approved 2026-10)
 
-PowerCoach Studio operates in **local-first** mode. Business data lives on-device;
-Supabase is used for authentication and optional cloud **backup snapshots**
-(manual + automatic + sync-on-open merge). There is no GymBlog live sync /
-`PendingOperations` outbox.
+PowerCoach Studio uses **Supabase `public.coach_entities` as the cloud source of
+truth** for coach business entities. Writes are **online-required** (authenticated
+session + successful remote write before the UI treats the change as saved).
+There is **no offline outbox** in v1.
 
-Remote sync replay and the sync-issues UI are **removed from the product surface**.
-Multi-device data transfer uses **backup export / import** (file and cloud snapshot)
-plus **sync-on-open merge** when local data already exists.
+Drift SQLite (`LocalEntities` via `OfflineLocalStore`) is a **per-user cache**.
+After a successful pull, the cache is **fully replaced per entity type**.
+SharedPreferences still hold settings, drafts, pins, and PDF brand (not Postgres).
 
 ### Rationale
 
-- Coaches need reliable offline access to clients, plans, and session logs.
-- Session execution data (diary, adherence, progress panels) is stored in local plan payloads.
-- GymBlog.API remote replay is not active and not planned in the near term.
-- On web, IndexedDB can be evicted; automatic cloud snapshots + recovery reduce data-loss risk.
+- Multi-device coherence without reintroducing GymBlog.API or a PendingOperations outbox.
+- One RLS surface (`user_id = auth.uid()`) on a document/JSONB table aligned with Drift.
+- Soft FKs stay inside `payload` JSONB; integrity is enforced in-app + data-quality rules.
+- Coaches without network cannot edit — accepted product tradeoff for v1 (decision 1A).
+
+### Entity types
+
+| Type | Notes |
+|------|--------|
+| `customer` | Coach-owned athletes |
+| `workoutPlan` | Plans scoped by `customerId` |
+| `measurement` | Body measurements |
+| `customExercise` | Library exercises (`scope_id = library`) |
+| `customerNote` | Notes threads |
+
+Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** part of
+`coach_entities`.
 
 ### User-facing implications
 
 | Area | Behavior |
 |------|----------|
-| Data storage | Drift SQLite + plan `planData` JSON (including `sessionExecutions`) |
-| Sync issues screen | **Removed** — no user-facing sync queue |
-| Multi-device | File export/import, automatic cloud snapshots, sync-on-open merge |
-| Cloud snapshots | JSON uploads to Supabase Storage (same envelope as file backup) |
-| Auth | Supabase sign-in for account identity; offline data scoped per user |
+| Data storage | Supabase `coach_entities` (SoT) + Drift cache + SharedPreferences prefs |
+| Saves | Require session + connectivity; spinner until remote ack |
+| Multi-device | Pull on login/resume replaces Drift cache per type |
+| Backup | File/cloud JSON remains disaster recovery; restore writes to remote + cache |
+| Auth | Supabase JWT scopes all RLS; anon has no table access |
+| Sync issues / outbox UI | Not reintroduced |
 
-### Backup as the multi-device path
+### Pull / cache
 
-1. Export JSON from Settings on device A (Share / file, or cloud snapshot).
-2. Import on device B with **Merge by id** (default) or **Replace all** (destructive).
-3. Merge keeps the entity with the newer `updatedAt` timestamp per id.
+1. On login and app resume: `CoachEntitiesRemote` lists rows for the user (optionally
+   filtered by `type` / `updated_at`).
+2. For each `OfflineEntityType`, replace Drift rows for that user+type with the
+   pulled snapshot (include soft-deleted rows so delete state is coherent).
+3. Sign-out: `wipeForUser` clears the Drift cache (existing pattern).
 
-### Cloud snapshots (manual + automatic)
+### Migration (existing coaches)
 
-Cloud snapshots copy the same backup JSON envelope to the private `user-backups`
-Supabase Storage bucket (max 5 per user, oldest pruned).
+If remote is empty and the device (or backup) has non-deleted entities → **one-shot
+upload** (idempotent upsert on PK) with progress UI; mark complete in prefs per user.
+See migration UI in Settings / first-run gate.
 
-**Automatic uploads (web-first):** when “Backup cloud automatico” is enabled
-(default **on** on web when unset), `CloudSnapshotScheduler` debounces (~90s)
-after material local writes (`OfflineLocalStore.upsertEntity`, profile, exported
-preferences, pins/recents) and flushes on app pause / web `beforeunload`.
-Upload on unload is best-effort — browsers may not allow reliable async upload.
+### Cloud Storage snapshots
 
-**Empty-local recovery:** after login, if there are no non-deleted customers and
-no non-deleted workout plans **and** cloud snapshots exist, the dashboard shows
-“Ripristina ultimo backup cloud?” and can run **replace-all** restore.
+JSON uploads to the private `user-backups` bucket remain available as an extra
+safety net (manual + automatic scheduler). They are **not** a substitute for
+`coach_entities` live CRUD.
 
-**Sync-on-open (Phase B):** when local coach data is **not** empty and the newest
-cloud snapshot `createdAt` is newer than
-`max(local max entity updatedAt, lastSuccessfulBackupAt, lastCloudSyncAt)`,
-`SyncOnOpenService` downloads and **mergeRestore**s (newer `updatedAt` wins),
-then schedules a push via the auto snapshot debounce. Empty local is left to
-the recovery dialog (replace-all only).
+### Security
 
-Web also requests `navigator.storage.persist()` after auth; Settings shows a
-hint when storage is not persisted.
+- RLS policies: SELECT/INSERT/UPDATE/DELETE only when `user_id = auth.uid()`.
+- App secrets: `SUPABASE_URL` + `SUPABASE_ANON_KEY` only.
+- Never ship `SUPABASE_SERVICE_ROLE` in the client.
+- Policy rehearsal: `supabase/tests/coach_entities_rls.sql`.
 
-### Internal outbox (removed)
+### Explicit non-goals (v1)
 
-The legacy `PendingOperations` outbox and `SyncMetaEntries` key/value table were dropped from
-the Drift schema in v2 (2026-08, Wave C). The migration runs `DROP TABLE IF EXISTS` for both on
-upgrade from v1 — this is destructive for any rows left over from earlier local-only builds, but
-those rows were unread and unexported since Wave A. **Back up your data (Settings → Backup)
-before updating**, especially on web where storage can otherwise be lost if something goes wrong
-during the upgrade. New backups do not export pending ops or sync meta; restore ignores those
-legacy keys when present in older backup files.
-
-### Future live sync (not implemented)
-
-If remote sync returns, require a new approved plan before reintroducing:
-
-- Sync orchestrator bootstrap
-- Sync-issues UI
-- Remote conflict resolution
+- Offline outbox / conflict merge UI
+- Normalized SQL tables per entity
+- Moving prefs/PDF brand/pins to Postgres
+- Reintroducing GymBlog.API
+- Sharing entities across coaches
+- Realtime subscriptions (poll/pull on resume only)
 
 ### Related code
 
-- `lib/core/backup/user_data_backup_service.dart` — export, replace restore, merge restore
-- `lib/core/backup/cloud_backup_repository.dart` — Supabase Storage snapshots
-- `lib/core/backup/cloud_snapshot_scheduler.dart` — debounced automatic uploads
-- `lib/core/backup/sync_on_open_service.dart` — merge when cloud is newer
-- `lib/core/backup/web_persistence_coordinator.dart` — persist + recovery + auth hooks
-- `lib/core/sync/offline_models.dart` / `offline_repository_support.dart` — local entity models
+- `supabase/migrations/*_coach_entities.sql` — table, indexes, RLS
+- `lib/core/remote/coach_entities_remote.dart` — list/upsert/soft-delete/pull
+- `lib/core/sync/offline_repository_support.dart` — remote-first helper + Drift cache
+- `lib/core/storage/offline_local_store.dart` — Drift cache
+- `lib/core/backup/user_data_backup_service.dart` — export / restore-to-remote
+- `lib/core/data_quality/` — soft-FK / orphan scans on pulled or backup JSON
 
 ### Data catalog & quality
 
-Entity shapes, soft FKs, and storage loci are documented in
-[`docs/data-catalog.md`](data-catalog.md) (source of truth:
-`lib/core/data_catalog/`). Optional local OpenMetadata spike:
-`tool/openmetadata/`. Read-only data-quality scanner:
-`lib/core/data_quality/` (`dart run tool/data_quality_report.dart <backup.json>`).
+Entity shapes and soft FKs: [`docs/data-catalog.md`](data-catalog.md).
+Run the read-only scanner after pulls when investigating integrity issues:
+`dart run tool/data_quality_report.dart <backup.json>`.

@@ -12,10 +12,11 @@ Multi-platform **Flutter/Dart** app (Android, iOS, web, Windows, macOS) for gym 
 | Concern | Technology |
 |---------|-----------|
 | Language | Dart (SDK ^3.9.2), Flutter |
-| Auth | Supabase (`supabase_flutter ^2.5.0`) — session only |
-| Local DB | **Drift** + SQLite (`powercoach_offline.sqlite`) |
-| Local prefs | **SharedPreferences** (settings, drafts, pins, calendar reminder prefs) |
-| External API | None for business data (local-first; optional Stripe billing on web) |
+| Auth | Supabase (`supabase_flutter ^2.5.0`) — session (JWT) |
+| Cloud SoT | Supabase `public.coach_entities` (JSONB + RLS); anon key + user JWT only |
+| Local DB | **Drift** + SQLite cache (`powercoach_offline.sqlite`) |
+| Local prefs | **SharedPreferences** (settings, drafts, pins, calendar reminder prefs, PDF brand) |
+| External API | Coach entity CRUD via Supabase PostgREST; optional Stripe billing on web |
 | Routing | `go_router ^17` — routes in `lib/core/routing/app_routes.dart`, shell in `lib/app.dart` |
 | Monitoring | `sentry_flutter` (opt-in via `SENTRY_DSN`, release builds) |
 | i18n | Flutter ARB — primary locale **Italian (`it`)**, secondary English |
@@ -45,6 +46,6 @@ Bundled as a Flutter asset via `loadAppEnv()` in `lib/core/platform/app_env_load
 
 Local secrets: keep them in gitignored `.env`, then run `bash scripts/ensure-env.sh` to sync into `.env.example` before `flutter run`.
 
-## Data model (local-first)
+## Data model (cloud SoT + Drift cache)
 
-All coach/client/workout data is persisted locally per authenticated Supabase user id. There is no GymBlog.API or remote sync in the current architecture. See rule `07-local-data-and-integrations.mdc`.
+Coach/client/workout entities are stored in Supabase `coach_entities` (RLS per `auth.uid()`). Drift is a local cache replaced per type after pull. Writes are online-required (no offline outbox). Prefs stay on SharedPreferences. No GymBlog.API. See `07-local-data-and-integrations.mdc` and `docs/sync-strategy.md`.
