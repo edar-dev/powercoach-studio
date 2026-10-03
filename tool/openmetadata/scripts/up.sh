@@ -18,7 +18,7 @@ Usage: up.sh [--wait]
   --wait   After start, poll health until ready (or timeout).
   -h       Show this help.
 
-LOCAL ONLY — default login admin/admin. Never expose publicly.
+LOCAL ONLY — default login admin@open-metadata.org / admin. Never expose publicly.
 EOF
 }
 
@@ -50,7 +50,7 @@ docker compose up --detach
 
 echo
 echo "UI:    ${OM_BASE_URL}"
-echo "Login: admin / admin  (local quickstart only — never expose publicly)"
+echo "Login: admin@open-metadata.org / admin  (local quickstart only — never expose publicly)"
 echo
 echo "Tip: wait until healthy with:"
 echo "  ${SCRIPT_DIR}/health.sh --wait"

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'om_catalog_payload.dart';
+import 'om_live_defaults.dart';
 
 /// Custom OpenMetadata ingestion for the PowerCoach data catalog spike.
 ///
@@ -10,8 +11,10 @@ import 'om_catalog_payload.dart';
 /// - `--dry-run` (default): writes an OM-oriented payload JSON for inspection
 /// - `--live`: POSTs service / schema / tables / lineage to a local OM server
 ///
-/// No secrets are required for dry-run. Live mode uses the local OM quickstart
-/// defaults (`admin` / `admin`) against http://localhost:8585 — never for prod.
+/// No secrets are required for dry-run. Live mode uses the local OM 1.5.15
+/// quickstart defaults (`admin@open-metadata.org` / `admin`) against
+/// http://localhost:8585 — never for prod. The login API receives a
+/// Base64-encoded password; lineage edges use table UUIDs (not FQNs).
 ///
 /// Usage (from repo root):
 ///   dart run tool/openmetadata/ingestion/ingest_from_registry.dart
@@ -60,12 +63,12 @@ void main(List<String> args) async {
     return;
   }
 
-  final baseUrl =
-      Platform.environment['OM_BASE_URL'] ?? 'http://localhost:8585';
+  final baseUrl = Platform.environment['OM_BASE_URL'] ?? kOmDefaultBaseUrl;
   final token = await _login(
     baseUrl: baseUrl,
-    email: Platform.environment['OM_EMAIL'] ?? 'admin',
-    password: Platform.environment['OM_PASSWORD'] ?? 'admin',
+    email: Platform.environment['OM_EMAIL'] ?? kOmDefaultEmail,
+    // OM_PASSWORD is plaintext; the login API requires Base64.
+    password: Platform.environment['OM_PASSWORD'] ?? kOmDefaultPassword,
   );
   await _ingestLive(baseUrl: baseUrl, token: token, payload: payload);
   stdout.writeln('Live ingestion finished against $baseUrl');
@@ -96,7 +99,10 @@ Future<String> _login({
     final req = await client.postUrl(Uri.parse('$baseUrl/api/v1/users/login'));
     req.headers.contentType = ContentType.json;
     req.write(
-      jsonEncode(<String, dynamic>{'email': email, 'password': password}),
+      jsonEncode(<String, dynamic>{
+        'email': email,
+        'password': encodeOmLoginPassword(password),
+      }),
     );
     final res = await req.close();
     final body = await res.transform(utf8.decoder).join();
@@ -126,11 +132,17 @@ Future<void> _ingestLive({
     Object? body,
   }) async {
     final uri = Uri.parse('$baseUrl$path');
-    final req = await (method == 'PUT'
-        ? client.putUrl(uri)
-        : method == 'PATCH'
-            ? client.patchUrl(uri)
-            : client.postUrl(uri));
+    final HttpClientRequest req;
+    switch (method) {
+      case 'PUT':
+        req = await client.putUrl(uri);
+      case 'PATCH':
+        req = await client.patchUrl(uri);
+      case 'GET':
+        req = await client.getUrl(uri);
+      default:
+        req = await client.postUrl(uri);
+    }
     req.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
     req.headers.contentType = ContentType.json;
     if (body != null) req.write(jsonEncode(body));
@@ -194,12 +206,16 @@ Future<void> _ingestLive({
     );
 
     final tables = (payload['tables'] as List).cast<Map<String, dynamic>>();
+    // OM lineage EntityReference.id must be a UUID (not an FQN).
+    final tableIdsByName = <String, String>{};
     for (final table in tables) {
-      await api(
+      final name = table['name']?.toString() ?? '';
+      final fqn = '$schemaFqn.$name';
+      final created = await api(
         'POST',
         '/api/v1/tables',
         body: <String, dynamic>{
-          'name': table['name'],
+          'name': name,
           'displayName': table['displayName'],
           'description': table['description'],
           'tableType': 'Regular',
@@ -207,35 +223,43 @@ Future<void> _ingestLive({
           'databaseSchema': schemaFqn,
         },
       );
+      var id = created?['id']?.toString();
+      if (id == null || id.isEmpty) {
+        // Re-run / already exists: resolve UUID by FQN.
+        final existing = await api('GET', '/api/v1/tables/name/$fqn');
+        id = existing?['id']?.toString();
+      }
+      if (id == null || id.isEmpty) {
+        stderr.writeln('OM: could not resolve table UUID for $fqn');
+        continue;
+      }
+      tableIdsByName[name] = id;
     }
 
     final edges =
         (payload['lineageEdges'] as List).cast<Map<String, dynamic>>();
     for (final edge in edges) {
-      final fromFqn = '$schemaFqn.${edge['fromEntity']}';
-      final toFqn = '$schemaFqn.${edge['toEntity']}';
+      final fromName = edge['fromEntity']?.toString() ?? '';
+      final toName = edge['toEntity']?.toString() ?? '';
+      final fromId = tableIdsByName[fromName];
+      final toId = tableIdsByName[toName];
+      if (fromId == null || toId == null) {
+        stderr.writeln(
+          'OM: skip lineage $fromName → $toName '
+          '(missing UUID: from=$fromId to=$toId)',
+        );
+        continue;
+      }
+      final description =
+          '${edge['fieldPath']}: ${edge['description'] ?? ''}'.trim();
       await api(
         'PUT',
         '/api/v1/lineage',
-        body: <String, dynamic>{
-          'edge': <String, dynamic>{
-            'fromEntity': <String, dynamic>{
-              'id': fromFqn,
-              'type': 'table',
-              'fqn': fromFqn,
-            },
-            'toEntity': <String, dynamic>{
-              'id': toFqn,
-              'type': 'table',
-              'fqn': toFqn,
-            },
-            'lineageDetails': <String, dynamic>{
-              'description':
-                  '${edge['fieldPath']}: ${edge['description'] ?? ''}'.trim(),
-              'source': 'Manual',
-            },
-          },
-        },
+        body: buildOmLineagePutBody(
+          fromId: fromId,
+          toId: toId,
+          description: description,
+        ),
       );
     }
   } finally {

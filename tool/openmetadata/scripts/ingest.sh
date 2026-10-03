@@ -24,7 +24,8 @@ Usage: ingest.sh [--live] [--refresh-registry]
   -h                   Show this help.
 
 Live credentials (optional env): OM_BASE_URL, OM_EMAIL, OM_PASSWORD
-Defaults: http://localhost:8585 , admin / admin (local only).
+Defaults: http://localhost:8585 , admin@open-metadata.org / admin (local only).
+OM_PASSWORD is plaintext; the Dart ingest Base64-encodes it for the login API.
 EOF
 }
 

@@ -100,7 +100,7 @@ dart run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.j
 Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,down}.sh`
 (see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md)). OM is a
 viewer only; this document + the Dart registry remain authoritative. Not used
-in CI; never expose the default `admin`/`admin` stack publicly.
+in CI; never expose the default `admin@open-metadata.org`/`admin` stack publicly.
 
 ## Data quality
 
