@@ -1,27 +1,62 @@
 {
-  "schemaVersion": 1,
-  "exportFormat": "powercoach_om_catalog_payload_v1",
+  "schemaVersion": 2,
+  "exportFormat": "powercoach_om_catalog_payload_v2",
   "service": {
-    "name": "powercoach_local",
-    "displayName": "PowerCoach Local (spike)",
+    "name": "powercoach_cloud",
+    "displayName": "PowerCoach Cloud SoT (spike)",
     "serviceType": "CustomDatabase",
-    "description": "Document-oriented local-first catalog mirrored from Dart registry."
+    "description": "Document-oriented catalog: Supabase coach_entities (SoT) + Drift cache + SharedPreferences, mirrored from Dart registry."
   },
   "database": {
-    "name": "powercoach_offline",
-    "description": "Logical DB for Drift LocalEntities + prefs buckets"
+    "name": "powercoach_studio",
+    "description": "Logical DB for public.coach_entities (SoT), Drift LocalEntities cache, and prefs buckets"
   },
   "schema": {
-    "name": "local_first",
-    "description": "Soft-FK entity types and prefs buckets"
+    "name": "cloud_sot",
+    "description": "Soft-FK coach entity types (cloud SoT) and local prefs buckets"
+  },
+  "coachEntities": {
+    "remoteTable": "public.coach_entities",
+    "remoteRowFields": [
+      "user_id",
+      "type",
+      "id",
+      "scope_id",
+      "payload",
+      "updated_at",
+      "deleted"
+    ],
+    "softDeleteColumn": "deleted",
+    "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
+    "softFkNote": "No SQL FKs; soft references live in payload JSONB (see SoftReference + data_quality scanner).",
+    "typeCheckValues": [
+      "customer",
+      "workoutPlan",
+      "measurement",
+      "customExercise",
+      "customerNote"
+    ]
   },
   "tables": [
     {
       "name": "customer",
       "displayName": "Customer",
-      "description": "Coach client record. scopeId is the authenticated coach userId.",
-      "locus": "driftLocalEntities",
+      "description": "Coach client record. Cloud SoT in coach_entities; Drift cache. scope_id is the authenticated coach userId.",
+      "locus": "supabaseCoachEntities",
+      "cacheLocus": "driftLocalEntities",
       "driftType": "customer",
+      "remoteTable": "public.coach_entities",
+      "remoteRowFields": [
+        "user_id",
+        "type",
+        "id",
+        "scope_id",
+        "payload",
+        "updated_at",
+        "deleted"
+      ],
+      "softDelete": true,
+      "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
       "includedInBackup": true,
       "columns": [
         {
@@ -120,9 +155,22 @@
     {
       "name": "workoutPlan",
       "displayName": "Workout plan",
-      "description": "Client workout plan. scopeId is customerId. Nested planData holds weeks/days/exercises and session diary.",
-      "locus": "driftLocalEntities",
+      "description": "Client workout plan. Cloud SoT in coach_entities; Drift cache. scope_id is customerId. Nested planData holds weeks/days/exercises and session diary.",
+      "locus": "supabaseCoachEntities",
+      "cacheLocus": "driftLocalEntities",
       "driftType": "workoutPlan",
+      "remoteTable": "public.coach_entities",
+      "remoteRowFields": [
+        "user_id",
+        "type",
+        "id",
+        "scope_id",
+        "payload",
+        "updated_at",
+        "deleted"
+      ],
+      "softDelete": true,
+      "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
       "includedInBackup": true,
       "columns": [
         {
@@ -206,16 +254,29 @@
           "fieldPath": "customerId",
           "targetCatalogId": "customer",
           "optional": false,
-          "description": "Owning customer id (also mirrored in scopeId)."
+          "description": "Owning customer id (also mirrored in scope_id)."
         }
       ]
     },
     {
       "name": "measurement",
       "displayName": "Measurement",
-      "description": "Client body / strength measurement. scopeId is customerId.",
-      "locus": "driftLocalEntities",
+      "description": "Client body / strength measurement. Cloud SoT in coach_entities; Drift cache. scope_id is customerId.",
+      "locus": "supabaseCoachEntities",
+      "cacheLocus": "driftLocalEntities",
       "driftType": "measurement",
+      "remoteTable": "public.coach_entities",
+      "remoteRowFields": [
+        "user_id",
+        "type",
+        "id",
+        "scope_id",
+        "payload",
+        "updated_at",
+        "deleted"
+      ],
+      "softDelete": true,
+      "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
       "includedInBackup": true,
       "columns": [
         {
@@ -289,16 +350,29 @@
           "fieldPath": "customerId",
           "targetCatalogId": "customer",
           "optional": false,
-          "description": "Owning customer id (also mirrored in scopeId)."
+          "description": "Owning customer id (also mirrored in scope_id)."
         }
       ]
     },
     {
       "name": "customExercise",
       "displayName": "Custom exercise",
-      "description": "Coach exercise library node. scopeId is the constant \"library\". Optional parentId builds a folder tree.",
-      "locus": "driftLocalEntities",
+      "description": "Coach exercise library node. Cloud SoT in coach_entities; Drift cache. scope_id is the constant \"library\". Optional parentId builds a folder tree.",
+      "locus": "supabaseCoachEntities",
+      "cacheLocus": "driftLocalEntities",
       "driftType": "customExercise",
+      "remoteTable": "public.coach_entities",
+      "remoteRowFields": [
+        "user_id",
+        "type",
+        "id",
+        "scope_id",
+        "payload",
+        "updated_at",
+        "deleted"
+      ],
+      "softDelete": true,
+      "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
       "includedInBackup": true,
       "columns": [
         {
@@ -369,9 +443,22 @@
     {
       "name": "customerNote",
       "displayName": "Customer note",
-      "description": "Per-message coaching note for a client. scopeId is customerId.",
-      "locus": "driftLocalEntities",
+      "description": "Per-message coaching note for a client. Cloud SoT in coach_entities; Drift cache. scope_id is customerId.",
+      "locus": "supabaseCoachEntities",
+      "cacheLocus": "driftLocalEntities",
       "driftType": "customerNote",
+      "remoteTable": "public.coach_entities",
+      "remoteRowFields": [
+        "user_id",
+        "type",
+        "id",
+        "scope_id",
+        "payload",
+        "updated_at",
+        "deleted"
+      ],
+      "softDelete": true,
+      "rlsNote": "authenticated; user_id = auth.uid(); anon revoked",
       "includedInBackup": true,
       "columns": [
         {
@@ -415,7 +502,7 @@
           "fieldPath": "customerId",
           "targetCatalogId": "customer",
           "optional": false,
-          "description": "Owning customer id (also mirrored in scopeId)."
+          "description": "Owning customer id (also mirrored in scope_id)."
         }
       ]
     },
@@ -424,7 +511,12 @@
       "displayName": "Plan data (nested)",
       "description": "JSON string embedded in workoutPlan.planData: phases/weeks/days/exercises, mobility, and sessionExecutions diary.",
       "locus": "nestedJson",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": true,
       "columns": [
         {
@@ -527,9 +619,14 @@
     {
       "name": "userProfile",
       "displayName": "Coach user profile",
-      "description": "Local coach profile fields (not Supabase profiles table CRUD).",
+      "description": "Local coach profile fields (SharedPreferences; not coach_entities and not Supabase profiles table CRUD).",
       "locus": "sharedPreferences",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": true,
       "columns": [
         {
@@ -568,9 +665,14 @@
     {
       "name": "pdfBrand",
       "displayName": "PDF brand kit",
-      "description": "PDF studio branding + logo path/bytes. Device-local; not included in the user backup envelope.",
+      "description": "PDF studio branding + logo path/bytes. Device-local SharedPreferences + files; not included in the user backup envelope.",
       "locus": "sharedPreferences",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": false,
       "columns": [
         {
@@ -604,9 +706,14 @@
     {
       "name": "userPreferences",
       "displayName": "User preferences",
-      "description": "Settings + pinned/recent exercise ids exported under backup `preferences`.",
+      "description": "Settings + pinned/recent exercise ids exported under backup `preferences`. SharedPreferences only (not coach_entities).",
       "locus": "sharedPreferences",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": true,
       "columns": [
         {
@@ -670,7 +777,12 @@
       "displayName": "Workout builder draft",
       "description": "In-progress workout builder draft. Not part of backup export.",
       "locus": "sharedPreferences",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": false,
       "columns": [
         {
@@ -686,7 +798,12 @@
       "displayName": "Cloud backup metadata",
       "description": "Auto-snapshot / last-sync timestamps for cloud backup UX. Not part of the backup entity envelope.",
       "locus": "sharedPreferences",
+      "cacheLocus": null,
       "driftType": null,
+      "remoteTable": null,
+      "remoteRowFields": null,
+      "softDelete": false,
+      "rlsNote": null,
       "includedInBackup": false,
       "columns": [
         {
@@ -713,14 +830,14 @@
       "fromEntity": "customer",
       "toEntity": "workoutPlan",
       "fieldPath": "customerId",
-      "description": "Owning customer id (also mirrored in scopeId).",
+      "description": "Owning customer id (also mirrored in scope_id).",
       "source": "registry.softReference"
     },
     {
       "fromEntity": "customer",
       "toEntity": "measurement",
       "fieldPath": "customerId",
-      "description": "Owning customer id (also mirrored in scopeId).",
+      "description": "Owning customer id (also mirrored in scope_id).",
       "source": "registry.softReference"
     },
     {
@@ -734,7 +851,7 @@
       "fromEntity": "customer",
       "toEntity": "customerNote",
       "fieldPath": "customerId",
-      "description": "Owning customer id (also mirrored in scopeId).",
+      "description": "Owning customer id (also mirrored in scope_id).",
       "source": "registry.softReference"
     },
     {
@@ -847,6 +964,13 @@
     }
   ],
   "acceptance": {
+    "requiresCoachEntityTypes": [
+      "customer",
+      "workoutPlan",
+      "measurement",
+      "customExercise",
+      "customerNote"
+    ],
     "requiresDriftTypes": [
       "customer",
       "workoutPlan",
@@ -868,6 +992,8 @@
         "customer",
         "measurement"
       ]
-    ]
+    ],
+    "requiresCloudSotLocus": "supabaseCoachEntities",
+    "requiresCacheLocus": "driftLocalEntities"
   }
 }

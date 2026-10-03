@@ -1,54 +1,122 @@
-# Data catalog (local-first)
+# Data catalog (cloud SoT)
 
-Source of truth: Dart registry
+Source of truth for **catalog metadata**: Dart registry
 [`lib/core/data_catalog/data_catalog_registry.dart`](../lib/core/data_catalog/data_catalog_registry.dart).
 
-OpenMetadata (optional local spike under `tool/openmetadata/`) ingests a JSON dump
-of this registry. It does **not** replace the in-repo catalog.
+Source of truth for **coach business data**: Supabase
+`public.coach_entities` (JSONB document table). Drift `LocalEntities` is a
+**per-user cache** replaced per entity type on pull. SharedPreferences stay
+local (settings, drafts, pins, PDF brand).
 
-Related: [sync-strategy.md](sync-strategy.md) (local-first + backup path).
+OpenMetadata (optional local spike under `tool/openmetadata/`) ingests a JSON
+dump of this registry. It does **not** replace the in-repo catalog.
+
+Related: [sync-strategy.md](sync-strategy.md) (cloud SoT, online writes, pull,
+one-shot migration).
 
 ## Storage model
 
-| Locus | Mechanism | Examples |
-|-------|-----------|----------|
-| Drift `LocalEntities` | `(userId, type, id)` + `payloadJson` | customer, workoutPlan, measurement, customExercise, customerNote |
-| Nested JSON | string field inside another payload | `workoutPlan.planData` |
-| SharedPreferences | per-user / global keys | userProfile, pdfBrand, preferences, drafts |
-| Filesystem | logo bytes under app documents (native) | pdfBrand logo |
+| Locus | Mechanism | Role | Examples |
+|-------|-----------|------|----------|
+| Supabase `public.coach_entities` | `(user_id, type, id)` + `payload` JSONB | **Cloud SoT** | customer, workoutPlan, measurement, customExercise, customerNote |
+| Drift `LocalEntities` | same logical row, local SQLite | **Cache** (full replace per type on pull) | same five types |
+| Nested JSON | string field inside another payload | Embedded | `workoutPlan.planData` |
+| SharedPreferences | per-user / global keys | Local-only | userProfile, pdfBrand, preferences, drafts |
+| Filesystem | logo bytes under app documents (native) | Local-only | pdfBrand logo |
 
-There are **no SQL foreign keys**. Relationships are soft string ids inside JSON.
+There are **no SQL foreign keys**. Relationships are soft string ids inside
+JSON `payload` (and nested `planData`). Soft-delete uses the `deleted` column
+(not hard DELETE from the app write path).
+
+## `coach_entities` table
+
+Migration: [`supabase/migrations/20261003200000_coach_entities.sql`](../supabase/migrations/20261003200000_coach_entities.sql).
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `user_id` | `uuid` | FK → `auth.users`; RLS key |
+| `type` | `text` | CHECK — see below |
+| `id` | `text` | Entity id |
+| `scope_id` | `text` | e.g. coach userId, customerId, or `library` |
+| `payload` | `jsonb` | Full entity JSON; soft FKs live here |
+| `updated_at` | `timestamptz` | UTC |
+| `deleted` | `boolean` | Soft-delete flag |
+
+**Primary key:** `(user_id, type, id)`.
+
+**`type` CHECK** (must match `OfflineEntityType.name`):
+
+- `customer`
+- `workoutPlan`
+- `measurement`
+- `customExercise`
+- `customerNote`
+
+Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** in
+the CHECK list.
+
+**Indexes:**
+
+- `coach_entities_user_type_idx` — `(user_id, type)`
+- `coach_entities_user_updated_at_idx` — `(user_id, updated_at desc)`
+- `coach_entities_user_payload_customer_id_idx` — `(user_id, (payload->>'customerId'))` where `payload ? 'customerId'`
+
+**RLS:** authenticated only; each policy requires `user_id = auth.uid()`.
+`anon` has no grants. The app uses `SUPABASE_ANON_KEY` + user JWT — never a
+service role for entity CRUD. Rehearsal: `supabase/tests/coach_entities_rls.sql`.
+
+Shared Dart contract:
+[`CoachEntityRowContract`](../lib/core/data_catalog/coach_entity_row_contract.dart).
+
+## Data flows
+
+| Flow | Behavior |
+|------|----------|
+| Online write | Authenticated session → remote upsert/soft-delete → then update Drift cache |
+| Pull | On login / resume: list remote rows → **replace Drift rows per type** (includes soft-deleted) |
+| One-shot migration | If remote empty and local/backup has entities → upload upsert → prefs `coach_entities_migration_v1_<userId>` |
+| Prefs | Still SharedPreferences only (not Postgres) |
+| Backup | File / Storage snapshots remain disaster recovery; restore writes remote + cache |
+
+Details: [sync-strategy.md](sync-strategy.md).
 
 ## Entity relationship (soft FKs)
 
 ```mermaid
 erDiagram
-  COACH_USER ||--o{ CUSTOMER : "owns (scopeId=userId)"
-  COACH_USER ||--o{ CUSTOM_EXERCISE : "library"
+  COACH_USER ||--o{ COACH_ENTITIES : "RLS user_id = auth.uid()"
+  COACH_ENTITIES ||--o| DRIFT_CACHE : "pull replace-per-type"
   COACH_USER ||--|| USER_PROFILE : "prefs"
   COACH_USER ||--|| PDF_BRAND : "prefs+files"
   COACH_USER ||--|| USER_PREFERENCES : "prefs"
-  CUSTOMER ||--o{ WORKOUT_PLAN : "customerId"
-  CUSTOMER ||--o{ MEASUREMENT : "customerId"
-  CUSTOMER ||--o{ CUSTOMER_NOTE : "customerId"
-  CUSTOM_EXERCISE ||--o{ CUSTOM_EXERCISE : "parentId"
+  CUSTOMER ||--o{ WORKOUT_PLAN : "customerId in payload"
+  CUSTOMER ||--o{ MEASUREMENT : "customerId in payload"
+  CUSTOMER ||--o{ CUSTOMER_NOTE : "customerId in payload"
+  CUSTOM_EXERCISE ||--o{ CUSTOM_EXERCISE : "parentId in payload"
   WORKOUT_PLAN ||--|| PLAN_DATA : "planData JSON"
   PLAN_DATA }o--o| CUSTOM_EXERCISE : "customExerciseId"
 ```
 
 ```mermaid
 flowchart LR
-  CoachUser[Coach_userId]
+  Coach[Coach_userId]
+  Cloud[(coach_entities SoT)]
+  Cache[(Drift LocalEntities cache)]
+  Prefs[SharedPreferences]
   Customer[customer]
   Plan[workoutPlan]
   Meas[measurement]
   Note[customerNote]
   CustEx[customExercise]
   PlanData[planData_nested]
-  Prefs[userProfile_pdfBrand_preferences]
-  CoachUser --> Customer
-  CoachUser --> CustEx
-  CoachUser --> Prefs
+  Coach -->|JWT RLS| Cloud
+  Cloud -->|pull replace-per-type| Cache
+  Coach --> Prefs
+  Cloud --> Customer
+  Cloud --> Plan
+  Cloud --> Meas
+  Cloud --> Note
+  Cloud --> CustEx
   Customer -->|customerId| Plan
   Customer -->|customerId| Meas
   Customer -->|customerId| Note
@@ -57,17 +125,21 @@ flowchart LR
   PlanData -->|customExerciseId| CustEx
 ```
 
-## Drift entity types (`OfflineEntityType`)
+## Entity types (`OfflineEntityType` / `coach_entities.type`)
 
-| Type | scopeId | Soft refs | Backup |
-|------|---------|-----------|--------|
+| Type | scope_id | Soft refs (in payload) | Backup |
+|------|----------|------------------------|--------|
 | `customer` | coach `userId` | — | `entities[]` |
 | `workoutPlan` | `customerId` | `customerId` → customer | `entities[]` |
 | `measurement` | `customerId` | `customerId` → customer | `entities[]` |
 | `customExercise` | `"library"` | `parentId` → customExercise | `entities[]` |
 | `customerNote` | `customerId` | `customerId` → customer | `entities[]` |
 
-Legacy removed type: `exerciseRecord` (former index 3) — skipped on read/backup.
+Each catalog entry documents:
+
+- `locus`: `supabaseCoachEntities` (SoT)
+- `cacheLocus`: `driftLocalEntities`
+- `remoteTable` / `remoteRowFields` / `softDelete` / `rlsNote` / `softFkNote`
 
 ## Nested: `planData`
 
@@ -77,7 +149,7 @@ Embedded JSON string on `workoutPlan`. Codec:
 - Structure: phases/weeks → days → exercises; mobility; `sessionExecutions`
 - Soft refs: `customExerciseId` on mobility items, exercises, and executed logs
 
-## Non-Drift buckets
+## Non-cloud buckets (SharedPreferences)
 
 | Catalog id | Locus | Backup key | Notes |
 |------------|-------|------------|-------|
@@ -95,12 +167,16 @@ dart run tool/dump_data_catalog.dart
 dart run tool/dump_data_catalog.dart --out tool/openmetadata/fixtures/registry.json
 ```
 
+Export format: `powercoach_data_catalog_v2` (includes top-level `coachEntities`
+contract + per-entry cloud/cache fields).
+
 ## OpenMetadata spike (optional, local only)
 
 Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,down}.sh`
 (see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md)). OM is a
-viewer only; this document + the Dart registry remain authoritative. Not used
-in CI; never expose the default `admin@open-metadata.org`/`admin` stack publicly.
+viewer only; this document + the Dart registry remain authoritative. The spike
+models a logical catalog that mirrors cloud SoT + prefs buckets. Not used in
+CI; never expose the default `admin@open-metadata.org`/`admin` stack publicly.
 
 ## Data quality
 
@@ -121,4 +197,5 @@ dart run tool/data_quality_report.dart path/to/backup.json
 dart run tool/data_quality_report.dart path/to/backup.json --format markdown
 ```
 
-Findings are report-only — no auto-delete or repair.
+Findings are report-only — no auto-delete or repair. Run after pulls when
+investigating integrity issues.

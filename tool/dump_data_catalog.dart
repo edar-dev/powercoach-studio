@@ -5,6 +5,9 @@ import 'package:powercoach_studio/core/data_catalog/data_catalog.dart';
 
 /// Dump the in-repo data catalog as JSON for OpenMetadata / tooling.
 ///
+/// Export format `powercoach_data_catalog_v2` includes the shared
+/// `coach_entities` cloud SoT contract plus per-entry cache locus fields.
+///
 /// Usage:
 ///   dart run tool/dump_data_catalog.dart
 ///   dart run tool/dump_data_catalog.dart --out path/to/registry.json

@@ -1,9 +1,14 @@
 import '../sync/offline_models.dart';
+import 'coach_entity_row_contract.dart';
 import 'data_storage_locus.dart';
 import 'entity_catalog_entry.dart';
 import 'soft_reference.dart';
 
-/// In-repo source of truth for local-first entity shapes and soft FKs.
+/// In-repo registry of entity shapes, storage loci, and soft FKs.
+///
+/// Business entities: Supabase [CoachEntityRowContract.remoteTable] is the
+/// cloud source of truth; Drift `LocalEntities` is a per-user cache.
+/// SharedPreferences remain local-only (settings, drafts, pins, PDF brand).
 ///
 /// OpenMetadata ingestion and data-quality scanners consume this registry;
 /// they must not invent relationship rules outside of these entries.
@@ -20,15 +25,15 @@ abstract final class DataCatalogRegistry {
   static const String workoutDraft = 'workoutDraft';
   static const String cloudBackupMeta = 'cloudBackupMeta';
 
-  /// All catalogued buckets (Drift + prefs + nested JSON).
+  /// All catalogued buckets (cloud entities + prefs + nested JSON).
   static final List<EntityCatalogEntry> entries = List.unmodifiable(<EntityCatalogEntry>[
-    const EntityCatalogEntry(
+    EntityCatalogEntry.coachEntity(
       catalogId: customer,
       displayName: 'Customer',
       driftType: OfflineEntityType.customer,
-      locus: DataStorageLocus.driftLocalEntities,
       summary:
-          'Coach client record. scopeId is the authenticated coach userId.',
+          'Coach client record. Cloud SoT in coach_entities; Drift cache. '
+          'scope_id is the authenticated coach userId.',
       scopeIdPattern: 'userId',
       payloadFields: <String>[
         'id',
@@ -50,18 +55,16 @@ abstract final class DataCatalogRegistry {
         'updatedAt',
         'rowVersion',
       ],
-      includedInBackup: true,
-      backupKey: 'entities',
       sourcePath: 'lib/features/customers/data/models/customer.dart',
     ),
-    const EntityCatalogEntry(
+    EntityCatalogEntry.coachEntity(
       catalogId: workoutPlan,
       displayName: 'Workout plan',
       driftType: OfflineEntityType.workoutPlan,
-      locus: DataStorageLocus.driftLocalEntities,
       summary:
-          'Client workout plan. scopeId is customerId. Nested planData holds '
-          'weeks/days/exercises and session diary.',
+          'Client workout plan. Cloud SoT in coach_entities; Drift cache. '
+          'scope_id is customerId. Nested planData holds weeks/days/exercises '
+          'and session diary.',
       scopeIdPattern: 'customerId',
       payloadFields: <String>[
         'id',
@@ -81,23 +84,22 @@ abstract final class DataCatalogRegistry {
         'rowVersion',
       ],
       references: <SoftReference>[
-        SoftReference(
+        const SoftReference(
           fieldPath: 'customerId',
           targetCatalogId: customer,
           optional: false,
-          description: 'Owning customer id (also mirrored in scopeId).',
+          description: 'Owning customer id (also mirrored in scope_id).',
         ),
       ],
-      includedInBackup: true,
-      backupKey: 'entities',
       sourcePath: 'lib/features/workouts/data/workout_plan_api_model.dart',
     ),
-    const EntityCatalogEntry(
+    EntityCatalogEntry.coachEntity(
       catalogId: measurement,
       displayName: 'Measurement',
       driftType: OfflineEntityType.measurement,
-      locus: DataStorageLocus.driftLocalEntities,
-      summary: 'Client body / strength measurement. scopeId is customerId.',
+      summary:
+          'Client body / strength measurement. Cloud SoT in coach_entities; '
+          'Drift cache. scope_id is customerId.',
       scopeIdPattern: 'customerId',
       payloadFields: <String>[
         'id',
@@ -115,25 +117,23 @@ abstract final class DataCatalogRegistry {
         'rowVersion',
       ],
       references: <SoftReference>[
-        SoftReference(
+        const SoftReference(
           fieldPath: 'customerId',
           targetCatalogId: customer,
           optional: false,
-          description: 'Owning customer id (also mirrored in scopeId).',
+          description: 'Owning customer id (also mirrored in scope_id).',
         ),
       ],
-      includedInBackup: true,
-      backupKey: 'entities',
       sourcePath: 'lib/features/customers/data/models/customer_measurement.dart',
     ),
-    const EntityCatalogEntry(
+    EntityCatalogEntry.coachEntity(
       catalogId: customExercise,
       displayName: 'Custom exercise',
       driftType: OfflineEntityType.customExercise,
-      locus: DataStorageLocus.driftLocalEntities,
       summary:
-          'Coach exercise library node. scopeId is the constant "library". '
-          'Optional parentId builds a folder tree.',
+          'Coach exercise library node. Cloud SoT in coach_entities; Drift '
+          'cache. scope_id is the constant "library". Optional parentId builds '
+          'a folder tree.',
       scopeIdPattern: 'library',
       payloadFields: <String>[
         'id',
@@ -149,23 +149,22 @@ abstract final class DataCatalogRegistry {
         'rowVersion',
       ],
       references: <SoftReference>[
-        SoftReference(
+        const SoftReference(
           fieldPath: 'parentId',
           targetCatalogId: customExercise,
           optional: true,
           description: 'Self-referential library parent (orphan / cycle checks).',
         ),
       ],
-      includedInBackup: true,
-      backupKey: 'entities',
       sourcePath: 'lib/features/exercise_library/data/custom_exercise_item.dart',
     ),
-    const EntityCatalogEntry(
+    EntityCatalogEntry.coachEntity(
       catalogId: customerNote,
       displayName: 'Customer note',
       driftType: OfflineEntityType.customerNote,
-      locus: DataStorageLocus.driftLocalEntities,
-      summary: 'Per-message coaching note for a client. scopeId is customerId.',
+      summary:
+          'Per-message coaching note for a client. Cloud SoT in '
+          'coach_entities; Drift cache. scope_id is customerId.',
       scopeIdPattern: 'customerId',
       payloadFields: <String>[
         'id',
@@ -177,15 +176,13 @@ abstract final class DataCatalogRegistry {
         'attachmentRef',
       ],
       references: <SoftReference>[
-        SoftReference(
+        const SoftReference(
           fieldPath: 'customerId',
           targetCatalogId: customer,
           optional: false,
-          description: 'Owning customer id (also mirrored in scopeId).',
+          description: 'Owning customer id (also mirrored in scope_id).',
         ),
       ],
-      includedInBackup: true,
-      backupKey: 'entities',
       sourcePath: 'lib/features/customers/domain/models/client_note_message.dart',
     ),
     const EntityCatalogEntry(
@@ -240,7 +237,9 @@ abstract final class DataCatalogRegistry {
       catalogId: userProfile,
       displayName: 'Coach user profile',
       locus: DataStorageLocus.sharedPreferences,
-      summary: 'Local coach profile fields (not Supabase profiles table CRUD).',
+      summary:
+          'Local coach profile fields (SharedPreferences; not coach_entities '
+          'and not Supabase profiles table CRUD).',
       payloadFields: <String>[
         'displayName',
         'phone',
@@ -259,8 +258,8 @@ abstract final class DataCatalogRegistry {
       displayName: 'PDF brand kit',
       locus: DataStorageLocus.sharedPreferences,
       summary:
-          'PDF studio branding + logo path/bytes. Device-local; not included '
-          'in the user backup envelope.',
+          'PDF studio branding + logo path/bytes. Device-local SharedPreferences '
+          '+ files; not included in the user backup envelope.',
       payloadFields: <String>[
         'studioName',
         'accentColorArgb',
@@ -278,7 +277,7 @@ abstract final class DataCatalogRegistry {
       locus: DataStorageLocus.sharedPreferences,
       summary:
           'Settings + pinned/recent exercise ids exported under backup '
-          '`preferences`.',
+          '`preferences`. SharedPreferences only (not coach_entities).',
       payloadFields: <String>[
         'settings_notifications_enabled',
         'app_locale_code',
@@ -336,9 +335,12 @@ abstract final class DataCatalogRegistry {
     ),
   ]);
 
-  /// Drift entity entries only (one per [OfflineEntityType]).
+  /// Coach-entity entries (one per [OfflineEntityType]; cloud SoT + Drift cache).
   static Iterable<EntityCatalogEntry> get driftEntries =>
       entries.where((e) => e.driftType != null);
+
+  /// Alias: cloud SoT coach entity entries (same set as [driftEntries]).
+  static Iterable<EntityCatalogEntry> get coachEntityEntries => driftEntries;
 
   /// Lookup by [EntityCatalogEntry.catalogId].
   static EntityCatalogEntry? byCatalogId(String catalogId) {
@@ -348,7 +350,7 @@ abstract final class DataCatalogRegistry {
     return null;
   }
 
-  /// Lookup by Drift [OfflineEntityType].
+  /// Lookup by Drift / remote [OfflineEntityType].
   static EntityCatalogEntry? byDriftType(OfflineEntityType type) {
     for (final entry in entries) {
       if (entry.driftType == type) return entry;
@@ -369,8 +371,16 @@ abstract final class DataCatalogRegistry {
 
   /// JSON document for OpenMetadata / tooling ingestion.
   static Map<String, dynamic> toJsonDocument() => <String, dynamic>{
-        'schemaVersion': 1,
-        'exportFormat': 'powercoach_data_catalog_v1',
+        'schemaVersion': 2,
+        'exportFormat': 'powercoach_data_catalog_v2',
+        'coachEntities': <String, dynamic>{
+          'remoteTable': CoachEntityRowContract.remoteTable,
+          'remoteRowFields': CoachEntityRowContract.remoteRowFields,
+          'softDeleteColumn': CoachEntityRowContract.softDeleteColumn,
+          'rlsNote': CoachEntityRowContract.rlsNote,
+          'softFkNote': CoachEntityRowContract.softFkNote,
+          'typeCheckValues': CoachEntityRowContract.typeCheckValues,
+        },
         'entries': entries.map((e) => e.toJson()).toList(growable: false),
       };
 }
