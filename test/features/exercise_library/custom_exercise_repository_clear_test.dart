@@ -87,7 +87,7 @@ void main() {
   });
 
   test('deleteAll returns 0 when library is empty', () async {
-    final repo = CustomExerciseRepository();
+    final repo = CustomExerciseRepository(offline: OfflineRepositorySupport());
     expect(await repo.deleteAll(), 0);
     expect(await repo.listFlat(), isEmpty);
   });

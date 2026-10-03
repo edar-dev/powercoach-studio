@@ -1,14 +1,31 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../platform/web_online_status.dart';
+import '../remote/coach_entities_exceptions.dart';
+import '../remote/coach_entities_remote.dart';
 import '../storage/offline_local_store.dart';
 import 'offline_models.dart';
 
 class OfflineRepositorySupport {
-  OfflineRepositorySupport({OfflineLocalStore? store})
-      : _store = store ?? OfflineLocalStore.instance;
+  OfflineRepositorySupport({
+    OfflineLocalStore? store,
+    CoachEntitiesRemote? remote,
+    bool Function()? isOnline,
+    String? Function()? resolveUserId,
+  })  : _store = store ?? OfflineLocalStore.instance,
+        _remote = remote,
+        _isOnline = isOnline ?? (remote != null ? isNavigatorOnline : null),
+        _resolveUserId = resolveUserId;
 
   final OfflineLocalStore _store;
+  final CoachEntitiesRemote? _remote;
+  final bool Function()? _isOnline;
+  final String? Function()? _resolveUserId;
   static const _uuid = Uuid();
+
+  /// Whether writes go remote-first (production) or local-only (unit tests).
+  bool get usesRemote => _remote != null;
 
   Future<void> saveLocalEntity({
     required OfflineEntityType type,
@@ -17,18 +34,24 @@ class OfflineRepositorySupport {
     required Map<String, dynamic> payload,
     bool deleted = false,
     bool localOnly = false,
-  }) {
-    return _store.upsertEntity(
-      OfflineEntity(
-        id: id,
-        type: type,
-        scopeId: scopeId,
-        payload: payload,
-        updatedAt: DateTime.now(),
-        deleted: deleted,
-        localOnly: localOnly,
-      ),
+  }) async {
+    final entity = OfflineEntity(
+      id: id,
+      type: type,
+      scopeId: scopeId,
+      payload: payload,
+      updatedAt: DateTime.now().toUtc(),
+      deleted: deleted,
+      localOnly: localOnly,
     );
+
+    final remote = _remote;
+    if (remote != null) {
+      _ensureRemoteWriteAllowed();
+      await remote.upsert(entity);
+    }
+
+    await _store.upsertEntity(entity);
   }
 
   Future<List<Map<String, dynamic>>> readLocalEntities(
@@ -71,6 +94,81 @@ class OfflineRepositorySupport {
     return 'local_${prefix}_${_uuid.v4()}';
   }
 
-  Future<void> markDeleted(OfflineEntityType type, String entityId) =>
-      _store.markDeleted(type, entityId);
+  Future<void> markDeleted(OfflineEntityType type, String entityId) async {
+    final current = await _store.readEntityById(type, entityId);
+    final remote = _remote;
+    if (remote != null) {
+      _ensureRemoteWriteAllowed();
+      if (current != null) {
+        await remote.softDelete(
+          type: type,
+          id: entityId,
+          scopeId: current.scopeId,
+          payload: current.payload,
+        );
+      } else {
+        // Entity missing locally — still attempt remote soft-delete.
+        await remote.softDelete(
+          type: type,
+          id: entityId,
+          scopeId: '',
+          payload: const <String, dynamic>{},
+        );
+      }
+    }
+    await _store.markDeleted(type, entityId);
+  }
+
+  /// Pulls all coach entities for the signed-in user and replaces the Drift
+  /// cache per [OfflineEntityType] (including soft-deleted rows).
+  Future<void> pullAndReplaceCache({DateTime? since}) async {
+    final remote = _remote;
+    if (remote == null) return;
+
+    final userId = _requireUserId();
+    final pulled = await remote.pullSince(since: since);
+    final byType = <OfflineEntityType, List<OfflineEntity>>{
+      for (final type in OfflineEntityType.values) type: <OfflineEntity>[],
+    };
+    for (final entity in pulled) {
+      byType[entity.type]?.add(entity);
+    }
+    for (final type in OfflineEntityType.values) {
+      await _store.replaceEntitiesForType(
+        userId: userId,
+        type: type,
+        entities: byType[type] ?? const <OfflineEntity>[],
+      );
+    }
+  }
+
+  void _ensureRemoteWriteAllowed() {
+    _requireUserId();
+    final onlineCheck = _isOnline;
+    if (onlineCheck != null && !onlineCheck()) {
+      throw CoachEntitiesOnlineRequiredException(
+        CoachEntitiesOnlineRequiredReason.offline,
+      );
+    }
+  }
+
+  String _requireUserId() {
+    final id = _currentUserId();
+    if (id == null || id.isEmpty) {
+      throw CoachEntitiesOnlineRequiredException(
+        CoachEntitiesOnlineRequiredReason.notAuthenticated,
+      );
+    }
+    return id;
+  }
+
+  String? _currentUserId() {
+    final injected = _resolveUserId;
+    if (injected != null) return injected();
+    try {
+      return Supabase.instance.client.auth.currentUser?.id;
+    } catch (_) {
+      return null;
+    }
+  }
 }

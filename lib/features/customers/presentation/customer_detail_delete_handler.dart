@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -45,7 +46,7 @@ Future<void> deleteCustomerDetail({
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          l10n.customerDeleteError,
+          tryCloudSaveErrorMessage(e, l10n) ?? l10n.customerDeleteError,
           style: TextStyle(color: colorScheme.onErrorContainer),
         ),
         backgroundColor: colorScheme.errorContainer,

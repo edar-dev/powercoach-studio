@@ -13,6 +13,7 @@ import 'package:powercoach_studio/features/workouts/data/workout_routine_model.d
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ void main() {
   });
 
   test('customer local CRUD smoke', () async {
-    final repo = CustomerRepository();
+    final repo = CustomerRepository(offline: OfflineRepositorySupport());
     final now = DateTime.now();
 
     final created = await repo.create(
@@ -71,7 +72,7 @@ void main() {
   });
 
   test('workout plan local CRUD smoke', () async {
-    final repo = WorkoutPlanRepository();
+    final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
     final routineJson = jsonEncode(WorkoutRoutine.empty().toJson());
 
     final created = await repo.create(
@@ -103,8 +104,8 @@ void main() {
   });
 
   test('exercise library + measurements local smoke', () async {
-    final exerciseRepo = CustomExerciseRepository();
-    final measurementsRepo = CustomerMeasurementRepository();
+    final exerciseRepo = CustomExerciseRepository(offline: OfflineRepositorySupport());
+    final measurementsRepo = CustomerMeasurementRepository(offline: OfflineRepositorySupport());
 
     final root = await exerciseRepo.create(<String, dynamic>{
       'name': 'Squat',

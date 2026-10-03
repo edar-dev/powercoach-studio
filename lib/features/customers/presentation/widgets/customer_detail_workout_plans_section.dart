@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
@@ -62,11 +63,13 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
           backgroundColor: StitchM3Theme.accent,
         ),
       );
-    } catch (_) {
+    } catch (e) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.workoutDeleteError),
+          content: Text(
+            tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutDeleteError,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),

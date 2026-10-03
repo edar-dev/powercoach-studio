@@ -1,10 +1,12 @@
+import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'models/customer.dart';
 
 class CustomerRepository {
   CustomerRepository({OfflineRepositorySupport? offline})
-      : _offline = offline ?? OfflineRepositorySupport();
+      : _offline = offline ??
+            OfflineRepositorySupport(remote: CoachEntitiesRemote());
 
   final OfflineRepositorySupport _offline;
 

@@ -11,6 +11,7 @@ import 'package:powercoach_studio/features/workouts/domain/session_execution.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +29,7 @@ void main() {
 
   group('WorkoutPlanRepository session APIs', () {
     test('set and remove session occurrence override', () async {
-      final repo = WorkoutPlanRepository();
+      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan A',
@@ -60,7 +61,7 @@ void main() {
     });
 
     test('upsert, list, get and delete session execution', () async {
-      final repo = WorkoutPlanRepository();
+      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan B',

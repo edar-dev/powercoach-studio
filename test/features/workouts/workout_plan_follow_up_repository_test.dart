@@ -11,6 +11,7 @@ import 'package:powercoach_studio/features/workouts/data/workout_routine_model.d
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +27,8 @@ void main() {
   });
 
   test('createFollowUpFromPlan clones plan, bumps week and resets maps', () async {
-    final customerRepo = CustomerRepository();
-    final repo = WorkoutPlanRepository();
+    final customerRepo = CustomerRepository(offline: OfflineRepositorySupport());
+    final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
     final now = DateTime.now();
     final customer = await customerRepo.create(
       Customer(

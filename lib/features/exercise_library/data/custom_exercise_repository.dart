@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/exercise_catalog_source.dart';
+import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'custom_exercise_item.dart';
@@ -9,7 +10,8 @@ import 'custom_exercise_item.dart';
 /// Local-only custom exercise library.
 class CustomExerciseRepository {
   CustomExerciseRepository({OfflineRepositorySupport? offline})
-      : _offline = offline ?? OfflineRepositorySupport();
+      : _offline = offline ??
+            OfflineRepositorySupport(remote: CoachEntitiesRemote());
 
   final OfflineRepositorySupport _offline;
 

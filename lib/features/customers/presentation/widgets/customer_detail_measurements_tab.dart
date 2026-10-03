@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
@@ -291,11 +292,13 @@ class _CustomerDetailMeasurementsTabState
       if (!context.mounted) return;
       showAppSnackBar(context, content: Text(l10n.measurementDeleted));
       widget.onReload();
-    } catch (_) {
+    } catch (e) {
       if (!context.mounted) return;
       showAppSnackBar(
         context,
-        content: Text(l10n.measurementDeleteError),
+        content: Text(
+          tryCloudSaveErrorMessage(e, l10n) ?? l10n.measurementDeleteError,
+        ),
         backgroundColor: colorScheme.errorContainer,
       );
     }

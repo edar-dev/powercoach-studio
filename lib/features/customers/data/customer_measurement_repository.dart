@@ -1,3 +1,4 @@
+import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import 'models/customer_measurement.dart';
@@ -5,7 +6,8 @@ import 'models/customer_measurement.dart';
 /// Persists customer measurements in local storage.
 class CustomerMeasurementRepository {
   CustomerMeasurementRepository({OfflineRepositorySupport? offline})
-      : _offline = offline ?? OfflineRepositorySupport();
+      : _offline = offline ??
+            OfflineRepositorySupport(remote: CoachEntitiesRemote());
 
   final OfflineRepositorySupport _offline;
 

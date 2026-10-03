@@ -3230,6 +3230,24 @@ abstract class AppLocalizations {
   /// **'Could not save customer.'**
   String get customerSaveError;
 
+  /// No description provided for @cloudSaveRequiresLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to save your data to the cloud.'**
+  String get cloudSaveRequiresLogin;
+
+  /// No description provided for @cloudSaveRequiresNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'You need an internet connection to save.'**
+  String get cloudSaveRequiresNetwork;
+
+  /// No description provided for @cloudSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save to the cloud. Try again.'**
+  String get cloudSaveFailed;
+
   /// No description provided for @customerDeleteError.
   ///
   /// In en, this message translates to:

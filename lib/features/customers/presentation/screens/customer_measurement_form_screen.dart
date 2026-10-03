@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
@@ -135,11 +136,13 @@ class _CustomerMeasurementFormScreenState
         ),
       );
       Navigator.of(context).pop(true);
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.measurementSaveError),
+          content: Text(
+            tryCloudSaveErrorMessage(e, l10n) ?? l10n.measurementSaveError,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: const Color(0xFF7F1D1D),
         ),

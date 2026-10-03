@@ -6,6 +6,7 @@ import 'package:powercoach_studio/features/customers/data/customer_measurement_r
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ void main() {
   });
 
   test('create and list measurements for customer', () async {
-    final repo = CustomerMeasurementRepository();
+    final repo = CustomerMeasurementRepository(offline: OfflineRepositorySupport());
     const customerId = 'customer-42';
 
     final created = await repo.create(customerId, <String, dynamic>{
@@ -38,7 +39,7 @@ void main() {
   });
 
   test('update and delete measurement', () async {
-    final repo = CustomerMeasurementRepository();
+    final repo = CustomerMeasurementRepository(offline: OfflineRepositorySupport());
     const customerId = 'customer-99';
 
     final created = await repo.create(customerId, <String, dynamic>{

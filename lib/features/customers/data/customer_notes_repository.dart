@@ -1,4 +1,5 @@
 import '../../../core/auth/supabase_bootstrap.dart';
+import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import '../domain/models/client_note_message.dart';
@@ -6,7 +7,8 @@ import '../domain/models/client_note_message.dart';
 /// Offline-first customer note thread (one [OfflineEntityType.customerNote] per message).
 class CustomerNotesRepository {
   CustomerNotesRepository({OfflineRepositorySupport? offline})
-      : _offline = offline ?? OfflineRepositorySupport();
+      : _offline = offline ??
+            OfflineRepositorySupport(remote: CoachEntitiesRemote());
 
   final OfflineRepositorySupport _offline;
 

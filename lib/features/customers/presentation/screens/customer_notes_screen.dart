@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../../data/customer_notes_repository.dart';
@@ -88,13 +89,15 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
       await _repository.markThreadRead(widget.customerId);
       _composerController.clear();
       await _loadThread();
-    } catch (_) {
+    } catch (e) {
       if (!mounted) {
         return;
       }
       showAppSnackBar(
         context,
-        content: Text(l10n.customerNotesSendError),
+        content: Text(
+          tryCloudSaveErrorMessage(e, l10n) ?? l10n.customerNotesSendError,
+        ),
         backgroundColor: Theme.of(context).colorScheme.errorContainer,
       );
     }
