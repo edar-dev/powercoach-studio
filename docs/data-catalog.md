@@ -105,6 +105,12 @@ this document + the Dart registry remain authoritative. Not used in CI.
 
 Read-only scanner: `lib/core/data_quality/` (driven by registry soft refs).
 
+In addition to entity soft-FKs and nested `planData` exercise ids, the scanner
+checks backup `preferences` pin/recent lists
+(`pinned_exercise_ids_json_v1`, `recent_exercise_ids_json_v1`) for orphan
+refs to missing `customExercise` ids (report-only; malformed list values emit
+`preferences_decode`).
+
 ```bash
 # Fixture / unit tests
 flutter test test/core/data_quality/

@@ -4,6 +4,7 @@ import '../../features/workouts/data/workout_routine_model.dart';
 import '../../features/workouts/domain/workout_routine_json_codec.dart';
 import '../data_catalog/data_catalog_registry.dart';
 import '../data_catalog/soft_reference.dart';
+import '../settings/settings_prefs_keys.dart';
 import '../sync/offline_models.dart';
 import 'data_quality_finding.dart';
 import 'data_quality_report.dart';
@@ -18,9 +19,18 @@ class DataQualityScanner {
   const DataQualityScanner();
 
   /// Scan an in-memory entity list (e.g. Drift cache rows).
-  DataQualityReport scanEntities(List<OfflineEntity> entities) {
+  ///
+  /// Pass [preferences] (backup-shaped prefs map) to also scan pin/recent
+  /// exercise id lists for orphan customExercise refs.
+  DataQualityReport scanEntities(
+    List<OfflineEntity> entities, {
+    Map<String, dynamic>? preferences,
+  }) {
     final findings = <DataQualityFinding>[];
     _scanTypedEntities(entities, findings);
+    if (preferences != null) {
+      _checkPreferences(preferences, _buildIdSets(entities), findings);
+    }
     return DataQualityReport(
       findings: List.unmodifiable(findings),
       scannedEntityCount: entities.length,
@@ -99,6 +109,15 @@ class DataQualityScanner {
     }
 
     _scanTypedEntities(typed, findings);
+
+    final prefs = backup['preferences'];
+    if (prefs is Map) {
+      _checkPreferences(
+        prefs.cast<String, dynamic>(),
+        _buildIdSets(typed),
+        findings,
+      );
+    }
 
     return DataQualityReport(
       findings: List.unmodifiable(findings),
@@ -474,5 +493,100 @@ class DataQualityScanner {
         },
       ),
     );
+  }
+
+  /// Explicit prefs pass: pin/recent lists are not auto-scanned by soft refs
+  /// (registry bracket paths like `pinned_exercise_ids_json_v1[]`).
+  void _checkPreferences(
+    Map<String, dynamic> preferences,
+    Map<OfflineEntityType, Set<String>> idsByType,
+    List<DataQualityFinding> findings,
+  ) {
+    final customExerciseIds =
+        idsByType[OfflineEntityType.customExercise] ?? const <String>{};
+
+    _checkPreferencesIdList(
+      preferences: preferences,
+      fieldPath: SettingsPrefsKeys.pinnedExerciseIdsJson,
+      customExerciseIds: customExerciseIds,
+      findings: findings,
+    );
+    _checkPreferencesIdList(
+      preferences: preferences,
+      fieldPath: SettingsPrefsKeys.recentExerciseIdsJson,
+      customExerciseIds: customExerciseIds,
+      findings: findings,
+    );
+  }
+
+  void _checkPreferencesIdList({
+    required Map<String, dynamic> preferences,
+    required String fieldPath,
+    required Set<String> customExerciseIds,
+    required List<DataQualityFinding> findings,
+  }) {
+    if (!preferences.containsKey(fieldPath)) return;
+    final raw = preferences[fieldPath];
+    if (raw == null) return;
+
+    final ids = _parsePreferencesIdList(raw);
+    if (ids == null) {
+      findings.add(
+        DataQualityFinding(
+          ruleId: DataQualityRuleIds.preferencesDecode,
+          severity: DataQualitySeverity.info,
+          message: 'preferences.$fieldPath could not be decoded as an id list',
+          details: <String, dynamic>{
+            'fieldPath': fieldPath,
+            'source': 'preferences',
+            'valueType': raw.runtimeType.toString(),
+          },
+        ),
+      );
+      return;
+    }
+
+    for (final id in ids) {
+      if (customExerciseIds.contains(id)) continue;
+      findings.add(
+        DataQualityFinding(
+          ruleId: DataQualityRuleIds.orphanReference,
+          severity: DataQualitySeverity.warning,
+          message:
+              'Orphan customExercise id="$id" in preferences.$fieldPath',
+          details: <String, dynamic>{
+            'fieldPath': fieldPath,
+            'targetCatalogId': DataCatalogRegistry.customExercise,
+            'targetId': id,
+            'source': 'preferences',
+          },
+        ),
+      );
+    }
+  }
+
+  /// Accepts JSON-encoded strings or raw Lists (backup restore shapes).
+  /// Returns null when the value is present but not a usable id list.
+  List<String>? _parsePreferencesIdList(Object? raw) {
+    if (raw is List) {
+      return raw
+          .map((e) => e?.toString().trim() ?? '')
+          .where((id) => id.isNotEmpty)
+          .toList(growable: false);
+    }
+    if (raw is String) {
+      if (raw.isEmpty) return null;
+      try {
+        final decoded = jsonDecode(raw);
+        if (decoded is! List) return null;
+        return decoded
+            .map((e) => e?.toString().trim() ?? '')
+            .where((id) => id.isNotEmpty)
+            .toList(growable: false);
+      } catch (_) {
+        return null;
+      }
+    }
+    return null;
   }
 }
