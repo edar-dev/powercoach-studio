@@ -7818,11 +7818,41 @@ abstract class AppLocalizations {
   /// **'Could not scan local data'**
   String get dataHealthScanFailed;
 
+  /// No description provided for @dataHealthRepairFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not clear orphan pins and recents'**
+  String get dataHealthRepairFailed;
+
   /// No description provided for @dataHealthNotSignedIn.
   ///
   /// In en, this message translates to:
   /// **'Sign in to scan local data for this account.'**
   String get dataHealthNotSignedIn;
+
+  /// No description provided for @dataHealthScannedMeta.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} entities · {timestamp}'**
+  String dataHealthScannedMeta(int count, String timestamp);
+
+  /// No description provided for @dataHealthSeverityError.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get dataHealthSeverityError;
+
+  /// No description provided for @dataHealthSeverityWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get dataHealthSeverityWarning;
+
+  /// No description provided for @dataHealthSeverityInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get dataHealthSeverityInfo;
 
   /// No description provided for @customerPdfHeaderSection.
   ///

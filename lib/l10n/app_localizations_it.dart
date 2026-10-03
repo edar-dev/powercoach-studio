@@ -4385,8 +4385,26 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dataHealthScanFailed => 'Impossibile analizzare i dati locali';
 
   @override
+  String get dataHealthRepairFailed =>
+      'Impossibile pulire pin e recenti orfani';
+
+  @override
   String get dataHealthNotSignedIn =>
       'Accedi per analizzare i dati locali di questo account.';
+
+  @override
+  String dataHealthScannedMeta(int count, String timestamp) {
+    return '$count entità · $timestamp';
+  }
+
+  @override
+  String get dataHealthSeverityError => 'Errore';
+
+  @override
+  String get dataHealthSeverityWarning => 'Avviso';
+
+  @override
+  String get dataHealthSeverityInfo => 'Info';
 
   @override
   String get customerPdfHeaderSection => 'Header PDF';

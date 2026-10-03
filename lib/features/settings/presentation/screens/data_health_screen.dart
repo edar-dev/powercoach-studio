@@ -108,7 +108,7 @@ class _DataHealthScreenState extends State<DataHealthScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.dataHealthScanFailed),
+          content: Text(l10n.dataHealthRepairFailed),
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
           behavior: SnackBarBehavior.floating,
         ),
@@ -231,8 +231,10 @@ class _DataHealthScreenState extends State<DataHealthScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${report.scannedEntityCount} entities · '
-                      '${report.generatedAt.toLocal()}',
+                      l10n.dataHealthScannedMeta(
+                        report.scannedEntityCount,
+                        report.generatedAt.toLocal().toString(),
+                      ),
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: MarketingDarkColors.slate500,
                       ),
@@ -306,6 +308,7 @@ class _FindingTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final severityColor = _severityColor(finding.severity);
     final entityRef = [
@@ -334,7 +337,7 @@ class _FindingTile extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  finding.severity.name.toUpperCase(),
+                  _severityLabel(l10n, finding.severity),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: severityColor,
                     fontWeight: FontWeight.w700,
@@ -373,6 +376,20 @@ class _FindingTile extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static String _severityLabel(
+    AppLocalizations l10n,
+    DataQualitySeverity severity,
+  ) {
+    switch (severity) {
+      case DataQualitySeverity.error:
+        return l10n.dataHealthSeverityError;
+      case DataQualitySeverity.warning:
+        return l10n.dataHealthSeverityWarning;
+      case DataQualitySeverity.info:
+        return l10n.dataHealthSeverityInfo;
+    }
   }
 
   static Color _severityColor(DataQualitySeverity severity) {

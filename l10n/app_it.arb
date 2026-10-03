@@ -2056,7 +2056,22 @@
     }
   },
   "dataHealthScanFailed": "Impossibile analizzare i dati locali",
+  "dataHealthRepairFailed": "Impossibile pulire pin e recenti orfani",
   "dataHealthNotSignedIn": "Accedi per analizzare i dati locali di questo account.",
+  "dataHealthScannedMeta": "{count} entità · {timestamp}",
+  "@dataHealthScannedMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "timestamp": {
+        "type": "String"
+      }
+    }
+  },
+  "dataHealthSeverityError": "Errore",
+  "dataHealthSeverityWarning": "Avviso",
+  "dataHealthSeverityInfo": "Info",
   "customerPdfHeaderSection": "Header PDF",
   "customerUseCustomPdfHeader": "Header PDF personalizzato",
   "customerUseCustomPdfHeaderSubtitle": "Sostituisce il nome studio solo per questo cliente",

@@ -2097,7 +2097,22 @@
     }
   },
   "dataHealthScanFailed": "Could not scan local data",
+  "dataHealthRepairFailed": "Could not clear orphan pins and recents",
   "dataHealthNotSignedIn": "Sign in to scan local data for this account.",
+  "dataHealthScannedMeta": "{count} entities · {timestamp}",
+  "@dataHealthScannedMeta": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "timestamp": {
+        "type": "String"
+      }
+    }
+  },
+  "dataHealthSeverityError": "Error",
+  "dataHealthSeverityWarning": "Warning",
+  "dataHealthSeverityInfo": "Info",
   "customerPdfHeaderSection": "PDF header",
   "customerUseCustomPdfHeader": "Custom PDF header",
   "customerUseCustomPdfHeaderSubtitle": "Overrides the studio name for this client only",
