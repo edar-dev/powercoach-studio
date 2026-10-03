@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -166,14 +167,19 @@ class WorkoutBuilderRoutineCoordinator {
           );
         }
       } else if (silent) {
+        final l10n = AppLocalizations.of(context);
+        final err = outcome.error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              AppLocalizations.of(context).workoutEditorAutosaveFailed,
+              err != null
+                  ? (tryCloudSaveErrorMessage(err, l10n) ??
+                      l10n.workoutEditorAutosaveFailed)
+                  : l10n.workoutEditorAutosaveFailed,
             ),
             behavior: SnackBarBehavior.floating,
             action: SnackBarAction(
-              label: AppLocalizations.of(context).workoutEditorRetrySave,
+              label: l10n.workoutEditorRetrySave,
               onPressed: () {
                 saveRoutine(
                   context: context,
@@ -189,9 +195,16 @@ class WorkoutBuilderRoutineCoordinator {
           ),
         );
       } else {
+        final l10n = AppLocalizations.of(context);
+        final err = outcome.error;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).workoutExportError),
+            content: Text(
+              err != null
+                  ? (tryCloudSaveErrorMessage(err, l10n) ??
+                      l10n.workoutExportError)
+                  : l10n.workoutExportError,
+            ),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),

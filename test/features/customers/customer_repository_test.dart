@@ -7,6 +7,7 @@ import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ void main() {
   });
 
   test('create assigns local id and persists', () async {
-    final repo = CustomerRepository();
+    final repo = CustomerRepository(offline: OfflineRepositorySupport());
     final now = DateTime(2026, 1, 15);
 
     final created = await repo.create(
@@ -45,7 +46,7 @@ void main() {
   });
 
   test('getAll returns all stored customers', () async {
-    final repo = CustomerRepository();
+    final repo = CustomerRepository(offline: OfflineRepositorySupport());
     final now = DateTime(2026, 2, 1);
 
     await repo.create(
@@ -74,7 +75,7 @@ void main() {
   });
 
   test('update replaces stored fields', () async {
-    final repo = CustomerRepository();
+    final repo = CustomerRepository(offline: OfflineRepositorySupport());
     final now = DateTime(2026, 3, 1);
 
     final created = await repo.create(
@@ -103,7 +104,7 @@ void main() {
   });
 
   test('delete removes customer from store', () async {
-    final repo = CustomerRepository();
+    final repo = CustomerRepository(offline: OfflineRepositorySupport());
     final now = DateTime(2026, 4, 1);
 
     final created = await repo.create(

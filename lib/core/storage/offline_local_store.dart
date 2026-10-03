@@ -302,4 +302,41 @@ class OfflineLocalStore {
       }
     });
   }
+
+  /// Full-replace Drift cache for one [userId]+[type] after a cloud pull.
+  ///
+  /// Deletes all local rows for that pair, then inserts [entities] (including
+  /// soft-deleted rows so delete state stays coherent with the cloud SoT).
+  Future<void> replaceEntitiesForType({
+    required String userId,
+    required OfflineEntityType type,
+    required List<OfflineEntity> entities,
+  }) async {
+    if (userId.isEmpty) return;
+    final db = await _ensureDb();
+    await db.transaction(() async {
+      await (db.delete(db.localEntities)
+            ..where(
+              (t) => t.userId.equals(userId) & t.type.equals(type.index),
+            ))
+          .go();
+      for (final e in entities) {
+        if (e.type != type) continue;
+        await db.into(db.localEntities).insert(
+              LocalEntitiesCompanion.insert(
+                userId: userId,
+                type: type.index,
+                id: e.id,
+                scopeId: e.scopeId,
+                payloadJson: jsonEncode(e.payload),
+                updatedAt: e.updatedAt,
+                deleted: Value(e.deleted),
+                localOnly: Value(e.localOnly),
+              ),
+              mode: InsertMode.insertOrReplace,
+            );
+      }
+    });
+    MaterialWriteNotifier.notify();
+  }
 }

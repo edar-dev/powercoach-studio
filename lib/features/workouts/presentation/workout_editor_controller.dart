@@ -31,12 +31,14 @@ class WorkoutEditorSaveOutcome {
     this.savedRoutine,
     this.savedInitialWeekNumber,
     this.createdPlanId,
+    this.error,
   });
 
   final bool success;
   final WorkoutRoutine? savedRoutine;
   final int? savedInitialWeekNumber;
   final String? createdPlanId;
+  final Object? error;
 }
 
 typedef WorkoutEditorPlanGetter =
@@ -284,11 +286,11 @@ class WorkoutEditorController extends ChangeNotifier {
         savedInitialWeekNumber: savedInitialWeek,
         createdPlanId: createdPlanId,
       );
-    } catch (_) {
+    } catch (e) {
       saving = false;
       saveState = WorkoutEditorSaveState.failed;
       notifyListeners();
-      return const WorkoutEditorSaveOutcome(success: false);
+      return WorkoutEditorSaveOutcome(success: false, error: e);
     }
   }
 

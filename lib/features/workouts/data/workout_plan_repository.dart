@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import '../../../core/constants/workout_plan_template_scope.dart';
+import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
 import '../domain/session_execution.dart';
@@ -17,7 +18,8 @@ export '../domain/workout_plan_query_helpers.dart' show planDataToRoutine;
 /// Persists workout plans in local storage.
 class WorkoutPlanRepository {
   WorkoutPlanRepository({OfflineRepositorySupport? offline})
-    : _offline = offline ?? OfflineRepositorySupport();
+    : _offline = offline ??
+          OfflineRepositorySupport(remote: CoachEntitiesRemote());
 
   final OfflineRepositorySupport _offline;
 

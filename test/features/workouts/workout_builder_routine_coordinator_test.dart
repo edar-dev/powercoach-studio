@@ -7,6 +7,7 @@ import 'package:powercoach_studio/features/workouts/data/workout_routine_model.d
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_routine_coordinator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_session_controller.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_editor_controller.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   group('WorkoutBuilderRoutineCoordinator', () {
@@ -20,10 +21,10 @@ void main() {
       final coordinator = WorkoutBuilderRoutineCoordinator(
         builderSession: session,
         editorController: WorkoutEditorController(
-          planRepo: WorkoutPlanRepository(),
+          planRepo: WorkoutPlanRepository(offline: OfflineRepositorySupport()),
         ),
-        planRepo: WorkoutPlanRepository(),
-        customerRepo: CustomerRepository(),
+        planRepo: WorkoutPlanRepository(offline: OfflineRepositorySupport()),
+        customerRepo: CustomerRepository(offline: OfflineRepositorySupport()),
         draftStore: const SharedPrefsWorkoutDraftStore(),
         routineNameController: nameController,
         initialWeekController: initialWeekController,

@@ -1776,6 +1776,16 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerSaveError => 'Impossibile salvare il cliente.';
 
   @override
+  String get cloudSaveRequiresLogin => 'Accedi per salvare i dati sul cloud.';
+
+  @override
+  String get cloudSaveRequiresNetwork =>
+      'Serve una connessione Internet per salvare.';
+
+  @override
+  String get cloudSaveFailed => 'Impossibile salvare sul cloud. Riprova.';
+
+  @override
   String get customerDeleteError => 'Impossibile eliminare il cliente.';
 
   @override

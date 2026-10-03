@@ -1758,6 +1758,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customerSaveError => 'Could not save customer.';
 
   @override
+  String get cloudSaveRequiresLogin =>
+      'Sign in to save your data to the cloud.';
+
+  @override
+  String get cloudSaveRequiresNetwork =>
+      'You need an internet connection to save.';
+
+  @override
+  String get cloudSaveFailed => 'Could not save to the cloud. Try again.';
+
+  @override
   String get customerDeleteError => 'Could not delete customer.';
 
   @override

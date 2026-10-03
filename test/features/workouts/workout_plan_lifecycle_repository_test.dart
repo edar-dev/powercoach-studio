@@ -10,6 +10,7 @@ import 'package:powercoach_studio/features/workouts/domain/workout_plan_list_hel
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +27,7 @@ void main() {
 
   group('WorkoutPlanRepository lifecycle', () {
     test('archive and unarchive round-trip', () async {
-      final repo = WorkoutPlanRepository();
+      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan A',
@@ -42,7 +43,7 @@ void main() {
     });
 
     test('markPlanCompleted persists completedAt', () async {
-      final repo = WorkoutPlanRepository();
+      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan B',

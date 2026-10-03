@@ -14,6 +14,7 @@ import 'package:powercoach_studio/features/workouts/presentation/workout_editor_
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_editor_shell.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 /// Harness for the loaded new-customer-plan editor shell (no Drift load).
 class _NewCustomerPlanEditorHarness extends StatefulWidget {
@@ -180,8 +181,8 @@ void main() {
     final coordinator = WorkoutBuilderRoutineCoordinator(
       builderSession: session,
       editorController: editorController,
-      planRepo: WorkoutPlanRepository(),
-      customerRepo: CustomerRepository(),
+      planRepo: WorkoutPlanRepository(offline: OfflineRepositorySupport()),
+      customerRepo: CustomerRepository(offline: OfflineRepositorySupport()),
       draftStore: const SharedPrefsWorkoutDraftStore(),
       routineNameController: nameController,
       initialWeekController: initialWeekController,

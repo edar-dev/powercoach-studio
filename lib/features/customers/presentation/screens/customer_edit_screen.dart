@@ -6,6 +6,7 @@ import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
@@ -152,7 +153,7 @@ class _CustomerEditScreenState extends State<CustomerEditScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            l10n.customerSaveError,
+            tryCloudSaveErrorMessage(e, l10n) ?? l10n.customerSaveError,
             style: TextStyle(color: colorScheme.onErrorContainer),
           ),
           backgroundColor: colorScheme.errorContainer,
