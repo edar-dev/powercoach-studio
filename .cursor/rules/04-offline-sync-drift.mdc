@@ -10,13 +10,15 @@ alwaysApply: false
 
 | Table | Purpose |
 |-------|---------|
-| `LocalEntities` | Local entity cache (JSON payload, keyed by `userId + type + id`) |
+| `LocalEntities` | Local **cache** of cloud `coach_entities` (JSON payload, keyed by `userId + type + id`) |
 
 `AppDatabase` is obtained via `OfflineLocalStore` or constructed directly in tests.
+Cloud source of truth is Supabase `public.coach_entities` (see `docs/sync-strategy.md`).
+After pull, replace cache rows per entity type for the authenticated user.
 
 The legacy `PendingOperations` outbox and `SyncMetaEntries` key/value table were dropped in
-schema v2 (2026-08, Wave C of `local-first-persistence-v1`) — they were never read after backups
-stopped emitting them. Do not reintroduce them without an approved plan.
+schema v2 (2026-08, Wave C of `local-first-persistence-v1`). Do not reintroduce an offline
+outbox without a new approved plan — v1 cloud CRUD is online-required.
 
 ## Drift Rules
 
