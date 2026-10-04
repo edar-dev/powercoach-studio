@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -62,7 +60,7 @@ void main() {
     final sourcePlan = await repo.create(
       customerId: customer.id,
       name: 'Plan A',
-      planDataJson: jsonEncode(sourceRoutine.toJson()),
+      routine: sourceRoutine,
       initialWeekNumber: 5,
       phase: 'Strength',
       tags: 'Upper',

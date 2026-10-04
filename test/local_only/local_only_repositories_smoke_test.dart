@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -73,12 +71,11 @@ void main() {
 
   test('workout plan local CRUD smoke', () async {
     final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
-    final routineJson = jsonEncode(WorkoutRoutine.empty().toJson());
 
     final created = await repo.create(
       customerId: 'customer-1',
       name: 'Plan A',
-      planDataJson: routineJson,
+      routine: WorkoutRoutine.empty(),
       initialWeekNumber: 1,
     );
     expect(created.id, startsWith('local_workout_'));

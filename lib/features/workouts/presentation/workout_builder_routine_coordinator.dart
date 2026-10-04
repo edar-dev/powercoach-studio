@@ -9,7 +9,6 @@ import '../../customers/data/models/customer.dart' show Customer;
 import '../data/workout_draft_store.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
-import '../domain/workout_routine_plan_encoder.dart';
 import 'widgets/assign_customer_picker_dialog.dart';
 import 'workout_builder_editor_exit.dart';
 import 'workout_builder_load_helpers.dart';
@@ -342,7 +341,7 @@ class WorkoutBuilderRoutineCoordinator {
       final created = await planRepo.create(
         customerId: chosen.id,
         name: routine.name,
-        planDataJson: encodeWorkoutRoutinePlanData(routine),
+        routine: routine,
         pdfHeader: chosen.pdfHeader,
         useCustomPdfHeader: chosen.useCustomPdfHeader,
         initialWeekNumber: session.initialWeekNumber,

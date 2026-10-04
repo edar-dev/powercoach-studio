@@ -61,7 +61,7 @@ class WorkoutPlanDraftStore implements WorkoutDraftStore {
     await _repository.update(
       planId: planId,
       name: routine.name,
-      planDataJson: jsonEncode(routine.toJson()),
+      routine: routine,
     );
   }
 }

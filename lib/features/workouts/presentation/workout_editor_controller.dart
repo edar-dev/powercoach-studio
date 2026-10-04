@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
-import '../domain/workout_routine_plan_encoder.dart';
 import 'workout_editor_snapshot.dart';
 
 enum WorkoutEditorSaveState { saved, saving, unsaved, failed }
@@ -41,13 +40,11 @@ class WorkoutEditorSaveOutcome {
   final Object? error;
 }
 
-typedef WorkoutEditorPlanGetter =
-    Future<WorkoutPlanApiModel?> Function(String planId);
 typedef WorkoutEditorPlanCreator =
     Future<WorkoutPlanApiModel> Function({
       required String customerId,
       required String name,
-      required String planDataJson,
+      required WorkoutRoutine routine,
       String? pdfHeader,
       bool useCustomPdfHeader,
       int initialWeekNumber,
@@ -57,7 +54,7 @@ typedef WorkoutEditorPlanUpdater =
     Future<WorkoutPlanApiModel> Function({
       required String planId,
       String? name,
-      String? planDataJson,
+      WorkoutRoutine? routine,
       int? initialWeekNumber,
       String? notes,
     });
@@ -71,18 +68,16 @@ typedef WorkoutEditorPlanUpdater =
 class WorkoutEditorController extends ChangeNotifier {
   WorkoutEditorController({
     WorkoutPlanRepository? planRepo,
-    WorkoutEditorPlanGetter? getPlanById,
     WorkoutEditorPlanCreator? createPlan,
     WorkoutEditorPlanUpdater? updatePlan,
     this.autosaveDelay = const Duration(milliseconds: 2500),
     this.dirtyDebounceDelay = const Duration(milliseconds: 300),
-  }) : _getPlanById = getPlanById ?? ((planId) => planRepo!.getById(planId)),
-       _createPlan =
+  }) : _createPlan =
            createPlan ??
            (({
              required customerId,
              required name,
-             required planDataJson,
+             required routine,
              pdfHeader,
              useCustomPdfHeader = false,
              initialWeekNumber = 1,
@@ -91,7 +86,7 @@ class WorkoutEditorController extends ChangeNotifier {
              return planRepo!.create(
                customerId: customerId,
                name: name,
-               planDataJson: planDataJson,
+               routine: routine,
                pdfHeader: pdfHeader,
                useCustomPdfHeader: useCustomPdfHeader,
                initialWeekNumber: initialWeekNumber,
@@ -103,14 +98,14 @@ class WorkoutEditorController extends ChangeNotifier {
            (({
              required planId,
              name,
-             planDataJson,
+             routine,
              initialWeekNumber,
              notes,
            }) {
              return planRepo!.update(
                planId: planId,
                name: name,
-               planDataJson: planDataJson,
+               routine: routine,
                initialWeekNumber: initialWeekNumber,
                notes: notes,
              );
@@ -118,7 +113,6 @@ class WorkoutEditorController extends ChangeNotifier {
 
   final Duration autosaveDelay;
   final Duration dirtyDebounceDelay;
-  final WorkoutEditorPlanGetter _getPlanById;
   final WorkoutEditorPlanCreator _createPlan;
   final WorkoutEditorPlanUpdater _updatePlan;
 
@@ -244,14 +238,10 @@ class WorkoutEditorController extends ChangeNotifier {
     try {
       String? createdPlanId;
       if (loadedPlanId != null) {
-        final existingPlan = await _getPlanById(loadedPlanId!);
         await _updatePlan(
           planId: loadedPlanId!,
           name: toSave.name,
-          planDataJson: encodeWorkoutRoutinePlanData(
-            toSave,
-            existingPlanData: existingPlan?.planData,
-          ),
+          routine: toSave,
           initialWeekNumber: savedInitialWeek,
           notes: notes,
         );
@@ -259,7 +249,7 @@ class WorkoutEditorController extends ChangeNotifier {
         final created = await _createPlan(
           customerId: customerId,
           name: toSave.name,
-          planDataJson: encodeWorkoutRoutinePlanData(toSave),
+          routine: toSave,
           pdfHeader: pdfHeader,
           useCustomPdfHeader: useCustomPdfHeader,
           initialWeekNumber: savedInitialWeek,

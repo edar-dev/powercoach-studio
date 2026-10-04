@@ -33,7 +33,7 @@ void main() {
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan A',
-        planDataJson: jsonEncode(WorkoutRoutine.empty().toJson()),
+        routine: WorkoutRoutine.empty(),
       );
 
       final movedTo = DateTime(2026, 6, 20);
@@ -65,7 +65,7 @@ void main() {
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan B',
-        planDataJson: jsonEncode(WorkoutRoutine.empty().toJson()),
+        routine: WorkoutRoutine.empty(),
       );
       final execution = SessionExecution(
         sessionKey: '0-0',

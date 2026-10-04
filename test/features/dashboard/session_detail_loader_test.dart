@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
@@ -81,7 +79,7 @@ void main() {
       final plan = await planRepo.create(
         customerId: customer.id,
         name: 'Strength block',
-        planDataJson: jsonEncode(routine.toJson()),
+        routine: routine,
         phase: 'Hypertrophy',
       );
 
@@ -113,7 +111,7 @@ void main() {
       final plan = await planRepo.create(
         customerId: 'customer-1',
         name: 'Plan',
-        planDataJson: jsonEncode(WorkoutRoutine.empty().toJson()),
+        routine: WorkoutRoutine.empty(),
       );
       final loader = SessionDetailLoader(workoutPlanRepository: planRepo);
 
@@ -153,7 +151,7 @@ void main() {
       final plan = await planRepo.create(
         customerId: 'customer-1',
         name: 'Plan',
-        planDataJson: jsonEncode(routine.toJson()),
+        routine: routine,
       );
       final loader = SessionDetailLoader(workoutPlanRepository: planRepo);
 

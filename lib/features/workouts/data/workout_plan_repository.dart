@@ -9,6 +9,7 @@ import '../../../core/sync/offline_repository_support.dart';
 import '../domain/session_execution.dart';
 import '../domain/workout_follow_up_factory.dart';
 import '../domain/workout_plan_query_helpers.dart';
+import '../domain/workout_routine_plan_encoder.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
 import 'workout_plan_api_model.dart';
 import 'workout_routine_model.dart';
@@ -104,7 +105,7 @@ class WorkoutPlanRepository {
   Future<WorkoutPlanApiModel> create({
     required String customerId,
     required String name,
-    required String planDataJson,
+    required WorkoutRoutine routine,
     String? pdfHeader,
     bool useCustomPdfHeader = false,
     String? theme,
@@ -120,7 +121,7 @@ class WorkoutPlanRepository {
     final body = <String, dynamic>{
       'customerId': customerId,
       'name': name,
-      'planData': planDataJson,
+      'planData': encodeWorkoutRoutinePlanData(routine),
       'useCustomPdfHeader': useCustomPdfHeader,
       'initialWeekNumber': initialWeekNumber,
     };
@@ -152,7 +153,7 @@ class WorkoutPlanRepository {
   Future<WorkoutPlanApiModel> update({
     required String planId,
     String? name,
-    String? planDataJson,
+    WorkoutRoutine? routine,
     String? pdfHeader,
     bool? useCustomPdfHeader,
     String? theme,
@@ -161,9 +162,19 @@ class WorkoutPlanRepository {
     String? tags,
     String? notes,
   }) async {
+    final current = await _offline.readLocalEntityById(
+      OfflineEntityType.workoutPlan,
+      planId,
+    );
     final body = <String, dynamic>{};
     if (name != null) body['name'] = name;
-    if (planDataJson != null) body['planData'] = planDataJson;
+    if (routine != null) {
+      final currentPlanData = current?['planData']?.toString();
+      body['planData'] = encodeWorkoutRoutinePlanData(
+        routine,
+        existingPlanData: currentPlanData,
+      );
+    }
     if (pdfHeader != null) body['pdfHeader'] = pdfHeader;
     if (useCustomPdfHeader != null) {
       body['useCustomPdfHeader'] = useCustomPdfHeader;
@@ -176,13 +187,38 @@ class WorkoutPlanRepository {
     if (tags != null) body['tags'] = tags;
     if (notes != null) body['notes'] = notes;
 
+    final merged = <String, dynamic>{
+      ...?current,
+      ...body,
+      'id': planId,
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+    await _offline.saveLocalEntity(
+      type: OfflineEntityType.workoutPlan,
+      id: planId,
+      scopeId:
+          merged['customerId']?.toString() ??
+          current?['customerId']?.toString() ??
+          '',
+      payload: merged,
+      localOnly: false,
+    );
+    return WorkoutPlanApiModel.fromJson(merged);
+  }
+
+  /// Persists a raw planData JSON string without round-tripping through
+  /// [WorkoutRoutine] (used by schedule/lifecycle/session map patches).
+  Future<WorkoutPlanApiModel> _updatePlanDataJson(
+    String planId,
+    String planDataJson,
+  ) async {
     final current = await _offline.readLocalEntityById(
       OfflineEntityType.workoutPlan,
       planId,
     );
     final merged = <String, dynamic>{
       ...?current,
-      ...body,
+      'planData': planDataJson,
       'id': planId,
       'updatedAt': DateTime.now().toIso8601String(),
     };
@@ -214,14 +250,14 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final planDataCopy = cloneWorkoutPlanDataJson(src.planData);
+    final routine = planDataToRoutine(cloneWorkoutPlanDataJson(src.planData));
     final resolvedName = (name != null && name.trim().isNotEmpty)
         ? name.trim()
         : src.name;
     return create(
       customerId: customerId,
       name: resolvedName,
-      planDataJson: planDataCopy,
+      routine: routine,
       pdfHeader: src.pdfHeader,
       useCustomPdfHeader: src.useCustomPdfHeader,
       theme: src.theme,
@@ -266,7 +302,7 @@ class WorkoutPlanRepository {
     return create(
       customerId: src.customerId,
       name: resolvedName,
-      planDataJson: jsonEncode(followUpRoutine.toJson()),
+      routine: followUpRoutine,
       pdfHeader: src.pdfHeader,
       useCustomPdfHeader: src.useCustomPdfHeader,
       theme: src.theme,
@@ -288,7 +324,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     DateTime? effectiveStart = startDate;
     final existingStart = map['startDate'];
     if (effectiveStart == null && existingStart != null) {
@@ -314,7 +350,7 @@ class WorkoutPlanRepository {
       }
       map['currentWeek'] = currentWeek;
     }
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<WorkoutPlanApiModel> updateLifecycleMarkers({
@@ -328,7 +364,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     if (clearArchivedAt) {
       map.remove('archivedAt');
     } else if (archivedAt != null) {
@@ -339,7 +375,7 @@ class WorkoutPlanRepository {
     } else if (completedAt != null) {
       map['completedAt'] = dateOnlyIso(completedAt);
     }
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<WorkoutPlanApiModel> archivePlan(String planId) {
@@ -389,7 +425,7 @@ class WorkoutPlanRepository {
       completion.remove(key);
       skippedByKey.remove(key);
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     if (completion.isEmpty) {
       map.remove('sessionCompletionByKey');
     } else {
@@ -400,7 +436,7 @@ class WorkoutPlanRepository {
     } else {
       map['sessionSkippedByKey'] = skippedByKey;
     }
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<WorkoutPlanApiModel> setSessionOccurrenceOverride({
@@ -414,7 +450,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     final overridesRaw = map['sessionOverrides'];
     final overrides = overridesRaw is Map<String, dynamic>
         ? Map<String, dynamic>.from(overridesRaw)
@@ -426,7 +462,7 @@ class WorkoutPlanRepository {
     );
     overrides[key] = override.toJson();
     map['sessionOverrides'] = overrides;
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<WorkoutPlanApiModel> removeSessionOccurrenceOverride({
@@ -439,7 +475,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     final overridesRaw = map['sessionOverrides'];
     if (overridesRaw is! Map) {
       return plan;
@@ -456,7 +492,7 @@ class WorkoutPlanRepository {
     } else {
       map['sessionOverrides'] = overrides;
     }
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<SessionExecution?> getSessionExecution({
@@ -486,14 +522,14 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     final raw = map['sessionExecutions'];
     final executions = raw is Map<String, dynamic>
         ? Map<String, dynamic>.from(raw)
         : <String, dynamic>{};
     executions[execution.sessionKey] = execution.toJson();
     map['sessionExecutions'] = executions;
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 
   Future<WorkoutPlanApiModel> deleteSessionExecution({
@@ -504,7 +540,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
+    final map = Map<String, dynamic>.from(plan.planDataMap);
     final raw = map['sessionExecutions'];
     if (raw is! Map) return plan;
     final executions = Map<String, dynamic>.from(raw);
@@ -514,6 +550,6 @@ class WorkoutPlanRepository {
     } else {
       map['sessionExecutions'] = executions;
     }
-    return update(planId: planId, planDataJson: jsonEncode(map));
+    return _updatePlanDataJson(planId, jsonEncode(map));
   }
 }

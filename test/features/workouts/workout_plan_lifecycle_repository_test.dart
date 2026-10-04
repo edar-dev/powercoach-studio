@@ -31,7 +31,7 @@ void main() {
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan A',
-        planDataJson: jsonEncode(WorkoutRoutine.empty().toJson()),
+        routine: WorkoutRoutine.empty(),
       );
       expect(isArchivedPlan(created), isFalse);
 
@@ -47,7 +47,7 @@ void main() {
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan B',
-        planDataJson: jsonEncode(WorkoutRoutine.empty().toJson()),
+        routine: WorkoutRoutine.empty(),
       );
 
       final completed = await repo.markPlanCompleted(created.id);
@@ -57,6 +57,37 @@ void main() {
       final reloaded = await repo.getById(created.id);
       expect(reloaded, isNotNull);
       expect(completedAtForPlan(reloaded!), isNotNull);
+    });
+
+    test('update with routine preserves archivedAt and completedAt', () async {
+      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
+      final created = await repo.create(
+        customerId: 'customer-1',
+        name: 'Plan C',
+        routine: WorkoutRoutine.empty().copyWith(name: 'Plan C'),
+      );
+      await repo.archivePlan(created.id);
+      await repo.markPlanCompleted(
+        created.id,
+        completedAt: DateTime(2026, 2, 1),
+      );
+
+      final updated = await repo.update(
+        planId: created.id,
+        name: 'Plan C Updated',
+        routine: WorkoutRoutine.empty().copyWith(
+          name: 'Plan C Updated',
+          currentWeek: 3,
+        ),
+      );
+
+      expect(updated.name, 'Plan C Updated');
+      expect(updated.routine.currentWeek, 3);
+      expect(isArchivedPlan(updated), isTrue);
+      expect(completedAtForPlan(updated), isNotNull);
+      final map = jsonDecode(updated.planData) as Map<String, dynamic>;
+      expect(map.containsKey('archivedAt'), isTrue);
+      expect(map.containsKey('completedAt'), isTrue);
     });
   });
 }
