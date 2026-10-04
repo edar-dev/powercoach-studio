@@ -190,8 +190,10 @@ abstract final class DataCatalogRegistry {
       displayName: 'Plan data (nested)',
       locus: DataStorageLocus.nestedJson,
       summary:
-          'JSON string embedded in workoutPlan.planData: phases/weeks/days/'
-          'exercises, mobility, and sessionExecutions diary.',
+          'JSON string embedded in workoutPlan.planData (PR1 storage form): '
+          'phases/weeks/days/exercises, mobility, sessionExecutions diary, '
+          'and lifecycle markers. App exposes typed WorkoutRoutine plus '
+          'archivedAt/completedAt as logical fields on WorkoutPlanApiModel.',
       payloadFields: <String>[
         'name',
         'mobilitySections',

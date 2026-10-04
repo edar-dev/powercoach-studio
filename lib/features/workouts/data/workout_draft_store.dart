@@ -53,7 +53,7 @@ class WorkoutPlanDraftStore implements WorkoutDraftStore {
   Future<WorkoutRoutine> load() async {
     final plan = await _repository.getById(planId);
     if (plan == null) return WorkoutRoutine.empty();
-    return planDataToRoutine(plan.planData);
+    return plan.routine;
   }
 
   @override

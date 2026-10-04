@@ -1,7 +1,6 @@
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/workout_plan_list_helpers.dart';
-import '../domain/workout_plan_query_helpers.dart';
 
 /// Week/day selection resolved from a deep-link query (`?week=&day=`).
 class WorkoutBuilderWeekDaySelection {
@@ -70,7 +69,7 @@ WorkoutBuilderEditorPlanSnapshot buildEditorPlanSnapshot(
   int? pendingWeekIndex,
   int? pendingDayIndex,
 }) {
-  final routine = planDataToRoutine(plan.planData);
+  final routine = plan.routine;
   final selection = resolveWorkoutBuilderDeepLinkSelection(
         routine,
         pendingWeekIndex: pendingWeekIndex,

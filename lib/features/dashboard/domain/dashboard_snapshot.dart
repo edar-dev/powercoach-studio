@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'dart:convert';
 
 import '../../customers/data/models/customer.dart';
 import '../../workouts/data/workout_plan_api_model.dart';
@@ -128,7 +127,7 @@ DashboardSnapshot buildDashboardSnapshot({
 
   final planCountByCustomerId = <String, int>{};
   for (final p in plans) {
-    if (_isArchivedPlan(p)) continue;
+    if (p.isArchived) continue;
     planCountByCustomerId.update(p.customerId, (n) => n + 1, ifAbsent: () => 1);
   }
 
@@ -175,7 +174,7 @@ DashboardSnapshot buildDashboardSnapshot({
   ).subtract(Duration(days: stalePlanDays));
   final staleCandidates = <DashboardStalePlanItem>[];
   for (final plan in plans) {
-    if (_isArchivedPlan(plan)) continue;
+    if (plan.isArchived) continue;
     final updatedDay = DateTime(
       plan.updatedAt.year,
       plan.updatedAt.month,
@@ -208,19 +207,10 @@ DashboardSnapshot buildDashboardSnapshot({
 
   return DashboardSnapshot(
     clientCount: customers.length,
-    activePrograms: plans.where((p) => !_isArchivedPlan(p)).length,
+    activePrograms: plans.where((p) => !p.isArchived).length,
     weeklyUpdates: weeklyUpdates,
     todayItems: todayItems,
     stalePlans: stalePlans,
     customersWithoutPlan: customersWithoutPlan,
   );
-}
-
-bool _isArchivedPlan(WorkoutPlanApiModel plan) {
-  try {
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
-    return map['archivedAt'] != null;
-  } catch (_) {
-    return false;
-  }
 }

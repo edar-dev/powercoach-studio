@@ -172,7 +172,7 @@ class SessionExecutionService {
     DateTime? from,
     DateTime? to,
   }) {
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     final executions = routine.sessionExecutions.values
         .where((e) => e.status != PlanSessionStatus.planned)
         .toList();
