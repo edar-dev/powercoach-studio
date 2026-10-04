@@ -1,3 +1,5 @@
+import 'om_sample_data.dart';
+
 /// Builds an OpenMetadata-oriented payload from the in-repo catalog registry.
 ///
 /// Used by [ingest_from_registry.dart] (CLI) and unit tests. No network I/O.
@@ -107,6 +109,10 @@ Map<String, dynamic> buildOpenMetadataPayload({
     'tables': tables,
     'lineageEdges': lineageEdges,
     'sampleEntities': sampleEntities['entities'] ?? const <dynamic>[],
+    'sampleDataByTable': buildSampleDataByTable(
+      registry: registry,
+      sampleEntities: sampleEntities,
+    ),
     'expectedLineageEdges': expected,
     'acceptance': <String, dynamic>{
       'requiresCoachEntityTypes': <String>[

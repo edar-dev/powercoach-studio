@@ -1,5 +1,5 @@
 {
-  "description": "Fixture graph for OpenMetadata lineage spike (customer → workoutPlan / measurement).",
+  "description": "Anonymized fixture graph for OpenMetadata sample data + lineage spike (customer → workoutPlan / measurement / customerNote).",
   "coachUserId": "coach_demo_1",
   "entities": [
     {
@@ -9,7 +9,28 @@
       "payload": {
         "id": "cust_1",
         "userId": "coach_demo_1",
-        "name": "Ada Client"
+        "name": "Ada Client",
+        "email": "ada.demo@example.local",
+        "phone": "+39 333 0000001",
+        "goals": "Hypertrophy",
+        "isFavorite": true,
+        "isArchived": false,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "cust_2",
+      "type": "customer",
+      "scopeId": "coach_demo_1",
+      "payload": {
+        "id": "cust_2",
+        "userId": "coach_demo_1",
+        "name": "Bea Client",
+        "email": "bea.demo@example.local",
+        "goals": "Strength",
+        "isFavorite": false,
+        "isArchived": false,
+        "rowVersion": 1
       }
     },
     {
@@ -21,7 +42,22 @@
         "customerId": "cust_1",
         "userId": "coach_demo_1",
         "name": "Hypertrophy A",
-        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}]}"
+        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[{\"name\":\"Day 1\",\"exercises\":[]}]}],\"includesMobilityTab\":false}",
+        "phase": "build",
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "plan_2",
+      "type": "workoutPlan",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "plan_2",
+        "customerId": "cust_2",
+        "userId": "coach_demo_1",
+        "name": "Strength B",
+        "planData": "{\"name\":\"Strength B\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}],\"includesMobilityTab\":true}",
+        "rowVersion": 1
       }
     },
     {
@@ -32,7 +68,22 @@
         "id": "meas_1",
         "customerId": "cust_1",
         "userId": "coach_demo_1",
-        "measurementDate": "2026-01-15"
+        "measurementDate": "2026-01-15",
+        "bodyFatPercent": 18.5,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "meas_2",
+      "type": "measurement",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "meas_2",
+        "customerId": "cust_2",
+        "userId": "coach_demo_1",
+        "measurementDate": "2026-02-01",
+        "squat1RM": 100,
+        "rowVersion": 1
       }
     },
     {
@@ -43,7 +94,24 @@
         "id": "ex_root",
         "userId": "coach_demo_1",
         "name": "Library",
-        "parentId": null
+        "parentId": null,
+        "sortOrder": 0,
+        "isMobility": false,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "ex_squat",
+      "type": "customExercise",
+      "scopeId": "library",
+      "payload": {
+        "id": "ex_squat",
+        "userId": "coach_demo_1",
+        "name": "Back Squat (demo)",
+        "parentId": "ex_root",
+        "sortOrder": 1,
+        "isMobility": false,
+        "rowVersion": 1
       }
     },
     {
@@ -54,10 +122,46 @@
         "id": "note_1",
         "customerId": "cust_1",
         "authorUserId": "coach_demo_1",
-        "body": "Demo note"
+        "body": "Demo note — anonymized coaching comment"
+      }
+    },
+    {
+      "id": "note_2",
+      "type": "customerNote",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "note_2",
+        "customerId": "cust_2",
+        "authorUserId": "coach_demo_1",
+        "body": "Second demo note"
       }
     }
   ],
+  "preferences": {
+    "settings_notifications_enabled": true,
+    "app_locale_code": "it",
+    "settings_calendar_reminders_enabled": false,
+    "settings_calendar_reminder_lead_hours": 2,
+    "workout_builder_compact_add_v1": false,
+    "workout_builder_include_mobility_default_v1": true,
+    "pinned_exercise_ids_json_v1": "[\"ex_root\",\"ex_squat\"]",
+    "recent_exercise_ids_json_v1": "[\"ex_squat\"]"
+  },
+  "localUserProfile": {
+    "displayName": "Demo Coach",
+    "phone": "+39 000 0000000",
+    "bio": "Anonymized coach profile for OM sample data",
+    "avatarUrl": "",
+    "website": "https://example.local",
+    "subscriptionPlan": "local_spike"
+  },
+  "pdfBrand": {
+    "studioName": "Demo Studio",
+    "accentColorArgb": "FF0D59F2",
+    "disclaimer": "Sample disclaimer",
+    "hidePowerCoachBranding": false,
+    "logoRelativePath": ""
+  },
   "expectedLineageEdges": [
     {
       "fromCatalogId": "customer",

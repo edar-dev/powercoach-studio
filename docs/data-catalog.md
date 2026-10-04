@@ -172,8 +172,9 @@ contract + per-entry cloud/cache fields).
 
 ## OpenMetadata spike (optional, local only)
 
-Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,down}.sh`
-(see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md)). OM is a
+Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,dq_to_om,profiler,down}.sh`
+(see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md) for sample data,
+DQ bridge, and optional Postgres profiler). OM is a
 viewer only; this document + the Dart registry remain authoritative. The spike
 models a logical catalog that mirrors cloud SoT + prefs buckets. Not used in
 CI; never expose the default `admin@open-metadata.org`/`admin` stack publicly.

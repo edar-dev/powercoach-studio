@@ -898,7 +898,28 @@
       "payload": {
         "id": "cust_1",
         "userId": "coach_demo_1",
-        "name": "Ada Client"
+        "name": "Ada Client",
+        "email": "ada.demo@example.local",
+        "phone": "+39 333 0000001",
+        "goals": "Hypertrophy",
+        "isFavorite": true,
+        "isArchived": false,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "cust_2",
+      "type": "customer",
+      "scopeId": "coach_demo_1",
+      "payload": {
+        "id": "cust_2",
+        "userId": "coach_demo_1",
+        "name": "Bea Client",
+        "email": "bea.demo@example.local",
+        "goals": "Strength",
+        "isFavorite": false,
+        "isArchived": false,
+        "rowVersion": 1
       }
     },
     {
@@ -910,7 +931,22 @@
         "customerId": "cust_1",
         "userId": "coach_demo_1",
         "name": "Hypertrophy A",
-        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}]}"
+        "planData": "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[{\"name\":\"Day 1\",\"exercises\":[]}]}],\"includesMobilityTab\":false}",
+        "phase": "build",
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "plan_2",
+      "type": "workoutPlan",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "plan_2",
+        "customerId": "cust_2",
+        "userId": "coach_demo_1",
+        "name": "Strength B",
+        "planData": "{\"name\":\"Strength B\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}],\"includesMobilityTab\":true}",
+        "rowVersion": 1
       }
     },
     {
@@ -921,7 +957,22 @@
         "id": "meas_1",
         "customerId": "cust_1",
         "userId": "coach_demo_1",
-        "measurementDate": "2026-01-15"
+        "measurementDate": "2026-01-15",
+        "bodyFatPercent": 18.5,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "meas_2",
+      "type": "measurement",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "meas_2",
+        "customerId": "cust_2",
+        "userId": "coach_demo_1",
+        "measurementDate": "2026-02-01",
+        "squat1RM": 100,
+        "rowVersion": 1
       }
     },
     {
@@ -932,7 +983,24 @@
         "id": "ex_root",
         "userId": "coach_demo_1",
         "name": "Library",
-        "parentId": null
+        "parentId": null,
+        "sortOrder": 0,
+        "isMobility": false,
+        "rowVersion": 1
+      }
+    },
+    {
+      "id": "ex_squat",
+      "type": "customExercise",
+      "scopeId": "library",
+      "payload": {
+        "id": "ex_squat",
+        "userId": "coach_demo_1",
+        "name": "Back Squat (demo)",
+        "parentId": "ex_root",
+        "sortOrder": 1,
+        "isMobility": false,
+        "rowVersion": 1
       }
     },
     {
@@ -943,10 +1011,406 @@
         "id": "note_1",
         "customerId": "cust_1",
         "authorUserId": "coach_demo_1",
-        "body": "Demo note"
+        "body": "Demo note — anonymized coaching comment"
+      }
+    },
+    {
+      "id": "note_2",
+      "type": "customerNote",
+      "scopeId": "cust_2",
+      "payload": {
+        "id": "note_2",
+        "customerId": "cust_2",
+        "authorUserId": "coach_demo_1",
+        "body": "Second demo note"
       }
     }
   ],
+  "sampleDataByTable": {
+    "customer": {
+      "columns": [
+        "id",
+        "userId",
+        "name",
+        "email",
+        "phone",
+        "dateOfBirth",
+        "heightCm",
+        "weightKg",
+        "notes",
+        "goals",
+        "pdfHeader",
+        "useCustomPdfHeader",
+        "isFavorite",
+        "isArchived",
+        "lastPlanUpdateDate",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "rows": [
+        [
+          "cust_1",
+          "coach_demo_1",
+          "Ada Client",
+          "ada.demo@example.local",
+          "+39 333 0000001",
+          "",
+          "",
+          "",
+          "",
+          "Hypertrophy",
+          "",
+          "",
+          "true",
+          "false",
+          "",
+          "",
+          "",
+          "1"
+        ],
+        [
+          "cust_2",
+          "coach_demo_1",
+          "Bea Client",
+          "bea.demo@example.local",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "Strength",
+          "",
+          "",
+          "false",
+          "false",
+          "",
+          "",
+          "",
+          "1"
+        ]
+      ]
+    },
+    "workoutPlan": {
+      "columns": [
+        "id",
+        "customerId",
+        "userId",
+        "name",
+        "theme",
+        "initialWeekNumber",
+        "planData",
+        "pdfHeader",
+        "useCustomPdfHeader",
+        "phase",
+        "tags",
+        "notes",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "rows": [
+        [
+          "plan_1",
+          "cust_1",
+          "coach_demo_1",
+          "Hypertrophy A",
+          "",
+          "",
+          "{\"name\":\"Hypertrophy A\",\"weeks\":[{\"name\":\"W1\",\"days\":[{\"name\":\"Day 1\",\"exercises\":[]}]}],\"includesMobilityTab\":false}",
+          "",
+          "",
+          "build",
+          "",
+          "",
+          "",
+          "",
+          "1"
+        ],
+        [
+          "plan_2",
+          "cust_2",
+          "coach_demo_1",
+          "Strength B",
+          "",
+          "",
+          "{\"name\":\"Strength B\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}],\"includesMobilityTab\":true}",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "1"
+        ]
+      ]
+    },
+    "measurement": {
+      "columns": [
+        "id",
+        "customerId",
+        "userId",
+        "measurementDate",
+        "squat1RM",
+        "benchPress1RM",
+        "deadlift1RM",
+        "bodyFatPercent",
+        "muscleMassKg",
+        "notes",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "rows": [
+        [
+          "meas_1",
+          "cust_1",
+          "coach_demo_1",
+          "2026-01-15",
+          "",
+          "",
+          "",
+          "18.5",
+          "",
+          "",
+          "",
+          "",
+          "1"
+        ],
+        [
+          "meas_2",
+          "cust_2",
+          "coach_demo_1",
+          "2026-02-01",
+          "100",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "1"
+        ]
+      ]
+    },
+    "customExercise": {
+      "columns": [
+        "id",
+        "userId",
+        "name",
+        "description",
+        "parentId",
+        "sortOrder",
+        "isMobility",
+        "catalogSource",
+        "createdAt",
+        "updatedAt",
+        "rowVersion"
+      ],
+      "rows": [
+        [
+          "ex_root",
+          "coach_demo_1",
+          "Library",
+          "",
+          "",
+          "0",
+          "false",
+          "",
+          "",
+          "",
+          "1"
+        ],
+        [
+          "ex_squat",
+          "coach_demo_1",
+          "Back Squat (demo)",
+          "",
+          "ex_root",
+          "1",
+          "false",
+          "",
+          "",
+          "",
+          "1"
+        ]
+      ]
+    },
+    "customerNote": {
+      "columns": [
+        "id",
+        "customerId",
+        "authorUserId",
+        "body",
+        "createdAt",
+        "readAt",
+        "attachmentRef"
+      ],
+      "rows": [
+        [
+          "note_1",
+          "cust_1",
+          "coach_demo_1",
+          "Demo note — anonymized coaching comment",
+          "",
+          "",
+          ""
+        ],
+        [
+          "note_2",
+          "cust_2",
+          "coach_demo_1",
+          "Second demo note",
+          "",
+          "",
+          ""
+        ]
+      ]
+    },
+    "planData": {
+      "columns": [
+        "name",
+        "mobilitySections",
+        "mobilityItems",
+        "phases",
+        "weeks",
+        "startDate",
+        "endDate",
+        "currentWeek",
+        "includesMobilityTab",
+        "sessionCompletionByKey",
+        "sessionSkippedByKey",
+        "sessionOverrides",
+        "sessionExecutions",
+        "archivedAt",
+        "completedAt"
+      ],
+      "rows": [
+        [
+          "Hypertrophy A",
+          "",
+          "",
+          "",
+          "[{\"name\":\"W1\",\"days\":[{\"name\":\"Day 1\",\"exercises\":[]}]}]",
+          "",
+          "",
+          "",
+          "false",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ],
+        [
+          "Strength B",
+          "",
+          "",
+          "",
+          "[{\"name\":\"W1\",\"days\":[]}]",
+          "",
+          "",
+          "",
+          "true",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
+        ]
+      ]
+    },
+    "userProfile": {
+      "columns": [
+        "displayName",
+        "phone",
+        "bio",
+        "avatarUrl",
+        "website",
+        "subscriptionPlan"
+      ],
+      "rows": [
+        [
+          "Demo Coach",
+          "+39 000 0000000",
+          "Anonymized coach profile for OM sample data",
+          "",
+          "https://example.local",
+          "local_spike"
+        ]
+      ]
+    },
+    "pdfBrand": {
+      "columns": [
+        "studioName",
+        "accentColorArgb",
+        "disclaimer",
+        "hidePowerCoachBranding",
+        "logoRelativePath"
+      ],
+      "rows": [
+        [
+          "Demo Studio",
+          "FF0D59F2",
+          "Sample disclaimer",
+          "false",
+          ""
+        ]
+      ]
+    },
+    "userPreferences": {
+      "columns": [
+        "settings_notifications_enabled",
+        "app_locale_code",
+        "settings_calendar_reminders_enabled",
+        "settings_calendar_reminder_lead_hours",
+        "workout_builder_compact_add_v1",
+        "workout_builder_include_mobility_default_v1",
+        "pinned_exercise_ids_json_v1",
+        "recent_exercise_ids_json_v1"
+      ],
+      "rows": [
+        [
+          "true",
+          "it",
+          "false",
+          "2",
+          "false",
+          "true",
+          "[\"ex_root\",\"ex_squat\"]",
+          "[\"ex_squat\"]"
+        ]
+      ]
+    },
+    "workoutDraft": {
+      "columns": [
+        "workout_routine_draft"
+      ],
+      "rows": [
+        [
+          "{\"name\":\"Draft demo\",\"weeks\":[{\"name\":\"W1\",\"days\":[]}]}"
+        ]
+      ]
+    },
+    "cloudBackupMeta": {
+      "columns": [
+        "auto_cloud_snapshot_*",
+        "last_cloud_sync_at_v1_$userId",
+        "backup_last_successful_at_v1_$userId"
+      ],
+      "rows": [
+        [
+          "disabled_local_spike",
+          "2026-01-15T10:00:00.000Z",
+          "2026-01-15T10:00:00.000Z"
+        ]
+      ]
+    }
+  },
   "expectedLineageEdges": [
     {
       "fromCatalogId": "customer",
