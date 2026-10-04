@@ -243,7 +243,8 @@ After dry-run or live ingest, the payload / UI should show:
 2. Lineage edges **`customer → workoutPlan`** and **`customer → measurement`**
    (from registry soft refs + `fixtures/sample_entities.json`).
 3. **Sample Data** rows on each catalog table (fixture + synthetic prefs).
-4. With `--with-dq`: test suite `powercoach_dart_dq` + description badges.
+4. With `--with-dq`: per-table executable suites `{table}.testSuite` (hub
+   `powercoach_dart_dq`) with Success test cases + description badges.
 
 ## Layout
 
