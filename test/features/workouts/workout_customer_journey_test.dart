@@ -8,6 +8,7 @@ import 'package:powercoach_studio/features/workouts/data/workout_draft_store.dar
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/workout_routine_plan_encoder.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_routine_coordinator.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_builder_session_controller.dart';
 import 'package:powercoach_studio/features/workouts/presentation/workout_editor_controller.dart';
@@ -146,7 +147,7 @@ void main() {
       createPlan: ({
         required customerId,
         required name,
-        required planDataJson,
+        required routine,
         pdfHeader,
         useCustomPdfHeader = false,
         initialWeekNumber = 1,
@@ -162,7 +163,7 @@ void main() {
           customerId: customerId,
           userId: 'user-1',
           name: name,
-          planData: planDataJson,
+          planData: encodeWorkoutRoutinePlanData(routine),
           initialWeekNumber: initialWeekNumber,
           createdAt: now,
           updatedAt: now,

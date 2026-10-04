@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
@@ -64,12 +62,11 @@ void main() {
       createCalls = [];
       updateCalls = [];
       controller = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
         createPlan:
             ({
               required customerId,
               required name,
-              required planDataJson,
+              required routine,
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
@@ -78,14 +75,14 @@ void main() {
               final created = plan(
                 id: 'plan-new',
                 name: name,
-                planData: planDataJson,
+                planData: encodeWorkoutRoutinePlanData(routine),
                 initialWeekNumber: initialWeekNumber,
                 notes: notes,
               );
               createCalls.add({
                 'customerId': customerId,
                 'name': name,
-                'planDataJson': planDataJson,
+                'routine': routine,
                 'initialWeekNumber': initialWeekNumber,
                 'notes': notes,
               });
@@ -96,7 +93,7 @@ void main() {
             ({
               required planId,
               name,
-              planDataJson,
+              routine,
               initialWeekNumber,
               notes,
             }) async {
@@ -104,14 +101,19 @@ void main() {
               updateCalls.add({
                 'planId': planId,
                 'name': name,
-                'planDataJson': planDataJson,
+                'routine': routine,
                 'initialWeekNumber': initialWeekNumber,
                 'notes': notes,
               });
               final updated = plan(
                 id: planId,
                 name: name ?? existing.name,
-                planData: planDataJson ?? existing.planData,
+                planData: routine != null
+                    ? encodeWorkoutRoutinePlanData(
+                        routine,
+                        existingPlanData: existing.planData,
+                      )
+                    : existing.planData,
                 initialWeekNumber:
                     initialWeekNumber ?? existing.initialWeekNumber,
                 notes: notes ?? existing.notes,
@@ -139,12 +141,11 @@ void main() {
 
     test('marks dirty after debounce elapses', () async {
       final debounced = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
         createPlan:
             ({
               required customerId,
               required name,
-              required planDataJson,
+              required routine,
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
@@ -153,7 +154,7 @@ void main() {
               final created = plan(
                 id: 'plan-new',
                 name: name,
-                planData: planDataJson,
+                planData: encodeWorkoutRoutinePlanData(routine),
                 initialWeekNumber: initialWeekNumber,
                 notes: notes,
               );
@@ -164,7 +165,7 @@ void main() {
             ({
               required planId,
               name,
-              planDataJson,
+              routine,
               initialWeekNumber,
               notes,
             }) async {
@@ -172,7 +173,12 @@ void main() {
               final updated = plan(
                 id: planId,
                 name: name ?? existing.name,
-                planData: planDataJson ?? existing.planData,
+                planData: routine != null
+                    ? encodeWorkoutRoutinePlanData(
+                        routine,
+                        existingPlanData: existing.planData,
+                      )
+                    : existing.planData,
                 initialWeekNumber:
                     initialWeekNumber ?? existing.initialWeekNumber,
                 notes: notes ?? existing.notes,
@@ -202,12 +208,11 @@ void main() {
       'coalesces rapid changes into one dirty update after debounce',
       () async {
         final debounced = WorkoutEditorController(
-          getPlanById: (planId) async => plans[planId],
           createPlan:
               ({
                 required customerId,
                 required name,
-                required planDataJson,
+                required routine,
                 pdfHeader,
                 useCustomPdfHeader = false,
                 initialWeekNumber = 1,
@@ -216,7 +221,7 @@ void main() {
                 final created = plan(
                   id: 'plan-new',
                   name: name,
-                  planData: planDataJson,
+                  planData: encodeWorkoutRoutinePlanData(routine),
                 );
                 plans[created.id] = created;
                 return created;
@@ -225,7 +230,7 @@ void main() {
               ({
                 required planId,
                 name,
-                planDataJson,
+                routine,
                 initialWeekNumber,
                 notes,
               }) async {
@@ -233,7 +238,12 @@ void main() {
                 return plan(
                   id: planId,
                   name: name ?? existing.name,
-                  planData: planDataJson ?? existing.planData,
+                  planData: routine != null
+                      ? encodeWorkoutRoutinePlanData(
+                          routine,
+                          existingPlanData: existing.planData,
+                        )
+                      : existing.planData,
                 );
               },
           dirtyDebounceDelay: const Duration(milliseconds: 80),
@@ -315,16 +325,11 @@ void main() {
       expect(controller.loadedPlanId, 'plan-new');
       expect(createCalls, hasLength(1));
       expect(createCalls.single['name'], 'New plan');
+      expect(createCalls.single['routine'], isA<WorkoutRoutine>());
     });
 
-    test('save preserves archivedAt and completedAt markers', () async {
+    test('save passes typed routine to updater', () async {
       final routine = WorkoutRoutine.empty().copyWith(name: 'Plan A');
-      final existingData = jsonEncode({
-        ...routine.toJson(),
-        'archivedAt': '2026-01-01T00:00:00.000',
-        'completedAt': '2026-02-01T00:00:00.000',
-      });
-      plans['plan-1'] = plan(id: 'plan-1', planData: existingData);
       controller.markLoaded(
         session: session(routine: routine),
         planId: 'plan-1',
@@ -340,31 +345,33 @@ void main() {
         customerId: 'cust-1',
       );
 
-      final savedJson = updateCalls.single['planDataJson'] as String;
-      expect(savedJson, contains('"archivedAt"'));
-      expect(savedJson, contains('"completedAt"'));
-      expect(savedJson, contains('"currentWeek":2'));
+      final savedRoutine = updateCalls.single['routine'] as WorkoutRoutine;
+      expect(savedRoutine.currentWeek, 2);
+      expect(savedRoutine.name, 'Plan A');
     });
 
     test('autosave fires once after dirty existing plan delay', () async {
       var autosaveCalls = 0;
       final autosaving = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
         createPlan:
             ({
               required customerId,
               required name,
-              required planDataJson,
+              required routine,
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
               notes,
-            }) async => plan(id: 'created', name: name, planData: planDataJson),
+            }) async => plan(
+              id: 'created',
+              name: name,
+              planData: encodeWorkoutRoutinePlanData(routine),
+            ),
         updatePlan:
             ({
               required planId,
               name,
-              planDataJson,
+              routine,
               initialWeekNumber,
               notes,
             }) async => plans[planId]!,
@@ -398,12 +405,11 @@ void main() {
     test('autosave is scheduled for new plans without id', () async {
       var autosaveCalls = 0;
       final newPlanController = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
         createPlan:
             ({
               required customerId,
               required name,
-              required planDataJson,
+              required routine,
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
@@ -412,7 +418,7 @@ void main() {
               createCalls.add({
                 'customerId': customerId,
                 'name': name,
-                'planDataJson': planDataJson,
+                'routine': routine,
               });
               final created = plan(id: 'plan-new', name: name);
               plans[created.id] = created;
@@ -439,12 +445,11 @@ void main() {
 
     test('save failure leaves unsaved state', () async {
       final failing = WorkoutEditorController(
-        getPlanById: (planId) async => plans[planId],
         createPlan:
             ({
               required customerId,
               required name,
-              required planDataJson,
+              required routine,
               pdfHeader,
               useCustomPdfHeader = false,
               initialWeekNumber = 1,
@@ -454,7 +459,7 @@ void main() {
             ({
               required planId,
               name,
-              planDataJson,
+              routine,
               initialWeekNumber,
               notes,
             }) async => throw StateError('boom'),
