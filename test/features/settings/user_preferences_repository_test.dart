@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
+import 'package:powercoach_studio/features/exercise_library/data/pinned_exercises_store.dart';
+import 'package:powercoach_studio/features/exercise_library/data/recent_exercises_store.dart';
 import 'package:powercoach_studio/features/settings/data/user_preferences_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -83,6 +87,44 @@ void main() {
       expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isTrue);
       await repository.setWorkoutBuilderIncludeMobilityDefault(false);
       expect(await repository.getWorkoutBuilderIncludeMobilityDefault(), isFalse);
+    });
+  });
+
+  group('backup pin/recent id lists', () {
+    test('exportForBackup emits native Lists', () async {
+      await PinnedExercisesStore.instance.replaceAll({'ex-a', 'ex-b'});
+      await RecentExercisesStore.instance.replaceAll(['ex-b', 'ex-c']);
+
+      final map = await repository.exportForBackup();
+      expect(
+        map[SettingsPrefsKeys.pinnedExerciseIdsJson],
+        isA<List>(),
+      );
+      expect(
+        map[SettingsPrefsKeys.recentExerciseIdsJson],
+        isA<List>(),
+      );
+      expect(
+        (map[SettingsPrefsKeys.pinnedExerciseIdsJson] as List).toSet(),
+        {'ex-a', 'ex-b'},
+      );
+      expect(
+        map[SettingsPrefsKeys.recentExerciseIdsJson],
+        ['ex-b', 'ex-c'],
+      );
+    });
+
+    test('applyFromBackupMap accepts List and legacy JSON string', () async {
+      await PinnedExercisesStore.instance.replaceAll({});
+      await RecentExercisesStore.instance.replaceAll([]);
+
+      await repository.applyFromBackupMap({
+        SettingsPrefsKeys.pinnedExerciseIdsJson: <String>['ex-list'],
+        SettingsPrefsKeys.recentExerciseIdsJson: jsonEncode(['ex-string']),
+      });
+
+      expect(await PinnedExercisesStore.instance.getPinnedIds(), {'ex-list'});
+      expect(await RecentExercisesStore.instance.getRecentIds(), ['ex-string']);
     });
   });
 }

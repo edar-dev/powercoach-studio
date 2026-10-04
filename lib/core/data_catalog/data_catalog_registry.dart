@@ -63,7 +63,8 @@ abstract final class DataCatalogRegistry {
       driftType: OfflineEntityType.workoutPlan,
       summary:
           'Client workout plan. Cloud SoT in coach_entities; Drift cache. '
-          'scope_id is customerId. Nested planData holds weeks/days/exercises '
+          'scope_id is customerId. Plan-level lifecycle/schedule markers are '
+          'top-level payload fields; nested planData holds weeks/days/exercises '
           'and session diary.',
       scopeIdPattern: 'customerId',
       payloadFields: <String>[
@@ -79,6 +80,11 @@ abstract final class DataCatalogRegistry {
         'phase',
         'tags',
         'notes',
+        'archivedAt',
+        'completedAt',
+        'startDate',
+        'endDate',
+        'currentWeek',
         'createdAt',
         'updatedAt',
         'rowVersion',
@@ -192,25 +198,20 @@ abstract final class DataCatalogRegistry {
       summary:
           'Nested JSON object (Map) written into workoutPlan.planData; legacy '
           'JSON strings remain readable. Holds phases/weeks/days/exercises, '
-          'mobility, sessionExecutions diary, and lifecycle markers. App '
-          'exposes typed WorkoutRoutine plus archivedAt/completedAt accessors '
-          'on WorkoutPlanApiModel.',
+          'mobility, and sessionExecutions diary. Plan-level lifecycle/schedule '
+          'markers are top-level on workoutPlan (legacy nested keys still '
+          'readable until rewrite).',
       payloadFields: <String>[
         'name',
         'mobilitySections',
         'mobilityItems',
         'phases',
         'weeks',
-        'startDate',
-        'endDate',
-        'currentWeek',
         'includesMobilityTab',
         'sessionCompletionByKey',
         'sessionSkippedByKey',
         'sessionOverrides',
         'sessionExecutions',
-        'archivedAt',
-        'completedAt',
       ],
       references: <SoftReference>[
         SoftReference(
@@ -280,7 +281,8 @@ abstract final class DataCatalogRegistry {
       locus: DataStorageLocus.sharedPreferences,
       summary:
           'Settings + pinned/recent exercise ids exported under backup '
-          '`preferences`. SharedPreferences only (not coach_entities).',
+          '`preferences` as native JSON arrays (legacy string-encoded lists '
+          'still accepted on import). SharedPreferences only (not coach_entities).',
       payloadFields: <String>[
         'settings_notifications_enabled',
         'app_locale_code',
@@ -296,13 +298,15 @@ abstract final class DataCatalogRegistry {
           fieldPath: 'pinned_exercise_ids_json_v1[]',
           targetCatalogId: customExercise,
           optional: true,
-          description: 'Pinned library exercise ids.',
+          description:
+              'Pinned library exercise ids (backup array; device prefs string).',
         ),
         SoftReference(
           fieldPath: 'recent_exercise_ids_json_v1[]',
           targetCatalogId: customExercise,
           optional: true,
-          description: 'Recent library exercise ids.',
+          description:
+              'Recent library exercise ids (backup array; device prefs string).',
         ),
       ],
       includedInBackup: true,

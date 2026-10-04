@@ -41,6 +41,21 @@ void main() {
       });
       expect(workoutPlanSortKey(plan), DateTime(2025, 6, 20));
     });
+
+    test('prefers top-level startDate over nested planData', () {
+      final plan = WorkoutPlanApiModel.fromJson({
+        'id': 'p1',
+        'customerId': 'c1',
+        'userId': 'u1',
+        'name': 'Plan',
+        'planData': '{"startDate":"2024-01-01T00:00:00.000","weeks":[]}',
+        'startDate': '2024-08-01T00:00:00.000',
+        'createdAt': '2020-01-01T00:00:00.000',
+        'updatedAt': '2025-01-01T00:00:00.000',
+        'rowVersion': 1,
+      });
+      expect(workoutPlanSortKey(plan), DateTime(2024, 8, 1));
+    });
   });
 
   group('sortWorkoutPlansByStartDateDesc', () {
@@ -68,12 +83,15 @@ void main() {
   });
 
   group('cloneWorkoutPlanDataJson', () {
-    test('removes archivedAt and completedAt from String', () {
+    test('removes plan-level markers from String', () {
       const raw =
-          '{"weeks":[],"archivedAt":"2024-01-01","completedAt":"2024-02-01"}';
+          '{"weeks":[],"archivedAt":"2024-01-01","completedAt":"2024-02-01",'
+          '"startDate":"2024-03-01","currentWeek":2}';
       final cloned = cloneWorkoutPlanDataJson(raw);
       expect(cloned.contains('archivedAt'), isFalse);
       expect(cloned.contains('completedAt'), isFalse);
+      expect(cloned.contains('startDate'), isFalse);
+      expect(cloned.contains('currentWeek'), isFalse);
       expect(cloned.contains('"weeks"'), isTrue);
     });
 

@@ -143,11 +143,14 @@ Each catalog entry documents:
 
 ## Nested: `planData`
 
-Embedded JSON string on `workoutPlan`. Codec:
-`lib/features/workouts/domain/workout_routine_json_codec.dart`.
+Nested JSON object (Map) on `workoutPlan.planData` (legacy JSON strings remain
+readable). Codec: `lib/features/workouts/domain/workout_routine_json_codec.dart`.
 
 - Structure: phases/weeks → days → exercises; mobility; `sessionExecutions`
 - Soft refs: `customExerciseId` on mobility items, exercises, and executed logs
+- Plan-level markers (`archivedAt`, `completedAt`, `startDate`, `endDate`,
+  `currentWeek`) are **top-level** `workoutPlan` payload fields; readers still
+  fall back to legacy nested keys inside `planData` when top-level is absent
 
 ## Non-cloud buckets (SharedPreferences)
 

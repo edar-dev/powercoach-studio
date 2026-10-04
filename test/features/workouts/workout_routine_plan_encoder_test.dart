@@ -26,9 +26,30 @@ void main() {
     });
   });
 
+  group('stripPlanLevelMarkersFromPlanData', () {
+    test('removes lifecycle and schedule keys', () {
+      final map = <String, dynamic>{
+        'name': 'Keep',
+        'archivedAt': '2026-01-01',
+        'completedAt': '2026-01-02',
+        'startDate': '2026-01-03',
+        'endDate': '2026-01-04',
+        'currentWeek': 2,
+        'weeks': <dynamic>[],
+      };
+      stripPlanLevelMarkersFromPlanData(map);
+      expect(map.keys.toSet(), {'name', 'weeks'});
+    });
+  });
+
   group('buildWorkoutRoutinePlanData', () {
-    test('preserves lifecycle markers from existing String plan data', () {
-      final routine = WorkoutRoutine.empty().copyWith(name: 'Updated');
+    test('does not emit lifecycle or schedule into planData', () {
+      final routine = WorkoutRoutine.empty().copyWith(
+        name: 'Updated',
+        startDate: DateTime(2026, 3, 1),
+        endDate: DateTime(2026, 4, 1),
+        currentWeek: 2,
+      );
       final existing = jsonEncode({
         ...WorkoutRoutine.empty().toJson(),
         'archivedAt': '2026-06-01T00:00:00.000',
@@ -42,26 +63,11 @@ void main() {
 
       expect(encoded, isA<Map<String, dynamic>>());
       expect(encoded['name'], 'Updated');
-      expect(encoded['archivedAt'], '2026-06-01T00:00:00.000');
-      expect(encoded['completedAt'], '2026-06-02T00:00:00.000');
-    });
-
-    test('preserves lifecycle markers from existing Map plan data', () {
-      final routine = WorkoutRoutine.empty().copyWith(name: 'FromMap');
-      final existing = <String, dynamic>{
-        ...WorkoutRoutine.empty().toJson(),
-        'archivedAt': '2026-07-01T00:00:00.000',
-        'completedAt': '2026-07-02T00:00:00.000',
-      };
-
-      final encoded = buildWorkoutRoutinePlanData(
-        routine,
-        existingPlanData: existing,
-      );
-
-      expect(encoded['name'], 'FromMap');
-      expect(encoded['archivedAt'], '2026-07-01T00:00:00.000');
-      expect(encoded['completedAt'], '2026-07-02T00:00:00.000');
+      expect(encoded.containsKey('archivedAt'), isFalse);
+      expect(encoded.containsKey('completedAt'), isFalse);
+      expect(encoded.containsKey('startDate'), isFalse);
+      expect(encoded.containsKey('endDate'), isFalse);
+      expect(encoded.containsKey('currentWeek'), isFalse);
     });
 
     test('ignores malformed existing plan data', () {

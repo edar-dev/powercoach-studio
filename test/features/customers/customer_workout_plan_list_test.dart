@@ -37,19 +37,17 @@ void main() {
         ),
       ],
     );
-    final planData = Map<String, dynamic>.from(routine.toJson());
-    if (archivedAt != null) {
-      planData['archivedAt'] = archivedAt;
-    }
-    return WorkoutPlanApiModel(
-      id: 'p1',
-      customerId: 'c1',
-      userId: 'u1',
-      name: name,
-      planData: jsonEncode(planData),
-      createdAt: now,
-      updatedAt: now,
-    );
+    final planData = jsonEncode(routine.toJson());
+    return WorkoutPlanApiModel.fromJson({
+      'id': 'p1',
+      'customerId': 'c1',
+      'userId': 'u1',
+      'name': name,
+      'planData': planData,
+      'createdAt': now.toIso8601String(),
+      'updatedAt': now.toIso8601String(),
+      'archivedAt': ?archivedAt,
+    });
   }
 
   group('WorkoutPlanLifecyclePill', () {

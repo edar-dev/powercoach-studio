@@ -362,8 +362,13 @@ void main() {
 
     final map = await backup.buildExportMap(uid);
     final prefs = map['preferences'] as Map<String, dynamic>;
-    expect(prefs[SettingsPrefsKeys.pinnedExerciseIdsJson], isNotNull);
-    expect(prefs[SettingsPrefsKeys.recentExerciseIdsJson], isNotNull);
+    expect(prefs[SettingsPrefsKeys.pinnedExerciseIdsJson], isA<List>());
+    expect(prefs[SettingsPrefsKeys.recentExerciseIdsJson], isA<List>());
+    expect(
+      (prefs[SettingsPrefsKeys.pinnedExerciseIdsJson] as List).toSet(),
+      {'ex-a', 'ex-b'},
+    );
+    expect(prefs[SettingsPrefsKeys.recentExerciseIdsJson], ['ex-b', 'ex-c']);
 
     await PinnedExercisesStore.instance.replaceAll({});
     await RecentExercisesStore.instance.replaceAll([]);

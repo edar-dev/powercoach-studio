@@ -18,6 +18,9 @@ enum WorkoutPlanFilter {
 DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
 DateTime startDateForPlan(WorkoutPlanApiModel plan) {
+  if (plan.startDate != null) {
+    return _dateOnly(plan.startDate!);
+  }
   try {
     final start = plan.routine.startDate;
     if (start != null) {
@@ -28,6 +31,9 @@ DateTime startDateForPlan(WorkoutPlanApiModel plan) {
 }
 
 DateTime? endDateForPlan(WorkoutPlanApiModel plan) {
+  if (plan.endDate != null) {
+    return _dateOnly(plan.endDate!);
+  }
   try {
     final end = plan.routine.endDate;
     if (end != null) {
@@ -44,6 +50,7 @@ DateTime? completedAtForPlan(WorkoutPlanApiModel plan) => plan.completedAt;
 bool isArchivedPlan(WorkoutPlanApiModel plan) => plan.isArchived;
 
 bool hasScheduledStart(WorkoutPlanApiModel plan) {
+  if (plan.startDate != null) return true;
   try {
     return plan.routine.startDate != null;
   } catch (_) {
