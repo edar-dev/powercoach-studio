@@ -60,6 +60,8 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT || 'production' }}
+          POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST || 'https://eu.i.posthog.com' }}
 
       - name: Package prebuilt output
         run: bash scripts/package-vercel-prebuilt.sh

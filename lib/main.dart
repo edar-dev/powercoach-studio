@@ -13,6 +13,7 @@ import 'package:powercoach_studio/core/remote/coach_entities_sync_coordinator.da
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
+import 'package:powercoach_studio/core/analytics/posthog_bootstrap.dart';
 import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
@@ -36,6 +37,11 @@ Future<void> main() async {
     debugPrint('powercoach-studio: $appEnvAssetPath not found; Supabase may not work.');
     _logStartupStep('dotenv.load skipped (missing $appEnvAssetPath)', startupWatch);
   }
+
+  // Web-only product analytics; no-op when POSTHOG_API_KEY is empty or off-web.
+  PostHogBootstrap.ensureInitialized();
+  PostHogBootstrap.bindRouter(appGoRouter);
+  _logStartupStep('PostHog bootstrap step completed', startupWatch);
 
   final dsn = dotenv.env['SENTRY_DSN']?.trim();
   final useSentry = kReleaseMode && (dsn != null && dsn.isNotEmpty);
@@ -120,6 +126,7 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
       if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
         await SupabaseBootstrap.ensureInitialized();
         _logStartupStep('Supabase init completed', _bootstrapWatch);
+        PostHogBootstrap.bindAuthIdentity();
         EntitlementRefreshCoordinator.instance.start();
         WebPersistenceCoordinator.instance.start();
         CoachEntitiesSyncCoordinator.instance.start();

@@ -16,6 +16,7 @@ void configureAppRouter() {
   appGoRouter = GoRouter(
     navigatorKey: appRootNavigatorKey,
     initialLocation: '/',
+    // PostHog $pageview is bound via PostHogBootstrap.bindRouter (matchedLocation).
     observers:
         kReleaseMode ? [SentryNavigatorObserver()] : const <NavigatorObserver>[],
     refreshListenable: SupabaseBootstrap.refreshTick,

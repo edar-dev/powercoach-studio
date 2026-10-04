@@ -28,6 +28,8 @@ SUPABASE_URL=${SUPABASE_URL:-}
 SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY:-}
 SENTRY_DSN=${SENTRY_DSN:-}
 SENTRY_ENVIRONMENT=${SENTRY_ENVIRONMENT:-production}
+POSTHOG_API_KEY=${POSTHOG_API_KEY:-}
+POSTHOG_HOST=${POSTHOG_HOST:-https://eu.i.posthog.com}
 EOF
 
 APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"

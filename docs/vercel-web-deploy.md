@@ -13,6 +13,8 @@
 | `SUPABASE_ANON_KEY` | Yes | Supabase anon key (auth) |
 | `SENTRY_DSN` | No | Optional error monitoring |
 | `SENTRY_ENVIRONMENT` | No | e.g. `production` |
+| `POSTHOG_API_KEY` | No | Optional web product analytics (empty = off) |
+| `POSTHOG_HOST` | No | Default `https://eu.i.posthog.com` |
 | `FLUTTER_VERSION` | No | Defaults to `3.35.6` in `scripts/vercel-build.sh` |
 
 ## Supabase auth
@@ -66,6 +68,8 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 | `SUPABASE_ANON_KEY` | Same value as Vercel Production env |
 | `SENTRY_DSN` | Optional |
 | `SENTRY_ENVIRONMENT` | e.g. `production` |
+| `POSTHOG_API_KEY` | Optional (web analytics) |
+| `POSTHOG_HOST` | Optional (default EU) |
 | `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
 | `VERCEL_PROJECT_ID` | Project ID from `.vercel/project.json` |
 
