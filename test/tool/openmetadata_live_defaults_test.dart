@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../tool/openmetadata/ingestion/om_live_defaults.dart';
@@ -12,6 +14,18 @@ void main() {
   test('login API password is Base64 of plaintext', () {
     expect(encodeOmLoginPassword('admin'), 'YWRtaW4=');
     expect(encodeOmLoginPassword(''), '');
+  });
+
+  test('UTF-8 JSON body encoding keeps lineage arrows', () {
+    final body = buildOmLineagePutBody(
+      fromId: '11111111-1111-1111-1111-111111111111',
+      toId: '22222222-2222-2222-2222-222222222222',
+      description: 'customExerciseId: Mobility item → library exercise.',
+    );
+    final bytes = encodeOmUtf8JsonBody(body);
+    final decoded = utf8.decode(bytes);
+    expect(decoded, contains('→'));
+    expect(() => jsonDecode(decoded), returnsNormally);
   });
 
   test('lineage PUT body uses entity UUIDs (not FQNs)', () {

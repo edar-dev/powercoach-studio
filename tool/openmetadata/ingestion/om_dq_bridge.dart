@@ -1,11 +1,13 @@
 import 'package:powercoach_studio/core/data_quality/data_quality.dart';
 
 /// Pure builders that map [DataQualityReport] → OpenMetadata 1.5.15 DQ API
-/// payloads (custom test definition / logical suite / cases / results) plus
-/// table description badges.
+/// payloads (custom test definition / logical hub suite / per-table
+/// executable suites / cases / results) plus table description badges.
 ///
 /// In-app Salute dati remains the product DQ source of truth; OM is a
-/// local viewer/bridge only.
+/// local viewer/bridge only. Live push attaches cases to **executable**
+/// suites (`POST …/testSuites/executable`) so Test Cases show Success in
+/// OM 1.5.15 UI; the logical suite remains a hub label only.
 
 const String kOmDartDqTestDefinitionName = 'powercoachDartScanner';
 const String kOmDartDqTestSuiteName = 'powercoach_dart_dq';
@@ -17,6 +19,9 @@ String omCloudSotSchemaFqn({
   String schema = 'cloud_sot',
 }) =>
     '$service.$database.$schema';
+
+/// Short name for the per-table executable suite (`{table}.testSuite`).
+String omDartDqExecutableSuiteName(String table) => '$table.testSuite';
 
 /// Custom test definition body for POST `/api/v1/dataQuality/testDefinitions`.
 Map<String, dynamic> buildOmDartDqTestDefinitionBody() => <String, dynamic>{
@@ -37,13 +42,31 @@ Map<String, dynamic> buildOmDartDqTestDefinitionBody() => <String, dynamic>{
       ],
     };
 
-/// Logical (non-executable) test suite for the Dart bridge.
+/// Logical (non-executable) hub suite for Observability → Data Quality.
+///
+/// Live cases attach to per-table executable suites; this suite is kept as
+/// a named grouping / docs anchor only.
 Map<String, dynamic> buildOmDartDqTestSuiteBody() => <String, dynamic>{
       'name': kOmDartDqTestSuiteName,
       'displayName': 'PowerCoach Dart DQ (local bridge)',
       'description':
-          'Aggregates `DataQualityScanner` findings for the local OM spike. '
+          'Hub label for `DataQualityScanner` results on the local OM spike. '
+          'Executable cases live on per-table `{table}.testSuite` suites. '
           'Refresh via `ingest.sh --live --with-dq` or `scripts/dq_to_om.sh`.',
+    };
+
+/// Body for POST `/api/v1/dataQuality/testSuites/executable` (OM 1.5.15).
+Map<String, dynamic> buildOmDartDqExecutableTestSuiteBody({
+  required String tableName,
+  required String tableFqn,
+}) =>
+    <String, dynamic>{
+      'name': omDartDqExecutableSuiteName(tableName),
+      'displayName': 'PowerCoach Dart DQ · $tableName',
+      'description':
+          'Executable suite for `$tableFqn`. Results published by '
+          '`ingest.sh --live --with-dq` (OM does not run the Dart scanner).',
+      'executableEntityReference': tableFqn,
     };
 
 /// Aggregate findings by catalog table name (entityType name or `unknown`).
@@ -79,6 +102,7 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
         findings.where((f) => f.severity == DataQualitySeverity.error).length;
     final warningCount =
         findings.where((f) => f.severity == DataQualitySeverity.warning).length;
+    final tableFqn = '$fqn.$table';
     cases.add(<String, dynamic>{
       'name': 'dart_dq_$table',
       'displayName': 'Dart DQ · $table',
@@ -89,8 +113,9 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
         warningCount: warningCount,
       ),
       'testDefinition': kOmDartDqTestDefinitionName,
-      'entityLink': '<#E::table::$fqn.$table>',
-      'testSuite': kOmDartDqTestSuiteName,
+      'entityLink': '<#E::table::$tableFqn>',
+      // OM 1.5.15: attach to per-table executable suite (not logical hub).
+      'testSuite': omDartDqExecutableSuiteName(table),
       'parameterValues': <Map<String, dynamic>>[
         <String, dynamic>{
           'name': 'ruleId',
@@ -104,6 +129,7 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
         generatedAt: report.generatedAt,
       ),
       '_table': table,
+      '_tableFqn': tableFqn,
     });
   }
 
@@ -111,6 +137,8 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
   for (final entry in byTable.entries) {
     if (tableNames.contains(entry.key)) continue;
     final findings = entry.value;
+    const anchorTable = 'customer';
+    final tableFqn = '$fqn.$anchorTable';
     cases.add(<String, dynamic>{
       'name': 'dart_dq_unmapped_${entry.key}',
       'displayName': 'Dart DQ · unmapped (${entry.key})',
@@ -118,8 +146,8 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
           'Findings without a matching OM catalog table (`${entry.key}`).',
       'testDefinition': kOmDartDqTestDefinitionName,
       // Attach to customer as a stable anchor table for visibility.
-      'entityLink': '<#E::table::$fqn.customer>',
-      'testSuite': kOmDartDqTestSuiteName,
+      'entityLink': '<#E::table::$tableFqn>',
+      'testSuite': omDartDqExecutableSuiteName(anchorTable),
       'parameterValues': <Map<String, dynamic>>[
         <String, dynamic>{'name': 'ruleId', 'value': 'unmapped_${entry.key}'},
       ],
@@ -128,7 +156,8 @@ List<Map<String, dynamic>> buildOmDartDqTestCaseBodies({
         scannedEntityCount: report.scannedEntityCount,
         generatedAt: report.generatedAt,
       ),
-      '_table': 'customer',
+      '_table': anchorTable,
+      '_tableFqn': tableFqn,
     });
   }
 
@@ -227,6 +256,7 @@ Map<String, dynamic> buildOmDqBridgePayload({
   required Iterable<String> tableNames,
   String schemaFqn = '',
 }) {
+  final fqn = schemaFqn.isEmpty ? omCloudSotSchemaFqn() : schemaFqn;
   final byTable = groupFindingsByCatalogTable(report);
   final cases = buildOmDartDqTestCaseBodies(
     report: report,
@@ -238,10 +268,17 @@ Map<String, dynamic> buildOmDqBridgePayload({
     'exportFormat': 'powercoach_om_dq_bridge_v1',
     'testDefinition': buildOmDartDqTestDefinitionBody(),
     'testSuite': buildOmDartDqTestSuiteBody(),
+    'executableTestSuites': <Map<String, dynamic>>[
+      for (final table in tableNames)
+        buildOmDartDqExecutableTestSuiteBody(
+          tableName: table,
+          tableFqn: '$fqn.$table',
+        ),
+    ],
     'testCases': cases
         .map((c) {
           final copy = Map<String, dynamic>.from(c);
-          // Keep _result for inspection in dry-run JSON.
+          // Keep _result / _tableFqn for inspection in dry-run JSON.
           return copy;
         })
         .toList(growable: false),

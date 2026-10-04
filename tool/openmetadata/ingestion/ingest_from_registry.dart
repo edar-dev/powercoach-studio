@@ -185,6 +185,22 @@ Directory _findRepoRoot() {
   }
 }
 
+void _writeOmUtf8Body(HttpClientRequest req, Object body) {
+  final bytes = encodeOmUtf8JsonBody(body);
+  req.contentLength = bytes.length;
+  req.add(bytes);
+}
+
+ContentType _omJsonContentType([String? contentType]) {
+  if (contentType == null || contentType == 'application/json') {
+    return ContentType('application', 'json', charset: 'utf-8');
+  }
+  if (contentType == 'application/json-patch+json') {
+    return ContentType('application', 'json-patch+json', charset: 'utf-8');
+  }
+  return ContentType.parse(contentType);
+}
+
 Future<String> _login({
   required String baseUrl,
   required String email,
@@ -193,12 +209,13 @@ Future<String> _login({
   final client = HttpClient();
   try {
     final req = await client.postUrl(Uri.parse('$baseUrl/api/v1/users/login'));
-    req.headers.contentType = ContentType.json;
-    req.write(
-      jsonEncode(<String, dynamic>{
+    req.headers.contentType = _omJsonContentType();
+    _writeOmUtf8Body(
+      req,
+      <String, dynamic>{
         'email': email,
         'password': encodeOmLoginPassword(password),
-      }),
+      },
     );
     final res = await req.close();
     final body = await res.transform(utf8.decoder).join();
@@ -249,11 +266,9 @@ Future<Map<String, String>> _ingestLive({
         req = await client.postUrl(uri);
     }
     req.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
-    req.headers.contentType = ContentType.parse(
-      contentType ?? 'application/json',
-    );
+    req.headers.contentType = _omJsonContentType(contentType);
     if (body != null) {
-      req.write(body is String ? body : jsonEncode(body));
+      _writeOmUtf8Body(req, body);
     }
     final res = await req.close();
     final text = await res.transform(utf8.decoder).join();
@@ -463,11 +478,9 @@ Future<void> _pushDqBridge({
         req = await client.postUrl(uri);
     }
     req.headers.set(HttpHeaders.authorizationHeader, 'Bearer $token');
-    req.headers.contentType = ContentType.parse(
-      contentType ?? 'application/json',
-    );
+    req.headers.contentType = _omJsonContentType(contentType);
     if (body != null) {
-      req.write(body is String ? body : jsonEncode(body));
+      _writeOmUtf8Body(req, body);
     }
     final res = await req.close();
     final text = await res.transform(utf8.decoder).join();
@@ -491,6 +504,9 @@ Future<void> _pushDqBridge({
       '/api/v1/dataQuality/testDefinitions/name/${defBody['name']}',
     );
 
+    // Logical hub suite (Observability → Data Quality). Cases attach to
+    // per-table executable suites below — OM 1.5.15 rejects case create on
+    // a logical suite for this custom definition path.
     final suiteBody = dqPayload['testSuite'] as Map<String, dynamic>;
     await api('POST', '/api/v1/dataQuality/testSuites', body: suiteBody);
     await api(
@@ -498,26 +514,68 @@ Future<void> _pushDqBridge({
       '/api/v1/dataQuality/testSuites/name/${suiteBody['name']}',
     );
 
+    final service = payload['service'] as Map<String, dynamic>;
+    final database = payload['database'] as Map<String, dynamic>;
+    final schema = payload['schema'] as Map<String, dynamic>;
+    final schemaFqn =
+        '${service['name']}.${database['name']}.${schema['name']}';
+
+    final executableSuites =
+        (dqPayload['executableTestSuites'] as List?)
+            ?.cast<Map<String, dynamic>>() ??
+        <Map<String, dynamic>>[
+          for (final name in tableIdsByName.keys)
+            buildOmDartDqExecutableTestSuiteBody(
+              tableName: name,
+              tableFqn: '$schemaFqn.$name',
+            ),
+        ];
+
+    // POST …/executable; on 409 resolve via GET …/name/{shortName}
+    // (GET …/executable/name/{fqn} 405/500s on OM 1.5.15).
+    for (final execBody in executableSuites) {
+      final shortName = execBody['name']?.toString() ?? '';
+      var created = await api(
+        'POST',
+        '/api/v1/dataQuality/testSuites/executable',
+        body: execBody,
+      );
+      created ??= await api(
+        'GET',
+        '/api/v1/dataQuality/testSuites/name/$shortName',
+      );
+      if (created == null) {
+        stderr.writeln(
+          'OM: could not create/resolve executable suite $shortName',
+        );
+      }
+    }
+
     final cases =
         (dqPayload['testCases'] as List).cast<Map<String, dynamic>>();
     var caseCount = 0;
     var resultCount = 0;
     for (final raw in cases) {
+      final table = raw['_table']?.toString() ?? '';
+      final tableFqn = raw['_tableFqn']?.toString() ??
+          (table.isEmpty ? '' : '$schemaFqn.$table');
       final createBody = Map<String, dynamic>.from(raw)
         ..remove('_result')
-        ..remove('_table');
+        ..remove('_table')
+        ..remove('_tableFqn');
       var created = await api(
         'POST',
         '/api/v1/dataQuality/testCases',
         body: createBody,
       );
+      // Executable-suite case FQN is `{tableFqn}.{caseName}` (dots unencoded).
+      final fallbackFqn = tableFqn.isEmpty
+          ? createBody['name']?.toString() ?? ''
+          : '$tableFqn.${createBody['name']}';
       created ??= await api(
         'GET',
-        '/api/v1/dataQuality/testCases/name/'
-        '${suiteBody['name']}.${createBody['name']}',
+        '/api/v1/dataQuality/testCases/name/$fallbackFqn',
       );
-      // OM FQN for logical suite cases is often suiteName.caseName or
-      // entityLink-based — try alternate lookup.
       created ??= await api(
         'GET',
         '/api/v1/dataQuality/testCases/name/${createBody['name']}',
@@ -525,15 +583,15 @@ Future<void> _pushDqBridge({
 
       // OM 1.5.15 addTestCaseResult is FQN-only:
       // PUT /api/v1/dataQuality/testCases/{fqn}/testCaseResult
-      final fqn = created?['fullyQualifiedName']?.toString() ??
-          '${suiteBody['name']}.${createBody['name']}';
+      // Keep `.` literal (do not %2E-encode the FQN path segment).
+      final fqn = created?['fullyQualifiedName']?.toString() ?? fallbackFqn;
       if (created != null) caseCount++;
 
       final result = raw['_result'];
-      if (result is Map<String, dynamic>) {
+      if (result is Map<String, dynamic> && fqn.isNotEmpty) {
         final ok = await api(
           'PUT',
-          '/api/v1/dataQuality/testCases/${Uri.encodeComponent(fqn)}/testCaseResult',
+          '/api/v1/dataQuality/testCases/$fqn/testCaseResult',
           body: result,
         );
         if (ok != null) resultCount++;
