@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 
 import '../../../core/constants/workout_plan_template_scope.dart';
@@ -121,7 +119,7 @@ class WorkoutPlanRepository {
     final body = <String, dynamic>{
       'customerId': customerId,
       'name': name,
-      'planData': encodeWorkoutRoutinePlanData(routine),
+      'planData': buildWorkoutRoutinePlanData(routine),
       'useCustomPdfHeader': useCustomPdfHeader,
       'initialWeekNumber': initialWeekNumber,
     };
@@ -169,10 +167,9 @@ class WorkoutPlanRepository {
     final body = <String, dynamic>{};
     if (name != null) body['name'] = name;
     if (routine != null) {
-      final currentPlanData = current?['planData']?.toString();
-      body['planData'] = encodeWorkoutRoutinePlanData(
+      body['planData'] = buildWorkoutRoutinePlanData(
         routine,
-        existingPlanData: currentPlanData,
+        existingPlanData: current?['planData'],
       );
     }
     if (pdfHeader != null) body['pdfHeader'] = pdfHeader;
@@ -206,11 +203,11 @@ class WorkoutPlanRepository {
     return WorkoutPlanApiModel.fromJson(merged);
   }
 
-  /// Persists a raw planData JSON string without round-tripping through
-  /// [WorkoutRoutine] (used by schedule/lifecycle/session map patches).
-  Future<WorkoutPlanApiModel> _updatePlanDataJson(
+  /// Persists a planData [Map] without round-tripping through [WorkoutRoutine]
+  /// (used by schedule/lifecycle/session map patches).
+  Future<WorkoutPlanApiModel> _updatePlanDataMap(
     String planId,
-    String planDataJson,
+    Map<String, dynamic> planData,
   ) async {
     final current = await _offline.readLocalEntityById(
       OfflineEntityType.workoutPlan,
@@ -218,7 +215,7 @@ class WorkoutPlanRepository {
     );
     final merged = <String, dynamic>{
       ...?current,
-      'planData': planDataJson,
+      'planData': planData,
       'id': planId,
       'updatedAt': DateTime.now().toIso8601String(),
     };
@@ -350,7 +347,7 @@ class WorkoutPlanRepository {
       }
       map['currentWeek'] = currentWeek;
     }
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<WorkoutPlanApiModel> updateLifecycleMarkers({
@@ -375,7 +372,7 @@ class WorkoutPlanRepository {
     } else if (completedAt != null) {
       map['completedAt'] = dateOnlyIso(completedAt);
     }
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<WorkoutPlanApiModel> archivePlan(String planId) {
@@ -436,7 +433,7 @@ class WorkoutPlanRepository {
     } else {
       map['sessionSkippedByKey'] = skippedByKey;
     }
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<WorkoutPlanApiModel> setSessionOccurrenceOverride({
@@ -462,7 +459,7 @@ class WorkoutPlanRepository {
     );
     overrides[key] = override.toJson();
     map['sessionOverrides'] = overrides;
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<WorkoutPlanApiModel> removeSessionOccurrenceOverride({
@@ -492,7 +489,7 @@ class WorkoutPlanRepository {
     } else {
       map['sessionOverrides'] = overrides;
     }
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<SessionExecution?> getSessionExecution({
@@ -529,7 +526,7 @@ class WorkoutPlanRepository {
         : <String, dynamic>{};
     executions[execution.sessionKey] = execution.toJson();
     map['sessionExecutions'] = executions;
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 
   Future<WorkoutPlanApiModel> deleteSessionExecution({
@@ -550,6 +547,6 @@ class WorkoutPlanRepository {
     } else {
       map['sessionExecutions'] = executions;
     }
-    return _updatePlanDataJson(planId, jsonEncode(map));
+    return _updatePlanDataMap(planId, map);
   }
 }
