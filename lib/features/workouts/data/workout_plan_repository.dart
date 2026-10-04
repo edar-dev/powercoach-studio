@@ -172,13 +172,16 @@ class WorkoutPlanRepository {
         routine,
         existingPlanData: current?['planData'],
       );
-      _writeScheduleMarkersToPayload(body, routine);
       if (current != null) {
-        _promoteLifecycleMarkersToPayload(
+        // Promote legacy nested markers first so a partial routine cannot drop
+        // schedule/lifecycle that only lived in planData or top-level.
+        _promoteAllMarkersToPayload(
           body,
           WorkoutPlanApiModel.fromJson(current),
         );
       }
+      // Non-null routine schedule overwrites promoted values.
+      _writeScheduleMarkersToPayload(body, routine);
     }
     if (pdfHeader != null) body['pdfHeader'] = pdfHeader;
     if (useCustomPdfHeader != null) {
@@ -198,10 +201,6 @@ class WorkoutPlanRepository {
       'id': planId,
       'updatedAt': DateTime.now().toIso8601String(),
     };
-    // When schedule keys are cleared on the routine, remove stale top-level.
-    if (routine != null) {
-      _syncClearedScheduleMarkers(merged, routine);
-    }
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
       id: planId,
@@ -286,18 +285,8 @@ class WorkoutPlanRepository {
     }
   }
 
-  /// Removes top-level schedule keys that are null on [routine] after merge.
-  void _syncClearedScheduleMarkers(
-    Map<String, dynamic> payload,
-    WorkoutRoutine routine,
-  ) {
-    if (routine.startDate == null) payload.remove('startDate');
-    if (routine.endDate == null) payload.remove('endDate');
-    if (routine.currentWeek == null) payload.remove('currentWeek');
-  }
-
-  /// Copies lifecycle markers from a normalized [plan] onto [payload].
-  void _promoteLifecycleMarkersToPayload(
+  /// Copies all plan-level markers from a normalized [plan] onto [payload].
+  void _promoteAllMarkersToPayload(
     Map<String, dynamic> payload,
     WorkoutPlanApiModel plan,
   ) {
@@ -307,14 +296,6 @@ class WorkoutPlanRepository {
     if (plan.completedAt != null) {
       payload.putIfAbsent('completedAt', () => dateOnlyIso(plan.completedAt!));
     }
-  }
-
-  /// Copies all plan-level markers from a normalized [plan] onto [payload].
-  void _promoteAllMarkersToPayload(
-    Map<String, dynamic> payload,
-    WorkoutPlanApiModel plan,
-  ) {
-    _promoteLifecycleMarkersToPayload(payload, plan);
     if (plan.startDate != null) {
       payload.putIfAbsent('startDate', () => dateOnlyIso(plan.startDate!));
     }

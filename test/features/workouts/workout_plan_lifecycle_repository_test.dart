@@ -153,6 +153,59 @@ void main() {
       expect(reloaded.routine.startDate, DateTime(2026, 3, 1));
     });
 
+    test('session rewrite promotes legacy nested markers to top-level',
+        () async {
+      final offline = OfflineRepositorySupport();
+      final repo = WorkoutPlanRepository(offline: offline);
+      final now = DateTime.now().toIso8601String();
+      const planId = 'legacy-session-plan';
+      await offline.saveLocalEntity(
+        type: OfflineEntityType.workoutPlan,
+        id: planId,
+        scopeId: 'customer-1',
+        payload: <String, dynamic>{
+          'id': planId,
+          'customerId': 'customer-1',
+          'userId': '',
+          'name': 'Legacy Session',
+          'planData': <String, dynamic>{
+            'name': 'Legacy Session',
+            'weeks': <dynamic>[],
+            'archivedAt': '2026-01-15T00:00:00.000',
+            'startDate': '2026-01-01T00:00:00.000',
+            'currentWeek': 2,
+          },
+          'useCustomPdfHeader': false,
+          'initialWeekNumber': 1,
+          'createdAt': now,
+          'updatedAt': now,
+          'rowVersion': 1,
+        },
+        localOnly: false,
+      );
+
+      final updated = await repo.setSessionCompleted(
+        planId: planId,
+        weekIndex: 0,
+        dayIndex: 0,
+        completed: true,
+      );
+      expect(isArchivedPlan(updated), isTrue);
+      expect(updated.startDate, DateTime(2026, 1, 1));
+      expect(updated.currentWeek, 2);
+      expect(updated.planDataMap.containsKey('archivedAt'), isFalse);
+      expect(updated.planDataMap.containsKey('startDate'), isFalse);
+
+      final stored = await offline.readLocalEntityById(
+        OfflineEntityType.workoutPlan,
+        planId,
+      );
+      expect(stored?['archivedAt'], isNotNull);
+      expect(stored?['startDate'], isNotNull);
+      expect(stored?['currentWeek'], 2);
+      expect((stored?['planData'] as Map?)?.containsKey('archivedAt'), isFalse);
+    });
+
     test('legacy String planData markers readable and promoted on update',
         () async {
       final offline = OfflineRepositorySupport();
