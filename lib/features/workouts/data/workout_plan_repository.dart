@@ -128,6 +128,7 @@ class WorkoutPlanRepository {
     if (phase != null) body['phase'] = phase;
     if (tags != null) body['tags'] = tags;
     if (notes != null) body['notes'] = notes;
+    _writeScheduleMarkersToPayload(body, routine);
 
     final localPayload = <String, dynamic>{
       'id': tempId,
@@ -171,6 +172,13 @@ class WorkoutPlanRepository {
         routine,
         existingPlanData: current?['planData'],
       );
+      _writeScheduleMarkersToPayload(body, routine);
+      if (current != null) {
+        _promoteLifecycleMarkersToPayload(
+          body,
+          WorkoutPlanApiModel.fromJson(current),
+        );
+      }
     }
     if (pdfHeader != null) body['pdfHeader'] = pdfHeader;
     if (useCustomPdfHeader != null) {
@@ -190,6 +198,10 @@ class WorkoutPlanRepository {
       'id': planId,
       'updatedAt': DateTime.now().toIso8601String(),
     };
+    // When schedule keys are cleared on the routine, remove stale top-level.
+    if (routine != null) {
+      _syncClearedScheduleMarkers(merged, routine);
+    }
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
       id: planId,
@@ -204,7 +216,10 @@ class WorkoutPlanRepository {
   }
 
   /// Persists a planData [Map] without round-tripping through [WorkoutRoutine]
-  /// (used by schedule/lifecycle/session map patches).
+  /// (used by session map patches).
+  ///
+  /// Strips plan-level markers from the blob and promotes any legacy nested
+  /// markers onto the entity top level so they are not lost.
   Future<WorkoutPlanApiModel> _updatePlanDataMap(
     String planId,
     Map<String, dynamic> planData,
@@ -213,12 +228,35 @@ class WorkoutPlanRepository {
       OfflineEntityType.workoutPlan,
       planId,
     );
+    final plan = current == null
+        ? null
+        : WorkoutPlanApiModel.fromJson(current);
+    stripPlanLevelMarkersFromPlanData(planData);
+    final patch = <String, dynamic>{'planData': planData};
+    if (plan != null) {
+      _promoteAllMarkersToPayload(patch, plan);
+    }
+    return _updatePayload(planId, patch);
+  }
+
+  Future<WorkoutPlanApiModel> _updatePayload(
+    String planId,
+    Map<String, dynamic> patch, {
+    Iterable<String> removeKeys = const <String>[],
+  }) async {
+    final current = await _offline.readLocalEntityById(
+      OfflineEntityType.workoutPlan,
+      planId,
+    );
     final merged = <String, dynamic>{
       ...?current,
-      'planData': planData,
+      ...patch,
       'id': planId,
       'updatedAt': DateTime.now().toIso8601String(),
     };
+    for (final key in removeKeys) {
+      merged.remove(key);
+    }
     await _offline.saveLocalEntity(
       type: OfflineEntityType.workoutPlan,
       id: planId,
@@ -230,6 +268,62 @@ class WorkoutPlanRepository {
       localOnly: false,
     );
     return WorkoutPlanApiModel.fromJson(merged);
+  }
+
+  /// Writes schedule markers as top-level payload fields from [routine].
+  void _writeScheduleMarkersToPayload(
+    Map<String, dynamic> payload,
+    WorkoutRoutine routine,
+  ) {
+    if (routine.startDate != null) {
+      payload['startDate'] = dateOnlyIso(routine.startDate!);
+    }
+    if (routine.endDate != null) {
+      payload['endDate'] = dateOnlyIso(routine.endDate!);
+    }
+    if (routine.currentWeek != null) {
+      payload['currentWeek'] = routine.currentWeek;
+    }
+  }
+
+  /// Removes top-level schedule keys that are null on [routine] after merge.
+  void _syncClearedScheduleMarkers(
+    Map<String, dynamic> payload,
+    WorkoutRoutine routine,
+  ) {
+    if (routine.startDate == null) payload.remove('startDate');
+    if (routine.endDate == null) payload.remove('endDate');
+    if (routine.currentWeek == null) payload.remove('currentWeek');
+  }
+
+  /// Copies lifecycle markers from a normalized [plan] onto [payload].
+  void _promoteLifecycleMarkersToPayload(
+    Map<String, dynamic> payload,
+    WorkoutPlanApiModel plan,
+  ) {
+    if (plan.archivedAt != null) {
+      payload.putIfAbsent('archivedAt', () => dateOnlyIso(plan.archivedAt!));
+    }
+    if (plan.completedAt != null) {
+      payload.putIfAbsent('completedAt', () => dateOnlyIso(plan.completedAt!));
+    }
+  }
+
+  /// Copies all plan-level markers from a normalized [plan] onto [payload].
+  void _promoteAllMarkersToPayload(
+    Map<String, dynamic> payload,
+    WorkoutPlanApiModel plan,
+  ) {
+    _promoteLifecycleMarkersToPayload(payload, plan);
+    if (plan.startDate != null) {
+      payload.putIfAbsent('startDate', () => dateOnlyIso(plan.startDate!));
+    }
+    if (plan.endDate != null) {
+      payload.putIfAbsent('endDate', () => dateOnlyIso(plan.endDate!));
+    }
+    if (plan.currentWeek != null) {
+      payload.putIfAbsent('currentWeek', () => plan.currentWeek);
+    }
   }
 
   Future<void> delete(String planId) async {
@@ -247,14 +341,21 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
+    // Prefer typed routine (hydrates top-level schedule). Clone helper strips
+    // any legacy plan-level markers still nested in planData.
     final routine = planDataToRoutine(cloneWorkoutPlanDataJson(src.planData));
+    final withSchedule = routine.copyWith(
+      startDate: src.startDate,
+      endDate: src.endDate,
+      currentWeek: src.currentWeek,
+    );
     final resolvedName = (name != null && name.trim().isNotEmpty)
         ? name.trim()
         : src.name;
     return create(
       customerId: customerId,
       name: resolvedName,
-      routine: routine,
+      routine: withSchedule,
       pdfHeader: src.pdfHeader,
       useCustomPdfHeader: src.useCustomPdfHeader,
       theme: src.theme,
@@ -310,7 +411,7 @@ class WorkoutPlanRepository {
     );
   }
 
-  /// Updates assignment markers stored inside [planData] JSON.
+  /// Updates assignment markers as top-level workoutPlan payload fields.
   Future<WorkoutPlanApiModel> updateScheduleMarkers({
     required String planId,
     DateTime? startDate,
@@ -321,15 +422,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = Map<String, dynamic>.from(plan.planDataMap);
-    DateTime? effectiveStart = startDate;
-    final existingStart = map['startDate'];
-    if (effectiveStart == null && existingStart != null) {
-      effectiveStart = DateTime.tryParse(existingStart.toString());
-    }
-    if (startDate != null) {
-      map['startDate'] = dateOnlyIso(startDate);
-    }
+    final effectiveStart = startDate ?? plan.startDate;
     if (endDate != null) {
       if (effectiveStart != null &&
           dateOnly(endDate).isBefore(dateOnly(effectiveStart))) {
@@ -339,17 +432,21 @@ class WorkoutPlanRepository {
           'must be on or after startDate',
         );
       }
-      map['endDate'] = dateOnlyIso(endDate);
     }
-    if (currentWeek != null) {
-      if (currentWeek < 1) {
-        throw ArgumentError.value(currentWeek, 'currentWeek', 'must be >= 1');
-      }
-      map['currentWeek'] = currentWeek;
+    if (currentWeek != null && currentWeek < 1) {
+      throw ArgumentError.value(currentWeek, 'currentWeek', 'must be >= 1');
     }
-    return _updatePlanDataMap(planId, map);
+
+    final planData = Map<String, dynamic>.from(plan.planDataMap);
+    stripPlanLevelMarkersFromPlanData(planData);
+    final patch = <String, dynamic>{'planData': planData};
+    if (startDate != null) patch['startDate'] = dateOnlyIso(startDate);
+    if (endDate != null) patch['endDate'] = dateOnlyIso(endDate);
+    if (currentWeek != null) patch['currentWeek'] = currentWeek;
+    return _updatePayload(planId, patch);
   }
 
+  /// Updates lifecycle markers as top-level workoutPlan payload fields.
   Future<WorkoutPlanApiModel> updateLifecycleMarkers({
     required String planId,
     DateTime? archivedAt,
@@ -361,18 +458,21 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final map = Map<String, dynamic>.from(plan.planDataMap);
+    final planData = Map<String, dynamic>.from(plan.planDataMap);
+    stripPlanLevelMarkersFromPlanData(planData);
+    final patch = <String, dynamic>{'planData': planData};
+    final removeKeys = <String>[];
     if (clearArchivedAt) {
-      map.remove('archivedAt');
+      removeKeys.add('archivedAt');
     } else if (archivedAt != null) {
-      map['archivedAt'] = dateOnlyIso(archivedAt);
+      patch['archivedAt'] = dateOnlyIso(archivedAt);
     }
     if (clearCompletedAt) {
-      map.remove('completedAt');
+      removeKeys.add('completedAt');
     } else if (completedAt != null) {
-      map['completedAt'] = dateOnlyIso(completedAt);
+      patch['completedAt'] = dateOnlyIso(completedAt);
     }
-    return _updatePlanDataMap(planId, map);
+    return _updatePayload(planId, patch, removeKeys: removeKeys);
   }
 
   Future<WorkoutPlanApiModel> archivePlan(String planId) {

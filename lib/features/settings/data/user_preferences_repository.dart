@@ -155,11 +155,12 @@ class UserPreferencesRepository {
 
     final pinned = await PinnedExercisesStore.instance.getPinnedIds();
     if (pinned.isNotEmpty) {
-      map[SettingsPrefsKeys.pinnedExerciseIdsJson] = jsonEncode(pinned.toList());
+      // Native JSON arrays in the backup envelope (not double-encoded strings).
+      map[SettingsPrefsKeys.pinnedExerciseIdsJson] = pinned.toList();
     }
     final recent = await RecentExercisesStore.instance.getRecentIds();
     if (recent.isNotEmpty) {
-      map[SettingsPrefsKeys.recentExerciseIdsJson] = jsonEncode(recent);
+      map[SettingsPrefsKeys.recentExerciseIdsJson] = recent;
     }
     return map;
   }

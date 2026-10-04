@@ -11,8 +11,11 @@ DateTime dateOnly(DateTime value) =>
 
 String dateOnlyIso(DateTime value) => dateOnly(value).toIso8601String();
 
-/// Sort key: routine `startDate` from [WorkoutPlanApiModel.routine], else [updatedAt].
+/// Sort key: top-level / routine `startDate`, else [updatedAt].
 DateTime workoutPlanSortKey(WorkoutPlanApiModel plan) {
+  if (plan.startDate != null) {
+    return dateOnly(plan.startDate!);
+  }
   try {
     final start = plan.routine.startDate;
     if (start != null) {
@@ -40,7 +43,7 @@ List<WorkoutPlanApiModel> mapAndSortWorkoutPlans(
   return models;
 }
 
-/// Deep-clone [planData] (JSON [String] or [Map]); strips lifecycle markers.
+/// Deep-clone [planData] (JSON [String] or [Map]); strips plan-level markers.
 ///
 /// Throws [FormatException] if [planData] cannot be normalized to an object.
 String cloneWorkoutPlanDataJson(dynamic planData) {
@@ -48,8 +51,7 @@ String cloneWorkoutPlanDataJson(dynamic planData) {
   if (decoded == null) {
     throw const FormatException('invalid_workout_plan_data');
   }
-  decoded.remove('archivedAt');
-  decoded.remove('completedAt');
+  stripPlanLevelMarkersFromPlanData(decoded);
   return jsonEncode(decoded);
 }
 

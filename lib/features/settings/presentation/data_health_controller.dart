@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import '../../../core/data_quality/data_quality.dart';
 import '../../../core/settings/settings_prefs_keys.dart';
 import '../../../core/storage/offline_local_store.dart';
@@ -67,12 +65,12 @@ class DataHealthController {
     final map = <String, dynamic>{};
     final pinned = await _pinnedStore.getPinnedIds();
     if (pinned.isNotEmpty) {
-      map[SettingsPrefsKeys.pinnedExerciseIdsJson] =
-          jsonEncode(pinned.toList());
+      // Match backup export: native List values (scanner accepts List|String).
+      map[SettingsPrefsKeys.pinnedExerciseIdsJson] = pinned.toList();
     }
     final recent = await _recentStore.getRecentIds();
     if (recent.isNotEmpty) {
-      map[SettingsPrefsKeys.recentExerciseIdsJson] = jsonEncode(recent);
+      map[SettingsPrefsKeys.recentExerciseIdsJson] = recent;
     }
     return map;
   }

@@ -154,9 +154,6 @@ List<List<Object?>> _planDataRows(
       'mobilityItems': _jsonOrEmpty(decoded['mobilityItems']),
       'phases': _jsonOrEmpty(decoded['phases']),
       'weeks': _jsonOrEmpty(decoded['weeks']),
-      'startDate': decoded['startDate']?.toString() ?? '',
-      'endDate': decoded['endDate']?.toString() ?? '',
-      'currentWeek': decoded['currentWeek']?.toString() ?? '',
       'includesMobilityTab':
           decoded['includesMobilityTab']?.toString() ?? 'false',
       'sessionCompletionByKey':
@@ -164,8 +161,6 @@ List<List<Object?>> _planDataRows(
       'sessionSkippedByKey': _jsonOrEmpty(decoded['sessionSkippedByKey']),
       'sessionOverrides': _jsonOrEmpty(decoded['sessionOverrides']),
       'sessionExecutions': _jsonOrEmpty(decoded['sessionExecutions']),
-      'archivedAt': decoded['archivedAt']?.toString() ?? '',
-      'completedAt': decoded['completedAt']?.toString() ?? '',
     };
     rows.add(fields.map((f) => values[f]).toList(growable: false));
   }
@@ -179,9 +174,7 @@ List<List<Object?>> _planDataRows(
                     ? '[{"name":"W1","days":[]}]'
                     : f == 'includesMobilityTab'
                         ? 'false'
-                        : f == 'currentWeek'
-                            ? '1'
-                            : '',
+                        : '',
           )
           .toList(growable: false),
     );
@@ -231,8 +224,8 @@ Map<String, dynamic> _syntheticUserPreferences() => <String, dynamic>{
       'settings_calendar_reminder_lead_hours': '2',
       'workout_builder_compact_add_v1': 'false',
       'workout_builder_include_mobility_default_v1': 'true',
-      'pinned_exercise_ids_json_v1': '["ex_root"]',
-      'recent_exercise_ids_json_v1': '["ex_root"]',
+      'pinned_exercise_ids_json_v1': <String>['ex_root'],
+      'recent_exercise_ids_json_v1': <String>['ex_root'],
     };
 
 Map<String, dynamic> _syntheticWorkoutDraft() => <String, dynamic>{

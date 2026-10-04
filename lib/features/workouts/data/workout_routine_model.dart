@@ -105,7 +105,7 @@ class WorkoutRoutine {
   /// When false, the builder hides the mobility tab (training + details only).
   final bool includesMobilityTab;
 
-  /// Calendar start of the plan; persisted in planData. Null for legacy JSON.
+  /// Calendar start of the plan; persisted as a top-level workoutPlan field.
   final DateTime? startDate;
 
   /// Optional explicit end date for the assignment window.
