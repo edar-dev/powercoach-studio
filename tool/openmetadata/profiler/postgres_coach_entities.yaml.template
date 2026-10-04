@@ -1,0 +1,64 @@
+# OpenMetadata 1.5.15 — optional Postgres profiler recipe (LOCAL / STAGING ONLY).
+#
+# Targets physical `public.coach_entities` (JSONB SoT). This is separate from the
+# Dart CustomDatabase catalog ingest (logical tables under cloud_sot).
+#
+# Do NOT commit real passwords. Render via:
+#   tool/openmetadata/scripts/profiler.sh --render
+# or export OM_PROFILER_* / OM_PROFILER_DB_URL and run --run.
+#
+# WARNINGS:
+# - Never point this casually at production. Prefer a local Docker Postgres or
+#   a staging Supabase project with a read-only role.
+# - JSONB `payload` profiling is limited: OM column stats treat jsonb as a
+#   single column (null%/distinct on the document), not nested field metrics.
+# - Soft-deleted rows (`deleted_at`) are still visible unless you add a
+#   profiler filter / view.
+
+source:
+  type: postgres
+  serviceName: powercoach_postgres_profiler
+  serviceConnection:
+    config:
+      type: Postgres
+      username: "${OM_PROFILER_DB_USER}"
+      authType:
+        password: "${OM_PROFILER_DB_PASSWORD}"
+      hostPort: "${OM_PROFILER_DB_HOST}:${OM_PROFILER_DB_PORT}"
+      database: "${OM_PROFILER_DB_NAME}"
+      schemaFilterPattern:
+        includes:
+          - public
+  sourceConfig:
+    config:
+      type: Profiler
+      generateSampleData: true
+      computeMetrics: true
+      profileSample: 100
+      threadCount: 1
+      timeoutSeconds: 3600
+      databaseFilterPattern:
+        includes:
+          - "${OM_PROFILER_DB_NAME}"
+      schemaFilterPattern:
+        includes:
+          - public
+      tableFilterPattern:
+        includes:
+          - coach_entities
+
+processor:
+  type: orm-profiler
+  config: {}
+
+sink:
+  type: metadata-rest
+  config: {}
+
+workflowConfig:
+  loggerLevel: INFO
+  openMetadataServerConfig:
+    hostPort: "${OM_PROFILER_OM_HOST_PORT}"
+    authProvider: openmetadata
+    securityConfig:
+      jwtToken: "${OM_PROFILER_OM_JWT}"

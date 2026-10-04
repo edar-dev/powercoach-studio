@@ -84,5 +84,13 @@ void main() {
       isTrue,
       reason: 'Need customer → measurement lineage',
     );
+
+    final sampleByTable =
+        payload['sampleDataByTable'] as Map<String, dynamic>;
+    expect(sampleByTable.keys, containsAll(tableNames));
+    expect(
+      ((sampleByTable['customer'] as Map)['rows'] as List),
+      isNotEmpty,
+    );
   });
 }

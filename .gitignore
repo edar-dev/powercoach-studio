@@ -47,6 +47,8 @@ migrate_working_dir/
 
 # OpenMetadata local spike volumes (tool/openmetadata)
 /tool/openmetadata/docker-volume/
+# Profiler recipe rendered with DB secrets (local/staging only)
+/tool/openmetadata/profiler/*.rendered.yaml
 
 # Symbolication related
 app.*.symbols
