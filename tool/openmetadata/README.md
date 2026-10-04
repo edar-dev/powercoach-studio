@@ -119,9 +119,14 @@ product source of truth. OM only **views** bridged results.
 The bridge:
 
 1. Runs `DataQualityScanner` on `sample_entities.json` (or `--backup path.json`)
-2. Builds a custom OM 1.5.15 test definition `powercoachDartScanner`, logical
-   suite `powercoach_dart_dq`, per-table test cases + results
+2. Builds a custom OM 1.5.15 test definition `powercoachDartScanner`, a logical
+   hub suite `powercoach_dart_dq`, and **per-table executable** suites
+   (`POST …/testSuites/executable`, name `{table}.testSuite`) with cases +
+   results (FQN `{tableFqn}.{caseName}`) so Test Cases show Success in the UI
 3. Appends a short **Dart DQ bridge** badge to each table description
+
+Live HTTP bodies are written as UTF-8 bytes (lineage descriptions may contain
+`→`; Latin-1 `HttpClientRequest.write` would crash).
 
 ```bash
 # Dry-run → fixtures/om_dq_bridge_payload.json
@@ -238,7 +243,8 @@ After dry-run or live ingest, the payload / UI should show:
 2. Lineage edges **`customer → workoutPlan`** and **`customer → measurement`**
    (from registry soft refs + `fixtures/sample_entities.json`).
 3. **Sample Data** rows on each catalog table (fixture + synthetic prefs).
-4. With `--with-dq`: test suite `powercoach_dart_dq` + description badges.
+4. With `--with-dq`: per-table executable suites `{table}.testSuite` (hub
+   `powercoach_dart_dq`) with Success test cases + description badges.
 
 ## Layout
 

@@ -21,8 +21,76 @@
   "testSuite": {
     "name": "powercoach_dart_dq",
     "displayName": "PowerCoach Dart DQ (local bridge)",
-    "description": "Aggregates `DataQualityScanner` findings for the local OM spike. Refresh via `ingest.sh --live --with-dq` or `scripts/dq_to_om.sh`."
+    "description": "Hub label for `DataQualityScanner` results on the local OM spike. Executable cases live on per-table `{table}.testSuite` suites. Refresh via `ingest.sh --live --with-dq` or `scripts/dq_to_om.sh`."
   },
+  "executableTestSuites": [
+    {
+      "name": "customer.testSuite",
+      "displayName": "PowerCoach Dart DQ · customer",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.customer`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.customer"
+    },
+    {
+      "name": "workoutPlan.testSuite",
+      "displayName": "PowerCoach Dart DQ · workoutPlan",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.workoutPlan`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.workoutPlan"
+    },
+    {
+      "name": "measurement.testSuite",
+      "displayName": "PowerCoach Dart DQ · measurement",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.measurement`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.measurement"
+    },
+    {
+      "name": "customExercise.testSuite",
+      "displayName": "PowerCoach Dart DQ · customExercise",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.customExercise`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.customExercise"
+    },
+    {
+      "name": "customerNote.testSuite",
+      "displayName": "PowerCoach Dart DQ · customerNote",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.customerNote`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.customerNote"
+    },
+    {
+      "name": "planData.testSuite",
+      "displayName": "PowerCoach Dart DQ · planData",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.planData`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.planData"
+    },
+    {
+      "name": "userProfile.testSuite",
+      "displayName": "PowerCoach Dart DQ · userProfile",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.userProfile`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.userProfile"
+    },
+    {
+      "name": "pdfBrand.testSuite",
+      "displayName": "PowerCoach Dart DQ · pdfBrand",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.pdfBrand`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.pdfBrand"
+    },
+    {
+      "name": "userPreferences.testSuite",
+      "displayName": "PowerCoach Dart DQ · userPreferences",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.userPreferences`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.userPreferences"
+    },
+    {
+      "name": "workoutDraft.testSuite",
+      "displayName": "PowerCoach Dart DQ · workoutDraft",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.workoutDraft`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.workoutDraft"
+    },
+    {
+      "name": "cloudBackupMeta.testSuite",
+      "displayName": "PowerCoach Dart DQ · cloudBackupMeta",
+      "description": "Executable suite for `powercoach_cloud.powercoach_studio.cloud_sot.cloudBackupMeta`. Results published by `ingest.sh --live --with-dq` (OM does not run the Dart scanner).",
+      "executableEntityReference": "powercoach_cloud.powercoach_studio.cloud_sot.cloudBackupMeta"
+    }
+  ],
   "testCases": [
     {
       "name": "dart_dq_customer",
@@ -30,7 +98,7 @@
       "description": "Dart DataQualityScanner summary for `customer` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.customer>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "customer.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -38,7 +106,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -64,7 +132,8 @@
           }
         ]
       },
-      "_table": "customer"
+      "_table": "customer",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.customer"
     },
     {
       "name": "dart_dq_workoutPlan",
@@ -72,7 +141,7 @@
       "description": "Dart DataQualityScanner summary for `workoutPlan` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.workoutPlan>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "workoutPlan.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -80,7 +149,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -106,7 +175,8 @@
           }
         ]
       },
-      "_table": "workoutPlan"
+      "_table": "workoutPlan",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.workoutPlan"
     },
     {
       "name": "dart_dq_measurement",
@@ -114,7 +184,7 @@
       "description": "Dart DataQualityScanner summary for `measurement` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.measurement>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "measurement.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -122,7 +192,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -148,7 +218,8 @@
           }
         ]
       },
-      "_table": "measurement"
+      "_table": "measurement",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.measurement"
     },
     {
       "name": "dart_dq_customExercise",
@@ -156,7 +227,7 @@
       "description": "Dart DataQualityScanner summary for `customExercise` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.customExercise>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "customExercise.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -164,7 +235,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -190,7 +261,8 @@
           }
         ]
       },
-      "_table": "customExercise"
+      "_table": "customExercise",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.customExercise"
     },
     {
       "name": "dart_dq_customerNote",
@@ -198,7 +270,7 @@
       "description": "Dart DataQualityScanner summary for `customerNote` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.customerNote>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "customerNote.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -206,7 +278,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -232,7 +304,8 @@
           }
         ]
       },
-      "_table": "customerNote"
+      "_table": "customerNote",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.customerNote"
     },
     {
       "name": "dart_dq_planData",
@@ -240,7 +313,7 @@
       "description": "Dart DataQualityScanner summary for `planData` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.planData>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "planData.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -248,7 +321,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -274,7 +347,8 @@
           }
         ]
       },
-      "_table": "planData"
+      "_table": "planData",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.planData"
     },
     {
       "name": "dart_dq_userProfile",
@@ -282,7 +356,7 @@
       "description": "Dart DataQualityScanner summary for `userProfile` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.userProfile>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "userProfile.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -290,7 +364,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -316,7 +390,8 @@
           }
         ]
       },
-      "_table": "userProfile"
+      "_table": "userProfile",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.userProfile"
     },
     {
       "name": "dart_dq_pdfBrand",
@@ -324,7 +399,7 @@
       "description": "Dart DataQualityScanner summary for `pdfBrand` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.pdfBrand>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "pdfBrand.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -332,7 +407,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -358,7 +433,8 @@
           }
         ]
       },
-      "_table": "pdfBrand"
+      "_table": "pdfBrand",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.pdfBrand"
     },
     {
       "name": "dart_dq_userPreferences",
@@ -366,7 +442,7 @@
       "description": "Dart DataQualityScanner summary for `userPreferences` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.userPreferences>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "userPreferences.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -374,7 +450,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -400,7 +476,8 @@
           }
         ]
       },
-      "_table": "userPreferences"
+      "_table": "userPreferences",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.userPreferences"
     },
     {
       "name": "dart_dq_workoutDraft",
@@ -408,7 +485,7 @@
       "description": "Dart DataQualityScanner summary for `workoutDraft` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.workoutDraft>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "workoutDraft.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -416,7 +493,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -442,7 +519,8 @@
           }
         ]
       },
-      "_table": "workoutDraft"
+      "_table": "workoutDraft",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.workoutDraft"
     },
     {
       "name": "dart_dq_cloudBackupMeta",
@@ -450,7 +528,7 @@
       "description": "Dart DataQualityScanner summary for `cloudBackupMeta` — no findings.",
       "testDefinition": "powercoachDartScanner",
       "entityLink": "<#E::table::powercoach_cloud.powercoach_studio.cloud_sot.cloudBackupMeta>",
-      "testSuite": "powercoach_dart_dq",
+      "testSuite": "cloudBackupMeta.testSuite",
       "parameterValues": [
         {
           "name": "ruleId",
@@ -458,7 +536,7 @@
         }
       ],
       "_result": {
-        "timestamp": 1791131630529,
+        "timestamp": 1791136412909,
         "testCaseStatus": "Success",
         "result": "No Dart DQ findings (scanned=10).",
         "testResultValue": [
@@ -484,24 +562,25 @@
           }
         ]
       },
-      "_table": "cloudBackupMeta"
+      "_table": "cloudBackupMeta",
+      "_tableFqn": "powercoach_cloud.powercoach_studio.cloud_sot.cloudBackupMeta"
     }
   ],
   "descriptionBadges": {
-    "customer": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`customer`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "workoutPlan": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`workoutPlan`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "measurement": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`measurement`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "customExercise": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`customExercise`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "customerNote": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`customerNote`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "planData": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`planData`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "userProfile": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`userProfile`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "pdfBrand": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`pdfBrand`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "userPreferences": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`userPreferences`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "workoutDraft": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`workoutDraft`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
-    "cloudBackupMeta": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T16:33:50.529857Z` · table=`cloudBackupMeta`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n"
+    "customer": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`customer`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "workoutPlan": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`workoutPlan`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "measurement": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`measurement`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "customExercise": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`customExercise`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "customerNote": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`customerNote`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "planData": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`planData`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "userProfile": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`userProfile`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "pdfBrand": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`pdfBrand`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "userPreferences": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`userPreferences`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "workoutDraft": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`workoutDraft`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n",
+    "cloudBackupMeta": "\n---\n**Dart DQ bridge** · `PASS` · errors=0 warnings=0 · scanned@`2026-10-04T17:53:32.909745Z` · table=`cloudBackupMeta`\n\n_Source: in-repo `DataQualityScanner` / Salute dati. OM is viewer only._\n"
   },
   "reportSummary": {
-    "generatedAt": "2026-10-04T16:33:50.529857Z",
+    "generatedAt": "2026-10-04T17:53:32.909745Z",
     "scannedEntityCount": 10,
     "findingCount": 0,
     "errorCount": 0,

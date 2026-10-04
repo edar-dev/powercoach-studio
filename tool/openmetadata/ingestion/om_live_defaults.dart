@@ -12,6 +12,15 @@ const String kOmDefaultPassword = 'admin';
 String encodeOmLoginPassword(String plaintextPassword) =>
     base64Encode(utf8.encode(plaintextPassword));
 
+/// Encode a JSON HTTP body as UTF-8 bytes.
+///
+/// Prefer this over [HttpClientRequest.write], which uses Latin-1 and throws
+/// on Unicode (lineage descriptions with `→`, DQ badges with `·` / `—`).
+List<int> encodeOmUtf8JsonBody(Object body) {
+  final json = body is String ? body : jsonEncode(body);
+  return utf8.encode(json);
+}
+
 /// Build a PUT `/api/v1/lineage` body. [fromId] / [toId] must be entity UUIDs
 /// (FQNs are rejected by OM 1.5.x `EntityReference.id`).
 Map<String, dynamic> buildOmLineagePutBody({
