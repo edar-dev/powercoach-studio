@@ -392,6 +392,42 @@ void main() {
     expect(counts.exerciseLibrary, 0);
   });
 
+  test('previewCountsFromBackup counts session executions in Map planData', () {
+    final jsonText = jsonEncode(
+      minimalEnvelope(
+        entities: <Map<String, dynamic>>[
+          <String, dynamic>{
+            'id': 'p-map',
+            'type': 'workoutPlan',
+            'scopeId': 'c1',
+            'payload': <String, dynamic>{
+              'id': 'p-map',
+              'customerId': 'c1',
+              'planData': <String, dynamic>{
+                'name': 'Plan',
+                'mobilitySections': <dynamic>[],
+                'mobilityItems': <dynamic>[],
+                'weeks': <dynamic>[],
+                'sessionExecutions': {
+                  '0-0': {'sessionKey': '0-0', 'weekIndex': 0, 'dayIndex': 0},
+                  '0-1': {'sessionKey': '0-1', 'weekIndex': 0, 'dayIndex': 1},
+                  '1-0': {'sessionKey': '1-0', 'weekIndex': 1, 'dayIndex': 0},
+                },
+              },
+            },
+            'updatedAt': DateTime.utc(2026, 6, 1).toIso8601String(),
+            'deleted': false,
+            'localOnly': false,
+          },
+        ],
+      ),
+    );
+    final parsed = parseUserBackupJson(jsonText, uid);
+    final counts = previewCountsFromBackup(parsed);
+    expect(counts.plans, 1);
+    expect(counts.executions, 3);
+  });
+
   test('parse keeps optional export metadata', () {
     final jsonText = jsonEncode({
       ...minimalEnvelope(),

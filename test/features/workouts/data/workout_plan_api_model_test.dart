@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 
-WorkoutPlanApiModel _model(String planData) {
+WorkoutPlanApiModel _model(dynamic planData) {
   return WorkoutPlanApiModel.fromJson({
     'id': 'p1',
     'customerId': 'c1',
@@ -69,20 +69,31 @@ void main() {
       expect(() => plan.routine, throwsA(isA<FormatException>()));
     });
 
-    test('fromJson keeps planData as String', () {
+    test('fromJson keeps String planData as String', () {
       const raw = '{"weeks":[]}';
-      final plan = WorkoutPlanApiModel.fromJson({
-        'id': 'p1',
-        'customerId': 'c1',
-        'userId': 'u1',
-        'name': 'Plan',
-        'planData': raw,
-        'createdAt': '2026-01-01T00:00:00.000',
-        'updatedAt': '2026-01-02T00:00:00.000',
-      });
+      final plan = _model(raw);
 
       expect(plan.planData, raw);
       expect(plan.planData, isA<String>());
+    });
+
+    test('fromJson normalizes Map planData into String', () {
+      final plan = _model(<String, dynamic>{
+        'weeks': <dynamic>[],
+        'name': 'MapPlan',
+        'archivedAt': '2026-05-01T00:00:00.000',
+      });
+
+      expect(plan.planData, isA<String>());
+      final decoded = jsonDecode(plan.planData) as Map<String, dynamic>;
+      expect(decoded['name'], 'MapPlan');
+      expect(plan.routine.name, 'MapPlan');
+      expect(plan.archivedAt, DateTime(2026, 5, 1));
+    });
+
+    test('fromJson maps null/unsupported planData to empty object string', () {
+      expect(_model(null).planData, '{}');
+      expect(_model(42).planData, '{}');
     });
   });
 }

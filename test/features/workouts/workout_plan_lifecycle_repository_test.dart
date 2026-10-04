@@ -1,16 +1,15 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
+import 'package:powercoach_studio/core/sync/offline_models.dart';
+import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_plan_list_helpers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../support/fake_path_provider_platform.dart';
-import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -60,7 +59,8 @@ void main() {
     });
 
     test('update with routine preserves archivedAt and completedAt', () async {
-      final repo = WorkoutPlanRepository(offline: OfflineRepositorySupport());
+      final offline = OfflineRepositorySupport();
+      final repo = WorkoutPlanRepository(offline: offline);
       final created = await repo.create(
         customerId: 'customer-1',
         name: 'Plan C',
@@ -85,9 +85,93 @@ void main() {
       expect(updated.routine.currentWeek, 3);
       expect(isArchivedPlan(updated), isTrue);
       expect(completedAtForPlan(updated), isNotNull);
-      final map = jsonDecode(updated.planData) as Map<String, dynamic>;
-      expect(map.containsKey('archivedAt'), isTrue);
-      expect(map.containsKey('completedAt'), isTrue);
+      expect(updated.planDataMap.containsKey('archivedAt'), isTrue);
+      expect(updated.planDataMap.containsKey('completedAt'), isTrue);
+
+      final stored = await offline.readLocalEntityById(
+        OfflineEntityType.workoutPlan,
+        created.id,
+      );
+      expect(stored?['planData'], isA<Map>());
+      expect(
+        (stored!['planData'] as Map)['archivedAt'],
+        isNotNull,
+      );
+    });
+
+    test('create stores planData as Map in payload', () async {
+      final offline = OfflineRepositorySupport();
+      final repo = WorkoutPlanRepository(offline: offline);
+      final created = await repo.create(
+        customerId: 'customer-1',
+        name: 'Map Plan',
+        routine: WorkoutRoutine.empty().copyWith(name: 'Map Plan'),
+      );
+
+      final stored = await offline.readLocalEntityById(
+        OfflineEntityType.workoutPlan,
+        created.id,
+      );
+      expect(stored?['planData'], isA<Map>());
+      expect((stored!['planData'] as Map)['name'], 'Map Plan');
+
+      final reloaded = await repo.getById(created.id);
+      expect(reloaded, isNotNull);
+      expect(reloaded!.routine.name, 'Map Plan');
+      expect(reloaded.planData, isA<String>());
+    });
+
+    test('legacy String planData is readable and rewrite to Map on update',
+        () async {
+      final offline = OfflineRepositorySupport();
+      final repo = WorkoutPlanRepository(offline: offline);
+      final now = DateTime.now().toIso8601String();
+      const planId = 'legacy-string-plan';
+      await offline.saveLocalEntity(
+        type: OfflineEntityType.workoutPlan,
+        id: planId,
+        scopeId: 'customer-1',
+        payload: <String, dynamic>{
+          'id': planId,
+          'customerId': 'customer-1',
+          'userId': '',
+          'name': 'Legacy',
+          'planData':
+              '{"name":"Legacy","weeks":[],"archivedAt":"2026-01-15T00:00:00.000"}',
+          'useCustomPdfHeader': false,
+          'initialWeekNumber': 1,
+          'createdAt': now,
+          'updatedAt': now,
+          'rowVersion': 1,
+        },
+        localOnly: false,
+      );
+
+      final loaded = await repo.getById(planId);
+      expect(loaded, isNotNull);
+      expect(loaded!.routine.name, 'Legacy');
+      expect(isArchivedPlan(loaded), isTrue);
+
+      final before = await offline.readLocalEntityById(
+        OfflineEntityType.workoutPlan,
+        planId,
+      );
+      expect(before?['planData'], isA<String>());
+
+      final updated = await repo.update(
+        planId: planId,
+        routine: WorkoutRoutine.empty().copyWith(name: 'Rewritten'),
+      );
+      expect(updated.routine.name, 'Rewritten');
+      expect(isArchivedPlan(updated), isTrue);
+
+      final after = await offline.readLocalEntityById(
+        OfflineEntityType.workoutPlan,
+        planId,
+      );
+      expect(after?['planData'], isA<Map>());
+      expect((after!['planData'] as Map)['name'], 'Rewritten');
+      expect((after['planData'] as Map)['archivedAt'], isNotNull);
     });
   });
 }

@@ -68,10 +68,21 @@ void main() {
   });
 
   group('cloneWorkoutPlanDataJson', () {
-    test('removes archivedAt and completedAt', () {
+    test('removes archivedAt and completedAt from String', () {
       const raw =
           '{"weeks":[],"archivedAt":"2024-01-01","completedAt":"2024-02-01"}';
       final cloned = cloneWorkoutPlanDataJson(raw);
+      expect(cloned.contains('archivedAt'), isFalse);
+      expect(cloned.contains('completedAt'), isFalse);
+      expect(cloned.contains('"weeks"'), isTrue);
+    });
+
+    test('removes lifecycle markers from Map source', () {
+      final cloned = cloneWorkoutPlanDataJson(<String, dynamic>{
+        'weeks': <dynamic>[],
+        'archivedAt': '2024-01-01',
+        'completedAt': '2024-02-01',
+      });
       expect(cloned.contains('archivedAt'), isFalse);
       expect(cloned.contains('completedAt'), isFalse);
       expect(cloned.contains('"weeks"'), isTrue);

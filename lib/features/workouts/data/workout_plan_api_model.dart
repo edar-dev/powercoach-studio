@@ -4,9 +4,10 @@ import 'workout_routine_model.dart';
 
 /// Local workout plan DTO (Drift / repository layer).
 ///
-/// [planData] remains a JSON string in the entity payload. Typed accessors
-/// expose [WorkoutRoutine] plus lifecycle fields ([archivedAt] / [completedAt])
-/// that live in the same blob outside the routine's own structural fields.
+/// Writers persist [planData] as a nested JSON Map in entity payloads.
+/// [fromJson] normalizes String|Map into the in-memory [planData] String so
+/// typed accessors keep working. Lifecycle fields ([archivedAt] /
+/// [completedAt]) live in the same blob outside the routine's structural fields.
 class WorkoutPlanApiModel {
   const WorkoutPlanApiModel({
     required this.id,
@@ -81,7 +82,7 @@ class WorkoutPlanApiModel {
       name: json['name'] as String? ?? '',
       theme: json['theme'] as String?,
       initialWeekNumber: json['initialWeekNumber'] as int? ?? 1,
-      planData: json['planData'] as String? ?? '{}',
+      planData: _normalizePlanDataField(json['planData']),
       pdfHeader: json['pdfHeader'] as String?,
       useCustomPdfHeader: json['useCustomPdfHeader'] as bool? ?? false,
       phase: json['phase'] as String?,
@@ -91,6 +92,18 @@ class WorkoutPlanApiModel {
       updatedAt: _parseDateTime(json['updatedAt']),
       rowVersion: (json['rowVersion'] as num?)?.toInt() ?? 1,
     );
+  }
+
+  /// Normalizes payload planData (String|Map) into the in-memory String field.
+  ///
+  /// Maps are jsonEncoded; null / unsupported shapes become `'{}'`.
+  static String _normalizePlanDataField(dynamic raw) {
+    if (raw == null) return '{}';
+    if (raw is String) return raw;
+    if (raw is Map) {
+      return jsonEncode(Map<String, dynamic>.from(raw));
+    }
+    return '{}';
   }
 
   static DateTime _parseDateTime(dynamic v) {

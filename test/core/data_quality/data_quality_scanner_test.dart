@@ -387,6 +387,40 @@ void main() {
         isTrue,
       );
     });
+
+    test('empty weeks with Map planData', () {
+      final report = scanner.scanEntities([
+        entity(
+          id: 'cust-1',
+          type: OfflineEntityType.customer,
+        ),
+        entity(
+          id: 'plan-empty-map',
+          type: OfflineEntityType.workoutPlan,
+          scopeId: 'cust-1',
+          payload: <String, dynamic>{
+            'id': 'plan-empty-map',
+            'customerId': 'cust-1',
+            'planData': <String, dynamic>{
+              'name': 'EmptyMap',
+              'mobilitySections': <dynamic>[],
+              'mobilityItems': <dynamic>[],
+              'weeks': <dynamic>[],
+            },
+          },
+        ),
+      ]);
+
+      expect(
+        report.findings.any(
+          (f) =>
+              f.ruleId == DataQualityRuleIds.planDataEmptyWeeks &&
+              f.severity == DataQualitySeverity.warning &&
+              f.entityId == 'plan-empty-map',
+        ),
+        isTrue,
+      );
+    });
   });
 
   group('backup JSON', () {

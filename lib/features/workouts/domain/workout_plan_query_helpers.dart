@@ -4,6 +4,7 @@ import '../../../core/constants/workout_plan_template_scope.dart';
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_routine_model.dart';
 import 'session_execution.dart';
+import 'workout_routine_plan_encoder.dart';
 
 DateTime dateOnly(DateTime value) =>
     DateTime(value.year, value.month, value.day);
@@ -39,19 +40,17 @@ List<WorkoutPlanApiModel> mapAndSortWorkoutPlans(
   return models;
 }
 
-/// Deep-clone [planData] JSON string; throws [FormatException] if not valid JSON.
-String cloneWorkoutPlanDataJson(String planData) {
-  try {
-    final decoded = jsonDecode(planData);
-    if (decoded is Map<String, dynamic>) {
-      decoded.remove('archivedAt');
-      decoded.remove('completedAt');
-      return jsonEncode(decoded);
-    }
-    return jsonEncode(decoded);
-  } catch (_) {
+/// Deep-clone [planData] (JSON [String] or [Map]); strips lifecycle markers.
+///
+/// Throws [FormatException] if [planData] cannot be normalized to an object.
+String cloneWorkoutPlanDataJson(dynamic planData) {
+  final decoded = normalizePlanDataToMap(planData);
+  if (decoded == null) {
     throw const FormatException('invalid_workout_plan_data');
   }
+  decoded.remove('archivedAt');
+  decoded.remove('completedAt');
+  return jsonEncode(decoded);
 }
 
 /// Parses a planData JSON string into [WorkoutRoutine].
