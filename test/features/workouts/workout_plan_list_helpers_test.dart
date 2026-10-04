@@ -17,20 +17,20 @@ WorkoutPlanApiModel _plan({
     'mobilitySections': [],
     'mobilityItems': [],
     'weeks': [],
+  };
+  final now = DateTime(2026, 6, 15);
+  return WorkoutPlanApiModel.fromJson({
+    'id': id,
+    'customerId': 'c1',
+    'userId': 'u1',
+    'name': name,
+    'planData': jsonEncode(routine),
+    'createdAt': now.toIso8601String(),
+    'updatedAt': (updatedAt ?? now).toIso8601String(),
     'startDate': ?startDate,
     'endDate': ?endDate,
     'archivedAt': ?archivedAt,
-  };
-  final now = DateTime(2026, 6, 15);
-  return WorkoutPlanApiModel(
-    id: id,
-    customerId: 'c1',
-    userId: 'u1',
-    name: name,
-    planData: jsonEncode(routine),
-    createdAt: now,
-    updatedAt: updatedAt ?? now,
-  );
+  });
 }
 
 void main() {
