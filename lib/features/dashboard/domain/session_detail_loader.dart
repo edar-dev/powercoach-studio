@@ -37,7 +37,7 @@ class SessionDetailLoader {
     if (weekIndex < 0 || dayIndex < 0) return null;
     final plan = await _workoutPlanRepository.getById(planId);
     if (plan == null) return null;
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     if (weekIndex >= routine.weeks.length) return null;
     final week = routine.weeks[weekIndex];
     if (dayIndex >= week.days.length) return null;

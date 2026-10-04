@@ -100,7 +100,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           final plan = await _planRepo.getById(event.planId);
           if (!mounted) return;
           if (plan != null) {
-            final routine = planDataToRoutine(plan.planData);
+            final routine = plan.routine;
             if (event.weekIndex < routine.weeks.length &&
                 event.dayIndex <
                     routine.weeks[event.weekIndex].days.length) {

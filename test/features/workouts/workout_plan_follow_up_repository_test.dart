@@ -74,7 +74,7 @@ void main() {
       name: 'Plan A Follow-up',
       newStartDate: DateTime(2026, 3, 3),
     );
-    final followUpRoutine = planDataToRoutine(followUpPlan.planData);
+    final followUpRoutine = followUpPlan.routine;
 
     expect(followUpPlan.id, isNot(sourcePlan.id));
     expect(followUpPlan.customerId, sourcePlan.customerId);

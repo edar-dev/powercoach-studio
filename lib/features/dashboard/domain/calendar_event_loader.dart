@@ -1,5 +1,4 @@
 import '../../workouts/data/workout_plan_api_model.dart';
-import '../../workouts/data/workout_plan_repository.dart';
 import 'plan_calendar_event.dart';
 
 /// Expands workout plans into calendar events for dashboard views.
@@ -20,7 +19,7 @@ class CalendarEventLoader {
 
     for (final plan in plans) {
       try {
-        final routine = planDataToRoutine(plan.planData);
+        final routine = plan.routine;
         final startDate = routine.startDate;
         if (startDate == null || routine.weeks.isEmpty) {
           continue;
@@ -111,7 +110,7 @@ class CalendarEventLoader {
     int limit = 5,
   }) {
     try {
-      final routine = planDataToRoutine(plan.planData);
+      final routine = plan.routine;
       final startDate = routine.startDate;
       if (startDate == null || routine.weeks.isEmpty) {
         return const [];

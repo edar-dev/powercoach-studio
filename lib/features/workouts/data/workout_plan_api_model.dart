@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'workout_routine_model.dart';
+
 /// Local workout plan DTO (Drift / repository layer).
-/// planData is JSON string; decode to WorkoutRoutine via WorkoutRoutine.fromJson(jsonDecode(planData)).
+///
+/// [planData] remains a JSON string in the entity payload. Typed accessors
+/// expose [WorkoutRoutine] plus lifecycle fields ([archivedAt] / [completedAt])
+/// that live in the same blob outside the routine's own structural fields.
 class WorkoutPlanApiModel {
   const WorkoutPlanApiModel({
     required this.id,
@@ -34,6 +41,37 @@ class WorkoutPlanApiModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final int rowVersion;
+
+  /// Decoded [planData] map. Returns `{}` when JSON is invalid or not an object.
+  Map<String, dynamic> get planDataMap {
+    try {
+      final decoded = jsonDecode(planData);
+      if (decoded is Map<String, dynamic>) return decoded;
+      if (decoded is Map) return Map<String, dynamic>.from(decoded);
+      return const <String, dynamic>{};
+    } catch (_) {
+      return const <String, dynamic>{};
+    }
+  }
+
+  /// Parsed routine from [planData]. Throws on invalid JSON (same cast path as
+  /// the string-only `planDataToRoutine` shim).
+  WorkoutRoutine get routine {
+    final map = jsonDecode(planData) as Map<String, dynamic>;
+    return WorkoutRoutine.fromJson(map);
+  }
+
+  DateTime? get archivedAt => _lifecycleDate('archivedAt');
+
+  DateTime? get completedAt => _lifecycleDate('completedAt');
+
+  bool get isArchived => archivedAt != null;
+
+  DateTime? _lifecycleDate(String key) {
+    final raw = planDataMap[key];
+    if (raw == null) return null;
+    return DateTime.tryParse(raw.toString());
+  }
 
   static WorkoutPlanApiModel fromJson(Map<String, dynamic> json) {
     return WorkoutPlanApiModel(

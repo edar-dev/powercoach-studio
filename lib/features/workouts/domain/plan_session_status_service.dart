@@ -33,7 +33,7 @@ class PlanSessionStatusService {
 
     final plan = await _repository.getById(planId);
     if (plan == null) return;
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     final resolvedDate =
         sessionDate ??
         (routine.startDate != null

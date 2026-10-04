@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import '../../dashboard/domain/dashboard_snapshot.dart';
 import '../data/workout_plan_api_model.dart';
-import '../domain/workout_plan_query_helpers.dart';
 
 enum WorkoutPlanSort {
   startDateDesc,
@@ -22,9 +19,9 @@ DateTime _dateOnly(DateTime d) => DateTime(d.year, d.month, d.day);
 
 DateTime startDateForPlan(WorkoutPlanApiModel plan) {
   try {
-    final routine = planDataToRoutine(plan.planData);
-    if (routine.startDate != null) {
-      return _dateOnly(routine.startDate!);
+    final start = plan.routine.startDate;
+    if (start != null) {
+      return _dateOnly(start);
     }
   } catch (_) {}
   return _dateOnly(plan.updatedAt);
@@ -32,37 +29,23 @@ DateTime startDateForPlan(WorkoutPlanApiModel plan) {
 
 DateTime? endDateForPlan(WorkoutPlanApiModel plan) {
   try {
-    final routine = planDataToRoutine(plan.planData);
-    if (routine.endDate != null) {
-      return _dateOnly(routine.endDate!);
+    final end = plan.routine.endDate;
+    if (end != null) {
+      return _dateOnly(end);
     }
   } catch (_) {}
   return null;
 }
 
-DateTime? _lifecycleDateForPlan(WorkoutPlanApiModel plan, String key) {
-  try {
-    final map = jsonDecode(plan.planData) as Map<String, dynamic>;
-    final raw = map[key];
-    if (raw == null) return null;
-    return DateTime.tryParse(raw.toString());
-  } catch (_) {
-    return null;
-  }
-}
+DateTime? archivedAtForPlan(WorkoutPlanApiModel plan) => plan.archivedAt;
 
-DateTime? archivedAtForPlan(WorkoutPlanApiModel plan) =>
-    _lifecycleDateForPlan(plan, 'archivedAt');
+DateTime? completedAtForPlan(WorkoutPlanApiModel plan) => plan.completedAt;
 
-DateTime? completedAtForPlan(WorkoutPlanApiModel plan) =>
-    _lifecycleDateForPlan(plan, 'completedAt');
-
-bool isArchivedPlan(WorkoutPlanApiModel plan) =>
-    archivedAtForPlan(plan) != null;
+bool isArchivedPlan(WorkoutPlanApiModel plan) => plan.isArchived;
 
 bool hasScheduledStart(WorkoutPlanApiModel plan) {
   try {
-    return planDataToRoutine(plan.planData).startDate != null;
+    return plan.routine.startDate != null;
   } catch (_) {
     return false;
   }

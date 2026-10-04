@@ -247,7 +247,7 @@ class WorkoutPlanRepository {
     if (src == null) {
       throw StateError('workout_plan_not_found');
     }
-    final sourceRoutine = planDataToRoutine(src.planData);
+    final sourceRoutine = src.routine;
     final executions = applyExecutedLoads
         ? await listSessionExecutionsForPlan(sourcePlanId)
         : const <SessionExecution>[];
@@ -375,7 +375,7 @@ class WorkoutPlanRepository {
     if (plan == null) {
       throw StateError('workout_plan_not_found');
     }
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     final key = WorkoutRoutine.sessionKey(weekIndex, dayIndex);
     final completion = Map<String, bool>.from(routine.sessionCompletionByKey);
     final skippedByKey = Map<String, bool>.from(routine.sessionSkippedByKey);
@@ -465,7 +465,7 @@ class WorkoutPlanRepository {
   }) async {
     final plan = await getById(planId);
     if (plan == null) return null;
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     return routine.sessionExecutions[sessionKey];
   }
 
@@ -474,7 +474,7 @@ class WorkoutPlanRepository {
   ) async {
     final plan = await getById(planId);
     if (plan == null) return const [];
-    final routine = planDataToRoutine(plan.planData);
+    final routine = plan.routine;
     return sortSessionExecutionsNewestFirst(routine.sessionExecutions.values);
   }
 

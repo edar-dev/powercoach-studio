@@ -10,18 +10,12 @@ DateTime dateOnly(DateTime value) =>
 
 String dateOnlyIso(DateTime value) => dateOnly(value).toIso8601String();
 
-/// Sort key: routine `startDate` from [WorkoutPlanApiModel.planData], else [updatedAt].
+/// Sort key: routine `startDate` from [WorkoutPlanApiModel.routine], else [updatedAt].
 DateTime workoutPlanSortKey(WorkoutPlanApiModel plan) {
   try {
-    final decoded = jsonDecode(plan.planData);
-    if (decoded is Map<String, dynamic>) {
-      final sd = decoded['startDate'];
-      if (sd != null) {
-        final d = DateTime.tryParse(sd.toString());
-        if (d != null) {
-          return dateOnly(d);
-        }
-      }
+    final start = plan.routine.startDate;
+    if (start != null) {
+      return dateOnly(start);
     }
   } catch (_) {}
   return plan.updatedAt;
@@ -60,7 +54,9 @@ String cloneWorkoutPlanDataJson(String planData) {
   }
 }
 
-/// Parses [WorkoutPlanApiModel.planData] into [WorkoutRoutine].
+/// Parses a planData JSON string into [WorkoutRoutine].
+///
+/// Prefer [WorkoutPlanApiModel.routine] when a model is available.
 WorkoutRoutine planDataToRoutine(String planDataJson) {
   final map = jsonDecode(planDataJson) as Map<String, dynamic>;
   return WorkoutRoutine.fromJson(map);
