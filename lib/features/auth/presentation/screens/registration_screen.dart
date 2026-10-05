@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/analytics/product_analytics.dart';
 import 'package:powercoach_studio/core/auth/auth_redirect_urls.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
@@ -128,6 +129,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       if (response.session != null) {
         await _persistDisplayNameIfSession(response.session);
+        ProductAnalytics.signupCompleted();
         await EntitlementRepository.instance.refresh();
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(

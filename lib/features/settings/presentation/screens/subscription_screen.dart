@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../../core/billing/billing_checkout.dart';
 import '../../../../core/billing/entitlement_models.dart';
@@ -33,6 +34,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _isLoading = true;
   bool _busy = false;
   bool _yearly = false;
+  bool _subscribedEventSent = false;
   Entitlement? _entitlement;
   int _activeCustomerCount = 0;
   final PlanUsage _planUsage = PlanUsage();
@@ -57,6 +59,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     if (checkout == 'success') {
+      if (!_subscribedEventSent) {
+        _subscribedEventSent = true;
+        ProductAnalytics.subscribed();
+      }
       unawaited(_load());
       messenger.showSnackBar(
         SnackBar(

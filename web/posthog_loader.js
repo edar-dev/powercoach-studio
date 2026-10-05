@@ -2,9 +2,14 @@
  * PostHog web loader for PowerCoach Studio.
  *
  * No API keys live here. Dart calls window.__powercoachPostHog.init(apiKey, host)
- * after loadAppEnv() when POSTHOG_API_KEY is set.
+ * after loadAppEnv() when POSTHOG_API_KEY is set AND the user has granted consent.
  *
  * Stub matches the official posthog-js snippet so capture/identify queue until array.js loads.
+ *
+ * Session replay: enabled after consent, with strong text/input masking.
+ * Residual: Flutter CanvasKit paints UI to <canvas>; replay/heatmaps may not
+ * reconstruct widget-level DOM the way a typical HTML app does. Prefer product
+ * events + pageviews for reliable funnels; treat canvas replay as best-effort.
  */
 (function () {
   'use strict';
@@ -73,6 +78,24 @@
 
   var DEFAULT_HOST = 'https://eu.i.posthog.com';
 
+  function parseProps(properties) {
+    if (properties == null) {
+      return {};
+    }
+    if (typeof properties === 'string') {
+      try {
+        var parsed = JSON.parse(properties);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+    if (typeof properties === 'object') {
+      return properties;
+    }
+    return {};
+  }
+
   window.__powercoachPostHog = {
     initialized: false,
     init: function (apiKey, host) {
@@ -92,10 +115,9 @@
         // Manual $pageview from go_router (Flutter SPA).
         capture_pageview: false,
         capture_pageleave: true,
-        // Spike scope: heatmaps + pageviews. Do not start session replay unless
-        // product explicitly opts in later (larger compliance surface).
-        disable_session_recording: true,
-        // Privacy-friendly defaults (cookie/consent banner is a residual follow-up).
+        // Session replay on after consent-gated Dart init (EU cookie banner).
+        disable_session_recording: false,
+        // Strong masking: text + inputs + attributes.
         mask_all_text: true,
         mask_all_element_attributes: true,
         session_recording: {
@@ -107,10 +129,10 @@
       return true;
     },
     capture: function (eventName, properties) {
-      if (!this.initialized || !window.posthog) {
+      if (!this.initialized || !window.posthog || !eventName) {
         return;
       }
-      window.posthog.capture(eventName, properties || {});
+      window.posthog.capture(String(eventName), parseProps(properties));
     },
     capturePageview: function (path) {
       if (!this.initialized || !window.posthog) {
@@ -118,7 +140,8 @@
       }
       var safePath =
         typeof path === 'string' && path.length > 0 ? path : window.location.pathname;
-      var href = window.location.origin + safePath + (window.location.search || '');
+      // Never attach location.search — query strings may contain email / names.
+      var href = window.location.origin + safePath;
       window.posthog.capture('$pageview', {
         $current_url: href,
         path: safePath,
@@ -135,6 +158,28 @@
         return;
       }
       window.posthog.reset();
+    },
+    optInCapturing: function () {
+      if (!this.initialized || !window.posthog) {
+        return;
+      }
+      if (typeof window.posthog.opt_in_capturing === 'function') {
+        window.posthog.opt_in_capturing();
+      }
+      if (typeof window.posthog.startSessionRecording === 'function') {
+        window.posthog.startSessionRecording();
+      }
+    },
+    optOutCapturing: function () {
+      if (!window.posthog) {
+        return;
+      }
+      if (typeof window.posthog.stopSessionRecording === 'function') {
+        window.posthog.stopSessionRecording();
+      }
+      if (typeof window.posthog.opt_out_capturing === 'function') {
+        window.posthog.opt_out_capturing();
+      }
     },
   };
 })();

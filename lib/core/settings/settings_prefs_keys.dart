@@ -1,7 +1,11 @@
-/// SharedPreferences keys used across settings and backup export/import.
+  /// SharedPreferences keys used across settings and backup export/import.
 abstract final class SettingsPrefsKeys {
   static const notificationsEnabled = 'settings_notifications_enabled';
   static const appLocaleCode = 'app_locale_code';
+
+  /// Web analytics + session replay consent (`granted` / `denied`).
+  /// Stored via SharedPreferences (maps to localStorage on Flutter web).
+  static const analyticsConsent = 'analytics_consent_v1';
 
 
   /// JSON list of recently selected custom exercise IDs.

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/analytics/analytics_consent_banner.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/routing/app_routes.dart';
@@ -54,6 +55,11 @@ class PowerCoachStudioApp extends StatelessWidget {
             return const Locale('it');
           },
           routerConfig: appGoRouter,
+          builder: (context, child) {
+            return AnalyticsConsentBannerHost(
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
         );
       },
     );

@@ -2139,5 +2139,10 @@
   "customerUseCustomPdfHeader": "Custom PDF header",
   "customerUseCustomPdfHeaderSubtitle": "Overrides the studio name for this client only",
   "customerPdfHeaderLabel": "PDF header text",
-  "customerPdfHeaderHint": "e.g. Mario's plan — Alpha Studio"
+  "customerPdfHeaderHint": "e.g. Mario's plan — Alpha Studio",
+  "analyticsConsentTitle": "Analytics and session replay",
+  "analyticsConsentBody": "We use PostHog (EU) to understand how the web app is used and to improve it. Text and form inputs are masked. You can decline; the app still works.",
+  "analyticsConsentAccept": "Accept",
+  "analyticsConsentDecline": "Decline",
+  "analyticsConsentPrivacyLink": "Privacy policy"
 }

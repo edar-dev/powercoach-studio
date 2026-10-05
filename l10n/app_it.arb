@@ -2098,5 +2098,10 @@
   "customerUseCustomPdfHeader": "Header PDF personalizzato",
   "customerUseCustomPdfHeaderSubtitle": "Sostituisce il nome studio solo per questo cliente",
   "customerPdfHeaderLabel": "Testo header PDF",
-  "customerPdfHeaderHint": "es. Scheda di Mario — Studio Alpha"
+  "customerPdfHeaderHint": "es. Scheda di Mario — Studio Alpha",
+  "analyticsConsentTitle": "Analytics e session replay",
+  "analyticsConsentBody": "Usiamo PostHog (UE) per capire come viene usata l'app web e migliorarla. Testo e campi modulo sono mascherati. Puoi rifiutare; l'app continua a funzionare.",
+  "analyticsConsentAccept": "Accetta",
+  "analyticsConsentDecline": "Rifiuta",
+  "analyticsConsentPrivacyLink": "Informativa privacy"
 }

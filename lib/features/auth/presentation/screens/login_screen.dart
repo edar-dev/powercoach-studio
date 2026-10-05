@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/analytics/product_analytics.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
@@ -72,6 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text,
       );
 
+      ProductAnalytics.loginCompleted();
       await EntitlementRepository.instance.refresh();
 
       if (!mounted) return;

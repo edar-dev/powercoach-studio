@@ -4423,4 +4423,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customerPdfHeaderHint => 'e.g. Mario\'s plan — Alpha Studio';
+
+  @override
+  String get analyticsConsentTitle => 'Analytics and session replay';
+
+  @override
+  String get analyticsConsentBody =>
+      'We use PostHog (EU) to understand how the web app is used and to improve it. Text and form inputs are masked. You can decline; the app still works.';
+
+  @override
+  String get analyticsConsentAccept => 'Accept';
+
+  @override
+  String get analyticsConsentDecline => 'Decline';
+
+  @override
+  String get analyticsConsentPrivacyLink => 'Privacy policy';
 }

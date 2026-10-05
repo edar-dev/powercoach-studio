@@ -31,7 +31,7 @@ When `SENTRY_DSN` is set, release builds send errors and navigation traces to [S
 
 ## Product analytics (PostHog, web)
 
-When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.com) (posthog-js) for pageviews and heatmap-capable click capture. Leave empty to disable. Mobile builds are unaffected. See the spike plan in the project docs for CanvasKit go/no-go validation.
+When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.com) (posthog-js, EU host by default) for pageviews, product events, and session replay — **only after the user accepts the consent banner**. Leave the key empty to disable. Mobile builds are unaffected. Text/inputs are masked; Flutter CanvasKit limits DOM-level replay fidelity. Privacy disclosure: `docs/privacy-policy/`.
 
 ## Local data
 

@@ -1,6 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/analytics/product_analytics.dart';
 import '../../../core/export/export_artifact.dart';
 import '../../../core/export/export_filename.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
@@ -127,6 +128,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
     generatedOn: generatedAt,
     fallbackDocumentSlug: 'workout_plan',
   );
+  ProductAnalytics.pdfExported(source: 'workout_plan');
   return ExportArtifact(
     bytes: bytes,
     filename: filename,
