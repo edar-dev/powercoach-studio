@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/analytics/product_analytics.dart';
 import '../../../core/constants/workout_plan_template_scope.dart';
 import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
@@ -146,6 +147,7 @@ class WorkoutPlanRepository {
       payload: localPayload,
       localOnly: false,
     );
+    ProductAnalytics.workoutPlanCreated();
     return WorkoutPlanApiModel.fromJson(localPayload);
   }
 
@@ -211,6 +213,7 @@ class WorkoutPlanRepository {
       payload: merged,
       localOnly: false,
     );
+    ProductAnalytics.workoutPlanSaved();
     return WorkoutPlanApiModel.fromJson(merged);
   }
 

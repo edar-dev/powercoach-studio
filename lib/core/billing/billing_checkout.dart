@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:powercoach_studio/core/analytics/product_analytics.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/platform/open_external_url.dart';
 import 'package:powercoach_studio/core/routing/app_paths.dart';
@@ -37,6 +38,9 @@ abstract final class BillingCheckout {
     });
 
     final url = _readUrl(response);
+    ProductAnalytics.subscriptionCheckoutStarted(
+      billingInterval: interval.name,
+    );
     openExternalUrl(url);
     return url;
   }

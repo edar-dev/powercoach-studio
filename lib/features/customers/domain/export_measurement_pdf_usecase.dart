@@ -1,6 +1,7 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
+import '../../../core/analytics/product_analytics.dart';
 import '../../../core/export/export_artifact.dart';
 import '../../../core/export/export_filename.dart';
 import '../../../core/pdf/pdf_coach_header.dart';
@@ -110,6 +111,7 @@ Future<ExportArtifact> exportMeasurementsToPdf(
     generatedOn: generatedAt,
     fallbackDocumentSlug: 'measurements',
   );
+  ProductAnalytics.pdfExported(source: 'measurements');
   return ExportArtifact(
     bytes: bytes,
     filename: filename,

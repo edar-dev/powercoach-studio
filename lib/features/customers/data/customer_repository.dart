@@ -1,3 +1,4 @@
+import '../../../core/analytics/product_analytics.dart';
 import '../../../core/remote/coach_entities_remote.dart';
 import '../../../core/sync/offline_models.dart';
 import '../../../core/sync/offline_repository_support.dart';
@@ -54,6 +55,7 @@ class CustomerRepository {
       payload: _toJson(local),
       localOnly: false,
     );
+    ProductAnalytics.customerCreated();
     return local;
   }
 
