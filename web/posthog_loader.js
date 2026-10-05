@@ -109,8 +109,11 @@
         host && typeof host === 'string' && host.trim()
           ? host.trim()
           : DEFAULT_HOST;
+      // api_host: absolute EU ingest OR relative first-party proxy (e.g. '/pcs-ph').
+      // ui_host: always the PostHog EU app — never the proxy path (toolbar / recordings).
       window.posthog.init(apiKey, {
         api_host: apiHost,
+        ui_host: 'https://eu.posthog.com',
         person_profiles: 'identified_only',
         // Manual $pageview from go_router (Flutter SPA).
         capture_pageview: false,

@@ -13,7 +13,17 @@ import 'posthog_web.dart';
 ///
 /// Chosen because the product’s primary locale/market is Italy; override with
 /// [posthogHostEnvKey] when the PostHog project is US-hosted.
+///
+/// Local / non-Vercel web should keep this absolute URL. Vercel production web
+/// uses the first-party reverse proxy path [posthogFirstPartyProxyPath] instead
+/// (see `vercel.json` / `scripts/package-vercel-prebuilt.sh`).
 const posthogDefaultHost = 'https://eu.i.posthog.com';
+
+/// Same-origin PostHog reverse-proxy path on Vercel (EU ingest + assets).
+const posthogFirstPartyProxyPath = '/pcs-ph';
+
+/// PostHog EU app host for toolbar / recording UI links (never the proxy path).
+const posthogUiHost = 'https://eu.posthog.com';
 
 const posthogApiKeyEnvKey = 'POSTHOG_API_KEY';
 const posthogHostEnvKey = 'POSTHOG_HOST';
@@ -51,6 +61,10 @@ class PostHogBootstrap {
   }
 
   /// Resolved ingest host (env or [posthogDefaultHost]).
+  ///
+  /// Accepts absolute PostHog cloud hosts (`https://eu.i.posthog.com`) or a
+  /// relative first-party proxy path ([posthogFirstPartyProxyPath]) for Vercel
+  /// web production. Passed through to `posthog-js` as `api_host`.
   static String get resolvedHost {
     final host = dotenv.env[posthogHostEnvKey]?.trim();
     if (host == null || host.isEmpty) return posthogDefaultHost;

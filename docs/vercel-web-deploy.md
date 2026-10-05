@@ -14,7 +14,7 @@
 | `SENTRY_DSN` | No | Optional error monitoring |
 | `SENTRY_ENVIRONMENT` | No | e.g. `production` |
 | `POSTHOG_API_KEY` | No | Optional web product analytics (empty = off) |
-| `POSTHOG_HOST` | No | Default `https://eu.i.posthog.com` |
+| `POSTHOG_HOST` | No | Local/default: `https://eu.i.posthog.com`. **Vercel production web:** `/pcs-ph` (first-party reverse proxy; baked by CI when secret unset) |
 | `FLUTTER_VERSION` | No | Defaults to `3.35.6` in `scripts/vercel-build.sh` |
 
 ## Supabase auth
@@ -31,7 +31,10 @@ Vercel uses `vercel.json`:
 - **Install command:** `bash scripts/vercel-install.sh` — Flutter SDK (`.flutter_sdk/`), `pub get`
 - **Build command:** `bash scripts/vercel-build.sh` — Drift web assets, `.env`, `flutter build web`
 - **Output:** `build/web`
-- SPA rewrites route all paths to `index.html`
+- SPA rewrites route unmatched paths to `index.html`
+- **PostHog reverse proxy** (before SPA): `/pcs-ph/static/*` and `/pcs-ph/array/*` → `eu-assets.i.posthog.com`; `/pcs-ph/*` → `eu.i.posthog.com`
+
+Production CI uses `vercel deploy --prebuilt`, so the same PostHog routes are written into `.vercel/output/config.json` by `scripts/package-vercel-prebuilt.sh` (do not rely on `vercel.json` alone for prod).
 
 ### Build speed
 
@@ -69,7 +72,7 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 | `SENTRY_DSN` | Optional |
 | `SENTRY_ENVIRONMENT` | e.g. `production` |
 | `POSTHOG_API_KEY` | Optional (web analytics) |
-| `POSTHOG_HOST` | Optional (default EU) |
+| `POSTHOG_HOST` | Optional; default `/pcs-ph` (first-party proxy). Set to absolute EU host only for non-proxy debugging. If an old secret still has `https://eu.i.posthog.com`, update it to `/pcs-ph` or delete the secret so the workflow default applies. |
 | `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
 | `VERCEL_PROJECT_ID` | Project ID from `.vercel/project.json` |
 
