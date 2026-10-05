@@ -140,7 +140,8 @@
       }
       var safePath =
         typeof path === 'string' && path.length > 0 ? path : window.location.pathname;
-      var href = window.location.origin + safePath + (window.location.search || '');
+      // Never attach location.search — query strings may contain email / names.
+      var href = window.location.origin + safePath;
       window.posthog.capture('$pageview', {
         $current_url: href,
         path: safePath,

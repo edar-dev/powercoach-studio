@@ -181,7 +181,7 @@ class PostHogBootstrap {
       if (!isEnabled) return;
       try {
         final matched = router.state.matchedLocation.trim();
-        final path = matched.isEmpty ? '/' : matched;
+        final path = matched.isEmpty ? '/' : _sanitizePagePath(matched);
         if (path == _lastPath) return;
         _lastPath = path;
         capturePosthogWebPageview(path);
@@ -198,6 +198,24 @@ class PostHogBootstrap {
     final id = userId?.trim();
     if (id == null || id.isEmpty) return;
     identifyPosthogWeb(id);
+  }
+
+  /// Redacts entity ids from router paths before `$pageview` (no client UUIDs).
+  static String _sanitizePagePath(String path) {
+    var result = path;
+    // Standard UUIDs.
+    result = result.replaceAll(
+      RegExp(
+        r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}',
+      ),
+      ':id',
+    );
+    // Offline temp ids (e.g. customer_…, workout_…).
+    result = result.replaceAllMapped(
+      RegExp(r'/(customer|workout|measurement|note)_[A-Za-z0-9]+'),
+      (m) => '/:id',
+    );
+    return result.isEmpty ? '/' : result;
   }
 
   /// Test-only: reset one-shot init / auth binding flags.

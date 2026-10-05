@@ -7949,6 +7949,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'e.g. Mario\'s plan — Alpha Studio'**
   String get customerPdfHeaderHint;
+
+  /// No description provided for @analyticsConsentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analytics and session replay'**
+  String get analyticsConsentTitle;
+
+  /// No description provided for @analyticsConsentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We use PostHog (EU) to understand how the web app is used and to improve it. Text and form inputs are masked. You can decline; the app still works.'**
+  String get analyticsConsentBody;
+
+  /// No description provided for @analyticsConsentAccept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get analyticsConsentAccept;
+
+  /// No description provided for @analyticsConsentDecline.
+  ///
+  /// In en, this message translates to:
+  /// **'Decline'**
+  String get analyticsConsentDecline;
+
+  /// No description provided for @analyticsConsentPrivacyLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy policy'**
+  String get analyticsConsentPrivacyLink;
 }
 
 class _AppLocalizationsDelegate

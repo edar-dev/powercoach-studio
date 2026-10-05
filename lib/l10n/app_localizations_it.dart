@@ -4462,4 +4462,20 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get customerPdfHeaderHint => 'es. Scheda di Mario — Studio Alpha';
+
+  @override
+  String get analyticsConsentTitle => 'Analytics e session replay';
+
+  @override
+  String get analyticsConsentBody =>
+      'Usiamo PostHog (UE) per capire come viene usata l\'app web e migliorarla. Testo e campi modulo sono mascherati. Puoi rifiutare; l\'app continua a funzionare.';
+
+  @override
+  String get analyticsConsentAccept => 'Accetta';
+
+  @override
+  String get analyticsConsentDecline => 'Rifiuta';
+
+  @override
+  String get analyticsConsentPrivacyLink => 'Informativa privacy';
 }

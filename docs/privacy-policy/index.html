@@ -53,11 +53,11 @@
     <main class="wrap">
       <article class="card">
         <h1>Privacy Policy - PowerCoach Studio</h1>
-        <p class="meta">Ultimo aggiornamento: 2026-05-04</p>
+        <p class="meta">Ultimo aggiornamento: 2026-10-05</p>
 
         <p>
           Questa informativa descrive come PowerCoach Studio raccoglie, usa e protegge i dati personali degli utenti
-          dell'applicazione mobile.
+          dell'applicazione (mobile e web).
         </p>
 
         <h2>1. Titolare del trattamento</h2>
@@ -97,12 +97,40 @@
         <ul>
           <li><strong>Supabase</strong> (autenticazione e dati backend).</li>
           <li><strong>Sentry</strong> (monitoraggio errori e performance, se configurato).</li>
-          <li><strong>PostHog</strong> (analytics di prodotto e heatmap sulla versione web, se configurato; dati tecnici di navigazione e interazione, con mascheramento testo/input lato client dove supportato).</li>
+          <li>
+            <strong>PostHog</strong> (solo versione <strong>web</strong>, se configurato e dopo consenso):
+            analytics di prodotto (pageview, eventi funzionali) e <strong>session replay</strong>,
+            con hosting UE (<code>eu.i.posthog.com</code>). Identificazione tramite id utente Supabase
+            (non email). Testo e input sono mascherati lato client dove supportato; su Flutter web
+            (CanvasKit) la ricostruzione UI nel replay puo essere limitata.
+          </li>
           <li><strong>Google Play</strong> (distribuzione app e servizi di piattaforma).</li>
+          <li><strong>Stripe</strong> (pagamenti abbonamento, dove disponibile sul web).</li>
         </ul>
         <p>
           I fornitori terzi trattano dati in qualita di responsabili/sub-responsabili secondo le rispettive policy.
-          Per PostHog su web puo essere richiesto un banner di consenso cookie/analytics (follow-up di prodotto; non sostituito da questa informativa).
+          Per PostHog: vedi
+          <a href="https://posthog.com/privacy" rel="noopener noreferrer">posthog.com/privacy</a>
+          e le impostazioni di retention del progetto PostHog.
+        </p>
+
+        <h2>5.1 Analytics web e session replay (PostHog)</h2>
+        <p>
+          Sulla versione web, se la chiave analytics e attiva, mostriamo un banner di consenso.
+          Fino all'accettazione non inizializziamo PostHog (nessuna cattura eventi / replay).
+          Se rifiuti, non avviamo analytics ne session recording. La scelta e salvata in locale
+          (localStorage / SharedPreferences).
+        </p>
+        <p>
+          Dati tipici raccolti dopo consenso: percorso di navigazione (pageview), eventi di prodotto
+          senza dati personali dei clienti (es. creazione scheda, export PDF), e registrazione di sessione
+          con mascheramento testo/input. Non inviamo nomi clienti, note, misure o indirizzi email
+          come proprieta degli eventi.
+        </p>
+        <p>
+          Per revocare il consenso: cancella i dati del sito per powercoach-studio (o localStorage)
+          e ricarica la pagina per rivedere il banner, oppure contatta
+          <strong>edoardo@arlati.dev</strong>.
         </p>
 
         <h2>6. Conservazione dei dati</h2>
@@ -137,8 +165,13 @@
 
         <h2>11. Versione inglese (summary)</h2>
         <p>
-          For an English version of this policy, contact <strong>edoardo@arlati.dev</strong>. The app processes account
-          data, profile data, customer/workout data, and technical diagnostics to provide core functionality and support.
+          PowerCoach Studio processes account data, profile data, customer/workout data, and technical
+          diagnostics to provide core functionality and support. On the <strong>web</strong> build, if
+          configured, we use <strong>PostHog (EU)</strong> for product analytics and session replay
+          only after you accept the consent banner. Text and inputs are masked; we identify users by
+          Supabase user id (not email) and do not attach customer PII to event properties. Decline keeps
+          the app working without PostHog. For an English full policy, contact
+          <strong>edoardo@arlati.dev</strong>.
         </p>
 
         <p class="meta">

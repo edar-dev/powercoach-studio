@@ -38,10 +38,9 @@ Future<void> main() async {
     _logStartupStep('dotenv.load skipped (missing $appEnvAssetPath)', startupWatch);
   }
 
-  // Web-only product analytics; no-op when POSTHOG_API_KEY is empty or off-web.
-  PostHogBootstrap.ensureInitialized();
+  // Web PostHog: consent-gated init (see bootstrapWithConsent in _initializeApp).
   PostHogBootstrap.bindRouter(appGoRouter);
-  _logStartupStep('PostHog bootstrap step completed', startupWatch);
+  _logStartupStep('PostHog router registered', startupWatch);
 
   final dsn = dotenv.env['SENTRY_DSN']?.trim();
   final useSentry = kReleaseMode && (dsn != null && dsn.isNotEmpty);
@@ -123,6 +122,10 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
         url: supabaseUrl,
         anonKey: supabaseAnonKey,
       );
+      // PostHog init only after consent (EU); no-op off-web / without key.
+      await PostHogBootstrap.bootstrapWithConsent(appGoRouter);
+      _logStartupStep('PostHog consent bootstrap completed', _bootstrapWatch);
+
       if (supabaseUrl.isNotEmpty && supabaseAnonKey.isNotEmpty) {
         await SupabaseBootstrap.ensureInitialized();
         _logStartupStep('Supabase init completed', _bootstrapWatch);
