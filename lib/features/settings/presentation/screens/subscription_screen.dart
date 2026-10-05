@@ -34,6 +34,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   bool _isLoading = true;
   bool _busy = false;
   bool _yearly = false;
+  bool _subscribedEventSent = false;
   Entitlement? _entitlement;
   int _activeCustomerCount = 0;
   final PlanUsage _planUsage = PlanUsage();
@@ -58,7 +59,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     final l10n = AppLocalizations.of(context);
     final messenger = ScaffoldMessenger.of(context);
     if (checkout == 'success') {
-      ProductAnalytics.subscribed();
+      if (!_subscribedEventSent) {
+        _subscribedEventSent = true;
+        ProductAnalytics.subscribed();
+      }
       unawaited(_load());
       messenger.showSnackBar(
         SnackBar(

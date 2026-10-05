@@ -234,6 +234,10 @@ class PostHogBootstrap {
   @visibleForTesting
   static String? get debugLastPath => _lastPath;
 
+  /// Test-only: expose path sanitization used for `$pageview`.
+  @visibleForTesting
+  static String debugSanitizePagePath(String path) => _sanitizePagePath(path);
+
   /// Test-only: seed consent cache without touching SharedPreferences.
   @visibleForTesting
   static void debugSetConsent(AnalyticsConsent? consent) {

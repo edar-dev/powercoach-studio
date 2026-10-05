@@ -68,6 +68,21 @@ POSTHOG_API_KEY=phc_test_key
       await PostHogBootstrap.loadConsent();
       expect(PostHogBootstrap.needsConsentBanner, isFalse);
     });
+
+    test('sanitizePagePath redacts UUIDs and temp ids', () {
+      expect(
+        PostHogBootstrap.debugSanitizePagePath(
+          '/customers/550e8400-e29b-41d4-a716-446655440000/notes',
+        ),
+        '/customers/:id/notes',
+      );
+      expect(
+        PostHogBootstrap.debugSanitizePagePath(
+          '/customers/customer_abc123',
+        ),
+        '/customers/:id',
+      );
+    });
   });
 
   group('AnalyticsConsentStore', () {
