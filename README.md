@@ -22,10 +22,16 @@ bash scripts/ensure-env.sh   # copies .env -> .env.example for flutter run/build
 | `SUPABASE_ANON_KEY` | Yes | Supabase anon key (auth) |
 | `SENTRY_DSN` | No | Error monitoring (release builds only) |
 | `SENTRY_ENVIRONMENT` | No | Sentry environment tag (default `development`) |
+| `POSTHOG_API_KEY` | No | Product analytics / heatmaps (**Flutter web only**; empty = off) |
+| `POSTHOG_HOST` | No | PostHog ingest host (default `https://eu.i.posthog.com`) |
 
 ## Monitoring (Sentry)
 
 When `SENTRY_DSN` is set, release builds send errors and navigation traces to [Sentry](https://sentry.io). Leave empty to disable.
+
+## Product analytics (PostHog, web)
+
+When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.com) (posthog-js) for pageviews and heatmap-capable click capture. Leave empty to disable. Mobile builds are unaffected. See the spike plan in the project docs for CanvasKit go/no-go validation.
 
 ## Local data
 
