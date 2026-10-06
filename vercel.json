@@ -8,6 +8,18 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/pcs-ph/static/:path(.*)",
+      "destination": "https://eu-assets.i.posthog.com/static/:path"
+    },
+    {
+      "source": "/pcs-ph/array/:path(.*)",
+      "destination": "https://eu-assets.i.posthog.com/array/:path"
+    },
+    {
+      "source": "/pcs-ph/:path(.*)",
+      "destination": "https://eu.i.posthog.com/:path"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }

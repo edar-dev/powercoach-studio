@@ -50,6 +50,16 @@ POSTHOG_HOST=https://us.i.posthog.com
       expect(PostHogBootstrap.resolvedHost, 'https://us.i.posthog.com');
     });
 
+    test('resolvedHost accepts relative first-party proxy path', () {
+      dotenv.loadFromString(envString: '''
+POSTHOG_API_KEY=phc_test_key
+POSTHOG_HOST=/pcs-ph
+''');
+      expect(PostHogBootstrap.resolvedHost, posthogFirstPartyProxyPath);
+      expect(PostHogBootstrap.resolvedHost, '/pcs-ph');
+      expect(posthogUiHost, 'https://eu.posthog.com');
+    });
+
     test('ensureInitialized is a no-op off web (VM tests)', () {
       dotenv.loadFromString(envString: '''
 POSTHOG_API_KEY=phc_test_key

@@ -13,10 +13,24 @@ rm -rf .vercel/output
 mkdir -p .vercel/output/static
 cp -r build/web/. .vercel/output/static/
 
+# PostHog first-party proxy routes MUST come before filesystem + SPA fallback.
+# Production uses `vercel deploy --prebuilt`, which ignores vercel.json rewrites.
 cat > .vercel/output/config.json <<'EOF'
 {
   "version": 3,
   "routes": [
+    {
+      "src": "/pcs-ph/static/(.*)",
+      "dest": "https://eu-assets.i.posthog.com/static/$1"
+    },
+    {
+      "src": "/pcs-ph/array/(.*)",
+      "dest": "https://eu-assets.i.posthog.com/array/$1"
+    },
+    {
+      "src": "/pcs-ph/(.*)",
+      "dest": "https://eu.i.posthog.com/$1"
+    },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }
   ],
