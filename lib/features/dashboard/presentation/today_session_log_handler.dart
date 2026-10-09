@@ -98,6 +98,7 @@ class TodaySessionLogHandler {
         sessionDate: item.date,
         exercises: logResult.exercises,
         notes: logResult.notes,
+        source: 'dashboard_today',
       );
       if (!context.mounted) return false;
 

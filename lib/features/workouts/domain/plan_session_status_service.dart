@@ -1,3 +1,4 @@
+import '../../../core/analytics/product_analytics.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
 import '../data/workout_plan_repository.dart';
 import 'session_execution.dart';
@@ -22,6 +23,7 @@ class PlanSessionStatusService {
     DateTime? sessionDate,
     List<ExecutedExercise> exercises = const [],
     String notes = '',
+    String source = 'unknown',
   }) async {
     await _repository.setSessionCompleted(
       planId: planId,
@@ -57,5 +59,12 @@ class PlanSessionStatusService {
       exercises: exercises,
       notes: notes,
     );
+
+    if (status == PlanSessionStatus.completed) {
+      ProductAnalytics.sessionLogged(
+        source: source,
+        hasExerciseData: exercises.isNotEmpty,
+      );
+    }
   }
 }

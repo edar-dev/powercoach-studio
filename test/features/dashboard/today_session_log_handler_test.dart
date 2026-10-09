@@ -61,6 +61,7 @@ class _RecordingStatusService extends PlanSessionStatusService {
     DateTime? sessionDate,
     List<ExecutedExercise> exercises = const [],
     String notes = '',
+    String source = 'unknown',
   }) async {
     if (throwOnCall) throw StateError('save failed');
     callCount++;

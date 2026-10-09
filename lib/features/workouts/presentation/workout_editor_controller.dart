@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
+import '../../../core/analytics/product_analytics.dart';
 import '../data/workout_plan_api_model.dart';
 import '../data/workout_plan_repository.dart';
 import '../data/workout_routine_model.dart';
@@ -280,6 +281,13 @@ class WorkoutEditorController extends ChangeNotifier {
       saving = false;
       saveState = WorkoutEditorSaveState.failed;
       notifyListeners();
+      // First create only — updates already have loadedPlanId.
+      if (loadedPlanId == null) {
+        ProductAnalytics.firstSaveFailed(
+          silent: silent,
+          reason: ProductAnalytics.reasonFromError(e),
+        );
+      }
       return WorkoutEditorSaveOutcome(success: false, error: e);
     }
   }

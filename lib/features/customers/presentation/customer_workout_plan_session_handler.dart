@@ -40,6 +40,7 @@ class CustomerWorkoutPlanSessionHandler {
           weekIndex: event.weekIndex,
           dayIndex: event.dayIndex,
           status: status,
+          source: 'customer_plan',
         );
       } else if (selected == 'override_skip') {
         await _sessionOverrideService.skipSessionOccurrence(

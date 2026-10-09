@@ -31,7 +31,7 @@ When `SENTRY_DSN` is set, release builds send errors and navigation traces to [S
 
 ## Product analytics (PostHog, web)
 
-When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.com) (posthog-js, EU project) for pageviews, product events, and session replay — **only after the user accepts the consent banner**. Leave the key empty to disable. Mobile builds are unaffected. Text/inputs are masked; Flutter CanvasKit limits DOM-level replay fidelity. Privacy disclosure: `docs/privacy-policy/`.
+When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.com) (posthog-js, EU project) for pageviews, product events, and session replay — **only after the user accepts the consent banner**. Leave the key empty to disable. Mobile builds are unaffected. Text/inputs are masked; Flutter CanvasKit limits DOM-level replay fidelity. Prefer **product event funnels** over CanvasKit session replay for drop-off analysis. Event catalog + coach funnel steps: `docs/posthog-product-events.md`. Privacy disclosure: `docs/privacy-policy/`.
 
 **Hosts:** local/dev keeps `POSTHOG_HOST=https://eu.i.posthog.com`. Production Vercel web uses a same-origin reverse proxy at `/pcs-ph` (rewrites to EU PostHog; see `docs/vercel-web-deploy.md`). The JS loader sets `ui_host` to `https://eu.posthog.com` so toolbar/recording links stay on the PostHog app.
 

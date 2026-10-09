@@ -111,6 +111,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
         status: completed
             ? PlanSessionStatus.completed
             : PlanSessionStatus.planned,
+        source: 'calendar',
       );
       await _loadEvents();
     } catch (_) {
@@ -133,6 +134,7 @@ class _CoachCalendarScreenState extends State<CoachCalendarScreen> {
         status: event.status == PlanSessionStatus.skipped
             ? PlanSessionStatus.planned
             : PlanSessionStatus.skipped,
+        source: 'calendar',
       );
       await _loadEvents();
     } catch (_) {
