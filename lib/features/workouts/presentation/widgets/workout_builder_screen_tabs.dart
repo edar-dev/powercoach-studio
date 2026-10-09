@@ -217,6 +217,7 @@ class WorkoutBuilderScreenTabs {
       showSandboxBanner: showSandboxBanner,
       showReadOnlyBanner: readOnly,
       routineTitleHint: routineTitleHint,
+      editorCustomerName: editorCustomerName,
       sandboxBanner: showSandboxBanner && onAssignDraftToCustomer != null
           ? WorkoutBuilderSandboxBanner(
               onAssignToCustomer: onAssignDraftToCustomer!,

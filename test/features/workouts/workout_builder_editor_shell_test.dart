@@ -9,10 +9,14 @@ class _ShellHarness extends StatefulWidget {
   const _ShellHarness({
     required this.showsMobilityTab,
     this.showFirstSaveBanner = false,
+    this.editorMode = false,
+    this.editorCustomerName,
   });
 
   final bool showsMobilityTab;
   final bool showFirstSaveBanner;
+  final bool editorMode;
+  final String? editorCustomerName;
 
   @override
   State<_ShellHarness> createState() => _ShellHarnessState();
@@ -48,7 +52,7 @@ class _ShellHarnessState extends State<_ShellHarness>
       showManualSaveButton: true,
       showFirstSaveBanner: widget.showFirstSaveBanner,
       saveStatusIndicator: null,
-      editorMode: false,
+      editorMode: widget.editorMode,
       loading: false,
       hideExportMenu: false,
       showsMobilityTab: widget.showsMobilityTab,
@@ -57,7 +61,8 @@ class _ShellHarnessState extends State<_ShellHarness>
       trainingTab: const Center(child: Text('Training tab body')),
       mobilityTab: const Center(child: Text('Mobility tab body')),
       detailsTab: const Center(child: Text('Details tab body')),
-      showBottomNav: true,
+      showBottomNav: !widget.editorMode,
+      editorCustomerName: widget.editorCustomerName,
       onPopInvoked: () async {},
       onBack: () async {},
       onImportJson: () {},
@@ -144,5 +149,34 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets('sandbox mode shows distinct draft builder title', (tester) async {
+    await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: true)));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Builder bozza'), findsOneWidget);
+    expect(find.text('Editor scheda'), findsNothing);
+  });
+
+  testWidgets('editor mode shows editor title and assigned plan badge', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      app(
+        const _ShellHarness(
+          showsMobilityTab: true,
+          editorMode: true,
+          editorCustomerName: 'Mario Rossi',
+        ),
+      ),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 200));
+
+    expect(find.text('Editor scheda'), findsOneWidget);
+    expect(find.text('Builder bozza'), findsNothing);
+    expect(find.text('Piano assegnato · Mario Rossi'), findsOneWidget);
   });
 }
