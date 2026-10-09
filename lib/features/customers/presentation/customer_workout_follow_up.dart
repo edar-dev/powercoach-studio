@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import '../../../core/routing/app_navigation.dart';
@@ -15,7 +17,7 @@ Future<WorkoutPlanApiModel?> createCustomerWorkoutFollowUp(
   BuildContext context, {
   required String customerId,
   required WorkoutPlanApiModel plan,
-  required VoidCallback onSuccess,
+  required FutureOr<void> Function() onSuccess,
   WorkoutPlanRepository? planRepo,
   SessionExecutionService? executionService,
   bool openEditor = true,
@@ -38,7 +40,8 @@ Future<WorkoutPlanApiModel?> createCustomerWorkoutFollowUp(
       applyExecutedLoads: draft.applyExecutedLoads,
     );
     if (!context.mounted) return created;
-    onSuccess();
+    await onSuccess();
+    if (!context.mounted) return created;
     showCloudSaveSuccessSnackBar(
       context,
       message: l10n.workoutFollowUpCreatedMessage,

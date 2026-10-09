@@ -135,6 +135,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(l10n.workoutFollowUpTitle), findsOneWidget);
+      expect(find.text(l10n.workoutFollowUpNoExecutionData), findsOneWidget);
       await tester.tap(find.text(l10n.workoutFollowUpCreateAction));
       await tester.pumpAndSettle();
 

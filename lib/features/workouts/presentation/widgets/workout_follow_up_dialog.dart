@@ -29,6 +29,7 @@ Future<WorkoutFollowUpDraft?> showWorkoutFollowUpDialog(
       l10n: l10n,
       initialName: '${plan.name} - ${l10n.workoutFollowUpDefaultSuffix}',
       applyExecutedLoads: applyExecutedLoads,
+      completedExecutionCount: completedCount,
     ),
   );
 }
@@ -38,11 +39,13 @@ class _WorkoutFollowUpDialog extends StatefulWidget {
     required this.l10n,
     required this.initialName,
     required this.applyExecutedLoads,
+    required this.completedExecutionCount,
   });
 
   final AppLocalizations l10n;
   final String initialName;
   final bool applyExecutedLoads;
+  final int completedExecutionCount;
 
   @override
   State<_WorkoutFollowUpDialog> createState() => _WorkoutFollowUpDialogState();
@@ -116,6 +119,17 @@ class _WorkoutFollowUpDialogState extends State<_WorkoutFollowUpDialog> {
                 );
               });
             },
+          ),
+          const SizedBox(height: 8),
+          Text(
+            widget.applyExecutedLoads
+                ? l10n.workoutFollowUpFromExecutionHint(
+                    widget.completedExecutionCount,
+                  )
+                : l10n.workoutFollowUpNoExecutionData,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
           ),
         ],
       ),
