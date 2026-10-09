@@ -2928,7 +2928,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderSaveToPersistHint =>
-      'Salva la scheda per associarla al cliente. Fino ad allora le modifiche restano solo in memoria.';
+      'Salva ora per collegare la scheda al cliente, oppure continua a modificare: il salvataggio automatico crea la scheda al primo edit.';
 
   @override
   String get workoutBuilderSaveNowAction => 'Salva ora';

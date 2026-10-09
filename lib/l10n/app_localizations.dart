@@ -5215,7 +5215,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderSaveToPersistHint.
   ///
   /// In en, this message translates to:
-  /// **'Save the plan to link it to this client. Until then, changes stay in memory only.'**
+  /// **'Save now to link the plan to this client, or keep editing — autosave creates the plan on your first edit.'**
   String get workoutBuilderSaveToPersistHint;
 
   /// No description provided for @workoutBuilderSaveNowAction.

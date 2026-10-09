@@ -139,7 +139,10 @@ class WorkoutBuilderRoutineCoordinator {
         silent: silent,
       );
       if (!context.mounted) {
-        return WorkoutBuilderSaveOutcome(success: outcome.success);
+        return WorkoutBuilderSaveOutcome(
+          success: outcome.success,
+          createdPlanId: outcome.createdPlanId,
+        );
       }
       if (outcome.success) {
         if (!silent) {
@@ -153,8 +156,13 @@ class WorkoutBuilderRoutineCoordinator {
             ),
           );
         }
+        // Manual create only: remount onto /workouts/:planId.
+        // Silent autosave create must keep the editor mounted so in-flight
+        // edits are not lost; editorController.save() already set loadedPlanId.
         final createdPlanId = outcome.createdPlanId;
-        if (createdPlanId != null && createdPlanId.isNotEmpty) {
+        if (!silent &&
+            createdPlanId != null &&
+            createdPlanId.isNotEmpty) {
           navigateReplace(
             context,
             customerWorkoutEditorPath(
@@ -213,6 +221,7 @@ class WorkoutBuilderRoutineCoordinator {
         success: outcome.success,
         savedRoutine: outcome.savedRoutine,
         savedInitialWeekNumber: outcome.savedInitialWeekNumber,
+        createdPlanId: outcome.createdPlanId,
       );
     }
 
@@ -438,9 +447,11 @@ class WorkoutBuilderSaveOutcome {
     required this.success,
     this.savedRoutine,
     this.savedInitialWeekNumber,
+    this.createdPlanId,
   });
 
   final bool success;
   final WorkoutRoutine? savedRoutine;
   final int? savedInitialWeekNumber;
+  final String? createdPlanId;
 }
