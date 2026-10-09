@@ -239,16 +239,19 @@ class WorkoutBuilderRoutineCoordinator {
         );
       }
       return WorkoutBuilderSaveOutcome(success: true, savedRoutine: toSave);
-    } catch (e) {
+    } catch (_) {
       if (!context.mounted) {
         return const WorkoutBuilderSaveOutcome(success: false);
       }
       if (!silent) {
+        // Sandbox draft is local SharedPreferences — not a cloud write.
         final l10n = AppLocalizations.of(context);
-        showCloudSaveErrorSnackBar(
-          context,
-          e,
-          fallbackMessage: l10n.cloudSaveFailed,
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.workoutActionFailed),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.errorContainer,
+          ),
         );
       }
       return const WorkoutBuilderSaveOutcome(success: false);

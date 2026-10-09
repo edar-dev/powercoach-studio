@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/ui/widgets/cloud_save_feedback.dart';
 import 'package:powercoach_studio/features/customers/presentation/customer_workout_follow_up.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
@@ -65,14 +65,10 @@ class CustomerDetailWorkoutPlansSection extends StatelessWidget {
       );
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutDeleteError,
-          ),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutDeleteError,
       );
     }
   }
