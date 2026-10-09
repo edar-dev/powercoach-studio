@@ -74,9 +74,15 @@ class _NewCustomerPlanEditorHarnessState extends State<_NewCustomerPlanEditorHar
 
 /// Minimal screen that saves a new customer plan via [WorkoutBuilderRoutineCoordinator].
 class _SaveNewPlanHarness extends StatefulWidget {
-  const _SaveNewPlanHarness({required this.coordinator});
+  const _SaveNewPlanHarness({
+    required this.coordinator,
+    this.silent = false,
+    this.buttonLabel = 'Salva',
+  });
 
   final WorkoutBuilderRoutineCoordinator coordinator;
+  final bool silent;
+  final String buttonLabel;
 
   @override
   State<_SaveNewPlanHarness> createState() => _SaveNewPlanHarnessState();
@@ -97,9 +103,10 @@ class _SaveNewPlanHarnessState extends State<_SaveNewPlanHarness> {
               editorCustomer: null,
               selectedWeekIndex: 0,
               selectedDayIndex: 0,
+              silent: widget.silent,
             );
           },
-          child: const Text('Salva'),
+          child: Text(widget.buttonLabel),
         ),
       ),
     );
@@ -129,7 +136,15 @@ void main() {
     expect(find.byType(WorkoutBuilderFirstSaveBanner), findsOneWidget);
     expect(find.text('Salva ora'), findsOneWidget);
     expect(
-      find.textContaining('Salva la scheda per associarla al cliente'),
+      find.textContaining(
+        'Salva ora per collegare la scheda al cliente',
+      ),
+      findsOneWidget,
+    );
+    expect(
+      find.textContaining(
+        'il salvataggio automatico crea la scheda al primo edit',
+      ),
       findsOneWidget,
     );
   });
@@ -238,4 +253,117 @@ void main() {
     expect(currentLocation, startsWith('/customers/c1/workouts/plan-new-1'));
     expect(find.text('Plan plan-new-1'), findsOneWidget);
   });
+
+  testWidgets(
+    'silent autosave create sets loadedPlanId without navigateReplace',
+    (tester) async {
+      final createCalls = <Map<String, dynamic>>[];
+      final session = WorkoutBuilderSessionController(
+        routine: WorkoutRoutine.empty().copyWith(name: 'Scheda test'),
+      );
+      final nameController = TextEditingController(text: 'Scheda test');
+      final initialWeekController = TextEditingController(text: '1');
+      final editorController = WorkoutEditorController(
+        createPlan: ({
+          required customerId,
+          required name,
+          required routine,
+          pdfHeader,
+          useCustomPdfHeader = false,
+          initialWeekNumber = 1,
+          notes,
+        }) async {
+          createCalls.add({
+            'customerId': customerId,
+            'name': name,
+          });
+          final now = DateTime(2026, 1, 1);
+          return WorkoutPlanApiModel(
+            id: 'plan-auto-1',
+            customerId: customerId,
+            userId: 'user-1',
+            name: name,
+            planData: encodeWorkoutRoutinePlanData(routine),
+            initialWeekNumber: initialWeekNumber,
+            createdAt: now,
+            updatedAt: now,
+          );
+        },
+      );
+      editorController.markLoaded(
+        session: WorkoutEditorSession(
+          routine: session.routine,
+          planName: 'Scheda test',
+          initialWeekNumber: 1,
+        ),
+        planId: null,
+      );
+
+      final coordinator = WorkoutBuilderRoutineCoordinator(
+        builderSession: session,
+        editorController: editorController,
+        planRepo: WorkoutPlanRepository(offline: OfflineRepositorySupport()),
+        customerRepo: CustomerRepository(offline: OfflineRepositorySupport()),
+        draftStore: const SharedPrefsWorkoutDraftStore(),
+        routineNameController: nameController,
+        initialWeekController: initialWeekController,
+        notesController: TextEditingController(),
+      );
+
+      addTearDown(() {
+        nameController.dispose();
+        initialWeekController.dispose();
+        session.dispose();
+        editorController.dispose();
+      });
+
+      final router = GoRouter(
+        initialLocation: customerWorkoutEditorPath('c1'),
+        routes: [
+          GoRoute(
+            path: '/customers/:customerId/workouts/new',
+            builder: (_, _) => _SaveNewPlanHarness(
+              coordinator: coordinator,
+              silent: true,
+              buttonLabel: 'Autosave',
+            ),
+          ),
+          GoRoute(
+            path: '/customers/:customerId/workouts/:planId',
+            builder: (_, state) => Scaffold(
+              body: Text('Plan ${state.pathParameters['planId']}'),
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        MaterialApp.router(
+          theme: StitchM3Theme.light,
+          darkTheme: StitchM3Theme.dark,
+          themeMode: ThemeMode.dark,
+          locale: const Locale('it'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          routerConfig: router,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(editorController.loadedPlanId, isNull);
+
+      await tester.tap(find.text('Autosave'));
+      await tester.pumpAndSettle();
+
+      expect(createCalls, hasLength(1));
+      expect(createCalls.single['customerId'], 'c1');
+      expect(editorController.loadedPlanId, 'plan-auto-1');
+      expect(find.text('Autosave'), findsOneWidget);
+      expect(find.text('Plan plan-auto-1'), findsNothing);
+      expect(
+        router.routeInformationProvider.value.uri.toString(),
+        '/customers/c1/workouts/new',
+      );
+    },
+  );
 }

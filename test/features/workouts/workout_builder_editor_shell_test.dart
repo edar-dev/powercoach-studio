@@ -139,7 +139,9 @@ void main() {
 
     expect(find.text('Salva ora'), findsOneWidget);
     expect(
-      find.textContaining('Salva la scheda per associarla al cliente'),
+      find.textContaining(
+        'Salva ora per collegare la scheda al cliente',
+      ),
       findsOneWidget,
     );
   });

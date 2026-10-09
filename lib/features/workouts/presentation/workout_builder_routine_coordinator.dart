@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
@@ -139,7 +140,10 @@ class WorkoutBuilderRoutineCoordinator {
         silent: silent,
       );
       if (!context.mounted) {
-        return WorkoutBuilderSaveOutcome(success: outcome.success);
+        return WorkoutBuilderSaveOutcome(
+          success: outcome.success,
+          createdPlanId: outcome.createdPlanId,
+        );
       }
       if (outcome.success) {
         if (!silent) {
@@ -153,17 +157,29 @@ class WorkoutBuilderRoutineCoordinator {
             ),
           );
         }
-        final createdPlanId = outcome.createdPlanId;
-        if (createdPlanId != null && createdPlanId.isNotEmpty) {
-          navigateReplace(
-            context,
-            customerWorkoutEditorPath(
-              customerId,
-              planId: createdPlanId,
-              weekIndex: selectedWeekIndex,
-              dayIndex: selectedDayIndex,
-            ),
-          );
+        // Manual save only: remount onto /workouts/:planId.
+        // Silent autosave create must keep the editor mounted so in-flight
+        // edits are not lost; editorController.save() already set loadedPlanId.
+        // Also sync the URL if a prior silent create left us on /workouts/new.
+        final planIdForRoute =
+            outcome.createdPlanId ?? editorController.loadedPlanId;
+        if (!silent &&
+            planIdForRoute != null &&
+            planIdForRoute.isNotEmpty) {
+          final path = GoRouterState.of(context).uri.path;
+          final needsRouteSync = outcome.createdPlanId != null ||
+              path.endsWith('/workouts/new');
+          if (needsRouteSync) {
+            navigateReplace(
+              context,
+              customerWorkoutEditorPath(
+                customerId,
+                planId: planIdForRoute,
+                weekIndex: selectedWeekIndex,
+                dayIndex: selectedDayIndex,
+              ),
+            );
+          }
         }
       } else if (silent) {
         final l10n = AppLocalizations.of(context);
@@ -213,6 +229,7 @@ class WorkoutBuilderRoutineCoordinator {
         success: outcome.success,
         savedRoutine: outcome.savedRoutine,
         savedInitialWeekNumber: outcome.savedInitialWeekNumber,
+        createdPlanId: outcome.createdPlanId,
       );
     }
 
@@ -438,9 +455,11 @@ class WorkoutBuilderSaveOutcome {
     required this.success,
     this.savedRoutine,
     this.savedInitialWeekNumber,
+    this.createdPlanId,
   });
 
   final bool success;
   final WorkoutRoutine? savedRoutine;
   final int? savedInitialWeekNumber;
+  final String? createdPlanId;
 }

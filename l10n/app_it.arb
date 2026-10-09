@@ -1342,7 +1342,7 @@
       }
     }
   },
-  "workoutBuilderSaveToPersistHint": "Salva la scheda per associarla al cliente. Fino ad allora le modifiche restano solo in memoria.",
+  "workoutBuilderSaveToPersistHint": "Salva ora per collegare la scheda al cliente, oppure continua a modificare: il salvataggio automatico crea la scheda al primo edit.",
   "workoutBuilderSaveNowAction": "Salva ora",
   "customerNewWorkoutSheetTitle": "Nuova scheda",
   "customerNewWorkoutBlank": "Scheda vuota",

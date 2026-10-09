@@ -2903,7 +2903,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderSaveToPersistHint =>
-      'Save the plan to link it to this client. Until then, changes stay in memory only.';
+      'Save now to link the plan to this client, or keep editing — autosave creates the plan on your first edit.';
 
   @override
   String get workoutBuilderSaveNowAction => 'Save now';
