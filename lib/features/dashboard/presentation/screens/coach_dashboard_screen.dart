@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../../core/auth/supabase_bootstrap.dart';
+import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../../settings/presentation/backup_onboarding_prompt.dart';
+import '../../../settings/presentation/data_health_controller.dart';
 import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
 import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -28,11 +32,18 @@ import '../today_session_log_handler.dart';
 
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
-  const CoachDashboardScreen({super.key, this.loadSnapshot});
+  const CoachDashboardScreen({
+    super.key,
+    this.loadSnapshot,
+    this.loadDataHealth,
+  });
 
   /// When set (tests), skips repositories and returns this future instead.
   final Future<DashboardSnapshot> Function(String unknownClientLabel)?
-  loadSnapshot;
+      loadSnapshot;
+
+  /// When set (tests), skips [DataHealthController] and returns this report.
+  final Future<DataQualityReport?> Function()? loadDataHealth;
 
   @override
   State<CoachDashboardScreen> createState() => _CoachDashboardScreenState();
@@ -42,7 +53,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   final DashboardSnapshotLoader _loader = DashboardSnapshotLoader();
   final TodaySessionLogHandler _todaySessionLogHandler =
       TodaySessionLogHandler();
+  final DataHealthController _dataHealthController = DataHealthController();
   DashboardSnapshot? _snapshot;
+  List<DataQualityFinding> _actionableFindings = const [];
   bool _loading = true;
   bool _backupOnboardingScheduled = false;
   bool _loggingTodaySession = false;
@@ -60,18 +73,22 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     setState(() => _loading = true);
     final l10n = AppLocalizations.of(context);
     final unknown = l10n.dashboardUnknownClient;
-    final DashboardSnapshot snap;
-    if (widget.loadSnapshot != null) {
-      snap = await widget.loadSnapshot!(unknown);
-    } else {
-      snap = await _loader.load(
-        unknownClientLabel: unknown,
-        untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
-      );
-    }
+    final snapFuture = widget.loadSnapshot != null
+        ? widget.loadSnapshot!(unknown)
+        : _loader.load(
+            unknownClientLabel: unknown,
+            untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
+          );
+    final results = await Future.wait<Object?>([
+      snapFuture,
+      _loadDataHealthReport(),
+    ]);
     if (!mounted) return;
+    final snap = results[0]! as DashboardSnapshot;
+    final report = results[1] as DataQualityReport?;
     setState(() {
       _snapshot = snap;
+      _actionableFindings = report?.actionableFindings ?? const [];
       _loading = false;
     });
     if (!_backupOnboardingScheduled && widget.loadSnapshot == null) {
@@ -95,15 +112,40 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
     }
   }
 
+  Future<DataQualityReport?> _loadDataHealthReport() async {
+    if (widget.loadDataHealth != null) {
+      try {
+        return await widget.loadDataHealth!();
+      } catch (e, stackTrace) {
+        await Sentry.captureException(e, stackTrace: stackTrace);
+        return null;
+      }
+    }
+    final uid = SupabaseBootstrap.currentUser?.id;
+    if (uid == null) return null;
+    try {
+      return await _dataHealthController.scan(uid);
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
+      return null;
+    }
+  }
+
   Future<void> _reloadStatsAfterRecovery() async {
     final l10n = AppLocalizations.of(context);
-    final snap = await _loader.load(
-      unknownClientLabel: l10n.dashboardUnknownClient,
-      untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
-    );
+    final results = await Future.wait<Object?>([
+      _loader.load(
+        unknownClientLabel: l10n.dashboardUnknownClient,
+        untitledWorkoutLabel: l10n.dashboardUntitledWorkout,
+      ),
+      _loadDataHealthReport(),
+    ]);
     if (!mounted) return;
+    final snap = results[0]! as DashboardSnapshot;
+    final report = results[1] as DataQualityReport?;
     setState(() {
       _snapshot = snap;
+      _actionableFindings = report?.actionableFindings ?? const [];
       _loading = false;
     });
   }
@@ -287,6 +329,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           theme: theme,
                           colorScheme: cs,
                           l10n: l10n,
+                          actionableFindings: _actionableFindings,
                         ),
                       ],
                     ),

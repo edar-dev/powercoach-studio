@@ -19,6 +19,21 @@ class DataQualityReport {
   bool get hasWarnings =>
       findings.any((f) => f.severity == DataQualitySeverity.warning);
 
+  /// Errors and warnings coaches should act on (excludes info noise).
+  ///
+  /// Sorted error → warning so dashboard Attention can show the worst first.
+  List<DataQualityFinding> get actionableFindings {
+    final list = findings
+        .where(
+          (f) =>
+              f.severity == DataQualitySeverity.error ||
+              f.severity == DataQualitySeverity.warning,
+        )
+        .toList();
+    list.sort((a, b) => b.severity.index.compareTo(a.severity.index));
+    return list;
+  }
+
   int countBySeverity(DataQualitySeverity severity) =>
       findings.where((f) => f.severity == severity).length;
 

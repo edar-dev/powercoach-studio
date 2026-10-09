@@ -3479,6 +3479,23 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardOpenBackupSettings => 'Apri backup';
 
   @override
+  String dashboardDataHealthIssuesTitle(int count) {
+    return '$count problemi dati da controllare';
+  }
+
+  @override
+  String get dashboardDataHealthIssuesHint =>
+      'Piani orfani, pin rotti o problemi di integrità nei dati locali. Controlla e ripara in Salute dati.';
+
+  @override
+  String get dashboardOpenDataHealth => 'Apri salute dati';
+
+  @override
+  String dashboardDataHealthMoreCount(int count) {
+    return '+$count altri';
+  }
+
+  @override
   String get dashboardBackupReminderMessage =>
       'Ultimo backup di oltre 7 giorni fa. Esporta o carica una copia recente per sicurezza.';
 

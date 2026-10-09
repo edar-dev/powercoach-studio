@@ -1575,6 +1575,24 @@
   "dashboardNoPending": "No items need your attention right now.",
   "dashboardBackupHint": "Your data stays on this device. Export a backup from Settings before reinstalling or switching devices.",
   "dashboardOpenBackupSettings": "Open backup settings",
+  "dashboardDataHealthIssuesTitle": "{count} data issues need review",
+  "@dashboardDataHealthIssuesTitle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dashboardDataHealthIssuesHint": "Orphan plans, broken pins, or integrity problems in local data. Review and repair in Data health.",
+  "dashboardOpenDataHealth": "Open data health",
+  "dashboardDataHealthMoreCount": "+{count} more",
+  "@dashboardDataHealthMoreCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "dashboardBackupReminderMessage": "Your last backup is over 7 days old. Export or upload a recent copy for safety.",
   "dashboardBackupReminderSubtitle": "Protect technical sheets, progressions, and max tests for your athletes.",
   "dashboardBackupReminderCta": "Open backup in settings →",
