@@ -45,6 +45,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   DashboardSnapshot? _snapshot;
   bool _loading = true;
   bool _backupOnboardingScheduled = false;
+  bool _loggingTodaySession = false;
 
   @override
   void initState() {
@@ -248,11 +249,18 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           snapshot: snap,
                           loading: _loading,
                           onSessionTap: (item) async {
-                            final ok = await _todaySessionLogHandler.logSession(
-                              context: context,
-                              item: item,
-                            );
-                            if (ok && mounted) await _loadStats();
+                            if (_loggingTodaySession) return;
+                            _loggingTodaySession = true;
+                            try {
+                              final ok = await _todaySessionLogHandler
+                                  .logSession(
+                                context: context,
+                                item: item,
+                              );
+                              if (ok && mounted) await _loadStats();
+                            } finally {
+                              _loggingTodaySession = false;
+                            }
                           },
                         ),
                       ],

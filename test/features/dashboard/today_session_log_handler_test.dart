@@ -229,6 +229,54 @@ void main() {
     expect(status.callCount, 0);
   });
 
+  testWidgets('logSession prefills sheet from existing execution', (
+    tester,
+  ) async {
+    final status = _RecordingStatusService();
+    final existing = SessionExecution(
+      sessionKey: WorkoutRoutine.sessionKey(0, 0),
+      weekIndex: 0,
+      dayIndex: 0,
+      sessionDate: DateTime(2026, 5, 12),
+      status: PlanSessionStatus.completed,
+      exercises: const [
+        ExecutedExercise(exerciseId: 'e1', name: 'Squat'),
+      ],
+      notes: 'Prior notes',
+    );
+    List<ExecutedExercise>? receivedInitial;
+    var receivedNotes = '';
+    final handler = TodaySessionLogHandler(
+      planRepository: _FakePlanRepo(
+        _planWithDay(
+          id: 'plan-1',
+          exercises: const [
+            Exercise(id: 'e1', name: 'Squat', sets: '3', reps: '5', rpe: ''),
+          ],
+        ),
+      ),
+      executionService: _FakeExecutionService(existing: existing),
+      statusService: status,
+      showLogSheet:
+          ({
+            required BuildContext context,
+            required List<Exercise> plannedExercises,
+            List<ExecutedExercise>? initialExercises,
+            String initialNotes = '',
+          }) async {
+            receivedInitial = initialExercises;
+            receivedNotes = initialNotes;
+            return null;
+          },
+    );
+
+    final ok = await _runLog(tester, handler: handler, item: _item());
+    expect(ok, isFalse);
+    expect(status.callCount, 0);
+    expect(receivedInitial, existing.exercises);
+    expect(receivedNotes, 'Prior notes');
+  });
+
   testWidgets('logSession missing plan shows error snackbar', (tester) async {
     final status = _RecordingStatusService();
     final handler = TodaySessionLogHandler(
