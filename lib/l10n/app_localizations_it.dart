@@ -318,7 +318,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingPricingSubtitle =>
-      'Inizia gratis con fino a 5 clienti. Passa a Pro quando cresci.';
+      'Piano Free fino a 5 clienti (accesso su invito). Passa a Pro quando cresci.';
 
   @override
   String get landingPricingFreeTitle => 'Gratuito';

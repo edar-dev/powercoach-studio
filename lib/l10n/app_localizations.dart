@@ -647,7 +647,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingPricingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Start free with up to 5 clients. Upgrade to Pro as you grow.'**
+  /// **'Free plan up to 5 clients (invite-only access). Upgrade to Pro as you grow.'**
   String get landingPricingSubtitle;
 
   /// No description provided for @landingPricingFreeTitle.
