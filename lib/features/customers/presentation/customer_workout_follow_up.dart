@@ -1,19 +1,26 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
-import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
-import 'package:powercoach_studio/features/workouts/domain/session_execution_service.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_follow_up_dialog.dart';
-import 'package:powercoach_studio/l10n/app_localizations.dart';
+
+import '../../../core/routing/app_navigation.dart';
+import '../../../core/ui/widgets/cloud_save_feedback.dart';
+import '../../../l10n/app_localizations.dart';
+import '../../workouts/data/workout_plan_api_model.dart';
+import '../../workouts/data/workout_plan_repository.dart';
+import '../../workouts/domain/session_execution_service.dart';
+import '../../workouts/presentation/widgets/workout_follow_up_dialog.dart';
 
 /// Shared follow-up creation flow for customer workout lists and overview.
-Future<void> createCustomerWorkoutFollowUp(
+///
+/// Returns the created plan, or `null` if the user cancelled or creation failed.
+Future<WorkoutPlanApiModel?> createCustomerWorkoutFollowUp(
   BuildContext context, {
   required String customerId,
   required WorkoutPlanApiModel plan,
-  required VoidCallback onSuccess,
+  required FutureOr<void> Function() onSuccess,
   WorkoutPlanRepository? planRepo,
   SessionExecutionService? executionService,
+  bool openEditor = true,
 }) async {
   final l10n = AppLocalizations.of(context);
   final repo = planRepo ?? WorkoutPlanRepository();
@@ -23,32 +30,36 @@ Future<void> createCustomerWorkoutFollowUp(
     plan: plan,
     executionService: execution,
   );
-  if (draft == null || !context.mounted) return;
+  if (draft == null || !context.mounted) return null;
 
   try {
-    await repo.createFollowUpFromPlan(
+    final created = await repo.createFollowUpFromPlan(
       sourcePlanId: plan.id,
       name: draft.name,
       newStartDate: draft.startDate,
       applyExecutedLoads: draft.applyExecutedLoads,
     );
-    if (!context.mounted) return;
-    onSuccess();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.workoutFollowUpCreatedMessage),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: StitchM3Theme.accent,
-      ),
+    if (!context.mounted) return created;
+    await onSuccess();
+    if (!context.mounted) return created;
+    showCloudSaveSuccessSnackBar(
+      context,
+      message: l10n.workoutFollowUpCreatedMessage,
     );
+    if (openEditor) {
+      navigateTo(
+        context,
+        customerWorkoutEditorPath(customerId, planId: created.id),
+      );
+    }
+    return created;
   } catch (e) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.workoutActionFailed),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-      ),
+    if (!context.mounted) return null;
+    showCloudSaveErrorSnackBar(
+      context,
+      e,
+      fallbackMessage: l10n.workoutActionFailed,
     );
+    return null;
   }
 }

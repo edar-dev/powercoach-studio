@@ -2092,7 +2092,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderAddSheetNotesSection => 'Note';
 
   @override
-  String get workoutCreateNewFromThis => 'Crea nuovo workout da questo';
+  String get workoutCreateNewFromThis => 'Crea follow-up da questo';
 
   @override
   String get workoutDuplicateTitle => 'Duplica workout';
@@ -2949,11 +2949,26 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customerNewWorkoutBlankHint => 'Parti da zero nel builder';
 
   @override
+  String get customerNewWorkoutFollowUp => 'Follow-up da scheda esistente';
+
+  @override
+  String get customerNewWorkoutFollowUpHint =>
+      'Prossimo mesociclo: azzera i progressi, mantiene la struttura, applica i carichi loggati se disponibili';
+
+  @override
+  String get customerNewWorkoutFollowUpPickTitle =>
+      'Scegli la scheda da continuare';
+
+  @override
+  String get customerNewWorkoutNoPlansForFollowUp =>
+      'Nessuna scheda da continuare per questo cliente.';
+
+  @override
   String get customerNewWorkoutDuplicateExisting => 'Duplica piano esistente';
 
   @override
   String get customerNewWorkoutDuplicateExistingHint =>
-      'Copia una scheda di questo cliente';
+      'Copia esatta di una scheda — progressi e carichi restano invariati';
 
   @override
   String get customerNewWorkoutNoPlansToDuplicate =>

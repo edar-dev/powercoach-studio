@@ -10,15 +10,18 @@ import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
+import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/presentation/widgets/workout_plan_name_prompt_dialog.dart';
+import '../customer_workout_follow_up.dart';
 
-enum CustomerNewWorkoutChoice { blank, duplicateExisting }
+enum CustomerNewWorkoutChoice { blank, followUpExisting, duplicateExisting }
 
 /// Bottom sheet entry for creating a new customer workout plan.
 Future<void> showCustomerNewWorkoutSheet(
   BuildContext context, {
   required String customerId,
   WorkoutPlanRepository? planRepo,
+  SessionExecutionService? executionService,
 }) async {
   final l10n = AppLocalizations.of(context);
   final repository = planRepo ?? WorkoutPlanRepository();
@@ -37,6 +40,13 @@ Future<void> showCustomerNewWorkoutSheet(
     case CustomerNewWorkoutChoice.blank:
       unawaited(HapticFeedback.mediumImpact());
       navigateTo(context, customerWorkoutEditorPath(customerId));
+    case CustomerNewWorkoutChoice.followUpExisting:
+      await _followUpExistingPlan(
+        context,
+        customerId: customerId,
+        planRepo: repository,
+        executionService: executionService,
+      );
     case CustomerNewWorkoutChoice.duplicateExisting:
       await _duplicateExistingPlan(
         context,
@@ -46,26 +56,106 @@ Future<void> showCustomerNewWorkoutSheet(
   }
 }
 
+Future<List<WorkoutPlanApiModel>?> _loadCustomerPlans(
+  BuildContext context, {
+  required String customerId,
+  required WorkoutPlanRepository planRepo,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  try {
+    return await planRepo.getByCustomerId(customerId);
+  } catch (e) {
+    if (!context.mounted) return null;
+    showCloudSaveErrorSnackBar(
+      context,
+      e,
+      fallbackMessage: l10n.workoutActionFailed,
+    );
+    return null;
+  }
+}
+
+Future<WorkoutPlanApiModel?> _pickSourcePlan(
+  BuildContext context, {
+  required List<WorkoutPlanApiModel> plans,
+  required String title,
+}) {
+  final l10n = AppLocalizations.of(context);
+  return showAppBottomSheet<WorkoutPlanApiModel>(
+    context: context,
+    title: title,
+    bodyBuilder: (sheetContext) => ListView.separated(
+      shrinkWrap: true,
+      itemCount: plans.length,
+      separatorBuilder: (_, _) => const Divider(height: 1),
+      itemBuilder: (ctx, index) {
+        final plan = plans[index];
+        final titleText = plan.name.trim().isEmpty
+            ? l10n.customerUnnamedPlan
+            : plan.name;
+        return ListTile(
+          title: Text(titleText),
+          onTap: () => Navigator.of(sheetContext).pop(plan),
+        );
+      },
+    ),
+  );
+}
+
+Future<void> _followUpExistingPlan(
+  BuildContext context, {
+  required String customerId,
+  required WorkoutPlanRepository planRepo,
+  SessionExecutionService? executionService,
+}) async {
+  final l10n = AppLocalizations.of(context);
+  final plans = await _loadCustomerPlans(
+    context,
+    customerId: customerId,
+    planRepo: planRepo,
+  );
+  if (plans == null || !context.mounted) return;
+
+  if (plans.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(l10n.customerNewWorkoutNoPlansForFollowUp),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+    return;
+  }
+
+  final source = await _pickSourcePlan(
+    context,
+    plans: plans,
+    title: l10n.customerNewWorkoutFollowUpPickTitle,
+  );
+  if (source == null || !context.mounted) return;
+
+  await createCustomerWorkoutFollowUp(
+    context,
+    customerId: customerId,
+    plan: source,
+    planRepo: planRepo,
+    executionService: executionService,
+    onSuccess: () {},
+  );
+}
+
 Future<void> _duplicateExistingPlan(
   BuildContext context, {
   required String customerId,
   required WorkoutPlanRepository planRepo,
 }) async {
   final l10n = AppLocalizations.of(context);
-  List<WorkoutPlanApiModel> plans;
-  try {
-    plans = await planRepo.getByCustomerId(customerId);
-  } catch (e) {
-    if (!context.mounted) return;
-    showCloudSaveErrorSnackBar(
-      context,
-      e,
-      fallbackMessage: l10n.workoutActionFailed,
-    );
-    return;
-  }
+  final plans = await _loadCustomerPlans(
+    context,
+    customerId: customerId,
+    planRepo: planRepo,
+  );
+  if (plans == null || !context.mounted) return;
 
-  if (!context.mounted) return;
   if (plans.isEmpty) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -76,24 +166,10 @@ Future<void> _duplicateExistingPlan(
     return;
   }
 
-  final source = await showAppBottomSheet<WorkoutPlanApiModel>(
-    context: context,
+  final source = await _pickSourcePlan(
+    context,
+    plans: plans,
     title: l10n.customerNewWorkoutDuplicatePickTitle,
-    bodyBuilder: (sheetContext) => ListView.separated(
-      shrinkWrap: true,
-      itemCount: plans.length,
-      separatorBuilder: (_, _) => const Divider(height: 1),
-      itemBuilder: (ctx, index) {
-        final plan = plans[index];
-        final title = plan.name.trim().isEmpty
-            ? l10n.customerUnnamedPlan
-            : plan.name;
-        return ListTile(
-          title: Text(title),
-          onTap: () => Navigator.of(sheetContext).pop(plan),
-        );
-      },
-    ),
   );
   if (source == null || !context.mounted) return;
 
@@ -151,6 +227,14 @@ class _CustomerNewWorkoutSheetBody extends StatelessWidget {
           subtitle: l10n.customerNewWorkoutBlankHint,
           colorScheme: cs,
           onTap: () => onChoice(CustomerNewWorkoutChoice.blank),
+        ),
+        const SizedBox(height: 8),
+        _ChoiceTile(
+          icon: Icons.replay_outlined,
+          title: l10n.customerNewWorkoutFollowUp,
+          subtitle: l10n.customerNewWorkoutFollowUpHint,
+          colorScheme: cs,
+          onTap: () => onChoice(CustomerNewWorkoutChoice.followUpExisting),
         ),
         const SizedBox(height: 8),
         _ChoiceTile(

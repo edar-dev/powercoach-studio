@@ -3785,7 +3785,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutCreateNewFromThis.
   ///
   /// In en, this message translates to:
-  /// **'Create new workout from this'**
+  /// **'Create follow-up from this'**
   String get workoutCreateNewFromThis;
 
   /// No description provided for @workoutDuplicateTitle.
@@ -5254,6 +5254,30 @@ abstract class AppLocalizations {
   /// **'Start from scratch in the builder'**
   String get customerNewWorkoutBlankHint;
 
+  /// No description provided for @customerNewWorkoutFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow-up from existing plan'**
+  String get customerNewWorkoutFollowUp;
+
+  /// No description provided for @customerNewWorkoutFollowUpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Next mesocycle: reset progress, keep structure, apply logged loads when available'**
+  String get customerNewWorkoutFollowUpHint;
+
+  /// No description provided for @customerNewWorkoutFollowUpPickTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a plan to continue'**
+  String get customerNewWorkoutFollowUpPickTitle;
+
+  /// No description provided for @customerNewWorkoutNoPlansForFollowUp.
+  ///
+  /// In en, this message translates to:
+  /// **'No plans to continue for this client.'**
+  String get customerNewWorkoutNoPlansForFollowUp;
+
   /// No description provided for @customerNewWorkoutDuplicateExisting.
   ///
   /// In en, this message translates to:
@@ -5263,7 +5287,7 @@ abstract class AppLocalizations {
   /// No description provided for @customerNewWorkoutDuplicateExistingHint.
   ///
   /// In en, this message translates to:
-  /// **'Copy one of this client\'s plans'**
+  /// **'Exact copy of a plan — progress and loads stay as-is'**
   String get customerNewWorkoutDuplicateExistingHint;
 
   /// No description provided for @customerNewWorkoutNoPlansToDuplicate.
