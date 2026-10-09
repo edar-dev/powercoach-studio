@@ -38,7 +38,7 @@ void main() {
       expect(find.text('Email'), findsWidgets);
       expect(find.text('Password'), findsWidgets);
       expect(find.text('Password dimenticata?'), findsOneWidget);
-      expect(find.text('Registrati'), findsWidgets);
+      expect(find.text('Scopri come accedere'), findsWidgets);
     });
 
     testWidgets('Landing hero visible when on landing', (WidgetTester tester) async {

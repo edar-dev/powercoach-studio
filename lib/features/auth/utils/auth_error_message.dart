@@ -19,6 +19,11 @@ String authErrorMessage(AuthException e, AppLocalizations l10n) {
     return l10n.loginErrorGeneric;
   }
 
+  final authCode = (e.code ?? '').toLowerCase();
+  if (_isSignupsDisabled(msg, authCode)) {
+    return l10n.registrationErrorSignupsDisabled;
+  }
+
   if (codeNum == 429) return l10n.loginErrorTooManyRequests;
   if (msg.contains('confirm') || msg.contains('verified') || codeNum == 422) {
     return l10n.loginErrorEmailNotConfirmed;
@@ -35,6 +40,11 @@ String authErrorMessage(AuthException e, AppLocalizations l10n) {
 /// Maps Supabase [AuthException] during sign-up to localized copy.
 String registrationErrorMessage(AuthException e, AppLocalizations l10n) {
   final msg = e.message.toLowerCase();
+  final code = (e.code ?? '').toLowerCase();
+
+  if (_isSignupsDisabled(msg, code)) {
+    return l10n.registrationErrorSignupsDisabled;
+  }
 
   if (msg.contains('already registered') ||
       msg.contains('user already registered') ||
@@ -47,4 +57,22 @@ String registrationErrorMessage(AuthException e, AppLocalizations l10n) {
   }
 
   return authErrorMessage(e, l10n);
+}
+
+bool _isSignupsDisabled(String msg, String code) {
+  if (code == 'signup_disabled' || code.contains('signup_disabled')) {
+    return true;
+  }
+  const fragments = [
+    'signups not allowed',
+    'signup is disabled',
+    'sign up is disabled',
+    'email signups are disabled',
+    'registration is disabled',
+    'signup_disabled',
+  ];
+  for (final fragment in fragments) {
+    if (msg.contains(fragment)) return true;
+  }
+  return false;
 }

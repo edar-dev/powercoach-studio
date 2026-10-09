@@ -60,7 +60,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The modular platform built for strength coaches, athletic trainers, and professional personal trainers. Block periodization, customizable microcycles, and real-time load tracking.';
 
   @override
-  String get landingCtaStartFreeNoCard => 'Start free — No card required';
+  String get landingCtaStartFreeNoCard => 'Already invited? Sign in';
 
   @override
   String get landingCtaSeePricingDemo => 'See pricing & demo';
@@ -253,7 +253,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drop chaotic tables. Coach Studio charts weekly volume, suggests load increases based on RPE/RIR, and lets athletes log results in their own logbook.';
 
   @override
-  String get landingPhasesCtaPrimary => 'Create your first plan in 2 minutes';
+  String get landingPhasesCtaPrimary => 'Already invited? Sign in';
 
   @override
   String get landingPhasesCtaSecondary => 'Explore the Exercise Library';
@@ -264,7 +264,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingCtaSectionSubtext =>
-      'Join the PowerCoach Studio beta. Manage athletes with modern tools, clean plans, and zero admin friction.';
+      'PowerCoach Studio is an invite-only beta. If you received an invite email, sign in and manage athletes with modern tools.';
 
   @override
   String get landingCtaSectionButton => 'Sign in';
@@ -277,11 +277,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingCtaSectionButtonLoggedIn => 'Dashboard';
 
   @override
-  String get landingCtaCreateAccount => 'Create your free coach account';
+  String get landingCtaCreateAccount => 'Already invited? Sign in';
 
   @override
   String get landingCtaFootnote =>
-      'No credit card required · Ready in 60 seconds';
+      'Invite-only access · No public registration';
 
   @override
   String get landingNavPricing => 'Pricing';
@@ -290,7 +290,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingBetaBadge => 'Early access — Beta Coach Studio v2.4';
 
   @override
-  String get landingCtaStartFree => 'Start free';
+  String get landingCtaStartFree => 'Sign in';
 
   @override
   String get landingCtaSeePricing => 'See pricing';
@@ -322,7 +322,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get landingPricingFreePeriod => 'forever';
 
   @override
-  String get landingPricingFreeCta => 'Create free account';
+  String get landingPricingFreeCta => 'Already invited? Sign in';
 
   @override
   String get landingPricingProTitle => 'Pro';
@@ -341,7 +341,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingPricingBetaNote =>
-      'During the closed beta you can activate Pro for free with an invite code after signing up.';
+      'During the closed beta you can activate Pro for free with a Pro promo code after signing in.';
 
   @override
   String landingPricingFeatureCustomersFree(int max) {
@@ -391,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingFaqBetaA =>
-      'Sign up for free, then open Subscription to request an invite code or redeem the one you receive.';
+      'App access is invite-only: an admin invites you by email. After the invite, set your password and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.';
 
   @override
   String get landingFaqBrowserQ => 'What if I clear browser data?';
@@ -504,6 +504,10 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get registrationErrorGeneric =>
       'Registration failed. Please try again.';
+
+  @override
+  String get registrationErrorSignupsDisabled =>
+      'Public registration is not available. Access is invite-only: if you received an invite, sign in with your credentials.';
 
   @override
   String get registrationErrorNameEmpty => 'Required field.';
@@ -624,10 +628,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginForgotPassword => 'Forgot password?';
 
   @override
-  String get loginNoAccount => 'Don\'t have a coach account yet?';
+  String get loginNoAccount => 'Access is invite-only.';
 
   @override
-  String get loginRegisterLink => 'Sign up free';
+  String get loginRegisterLink => 'How to get access';
 
   @override
   String get loginTrialChip => '14-day trial';
@@ -674,6 +678,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginSuccessMessage => 'Welcome back!';
+
+  @override
+  String get authInviteOnlyBadge => 'Invite-only access';
+
+  @override
+  String get authInviteOnlyHeadline => 'Access by invitation only';
+
+  @override
+  String get authInviteOnlyBody =>
+      'PowerCoach Studio does not offer public registration. An admin invites you by email: after the invite, set your password and sign in to your coach workspace.';
+
+  @override
+  String get authInviteOnlyLoginCta => 'Already invited? Sign in';
+
+  @override
+  String get authInviteOnlyProNote =>
+      'Pro promo codes unlock Pro after you have an account — they do not grant app access.';
 
   @override
   String get authBackHome => 'Back to home';
@@ -852,7 +873,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get subscriptionStatusFreeDetail =>
-      'Request an invite code or enter one you received to unlock Pro.';
+      'Request a Pro promo code or enter one you received to unlock Pro.';
 
   @override
   String get subscriptionUsageTitle => 'Free plan usage';
@@ -894,11 +915,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get subscriptionCompareNotIncluded => '—';
 
   @override
-  String get subscriptionStatusPromoActive => 'Pro (invite)';
+  String get subscriptionStatusPromoActive => 'Pro (promo)';
 
   @override
   String get subscriptionStatusPromoActiveDetail =>
-      'Pro access activated with an invite code.';
+      'Pro access activated with a Pro promo code.';
 
   @override
   String get subscriptionBillingDetailsTitle => 'Billing';

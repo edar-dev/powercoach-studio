@@ -13,4 +13,36 @@ void main() {
     );
     expect(message, l10n.registrationErrorAlreadyRegistered);
   });
+
+  test('registrationErrorMessage maps signup disabled messages', () async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('it'));
+    final fragments = [
+      'Signups not allowed for this instance',
+      'Signup is disabled',
+      'Sign up is disabled',
+      'Email signups are disabled',
+      'Registration is disabled',
+      'signup_disabled',
+    ];
+    for (final fragment in fragments) {
+      final message = registrationErrorMessage(AuthException(fragment), l10n);
+      expect(
+        message,
+        l10n.registrationErrorSignupsDisabled,
+        reason: 'Expected mapping for "$fragment"',
+      );
+    }
+  });
+
+  test('registrationErrorMessage maps signup_disabled code', () async {
+    final l10n = await AppLocalizations.delegate.load(const Locale('it'));
+    final message = registrationErrorMessage(
+      const AuthException(
+        'Forbidden',
+        code: 'signup_disabled',
+      ),
+      l10n,
+    );
+    expect(message, l10n.registrationErrorSignupsDisabled);
+  });
 }

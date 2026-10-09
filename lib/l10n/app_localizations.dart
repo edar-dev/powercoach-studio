@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingCtaStartFreeNoCard.
   ///
   /// In en, this message translates to:
-  /// **'Start free — No card required'**
+  /// **'Already invited? Sign in'**
   String get landingCtaStartFreeNoCard;
 
   /// No description provided for @landingCtaSeePricingDemo.
@@ -545,7 +545,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingPhasesCtaPrimary.
   ///
   /// In en, this message translates to:
-  /// **'Create your first plan in 2 minutes'**
+  /// **'Already invited? Sign in'**
   String get landingPhasesCtaPrimary;
 
   /// No description provided for @landingPhasesCtaSecondary.
@@ -563,7 +563,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingCtaSectionSubtext.
   ///
   /// In en, this message translates to:
-  /// **'Join the PowerCoach Studio beta. Manage athletes with modern tools, clean plans, and zero admin friction.'**
+  /// **'PowerCoach Studio is an invite-only beta. If you received an invite email, sign in and manage athletes with modern tools.'**
   String get landingCtaSectionSubtext;
 
   /// No description provided for @landingCtaSectionButton.
@@ -587,13 +587,13 @@ abstract class AppLocalizations {
   /// No description provided for @landingCtaCreateAccount.
   ///
   /// In en, this message translates to:
-  /// **'Create your free coach account'**
+  /// **'Already invited? Sign in'**
   String get landingCtaCreateAccount;
 
   /// No description provided for @landingCtaFootnote.
   ///
   /// In en, this message translates to:
-  /// **'No credit card required · Ready in 60 seconds'**
+  /// **'Invite-only access · No public registration'**
   String get landingCtaFootnote;
 
   /// No description provided for @landingNavPricing.
@@ -611,7 +611,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingCtaStartFree.
   ///
   /// In en, this message translates to:
-  /// **'Start free'**
+  /// **'Sign in'**
   String get landingCtaStartFree;
 
   /// No description provided for @landingCtaSeePricing.
@@ -671,7 +671,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingPricingFreeCta.
   ///
   /// In en, this message translates to:
-  /// **'Create free account'**
+  /// **'Already invited? Sign in'**
   String get landingPricingFreeCta;
 
   /// No description provided for @landingPricingProTitle.
@@ -707,7 +707,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingPricingBetaNote.
   ///
   /// In en, this message translates to:
-  /// **'During the closed beta you can activate Pro for free with an invite code after signing up.'**
+  /// **'During the closed beta you can activate Pro for free with a Pro promo code after signing in.'**
   String get landingPricingBetaNote;
 
   /// No description provided for @landingPricingFeatureCustomersFree.
@@ -791,7 +791,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqBetaA.
   ///
   /// In en, this message translates to:
-  /// **'Sign up for free, then open Subscription to request an invite code or redeem the one you receive.'**
+  /// **'App access is invite-only: an admin invites you by email. After the invite, set your password and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.'**
   String get landingFaqBetaA;
 
   /// No description provided for @landingFaqBrowserQ.
@@ -991,6 +991,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Registration failed. Please try again.'**
   String get registrationErrorGeneric;
+
+  /// No description provided for @registrationErrorSignupsDisabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Public registration is not available. Access is invite-only: if you received an invite, sign in with your credentials.'**
+  String get registrationErrorSignupsDisabled;
 
   /// No description provided for @registrationErrorNameEmpty.
   ///
@@ -1223,13 +1229,13 @@ abstract class AppLocalizations {
   /// No description provided for @loginNoAccount.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t have a coach account yet?'**
+  /// **'Access is invite-only.'**
   String get loginNoAccount;
 
   /// No description provided for @loginRegisterLink.
   ///
   /// In en, this message translates to:
-  /// **'Sign up free'**
+  /// **'How to get access'**
   String get loginRegisterLink;
 
   /// No description provided for @loginTrialChip.
@@ -1315,6 +1321,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Welcome back!'**
   String get loginSuccessMessage;
+
+  /// No description provided for @authInviteOnlyBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite-only access'**
+  String get authInviteOnlyBadge;
+
+  /// No description provided for @authInviteOnlyHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Access by invitation only'**
+  String get authInviteOnlyHeadline;
+
+  /// No description provided for @authInviteOnlyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'PowerCoach Studio does not offer public registration. An admin invites you by email: after the invite, set your password and sign in to your coach workspace.'**
+  String get authInviteOnlyBody;
+
+  /// No description provided for @authInviteOnlyLoginCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Already invited? Sign in'**
+  String get authInviteOnlyLoginCta;
+
+  /// No description provided for @authInviteOnlyProNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro promo codes unlock Pro after you have an account — they do not grant app access.'**
+  String get authInviteOnlyProNote;
 
   /// No description provided for @authBackHome.
   ///
@@ -1643,7 +1679,7 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionStatusFreeDetail.
   ///
   /// In en, this message translates to:
-  /// **'Request an invite code or enter one you received to unlock Pro.'**
+  /// **'Request a Pro promo code or enter one you received to unlock Pro.'**
   String get subscriptionStatusFreeDetail;
 
   /// No description provided for @subscriptionUsageTitle.
@@ -1715,13 +1751,13 @@ abstract class AppLocalizations {
   /// No description provided for @subscriptionStatusPromoActive.
   ///
   /// In en, this message translates to:
-  /// **'Pro (invite)'**
+  /// **'Pro (promo)'**
   String get subscriptionStatusPromoActive;
 
   /// No description provided for @subscriptionStatusPromoActiveDetail.
   ///
   /// In en, this message translates to:
-  /// **'Pro access activated with an invite code.'**
+  /// **'Pro access activated with a Pro promo code.'**
   String get subscriptionStatusPromoActiveDetail;
 
   /// No description provided for @subscriptionBillingDetailsTitle.

@@ -342,7 +342,7 @@ class _RightActions extends StatelessWidget {
           FilledButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/register');
+              navigateTo(context, '/login');
             },
             style: FilledButton.styleFrom(
               backgroundColor: LandingColors.brand,
