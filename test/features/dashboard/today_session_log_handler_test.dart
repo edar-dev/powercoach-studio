@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/sync/offline_repository_support.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
+import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/today_session_log_handler.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_repository.dart';
@@ -14,7 +15,6 @@ import 'package:powercoach_studio/features/workouts/domain/session_execution.dar
 import 'package:powercoach_studio/features/workouts/domain/session_execution_service.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/session_log_sheet.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
-import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 
 class _FakePlanRepo extends WorkoutPlanRepository {
   _FakePlanRepo(this.plan) : super(offline: OfflineRepositorySupport());
