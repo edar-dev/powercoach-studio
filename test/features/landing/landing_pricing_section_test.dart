@@ -32,6 +32,6 @@ void main() {
     expect(find.text('Gratuito'), findsOneWidget);
     expect(find.text('Pro'), findsOneWidget);
     expect(find.text('12 €/mese'), findsOneWidget);
-    expect(find.text('Crea account gratis'), findsOneWidget);
+    expect(find.text('Hai un invito? Accedi'), findsOneWidget);
   });
 }

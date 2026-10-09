@@ -345,25 +345,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: MarketingDarkColors.brand.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                      color: MarketingDarkColors.brand.withValues(alpha: 0.3),
-                    ),
-                  ),
-                  child: Text(
-                    l10n.loginTrialChip,
-                    style: const TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: MarketingDarkColors.brandLight,
+                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),

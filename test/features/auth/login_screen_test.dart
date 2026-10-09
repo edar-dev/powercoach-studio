@@ -31,7 +31,9 @@ void main() {
       expect(find.text('EMAIL O NOME UTENTE'), findsOneWidget);
       expect(find.text('PASSWORD'), findsWidgets);
       expect(find.text('Password dimenticata?'), findsOneWidget);
-      expect(find.text('Registrati gratis'), findsOneWidget);
+      expect(find.text('Accesso solo su invito.'), findsOneWidget);
+      expect(find.text('Scopri come accedere'), findsOneWidget);
+      expect(find.text('Registrati gratis'), findsNothing);
       expect(find.text('Coach / Trainer'), findsOneWidget);
       expect(find.text('Atleta'), findsOneWidget);
     });

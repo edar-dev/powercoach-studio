@@ -42,49 +42,15 @@ void main() {
   });
 
   group('RegistrationScreen', () {
-    testWidgets('shows Stitch fields and trust chips', (tester) async {
+    testWidgets('shows invite-only headline and login CTA', (tester) async {
       await tester.pumpWidget(_wrap(const RegistrationScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Crea il tuo account Coach'), findsOneWidget);
-      expect(find.text('266+ Esercizi inclusi'), findsOneWidget);
-      expect(find.text('NOME'), findsOneWidget);
-      expect(find.text('COGNOME'), findsOneWidget);
-      expect(find.text('EMAIL PROFESSIONALE'), findsOneWidget);
-      expect(find.text('Personal Trainer'), findsOneWidget);
-      expect(
-        find.text('Crea account e inizia la prova gratuita'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('rejects weak password', (tester) async {
-      await tester.pumpWidget(_wrap(const RegistrationScreen()));
-      await tester.pumpAndSettle();
-
-      await tester.enterText(
-        find.widgetWithText(TextFormField, '').at(0),
-        'Mario',
-      );
-      // Fill via labels' sibling fields by scrolling to password.
-      final passwordFields = find.byType(TextFormField);
-      expect(passwordFields, findsWidgets);
-
-      await tester.enterText(passwordFields.at(2), 'weak');
-      await tester.enterText(passwordFields.at(3), 'weak');
-
-      await tester.ensureVisible(
-        find.text('Crea account e inizia la prova gratuita'),
-      );
-      await tester.tap(find.text('Crea account e inizia la prova gratuita'));
-      await tester.pumpAndSettle();
-
-      expect(
-        find.textContaining('8 caratteri').evaluate().isNotEmpty ||
-            find.text('Campo obbligatorio.').evaluate().isNotEmpty ||
-            find.text('Accetta i termini per continuare.').evaluate().isNotEmpty,
-        isTrue,
-      );
+      expect(find.text('Accesso solo su invito'), findsOneWidget);
+      expect(find.text('Hai già un invito? Accedi'), findsOneWidget);
+      expect(find.text('Accesso su invito'), findsWidgets);
+      expect(find.textContaining('codici promo Pro'), findsOneWidget);
+      expect(find.byType(TextFormField), findsNothing);
     });
   });
 }

@@ -33,19 +33,13 @@ Widget _wrapWithApp(Widget child) {
 
 void main() {
   group('Auth screens UI', () {
-    testWidgets('Registration screen shows form', (WidgetTester tester) async {
+    testWidgets('Registration screen shows invite-only access', (WidgetTester tester) async {
       await tester.pumpWidget(_wrapWithApp(const RegistrationScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Crea il tuo account Coach'), findsOneWidget);
-      // AuthDarkTextField uppercases field labels.
-      expect(find.text('EMAIL PROFESSIONALE'), findsOneWidget);
-      expect(find.text('PASSWORD'), findsWidgets);
-      expect(find.text('CONFERMA PASSWORD'), findsOneWidget);
-      expect(
-        find.text('Crea account e inizia la prova gratuita'),
-        findsOneWidget,
-      );
+      expect(find.text('Accesso solo su invito'), findsOneWidget);
+      expect(find.text('Hai già un invito? Accedi'), findsOneWidget);
+      expect(find.byType(TextFormField), findsNothing);
     });
 
     testWidgets('Forgot password screen shows form and back link', (WidgetTester tester) async {

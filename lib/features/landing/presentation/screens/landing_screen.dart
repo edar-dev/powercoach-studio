@@ -96,7 +96,7 @@ class _LandingScreenState extends State<LandingScreen> {
     if (_isLoggedIn) {
       navigateTo(context, '/customers');
     } else {
-      navigateTo(context, '/register');
+      navigateTo(context, '/login');
     }
   }
 
@@ -105,7 +105,7 @@ class _LandingScreenState extends State<LandingScreen> {
     if (_isLoggedIn) {
       navigateTo(context, AppPaths.subscription);
     } else {
-      navigateTo(context, '/register');
+      navigateTo(context, '/login');
     }
   }
 
@@ -170,7 +170,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 if (isLoggedIn) {
                   navigateTo(context, '/dashboard');
                 } else {
-                  navigateTo(context, '/register');
+                  navigateTo(context, '/login');
                 }
               },
               onSecondary: () {

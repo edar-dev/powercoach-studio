@@ -2,7 +2,6 @@
 // Requires Supabase credentials in the bundled env asset (see scripts/ensure-env.sh).
 // Run: flutter test integration_test/
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:integration_test/integration_test.dart';
@@ -54,7 +53,7 @@ void main() {
       expect(find.text('Password'), findsWidgets);
     });
 
-    testWidgets('Navigate login -> register and see registration form', (WidgetTester tester) async {
+    testWidgets('Navigate login -> register and see invite-only screen', (WidgetTester tester) async {
       await tester.pumpWidget(const PowerCoachStudioApp());
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
@@ -62,11 +61,11 @@ void main() {
         await tester.tap(find.text('Accedi').first);
         await tester.pumpAndSettle();
       }
-      await tester.tap(find.text('Registrati').first);
+      await tester.tap(find.text('Scopri come accedere').first);
       await tester.pumpAndSettle();
 
-      expect(find.text('Conferma password'), findsOneWidget);
-      expect(find.text('Registrati'), findsWidgets);
+      expect(find.text('Accesso solo su invito'), findsOneWidget);
+      expect(find.text('Hai già un invito? Accedi'), findsOneWidget);
     });
 
     testWidgets('Navigate login -> forgot password', (WidgetTester tester) async {
@@ -105,7 +104,7 @@ void main() {
       );
     });
 
-    testWidgets('Register screen back button returns to login', (WidgetTester tester) async {
+    testWidgets('Register invite screen CTA returns to login', (WidgetTester tester) async {
       await tester.pumpWidget(const PowerCoachStudioApp());
       await tester.pumpAndSettle(const Duration(seconds: 5));
 
@@ -113,11 +112,11 @@ void main() {
         await tester.tap(find.text('Accedi').first);
         await tester.pumpAndSettle();
       }
-      await tester.tap(find.text('Registrati').first);
+      await tester.tap(find.text('Scopri come accedere').first);
       await tester.pumpAndSettle();
-      expect(find.text('Conferma password'), findsOneWidget);
+      expect(find.text('Accesso solo su invito'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.arrow_back));
+      await tester.tap(find.text('Hai già un invito? Accedi'));
       await tester.pumpAndSettle();
 
       expect(find.text('Password dimenticata?'), findsOneWidget);
