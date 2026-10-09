@@ -53,3 +53,49 @@ Future<void> presentPdfExportArtifact(
       );
   }
 }
+
+/// Workout-builder path: auto-open preview, then Share / Save / Close.
+///
+/// Skips the auto-preview snackbar; share/save still show success snackbars.
+Future<void> presentPdfExportArtifactPreviewFirst(
+  BuildContext context, {
+  required ExportArtifact artifact,
+  required AppLocalizations l10n,
+}) async {
+  await openPdfExportPreview(artifact);
+  if (!context.mounted) return;
+
+  final result = await showPdfExportShareSaveDialog(
+    context,
+    artifact: artifact,
+    title: l10n.pdfExportPreviewThenShareTitle,
+    message: l10n.pdfExportPreviewThenShareMessage,
+    shareLabel: l10n.pdfExportActionShare,
+    saveLabel: l10n.pdfExportActionSave,
+    closeLabel: l10n.pdfExportActionClose,
+  );
+  if (!context.mounted) return;
+
+  final messenger = ScaffoldMessenger.of(context);
+  switch (result) {
+    case PdfExportPreviewResult.cancelled:
+    case PdfExportPreviewResult.previewOpened:
+      return;
+    case PdfExportPreviewResult.shared:
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.pdfExportSharedSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+    case PdfExportPreviewResult.downloaded:
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(l10n.pdfExportSavedSuccess),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: StitchM3Theme.accent,
+        ),
+      );
+  }
+}

@@ -110,7 +110,7 @@ class WorkoutBuilderExportActions {
       );
       if (!context.mounted) return;
       hidePdfExportProgressDialog(context);
-      await presentPdfExportArtifact(
+      await presentPdfExportArtifactPreviewFirst(
         context,
         artifact: artifact,
         l10n: l10n,
