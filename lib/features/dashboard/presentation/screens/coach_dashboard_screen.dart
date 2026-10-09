@@ -24,6 +24,8 @@ import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashbo
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_surface_card.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_today_section.dart';
 
+import '../today_session_log_handler.dart';
+
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
   const CoachDashboardScreen({super.key, this.loadSnapshot});
@@ -38,6 +40,8 @@ class CoachDashboardScreen extends StatefulWidget {
 
 class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   final DashboardSnapshotLoader _loader = DashboardSnapshotLoader();
+  final TodaySessionLogHandler _todaySessionLogHandler =
+      TodaySessionLogHandler();
   DashboardSnapshot? _snapshot;
   bool _loading = true;
   bool _backupOnboardingScheduled = false;
@@ -243,6 +247,13 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           l10n: l10n,
                           snapshot: snap,
                           loading: _loading,
+                          onSessionTap: (item) async {
+                            final ok = await _todaySessionLogHandler.logSession(
+                              context: context,
+                              item: item,
+                            );
+                            if (ok && mounted) await _loadStats();
+                          },
                         ),
                       ],
                     ),

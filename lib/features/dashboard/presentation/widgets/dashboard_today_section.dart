@@ -18,6 +18,7 @@ class DashboardTodaySection extends StatelessWidget {
     required this.l10n,
     required this.snapshot,
     required this.loading,
+    this.onSessionTap,
   });
 
   final ThemeData theme;
@@ -25,6 +26,9 @@ class DashboardTodaySection extends StatelessWidget {
   final AppLocalizations l10n;
   final DashboardSnapshot snapshot;
   final bool loading;
+
+  /// When set, row tap invokes this instead of navigating to session detail.
+  final Future<void> Function(DashboardTodayItem item)? onSessionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +150,11 @@ class DashboardTodaySection extends StatelessWidget {
             programName: programLabel,
             onTap: () {
               HapticFeedback.mediumImpact();
+              final tap = onSessionTap;
+              if (tap != null) {
+                tap(item);
+                return;
+              }
               navigateTo(
                 context,
                 scheduleSessionDetailPath(
