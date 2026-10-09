@@ -17,7 +17,6 @@ class WorkoutBuilderSandboxBanner extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final stacked = !Breakpoints.isTabletOrWider(context);
 
     final copy = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,17 +47,26 @@ class WorkoutBuilderSandboxBanner extends StatelessWidget {
       color: cs.secondaryContainer,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: stacked
-            ? Column(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final layoutWidth = constraints.maxWidth.isFinite
+                ? constraints.maxWidth
+                : MediaQuery.sizeOf(context).width;
+            final stacked = layoutWidth < Breakpoints.tablet;
+
+            if (stacked) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.cloud_off_outlined,
-                        color: cs.onSecondaryContainer,
-                        size: 20,
+                      ExcludeSemantics(
+                        child: Icon(
+                          Icons.cloud_off_outlined,
+                          color: cs.onSecondaryContainer,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(child: copy),
@@ -67,21 +75,27 @@ class WorkoutBuilderSandboxBanner extends StatelessWidget {
                   const SizedBox(height: 12),
                   cta,
                 ],
-              )
-            : Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
+              );
+            }
+
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ExcludeSemantics(
+                  child: Icon(
                     Icons.cloud_off_outlined,
                     color: cs.onSecondaryContainer,
                     size: 20,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(child: copy),
-                  const SizedBox(width: 12),
-                  cta,
-                ],
-              ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: copy),
+                const SizedBox(width: 12),
+                cta,
+              ],
+            );
+          },
+        ),
       ),
     );
   }
