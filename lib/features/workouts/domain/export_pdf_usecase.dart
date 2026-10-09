@@ -556,12 +556,6 @@ List<pw.Widget> _densePageBodyWidgets(
   required bool includeMobility,
 }) {
   final dayBlocks = _buildDenseDayBlocks(routine, labels);
-  final laterBudget = denseContentBudget(firstPage: false);
-  final batches = packConsecutiveByHeight(
-    dayBlocks,
-    (b) => b.estimatedHeight,
-    pageBudget: laterBudget,
-  );
 
   final mobilityWidgets = includeMobility
       ? _mobilityWidgets(routine, labels, dense: true)
@@ -579,6 +573,16 @@ List<pw.Widget> _densePageBodyWidgets(
           itemCount: routine.mobilityItems.length,
           dense: true,
         );
+
+  // First batch uses the tighter page-1 budget (coach band + legend). When
+  // short mobility is present, reserve its height so attach can succeed.
+  final batches = packConsecutiveByHeightWithFirstPageBudget(
+    dayBlocks,
+    (b) => b.estimatedHeight,
+    firstPageBudget: denseContentBudget(firstPage: true),
+    laterPageBudget: denseContentBudget(firstPage: false),
+    reservedFirstPageHeight: mobilityHeight,
+  );
 
   final out = <pw.Widget>[];
   if (mobilityWidgets.isNotEmpty &&

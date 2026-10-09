@@ -103,3 +103,72 @@ List<List<T>> packConsecutiveByHeight<T>(
   flush();
   return pages;
 }
+
+/// Like [packConsecutiveByHeight], but the first batch uses [firstPageBudget]
+/// (tighter, coach header + legend) and later batches use [laterPageBudget].
+///
+/// When [reservedFirstPageHeight] is set (e.g. short mobility we hope to
+/// attach), the first-batch budget is reduced so mobility + days fit page 1.
+List<List<T>> packConsecutiveByHeightWithFirstPageBudget<T>(
+  List<T> items,
+  double Function(T) heightOf, {
+  required double firstPageBudget,
+  required double laterPageBudget,
+  double reservedFirstPageHeight = 0,
+  int maxItemsPerBatch = 3,
+}) {
+  if (items.isEmpty) return const [];
+
+  var firstBudget = firstPageBudget;
+  if (reservedFirstPageHeight > 0 &&
+      reservedFirstPageHeight < firstPageBudget) {
+    final remaining = firstPageBudget - reservedFirstPageHeight;
+    // Only reserve when there is still room for at least one short day.
+    if (remaining >= 80) {
+      firstBudget = remaining;
+    }
+  }
+
+  final firstBatch = <T>[];
+  var used = 0.0;
+  var index = 0;
+
+  for (; index < items.length; index++) {
+    final item = items[index];
+    final h = heightOf(item);
+    if (h > firstBudget) {
+      if (firstBatch.isEmpty) {
+        // Oversized for page 1: emit alone, pack the rest with later budget.
+        return [
+          [item],
+          ...packConsecutiveByHeight(
+            items.sublist(index + 1),
+            heightOf,
+            pageBudget: laterPageBudget,
+            maxItemsPerBatch: maxItemsPerBatch,
+          ),
+        ];
+      }
+      break;
+    }
+    final wouldExceedBudget = firstBatch.isNotEmpty && used + h > firstBudget;
+    final wouldExceedCap =
+        firstBatch.isNotEmpty && firstBatch.length >= maxItemsPerBatch;
+    if (firstBatch.isEmpty || (!wouldExceedBudget && !wouldExceedCap)) {
+      firstBatch.add(item);
+      used += h;
+    } else {
+      break;
+    }
+  }
+
+  return [
+    firstBatch,
+    ...packConsecutiveByHeight(
+      items.sublist(index),
+      heightOf,
+      pageBudget: laterPageBudget,
+      maxItemsPerBatch: maxItemsPerBatch,
+    ),
+  ];
+}

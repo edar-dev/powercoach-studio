@@ -147,4 +147,49 @@ void main() {
       expect(dense, lessThan(canonical));
     });
   });
+
+  group('packConsecutiveByHeightWithFirstPageBudget', () {
+    test('first batch uses tighter first-page budget', () {
+      // Later budget (400) would pack three 120s; first (250) packs only two.
+      final items = [120.0, 120.0, 120.0];
+      final batches = packConsecutiveByHeightWithFirstPageBudget(
+        items,
+        (h) => h,
+        firstPageBudget: 250,
+        laterPageBudget: 400,
+      );
+      expect(batches, [
+        [120.0, 120.0],
+        [120.0],
+      ]);
+    });
+
+    test('reserved mobility height shrinks first batch', () {
+      final items = [100.0, 100.0, 100.0];
+      final batches = packConsecutiveByHeightWithFirstPageBudget(
+        items,
+        (h) => h,
+        firstPageBudget: 300,
+        laterPageBudget: 400,
+        reservedFirstPageHeight: 120,
+      );
+      // firstBudget becomes 180 → only one 100 fits.
+      expect(batches.first, hasLength(1));
+      expect(batches.expand((b) => b).length, 3);
+    });
+
+    test('oversized first item alone then later packs rest', () {
+      final items = [500.0, 100.0, 100.0];
+      final batches = packConsecutiveByHeightWithFirstPageBudget(
+        items,
+        (h) => h,
+        firstPageBudget: 250,
+        laterPageBudget: 400,
+      );
+      expect(batches, [
+        [500.0],
+        [100.0, 100.0],
+      ]);
+    });
+  });
 }
