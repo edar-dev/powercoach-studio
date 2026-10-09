@@ -3048,12 +3048,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardWorkoutBuilderDraft => 'Builder bozza';
 
   @override
+  String get workoutBuilderSandboxTitle => 'Builder bozza';
+
+  @override
   String get workoutBuilderSandboxBanner =>
-      'Bozza locale — non assegnata a un cliente';
+      'Bozza locale su questo dispositivo — non è sul cliente';
 
   @override
   String get workoutBuilderSandboxBannerHint =>
-      'Salva su un cliente per usarla nel programma.';
+      'Salva tiene la bozza solo qui. Compare nella scheda del cliente solo dopo Assegna a cliente.';
 
   @override
   String get workoutBuilderAssignToCustomer => 'Assegna a cliente';

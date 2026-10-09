@@ -5428,16 +5428,22 @@ abstract class AppLocalizations {
   /// **'Draft builder'**
   String get dashboardWorkoutBuilderDraft;
 
+  /// No description provided for @workoutBuilderSandboxTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Draft builder'**
+  String get workoutBuilderSandboxTitle;
+
   /// No description provided for @workoutBuilderSandboxBanner.
   ///
   /// In en, this message translates to:
-  /// **'Local draft — not assigned to a client'**
+  /// **'Local draft on this device — not on a client'**
   String get workoutBuilderSandboxBanner;
 
   /// No description provided for @workoutBuilderSandboxBannerHint.
   ///
   /// In en, this message translates to:
-  /// **'Assign to a client to use it in their program.'**
+  /// **'Save keeps the draft only here. It appears under the client only after Assign to client.'**
   String get workoutBuilderSandboxBannerHint;
 
   /// No description provided for @workoutBuilderAssignToCustomer.

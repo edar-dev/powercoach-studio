@@ -3021,12 +3021,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardWorkoutBuilderDraft => 'Draft builder';
 
   @override
+  String get workoutBuilderSandboxTitle => 'Draft builder';
+
+  @override
   String get workoutBuilderSandboxBanner =>
-      'Local draft — not assigned to a client';
+      'Local draft on this device — not on a client';
 
   @override
   String get workoutBuilderSandboxBannerHint =>
-      'Assign to a client to use it in their program.';
+      'Save keeps the draft only here. It appears under the client only after Assign to client.';
 
   @override
   String get workoutBuilderAssignToCustomer => 'Assign to client';

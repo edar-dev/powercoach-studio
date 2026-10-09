@@ -34,12 +34,13 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.onExport,
     required this.onSave,
     this.showFirstSaveBanner = false,
-    this.showSandboxBanner = false,
     this.showReadOnlyBanner = false,
     this.sandboxBanner,
     this.readOnlyBanner,
     this.onboardingCard,
     this.routineTitleHint,
+    this.editorCustomerName,
+    this.hasLoadedPlan = false,
   });
 
   final bool canPop;
@@ -62,12 +63,13 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final void Function(String value) onExport;
   final VoidCallback onSave;
   final bool showFirstSaveBanner;
-  final bool showSandboxBanner;
   final bool showReadOnlyBanner;
   final Widget? sandboxBanner;
   final Widget? readOnlyBanner;
   final Widget? onboardingCard;
   final String? routineTitleHint;
+  final String? editorCustomerName;
+  final bool hasLoadedPlan;
 
   Widget _constrainedSessionColumn({
     required BuildContext context,
@@ -121,12 +123,14 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           onExport: onExport,
           onSave: onSave,
           saveStatusIndicator: saveStatusIndicator,
+          editorCustomerName: editorCustomerName,
+          hasLoadedPlan: hasLoadedPlan,
         ),
         body: loading
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: [
-                  if (showSandboxBanner && sandboxBanner != null) sandboxBanner!,
+                  if (sandboxBanner != null) sandboxBanner!,
                   if (showReadOnlyBanner && readOnlyBanner != null)
                     readOnlyBanner!,
                   if (onboardingCard != null) onboardingCard!,

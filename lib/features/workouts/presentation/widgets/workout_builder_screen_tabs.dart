@@ -214,9 +214,10 @@ class WorkoutBuilderScreenTabs {
       onExport: onExport,
       onSave: readOnly ? () async => true : onSave,
       showFirstSaveBanner: showFirstSaveBanner && !readOnly,
-      showSandboxBanner: showSandboxBanner,
       showReadOnlyBanner: readOnly,
       routineTitleHint: routineTitleHint,
+      editorCustomerName: editorCustomerName,
+      hasLoadedPlan: loadedPlanId != null && loadedPlanId!.isNotEmpty,
       sandboxBanner: showSandboxBanner && onAssignDraftToCustomer != null
           ? WorkoutBuilderSandboxBanner(
               onAssignToCustomer: onAssignDraftToCustomer!,

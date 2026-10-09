@@ -20,6 +20,8 @@ class WorkoutEditorAppBar extends StatelessWidget
     required this.onExport,
     required this.onSave,
     this.saveStatusIndicator,
+    this.editorCustomerName,
+    this.hasLoadedPlan = false,
   });
 
   final ThemeData theme;
@@ -35,22 +37,61 @@ class WorkoutEditorAppBar extends StatelessWidget
   final void Function(String value) onExport;
   final VoidCallback onSave;
   final Widget? saveStatusIndicator;
+  final String? editorCustomerName;
+  /// True only after a customer plan exists in cloud (not first-save draft).
+  final bool hasLoadedPlan;
+
+  String? get _assignedPlanBadge {
+    if (!editorMode || !hasLoadedPlan) return null;
+    final name = editorCustomerName?.trim();
+    if (name == null || name.isEmpty) return null;
+    return l10n.workoutBuilderAssignedPlanBadge(name);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final titleText =
+        editorMode ? l10n.workoutBuilderTitle : l10n.workoutBuilderSandboxTitle;
+    final badge = _assignedPlanBadge;
+
+    final toolbarHeight = badge == null ? kToolbarHeight : kToolbarHeight + 8;
+
     return AppBar(
       elevation: 0,
+      toolbarHeight: toolbarHeight,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
         onPressed: () async => onBack(),
       ),
-      title: Text(
-        l10n.workoutBuilderTitle,
-        style: theme.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w700,
-          color: colorScheme.onSurface,
-        ),
-      ),
+      title: badge == null
+          ? Text(
+              titleText,
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: colorScheme.onSurface,
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  titleText,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: colorScheme.onSurface,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  badge,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
       actions: [
         if (!loading)
           IconButton(
@@ -116,5 +157,8 @@ class WorkoutEditorAppBar extends StatelessWidget
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 1);
+  Size get preferredSize {
+    final hasBadge = _assignedPlanBadge != null;
+    return Size.fromHeight(kToolbarHeight + 1 + (hasBadge ? 8 : 0));
+  }
 }
