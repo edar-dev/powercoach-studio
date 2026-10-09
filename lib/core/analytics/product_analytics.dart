@@ -1,3 +1,4 @@
+import '../remote/coach_entities_exceptions.dart';
 import 'posthog_bootstrap.dart';
 import 'posthog_web.dart';
 
@@ -11,6 +12,9 @@ abstract final class AnalyticsEvents {
   static const pdfExported = 'pdf_exported';
   static const subscriptionCheckoutStarted = 'subscription_checkout_started';
   static const subscribed = 'subscribed';
+  static const firstSaveFailed = 'first_save_failed';
+  static const offlineSaveBlocked = 'offline_save_blocked';
+  static const sessionLogged = 'session_logged';
 }
 
 /// Thin product-analytics facade. No-op off-web, when disabled, or before consent.
@@ -24,6 +28,30 @@ abstract final class ProductAnalytics {
     if (trimmed.isEmpty) return;
     if (!PostHogBootstrap.isEnabled) return;
     capturePosthogWebEvent(trimmed, properties);
+  }
+
+  /// Non-PII reason token for cloud-save failures (`offline`, `not_authenticated`,
+  /// `remote`, `network`, `unknown`). Never include exception messages.
+  static String reasonFromError(Object error) {
+    if (error is CoachEntitiesOnlineRequiredException) {
+      return switch (error.reason) {
+        CoachEntitiesOnlineRequiredReason.offline => 'offline',
+        CoachEntitiesOnlineRequiredReason.notAuthenticated =>
+          'not_authenticated',
+      };
+    }
+    if (error is CoachEntitiesRemoteException) {
+      return 'remote';
+    }
+    final msg = error.toString().toLowerCase();
+    if (msg.contains('socketexception') ||
+        msg.contains('clientexception') ||
+        msg.contains('failed host lookup') ||
+        msg.contains('network') ||
+        msg.contains('connection')) {
+      return 'network';
+    }
+    return 'unknown';
   }
 
   static void loginCompleted() => capture(AnalyticsEvents.loginCompleted);
@@ -51,5 +79,34 @@ abstract final class ProductAnalytics {
   static void subscribed({String source = 'stripe_checkout'}) => capture(
         AnalyticsEvents.subscribed,
         <String, Object?>{'source': source},
+      );
+
+  /// First cloud create of a workout plan failed (editor had no [loadedPlanId]).
+  static void firstSaveFailed({
+    required bool silent,
+    required String reason,
+  }) =>
+      capture(
+        AnalyticsEvents.firstSaveFailed,
+        <String, Object?>{'silent': silent, 'reason': reason},
+      );
+
+  /// Remote write blocked because the coach is offline or not authenticated.
+  static void offlineSaveBlocked({required String reason}) => capture(
+        AnalyticsEvents.offlineSaveBlocked,
+        <String, Object?>{'reason': reason},
+      );
+
+  /// Coach logged a completed training session (diary / Today / calendar).
+  static void sessionLogged({
+    String source = 'unknown',
+    bool hasExerciseData = false,
+  }) =>
+      capture(
+        AnalyticsEvents.sessionLogged,
+        <String, Object?>{
+          'source': source,
+          'has_exercise_data': hasExerciseData,
+        },
       );
 }

@@ -241,6 +241,7 @@ class _WorkoutBuilderMobilityScreenState
         status: PlanSessionStatus.completed,
         exercises: logResult.exercises,
         notes: logResult.notes,
+        source: 'workout_builder',
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

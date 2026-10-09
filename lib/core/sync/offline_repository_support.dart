@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../analytics/product_analytics.dart';
 import '../platform/web_online_status.dart';
 import '../remote/coach_entities_exceptions.dart';
 import '../remote/coach_entities_remote.dart';
@@ -143,9 +144,17 @@ class OfflineRepositorySupport {
   }
 
   void _ensureRemoteWriteAllowed() {
-    _requireUserId();
+    try {
+      _requireUserId();
+    } on CoachEntitiesOnlineRequiredException catch (e) {
+      ProductAnalytics.offlineSaveBlocked(
+        reason: ProductAnalytics.reasonFromError(e),
+      );
+      rethrow;
+    }
     final onlineCheck = _isOnline;
     if (onlineCheck != null && !onlineCheck()) {
+      ProductAnalytics.offlineSaveBlocked(reason: 'offline');
       throw CoachEntitiesOnlineRequiredException(
         CoachEntitiesOnlineRequiredReason.offline,
       );

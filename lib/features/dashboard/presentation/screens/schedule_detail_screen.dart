@@ -136,6 +136,7 @@ class _ScheduleDetailScreenState extends State<ScheduleDetailScreen> {
           sessionDate: event.day,
           exercises: exercises,
           notes: notes,
+          source: 'schedule_detail',
         );
       } else if (selected == 'override_skip') {
         await _overrideService.skipSessionOccurrence(

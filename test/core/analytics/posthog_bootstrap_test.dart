@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/analytics/analytics_consent_store.dart';
 import 'package:powercoach_studio/core/analytics/posthog_bootstrap.dart';
 import 'package:powercoach_studio/core/analytics/product_analytics.dart';
+import 'package:powercoach_studio/core/remote/coach_entities_exceptions.dart';
 import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -142,6 +143,12 @@ POSTHOG_API_KEY=phc_test_key
       ProductAnalytics.pdfExported(source: 'workout_plan');
       ProductAnalytics.subscriptionCheckoutStarted(billingInterval: 'monthly');
       ProductAnalytics.subscribed();
+      ProductAnalytics.firstSaveFailed(silent: true, reason: 'offline');
+      ProductAnalytics.offlineSaveBlocked(reason: 'not_authenticated');
+      ProductAnalytics.sessionLogged(
+        source: 'dashboard_today',
+        hasExerciseData: true,
+      );
     });
 
     test('event name constants are stable', () {
@@ -156,6 +163,38 @@ POSTHOG_API_KEY=phc_test_key
         'subscription_checkout_started',
       );
       expect(AnalyticsEvents.subscribed, 'subscribed');
+      expect(AnalyticsEvents.firstSaveFailed, 'first_save_failed');
+      expect(AnalyticsEvents.offlineSaveBlocked, 'offline_save_blocked');
+      expect(AnalyticsEvents.sessionLogged, 'session_logged');
+    });
+
+    test('reasonFromError maps typed cloud errors without PII', () {
+      expect(
+        ProductAnalytics.reasonFromError(
+          CoachEntitiesOnlineRequiredException(
+            CoachEntitiesOnlineRequiredReason.offline,
+          ),
+        ),
+        'offline',
+      );
+      expect(
+        ProductAnalytics.reasonFromError(
+          CoachEntitiesOnlineRequiredException(
+            CoachEntitiesOnlineRequiredReason.notAuthenticated,
+          ),
+        ),
+        'not_authenticated',
+      );
+      expect(
+        ProductAnalytics.reasonFromError(
+          CoachEntitiesRemoteException('upsert failed'),
+        ),
+        'remote',
+      );
+      expect(
+        ProductAnalytics.reasonFromError(StateError('unexpected')),
+        'unknown',
+      );
     });
   });
 }
