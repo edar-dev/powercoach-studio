@@ -23,6 +23,8 @@ Session replay stays masked; CanvasKit limits visual fidelity — use **event fu
 | `offline_save_blocked` | Remote write blocked (offline / no session) | `reason` (`offline` \| `not_authenticated`) |
 | `session_logged` | Session marked completed | `source` (`dashboard_today` \| `schedule_detail` \| `workout_builder` \| `calendar` \| `customer_plan` \| `unknown`), `has_exercise_data` (bool) |
 
+**Correlation:** An offline first-create failure emits **both** `offline_save_blocked` (repository gate) and `first_save_failed` (editor). Treat them as paired, not as independent funnel steps. `offline_save_blocked` also fires for any blocked remote write (customers, measurements, deletes), not only the builder.
+
 ## Other events
 
 | Event | Props |

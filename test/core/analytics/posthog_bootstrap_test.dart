@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/analytics/analytics_consent_store.dart';
@@ -194,6 +196,12 @@ POSTHOG_API_KEY=phc_test_key
       expect(
         ProductAnalytics.reasonFromError(StateError('unexpected')),
         'unknown',
+      );
+      expect(
+        ProductAnalytics.reasonFromError(
+          const SocketException('Failed host lookup'),
+        ),
+        'network',
       );
     });
   });
