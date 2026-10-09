@@ -192,5 +192,176 @@ void main() {
         expect(find.text('Plan plan-coord-1'), findsOneWidget);
       },
     );
+
+    testWidgets(
+      'manual save after silent create syncs URL off /workouts/new',
+      (tester) async {
+        var createCalls = 0;
+        var updateCalls = 0;
+        Future<WorkoutPlanApiModel> createPlan({
+          required String customerId,
+          required String name,
+          required WorkoutRoutine routine,
+          String? pdfHeader,
+          bool useCustomPdfHeader = false,
+          int initialWeekNumber = 1,
+          String? notes,
+        }) async {
+          createCalls++;
+          final now = DateTime(2026, 1, 1);
+          return WorkoutPlanApiModel(
+            id: 'plan-sync-1',
+            customerId: customerId,
+            userId: 'user-1',
+            name: name,
+            planData: encodeWorkoutRoutinePlanData(routine),
+            initialWeekNumber: initialWeekNumber,
+            createdAt: now,
+            updatedAt: now,
+          );
+        }
+
+        final session = WorkoutBuilderSessionController(
+          routine: WorkoutRoutine.empty().copyWith(name: 'Plan'),
+        );
+        final nameController = TextEditingController(text: 'Plan');
+        final initialWeekController = TextEditingController(text: '1');
+        final notesController = TextEditingController();
+        final editorController = WorkoutEditorController(
+          createPlan: createPlan,
+          updatePlan: ({
+            required planId,
+            name,
+            routine,
+            initialWeekNumber,
+            notes,
+          }) async {
+            updateCalls++;
+            final now = DateTime(2026, 1, 1);
+            final resolvedRoutine = routine ?? session.routine;
+            return WorkoutPlanApiModel(
+              id: planId,
+              customerId: 'c1',
+              userId: 'user-1',
+              name: name ?? 'Plan',
+              planData: encodeWorkoutRoutinePlanData(resolvedRoutine),
+              initialWeekNumber: initialWeekNumber ?? 1,
+              createdAt: now,
+              updatedAt: now,
+            );
+          },
+        );
+        editorController.markLoaded(
+          session: WorkoutEditorSession(
+            routine: session.routine,
+            planName: 'Plan',
+            initialWeekNumber: 1,
+          ),
+          planId: null,
+        );
+        final coordinator = WorkoutBuilderRoutineCoordinator(
+          builderSession: session,
+          editorController: editorController,
+          planRepo: WorkoutPlanRepository(offline: OfflineRepositorySupport()),
+          customerRepo: CustomerRepository(offline: OfflineRepositorySupport()),
+          draftStore: const SharedPrefsWorkoutDraftStore(),
+          routineNameController: nameController,
+          initialWeekController: initialWeekController,
+          notesController: notesController,
+        );
+
+        addTearDown(() {
+          nameController.dispose();
+          initialWeekController.dispose();
+          notesController.dispose();
+          session.dispose();
+          editorController.dispose();
+        });
+
+        final router = GoRouter(
+          initialLocation: customerWorkoutEditorPath('c1'),
+          routes: [
+            GoRoute(
+              path: '/customers/:customerId/workouts/new',
+              builder: (context, _) => Scaffold(
+                body: Column(
+                  children: [
+                    FilledButton(
+                      onPressed: () async {
+                        await coordinator.saveRoutine(
+                          context: context,
+                          editorMode: true,
+                          customerId: 'c1',
+                          initialWeekNumber: 1,
+                          editorCustomer: null,
+                          selectedWeekIndex: 0,
+                          selectedDayIndex: 0,
+                          silent: true,
+                        );
+                      },
+                      child: const Text('silent'),
+                    ),
+                    FilledButton(
+                      onPressed: () async {
+                        await coordinator.saveRoutine(
+                          context: context,
+                          editorMode: true,
+                          customerId: 'c1',
+                          initialWeekNumber: 1,
+                          editorCustomer: null,
+                          selectedWeekIndex: 0,
+                          selectedDayIndex: 0,
+                        );
+                      },
+                      child: const Text('manual'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            GoRoute(
+              path: '/customers/:customerId/workouts/:planId',
+              builder: (_, state) =>
+                  Text('Plan ${state.pathParameters['planId']}'),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          MaterialApp.router(
+            theme: StitchM3Theme.light,
+            locale: const Locale('en'),
+            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            routerConfig: router,
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('silent'));
+        await tester.pumpAndSettle();
+        expect(createCalls, 1);
+        expect(editorController.loadedPlanId, 'plan-sync-1');
+        expect(find.text('silent'), findsOneWidget);
+
+        // Dirty again so manual save performs an update, then syncs URL.
+        editorController.notifyContentChanged(
+          session: WorkoutEditorSession(
+            routine: session.routine,
+            planName: 'Plan edited',
+            initialWeekNumber: 1,
+          ),
+          editorMode: true,
+          loading: false,
+        );
+        nameController.text = 'Plan edited';
+
+        await tester.tap(find.text('manual'));
+        await tester.pumpAndSettle();
+
+        expect(updateCalls, 1);
+        expect(find.text('Plan plan-sync-1'), findsOneWidget);
+      },
+    );
   });
 }

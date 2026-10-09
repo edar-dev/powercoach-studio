@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
@@ -156,22 +157,29 @@ class WorkoutBuilderRoutineCoordinator {
             ),
           );
         }
-        // Manual create only: remount onto /workouts/:planId.
+        // Manual save only: remount onto /workouts/:planId.
         // Silent autosave create must keep the editor mounted so in-flight
         // edits are not lost; editorController.save() already set loadedPlanId.
-        final createdPlanId = outcome.createdPlanId;
+        // Also sync the URL if a prior silent create left us on /workouts/new.
+        final planIdForRoute =
+            outcome.createdPlanId ?? editorController.loadedPlanId;
         if (!silent &&
-            createdPlanId != null &&
-            createdPlanId.isNotEmpty) {
-          navigateReplace(
-            context,
-            customerWorkoutEditorPath(
-              customerId,
-              planId: createdPlanId,
-              weekIndex: selectedWeekIndex,
-              dayIndex: selectedDayIndex,
-            ),
-          );
+            planIdForRoute != null &&
+            planIdForRoute.isNotEmpty) {
+          final path = GoRouterState.of(context).uri.path;
+          final needsRouteSync = outcome.createdPlanId != null ||
+              path.endsWith('/workouts/new');
+          if (needsRouteSync) {
+            navigateReplace(
+              context,
+              customerWorkoutEditorPath(
+                customerId,
+                planId: planIdForRoute,
+                weekIndex: selectedWeekIndex,
+                dayIndex: selectedDayIndex,
+              ),
+            );
+          }
         }
       } else if (silent) {
         final l10n = AppLocalizations.of(context);
