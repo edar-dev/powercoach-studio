@@ -44,4 +44,42 @@ void main() {
     await tester.pump();
     expect(tapped, isTrue);
   });
+
+  testWidgets('shows clarified EN copy', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: StitchM3Theme.light,
+        darkTheme: StitchM3Theme.dark,
+        themeMode: ThemeMode.dark,
+        locale: const Locale('en'),
+        supportedLocales: AppLocalizations.supportedLocales,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        home: Scaffold(
+          body: WorkoutBuilderSandboxBanner(onAssignToCustomer: () {}),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Local draft on this device — not on a client'),
+      findsOneWidget,
+    );
+    expect(find.textContaining('Assign to client'), findsWidgets);
+    expect(find.byType(FilledButton), findsOneWidget);
+  });
+
+  testWidgets('stacks CTA under copy on narrow widths', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(390, 800));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await tester.pumpWidget(
+      app(WorkoutBuilderSandboxBanner(onAssignToCustomer: () {})),
+    );
+    await tester.pump();
+
+    final banner = tester.getRect(find.byType(WorkoutBuilderSandboxBanner));
+    final cta = tester.getRect(find.byType(FilledButton));
+    expect(cta.top, greaterThan(banner.top + 40));
+  });
 }

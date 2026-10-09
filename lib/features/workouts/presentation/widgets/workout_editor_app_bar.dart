@@ -21,6 +21,7 @@ class WorkoutEditorAppBar extends StatelessWidget
     required this.onSave,
     this.saveStatusIndicator,
     this.editorCustomerName,
+    this.hasLoadedPlan = false,
   });
 
   final ThemeData theme;
@@ -37,9 +38,11 @@ class WorkoutEditorAppBar extends StatelessWidget
   final VoidCallback onSave;
   final Widget? saveStatusIndicator;
   final String? editorCustomerName;
+  /// True only after a customer plan exists in cloud (not first-save draft).
+  final bool hasLoadedPlan;
 
   String? get _assignedPlanBadge {
-    if (!editorMode) return null;
+    if (!editorMode || !hasLoadedPlan) return null;
     final name = editorCustomerName?.trim();
     if (name == null || name.isEmpty) return null;
     return l10n.workoutBuilderAssignedPlanBadge(name);
