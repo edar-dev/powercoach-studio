@@ -295,5 +295,59 @@ void main() {
       final rows = buildProgrammingSetRows(exercise);
       expect(rows.single.load, '63kg');
     });
+
+    test('normalizes float noise in unstructured reps / load fields', () {
+      const exercise = Exercise(
+        id: 'e2',
+        name: 'Bench',
+        sets: '3',
+        reps: '5 @ 62.99999999999999kg',
+        rpe: '62.99999999999999kg',
+      );
+      final rows = buildProgrammingSetRows(exercise);
+      expect(rows.single.reps, '5 @ 63kg');
+      expect(rows.single.load, '63kg');
+    });
+
+    test('normalizes float noise when load is only in set.line', () {
+      const exercise = Exercise(
+        id: 'e3',
+        name: 'Deadlift',
+        sets: '1',
+        reps: '',
+        rpe: '',
+        setDetails: [
+          ExerciseSet(line: '1x5 62.99999999999999kg'),
+        ],
+      );
+      final rows = buildProgrammingSetRows(exercise);
+      expect(rows.single.reps, '1x5 63kg');
+      expect(rows.single.load, isEmpty);
+    });
+
+    test('dense compact prescription normalizes interpolated loads', () {
+      const exercise = Exercise(
+        id: 'e4',
+        name: 'Squat',
+        sets: '3',
+        reps: '5',
+        rpe: '62.99999999999999kg',
+      );
+      expect(
+        formatExercisePrescriptionCompact(exercise, singleLine: true),
+        '3x5 63kg',
+      );
+      expect(formatDenseTablePrescription(exercise), '3x5 63kg');
+    });
+  });
+
+  group('formatPdfNumber', () {
+    test('rounds float noise to honest integers and decimals', () {
+      expect(formatPdfNumber(62.99999999999999), '63');
+      expect(formatPdfNumber(90 * 0.7), '63');
+      expect(formatPdfNumber(77.5), '77.5');
+      expect(formatPdfNumber(82.499999), '82.5');
+      expect(formatPdfNumber(70.0), '70');
+    });
   });
 }
