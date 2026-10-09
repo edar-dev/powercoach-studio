@@ -5,6 +5,7 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+import 'package:powercoach_studio/core/ui/widgets/cloud_save_feedback.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/customer_measurement_repository.dart';
@@ -84,16 +85,14 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
         });
         unawaited(_loadProgress());
       }
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       setState(() => _workoutPlansLoading = false);
       final l10n = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutPlansLoadError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutPlansLoadError,
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../l10n/app_localizations.dart';
+import '../../../core/ui/widgets/cloud_save_feedback.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
 import '../../workouts/domain/plan_session_override_service.dart';
 import '../../workouts/domain/plan_session_status_service.dart';
@@ -73,15 +74,13 @@ class CustomerWorkoutPlanSessionHandler {
         );
       }
       return true;
-    } catch (_) {
+    } catch (e) {
       if (!context.mounted) return false;
       final l10n = AppLocalizations.of(context);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.calendarUpdateError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.calendarUpdateError,
       );
       return false;
     }
