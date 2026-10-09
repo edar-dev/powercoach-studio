@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:powercoach_studio/core/data_quality/data_quality.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_dashboard_screen.dart';
@@ -163,6 +164,7 @@ void main() {
           locale: const Locale('en'),
           home: CoachDashboardScreen(
             loadSnapshot: (_) async => snap,
+            loadDataHealth: () async => null,
           ),
         ),
       );
@@ -171,6 +173,62 @@ void main() {
       expect(find.text('Needs attention'), findsOneWidget);
       expect(find.text('Clients without a program'), findsOneWidget);
       expect(find.text('Plans to refresh'), findsOneWidget);
+      expect(find.text('Open data health'), findsNothing);
+    });
+
+    testWidgets('surfaces actionable data-health findings in Attention',
+        (tester) async {
+      final now = DateTime(2025, 6, 15, 12);
+      final snap = buildDashboardSnapshot(
+        customers: [_customer(id: 'c1', name: 'Anna')],
+        plans: [
+          _plan(
+            id: 'p1',
+            customerId: 'c1',
+            name: 'Today plan',
+            updatedAt: now,
+            planDataJson: _routineJsonWithStart(DateTime(2025, 6, 15)),
+          ),
+        ],
+        now: now,
+        unknownClientLabel: '?',
+        untitledWorkoutLabel: 'Untitled',
+      );
+      final report = DataQualityReport(
+        findings: const [
+          DataQualityFinding(
+            ruleId: DataQualityRuleIds.orphanReference,
+            severity: DataQualitySeverity.error,
+            message: 'Plan orphan-plan references missing customer',
+          ),
+          DataQualityFinding(
+            ruleId: DataQualityRuleIds.preferencesDecode,
+            severity: DataQualitySeverity.info,
+            message: 'info should be filtered',
+          ),
+        ],
+        scannedEntityCount: 2,
+        generatedAt: DateTime.utc(2026, 10, 9),
+      );
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('en'),
+          home: CoachDashboardScreen(
+            loadSnapshot: (_) async => snap,
+            loadDataHealth: () async => report,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('1 data issues need review'), findsOneWidget);
+      expect(find.text('Open data health'), findsOneWidget);
+      expect(find.text('info should be filtered'), findsNothing);
+      expect(
+        find.text('Plan orphan-plan references missing customer'),
+        findsOneWidget,
+      );
     });
   });
 }

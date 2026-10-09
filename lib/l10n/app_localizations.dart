@@ -6214,6 +6214,30 @@ abstract class AppLocalizations {
   /// **'Open backup settings'**
   String get dashboardOpenBackupSettings;
 
+  /// No description provided for @dashboardDataHealthIssuesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} data issues need review'**
+  String dashboardDataHealthIssuesTitle(int count);
+
+  /// No description provided for @dashboardDataHealthIssuesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Orphan plans, broken pins, or integrity problems in local data. Review and repair in Data health.'**
+  String get dashboardDataHealthIssuesHint;
+
+  /// No description provided for @dashboardOpenDataHealth.
+  ///
+  /// In en, this message translates to:
+  /// **'Open data health'**
+  String get dashboardOpenDataHealth;
+
+  /// No description provided for @dashboardDataHealthMoreCount.
+  ///
+  /// In en, this message translates to:
+  /// **'+{count} more'**
+  String dashboardDataHealthMoreCount(int count);
+
   /// No description provided for @dashboardBackupReminderMessage.
   ///
   /// In en, this message translates to:
