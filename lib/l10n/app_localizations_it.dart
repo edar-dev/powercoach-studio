@@ -1584,7 +1584,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get customersOfflineFirstFooter =>
-      'Architettura Offline-First · dati salvati in locale su questo dispositivo';
+      'I dati si sincronizzano sul cloud quando sei online · cache locale su questo dispositivo';
 
   @override
   String get customersSearchEmpty => 'Nessun cliente corrisponde ai filtri.';
@@ -1836,6 +1836,12 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get cloudSaveFailed => 'Impossibile salvare sul cloud. Riprova.';
+
+  @override
+  String get cloudSaveSucceeded => 'Salvato sul cloud.';
+
+  @override
+  String get cloudSaveRetryAction => 'Riprova';
 
   @override
   String get customerDeleteError => 'Impossibile eliminare il cliente.';

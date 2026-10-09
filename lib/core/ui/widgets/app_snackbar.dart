@@ -5,6 +5,7 @@ void showAppSnackBar(
   required Widget content,
   Color? backgroundColor,
   Duration duration = const Duration(seconds: 3),
+  SnackBarAction? action,
 }) {
   final messenger = ScaffoldMessenger.maybeOf(context);
   if (messenger == null) return;
@@ -17,7 +18,7 @@ void showAppSnackBar(
         duration: duration,
         behavior: SnackBarBehavior.floating,
         backgroundColor: backgroundColor,
+        action: action,
       ),
     );
 }
-

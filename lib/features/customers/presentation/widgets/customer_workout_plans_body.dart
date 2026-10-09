@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
@@ -265,12 +265,10 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.toString()),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutActionFailed,
       );
     }
   }
@@ -299,14 +297,10 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       );
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutDeleteError,
-          ),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutDeleteError,
       );
     }
   }
@@ -318,14 +312,12 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutActionFailed),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutActionFailed,
       );
     }
   }
@@ -337,14 +329,12 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutActionFailed),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutActionFailed,
       );
     }
   }

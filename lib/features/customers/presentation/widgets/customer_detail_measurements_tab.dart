@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
-import 'package:powercoach_studio/core/routing/app_navigation.dart';
-import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
-import 'package:powercoach_studio/features/customers/data/customer_measurement_repository.dart';
-import 'package:powercoach_studio/features/customers/data/models/customer_measurement.dart';
-import 'package:powercoach_studio/features/customers/domain/customer_overview_metrics.dart';
-import 'package:powercoach_studio/features/customers/domain/measurement_metric.dart';
-import 'package:powercoach_studio/features/customers/domain/measurement_series_builder.dart';
-import 'package:powercoach_studio/features/customers/presentation/screens/customer_measurement_form_screen.dart';
-import 'package:powercoach_studio/features/customers/presentation/widgets/measurement_history_chart.dart';
-import 'package:powercoach_studio/l10n/app_localizations.dart';
+
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/ui/widgets/app_sheet.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../data/customer_measurement_repository.dart';
+import '../../data/models/customer_measurement.dart';
+import '../../domain/customer_overview_metrics.dart';
+import '../../domain/measurement_metric.dart';
+import '../../domain/measurement_series_builder.dart';
+import '../screens/customer_measurement_form_screen.dart';
+import 'measurement_history_chart.dart';
 
 class CustomerDetailMeasurementsTab extends StatefulWidget {
   const CustomerDetailMeasurementsTab({
@@ -277,7 +278,6 @@ class _CustomerDetailMeasurementsTabState
     CustomerMeasurement measurement,
   ) async {
     final l10n = AppLocalizations.of(context);
-    final colorScheme = Theme.of(context).colorScheme;
     final confirm = await showAppConfirmDialog(
       context: context,
       title: l10n.measurementDeleteConfirm,
@@ -294,12 +294,10 @@ class _CustomerDetailMeasurementsTabState
       widget.onReload();
     } catch (e) {
       if (!context.mounted) return;
-      showAppSnackBar(
+      showCloudSaveErrorSnackBar(
         context,
-        content: Text(
-          tryCloudSaveErrorMessage(e, l10n) ?? l10n.measurementDeleteError,
-        ),
-        backgroundColor: colorScheme.errorContainer,
+        e,
+        fallbackMessage: l10n.measurementDeleteError,
       );
     }
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:powercoach_studio/core/remote/cloud_save_error_message.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
-import 'package:powercoach_studio/l10n/app_localizations.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../core/ui/widgets/app_sheet.dart';
+import '../../../core/ui/widgets/cloud_save_feedback.dart';
+import '../../../l10n/app_localizations.dart';
 import '../data/customer_repository.dart';
 
 Future<void> deleteCustomerDetail({
@@ -43,15 +43,10 @@ Future<void> deleteCustomerDetail({
   } catch (e, stackTrace) {
     await Sentry.captureException(e, stackTrace: stackTrace);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          tryCloudSaveErrorMessage(e, l10n) ?? l10n.customerDeleteError,
-          style: TextStyle(color: colorScheme.onErrorContainer),
-        ),
-        backgroundColor: colorScheme.errorContainer,
-        behavior: SnackBarBehavior.floating,
-      ),
+    showCloudSaveErrorSnackBar(
+      context,
+      e,
+      fallbackMessage: l10n.customerDeleteError,
     );
   }
 }
