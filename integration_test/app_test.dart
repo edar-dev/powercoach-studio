@@ -2,7 +2,6 @@
 // Requires Supabase credentials in the bundled env asset (see scripts/ensure-env.sh).
 // Run: flutter test integration_test/
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:integration_test/integration_test.dart';
