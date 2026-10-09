@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/notifications/calendar_reminder_scheduler.dart';
+import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
@@ -11,7 +13,6 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
-import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../workouts/domain/session_execution_service.dart';
 import '../../../workouts/domain/workout_plan_list_helpers.dart';
 import '../../../workouts/presentation/workout_plan_display_helpers.dart';
@@ -29,11 +30,13 @@ class CustomerWorkoutPlansBody extends StatefulWidget {
     required this.customerId,
     this.embeddedInTab = false,
     this.onPlansChanged,
+    this.planRepo,
   });
 
   final String customerId;
   final bool embeddedInTab;
   final VoidCallback? onPlansChanged;
+  final WorkoutPlanRepository? planRepo;
 
   @override
   State<CustomerWorkoutPlansBody> createState() =>
@@ -41,7 +44,7 @@ class CustomerWorkoutPlansBody extends StatefulWidget {
 }
 
 class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
-  final WorkoutPlanRepository _planRepo = WorkoutPlanRepository();
+  late final WorkoutPlanRepository _planRepo;
   final SessionExecutionService _executionService = SessionExecutionService();
   late final CustomerWorkoutPlanSessionHandler _sessionHandler;
   List<WorkoutPlanApiModel> _plans = [];
@@ -61,6 +64,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
   @override
   void initState() {
     super.initState();
+    _planRepo = widget.planRepo ?? WorkoutPlanRepository();
     _sessionHandler = CustomerWorkoutPlanSessionHandler();
     _loadPlans();
   }
@@ -105,9 +109,11 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         setState(() {
           _loading = false;
-          _error = e.toString();
+          _error =
+              tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutPlansLoadError;
         });
       }
     }
@@ -144,6 +150,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       onDuplicate: () => _duplicatePlan(plan),
       onArchive: () => _archivePlan(plan),
       onUnarchive: () => _unarchivePlan(plan),
+      onMarkCompleted: () => _completePlan(plan),
       onDelete: () => _deletePlan(plan),
     );
   }
@@ -326,6 +333,23 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     final l10n = AppLocalizations.of(context);
     try {
       await _planRepo.unarchivePlan(plan.id);
+      await CalendarReminderScheduler.instance.rescheduleUpcoming();
+      if (!mounted) return;
+      await _loadPlans();
+    } catch (e) {
+      if (!mounted) return;
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.workoutActionFailed,
+      );
+    }
+  }
+
+  Future<void> _completePlan(WorkoutPlanApiModel plan) async {
+    final l10n = AppLocalizations.of(context);
+    try {
+      await _planRepo.markPlanCompleted(plan.id);
       await CalendarReminderScheduler.instance.rescheduleUpcoming();
       if (!mounted) return;
       await _loadPlans();
