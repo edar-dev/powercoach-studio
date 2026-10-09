@@ -2861,7 +2861,7 @@ abstract class AppLocalizations {
   /// No description provided for @customersOfflineFirstFooter.
   ///
   /// In en, this message translates to:
-  /// **'Offline-First architecture · data saved locally on this device'**
+  /// **'Data syncs to the cloud when you\'re online · local cache on this device'**
   String get customersOfflineFirstFooter;
 
   /// No description provided for @customersSearchEmpty.
@@ -3331,6 +3331,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Could not save to the cloud. Try again.'**
   String get cloudSaveFailed;
+
+  /// No description provided for @cloudSaveSucceeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved to the cloud.'**
+  String get cloudSaveSucceeded;
+
+  /// No description provided for @cloudSaveRetryAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get cloudSaveRetryAction;
 
   /// No description provided for @customerDeleteError.
   ///

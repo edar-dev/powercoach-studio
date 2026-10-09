@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../workout_editor_controller.dart';
 
 class WorkoutEditorSaveStatusIndicator extends StatelessWidget {
@@ -60,49 +61,15 @@ class WorkoutEditorSaveStatusIndicator extends StatelessWidget {
               ? l10n.workoutEditorAutosaveHint
               : label);
 
-    return Tooltip(
-      message: tooltip,
-      child: Semantics(
-        button: failed && onRetry != null,
-        label: tooltip,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(999),
-          onTap: failed ? onRetry : null,
-          child: Container(
-            margin: const EdgeInsets.only(right: 8),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              color: background,
-              borderRadius: BorderRadius.circular(999),
-              border: Border.all(color: foreground.withValues(alpha: 0.35)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 16, color: foreground),
-                const SizedBox(width: 6),
-                Text(
-                  label,
-                  style: textTheme.labelMedium?.copyWith(
-                    color: foreground,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                if (failed && onRetry != null) ...[
-                  const SizedBox(width: 6),
-                  Text(
-                    l10n.workoutEditorRetrySave,
-                    style: textTheme.labelMedium?.copyWith(
-                      color: foreground,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
+    return CloudSaveStatusChip(
+      icon: icon,
+      label: label,
+      foreground: foreground,
+      background: background,
+      textTheme: textTheme,
+      tooltip: tooltip,
+      onRetry: failed ? onRetry : null,
+      retryLabel: failed ? l10n.workoutEditorRetrySave : null,
     );
   }
 }

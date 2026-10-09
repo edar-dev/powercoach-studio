@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
 import '../../../workouts/data/workout_plan_repository.dart';
@@ -56,11 +57,10 @@ Future<void> _duplicateExistingPlan(
     plans = await planRepo.getByCustomerId(customerId);
   } catch (e) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(e.toString()),
-        behavior: SnackBarBehavior.floating,
-      ),
+    showCloudSaveErrorSnackBar(
+      context,
+      e,
+      fallbackMessage: l10n.workoutActionFailed,
     );
     return;
   }
@@ -119,12 +119,10 @@ Future<void> _duplicateExistingPlan(
     );
   } catch (e) {
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(e.toString()),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
-      ),
+    showCloudSaveErrorSnackBar(
+      context,
+      e,
+      fallbackMessage: l10n.workoutActionFailed,
     );
   }
 }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../customers/data/customer_repository.dart';
 import '../../customers/data/models/customer.dart' show Customer;
 import '../data/workout_draft_store.dart';
@@ -184,45 +184,29 @@ class WorkoutBuilderRoutineCoordinator {
       } else if (silent) {
         final l10n = AppLocalizations.of(context);
         final err = outcome.error;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              err != null
-                  ? (tryCloudSaveErrorMessage(err, l10n) ??
-                      l10n.workoutEditorAutosaveFailed)
-                  : l10n.workoutEditorAutosaveFailed,
-            ),
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: l10n.workoutEditorRetrySave,
-              onPressed: () {
-                saveRoutine(
-                  context: context,
-                  editorMode: editorMode,
-                  customerId: customerId,
-                  initialWeekNumber: initialWeekNumber,
-                  editorCustomer: editorCustomer,
-                  selectedWeekIndex: selectedWeekIndex,
-                  selectedDayIndex: selectedDayIndex,
-                );
-              },
-            ),
-          ),
+        showCloudSaveErrorSnackBar(
+          context,
+          err ?? Exception(l10n.workoutEditorAutosaveFailed),
+          fallbackMessage: l10n.workoutEditorAutosaveFailed,
+          onRetry: () {
+            saveRoutine(
+              context: context,
+              editorMode: editorMode,
+              customerId: customerId,
+              initialWeekNumber: initialWeekNumber,
+              editorCustomer: editorCustomer,
+              selectedWeekIndex: selectedWeekIndex,
+              selectedDayIndex: selectedDayIndex,
+            );
+          },
         );
       } else {
         final l10n = AppLocalizations.of(context);
         final err = outcome.error;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              err != null
-                  ? (tryCloudSaveErrorMessage(err, l10n) ??
-                      l10n.workoutExportError)
-                  : l10n.workoutExportError,
-            ),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.errorContainer,
-          ),
+        showCloudSaveErrorSnackBar(
+          context,
+          err ?? Exception(l10n.cloudSaveFailed),
+          fallbackMessage: l10n.cloudSaveFailed,
         );
       }
       return WorkoutBuilderSaveOutcome(
@@ -260,9 +244,11 @@ class WorkoutBuilderRoutineCoordinator {
         return const WorkoutBuilderSaveOutcome(success: false);
       }
       if (!silent) {
+        // Sandbox draft is local SharedPreferences — not a cloud write.
+        final l10n = AppLocalizations.of(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(AppLocalizations.of(context).workoutExportError),
+            content: Text(l10n.workoutActionFailed),
             behavior: SnackBarBehavior.floating,
             backgroundColor: Theme.of(context).colorScheme.errorContainer,
           ),
@@ -381,14 +367,12 @@ class WorkoutBuilderRoutineCoordinator {
           dayIndex: selectedDayIndex,
         ),
       );
-    } catch (_) {
+    } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.cloudSaveFailed,
       );
     }
   }
@@ -414,13 +398,12 @@ class WorkoutBuilderRoutineCoordinator {
           behavior: SnackBarBehavior.floating,
         ),
       );
-    } catch (_) {
+    } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutExportError),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.cloudSaveFailed,
       );
     }
   }

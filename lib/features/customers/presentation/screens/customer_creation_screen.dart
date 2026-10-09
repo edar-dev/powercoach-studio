@@ -7,7 +7,7 @@ import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import '../../../../core/remote/cloud_save_error_message.dart';
+import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
@@ -139,8 +139,6 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
     }
 
     final l10n = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     setState(() => _saving = true);
     try {
@@ -195,29 +193,15 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
 
       final created = await _repo.create(customer);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            l10n.profileSavedMessage,
-            style: TextStyle(color: colorScheme.onPrimaryContainer),
-          ),
-          backgroundColor: colorScheme.primaryContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+      showCloudSaveSuccessSnackBar(context);
       context.go('/customers/${created.id}');
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            tryCloudSaveErrorMessage(e, l10n) ?? l10n.customerSaveError,
-            style: TextStyle(color: colorScheme.onErrorContainer),
-          ),
-          backgroundColor: colorScheme.errorContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
+      showCloudSaveErrorSnackBar(
+        context,
+        e,
+        fallbackMessage: l10n.customerSaveError,
       );
     } finally {
       if (mounted) setState(() => _saving = false);

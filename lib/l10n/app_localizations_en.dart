@@ -1569,7 +1569,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get customersOfflineFirstFooter =>
-      'Offline-First architecture · data saved locally on this device';
+      'Data syncs to the cloud when you\'re online · local cache on this device';
 
   @override
   String get customersSearchEmpty => 'No clients match these filters.';
@@ -1820,6 +1820,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cloudSaveFailed => 'Could not save to the cloud. Try again.';
+
+  @override
+  String get cloudSaveSucceeded => 'Saved to the cloud.';
+
+  @override
+  String get cloudSaveRetryAction => 'Retry';
 
   @override
   String get customerDeleteError => 'Could not delete customer.';
