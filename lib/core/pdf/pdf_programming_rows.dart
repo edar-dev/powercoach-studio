@@ -152,10 +152,10 @@ List<PdfProgrammingSetRow> buildProgrammingSetRows(
   return [
     PdfProgrammingSetRow(
       exercise: exercise.name,
-      sets: exercise.sets,
-      reps: exercise.reps,
+      sets: sanitizePdfText(exercise.sets),
+      reps: formatPdfLoad(exercise.reps),
       load: formatPdfLoad(exercise.rpe),
-      notes: exercise.note,
+      notes: sanitizePdfText(exercise.note),
     ),
   ];
 }
@@ -182,8 +182,8 @@ String formatExercisePrescriptionCompact(
     return n.isEmpty ? d0 : '$d0 - ${sanitizePdfText(n)}';
   }
 
-  final sets = e.sets.trim();
-  final reps = e.reps.trim();
+  final sets = sanitizePdfText(e.sets.trim());
+  final reps = formatPdfLoad(e.reps);
   final rpe = formatPdfLoad(e.rpe);
   final note = includeExerciseNote ? e.note.trim() : '';
   String line;
@@ -204,8 +204,8 @@ String _compactSetFragment(ExerciseSet s, {required Exercise exercise}) {
     final display = formatPdfLoad(s.displayText);
     return n.isEmpty ? display : '$display (${sanitizePdfText(n)})';
   }
-  final sets = s.sets.trim();
-  final reps = s.reps.trim();
+  final sets = sanitizePdfText(s.sets.trim());
+  final reps = formatPdfLoad(s.reps);
   final load = formatPdfLoad(s.rpe);
   final n = s.note.trim();
   final core = sets.isNotEmpty && reps.isNotEmpty
@@ -239,14 +239,16 @@ String _setsForSet(ExerciseSet set, Exercise exercise) {
 }
 
 String _repsForSet(ExerciseSet set, {String fallback = ''}) {
+  // formatPdfLoad also sanitizes and strips float noise when load leaks into
+  // reps / line / displayText (e.g. interpolated doubles in fixtures).
   final reps = set.reps.trim();
-  if (reps.isNotEmpty) return sanitizePdfText(reps);
-  if (set.line.trim().isNotEmpty) return sanitizePdfText(set.line.trim());
+  if (reps.isNotEmpty) return formatPdfLoad(reps);
+  if (set.line.trim().isNotEmpty) return formatPdfLoad(set.line.trim());
   final display = set.displayText.trim();
   if (display.isNotEmpty && set.rpe.trim().isEmpty) {
-    return sanitizePdfText(display);
+    return formatPdfLoad(display);
   }
-  return sanitizePdfText(fallback);
+  return formatPdfLoad(fallback);
 }
 
 String _loadForSet(ExerciseSet set, {String fallback = ''}) {
@@ -327,8 +329,8 @@ String _compactDenseSetToken(ExerciseSet set) {
   if (display.isNotEmpty) {
     return _compactFromDisplayText(formatPdfLoad(display));
   }
-  final sets = set.sets.trim();
-  final reps = set.reps.trim();
+  final sets = sanitizePdfText(set.sets.trim());
+  final reps = formatPdfLoad(set.reps);
   final load = formatPdfLoad(set.rpe);
   if (load.startsWith('@')) return load;
   if (sets.isNotEmpty && reps.isNotEmpty && load.isNotEmpty) {

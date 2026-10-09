@@ -261,8 +261,9 @@ List<pw.Widget> _canonicalProgrammingWidgets(
             };
 
       dayWidgets.add(
+        // Keep day title + table together. canSpan:true orphans the title at
+        // the bottom of a page while the table continues on the next.
         pw.Inseparable(
-          canSpan: true,
           child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.stretch,
             children: [
@@ -293,9 +294,24 @@ List<pw.Widget> _canonicalProgrammingWidgets(
       );
     }
 
+    // Bind week title to the first day so it cannot orphan alone at a break.
+    if (dayWidgets.isEmpty) {
+      return [
+        PdfDocumentTheme.sectionTitle(weekTitle, dense: dense),
+        pw.SizedBox(height: dense ? 3 : 6),
+      ];
+    }
     return [
-      PdfDocumentTheme.sectionTitle(weekTitle, dense: dense),
-      ...dayWidgets,
+      pw.Inseparable(
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+          children: [
+            PdfDocumentTheme.sectionTitle(weekTitle, dense: dense),
+            dayWidgets.first,
+          ],
+        ),
+      ),
+      ...dayWidgets.skip(1),
       pw.SizedBox(height: dense ? 3 : 6),
     ];
   }).toList();
@@ -652,8 +668,8 @@ List<pw.Widget> _denseProgrammingWidgets(
     }
 
     out.add(
+      // Keep day title + table together (no canSpan — avoids orphan titles).
       pw.Inseparable(
-        canSpan: true,
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
