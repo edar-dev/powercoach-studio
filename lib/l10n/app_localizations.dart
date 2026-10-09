@@ -3446,6 +3446,12 @@ abstract class AppLocalizations {
   /// **'Generate and download'**
   String get workoutExportPdfGenerateAndDownload;
 
+  /// No description provided for @workoutExportPdfGenerateAndPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate preview'**
+  String get workoutExportPdfGenerateAndPreview;
+
   /// No description provided for @workoutPdfIncludeMobility.
   ///
   /// In en, this message translates to:
@@ -3457,6 +3463,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pick a preset. You can still toggle mobility and customize the layout.'**
   String get workoutPdfSheetSubtitle;
+
+  /// No description provided for @workoutPdfSheetSubtitlePreviewFirst.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a preset. A PDF preview opens first, then you can share or save.'**
+  String get workoutPdfSheetSubtitlePreviewFirst;
 
   /// No description provided for @workoutPdfPresetGym.
   ///
@@ -5344,6 +5356,18 @@ abstract class AppLocalizations {
   /// **'Your PDF is ready. Preview it, share it, or save it.'**
   String get pdfExportPostGenerateMessage;
 
+  /// No description provided for @pdfExportPreviewThenShareTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PDF preview'**
+  String get pdfExportPreviewThenShareTitle;
+
+  /// No description provided for @pdfExportPreviewThenShareMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Review the PDF, then share or save.'**
+  String get pdfExportPreviewThenShareMessage;
+
   /// No description provided for @pdfExportActionPreview.
   ///
   /// In en, this message translates to:
@@ -5361,6 +5385,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get pdfExportActionSave;
+
+  /// No description provided for @pdfExportActionClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get pdfExportActionClose;
 
   /// No description provided for @pdfExportPreviewOpened.
   ///

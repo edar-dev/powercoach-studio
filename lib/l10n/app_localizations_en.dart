@@ -1880,11 +1880,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportPdfGenerateAndDownload => 'Generate and download';
 
   @override
+  String get workoutExportPdfGenerateAndPreview => 'Generate preview';
+
+  @override
   String get workoutPdfIncludeMobility => 'Include mobility / warm-up';
 
   @override
   String get workoutPdfSheetSubtitle =>
       'Pick a preset. You can still toggle mobility and customize the layout.';
+
+  @override
+  String get workoutPdfSheetSubtitlePreviewFirst =>
+      'Pick a preset. A PDF preview opens first, then you can share or save.';
 
   @override
   String get workoutPdfPresetGym => 'Gym';
@@ -2976,6 +2983,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Your PDF is ready. Preview it, share it, or save it.';
 
   @override
+  String get pdfExportPreviewThenShareTitle => 'PDF preview';
+
+  @override
+  String get pdfExportPreviewThenShareMessage =>
+      'Review the PDF, then share or save.';
+
+  @override
   String get pdfExportActionPreview => 'Preview';
 
   @override
@@ -2983,6 +2997,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pdfExportActionSave => 'Save';
+
+  @override
+  String get pdfExportActionClose => 'Close';
 
   @override
   String get pdfExportPreviewOpened => 'PDF preview opened.';

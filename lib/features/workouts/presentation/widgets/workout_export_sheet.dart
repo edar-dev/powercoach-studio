@@ -64,7 +64,7 @@ Future<void> showWorkoutExportSheet({
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              l10n.workoutPdfSheetSubtitle,
+              l10n.workoutPdfSheetSubtitlePreviewFirst,
               style: Theme.of(ctx).textTheme.bodySmall?.copyWith(
                 color: Theme.of(ctx).colorScheme.onSurfaceVariant,
               ),
@@ -157,7 +157,7 @@ Future<void> showWorkoutExportSheet({
         );
       },
     ),
-    primaryActionLabel: l10n.workoutExportPdfGenerateAndDownload,
+    primaryActionLabel: l10n.workoutExportPdfGenerateAndPreview,
     onPrimaryAction: () {
       final options = WorkoutExportSheetPdfOptions(
         layout: layout,

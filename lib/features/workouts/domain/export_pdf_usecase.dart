@@ -10,6 +10,7 @@ import '../../../core/pdf/pdf_document_theme.dart';
 import '../../../core/pdf/pdf_exercise_name.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../../../core/pdf/pdf_mobility_format.dart';
+import '../../../core/pdf/pdf_page_packing.dart';
 import '../../../core/pdf/pdf_plan_metadata.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
@@ -47,9 +48,17 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
   final doc = pw.Document();
   final dense = layout == WorkoutPdfLayout.dense;
 
-  final programming = layout == WorkoutPdfLayout.canonical
-      ? _canonicalProgrammingWidgets(filtered, labels, dense: dense)
-      : _denseProgrammingWidgets(filtered, labels);
+  final body = dense
+      ? _densePageBodyWidgets(
+          filtered,
+          labels,
+          includeMobility: includeMobility,
+        )
+      : [
+          if (includeMobility)
+            ..._mobilityWidgets(filtered, labels, dense: dense),
+          ..._canonicalProgrammingWidgets(filtered, labels, dense: dense),
+        ];
 
   doc.addPage(
     pw.MultiPage(
@@ -113,11 +122,7 @@ Future<ExportArtifact> exportWorkoutRoutineToPdf(
         showDisclaimer: !dense || context.pageNumber == context.pagesCount,
         coachHeader: coachHeader,
       ),
-      build: (context) => [
-        if (includeMobility)
-          ..._mobilityWidgets(filtered, labels, dense: dense),
-        ...programming,
-      ],
+      build: (context) => body,
     ),
   );
 
@@ -231,14 +236,30 @@ List<pw.Widget> _mobilityWidgets(
   ];
 }
 
+/// Day section for optional within-week packing (canonical layout).
+class _CanonicalDayBlock {
+  _CanonicalDayBlock({
+    required this.widgets,
+    required this.estimatedHeight,
+  });
+
+  final List<pw.Widget> widgets;
+  final double estimatedHeight;
+}
+
 List<pw.Widget> _canonicalProgrammingWidgets(
   WorkoutRoutine routine,
   PdfExportLabels labels, {
   required bool dense,
 }) {
+  // Canonical packing uses a budget slightly tighter than dense later-page
+  // (larger margins / day chrome). Dense-only packing is the primary ROI;
+  // this only packs remaining short days after week-title+first-day.
+  final remainingDayBudget = denseContentBudget(firstPage: false) - 40;
+
   return routine.weeks.expand((week) {
     final weekTitle = week.name.trim().isNotEmpty ? week.name.trim() : 'Week';
-    final dayWidgets = <pw.Widget>[];
+    final dayBlocks = <_CanonicalDayBlock>[];
 
     for (final entry in week.days.asMap().entries) {
       final day = entry.value;
@@ -260,58 +281,78 @@ List<pw.Widget> _canonicalProgrammingWidgets(
               4: pw.FlexColumnWidth(1.55),
             };
 
-      dayWidgets.add(
-        // Keep day title + table together. canSpan:true orphans the title at
-        // the bottom of a page while the table continues on the next.
-        pw.Inseparable(
-          child: pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-            children: [
-              PdfDocumentTheme.dayTitle(dayTitle, dense: dense),
-              pw.Table(
-                border: pw.TableBorder.all(
-                  color: PdfDocumentTheme.border,
-                  width: dense ? 0.35 : 0.5,
-                ),
-                columnWidths: columnWidths,
-                children: [
-                  PdfDocumentTheme.programmingHeaderRow(
-                    labels,
-                    dense: dense,
-                    prescriptionColumns: dense,
-                  ),
-                  ...blocks.expand((item) => _tableRowsForBlock(
-                        item,
-                        labels,
-                        dense: dense,
-                      )),
-                ],
+      final tableRows = [
+        PdfDocumentTheme.programmingHeaderRow(
+          labels,
+          dense: dense,
+          prescriptionColumns: dense,
+        ),
+        ...blocks.expand((item) => _tableRowsForBlock(
+              item,
+              labels,
+              dense: dense,
+            )),
+      ];
+      // Prefer slight overestimate (title + header + rows + gap).
+      final estimatedHeight =
+          20.0 + 16.0 + (tableRows.length - 1) * 18.0 + (dense ? 5.0 : 10.0);
+
+      dayBlocks.add(
+        _CanonicalDayBlock(
+          estimatedHeight: estimatedHeight,
+          widgets: [
+            PdfDocumentTheme.dayTitle(dayTitle, dense: dense),
+            pw.Table(
+              border: pw.TableBorder.all(
+                color: PdfDocumentTheme.border,
+                width: dense ? 0.35 : 0.5,
               ),
-              pw.SizedBox(height: dense ? 5 : 10),
-            ],
-          ),
+              columnWidths: columnWidths,
+              children: tableRows,
+            ),
+            pw.SizedBox(height: dense ? 5 : 10),
+          ],
         ),
       );
     }
 
     // Bind week title to the first day so it cannot orphan alone at a break.
-    if (dayWidgets.isEmpty) {
+    if (dayBlocks.isEmpty) {
       return [
         PdfDocumentTheme.sectionTitle(weekTitle, dense: dense),
         pw.SizedBox(height: dense ? 3 : 6),
       ];
     }
+
+    final first = dayBlocks.first;
+    final remaining = dayBlocks.skip(1).toList();
+    final packedRemaining = packConsecutiveByHeight(
+      remaining,
+      (b) => b.estimatedHeight,
+      pageBudget: remainingDayBudget,
+    );
+
     return [
+      // Outer Inseparable: week title + first day only (no canSpan).
       pw.Inseparable(
         child: pw.Column(
           crossAxisAlignment: pw.CrossAxisAlignment.stretch,
           children: [
             PdfDocumentTheme.sectionTitle(weekTitle, dense: dense),
-            dayWidgets.first,
+            ...first.widgets,
           ],
         ),
       ),
-      ...dayWidgets.skip(1),
+      // Pack consecutive short remaining days; each batch is one Inseparable.
+      for (final batch in packedRemaining)
+        pw.Inseparable(
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+            children: [
+              for (final day in batch) ...day.widgets,
+            ],
+          ),
+        ),
       pw.SizedBox(height: dense ? 3 : 6),
     ];
   }).toList();
@@ -497,7 +538,101 @@ String _blockRowLabel(
   return '$prefix$densityTag$names';
 }
 
-List<pw.Widget> _denseProgrammingWidgets(
+/// One dense day slot: section widgets (no Inseparable) + height estimate.
+class _DenseDayBlock {
+  _DenseDayBlock({
+    required this.widgets,
+    required this.estimatedHeight,
+  });
+
+  final List<pw.Widget> widgets;
+  final double estimatedHeight;
+}
+
+/// Dense MultiPage body: mobility (optional attach) + packed day batches.
+List<pw.Widget> _densePageBodyWidgets(
+  WorkoutRoutine routine,
+  PdfExportLabels labels, {
+  required bool includeMobility,
+}) {
+  final dayBlocks = _buildDenseDayBlocks(routine, labels);
+
+  final mobilityWidgets = includeMobility
+      ? _mobilityWidgets(routine, labels, dense: true)
+      : const <pw.Widget>[];
+
+  final populatedSections = routine.mobilitySections
+      .where(
+        (s) => routine.mobilityItems.any((m) => m.sectionId == s.id),
+      )
+      .length;
+  final mobilityHeight = mobilityWidgets.isEmpty
+      ? 0.0
+      : estimateMobilityHeight(
+          sectionCount: populatedSections,
+          itemCount: routine.mobilityItems.length,
+          dense: true,
+        );
+
+  // First batch uses the tighter page-1 budget (coach band + legend). When
+  // short mobility is present, reserve its height so attach can succeed.
+  final batches = packConsecutiveByHeightWithFirstPageBudget(
+    dayBlocks,
+    (b) => b.estimatedHeight,
+    firstPageBudget: denseContentBudget(firstPage: true),
+    laterPageBudget: denseContentBudget(firstPage: false),
+    reservedFirstPageHeight: mobilityHeight,
+  );
+
+  final out = <pw.Widget>[];
+  if (mobilityWidgets.isNotEmpty &&
+      batches.isNotEmpty &&
+      canAttachMobilityToFirstBatch(
+        mobilityHeight: mobilityHeight,
+        firstBatchHeight: batches.first.fold<double>(
+          0,
+          (sum, b) => sum + b.estimatedHeight,
+        ),
+        firstPageBudget: denseContentBudget(firstPage: true),
+      )) {
+    out.add(
+      pw.Inseparable(
+        child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+          children: [
+            ...mobilityWidgets,
+            for (final day in batches.first) ...day.widgets,
+          ],
+        ),
+      ),
+    );
+    for (final batch in batches.skip(1)) {
+      out.add(_wrapDenseDayBatch(batch));
+    }
+    return out;
+  }
+
+  // Keep prior behavior when mobility does not fit with the first batch.
+  out.addAll(mobilityWidgets);
+  for (final batch in batches) {
+    out.add(_wrapDenseDayBatch(batch));
+  }
+  return out;
+}
+
+pw.Widget _wrapDenseDayBatch(List<_DenseDayBlock> batch) {
+  // One Inseparable per batch — never per-day, never canSpan.
+  return pw.Inseparable(
+    child: pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+      children: [
+        for (final day in batch) ...day.widgets,
+      ],
+    ),
+  );
+}
+
+List<_DenseDayBlock> _buildDenseDayBlocks(
   WorkoutRoutine routine,
   PdfExportLabels labels,
 ) {
@@ -505,7 +640,7 @@ List<pw.Widget> _denseProgrammingWidgets(
   final weeks = routine.weeks;
   if (weeks.isEmpty) return [];
 
-  final out = <pw.Widget>[];
+  final blocks = <_DenseDayBlock>[];
   final daySlots = _maxDaySlotCount(weeks);
 
   for (var d = 0; d < daySlots; d++) {
@@ -667,27 +802,28 @@ List<pw.Widget> _denseProgrammingWidgets(
       );
     }
 
-    out.add(
-      // Keep day title + table together (no canSpan — avoids orphan titles).
-      pw.Inseparable(
-        child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-          children: [
-            PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
-            pw.Table(
-              border: pw.TableBorder.all(
-                color: PdfDocumentTheme.border,
-                width: 0.35,
-              ),
-              columnWidths: columnWidths,
-              children: tableRows,
-            ),
-          ],
+    blocks.add(
+      _DenseDayBlock(
+        estimatedHeight: estimateDenseDayHeight(
+          rowCount: dayRows.length,
+          weekCount: weeks.length,
         ),
+        // Day UI only — batch wrapper owns Inseparable (no canSpan).
+        widgets: [
+          PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
+          pw.Table(
+            border: pw.TableBorder.all(
+              color: PdfDocumentTheme.border,
+              width: 0.35,
+            ),
+            columnWidths: columnWidths,
+            children: tableRows,
+          ),
+          pw.SizedBox(height: 8),
+        ],
       ),
     );
-    out.add(pw.SizedBox(height: 8));
   }
 
-  return out;
+  return blocks;
 }
