@@ -114,7 +114,7 @@ class _CustomerMeasurementHistoryScreenState
                     ? widget.customerName!.trim()
                     : widget.customerId;
                 if (value == 'csv') {
-                  shareCustomerMeasurementExport(
+                  await shareCustomerMeasurementExport(
                     context: context,
                     l10n: l10n,
                     export: () =>
@@ -122,7 +122,7 @@ class _CustomerMeasurementHistoryScreenState
                   );
                 } else if (value == 'pdf') {
                   final labels = l10n.toPdfExportLabels();
-                  shareCustomerMeasurementExport(
+                  await shareCustomerMeasurementExport(
                     context: context,
                     l10n: l10n,
                     showProgress: true,

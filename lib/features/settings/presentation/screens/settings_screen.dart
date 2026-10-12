@@ -359,7 +359,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return;
     }
     if (!mounted) return;
-    navigatePush(context, AppPaths.pdfBrand);
+    await navigatePush(context, AppPaths.pdfBrand);
   }
 
   void _scrollTo(GlobalKey key) {
