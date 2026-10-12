@@ -36,6 +36,9 @@ class WorkoutBuilderScreenTabs {
     required this.planArchived,
     required this.readOnly,
     this.onLogSession,
+    this.showLogSessionAction = false,
+    this.logSessionEnabled = false,
+    this.onLogSessionUnavailable,
     this.onCloneDayToTarget,
     required this.onInitialWeekChanged,
     required this.onCurrentWeekChanged,
@@ -77,6 +80,9 @@ class WorkoutBuilderScreenTabs {
   final bool planArchived;
   final bool readOnly;
   final VoidCallback? onLogSession;
+  final bool showLogSessionAction;
+  final bool logSessionEnabled;
+  final VoidCallback? onLogSessionUnavailable;
   final void Function(int weekIndex, int dayIndex)? onCloneDayToTarget;
   final ValueChanged<String> onInitialWeekChanged;
   final ValueChanged<int> onCurrentWeekChanged;
@@ -218,6 +224,10 @@ class WorkoutBuilderScreenTabs {
       routineTitleHint: routineTitleHint,
       editorCustomerName: editorCustomerName,
       hasLoadedPlan: loadedPlanId != null && loadedPlanId!.isNotEmpty,
+      showLogSessionAction: showLogSessionAction,
+      logSessionEnabled: logSessionEnabled,
+      onLogSession: onLogSession,
+      onLogSessionUnavailable: onLogSessionUnavailable,
       sandboxBanner: showSandboxBanner && onAssignDraftToCustomer != null
           ? WorkoutBuilderSandboxBanner(
               onAssignToCustomer: onAssignDraftToCustomer!,

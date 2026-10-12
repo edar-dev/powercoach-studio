@@ -30,6 +30,9 @@ class WorkoutBuilderScreenTabsConfig {
     required this.planArchived,
     required this.readOnly,
     required this.onLogSession,
+    this.showLogSessionAction = false,
+    this.logSessionEnabled = false,
+    this.onLogSessionUnavailable,
     required this.onAssignDraftToCustomer,
     required this.actions,
     required this.onInitialWeekNumberChanged,
@@ -61,6 +64,9 @@ class WorkoutBuilderScreenTabsConfig {
   final bool planArchived;
   final bool readOnly;
   final VoidCallback? onLogSession;
+  final bool showLogSessionAction;
+  final bool logSessionEnabled;
+  final VoidCallback? onLogSessionUnavailable;
   final VoidCallback? onAssignDraftToCustomer;
   final WorkoutBuilderScreenRoutineActions actions;
   final ValueChanged<int> onInitialWeekNumberChanged;
@@ -99,6 +105,9 @@ class WorkoutBuilderScreenTabsConfig {
       planArchived: planArchived,
       readOnly: readOnly,
       onLogSession: onLogSession,
+      showLogSessionAction: showLogSessionAction,
+      logSessionEnabled: logSessionEnabled,
+      onLogSessionUnavailable: onLogSessionUnavailable,
       onAssignDraftToCustomer: onAssignDraftToCustomer,
       onInitialWeekChanged: (value) {
         final v = int.tryParse(value);
