@@ -262,16 +262,20 @@ abstract final class DataCatalogRegistry {
       displayName: 'PDF brand kit',
       locus: DataStorageLocus.sharedPreferences,
       summary:
-          'PDF studio branding + logo path/bytes. Device-local SharedPreferences '
-          '+ files; not included in the user backup envelope.',
+          'PDF studio branding + logo path/bytes. SharedPreferences + files; '
+          'exported under backup top-level `pdfBrand` (logo as base64, no '
+          'device-local path). Not stored in Postgres/coach_entities.',
       payloadFields: <String>[
         'studioName',
         'accentColorArgb',
         'disclaimer',
         'hidePowerCoachBranding',
         'logoRelativePath',
+        'logoBase64',
+        'logoExtension',
       ],
-      includedInBackup: false,
+      includedInBackup: true,
+      backupKey: 'pdfBrand',
       prefsKeyPattern: 'pdf_brand_v1:\$userId',
       sourcePath: 'lib/core/pdf/pdf_brand_store.dart',
     ),

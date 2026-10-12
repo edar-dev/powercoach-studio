@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../constants/app_info.dart';
 import '../constants/workout_plan_template_scope.dart';
 import '../notifications/notification_scheduler_service.dart';
+import '../pdf/pdf_brand_store.dart';
 import '../../features/settings/data/user_preferences_repository.dart';
 import '../../features/auth/data/local_coach_profile_repository.dart';
 import '../platform/web_online_status.dart';
@@ -57,6 +58,8 @@ class UserDataBackupService {
         await UserPreferencesRepository.instance.exportForBackup();
     final profile =
         await LocalCoachProfileRepository.instance.getProfile(accountUserId);
+    final pdfBrand =
+        await PdfBrandStore.instance.exportForBackup(accountUserId);
 
     final entities = (await _store.listEntitiesJsonForBackup(accountUserId))
         // Data policy: omit retired template-scoped workout plans from export.
@@ -79,6 +82,7 @@ class UserDataBackupService {
       'accountUserId': accountUserId,
       'preferences': preferences,
       'localUserProfile': profile.toJson(),
+      'pdfBrand': pdfBrand,
       'entities': entities,
       'reminders': reminders,
     };
@@ -240,6 +244,7 @@ class UserDataBackupService {
       profile,
     );
     await _applyPreferences(parsed);
+    await _applyPdfBrand(parsed, accountUserId);
   }
 
   Future<void> _applyMergeProfileAndPreferences(
@@ -254,6 +259,7 @@ class UserDataBackupService {
       );
     }
     await _applyPreferences(parsed);
+    await _applyPdfBrand(parsed, accountUserId);
   }
 
   Future<void> _applyPreferences(ParsedUserBackup parsed) async {
@@ -266,6 +272,17 @@ class UserDataBackupService {
     }
     await NotificationSchedulerService.instance
         .syncWithNotificationPreference();
+  }
+
+  /// Applies [ParsedUserBackup.pdfBrandJson] when present. Older backups without
+  /// the key leave the local PDF brand unchanged.
+  Future<void> _applyPdfBrand(
+    ParsedUserBackup parsed,
+    String accountUserId,
+  ) async {
+    final brand = parsed.pdfBrandJson;
+    if (brand == null) return;
+    await PdfBrandStore.instance.applyFromBackupMap(accountUserId, brand);
   }
 
   void _ensureRemoteRestoreAllowed() {

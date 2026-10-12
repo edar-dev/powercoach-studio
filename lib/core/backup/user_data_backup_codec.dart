@@ -56,6 +56,7 @@ class ParsedUserBackup {
     required this.profileJson,
     required this.preferences,
     required this.reminders,
+    this.pdfBrandJson,
     this.exportedAt,
     this.appVersion,
     this.entityCounts,
@@ -68,6 +69,10 @@ class ParsedUserBackup {
   final List<Map<String, dynamic>> syncMeta;
   final Map<String, dynamic>? profileJson;
   final BackupPreferences preferences;
+
+  /// Optional PDF brand kit (`pdfBrand` top-level). Null when absent in older
+  /// backups — restore leaves the local brand unchanged.
+  final Map<String, dynamic>? pdfBrandJson;
 
   /// Optional reminder rows (Feature 02). Maps are validated on restore.
   final List<Map<String, dynamic>> reminders;
@@ -131,12 +136,21 @@ ParsedUserBackup parseUserBackupJson(String jsonText, String expectedAccountUser
     profileJson = profileRaw.cast<String, dynamic>();
   }
 
+  Map<String, dynamic>? pdfBrandJson;
+  final pdfBrandRaw = root['pdfBrand'];
+  if (pdfBrandRaw is Map<String, dynamic>) {
+    pdfBrandJson = pdfBrandRaw;
+  } else if (pdfBrandRaw is Map) {
+    pdfBrandJson = pdfBrandRaw.cast<String, dynamic>();
+  }
+
   return ParsedUserBackup(
     entities: entities,
     pendingOperations: pending,
     syncMeta: syncMeta,
     profileJson: profileJson,
     preferences: preferences,
+    pdfBrandJson: pdfBrandJson,
     reminders: reminders,
     exportedAt: root['exportedAt']?.toString(),
     appVersion: root['appVersion']?.toString(),

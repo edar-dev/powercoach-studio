@@ -78,7 +78,7 @@
       "driftType": "workoutPlan",
       "locus": "supabaseCoachEntities",
       "cacheLocus": "driftLocalEntities",
-      "summary": "Client workout plan. Cloud SoT in coach_entities; Drift cache. scope_id is customerId. Nested planData holds weeks/days/exercises and session diary.",
+      "summary": "Client workout plan. Cloud SoT in coach_entities; Drift cache. scope_id is customerId. Plan-level lifecycle/schedule markers are top-level payload fields; nested planData holds weeks/days/exercises and session diary.",
       "scopeIdPattern": "customerId",
       "payloadFields": [
         "id",
@@ -93,6 +93,11 @@
         "phase",
         "tags",
         "notes",
+        "archivedAt",
+        "completedAt",
+        "startDate",
+        "endDate",
+        "currentWeek",
         "createdAt",
         "updatedAt",
         "rowVersion"
@@ -271,7 +276,7 @@
       "displayName": "Plan data (nested)",
       "driftType": null,
       "locus": "nestedJson",
-      "summary": "JSON string embedded in workoutPlan.planData: phases/weeks/days/exercises, mobility, and sessionExecutions diary.",
+      "summary": "Nested JSON object (Map) written into workoutPlan.planData; legacy JSON strings remain readable. Holds phases/weeks/days/exercises, mobility, and sessionExecutions diary. Plan-level lifecycle/schedule markers are top-level on workoutPlan (legacy nested keys still readable until rewrite).",
       "scopeIdPattern": "",
       "payloadFields": [
         "name",
@@ -279,16 +284,11 @@
         "mobilityItems",
         "phases",
         "weeks",
-        "startDate",
-        "endDate",
-        "currentWeek",
         "includesMobilityTab",
         "sessionCompletionByKey",
         "sessionSkippedByKey",
         "sessionOverrides",
-        "sessionExecutions",
-        "archivedAt",
-        "completedAt"
+        "sessionExecutions"
       ],
       "references": [
         {
@@ -343,18 +343,20 @@
       "displayName": "PDF brand kit",
       "driftType": null,
       "locus": "sharedPreferences",
-      "summary": "PDF studio branding + logo path/bytes. Device-local SharedPreferences + files; not included in the user backup envelope.",
+      "summary": "PDF studio branding + logo path/bytes. SharedPreferences + files; exported under backup top-level `pdfBrand` (logo as base64, no device-local path). Not stored in Postgres/coach_entities.",
       "scopeIdPattern": "",
       "payloadFields": [
         "studioName",
         "accentColorArgb",
         "disclaimer",
         "hidePowerCoachBranding",
-        "logoRelativePath"
+        "logoRelativePath",
+        "logoBase64",
+        "logoExtension"
       ],
       "references": [],
-      "includedInBackup": false,
-      "backupKey": null,
+      "includedInBackup": true,
+      "backupKey": "pdfBrand",
       "prefsKeyPattern": "pdf_brand_v1:$userId",
       "sourcePath": "lib/core/pdf/pdf_brand_store.dart",
       "softDelete": false
@@ -364,7 +366,7 @@
       "displayName": "User preferences",
       "driftType": null,
       "locus": "sharedPreferences",
-      "summary": "Settings + pinned/recent exercise ids exported under backup `preferences`. SharedPreferences only (not coach_entities).",
+      "summary": "Settings + pinned/recent exercise ids exported under backup `preferences` as native JSON arrays (legacy string-encoded lists still accepted on import). SharedPreferences only (not coach_entities).",
       "scopeIdPattern": "",
       "payloadFields": [
         "settings_notifications_enabled",
@@ -381,13 +383,13 @@
           "fieldPath": "pinned_exercise_ids_json_v1[]",
           "targetCatalogId": "customExercise",
           "optional": true,
-          "description": "Pinned library exercise ids."
+          "description": "Pinned library exercise ids (backup array; device prefs string)."
         },
         {
           "fieldPath": "recent_exercise_ids_json_v1[]",
           "targetCatalogId": "customExercise",
           "optional": true,
-          "description": "Recent library exercise ids."
+          "description": "Recent library exercise ids (backup array; device prefs string)."
         }
       ],
       "includedInBackup": true,

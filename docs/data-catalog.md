@@ -157,7 +157,7 @@ readable). Codec: `lib/features/workouts/domain/workout_routine_json_codec.dart`
 | Catalog id | Locus | Backup key | Notes |
 |------------|-------|------------|-------|
 | `userProfile` | SharedPreferences | `localUserProfile` | Coach profile |
-| `pdfBrand` | SharedPreferences + files | *(none)* | PDF brand kit; device-local |
+| `pdfBrand` | SharedPreferences + files | `pdfBrand` | PDF brand kit; logo as base64 in backup (not Postgres) |
 | `userPreferences` | SharedPreferences | `preferences` | Settings + pins/recents |
 | `workoutDraft` | SharedPreferences | *(none)* | Builder draft |
 | `cloudBackupMeta` | SharedPreferences | *(none)* | Snapshot / sync timestamps |

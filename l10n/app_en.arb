@@ -2144,7 +2144,7 @@
   "pdfBrandWhiteLabelLabel": "Hide PowerCoach branding",
   "pdfBrandWhiteLabelSubtitle": "Removes the default product name from header and disclaimer",
   "pdfBrandLogoLabel": "PDF logo",
-  "pdfBrandLogoLocalHint": "The logo stays on this device and is not included in backups.",
+  "pdfBrandLogoLocalHint": "The logo is included in backup/export so branding can move with you to another browser or device.",
   "pdfBrandLogoPick": "Upload logo",
   "pdfBrandLogoReplace": "Replace logo",
   "pdfBrandLogoRemove": "Remove logo",

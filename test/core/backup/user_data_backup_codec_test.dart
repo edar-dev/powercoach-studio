@@ -36,6 +36,42 @@ void main() {
     expect(parsed.syncMeta, isEmpty);
     expect(parsed.notificationsEnabled, isTrue);
     expect(parsed.reminders, isEmpty);
+    expect(parsed.pdfBrandJson, isNull);
+  });
+
+  test('parse populates optional pdfBrand; missing key stays null', () {
+    final withoutBrand = parseUserBackupJson(jsonEncode(minimalEnvelope()), uid);
+    expect(withoutBrand.pdfBrandJson, isNull);
+
+    final withBrand = parseUserBackupJson(
+      jsonEncode({
+        ...minimalEnvelope(),
+        'pdfBrand': <String, dynamic>{
+          'studioName': 'Studio Alpha',
+          'accentColorArgb': 0xFF0D59F2,
+          'disclaimer': 'Footer',
+          'hidePowerCoachBranding': true,
+          'logoBase64': 'YWJj',
+          'logoExtension': 'png',
+        },
+      }),
+      uid,
+    );
+    expect(withBrand.pdfBrandJson, isNotNull);
+    expect(withBrand.pdfBrandJson!['studioName'], 'Studio Alpha');
+    expect(withBrand.pdfBrandJson!['logoExtension'], 'png');
+    expect(withBrand.pdfBrandJson!['logoBase64'], 'YWJj');
+  });
+
+  test('parse ignores non-map pdfBrand shapes', () {
+    final parsed = parseUserBackupJson(
+      jsonEncode({
+        ...minimalEnvelope(),
+        'pdfBrand': 'not-a-map',
+      }),
+      uid,
+    );
+    expect(parsed.pdfBrandJson, isNull);
   });
 
   test('parse rejects wrong account', () {
