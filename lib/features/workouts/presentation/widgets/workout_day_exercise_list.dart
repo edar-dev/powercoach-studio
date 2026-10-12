@@ -192,6 +192,9 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       exerciseIndexById[ex.id] = nextIndex++;
     }
 
+    // Cache once per list build; cards filter out their own group id.
+    final allSupersetOptions = getSupersetGroupOptions(day);
+
     final trailingCount = widget.sessionEditStyle
         ? (showSessionCtas ? 1 : 0)
         : (showTrailingAdd ? 1 : 0);
@@ -233,11 +236,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                   final showDivider =
                       !isLastPartition && !widget.sessionEditStyle;
                   if (entry is Exercise) {
-                    return _buildExerciseCard(
-                      context,
-                      exercise: entry,
-                      displayIndex: exerciseIndexById[entry.id] ?? (index + 1),
-                      showBottomDivider: showDivider,
+                    return RepaintBoundary(
+                      child: _buildExerciseCard(
+                        context,
+                        exercise: entry,
+                        displayIndex:
+                            exerciseIndexById[entry.id] ?? (index + 1),
+                        showBottomDivider: showDivider,
+                        allSupersetOptions: allSupersetOptions,
+                      ),
                     );
                   }
                   final exercises = entry as List<Exercise>;
@@ -245,29 +252,31 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           exercises.first.supersetGroupId != null
                       ? exercises.first.supersetGroupId!
                       : null;
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: WorkoutSupersetBlock(
-                      theme: theme,
-                      colorScheme: colorScheme,
-                      session: widget.session,
-                      weekIndex: weekIndex,
-                      dayIndex: dayIndex,
-                      exercises: exercises,
-                      supersetGroupId: groupId,
-                      expanded:
-                          groupId != null && groupId == _expandedSupersetId,
-                      onExpandedChanged: (value) {
-                        _setExpandedSuperset(value ? groupId : null);
-                      },
-                      onAddExercise: () =>
-                          widget.onAddExercise?.call(weekIndex, dayIndex),
-                      onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
-                      onRemoveExercise: widget.onRemoveExercise,
-                      onMoveExerciseWithinSuperset:
-                          widget.onMoveExerciseWithinSuperset,
-                      onRemoveFromSuperset: widget.onRemoveFromSuperset,
-                      onUpdateExercise: widget.onUpdateExercise,
+                  return RepaintBoundary(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: WorkoutSupersetBlock(
+                        theme: theme,
+                        colorScheme: colorScheme,
+                        session: widget.session,
+                        weekIndex: weekIndex,
+                        dayIndex: dayIndex,
+                        exercises: exercises,
+                        supersetGroupId: groupId,
+                        expanded:
+                            groupId != null && groupId == _expandedSupersetId,
+                        onExpandedChanged: (value) {
+                          _setExpandedSuperset(value ? groupId : null);
+                        },
+                        onAddExercise: () =>
+                            widget.onAddExercise?.call(weekIndex, dayIndex),
+                        onAddExerciseToSuperset: widget.onAddExerciseToSuperset,
+                        onRemoveExercise: widget.onRemoveExercise,
+                        onMoveExerciseWithinSuperset:
+                            widget.onMoveExerciseWithinSuperset,
+                        onRemoveFromSuperset: widget.onRemoveFromSuperset,
+                        onUpdateExercise: widget.onUpdateExercise,
+                      ),
                     ),
                   );
                 },
@@ -285,11 +294,14 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     required Exercise exercise,
     required int displayIndex,
     required bool showBottomDivider,
+    required List<({String id, String label})> allSupersetOptions,
   }) {
     final ex = exercise;
     final weekIndex = widget.weekIndex;
     final dayIndex = widget.dayIndex;
-    final day = widget.day;
+    final filteredSupersetOptions = allSupersetOptions
+        .where((o) => o.id != ex.supersetGroupId)
+        .toList(growable: false);
     void onEdit(
       String name,
       String sets,
@@ -390,11 +402,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         onDuplicateLastSet: canEdit ? onDuplicateLastSet : null,
         onUpdateSet: canEdit ? onUpdateSet : null,
         onRemoveSet: canEdit ? onRemoveSet : null,
-        supersetOptions: canEdit
-            ? getSupersetGroupOptions(
-                day,
-              ).where((o) => o.id != ex.supersetGroupId).toList()
-            : const [],
+        supersetOptions: canEdit ? filteredSupersetOptions : const [],
         onAssignToSuperset: canEdit
             ? (groupId) => widget.onAssignToSuperset(
                   weekIndex,
@@ -430,9 +438,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       onAddSet: onAddSet,
       onUpdateSet: onUpdateSet,
       onRemoveSet: onRemoveSet,
-      supersetOptions: getSupersetGroupOptions(
-        day,
-      ).where((o) => o.id != ex.supersetGroupId).toList(),
+      supersetOptions: filteredSupersetOptions,
       onAssignToSuperset: (groupId) =>
           widget.onAssignToSuperset(
             weekIndex,

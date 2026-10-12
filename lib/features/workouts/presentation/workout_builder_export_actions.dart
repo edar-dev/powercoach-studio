@@ -57,9 +57,12 @@ class WorkoutBuilderExportActions {
     }
   }
 
-  Future<PdfCoachHeaderInfo> resolvePdfCoachHeader() async {
+  Future<PdfCoachHeaderInfo> resolvePdfCoachHeader({
+    Customer? customer,
+  }) async {
     final labels = AppLocalizations.of(context).toPdfExportLabels();
-    final customer = await loadCustomerIfNeeded();
+    // Reuse a preloaded customer when export already fetched it.
+    final resolvedCustomer = customer ?? await loadCustomerIfNeeded();
     final uid = Supabase.instance.client.auth.currentUser?.id ?? '';
     final profile = await LocalCoachProfileRepository.instance.getProfile(uid);
     final email = Supabase.instance.client.auth.currentUser?.email;
@@ -67,7 +70,7 @@ class WorkoutBuilderExportActions {
     final logoBytes = await PdfBrandStore.instance.loadLogoBytes(uid);
     return buildPdfCoachHeader(
       labels: labels,
-      customer: customer,
+      customer: resolvedCustomer,
       profile: profile,
       authEmail: email,
       brand: brand,
@@ -90,9 +93,14 @@ class WorkoutBuilderExportActions {
     final labels = l10n.toPdfExportLabels();
     final resolved = namedRoutine(routine);
     showPdfExportProgressDialog(context, message: labels.exportGenerating);
+    // Yield so the progress dialog paints before heavy PDF work.
+    await Future<void>.delayed(Duration.zero);
+    if (!context.mounted) return;
+
+    final stopwatch = Stopwatch()..start();
     try {
       final customer = await loadCustomerIfNeeded();
-      final coachHeader = await resolvePdfCoachHeader();
+      final coachHeader = await resolvePdfCoachHeader(customer: customer);
       final planMetadata = buildPdfPlanMetadata(
         routine: resolved,
         labels: labels,
@@ -109,6 +117,12 @@ class WorkoutBuilderExportActions {
         weekIndices: weekIndices,
         clientOrCoachName: customer?.name,
       );
+      stopwatch.stop();
+      final weekCount = weekIndices?.length ?? resolved.weeks.length;
+      debugPrint(
+        '[perf] pdf-export ${stopwatch.elapsedMilliseconds}ms '
+        'weeks=$weekCount layout=$layout',
+      );
       if (!context.mounted) return;
       hidePdfExportProgressDialog(context);
       await presentPdfExportArtifactPreviewFirst(
@@ -121,6 +135,7 @@ class WorkoutBuilderExportActions {
         await PostInviteOnboardingStore.instance.markPdfDone(uid);
       }
     } catch (_) {
+      stopwatch.stop();
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

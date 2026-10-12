@@ -210,9 +210,20 @@ class WorkoutBuilderScreenTabs {
       showsMobilityTab: showsMobilityTab,
       sectionTabController: sectionTabController,
       routineNameController: routineNameController,
-      trainingTab: buildTrainingTab(theme, cs),
-      mobilityTab: buildMobilityTab(theme, cs),
-      detailsTab: buildDetailsTab(theme, cs),
+      // Narrow rebuilds: exercise/week edits notify builderSession /
+      // mobilityController without forcing a full screen setState.
+      trainingTab: ListenableBuilder(
+        listenable: builderSession,
+        builder: (context, _) => buildTrainingTab(theme, cs),
+      ),
+      mobilityTab: ListenableBuilder(
+        listenable: mobilityController,
+        builder: (context, _) => buildMobilityTab(theme, cs),
+      ),
+      detailsTab: ListenableBuilder(
+        listenable: builderSession,
+        builder: (context, _) => buildDetailsTab(theme, cs),
+      ),
       showBottomNav: showBottomNav,
       onPopInvoked: onPopInvoked,
       onBack: onBack,

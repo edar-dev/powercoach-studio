@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
@@ -10,6 +11,7 @@ import 'training_phase_detail_header.dart';
 import 'training_phase_rail.dart';
 import 'training_session_edit_sheet.dart';
 import 'workout_training_rename_dialogs.dart';
+import 'workout_training_week_expansion.dart';
 
 class WorkoutTrainingTab extends StatelessWidget {
   const WorkoutTrainingTab({
@@ -355,7 +357,12 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
         oldWidget.phase.weeks.length != widget.phase.weeks.length) {
       _expandedWeeks = _initialExpanded();
     } else if (oldWidget.selectedWeekIndex != widget.selectedWeekIndex) {
-      _expandedWeeks = {..._expandedWeeks, widget.selectedWeekIndex};
+      final singleExpand = Breakpoints.isDesktop(context);
+      _expandedWeeks = nextExpandedWeeksAfterSelect(
+        current: _expandedWeeks,
+        globalWeek: widget.selectedWeekIndex,
+        singleExpand: singleExpand,
+      );
     }
   }
 
@@ -366,15 +373,22 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
     final selected = widget.selectedWeekIndex;
     final inPhase = selected >= widget.globalWeekOffset &&
         selected < widget.globalWeekOffset + weeks.length;
-    return {first, if (inPhase) selected};
+    // Prefer selected week when in phase; keep first for empty-selection paths.
+    if (inPhase) return {selected};
+    return {first};
   }
 
   void _toggleWeek(int globalWeek) {
+    final currentlyExpanded = _expandedWeeks.contains(globalWeek);
+    final singleExpand = Breakpoints.isDesktop(context);
     setState(() {
-      if (_expandedWeeks.contains(globalWeek)) {
-        _expandedWeeks = {..._expandedWeeks}..remove(globalWeek);
-      } else {
-        _expandedWeeks = {..._expandedWeeks, globalWeek};
+      _expandedWeeks = nextExpandedWeeksAfterToggle(
+        current: _expandedWeeks,
+        globalWeek: globalWeek,
+        currentlyExpanded: currentlyExpanded,
+        singleExpand: singleExpand,
+      );
+      if (!currentlyExpanded) {
         widget.onSelectWeek(globalWeek);
       }
     });
@@ -383,8 +397,13 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
   void _openSessionEditor(int globalWeek, int dayIndex) {
     widget.onSelectWeek(globalWeek);
     widget.onSelectDay(dayIndex);
+    final singleExpand = Breakpoints.isDesktop(context);
     setState(() {
-      _expandedWeeks = {..._expandedWeeks, globalWeek};
+      _expandedWeeks = nextExpandedWeeksAfterSelect(
+        current: _expandedWeeks,
+        globalWeek: globalWeek,
+        singleExpand: singleExpand,
+      );
     });
     final weeks = widget.phase.weeks;
     final weekInPhase = globalWeek - widget.globalWeekOffset;
@@ -451,13 +470,9 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final weeks = widget.phase.weeks;
-
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+  Widget _buildPhaseHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
@@ -498,8 +513,26 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
           ),
         ),
         const SizedBox(height: 20),
-        if (weeks.isEmpty)
-          Padding(
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final weeks = widget.phase.weeks;
+    // item 0 = phase header; then empty state OR week blocks; last = add week.
+    final itemCount = weeks.isEmpty ? 2 : weeks.length + 2;
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(12, 4, 12, 24),
+      itemCount: itemCount,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return _buildPhaseHeader();
+        }
+        if (weeks.isEmpty) {
+          return Padding(
             padding: const EdgeInsets.symmetric(vertical: 32),
             child: Column(
               children: [
@@ -518,66 +551,66 @@ class _PhaseTrainingBodyState extends State<_PhaseTrainingBody> {
                 ),
               ],
             ),
-          )
-        else ...[
-          for (var wi = 0; wi < weeks.length; wi++) ...[
-            _WeekBlock(
-              theme: widget.theme,
-              cs: widget.cs,
-              week: weeks[wi],
-              weekInPhase: wi,
-              globalWeekIndex: widget.globalWeekOffset + wi,
-              expanded: _expandedWeeks.contains(widget.globalWeekOffset + wi),
-              selectedWeekIndex: widget.selectedWeekIndex,
-              selectedDayIndex: widget.selectedDayIndex,
-              onToggleExpanded: () =>
-                  _toggleWeek(widget.globalWeekOffset + wi),
-              onEditSession: (dayIndex) =>
-                  _openSessionEditor(widget.globalWeekOffset + wi, dayIndex),
-              onAddDay: () => widget.onAddDay(widget.globalWeekOffset + wi),
-              onCloneWeek: () =>
-                  widget.onCloneWeek(widget.globalWeekOffset + wi),
-              onDeleteWeek: () =>
-                  widget.onDeleteWeek(widget.globalWeekOffset + wi),
-              onRenameWeek: () {
-                final week = weeks[wi];
-                showRenameWeekDialog(
-                  context,
-                  week.name,
-                  (name) =>
-                      widget.onRenameWeek(widget.globalWeekOffset + wi, name),
-                );
-              },
-              onRenameDay: (dayIndex) {
-                final day = weeks[wi].days[dayIndex];
-                showRenameDayDialog(
-                  context,
-                  day.name,
-                  (name) => widget.onRenameDay(
-                    widget.globalWeekOffset + wi,
-                    dayIndex,
-                    name,
-                  ),
-                );
-              },
-              onDeleteDay: (dayIndex) => widget.onDeleteDay(
-                widget.globalWeekOffset + wi,
-                dayIndex,
-              ),
-              onUpdateScheduledWeekday: widget.onUpdateScheduledWeekday,
-              readOnly: widget.readOnly,
-            ),
-            const SizedBox(height: 28),
-          ],
-          _AddWeekButton(
+          );
+        }
+        if (index == weeks.length + 1) {
+          return _AddWeekButton(
             key: const ValueKey('training-add-week'),
             cs: widget.cs,
             theme: widget.theme,
             label: l10n.workoutPhaseAddWeek,
             onPressed: widget.readOnly ? null : widget.onNewWeek,
+          );
+        }
+        final wi = index - 1;
+        final globalWeekIndex = widget.globalWeekOffset + wi;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 28),
+          child: _WeekBlock(
+            key: ValueKey('week-$globalWeekIndex'),
+            theme: widget.theme,
+            cs: widget.cs,
+            week: weeks[wi],
+            weekInPhase: wi,
+            globalWeekIndex: globalWeekIndex,
+            expanded: _expandedWeeks.contains(globalWeekIndex),
+            selectedWeekIndex: widget.selectedWeekIndex,
+            selectedDayIndex: widget.selectedDayIndex,
+            onToggleExpanded: () => _toggleWeek(globalWeekIndex),
+            onEditSession: (dayIndex) =>
+                _openSessionEditor(globalWeekIndex, dayIndex),
+            onAddDay: () => widget.onAddDay(globalWeekIndex),
+            onCloneWeek: () => widget.onCloneWeek(globalWeekIndex),
+            onDeleteWeek: () => widget.onDeleteWeek(globalWeekIndex),
+            onRenameWeek: () {
+              final week = weeks[wi];
+              showRenameWeekDialog(
+                context,
+                week.name,
+                (name) => widget.onRenameWeek(globalWeekIndex, name),
+              );
+            },
+            onRenameDay: (dayIndex) {
+              final day = weeks[wi].days[dayIndex];
+              showRenameDayDialog(
+                context,
+                day.name,
+                (name) => widget.onRenameDay(
+                  globalWeekIndex,
+                  dayIndex,
+                  name,
+                ),
+              );
+            },
+            onDeleteDay: (dayIndex) => widget.onDeleteDay(
+              globalWeekIndex,
+              dayIndex,
+            ),
+            onUpdateScheduledWeekday: widget.onUpdateScheduledWeekday,
+            readOnly: widget.readOnly,
           ),
-        ],
-      ],
+        );
+      },
     );
   }
 }
@@ -677,6 +710,7 @@ class _DashedRoundedPainter extends CustomPainter {
 
 class _WeekBlock extends StatelessWidget {
   const _WeekBlock({
+    super.key,
     required this.theme,
     required this.cs,
     required this.week,

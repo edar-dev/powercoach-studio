@@ -76,6 +76,8 @@ class _WorkoutBuilderMobilityScreenState
   bool _didReadDeepLinkSelection = false;
   bool _showOnboardingCard = false;
   late final TabController _sectionTabController;
+  /// Cached shell flag so routine/mobility edits do not force full-screen setState.
+  bool? _lastShowsMobilityTab;
 
   int get _selectedWeekIndex => _builderSession.selectedWeekIndex;
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
@@ -254,9 +256,10 @@ class _WorkoutBuilderMobilityScreenState
       statusService: _statusService,
     );
     _builderSession = WorkoutBuilderSessionController();
-    _builderSession.addListener(_onBuilderControllersChanged);
+    _lastShowsMobilityTab = _builderSession.routine.includesMobilityTab;
+    _builderSession.addListener(_onBuilderShellFlagsChanged);
     _mobilityController = MobilityBuilderController(_builderSession);
-    _mobilityController.addListener(_onBuilderControllersChanged);
+    _mobilityController.addListener(_onBuilderShellFlagsChanged);
     _editorController = WorkoutEditorController(planRepo: _planRepo);
     _routineCoordinator = WorkoutBuilderRoutineCoordinator(
       builderSession: _builderSession,
@@ -465,15 +468,22 @@ class _WorkoutBuilderMobilityScreenState
     }
   }
 
-  void _onBuilderControllersChanged() {
+  /// Only rebuild the screen shell when mobility-tab visibility flips.
+  /// Training/mobility content updates via ListenableBuilder in
+  /// [WorkoutBuilderScreenTabs.buildEditorShell].
+  void _onBuilderShellFlagsChanged() {
     if (!mounted) return;
+    final shows = _showsMobilityTab;
+    if (_lastShowsMobilityTab == shows) return;
+    _lastShowsMobilityTab = shows;
+    _syncTabControllerLength();
     setState(() {});
   }
 
   @override
   void dispose() {
-    _builderSession.removeListener(_onBuilderControllersChanged);
-    _mobilityController.removeListener(_onBuilderControllersChanged);
+    _builderSession.removeListener(_onBuilderShellFlagsChanged);
+    _mobilityController.removeListener(_onBuilderShellFlagsChanged);
     _mobilityController.dispose();
     _builderSession.dispose();
     _editorController.dispose();
