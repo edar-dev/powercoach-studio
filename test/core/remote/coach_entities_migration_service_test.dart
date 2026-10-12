@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/backup/local_data_probe.dart';
+import 'package:powercoach_studio/core/remote/coach_entities_exceptions.dart';
 import 'package:powercoach_studio/core/remote/coach_entities_migration_service.dart';
 import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
@@ -171,5 +172,177 @@ void main() {
     expect(await service.isMigrationStarted(userId), isTrue);
     expect(await service.isMigrationComplete(userId), isFalse);
     expect(await service.needsMigration(userId), isTrue);
+  });
+
+  test('runMigration resume skips already-remote entities and upserts remainder',
+      () async {
+    await seedLocalCustomer();
+    await OfflineLocalStore.instance.upsertEntityForUser(userId, {
+      'id': 'c2',
+      'type': OfflineEntityType.customer.name,
+      'scopeId': userId,
+      'payload': <String, dynamic>{'id': 'c2', 'userId': userId, 'name': 'Bob'},
+      'updatedAt': DateTime.utc(2026, 9, 2).toIso8601String(),
+      'deleted': false,
+      'localOnly': false,
+    });
+    fake.seed(
+      OfflineEntity(
+        id: 'c1',
+        type: OfflineEntityType.customer,
+        scopeId: userId,
+        payload: const <String, dynamic>{'id': 'c1'},
+        updatedAt: DateTime.utc(2026, 9, 1),
+      ),
+    );
+    await service.markMigrationStarted(userId);
+
+    final progress = <(int, int)>[];
+    await service.runMigration(
+      userId: userId,
+      onProgress: (done, total) => progress.add((done, total)),
+    );
+
+    expect(fake.upsertAllCalls, 1);
+    final upsertedIds = fake.stored.map((e) => e.id).toSet();
+    expect(upsertedIds, containsAll(['c1', 'c2']));
+    expect(
+      progress.any((p) => p.$1 == 1 && p.$2 == 2),
+      isTrue,
+      reason: 'reports alreadyRemote before uploading remainder',
+    );
+    expect(progress.last, (2, 2));
+    expect(await service.isMigrationComplete(userId), isTrue);
+  });
+
+  test('runMigration clears progress prefs on complete', () async {
+    await seedLocalCustomer();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt(
+      SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+      3,
+    );
+
+    await service.runMigration(userId: userId);
+
+    expect(
+      prefs.getInt(
+        SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+      ),
+      isNull,
+    );
+    expect(await service.isMigrationComplete(userId), isTrue);
+  });
+
+  test('runMigration all-already-remote marks complete without upsert', () async {
+    await seedLocalCustomer();
+    fake.seed(
+      OfflineEntity(
+        id: 'c1',
+        type: OfflineEntityType.customer,
+        scopeId: userId,
+        payload: const <String, dynamic>{'id': 'c1'},
+        updatedAt: DateTime.utc(2026, 9, 1),
+        deleted: true,
+      ),
+    );
+    await service.markMigrationStarted(userId);
+    final before = fake.upsertAllCalls;
+
+    final progress = <(int, int)>[];
+    await service.runMigration(
+      userId: userId,
+      onProgress: (done, total) => progress.add((done, total)),
+    );
+
+    expect(fake.upsertAllCalls, before);
+    expect(await service.isMigrationComplete(userId), isTrue);
+    expect(await service.isMigrationStarted(userId), isFalse);
+    final prefs = await SharedPreferences.getInstance();
+    expect(
+      prefs.containsKey(
+        SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+      ),
+      isFalse,
+    );
+    expect(progress.any((p) => p.$1 == 1 && p.$2 == 1), isTrue);
+  });
+
+  test('runMigration mid-chunk failure then resume skips uploaded rows', () async {
+    // Seed 3 locals; fake chunk size is 100 so force fail after first upsertAll
+    // by uploading in two runs with one entity already remote after failure.
+    await seedLocalCustomer();
+    await OfflineLocalStore.instance.upsertEntityForUser(userId, {
+      'id': 'c2',
+      'type': OfflineEntityType.customer.name,
+      'scopeId': userId,
+      'payload': <String, dynamic>{'id': 'c2'},
+      'updatedAt': DateTime.utc(2026, 9, 2).toIso8601String(),
+      'deleted': false,
+      'localOnly': false,
+    });
+
+    // First attempt uploads c1 then fails before c2 (simulate via fail-after-1
+    // with a custom path: succeed once then fail — but chunk size is 100 so
+    // both would go in one call. Seed failure after success by inserting c1
+    // remotely after a failed full upsert, then retry.)
+    fake.failNextUpsertAll = true;
+    await expectLater(
+      service.runMigration(userId: userId),
+      throwsA(isA<Object>()),
+    );
+    expect(await service.isMigrationStarted(userId), isTrue);
+
+    // Partial remote state as if first chunk landed before a later failure.
+    fake.seed(
+      OfflineEntity(
+        id: 'c1',
+        type: OfflineEntityType.customer,
+        scopeId: userId,
+        payload: const <String, dynamic>{'id': 'c1'},
+        updatedAt: DateTime.utc(2026, 9, 1),
+      ),
+    );
+
+    final before = fake.upsertAllCalls;
+    final progress = <(int, int)>[];
+    await service.runMigration(
+      userId: userId,
+      onProgress: (done, total) => progress.add((done, total)),
+    );
+
+    expect(fake.upsertAllCalls, before + 1);
+    expect(fake.stored.map((e) => e.id).toSet(), containsAll(['c1', 'c2']));
+    expect(progress.first.$1, 1);
+    expect(progress.first.$2, 2);
+    expect(await service.isMigrationComplete(userId), isTrue);
+    final prefs = await SharedPreferences.getInstance();
+    expect(
+      prefs.getInt(
+        SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+      ),
+      isNull,
+    );
+  });
+
+  test('runMigration throws when offline', () async {
+    await seedLocalCustomer();
+    final offlineService = CoachEntitiesMigrationService(
+      remote: fake,
+      store: OfflineLocalStore.instance,
+      localProbe: LocalDataProbe(store: OfflineLocalStore.instance),
+      support: OfflineRepositorySupport(
+        remote: fake,
+        resolveUserId: () => userId,
+        isOnline: () => false,
+      ),
+      isOnline: () => false,
+      resolveUserId: () => userId,
+    );
+
+    await expectLater(
+      offlineService.runMigration(userId: userId),
+      throwsA(isA<CoachEntitiesOnlineRequiredException>()),
+    );
   });
 }

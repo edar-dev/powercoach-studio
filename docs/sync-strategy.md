@@ -57,6 +57,15 @@ upload** (idempotent upsert on PK) with progress UI; mark complete in prefs per 
 (`coach_entities_migration_v1_<userId>`). The dashboard gate runs
 `CoachEntitiesMigrationService` after sign-in (before empty-local cloud recovery).
 
+**Resume / retry:** before each run, list remote rows (including soft-deleted) and
+skip entities already present (`type.name::id`). Progress reports
+`(alreadyRemote + uploadedThisRun, totalLocal)`. Prefs also track
+`coach_entities_migration_started_v1_<userId>` (set before the first upsert so a
+partial remote cannot replace Drift on login) and
+`coach_entities_migration_progress_v1_<userId>` (int count after each successful
+chunk). Both started and progress keys are cleared on complete/clear. If every
+local entity is already remote, mark complete and best-effort pull (no upsert).
+
 ### Cloud Storage snapshots
 
 JSON uploads to the private `user-backups` bucket remain available as an extra

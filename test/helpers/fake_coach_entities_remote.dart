@@ -13,6 +13,9 @@ class FakeCoachEntitiesRemote extends CoachEntitiesRemote {
   int pullCalls = 0;
   bool failNextWrite = false;
   bool failNextUpsertAll = false;
+
+  /// When non-null, [upsertAll] fails after this many successful calls.
+  int? failAfterUpsertAllSuccesses;
   Object writeError = CoachEntitiesRemoteException('fake write failure');
 
   String _key(OfflineEntityType type, String id) => '${type.name}::$id';
@@ -96,6 +99,12 @@ class FakeCoachEntitiesRemote extends CoachEntitiesRemote {
     upsertAllCalls++;
     if (failNextUpsertAll) {
       failNextUpsertAll = false;
+      final err = writeError;
+      if (err is Exception) throw err;
+      throw CoachEntitiesRemoteException('$err');
+    }
+    final limit = failAfterUpsertAllSuccesses;
+    if (limit != null && upsertAllCalls > limit) {
       final err = writeError;
       if (err is Exception) throw err;
       throw CoachEntitiesRemoteException('$err');

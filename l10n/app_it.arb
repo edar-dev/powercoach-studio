@@ -525,6 +525,15 @@
       "error": { "type": "String" }
     }
   },
+  "coachEntitiesMigrationDataSafe": "I tuoi dati restano sul dispositivo; non è stato eliminato nulla.",
+  "coachEntitiesMigrationTryLater": "Più tardi",
+  "coachEntitiesMigrationResuming": "Ripresa da {done} di {total}…",
+  "@coachEntitiesMigrationResuming": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "coachEntitiesMigrationRetry": "Riprova",
   "settingsLegalSectionTitle": "Legale e privacy",
   "settingsLegalPrivacy": "Informativa privacy",

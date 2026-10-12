@@ -1276,6 +1276,18 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get coachEntitiesMigrationDataSafe =>
+      'Your data is still on this device; nothing was deleted.';
+
+  @override
+  String get coachEntitiesMigrationTryLater => 'Try later';
+
+  @override
+  String coachEntitiesMigrationResuming(int done, int total) {
+    return 'Resuming from $done of $total…';
+  }
+
+  @override
   String get coachEntitiesMigrationRetry => 'Retry';
 
   @override
