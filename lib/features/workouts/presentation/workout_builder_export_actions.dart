@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
 import 'package:powercoach_studio/core/export/pdf_export_delivery.dart';
 import 'package:powercoach_studio/core/billing/plan_gate.dart';
+import 'package:powercoach_studio/core/settings/post_invite_onboarding_store.dart';
 import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels_l10n.dart';
@@ -115,6 +116,10 @@ class WorkoutBuilderExportActions {
         artifact: artifact,
         l10n: l10n,
       );
+      final uid = Supabase.instance.client.auth.currentUser?.id;
+      if (uid != null && uid.isNotEmpty) {
+        await PostInviteOnboardingStore.instance.markPdfDone(uid);
+      }
     } catch (_) {
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

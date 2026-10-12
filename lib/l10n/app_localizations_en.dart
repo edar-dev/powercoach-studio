@@ -1605,25 +1605,23 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get customersEmptyStep1Title => 'Profile & Target';
+  String get customersEmptyStep1Title => 'Add a client';
 
   @override
-  String get customersEmptyStep1Body =>
-      'Enter anthropometrics, maxes, and primary goals (Hypertrophy, Strength, Cut).';
+  String get customersEmptyStep1Body => 'Create the first athlete profile.';
 
   @override
-  String get customersEmptyStep2Title => 'Assign a Plan';
+  String get customersEmptyStep2Title => 'Create a workout plan';
 
   @override
-  String get customersEmptyStep2Body =>
-      'Link a custom mesocycle or pick a template from the Library.';
+  String get customersEmptyStep2Body => 'Assign a training plan to the client.';
 
   @override
-  String get customersEmptyStep3Title => 'Track Loads & RPE';
+  String get customersEmptyStep3Title => 'Export the PDF';
 
   @override
   String get customersEmptyStep3Body =>
-      'View training logs, tonnage, and progressions in real time.';
+      'Generate the plan to print or share with the athlete.';
 
   @override
   String get customersOfflineFirstFooter =>
@@ -2877,6 +2875,46 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderOnboardingDismiss => 'Got it';
+
+  @override
+  String get postInviteOnboardingTitle => 'First steps';
+
+  @override
+  String postInviteOnboardingProgress(int completed) {
+    return '$completed of 3';
+  }
+
+  @override
+  String get postInviteOnboardingStep1Title => 'Add a client';
+
+  @override
+  String get postInviteOnboardingStep1Body =>
+      'Create the first athlete profile.';
+
+  @override
+  String get postInviteOnboardingStep1Action => 'New client';
+
+  @override
+  String get postInviteOnboardingStep2Title => 'Create a workout plan';
+
+  @override
+  String get postInviteOnboardingStep2Body => 'Assign a training plan.';
+
+  @override
+  String get postInviteOnboardingStep2Action => 'New plan';
+
+  @override
+  String get postInviteOnboardingStep3Title => 'Export the PDF';
+
+  @override
+  String get postInviteOnboardingStep3Body =>
+      'Generate the plan to print or share.';
+
+  @override
+  String get postInviteOnboardingStep3Action => 'Open plan';
+
+  @override
+  String get postInviteOnboardingDismiss => 'Hide';
 
   @override
   String get workoutBuilderCompactAddSearchHint => 'Search exercises…';

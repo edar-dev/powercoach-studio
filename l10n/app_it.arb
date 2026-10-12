@@ -668,12 +668,12 @@
       }
     }
   },
-  "customersEmptyStep1Title": "Anagrafica & Target",
-  "customersEmptyStep1Body": "Inserisci dati antropometrici, massimali e obiettivi primari (Ipertrofia, Forza, Cut).",
-  "customersEmptyStep2Title": "Assegna Scheda",
-  "customersEmptyStep2Body": "Collega un mesociclo personalizzato o seleziona un template dalla Libreria.",
-  "customersEmptyStep3Title": "Monitora Carichi & RPE",
-  "customersEmptyStep3Body": "Visualizza in tempo reale i log d'allenamento, tonnellaggio e progressioni.",
+  "customersEmptyStep1Title": "Aggiungi un cliente",
+  "customersEmptyStep1Body": "Crea l'anagrafica del primo atleta.",
+  "customersEmptyStep2Title": "Crea una scheda",
+  "customersEmptyStep2Body": "Assegna un piano di allenamento al cliente.",
+  "customersEmptyStep3Title": "Esporta il PDF",
+  "customersEmptyStep3Body": "Genera la scheda da stampare o condividere con l'atleta.",
   "customersOfflineFirstFooter": "I dati si sincronizzano sul cloud quando sei online · cache locale su questo dispositivo",
   "customersSearchEmpty": "Nessun cliente corrisponde ai filtri.",
   "customersMetricTotalAthletes": "Totale Atleti",
@@ -1328,6 +1328,25 @@
   "workoutBuilderOnboardingStep2": "Aggiungi esercizi dalla libreria o creane di nuovi.",
   "workoutBuilderOnboardingStep3": "Imposta date inizio/fine in Dettagli per il calendario.",
   "workoutBuilderOnboardingDismiss": "Ho capito",
+  "postInviteOnboardingTitle": "Primi passi",
+  "postInviteOnboardingProgress": "{completed} di 3",
+  "@postInviteOnboardingProgress": {
+    "placeholders": {
+      "completed": {
+        "type": "int"
+      }
+    }
+  },
+  "postInviteOnboardingStep1Title": "Aggiungi un cliente",
+  "postInviteOnboardingStep1Body": "Crea il profilo del primo atleta.",
+  "postInviteOnboardingStep1Action": "Nuovo cliente",
+  "postInviteOnboardingStep2Title": "Crea una scheda",
+  "postInviteOnboardingStep2Body": "Assegna un piano di allenamento.",
+  "postInviteOnboardingStep2Action": "Nuova scheda",
+  "postInviteOnboardingStep3Title": "Esporta il PDF",
+  "postInviteOnboardingStep3Body": "Genera la scheda da stampare o condividere.",
+  "postInviteOnboardingStep3Action": "Apri scheda",
+  "postInviteOnboardingDismiss": "Nascondi",
   "workoutBuilderCompactAddSearchHint": "Cerca esercizi…",
   "workoutBuilderCompactAddRecent": "Recenti e pin",
   "workoutBuilderCompactAddEmpty": "Nessun esercizio corrisponde alla ricerca.",
