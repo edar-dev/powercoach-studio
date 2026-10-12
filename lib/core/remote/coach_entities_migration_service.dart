@@ -11,11 +11,12 @@ import '../sync/offline_repository_support.dart';
 import 'coach_entities_exceptions.dart';
 import 'coach_entities_remote.dart';
 
-/// One-shot upload of local Drift coach data into empty `coach_entities`.
+/// One-shot upload of local Drift coach data into `coach_entities`.
 ///
 /// Used when an existing coach has local (or restored) data and the remote
-/// table is still empty. Idempotent on PK; completion is stored per user in
-/// SharedPreferences.
+/// table is still empty or only partially uploaded. Idempotent on PK; skips
+/// entities already present remotely (`type.name::id`, including soft-deleted).
+/// Completion and in-progress flags are stored per user in SharedPreferences.
 class CoachEntitiesMigrationService {
   CoachEntitiesMigrationService({
     CoachEntitiesRemote? remote,
@@ -100,7 +101,9 @@ class CoachEntitiesMigrationService {
 
   /// Uploads local known entities (including soft-deleted) then refreshes cache.
   ///
-  /// No-op when prefs already mark complete and remote is not empty.
+  /// Skips entities already present remotely (match on `type.name::id`,
+  /// including soft-deleted). No-op when prefs already mark complete and
+  /// remote is not empty.
   Future<void> runMigration({
     required String userId,
     void Function(int done, int total)? onProgress,
@@ -124,11 +127,28 @@ class CoachEntitiesMigrationService {
 
     final entities = await _loadEntitiesForUpload(userId);
     final total = entities.length;
-    onProgress?.call(0, total);
 
     if (total == 0) {
       await markMigrationComplete(userId);
       onProgress?.call(0, 0);
+      return;
+    }
+
+    final remoteRows = await _remote.list(includeDeleted: true);
+    final remoteKeys = <String>{
+      for (final e in remoteRows) _entityKey(e),
+    };
+
+    final toUpload = entities
+        .where((e) => !remoteKeys.contains(_entityKey(e)))
+        .toList(growable: false);
+    final alreadyRemote = total - toUpload.length;
+    // First progress after prepare: done > 0 means this run is a resume.
+    onProgress?.call(alreadyRemote, total);
+
+    if (toUpload.isEmpty) {
+      await markMigrationComplete(userId);
+      await _bestEffortPull();
       return;
     }
 
@@ -137,17 +157,24 @@ class CoachEntitiesMigrationService {
     await markMigrationStarted(userId);
 
     const chunkSize = CoachEntitiesRemote.upsertChunkSize;
-    for (var i = 0; i < entities.length; i += chunkSize) {
-      final end = (i + chunkSize < entities.length)
+    var uploadedThisRun = 0;
+    for (var i = 0; i < toUpload.length; i += chunkSize) {
+      final end = (i + chunkSize < toUpload.length)
           ? i + chunkSize
-          : entities.length;
-      final chunk = entities.sublist(i, end);
+          : toUpload.length;
+      final chunk = toUpload.sublist(i, end);
       await _remote.upsertAll(chunk);
-      onProgress?.call(end, total);
+      uploadedThisRun = end;
+      final done = alreadyRemote + uploadedThisRun;
+      await _persistProgress(userId, done);
+      onProgress?.call(done, total);
     }
 
     await markMigrationComplete(userId);
+    await _bestEffortPull();
+  }
 
+  Future<void> _bestEffortPull() async {
     try {
       await _support.pullAndReplaceCache();
     } catch (e, stack) {
@@ -156,6 +183,18 @@ class CoachEntitiesMigrationService {
         'CoachEntitiesMigrationService: pull after upload failed: $e\n$stack',
       );
     }
+  }
+
+  static String _entityKey(OfflineEntity entity) =>
+      '${entity.type.name}::${entity.id}';
+
+  Future<void> _persistProgress(String userId, int done) async {
+    if (userId.isEmpty) return;
+    final prefs = await _prefsLoader();
+    await prefs.setInt(
+      SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+      done,
+    );
   }
 
   @visibleForTesting
@@ -179,6 +218,9 @@ class CoachEntitiesMigrationService {
     await prefs.remove(
       SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
     );
+    await prefs.remove(
+      SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
+    );
   }
 
   @visibleForTesting
@@ -190,6 +232,9 @@ class CoachEntitiesMigrationService {
     );
     await prefs.remove(
       SettingsPrefsKeys.coachEntitiesMigrationStartedKey(userId),
+    );
+    await prefs.remove(
+      SettingsPrefsKeys.coachEntitiesMigrationProgressKey(userId),
     );
   }
 

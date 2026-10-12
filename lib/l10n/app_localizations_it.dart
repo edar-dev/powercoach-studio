@@ -1288,6 +1288,18 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
+  String get coachEntitiesMigrationDataSafe =>
+      'I tuoi dati restano sul dispositivo; non è stato eliminato nulla.';
+
+  @override
+  String get coachEntitiesMigrationTryLater => 'Più tardi';
+
+  @override
+  String coachEntitiesMigrationResuming(int done, int total) {
+    return 'Ripresa da $done di $total…';
+  }
+
+  @override
   String get coachEntitiesMigrationRetry => 'Riprova';
 
   @override

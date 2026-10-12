@@ -72,4 +72,12 @@ abstract final class SettingsPrefsKeys {
 
   static String coachEntitiesMigrationStartedKey(String userId) =>
       '$coachEntitiesMigrationStartedPrefix$userId';
+
+  /// Prefix for resumable migration progress (uploaded count so far).
+  /// Full key: `coach_entities_migration_progress_v1_<userId>`.
+  static const coachEntitiesMigrationProgressPrefix =
+      'coach_entities_migration_progress_v1_';
+
+  static String coachEntitiesMigrationProgressKey(String userId) =>
+      '$coachEntitiesMigrationProgressPrefix$userId';
 }

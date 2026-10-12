@@ -2348,6 +2348,24 @@ abstract class AppLocalizations {
   /// **'Error: {error}'**
   String coachEntitiesMigrationFailureDetail(String error);
 
+  /// No description provided for @coachEntitiesMigrationDataSafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Your data is still on this device; nothing was deleted.'**
+  String get coachEntitiesMigrationDataSafe;
+
+  /// No description provided for @coachEntitiesMigrationTryLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Try later'**
+  String get coachEntitiesMigrationTryLater;
+
+  /// No description provided for @coachEntitiesMigrationResuming.
+  ///
+  /// In en, this message translates to:
+  /// **'Resuming from {done} of {total}…'**
+  String coachEntitiesMigrationResuming(int done, int total);
+
   /// No description provided for @coachEntitiesMigrationRetry.
   ///
   /// In en, this message translates to:

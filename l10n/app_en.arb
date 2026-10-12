@@ -525,6 +525,15 @@
       "error": { "type": "String" }
     }
   },
+  "coachEntitiesMigrationDataSafe": "Your data is still on this device; nothing was deleted.",
+  "coachEntitiesMigrationTryLater": "Try later",
+  "coachEntitiesMigrationResuming": "Resuming from {done} of {total}…",
+  "@coachEntitiesMigrationResuming": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "coachEntitiesMigrationRetry": "Retry",
   "settingsLegalSectionTitle": "Legal & privacy",
   "settingsLegalPrivacy": "Privacy policy",

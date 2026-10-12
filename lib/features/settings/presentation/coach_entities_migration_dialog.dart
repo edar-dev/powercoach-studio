@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/remote/cloud_save_error_message.dart';
 import '../../../core/remote/coach_entities_migration_service.dart';
 import '../../../core/theme/marketing_dark_colors.dart';
 import '../../../l10n/app_localizations.dart';
@@ -44,6 +45,8 @@ class _CoachEntitiesMigrationDialogState
   int _total = 0;
   bool _running = true;
   bool _failed = false;
+  /// True when this run started with entities already present remotely.
+  bool _resuming = false;
   Object? _error;
 
   @override
@@ -61,13 +64,20 @@ class _CoachEntitiesMigrationDialogState
       _error = null;
       _done = 0;
       _total = 0;
+      _resuming = false;
     });
+    var sawFirstProgress = false;
     try {
       await widget.service.runMigration(
         userId: widget.userId,
         onProgress: (done, total) {
           if (!mounted) return;
           setState(() {
+            // Service reports alreadyRemote on the first progress callback.
+            if (!sawFirstProgress && total > 0) {
+              sawFirstProgress = true;
+              _resuming = done > 0;
+            }
             _done = done;
             _total = total;
           });
@@ -85,13 +95,26 @@ class _CoachEntitiesMigrationDialogState
     }
   }
 
+  String _progressLabel(AppLocalizations l10n) {
+    if (_total <= 0) {
+      return l10n.coachEntitiesMigrationPreparing;
+    }
+    if (_resuming) {
+      return l10n.coachEntitiesMigrationResuming(_done, _total);
+    }
+    return l10n.coachEntitiesMigrationProgress(_done, _total);
+  }
+
+  String _failureDetail(AppLocalizations l10n) {
+    final error = _error;
+    if (error == null) return l10n.cloudSaveFailed;
+    return tryCloudSaveErrorMessage(error, l10n) ?? l10n.cloudSaveFailed;
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final progressLabel = _total <= 0
-        ? l10n.coachEntitiesMigrationPreparing
-        : l10n.coachEntitiesMigrationProgress(_done, _total);
 
     return AlertDialog(
       backgroundColor: MarketingDarkColors.stitchCard,
@@ -120,27 +143,40 @@ class _CoachEntitiesMigrationDialogState
             const LinearProgressIndicator(),
             const SizedBox(height: 12),
             Text(
-              progressLabel,
+              _progressLabel(l10n),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: MarketingDarkColors.slate300,
               ),
             ),
           ] else if (_failed) ...[
             Text(
-              l10n.coachEntitiesMigrationFailureDetail('$_error'),
+              _failureDetail(l10n),
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.error,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              l10n.coachEntitiesMigrationDataSafe,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: MarketingDarkColors.slate300,
+                height: 1.4,
               ),
             ),
           ],
         ],
       ),
       actions: [
-        if (_failed)
+        if (_failed) ...[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.coachEntitiesMigrationTryLater),
+          ),
           FilledButton(
             onPressed: _run,
             child: Text(l10n.coachEntitiesMigrationRetry),
           ),
+        ],
       ],
     );
   }
