@@ -202,6 +202,98 @@ class PdfBrandStore {
     return brand_logo.readPdfBrandLogoFile(path);
   }
 
+  /// Portable brand payload for the user backup envelope (`pdfBrand` key).
+  ///
+  /// Omits device-local [PdfBrandData.logoRelativePath]. When a logo is present
+  /// and within [maxWebLogoBytes], includes `logoBase64` + `logoExtension` so
+  /// restore works across web ↔ native. Oversized logos export metadata only.
+  Future<Map<String, dynamic>> exportForBackup(String userId) async {
+    final data = await read(userId);
+    final map = <String, dynamic>{
+      'studioName': data.studioName,
+      'accentColorArgb': data.accentColorArgb,
+      'disclaimer': data.disclaimer,
+      'hidePowerCoachBranding': data.hidePowerCoachBranding,
+    };
+    final bytes = await loadLogoBytes(userId);
+    if (bytes == null || bytes.isEmpty) return map;
+    if (bytes.length > maxWebLogoBytes) return map;
+
+    final prefs = await SharedPreferences.getInstance();
+    final extFromPrefs = prefs.getString(_logoExtKey(userId));
+    final ext = _normalizeExtension(
+      (extFromPrefs != null && extFromPrefs.isNotEmpty)
+          ? extFromPrefs
+          : _extensionFromRelativePath(data.logoRelativePath) ?? 'png',
+    );
+    map['logoBase64'] = base64Encode(bytes);
+    map['logoExtension'] = ext;
+    return map;
+  }
+
+  /// Restores brand metadata (+ optional logo) from a backup `pdfBrand` map.
+  ///
+  /// Missing/empty `logoBase64` clears any device-local logo so replace/merge
+  /// match the backup. Invalid or oversized logo bytes keep metadata and skip
+  /// the logo (no throw).
+  Future<void> applyFromBackupMap(
+    String userId,
+    Map<String, dynamic> map,
+  ) async {
+    if (userId.isEmpty) return;
+
+    final accentRaw = map['accentColorArgb'];
+    int? accent;
+    if (accentRaw is int) {
+      accent = accentRaw;
+    } else if (accentRaw is num) {
+      accent = accentRaw.toInt();
+    }
+
+    await write(
+      userId,
+      PdfBrandData(
+        studioName: map['studioName']?.toString() ?? '',
+        accentColorArgb: accent,
+        disclaimer: map['disclaimer']?.toString() ?? '',
+        hidePowerCoachBranding: map['hidePowerCoachBranding'] == true,
+      ),
+    );
+
+    final logoB64 = map['logoBase64']?.toString();
+    if (logoB64 == null || logoB64.isEmpty) {
+      await clearLogo(userId);
+      return;
+    }
+
+    late final Uint8List bytes;
+    try {
+      bytes = base64Decode(logoB64);
+    } catch (_) {
+      await clearLogo(userId);
+      return;
+    }
+    if (bytes.isEmpty) {
+      await clearLogo(userId);
+      return;
+    }
+
+    final ext = _normalizeExtension(map['logoExtension']?.toString() ?? 'png');
+    try {
+      await saveLogo(userId, bytes, extension: ext);
+    } on PdfBrandLogoTooLargeException {
+      // Keep metadata; leave logo cleared rather than failing the whole restore.
+      await clearLogo(userId);
+    }
+  }
+
+  static String? _extensionFromRelativePath(String? relativePath) {
+    if (relativePath == null || relativePath.isEmpty) return null;
+    final dot = relativePath.lastIndexOf('.');
+    if (dot < 0 || dot == relativePath.length - 1) return null;
+    return relativePath.substring(dot + 1);
+  }
+
   static String _normalizeExtension(String extension) {
     var ext = extension.trim().toLowerCase();
     if (ext.startsWith('.')) ext = ext.substring(1);

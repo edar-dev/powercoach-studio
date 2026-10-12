@@ -2103,7 +2103,7 @@
   "pdfBrandWhiteLabelLabel": "Nascondi branding PowerCoach",
   "pdfBrandWhiteLabelSubtitle": "Rimuove il nome prodotto di default da header e disclaimer",
   "pdfBrandLogoLabel": "Logo PDF",
-  "pdfBrandLogoLocalHint": "Il logo resta su questo dispositivo e non è incluso nel backup.",
+  "pdfBrandLogoLocalHint": "Il logo è incluso nel backup/export così il brand resta con te su un altro browser o dispositivo.",
   "pdfBrandLogoPick": "Carica logo",
   "pdfBrandLogoReplace": "Sostituisci logo",
   "pdfBrandLogoRemove": "Rimuovi logo",

@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_codec.dart';
 import 'package:powercoach_studio/core/backup/user_data_backup_service.dart';
+import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:powercoach_studio/core/settings/settings_prefs_keys.dart';
 import 'package:powercoach_studio/core/storage/offline_local_store.dart';
 import 'package:powercoach_studio/core/sync/offline_models.dart';
@@ -19,7 +23,9 @@ void main() {
 
   setUpAll(() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
-    PathProviderPlatform.instance = FakePathProviderPlatform(
+    // Stable paths so Drift + native PDF logo files survive multiple
+    // getApplicationDocumentsDirectory() calls in one test.
+    PathProviderPlatform.instance = StableFakePathProvider(
       prefix: 'powercoach_backup_service_test_',
     );
     registerFakeMacOSNotificationsPlatform();
@@ -376,5 +382,66 @@ void main() {
     await UserPreferencesRepository.instance.applyFromBackupMap(prefs);
     expect(await PinnedExercisesStore.instance.getPinnedIds(), {'ex-a', 'ex-b'});
     expect(await RecentExercisesStore.instance.getRecentIds(), ['ex-b', 'ex-c']);
+  });
+
+  test('export/import round-trips pdfBrand metadata and logo', () async {
+    registerFakeMacOSNotificationsPlatform();
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    final logoBytes = Uint8List.fromList([10, 20, 30, 40, 50]);
+    await PdfBrandStore.instance.write(
+      uid,
+      const PdfBrandData(
+        studioName: 'Backup Studio',
+        accentColorArgb: 0xFFABCDEF,
+        disclaimer: 'Exported footer',
+        hidePowerCoachBranding: true,
+      ),
+    );
+    await PdfBrandStore.instance.saveLogo(uid, logoBytes, extension: 'png');
+
+    final map = await backup.buildExportMap(uid);
+    expect(map['pdfBrand'], isA<Map>());
+    final brand = Map<String, dynamic>.from(map['pdfBrand'] as Map);
+    expect(brand['studioName'], 'Backup Studio');
+    expect(brand['logoBase64'], base64Encode(logoBytes));
+    expect(brand.containsKey('logoRelativePath'), isFalse);
+
+    await PdfBrandStore.instance.write(uid, const PdfBrandData());
+    await PdfBrandStore.instance.clearLogo(uid);
+
+    final jsonText = const JsonEncoder().convert(map);
+    final parsed = parseUserBackupJson(jsonText, uid);
+    expect(parsed.pdfBrandJson, isNotNull);
+    await backup.restoreParsed(parsed, uid);
+
+    final restored = await PdfBrandStore.instance.read(uid);
+    expect(restored.studioName, 'Backup Studio');
+    expect(restored.accentColorArgb, 0xFFABCDEF);
+    expect(restored.disclaimer, 'Exported footer');
+    expect(restored.hidePowerCoachBranding, isTrue);
+    expect(await PdfBrandStore.instance.loadLogoBytes(uid), logoBytes);
+  });
+
+  test('restore without pdfBrand leaves local brand unchanged', () async {
+    registerFakeMacOSNotificationsPlatform();
+    SharedPreferences.setMockInitialValues(<String, Object>{});
+    await PdfBrandStore.instance.write(
+      uid,
+      const PdfBrandData(studioName: 'Keep me'),
+    );
+
+    final parsed = ParsedUserBackup(
+      entities: const [],
+      pendingOperations: const [],
+      syncMeta: const [],
+      profileJson: null,
+      preferences: const BackupPreferences(notificationsEnabled: true),
+      reminders: const [],
+    );
+    expect(parsed.pdfBrandJson, isNull);
+    await backup.restoreParsed(parsed, uid);
+
+    final kept = await PdfBrandStore.instance.read(uid);
+    expect(kept.studioName, 'Keep me');
   });
 }

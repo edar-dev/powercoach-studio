@@ -4498,7 +4498,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get pdfBrandLogoLocalHint =>
-      'Il logo resta su questo dispositivo e non è incluso nel backup.';
+      'Il logo è incluso nel backup/export così il brand resta con te su un altro browser o dispositivo.';
 
   @override
   String get pdfBrandLogoPick => 'Carica logo';

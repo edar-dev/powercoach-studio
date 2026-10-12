@@ -38,7 +38,7 @@ Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** part o
 | Data storage | Supabase `coach_entities` (SoT) + Drift cache + SharedPreferences prefs |
 | Saves | Require session + connectivity; spinner until remote ack |
 | Multi-device | Pull on login/resume replaces Drift cache per type |
-| Backup | File/cloud JSON remains disaster recovery; restore writes to remote + cache |
+| Backup | File/cloud JSON remains disaster recovery; restore writes to remote + cache. Prefs + PDF brand (`pdfBrand`) ride in the envelope (not Postgres) |
 | Auth | Supabase JWT scopes all RLS; anon has no table access |
 | Sync issues / outbox UI | Not reintroduced |
 
