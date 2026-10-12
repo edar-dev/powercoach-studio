@@ -8,6 +8,8 @@ DashboardSnapshot _snap({
   List<DashboardTodayItem> todayItems = const [],
   List<DashboardStalePlanItem> stalePlans = const [],
   List<DashboardCustomerNoPlanItem> customersWithoutPlan = const [],
+  String? recentPlanCustomerId,
+  String? recentPlanId,
   String? errorMessage,
 }) {
   return DashboardSnapshot(
@@ -18,6 +20,8 @@ DashboardSnapshot _snap({
     todayItems: todayItems,
     stalePlans: stalePlans,
     customersWithoutPlan: customersWithoutPlan,
+    recentPlanCustomerId: recentPlanCustomerId,
+    recentPlanId: recentPlanId,
   );
 }
 
@@ -142,5 +146,22 @@ void main() {
     expect(state.firstPlanCustomerId, 'c-today');
     expect(state.firstPlanId, 'p-today');
     expect(state.visible, isFalse);
+  });
+
+  test('falls back to recentPlan when no stale or today items', () {
+    final state = resolvePostInviteOnboarding(
+      snapshot: _snap(
+        clientCount: 1,
+        activePrograms: 1,
+        recentPlanCustomerId: 'c-recent',
+        recentPlanId: 'p-recent',
+      ),
+      dismissed: false,
+      pdfDone: false,
+    );
+    expect(state.visible, isTrue);
+    expect(state.hasPlan, isTrue);
+    expect(state.firstPlanCustomerId, 'c-recent');
+    expect(state.firstPlanId, 'p-recent');
   });
 }

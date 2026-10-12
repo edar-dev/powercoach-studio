@@ -53,7 +53,9 @@ class _PostInviteOnboardingCardState extends State<PostInviteOnboardingCard> {
   void didUpdateWidget(covariant PostInviteOnboardingCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.userId != widget.userId ||
-        oldWidget.store != widget.store) {
+        oldWidget.store != widget.store ||
+        oldWidget.snapshot != widget.snapshot) {
+      // Reload prefs when dashboard snapshot refreshes (e.g. after PDF export).
       _loadPrefs();
     }
   }

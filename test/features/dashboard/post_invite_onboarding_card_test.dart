@@ -126,6 +126,50 @@ void main() {
     expect(find.text('New customer destination'), findsOneWidget);
   });
 
+  testWidgets('step3 opens recent plan editor when customer+plan exist',
+      (tester) async {
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => Scaffold(
+            body: PostInviteOnboardingCard(
+              snapshot: const DashboardSnapshot(
+                clientCount: 1,
+                activePrograms: 1,
+                weeklyUpdates: 0,
+                todayItems: [],
+                stalePlans: [],
+                customersWithoutPlan: [],
+                recentPlanCustomerId: 'c-1',
+                recentPlanId: 'p-1',
+              ),
+              userId: 'user-1',
+              store: PostInviteOnboardingStore.instance,
+            ),
+          ),
+        ),
+        GoRoute(
+          path: '/customers/:id/workouts/:planId',
+          builder: (context, state) => Scaffold(
+            body: Text(
+              'Editor ${state.pathParameters['id']}/${state.pathParameters['planId']}',
+            ),
+          ),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(_harness(router: router));
+    await tester.pumpAndSettle();
+
+    expect(find.text('2 of 3'), findsOneWidget);
+    await tester.tap(find.text('Open plan'));
+    await tester.pumpAndSettle();
+    expect(find.text('Editor c-1/p-1'), findsOneWidget);
+  });
+
   testWidgets('shrinks when all steps complete', (tester) async {
     await PostInviteOnboardingStore.instance.markPdfDone('user-1');
     final router = GoRouter(

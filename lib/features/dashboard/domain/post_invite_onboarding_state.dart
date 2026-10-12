@@ -48,6 +48,12 @@ PostInviteOnboardingState resolvePostInviteOnboarding({
   } else if (snapshot.todayItems.isNotEmpty) {
     planCustomerId = snapshot.todayItems.first.customerId;
     planId = snapshot.todayItems.first.planId;
+  } else if (snapshot.recentPlanCustomerId != null &&
+      snapshot.recentPlanCustomerId!.isNotEmpty &&
+      snapshot.recentPlanId != null &&
+      snapshot.recentPlanId!.isNotEmpty) {
+    planCustomerId = snapshot.recentPlanCustomerId;
+    planId = snapshot.recentPlanId;
   }
 
   return PostInviteOnboardingState(

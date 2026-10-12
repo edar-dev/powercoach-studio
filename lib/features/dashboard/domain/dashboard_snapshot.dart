@@ -75,6 +75,8 @@ class DashboardSnapshot {
     required this.todayItems,
     required this.stalePlans,
     required this.customersWithoutPlan,
+    this.recentPlanCustomerId,
+    this.recentPlanId,
   });
 
   factory DashboardSnapshot.error(String message) => DashboardSnapshot(
@@ -94,6 +96,10 @@ class DashboardSnapshot {
   final List<DashboardTodayItem> todayItems;
   final List<DashboardStalePlanItem> stalePlans;
   final List<DashboardCustomerNoPlanItem> customersWithoutPlan;
+
+  /// Most recently updated non-archived plan (onboarding deep-link fallback).
+  final String? recentPlanCustomerId;
+  final String? recentPlanId;
 
   bool get hasError => errorMessage != null && errorMessage!.isNotEmpty;
 }
@@ -205,6 +211,14 @@ DashboardSnapshot buildDashboardSnapshot({
   noPlan.sort((a, b) => a.name.compareTo(b.name));
   final customersWithoutPlan = noPlan.take(maxSectionRows).toList();
 
+  WorkoutPlanApiModel? recentPlan;
+  for (final plan in plans) {
+    if (plan.isArchived) continue;
+    if (recentPlan == null || plan.updatedAt.isAfter(recentPlan.updatedAt)) {
+      recentPlan = plan;
+    }
+  }
+
   return DashboardSnapshot(
     clientCount: customers.length,
     activePrograms: plans.where((p) => !p.isArchived).length,
@@ -212,5 +226,7 @@ DashboardSnapshot buildDashboardSnapshot({
     todayItems: todayItems,
     stalePlans: stalePlans,
     customersWithoutPlan: customersWithoutPlan,
+    recentPlanCustomerId: recentPlan?.customerId,
+    recentPlanId: recentPlan?.id,
   );
 }
