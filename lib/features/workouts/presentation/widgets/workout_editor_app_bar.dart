@@ -22,6 +22,10 @@ class WorkoutEditorAppBar extends StatelessWidget
     this.saveStatusIndicator,
     this.editorCustomerName,
     this.hasLoadedPlan = false,
+    this.showLogSessionAction = false,
+    this.logSessionEnabled = false,
+    this.onLogSession,
+    this.onLogSessionUnavailable,
   });
 
   final ThemeData theme;
@@ -40,6 +44,12 @@ class WorkoutEditorAppBar extends StatelessWidget
   final String? editorCustomerName;
   /// True only after a customer plan exists in cloud (not first-save draft).
   final bool hasLoadedPlan;
+  /// Show Log session in the app bar (hidden when read-only / loading).
+  final bool showLogSessionAction;
+  final bool logSessionEnabled;
+  final VoidCallback? onLogSession;
+  /// Called when the log action is visible but disabled (sandbox / unsaved).
+  final VoidCallback? onLogSessionUnavailable;
 
   String? get _assignedPlanBadge {
     if (!editorMode || !hasLoadedPlan) return null;
@@ -93,6 +103,19 @@ class WorkoutEditorAppBar extends StatelessWidget
               ],
             ),
       actions: [
+        if (showLogSessionAction && !loading)
+          IconButton(
+            icon: Icon(
+              Icons.edit_note_outlined,
+              color: logSessionEnabled
+                  ? null
+                  : colorScheme.onSurface.withValues(alpha: 0.38),
+            ),
+            tooltip: l10n.workoutBuilderLogSession,
+            onPressed: logSessionEnabled
+                ? onLogSession
+                : onLogSessionUnavailable,
+          ),
         if (!loading)
           IconButton(
             icon: const Icon(Icons.upload_file),

@@ -41,6 +41,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     this.routineTitleHint,
     this.editorCustomerName,
     this.hasLoadedPlan = false,
+    this.showLogSessionAction = false,
+    this.logSessionEnabled = false,
+    this.onLogSession,
+    this.onLogSessionUnavailable,
   });
 
   final bool canPop;
@@ -70,6 +74,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final String? routineTitleHint;
   final String? editorCustomerName;
   final bool hasLoadedPlan;
+  final bool showLogSessionAction;
+  final bool logSessionEnabled;
+  final VoidCallback? onLogSession;
+  final VoidCallback? onLogSessionUnavailable;
 
   Widget _constrainedSessionColumn({
     required BuildContext context,
@@ -125,6 +133,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           saveStatusIndicator: saveStatusIndicator,
           editorCustomerName: editorCustomerName,
           hasLoadedPlan: hasLoadedPlan,
+          showLogSessionAction: showLogSessionAction,
+          logSessionEnabled: logSessionEnabled,
+          onLogSession: onLogSession,
+          onLogSessionUnavailable: onLogSessionUnavailable,
         ),
         body: loading
             ? const Center(child: CircularProgressIndicator())

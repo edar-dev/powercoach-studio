@@ -8,13 +8,13 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart' show Customer;
-import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../settings/data/user_preferences_repository.dart';
 import '../../data/workout_draft_store.dart';
 import '../../data/workout_plan_repository.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/plan_session_status_service.dart';
 import '../../domain/session_execution_service.dart';
+import '../builder_session_log_handler.dart';
 import '../mobility_builder_controller.dart';
 import '../workout_builder_export_actions.dart';
 import '../workout_builder_mobility_handlers.dart';
@@ -26,7 +26,6 @@ import '../workout_builder_session_controller.dart';
 import '../workout_builder_training_handlers.dart';
 import '../workout_editor_controller.dart';
 import '../workout_editor_snapshot.dart';
-import '../widgets/session_log_sheet.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_save_status_indicator.dart';
 
 /// Workout Builder – training + optional mobility tab from [WorkoutRoutine.includesMobilityTab].
@@ -58,6 +57,7 @@ class _WorkoutBuilderMobilityScreenState
   final _planRepo = WorkoutPlanRepository();
   final _statusService = PlanSessionStatusService();
   final _executionService = SessionExecutionService();
+  late final BuilderSessionLogHandler _sessionLogHandler;
   final WorkoutDraftStore _draftStore = const SharedPrefsWorkoutDraftStore();
   late final WorkoutBuilderSessionController _builderSession;
   late final MobilityBuilderController _mobilityController;
@@ -158,6 +158,9 @@ class _WorkoutBuilderMobilityScreenState
         planArchived: _planArchived,
         readOnly: _readOnly,
         onLogSession: _canLogSession ? _logCurrentSession : null,
+        showLogSessionAction: _showLogSessionAction,
+        logSessionEnabled: _canLogSession,
+        onLogSessionUnavailable: _onLogSessionUnavailable,
         onAssignDraftToCustomer: !widget.editorMode ? _assignDraftToCustomer : null,
         actions: _routineActions,
         onInitialWeekNumberChanged: (value) =>
@@ -191,6 +194,9 @@ class _WorkoutBuilderMobilityScreenState
       !_readOnly &&
       !_loading;
 
+  /// Visible when not read-only (sandbox + unsaved still show a disabled affordance).
+  bool get _showLogSessionAction => !_readOnly && !_loading;
+
   Future<void> _assignDraftToCustomer() {
     return _routineCoordinator.assignDraftToCustomer(
       context: context,
@@ -199,6 +205,19 @@ class _WorkoutBuilderMobilityScreenState
       ),
       selectedWeekIndex: _selectedWeekIndex,
       selectedDayIndex: _selectedDayIndex,
+    );
+  }
+
+  void _onLogSessionUnavailable() {
+    final l10n = AppLocalizations.of(context);
+    final message = !widget.editorMode
+        ? l10n.workoutBuilderSandboxBannerHint
+        : l10n.workoutBuilderSaveToPersistHint;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 
@@ -218,53 +237,22 @@ class _WorkoutBuilderMobilityScreenState
     }
 
     final day = routine.weeks[weekIndex].days[dayIndex];
-    final sessionKey = WorkoutRoutine.sessionKey(weekIndex, dayIndex);
-    final existing = await _executionService.get(
-      planId: planId,
-      sessionKey: sessionKey,
-    );
-    if (!mounted) return;
-
-    final logResult = await showSessionLogSheet(
+    await _sessionLogHandler.logSession(
       context: context,
+      planId: planId,
+      weekIndex: weekIndex,
+      dayIndex: dayIndex,
       plannedExercises: day.exercises,
-      initialExercises: existing?.exercises,
-      initialNotes: existing?.notes ?? '',
     );
-    if (logResult == null || !mounted) return;
-
-    try {
-      await _statusService.setSessionStatus(
-        planId: planId,
-        weekIndex: weekIndex,
-        dayIndex: dayIndex,
-        status: PlanSessionStatus.completed,
-        exercises: logResult.exercises,
-        notes: logResult.notes,
-        source: 'workout_builder',
-      );
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).workoutBuilderLogSessionSuccess),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context).calendarUpdateError),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Theme.of(context).colorScheme.errorContainer,
-        ),
-      );
-    }
   }
 
   @override
   void initState() {
     super.initState();
+    _sessionLogHandler = BuilderSessionLogHandler(
+      executionService: _executionService,
+      statusService: _statusService,
+    );
     _builderSession = WorkoutBuilderSessionController();
     _builderSession.addListener(_onBuilderControllersChanged);
     _mobilityController = MobilityBuilderController(_builderSession);
