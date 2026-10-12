@@ -8,6 +8,8 @@ enum PaywallFeature {
   customers,
   exportProgress,
   workoutExport,
+  pdfBrand,
+  measurementExport,
 }
 
 Future<void> showPaywallDialog(
@@ -23,6 +25,8 @@ Future<void> showPaywallDialog(
       ),
     PaywallFeature.exportProgress => l10n.paywallMessageExport,
     PaywallFeature.workoutExport => l10n.paywallMessageWorkoutExport,
+    PaywallFeature.pdfBrand => l10n.paywallMessagePdfBrand,
+    PaywallFeature.measurementExport => l10n.paywallMessageMeasurementExport,
   };
 
   return showDialog<void>(

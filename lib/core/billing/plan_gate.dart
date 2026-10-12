@@ -24,6 +24,10 @@ abstract final class PlanGate {
 
   static Future<bool> canExportWorkoutPdfOrExcel() => isPro();
 
+  static Future<bool> canCustomizePdfBrand() => isPro();
+
+  static Future<bool> canExportMeasurements() => isPro();
+
   /// Returns `true` when the action is allowed; otherwise shows paywall and returns `false`.
   static Future<bool> requirePro(
     BuildContext context, {

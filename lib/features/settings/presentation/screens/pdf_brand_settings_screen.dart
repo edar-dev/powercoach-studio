@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/auth/supabase_bootstrap.dart';
+import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/pdf/pdf_brand_store.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
@@ -116,6 +119,9 @@ class _PdfBrandSettingsScreenState extends State<PdfBrandSettingsScreen> {
         _loadError = null;
         _applySaved(brand, logo);
       });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        unawaited(_gateDeepLinkIfNotPro());
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -123,6 +129,15 @@ class _PdfBrandSettingsScreenState extends State<PdfBrandSettingsScreen> {
         _loadError = e.toString();
       });
     }
+  }
+
+  Future<void> _gateDeepLinkIfNotPro() async {
+    if (!mounted) return;
+    if (await PlanGate.requirePro(context, feature: PaywallFeature.pdfBrand)) {
+      return;
+    }
+    if (!mounted) return;
+    context.pop();
   }
 
   void _applySaved(PdfBrandData brand, Uint8List? logo) {
@@ -205,6 +220,10 @@ class _PdfBrandSettingsScreenState extends State<PdfBrandSettingsScreen> {
   }
 
   Future<void> _save() async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.pdfBrand)) {
+      return;
+    }
+    if (!mounted) return;
     final user = SupabaseBootstrap.currentUser;
     if (user == null) return;
     final l10n = AppLocalizations.of(context);

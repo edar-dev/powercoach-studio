@@ -1979,14 +1979,26 @@ abstract class AppLocalizations {
   /// No description provided for @paywallMessageExport.
   ///
   /// In en, this message translates to:
-  /// **'Client progress CSV export is included in PowerCoach Pro.'**
+  /// **'Client progress CSV export is included in PowerCoach Pro — download tracking data for reviews and sharing.'**
   String get paywallMessageExport;
 
   /// No description provided for @paywallMessageWorkoutExport.
   ///
   /// In en, this message translates to:
-  /// **'Workout PDF and Excel export is included in PowerCoach Pro.'**
+  /// **'Workout PDF and Excel export is included in PowerCoach Pro — deliver branded programs athletes can use in the gym.'**
   String get paywallMessageWorkoutExport;
+
+  /// No description provided for @paywallMessagePdfBrand.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom PDF brand kit (studio name, logo, colors, white-label) is included in PowerCoach Pro — so athlete handouts look like your studio.'**
+  String get paywallMessagePdfBrand;
+
+  /// No description provided for @paywallMessageMeasurementExport.
+  ///
+  /// In en, this message translates to:
+  /// **'Measurement history CSV and PDF export is included in PowerCoach Pro — share progress reports with clients from PowerCoach.'**
+  String get paywallMessageMeasurementExport;
 
   /// No description provided for @paywallUpgradeCta.
   ///
