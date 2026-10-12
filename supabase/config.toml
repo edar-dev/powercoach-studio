@@ -26,3 +26,7 @@ verify_jwt = true
 
 [functions.create-portal-session]
 verify_jwt = true
+
+# Public waitlist form (no Auth session yet). Service role used only inside the function.
+[functions.request-access]
+verify_jwt = false

@@ -391,7 +391,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get landingFaqBetaA =>
-      'App access is invite-only: an admin invites you by email. After the invite, set your password and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.';
+      'App access is invite-only. Leave your email on the waitlist via “How to get access”; after approval you receive an invite email, set your password, and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.';
 
   @override
   String get landingFaqBrowserQ => 'What if I clear browser data?';
@@ -687,7 +687,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get authInviteOnlyBody =>
-      'PowerCoach Studio does not offer public registration. An admin invites you by email: after the invite, set your password and sign in to your coach workspace.';
+      'PowerCoach Studio does not offer public registration. Leave your email and we will contact you with an invite. If you already received an invite, sign in to your coach workspace.';
 
   @override
   String get authInviteOnlyLoginCta => 'Already invited? Sign in';
@@ -695,6 +695,44 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get authInviteOnlyProNote =>
       'Pro promo codes unlock Pro after you have an account — they do not grant app access.';
+
+  @override
+  String get authWaitlistSectionTitle => 'Request access';
+
+  @override
+  String get authWaitlistEmailLabel => 'Email';
+
+  @override
+  String get authWaitlistNameLabel => 'Name (optional)';
+
+  @override
+  String get authWaitlistNoteLabel => 'Note (optional)';
+
+  @override
+  String get authWaitlistNoteHint =>
+      'Studio, city, or why you need PowerCoach…';
+
+  @override
+  String get authWaitlistSubmit => 'Submit request';
+
+  @override
+  String get authWaitlistSuccess =>
+      'Request sent. We will email you with an invite.';
+
+  @override
+  String get authWaitlistAlreadyPending =>
+      'You already have a pending request for this email.';
+
+  @override
+  String get authWaitlistErrorGeneric =>
+      'Could not submit the request. Please try again later.';
+
+  @override
+  String get authWaitlistErrorRateLimited =>
+      'Too many requests. Try again in a minute.';
+
+  @override
+  String get authWaitlistErrorInvalidEmail => 'Please enter a valid email.';
 
   @override
   String get authBackHome => 'Back to home';
