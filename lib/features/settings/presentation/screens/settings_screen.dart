@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -5,6 +7,7 @@ import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../../core/backup/auto_cloud_snapshot_store.dart';
 import '../../../../core/backup/backup_activity_store.dart';
 import '../../../../core/backup/web_persistence_coordinator.dart';
+import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
@@ -323,7 +326,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         navigateToSubscription(context);
         return;
       case SettingsHubSection.pdfBrand:
-        navigatePush(context, AppPaths.pdfBrand);
+        unawaited(_openPdfBrandIfPro());
         return;
       case SettingsHubSection.dataHealth:
         navigatePush(context, AppPaths.dataHealth);
@@ -349,6 +352,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   : _backupKey,
         );
     }
+  }
+
+  Future<void> _openPdfBrandIfPro() async {
+    if (!await PlanGate.requirePro(context, feature: PaywallFeature.pdfBrand)) {
+      return;
+    }
+    if (!mounted) return;
+    navigatePush(context, AppPaths.pdfBrand);
   }
 
   void _scrollTo(GlobalKey key) {

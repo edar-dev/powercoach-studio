@@ -432,8 +432,10 @@
       }
     }
   },
-  "paywallMessageExport": "L'export CSV del progresso cliente è incluso in PowerCoach Pro.",
-  "paywallMessageWorkoutExport": "L'export PDF ed Excel degli allenamenti è incluso in PowerCoach Pro.",
+  "paywallMessageExport": "L'export CSV del progresso cliente è incluso in PowerCoach Pro: scarica i dati per revisioni e condivisione.",
+  "paywallMessageWorkoutExport": "L'export PDF ed Excel degli allenamenti è incluso in PowerCoach Pro: consegna schede brandizzate da usare in palestra.",
+  "paywallMessagePdfBrand": "Il brand kit PDF (nome studio, logo, colori, white-label) è incluso in PowerCoach Pro: le schede per l'atleta sembrano del tuo studio.",
+  "paywallMessageMeasurementExport": "L'export CSV e PDF dello storico misure è incluso in PowerCoach Pro: condividi report di progresso con i clienti.",
   "paywallUpgradeCta": "Passa a Pro",
   "paywallNotNow": "Non ora",
   "settingsNotificationsDescription": "Promemoria locali per sessioni e clienti",

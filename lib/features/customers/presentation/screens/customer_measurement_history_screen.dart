@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -101,7 +102,14 @@ class _CustomerMeasurementHistoryScreenState
           if (_measurements.isNotEmpty)
             PopupMenuButton<String>(
               color: MarketingDarkColors.surface800,
-              onSelected: (value) {
+              onSelected: (value) async {
+                if (!await PlanGate.requirePro(
+                  context,
+                  feature: PaywallFeature.measurementExport,
+                )) {
+                  return;
+                }
+                if (!context.mounted) return;
                 final baseName = widget.customerName?.trim().isNotEmpty == true
                     ? widget.customerName!.trim()
                     : widget.customerId;

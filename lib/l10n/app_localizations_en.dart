@@ -1053,11 +1053,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get paywallMessageExport =>
-      'Client progress CSV export is included in PowerCoach Pro.';
+      'Client progress CSV export is included in PowerCoach Pro — download tracking data for reviews and sharing.';
 
   @override
   String get paywallMessageWorkoutExport =>
-      'Workout PDF and Excel export is included in PowerCoach Pro.';
+      'Workout PDF and Excel export is included in PowerCoach Pro — deliver branded programs athletes can use in the gym.';
+
+  @override
+  String get paywallMessagePdfBrand =>
+      'Custom PDF brand kit (studio name, logo, colors, white-label) is included in PowerCoach Pro — so athlete handouts look like your studio.';
+
+  @override
+  String get paywallMessageMeasurementExport =>
+      'Measurement history CSV and PDF export is included in PowerCoach Pro — share progress reports with clients from PowerCoach.';
 
   @override
   String get paywallUpgradeCta => 'Upgrade to Pro';
