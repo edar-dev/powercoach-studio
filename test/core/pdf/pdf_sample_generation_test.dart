@@ -306,6 +306,7 @@ Future<void> _exportAndWrite({
   PdfPlanMetadata? planMetadata,
   String? clientOrCoachName,
 }) async {
+  final stopwatch = Stopwatch()..start();
   final artifact = await exportWorkoutRoutineToPdf(
     routine,
     labels: _labels(),
@@ -316,7 +317,14 @@ Future<void> _exportAndWrite({
     weekIndices: weekIndices,
     clientOrCoachName: clientOrCoachName,
   );
+  stopwatch.stop();
+  final weekCount = weekIndices?.length ?? routine.weeks.length;
+  debugPrint(
+    '[perf] pdf-export ${stopwatch.elapsedMilliseconds}ms '
+    'weeks=$weekCount layout=$layout basename=$basename',
+  );
   expect(artifact.mimeType, 'application/pdf');
+  expect(artifact.bytes, isNotEmpty);
   await _writeSample(basename: basename, bytes: artifact.bytes);
 }
 

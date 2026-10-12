@@ -76,6 +76,8 @@ class _WorkoutBuilderMobilityScreenState
   bool _didReadDeepLinkSelection = false;
   bool _showOnboardingCard = false;
   late final TabController _sectionTabController;
+  /// Cached shell flag so routine/mobility edits do not force full-screen setState.
+  bool? _lastShowsMobilityTab;
 
   int get _selectedWeekIndex => _builderSession.selectedWeekIndex;
   int get _selectedDayIndex => _builderSession.selectedDayIndex;
@@ -254,9 +256,10 @@ class _WorkoutBuilderMobilityScreenState
       statusService: _statusService,
     );
     _builderSession = WorkoutBuilderSessionController();
-    _builderSession.addListener(_onBuilderControllersChanged);
+    _lastShowsMobilityTab = _builderSession.routine.includesMobilityTab;
+    _builderSession.addListener(_onBuilderShellFlagsChanged);
     _mobilityController = MobilityBuilderController(_builderSession);
-    _mobilityController.addListener(_onBuilderControllersChanged);
+    _mobilityController.addListener(_onBuilderShellFlagsChanged);
     _editorController = WorkoutEditorController(planRepo: _planRepo);
     _routineCoordinator = WorkoutBuilderRoutineCoordinator(
       builderSession: _builderSession,
@@ -465,15 +468,27 @@ class _WorkoutBuilderMobilityScreenState
     }
   }
 
-  void _onBuilderControllersChanged() {
+  /// Session/mobility mutations: keep dirty/autosave without full-shell rebuilds.
+  ///
+  /// Training/mobility/details tab bodies rebuild via [ListenableBuilder] in
+  /// [WorkoutBuilderScreenTabs.buildEditorShell]. Screen [setState] runs only
+  /// when mobility-tab visibility flips (TabBar / TabController length).
+  void _onBuilderShellFlagsChanged() {
     if (!mounted) return;
+    // Must run even when the shell does not rebuild — previously coupled to
+    // setState, which this perf pass stopped calling on every edit.
+    _scheduleEditorContentChanged();
+    final shows = _showsMobilityTab;
+    if (_lastShowsMobilityTab == shows) return;
+    _lastShowsMobilityTab = shows;
+    _syncTabControllerLength();
     setState(() {});
   }
 
   @override
   void dispose() {
-    _builderSession.removeListener(_onBuilderControllersChanged);
-    _mobilityController.removeListener(_onBuilderControllersChanged);
+    _builderSession.removeListener(_onBuilderShellFlagsChanged);
+    _mobilityController.removeListener(_onBuilderShellFlagsChanged);
     _mobilityController.dispose();
     _builderSession.dispose();
     _editorController.dispose();
@@ -492,42 +507,52 @@ class _WorkoutBuilderMobilityScreenState
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
-    final tabs = _screenTabsConfig.build();
 
     if (!widget.editorMode) {
-      return tabs.buildEditorShell(
-        canPop: !_isStandaloneDirty,
-        saving: _saving,
-        showManualSaveButton: true,
-        saveStatusIndicator: null,
-        showSandboxBanner: true,
+      // Sandbox: refresh canPop when the draft routine changes without
+      // waiting for an unrelated screen setState.
+      return ListenableBuilder(
+        listenable: _builderSession,
+        builder: (context, _) {
+          final tabs = _screenTabsConfig.build();
+          return tabs.buildEditorShell(
+            canPop: !_isStandaloneDirty,
+            saving: _saving,
+            showManualSaveButton: true,
+            saveStatusIndicator: null,
+            showSandboxBanner: true,
+          );
+        },
       );
     }
 
     return ListenableBuilder(
       listenable: _editorController,
-      builder: (context, _) => tabs.buildEditorShell(
-        canPop: !_editorController.isDirty,
-        saving: _editorController.saving,
-        showManualSaveButton: !_readOnly &&
-            _editorController.shouldShowManualSaveButton(
-              loading: _loading,
-              editorMode: widget.editorMode,
-            ),
-        saveStatusIndicator: !_loading
-            ? WorkoutEditorSaveStatusIndicator(
-                saveState: _editorController.saveState,
-                l10n: l10n,
-                colorScheme: cs,
-                textTheme: theme.textTheme,
+      builder: (context, _) {
+        final tabs = _screenTabsConfig.build();
+        return tabs.buildEditorShell(
+          canPop: !_editorController.isDirty,
+          saving: _editorController.saving,
+          showManualSaveButton: !_readOnly &&
+              _editorController.shouldShowManualSaveButton(
+                loading: _loading,
                 editorMode: widget.editorMode,
-                hasLoadedPlan: _editorController.loadedPlanId != null,
-                onRetry: _routineActions.saveRoutine,
-              )
-            : null,
-        showFirstSaveBanner:
-            !_loading && _editorController.loadedPlanId == null,
-      ),
+              ),
+          saveStatusIndicator: !_loading
+              ? WorkoutEditorSaveStatusIndicator(
+                  saveState: _editorController.saveState,
+                  l10n: l10n,
+                  colorScheme: cs,
+                  textTheme: theme.textTheme,
+                  editorMode: widget.editorMode,
+                  hasLoadedPlan: _editorController.loadedPlanId != null,
+                  onRetry: _routineActions.saveRoutine,
+                )
+              : null,
+          showFirstSaveBanner:
+              !_loading && _editorController.loadedPlanId == null,
+        );
+      },
     );
   }
 }
