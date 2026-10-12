@@ -100,6 +100,8 @@ safety net (manual + automatic scheduler). They are **not** a substitute for
 
 ### Data catalog & quality
 
-Entity shapes and soft FKs: [`docs/data-catalog.md`](data-catalog.md).
+Entity shapes and soft FKs: [`docs/data-catalog.md`](data-catalog.md)
+(governance stance: in-repo registry + DQ scanner are enough; OpenMetadata
+stays a local spike; Postgres profiler paused — no cloud OM).
 Run the read-only scanner after pulls when investigating integrity issues:
 `dart run tool/data_quality_report.dart <backup.json>`.

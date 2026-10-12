@@ -4,6 +4,18 @@ Local-only OpenMetadata viewer for the PowerCoach **in-repo data catalog**.
 The Dart registry (`lib/core/data_catalog/`) remains the source of truth; OM is
 an optional ingestion target.
 
+## Stance (keep spike; do not expand)
+
+| Decision | Status |
+|----------|--------|
+| In-repo registry + DQ scanner (`lib/core/data_quality/`) | **Enough** for schema / integrity decisions |
+| This Docker OM stack | **Keep** as optional local spike only |
+| Cloud / hosted OpenMetadata | **Out of scope** — no new OM infra |
+| Postgres profiler (`scripts/profiler.sh`) | **Paused** — recipe kept for reference; do not invest |
+
+Authoritative docs: [`docs/data-catalog.md`](../../docs/data-catalog.md)
+(Governance stance). Product DQ UI: Settings **Salute dati**.
+
 > **LOCAL ONLY.** Default quickstart UI login is `admin@open-metadata.org` /
 > `admin`. Never expose this stack on a public network. Not used in CI. No
 > production SaaS deploy.
@@ -145,14 +157,19 @@ tool/openmetadata/scripts/dq_to_om.sh --live --backup /path/to/backup.json
 Refresh anytime with the same commands (idempotent enough for spike re-runs:
 create-or-get definition/suite/cases, then PUT results + PATCH descriptions).
 
-## Profiler (optional Postgres)
+## Profiler (paused — optional Postgres recipe)
+
+> **PAUSED.** Do not run as part of normal local workflow. The template and
+> `scripts/profiler.sh` remain for future exploration only. Prefer the Dart
+> DQ scanner and in-repo catalog until the coach product loop is stable.
+> See [Stance](#stance-keep-spike-do-not-expand).
 
 Optional OM ingestion/profiler workflow against the **physical**
 `public.coach_entities` table. This is separate from the Dart CustomDatabase
 catalog (`cloud_sot.*` logical tables).
 
-> **LOCAL / STAGING ONLY.** Never bake production DB passwords into
-> `docker-compose.yml`. Pass credentials via env. Do not casually profile
+> **LOCAL / STAGING ONLY** if ever resumed. Never bake production DB passwords
+> into `docker-compose.yml`. Pass credentials via env. Do not casually profile
 > production — prefer a local Postgres copy or a staging Supabase project with
 > a **read-only** role.
 
@@ -207,8 +224,9 @@ tool/openmetadata/scripts/health.sh --wait --timeout 300
 ## CI / production policy
 
 - **Not used in CI** — no workflow depends on Docker OM or these scripts.
-- **No production deploy** — this spike is for local exploration only.
-- The in-repo Dart catalog + `docs/data-catalog.md` remain authoritative.
+- **No production / cloud deploy** — no hosted OM; this spike is local only.
+- **Postgres profiler paused** — keep scripts; do not wire to prod/staging by default.
+- The in-repo Dart catalog + DQ scanner + `docs/data-catalog.md` remain authoritative.
 - Unit tests cover dry-run payload / sample data / DQ bridge builders only.
 
 ## Advanced: raw docker / dart commands

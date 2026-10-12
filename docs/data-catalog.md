@@ -8,11 +8,28 @@ Source of truth for **coach business data**: Supabase
 **per-user cache** replaced per entity type on pull. SharedPreferences stay
 local (settings, drafts, pins, PDF brand).
 
-OpenMetadata (optional local spike under `tool/openmetadata/`) ingests a JSON
-dump of this registry. It does **not** replace the in-repo catalog.
-
 Related: [sync-strategy.md](sync-strategy.md) (cloud SoT, online writes, pull,
 one-shot migration).
+
+## Governance stance (v1)
+
+**Enough for schema decisions today:**
+
+| Layer | Role |
+|-------|------|
+| In-repo Dart registry (`lib/core/data_catalog/`) | Authoritative catalog metadata |
+| Read-only DQ scanner (`lib/core/data_quality/`) + Settings **Salute dati** | Integrity checks on pulled / backup JSON |
+| This doc + `docs/sync-strategy.md` | Human reference |
+
+**Paused / out of scope:**
+
+- **No cloud OpenMetadata** — no hosted OM, no shared team SaaS, no new OM infra.
+- **Postgres profiler remains paused** — the local recipe under
+  `tool/openmetadata/profiler/` stays available for optional exploration, but
+  do not invest in wiring it to staging/prod or treating column stats as a
+  product dependency.
+- OpenMetadata under `tool/openmetadata/` stays a **local Docker spike** only
+  (viewer for registry dumps + optional DQ bridge). Not used in CI.
 
 ## Storage model
 
@@ -175,12 +192,15 @@ contract + per-entry cloud/cache fields).
 
 ## OpenMetadata spike (optional, local only)
 
-Local ops scripts: `tool/openmetadata/scripts/{up,health,ingest,dq_to_om,profiler,down}.sh`
-(see [`tool/openmetadata/README.md`](../tool/openmetadata/README.md) for sample data,
-DQ bridge, and optional Postgres profiler). OM is a
-viewer only; this document + the Dart registry remain authoritative. The spike
-models a logical catalog that mirrors cloud SoT + prefs buckets. Not used in
-CI; never expose the default `admin@open-metadata.org`/`admin` stack publicly.
+Local Docker spike only — see [Governance stance](#governance-stance-v1).
+Ops scripts: `tool/openmetadata/scripts/{up,health,ingest,dq_to_om,profiler,down}.sh`
+([`tool/openmetadata/README.md`](../tool/openmetadata/README.md)).
+
+OM is a **viewer** for registry dumps (+ optional sample data / DQ bridge). It
+does **not** replace the in-repo catalog. Postgres profiler script/template
+exist but are **paused** (do not run against production; no cloud OM hosting).
+Not used in CI; never expose the default `admin@open-metadata.org`/`admin`
+stack publicly.
 
 ## Data quality
 

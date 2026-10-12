@@ -40,6 +40,7 @@ When `POSTHOG_API_KEY` is set, **Flutter web** loads [PostHog](https://posthog.c
 - **Drift/SQLite** (`powercoach_offline.sqlite`): customers, workout plans, session executions, measurements, notes (local-first; no remote sync replay).
 - **SharedPreferences**: settings, drafts, exercise pins/recents, calendar reminder prefs, locale.
 - **Backup/restore**: JSON export/import via Settings — always restore-all (merge or replace); see `docs/` and `.cursor/rules/13-user-data-backup-json-compat.mdc`.
+- **Data catalog / quality**: in-repo registry + read-only DQ scanner — see [`docs/data-catalog.md`](docs/data-catalog.md). OpenMetadata under `tool/openmetadata/` is a local spike only (no cloud OM; Postgres profiler paused).
 
 Coach profile fields (display name, phone, bio, etc.) live under **Settings → Personal info** (`/settings/personal-info`; legacy `/profile` redirects there), stored locally per user — not in Supabase tables.
 
