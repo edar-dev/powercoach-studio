@@ -1620,25 +1620,24 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get customersEmptyStep1Title => 'Anagrafica & Target';
+  String get customersEmptyStep1Title => 'Aggiungi un cliente';
 
   @override
-  String get customersEmptyStep1Body =>
-      'Inserisci dati antropometrici, massimali e obiettivi primari (Ipertrofia, Forza, Cut).';
+  String get customersEmptyStep1Body => 'Crea l\'anagrafica del primo atleta.';
 
   @override
-  String get customersEmptyStep2Title => 'Assegna Scheda';
+  String get customersEmptyStep2Title => 'Crea una scheda';
 
   @override
   String get customersEmptyStep2Body =>
-      'Collega un mesociclo personalizzato o seleziona un template dalla Libreria.';
+      'Assegna un piano di allenamento al cliente.';
 
   @override
-  String get customersEmptyStep3Title => 'Monitora Carichi & RPE';
+  String get customersEmptyStep3Title => 'Esporta il PDF';
 
   @override
   String get customersEmptyStep3Body =>
-      'Visualizza in tempo reale i log d\'allenamento, tonnellaggio e progressioni.';
+      'Genera la scheda da stampare o condividere con l\'atleta.';
 
   @override
   String get customersOfflineFirstFooter =>
@@ -2900,6 +2899,47 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderOnboardingDismiss => 'Ho capito';
+
+  @override
+  String get postInviteOnboardingTitle => 'Primi passi';
+
+  @override
+  String postInviteOnboardingProgress(int completed) {
+    return '$completed di 3';
+  }
+
+  @override
+  String get postInviteOnboardingStep1Title => 'Aggiungi un cliente';
+
+  @override
+  String get postInviteOnboardingStep1Body =>
+      'Crea il profilo del primo atleta.';
+
+  @override
+  String get postInviteOnboardingStep1Action => 'Nuovo cliente';
+
+  @override
+  String get postInviteOnboardingStep2Title => 'Crea una scheda';
+
+  @override
+  String get postInviteOnboardingStep2Body =>
+      'Assegna un piano di allenamento.';
+
+  @override
+  String get postInviteOnboardingStep2Action => 'Nuova scheda';
+
+  @override
+  String get postInviteOnboardingStep3Title => 'Esporta il PDF';
+
+  @override
+  String get postInviteOnboardingStep3Body =>
+      'Genera la scheda da stampare o condividere.';
+
+  @override
+  String get postInviteOnboardingStep3Action => 'Apri scheda';
+
+  @override
+  String get postInviteOnboardingDismiss => 'Nascondi';
 
   @override
   String get workoutBuilderCompactAddSearchHint => 'Cerca esercizi…';

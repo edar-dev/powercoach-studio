@@ -71,6 +71,8 @@ void main() {
       expect(s.todayItems, isEmpty);
       expect(s.stalePlans, isEmpty);
       expect(s.customersWithoutPlan, isEmpty);
+      expect(s.recentPlanCustomerId, isNull);
+      expect(s.recentPlanId, isNull);
     });
 
     test('lists today plans matching calendar day', () {
@@ -92,6 +94,8 @@ void main() {
       expect(s.todayItems, hasLength(1));
       expect(s.todayItems.single.planId, 'p1');
       expect(s.todayItems.single.clientName, 'Anna');
+      expect(s.recentPlanCustomerId, 'c1');
+      expect(s.recentPlanId, 'p1');
     });
 
     test('flags stale plans by updatedAt day threshold', () {

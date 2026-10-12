@@ -2921,37 +2921,37 @@ abstract class AppLocalizations {
   /// No description provided for @customersEmptyStep1Title.
   ///
   /// In en, this message translates to:
-  /// **'Profile & Target'**
+  /// **'Add a client'**
   String get customersEmptyStep1Title;
 
   /// No description provided for @customersEmptyStep1Body.
   ///
   /// In en, this message translates to:
-  /// **'Enter anthropometrics, maxes, and primary goals (Hypertrophy, Strength, Cut).'**
+  /// **'Create the first athlete profile.'**
   String get customersEmptyStep1Body;
 
   /// No description provided for @customersEmptyStep2Title.
   ///
   /// In en, this message translates to:
-  /// **'Assign a Plan'**
+  /// **'Create a workout plan'**
   String get customersEmptyStep2Title;
 
   /// No description provided for @customersEmptyStep2Body.
   ///
   /// In en, this message translates to:
-  /// **'Link a custom mesocycle or pick a template from the Library.'**
+  /// **'Assign a training plan to the client.'**
   String get customersEmptyStep2Body;
 
   /// No description provided for @customersEmptyStep3Title.
   ///
   /// In en, this message translates to:
-  /// **'Track Loads & RPE'**
+  /// **'Export the PDF'**
   String get customersEmptyStep3Title;
 
   /// No description provided for @customersEmptyStep3Body.
   ///
   /// In en, this message translates to:
-  /// **'View training logs, tonnage, and progressions in real time.'**
+  /// **'Generate the plan to print or share with the athlete.'**
   String get customersEmptyStep3Body;
 
   /// No description provided for @customersOfflineFirstFooter.
@@ -5175,6 +5175,78 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Got it'**
   String get workoutBuilderOnboardingDismiss;
+
+  /// No description provided for @postInviteOnboardingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'First steps'**
+  String get postInviteOnboardingTitle;
+
+  /// No description provided for @postInviteOnboardingProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{completed} of 3'**
+  String postInviteOnboardingProgress(int completed);
+
+  /// No description provided for @postInviteOnboardingStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a client'**
+  String get postInviteOnboardingStep1Title;
+
+  /// No description provided for @postInviteOnboardingStep1Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Create the first athlete profile.'**
+  String get postInviteOnboardingStep1Body;
+
+  /// No description provided for @postInviteOnboardingStep1Action.
+  ///
+  /// In en, this message translates to:
+  /// **'New client'**
+  String get postInviteOnboardingStep1Action;
+
+  /// No description provided for @postInviteOnboardingStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Create a workout plan'**
+  String get postInviteOnboardingStep2Title;
+
+  /// No description provided for @postInviteOnboardingStep2Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign a training plan.'**
+  String get postInviteOnboardingStep2Body;
+
+  /// No description provided for @postInviteOnboardingStep2Action.
+  ///
+  /// In en, this message translates to:
+  /// **'New plan'**
+  String get postInviteOnboardingStep2Action;
+
+  /// No description provided for @postInviteOnboardingStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'Export the PDF'**
+  String get postInviteOnboardingStep3Title;
+
+  /// No description provided for @postInviteOnboardingStep3Body.
+  ///
+  /// In en, this message translates to:
+  /// **'Generate the plan to print or share.'**
+  String get postInviteOnboardingStep3Body;
+
+  /// No description provided for @postInviteOnboardingStep3Action.
+  ///
+  /// In en, this message translates to:
+  /// **'Open plan'**
+  String get postInviteOnboardingStep3Action;
+
+  /// No description provided for @postInviteOnboardingDismiss.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide'**
+  String get postInviteOnboardingDismiss;
 
   /// No description provided for @workoutBuilderCompactAddSearchHint.
   ///

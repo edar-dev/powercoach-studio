@@ -16,6 +16,7 @@ import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
 import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/backup_reminder_banner.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/post_invite_onboarding_card.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
@@ -233,6 +234,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             children: [
               const BillingAlertBanner(),
               const BackupReminderBanner(),
+              PostInviteOnboardingCard(snapshot: snap),
               if (_loading && snap == null)
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 48),
