@@ -44,9 +44,9 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('Aggiungi il tuo primo cliente'), findsOneWidget);
-    expect(find.text('Anagrafica & Target'), findsOneWidget);
-    expect(find.text('Assegna Scheda'), findsOneWidget);
-    expect(find.text('Monitora Carichi & RPE'), findsOneWidget);
+    expect(find.text('Aggiungi un cliente'), findsOneWidget);
+    expect(find.text('Crea una scheda'), findsOneWidget);
+    expect(find.text('Esporta il PDF'), findsOneWidget);
     expect(find.textContaining('sincronizzano sul cloud'), findsOneWidget);
   });
 }
