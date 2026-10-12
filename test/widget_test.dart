@@ -34,12 +34,15 @@ Widget _wrapWithApp(Widget child) {
 void main() {
   group('Auth screens UI', () {
     testWidgets('Registration screen shows invite-only access', (WidgetTester tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 2200));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
       await tester.pumpWidget(_wrapWithApp(const RegistrationScreen()));
       await tester.pumpAndSettle();
 
       expect(find.text('Accesso solo su invito'), findsOneWidget);
       expect(find.text('Hai già un invito? Accedi'), findsOneWidget);
-      expect(find.byType(TextFormField), findsNothing);
+      expect(find.text('Richiedi accesso'), findsOneWidget);
+      expect(find.byType(TextFormField), findsNWidgets(3));
     });
 
     testWidgets('Forgot password screen shows form and back link', (WidgetTester tester) async {

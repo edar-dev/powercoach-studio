@@ -398,7 +398,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get landingFaqBetaA =>
-      'L\'accesso all\'app è solo su invito: un amministratore ti invita via email. Dopo l\'invito imposti la password e accedi. Separatamente, i codici promo Pro sbloccano Pro dopo il login — non sono la chiave di accesso all\'app.';
+      'L\'accesso all\'app è solo su invito. Puoi lasciare la email nella waitlist su «Scopri come accedere»; dopo l\'approvazione ricevi un invito via email, imposti la password e accedi. Separatamente, i codici promo Pro sbloccano Pro dopo il login — non sono la chiave di accesso all\'app.';
 
   @override
   String get landingFaqBrowserQ =>
@@ -696,7 +696,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get authInviteOnlyBody =>
-      'PowerCoach Studio non offre registrazione pubblica. Un amministratore ti invita via email: dopo l\'invito imposti la password e accedi al tuo workspace coach.';
+      'PowerCoach Studio non offre registrazione pubblica. Lascia la tua email: ti contattiamo con un invito. Se hai già ricevuto l\'invito, accedi al tuo workspace coach.';
 
   @override
   String get authInviteOnlyLoginCta => 'Hai già un invito? Accedi';
@@ -704,6 +704,44 @@ class AppLocalizationsIt extends AppLocalizations {
   @override
   String get authInviteOnlyProNote =>
       'I codici promo Pro sbloccano Pro dopo aver effettuato l\'accesso: non danno accesso all\'app.';
+
+  @override
+  String get authWaitlistSectionTitle => 'Richiedi accesso';
+
+  @override
+  String get authWaitlistEmailLabel => 'Email';
+
+  @override
+  String get authWaitlistNameLabel => 'Nome (opzionale)';
+
+  @override
+  String get authWaitlistNoteLabel => 'Nota (opzionale)';
+
+  @override
+  String get authWaitlistNoteHint =>
+      'Studio, città, o perché ti serve PowerCoach…';
+
+  @override
+  String get authWaitlistSubmit => 'Invia richiesta';
+
+  @override
+  String get authWaitlistSuccess =>
+      'Richiesta inviata. Ti contatteremo via email con l\'invito.';
+
+  @override
+  String get authWaitlistAlreadyPending =>
+      'Hai già una richiesta in attesa per questa email.';
+
+  @override
+  String get authWaitlistErrorGeneric =>
+      'Impossibile inviare la richiesta. Riprova più tardi.';
+
+  @override
+  String get authWaitlistErrorRateLimited =>
+      'Troppe richieste. Riprova tra un minuto.';
+
+  @override
+  String get authWaitlistErrorInvalidEmail => 'Inserisci un\'email valida.';
 
   @override
   String get authBackHome => 'Torna alla home';

@@ -791,7 +791,7 @@ abstract class AppLocalizations {
   /// No description provided for @landingFaqBetaA.
   ///
   /// In en, this message translates to:
-  /// **'App access is invite-only: an admin invites you by email. After the invite, set your password and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.'**
+  /// **'App access is invite-only. Leave your email on the waitlist via “How to get access”; after approval you receive an invite email, set your password, and sign in. Separately, Pro promo codes unlock Pro after login — they are not the key to app access.'**
   String get landingFaqBetaA;
 
   /// No description provided for @landingFaqBrowserQ.
@@ -1337,7 +1337,7 @@ abstract class AppLocalizations {
   /// No description provided for @authInviteOnlyBody.
   ///
   /// In en, this message translates to:
-  /// **'PowerCoach Studio does not offer public registration. An admin invites you by email: after the invite, set your password and sign in to your coach workspace.'**
+  /// **'PowerCoach Studio does not offer public registration. Leave your email and we will contact you with an invite. If you already received an invite, sign in to your coach workspace.'**
   String get authInviteOnlyBody;
 
   /// No description provided for @authInviteOnlyLoginCta.
@@ -1351,6 +1351,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pro promo codes unlock Pro after you have an account — they do not grant app access.'**
   String get authInviteOnlyProNote;
+
+  /// No description provided for @authWaitlistSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request access'**
+  String get authWaitlistSectionTitle;
+
+  /// No description provided for @authWaitlistEmailLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authWaitlistEmailLabel;
+
+  /// No description provided for @authWaitlistNameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Name (optional)'**
+  String get authWaitlistNameLabel;
+
+  /// No description provided for @authWaitlistNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Note (optional)'**
+  String get authWaitlistNoteLabel;
+
+  /// No description provided for @authWaitlistNoteHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio, city, or why you need PowerCoach…'**
+  String get authWaitlistNoteHint;
+
+  /// No description provided for @authWaitlistSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit request'**
+  String get authWaitlistSubmit;
+
+  /// No description provided for @authWaitlistSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. We will email you with an invite.'**
+  String get authWaitlistSuccess;
+
+  /// No description provided for @authWaitlistAlreadyPending.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a pending request for this email.'**
+  String get authWaitlistAlreadyPending;
+
+  /// No description provided for @authWaitlistErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not submit the request. Please try again later.'**
+  String get authWaitlistErrorGeneric;
+
+  /// No description provided for @authWaitlistErrorRateLimited.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many requests. Try again in a minute.'**
+  String get authWaitlistErrorRateLimited;
+
+  /// No description provided for @authWaitlistErrorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email.'**
+  String get authWaitlistErrorInvalidEmail;
 
   /// No description provided for @authBackHome.
   ///
