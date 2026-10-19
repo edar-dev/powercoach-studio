@@ -960,6 +960,68 @@ class AppLocalizationsEn extends AppLocalizations {
       'Pro access activated with a Pro promo code.';
 
   @override
+  String get subscriptionPromoSectionTitle => 'Pro promo code';
+
+  @override
+  String get subscriptionPromoSectionBody =>
+      'Enter a Pro promo code you received, or request one from the team.';
+
+  @override
+  String get subscriptionPromoCodeLabel => 'Code';
+
+  @override
+  String get subscriptionPromoCodeHint => 'e.g. POWERCOACH-BETA';
+
+  @override
+  String get subscriptionPromoRedeemCta => 'Redeem';
+
+  @override
+  String get subscriptionPromoRequestCta => 'Request invite code';
+
+  @override
+  String get subscriptionPromoRequestPending =>
+      'Request already sent — we\'ll email you a code.';
+
+  @override
+  String get subscriptionPromoRedeemSuccess =>
+      'Pro unlocked with your promo code.';
+
+  @override
+  String get subscriptionPromoAlreadyPro => 'You already have Pro.';
+
+  @override
+  String get subscriptionPromoRequestSuccess =>
+      'Request sent. We\'ll email you a code.';
+
+  @override
+  String get subscriptionPromoRequestAlreadyPending =>
+      'You already have a pending request.';
+
+  @override
+  String get subscriptionPromoCodeRequired => 'Enter a promo code.';
+
+  @override
+  String get subscriptionPromoRedeemError =>
+      'Could not redeem the code. Please try again.';
+
+  @override
+  String get subscriptionPromoInvalidCode => 'Invalid or inactive promo code.';
+
+  @override
+  String get subscriptionPromoExpiredCode => 'This promo code has expired.';
+
+  @override
+  String get subscriptionPromoCodeLimit =>
+      'This promo code has reached its redemption limit.';
+
+  @override
+  String get subscriptionPromoAlreadyUsed => 'You already used this code.';
+
+  @override
+  String get subscriptionPromoRequestError =>
+      'Could not send the request. Please try again.';
+
+  @override
   String get subscriptionBillingDetailsTitle => 'Billing';
 
   @override

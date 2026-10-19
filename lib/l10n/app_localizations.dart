@@ -1826,6 +1826,114 @@ abstract class AppLocalizations {
   /// **'Pro access activated with a Pro promo code.'**
   String get subscriptionStatusPromoActiveDetail;
 
+  /// No description provided for @subscriptionPromoSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro promo code'**
+  String get subscriptionPromoSectionTitle;
+
+  /// No description provided for @subscriptionPromoSectionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a Pro promo code you received, or request one from the team.'**
+  String get subscriptionPromoSectionBody;
+
+  /// No description provided for @subscriptionPromoCodeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get subscriptionPromoCodeLabel;
+
+  /// No description provided for @subscriptionPromoCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. POWERCOACH-BETA'**
+  String get subscriptionPromoCodeHint;
+
+  /// No description provided for @subscriptionPromoRedeemCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Redeem'**
+  String get subscriptionPromoRedeemCta;
+
+  /// No description provided for @subscriptionPromoRequestCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Request invite code'**
+  String get subscriptionPromoRequestCta;
+
+  /// No description provided for @subscriptionPromoRequestPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Request already sent — we\'ll email you a code.'**
+  String get subscriptionPromoRequestPending;
+
+  /// No description provided for @subscriptionPromoRedeemSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro unlocked with your promo code.'**
+  String get subscriptionPromoRedeemSuccess;
+
+  /// No description provided for @subscriptionPromoAlreadyPro.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have Pro.'**
+  String get subscriptionPromoAlreadyPro;
+
+  /// No description provided for @subscriptionPromoRequestSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Request sent. We\'ll email you a code.'**
+  String get subscriptionPromoRequestSuccess;
+
+  /// No description provided for @subscriptionPromoRequestAlreadyPending.
+  ///
+  /// In en, this message translates to:
+  /// **'You already have a pending request.'**
+  String get subscriptionPromoRequestAlreadyPending;
+
+  /// No description provided for @subscriptionPromoCodeRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a promo code.'**
+  String get subscriptionPromoCodeRequired;
+
+  /// No description provided for @subscriptionPromoRedeemError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not redeem the code. Please try again.'**
+  String get subscriptionPromoRedeemError;
+
+  /// No description provided for @subscriptionPromoInvalidCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or inactive promo code.'**
+  String get subscriptionPromoInvalidCode;
+
+  /// No description provided for @subscriptionPromoExpiredCode.
+  ///
+  /// In en, this message translates to:
+  /// **'This promo code has expired.'**
+  String get subscriptionPromoExpiredCode;
+
+  /// No description provided for @subscriptionPromoCodeLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'This promo code has reached its redemption limit.'**
+  String get subscriptionPromoCodeLimit;
+
+  /// No description provided for @subscriptionPromoAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'You already used this code.'**
+  String get subscriptionPromoAlreadyUsed;
+
+  /// No description provided for @subscriptionPromoRequestError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not send the request. Please try again.'**
+  String get subscriptionPromoRequestError;
+
   /// No description provided for @subscriptionBillingDetailsTitle.
   ///
   /// In en, this message translates to:
