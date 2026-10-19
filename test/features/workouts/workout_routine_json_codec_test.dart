@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/maximal_ref.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_routine_json_codec.dart';
 
 void main() {
@@ -270,5 +271,60 @@ void main() {
     );
     expect(off['includesMobilityTab'], isFalse);
     expect(on['includesMobilityTab'], isTrue);
+  });
+
+  test('round-trip preserves maximalRef measurement on exercise', () {
+    const exercise = Exercise(
+      id: 'e1',
+      name: 'Bench press',
+      sets: '3',
+      reps: '5',
+      rpe: '80kg',
+      maximalRef: MaximalRef.measurement(lift: MaximalLift.bench),
+    );
+    final encoded = encodeExercise(exercise);
+    expect(encoded['maximalRef'], {'type': 'measurement', 'lift': 'bench'});
+    final restored = decodeExercise(encoded);
+    expect(restored.maximalRef, exercise.maximalRef);
+  });
+
+  test('round-trip preserves maximalRef custom on exercise', () {
+    const exercise = Exercise(
+      id: 'e2',
+      name: 'Military press',
+      sets: '3',
+      reps: '8',
+      rpe: '',
+      maximalRef: MaximalRef.custom(maximalId: 'max_1'),
+    );
+    final restored = decodeExercise(encodeExercise(exercise));
+    expect(
+      restored.maximalRef,
+      const MaximalRef.custom(maximalId: 'max_1'),
+    );
+  });
+
+  test('decodeExercise drops invalid maximalRef without crashing', () {
+    final restored = decodeExercise({
+      'id': 'e1',
+      'name': 'Squat',
+      'sets': '3',
+      'reps': '5',
+      'rpe': '',
+      'note': '',
+      'maximalRef': {'type': 'measurement', 'lift': 'unknown'},
+    });
+    expect(restored.maximalRef, isNull);
+  });
+
+  test('encodeExercise omits maximalRef when null', () {
+    const exercise = Exercise(
+      id: 'e1',
+      name: 'Squat',
+      sets: '3',
+      reps: '5',
+      rpe: '',
+    );
+    expect(encodeExercise(exercise).containsKey('maximalRef'), isFalse);
   });
 }

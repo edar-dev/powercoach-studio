@@ -1,6 +1,7 @@
 import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
+import 'maximal_ref.dart';
 
 const int kDefaultExerciseSetCount = 3;
 const String kDefaultExerciseReps = '10';
@@ -180,6 +181,8 @@ WorkoutRoutine? updateExerciseInRoutine({
   String? shortName,
   ExercisePrescriptionScope? prescriptionScope,
   List<ExerciseSet>? setDetails,
+  MaximalRef? maximalRef,
+  bool clearMaximalRef = false,
 }) {
   return updateDayExercisesInRoutine(
     routine: routine,
@@ -198,6 +201,8 @@ WorkoutRoutine? updateExerciseInRoutine({
               shortName: shortName ?? e.shortName,
               prescriptionScope: prescriptionScope ?? e.prescriptionScope,
               setDetails: setDetails ?? e.setDetails,
+              maximalRef: maximalRef,
+              clearMaximalRef: clearMaximalRef,
             ),
           );
         })
