@@ -969,6 +969,70 @@ class AppLocalizationsIt extends AppLocalizations {
       'Accesso Pro attivato con codice promo Pro.';
 
   @override
+  String get subscriptionPromoSectionTitle => 'Codice promo Pro';
+
+  @override
+  String get subscriptionPromoSectionBody =>
+      'Inserisci il codice promo Pro che hai ricevuto, oppure richiedine uno al team.';
+
+  @override
+  String get subscriptionPromoCodeLabel => 'Codice';
+
+  @override
+  String get subscriptionPromoCodeHint => 'es. POWERCOACH-BETA';
+
+  @override
+  String get subscriptionPromoRedeemCta => 'Riscatta';
+
+  @override
+  String get subscriptionPromoRequestCta => 'Richiedi codice Pro';
+
+  @override
+  String get subscriptionPromoRequestPending =>
+      'Richiesta già inviata — ti invieremo un codice via email.';
+
+  @override
+  String get subscriptionPromoRedeemSuccess =>
+      'Pro sbloccato con il codice promo.';
+
+  @override
+  String get subscriptionPromoAlreadyPro => 'Hai già Pro attivo.';
+
+  @override
+  String get subscriptionPromoRequestSuccess =>
+      'Richiesta inviata. Ti invieremo un codice via email.';
+
+  @override
+  String get subscriptionPromoRequestAlreadyPending =>
+      'Hai già una richiesta in sospeso.';
+
+  @override
+  String get subscriptionPromoCodeRequired => 'Inserisci un codice promo.';
+
+  @override
+  String get subscriptionPromoRedeemError =>
+      'Impossibile riscattare il codice. Riprova.';
+
+  @override
+  String get subscriptionPromoInvalidCode =>
+      'Codice promo non valido o non attivo.';
+
+  @override
+  String get subscriptionPromoExpiredCode => 'Questo codice promo è scaduto.';
+
+  @override
+  String get subscriptionPromoCodeLimit =>
+      'Questo codice ha raggiunto il limite di utilizzi.';
+
+  @override
+  String get subscriptionPromoAlreadyUsed =>
+      'Hai già utilizzato questo codice.';
+
+  @override
+  String get subscriptionPromoRequestError =>
+      'Impossibile inviare la richiesta. Riprova.';
+
+  @override
   String get subscriptionBillingDetailsTitle => 'Fatturazione';
 
   @override

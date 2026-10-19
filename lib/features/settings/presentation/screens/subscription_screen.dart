@@ -19,6 +19,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../widgets/subscription/subscription_billing_details_card.dart';
 import '../widgets/subscription/subscription_plan_compare_card.dart';
 import '../widgets/subscription/subscription_pro_actions_card.dart';
+import '../widgets/subscription/subscription_promo_redeem_card.dart';
 import '../widgets/subscription/subscription_status_card.dart';
 import '../widgets/subscription/subscription_upgrade_card.dart';
 
@@ -288,6 +289,12 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                       ),
                       if (!isPro) ...[
                         const SizedBox(height: 16),
+                        SubscriptionPromoRedeemCard(
+                          hasPendingCouponRequest:
+                              entitlement.hasPendingCouponRequest,
+                          onRedeemed: _load,
+                        ),
+                        const SizedBox(height: 16),
                         SubscriptionUpgradeCard(
                           busy: _busy,
                           yearly: _yearly,
@@ -295,6 +302,14 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                           onYearlyChanged: (v) => setState(() => _yearly = v),
                         ),
                       ],
+                    ],
+                    if (desktop && !isPro) ...[
+                      const SizedBox(height: 16),
+                      SubscriptionPromoRedeemCard(
+                        hasPendingCouponRequest:
+                            entitlement.hasPendingCouponRequest,
+                        onRedeemed: _load,
+                      ),
                     ],
                     SizedBox(height: phone ? 24 : 32),
                     KeyedSubtree(
