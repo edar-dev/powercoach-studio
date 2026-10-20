@@ -34,6 +34,7 @@ class SessionExerciseEditorCard extends StatefulWidget {
     this.supersetOptions = const [],
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
+    this.customerId,
   });
 
   final ThemeData theme;
@@ -43,6 +44,8 @@ class SessionExerciseEditorCard extends StatefulWidget {
   final bool expanded;
   final ValueChanged<bool> onExpandedChanged;
   final String? athleteName;
+  /// Customer id for Massimali resolve in the set editor (null in sandbox).
+  final String? customerId;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -305,6 +308,8 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                                       load,
                                       note,
                                     ),
+                                exercise: widget.exercise,
+                                customerId: widget.customerId,
                               ),
                       onRemove: widget.onRemoveSet == null
                           ? null

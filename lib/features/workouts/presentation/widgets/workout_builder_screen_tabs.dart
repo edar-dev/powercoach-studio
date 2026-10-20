@@ -59,6 +59,7 @@ class WorkoutBuilderScreenTabs {
     this.onSyncMobilityTabVisibility,
     this.routineTitleHint,
     this.editorCustomerName,
+    this.customerId,
   });
 
   final BuildContext context;
@@ -103,6 +104,7 @@ class WorkoutBuilderScreenTabs {
   final VoidCallback? onSyncMobilityTabVisibility;
   final String? routineTitleHint;
   final String? editorCustomerName;
+  final String? customerId;
 
   WorkoutRoutine get _routine => builderSession.routine;
 
@@ -186,6 +188,7 @@ class WorkoutBuilderScreenTabs {
       editorMode: editorMode,
       planId: loadedPlanId,
       editorCustomerName: editorCustomerName,
+      customerId: customerId,
     );
   }
 

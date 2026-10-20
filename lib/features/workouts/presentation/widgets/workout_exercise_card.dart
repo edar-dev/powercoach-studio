@@ -28,6 +28,7 @@ class WorkoutExerciseCard extends StatelessWidget {
     this.supersetOptions = const [],
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
+    this.customerId,
   });
 
   final ThemeData theme;
@@ -37,6 +38,8 @@ class WorkoutExerciseCard extends StatelessWidget {
   final ValueChanged<bool> onExpandedChanged;
   final bool linked;
   final bool showBottomDivider;
+  /// Customer id for Massimali resolve in the set editor (null in sandbox).
+  final String? customerId;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -375,6 +378,8 @@ class WorkoutExerciseCard extends StatelessWidget {
                               s.note,
                               (sets, reps, load, note) =>
                                   onUpdateSet!(i, sets, reps, load, note),
+                              exercise: exercise,
+                              customerId: customerId,
                             ),
                           ),
                         if (onRemoveSet != null && details.length > 1)

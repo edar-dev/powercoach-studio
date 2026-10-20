@@ -27,6 +27,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
     this.onCreateSuperset,
     this.sessionEditStyle = false,
     this.athleteName,
+    this.customerId,
     this.readOnly = false,
     required this.onDuplicateExercise,
     required this.onRemoveExercise,
@@ -55,6 +56,9 @@ class WorkoutDayExerciseList extends StatefulWidget {
   /// When true, renders Stitch session cards + dual bottom CTAs.
   final bool sessionEditStyle;
   final String? athleteName;
+
+  /// Customer id for Massimali resolve in set editors (null in sandbox).
+  final String? customerId;
 
   /// When true, hides mutation controls on session cards.
   final bool readOnly;
@@ -380,6 +384,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         index: displayIndex,
         expanded: _expandedExerciseId == ex.id,
         athleteName: widget.athleteName,
+        customerId: widget.customerId,
         onExpandedChanged: (value) {
           _setExpandedExercise(value ? ex.id : null);
         },
@@ -424,6 +429,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       exercise: ex,
       expanded: _expandedExerciseId == ex.id,
       showBottomDivider: showBottomDivider,
+      customerId: widget.customerId,
       onExpandedChanged: (value) {
         _setExpandedExercise(value ? ex.id : null);
       },

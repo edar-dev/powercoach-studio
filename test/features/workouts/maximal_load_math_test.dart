@@ -78,4 +78,21 @@ void main() {
       );
     });
   });
+
+  group('formatMaximalLoadKg', () {
+    test('formats whole and half kilograms with kg suffix', () {
+      expect(formatMaximalLoadKg(80), '80kg');
+      expect(formatMaximalLoadKg(107.5), '107.5kg');
+      expect(formatMaximalLoadKg(80.0), '80kg');
+    });
+  });
+
+  group('kMaximalPercentPresets', () {
+    test('matches coach-oriented chip table', () {
+      expect(
+        kMaximalPercentPresets,
+        [50, 60, 65, 70, 75, 80, 85, 90, 95],
+      );
+    });
+  });
 }

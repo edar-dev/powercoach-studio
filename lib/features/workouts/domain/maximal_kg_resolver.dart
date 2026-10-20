@@ -46,6 +46,20 @@ class MaximalKgResolver {
     );
   }
 
+  /// Counts non-null 1RM values for [lift] across [measurements].
+  ///
+  /// Used by the set editor to show Ultimo | Massimo storico only when ≥2.
+  static int countLiftValues({
+    required Iterable<CustomerMeasurement> measurements,
+    required MaximalLift lift,
+  }) {
+    var count = 0;
+    for (final m in measurements) {
+      if (_liftKg(m, lift) != null) count++;
+    }
+    return count;
+  }
+
   static double? _resolveFromMeasurements({
     required Iterable<CustomerMeasurement> measurements,
     required MaximalLift lift,

@@ -91,6 +91,7 @@ Future<void> showTrainingSessionEditSheet({
   bool editorMode = false,
   String? planId,
   String? customerName,
+  String? customerId,
   VoidCallback? onLogSession,
   String? phaseName,
   String? weekLabel,
@@ -155,6 +156,7 @@ Future<void> showTrainingSessionEditSheet({
               editorMode: editorMode,
               planId: planId,
               customerName: customerName,
+              customerId: customerId,
               onLogSession: onLogSession,
               phaseName: phaseName,
               weekLabel: weekLabel,
@@ -298,6 +300,7 @@ class TrainingSessionEditBody extends StatefulWidget {
     this.editorMode = false,
     this.planId,
     this.customerName,
+    this.customerId,
     this.onLogSession,
     this.phaseName,
     this.weekLabel,
@@ -358,6 +361,7 @@ class TrainingSessionEditBody extends StatefulWidget {
   final bool editorMode;
   final String? planId;
   final String? customerName;
+  final String? customerId;
   final VoidCallback? onLogSession;
   final String? phaseName;
   final String? weekLabel;
@@ -586,6 +590,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                         day: day,
                         sessionEditStyle: true,
                         athleteName: customerName,
+                        customerId: widget.customerId,
                         readOnly: readOnly,
                         onAddExercise: readOnly
                             ? null
