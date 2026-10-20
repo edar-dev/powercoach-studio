@@ -4267,6 +4267,32 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get maximalLabel => 'Maximal';
+
+  @override
+  String maximalHeaderWithKg(String kg) {
+    return 'Maximal: $kg kg';
+  }
+
+  @override
+  String get maximalSetCta => 'Set maximal';
+
+  @override
+  String get maximalSetCtaComingSoon =>
+      'Associating a maximal opens in a later update.';
+
+  @override
+  String get maximalToggleLatest => 'Latest';
+
+  @override
+  String get maximalToggleHistoricMax => 'Historic max';
+
+  @override
+  String maximalPercentReadout(int percent, String kg) {
+    return '$percent% → $kg kg';
+  }
+
+  @override
   String get settingsBackupModuleTitle => 'Backup & Sync';
 
   @override

@@ -140,6 +140,28 @@ void main() {
       );
       expect(kg, isNull);
     });
+
+    test('countLiftValues counts non-null history for toggle', () {
+      final measurements = [
+        _m(id: '1', date: DateTime(2026, 1, 1), bench: 90),
+        _m(id: '2', date: DateTime(2026, 2, 1), bench: null),
+        _m(id: '3', date: DateTime(2026, 3, 1), bench: 100),
+      ];
+      expect(
+        MaximalKgResolver.countLiftValues(
+          measurements: measurements,
+          lift: MaximalLift.bench,
+        ),
+        2,
+      );
+      expect(
+        MaximalKgResolver.countLiftValues(
+          measurements: measurements,
+          lift: MaximalLift.squat,
+        ),
+        0,
+      );
+    });
   });
 
   group('MaximalRef JSON', () {

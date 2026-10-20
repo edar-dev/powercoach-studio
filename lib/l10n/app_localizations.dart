@@ -7656,6 +7656,48 @@ abstract class AppLocalizations {
   /// **'{kg} kg'**
   String settingsMaximalWeightRoundingOptionKg(String kg);
 
+  /// No description provided for @maximalLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximal'**
+  String get maximalLabel;
+
+  /// No description provided for @maximalHeaderWithKg.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximal: {kg} kg'**
+  String maximalHeaderWithKg(String kg);
+
+  /// No description provided for @maximalSetCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Set maximal'**
+  String get maximalSetCta;
+
+  /// No description provided for @maximalSetCtaComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Associating a maximal opens in a later update.'**
+  String get maximalSetCtaComingSoon;
+
+  /// No description provided for @maximalToggleLatest.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest'**
+  String get maximalToggleLatest;
+
+  /// No description provided for @maximalToggleHistoricMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Historic max'**
+  String get maximalToggleHistoricMax;
+
+  /// No description provided for @maximalPercentReadout.
+  ///
+  /// In en, this message translates to:
+  /// **'{percent}% → {kg} kg'**
+  String maximalPercentReadout(int percent, String kg);
+
   /// No description provided for @settingsBackupModuleTitle.
   ///
   /// In en, this message translates to:

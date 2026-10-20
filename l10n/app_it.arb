@@ -2005,6 +2005,30 @@
       }
     }
   },
+  "maximalLabel": "Massimale",
+  "maximalHeaderWithKg": "Massimale: {kg} kg",
+  "@maximalHeaderWithKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalSetCta": "Imposta massimale",
+  "maximalSetCtaComingSoon": "L'associazione del massimale arriverà in un aggiornamento successivo.",
+  "maximalToggleLatest": "Ultimo",
+  "maximalToggleHistoricMax": "Massimo storico",
+  "maximalPercentReadout": "{percent}% → {kg} kg",
+  "@maximalPercentReadout": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackupModuleTitle": "Backup & Sincronizzazione",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Esporta backup JSON (Locale)",

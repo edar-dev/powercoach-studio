@@ -2046,6 +2046,30 @@
       }
     }
   },
+  "maximalLabel": "Maximal",
+  "maximalHeaderWithKg": "Maximal: {kg} kg",
+  "@maximalHeaderWithKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalSetCta": "Set maximal",
+  "maximalSetCtaComingSoon": "Associating a maximal opens in a later update.",
+  "maximalToggleLatest": "Latest",
+  "maximalToggleHistoricMax": "Historic max",
+  "maximalPercentReadout": "{percent}% → {kg} kg",
+  "@maximalPercentReadout": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackupModuleTitle": "Backup & Sync",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Export JSON backup (Local)",
