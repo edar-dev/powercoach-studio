@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/maximal_ref.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_exercise_mutations.dart';
 
 void main() {
@@ -407,6 +408,32 @@ void main() {
           .effectiveSetDetails;
       expect(sets, hasLength(1));
       expect(sets.single.reps, '3');
+    });
+
+    test('updateExerciseInRoutine sets and clears maximalRef', () {
+      final linked = updateExerciseInRoutine(
+        routine: routineWithOneExercise(),
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e1',
+        maximalRef: const MaximalRef.measurement(lift: MaximalLift.bench),
+      )!;
+      expect(
+        linked.weeks.single.days.single.exercises.single.maximalRef,
+        const MaximalRef.measurement(lift: MaximalLift.bench),
+      );
+
+      final cleared = updateExerciseInRoutine(
+        routine: linked,
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e1',
+        clearMaximalRef: true,
+      )!;
+      expect(
+        cleared.weeks.single.days.single.exercises.single.maximalRef,
+        isNull,
+      );
     });
   });
 }

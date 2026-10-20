@@ -10,13 +10,15 @@ import '../../data/workout_routine_model.dart';
 import '../../domain/maximal_kg_resolver.dart';
 import '../../domain/maximal_load_math.dart';
 import '../../domain/maximal_ref.dart';
+import 'maximal_associate_sheet.dart';
 import 'maximal_set_panel.dart';
 
 /// Opens the set editor sheet (sets / reps / load / note + Massimali panel).
 ///
 /// [exercise] supplies [Exercise.maximalRef]. [customerId] loads measurements
 /// and custom massimali for resolve; when null (sandbox), the panel stays
-/// disabled with a stub CTA (full associate flow is PR5).
+/// disabled. [onMaximalRefChanged] persists association on the plan exercise
+/// (`null` + [clear] means remove the link).
 void showEditSetDialog(
   BuildContext context,
   ThemeData theme,
@@ -31,6 +33,7 @@ void showEditSetDialog(
   CustomerMeasurementRepository? measurementRepository,
   CustomerMaximalRepository? maximalRepository,
   double? roundingIncrementKg,
+  void Function(MaximalRef? ref, {required bool clear})? onMaximalRefChanged,
 }) {
   final setsController = TextEditingController(text: initialSets);
   final repsController = TextEditingController(text: initialReps);
@@ -57,6 +60,7 @@ void showEditSetDialog(
           measurementRepository: measurementRepository,
           maximalRepository: maximalRepository,
           roundingIncrementKg: roundingIncrementKg,
+          onMaximalRefChanged: onMaximalRefChanged,
         ),
         const SizedBox(height: 12),
         Row(
@@ -129,6 +133,7 @@ class _EditSetMaximalHost extends StatefulWidget {
     this.measurementRepository,
     this.maximalRepository,
     this.roundingIncrementKg,
+    this.onMaximalRefChanged,
   });
 
   final Exercise? exercise;
@@ -137,6 +142,8 @@ class _EditSetMaximalHost extends StatefulWidget {
   final CustomerMeasurementRepository? measurementRepository;
   final CustomerMaximalRepository? maximalRepository;
   final double? roundingIncrementKg;
+  final void Function(MaximalRef? ref, {required bool clear})?
+      onMaximalRefChanged;
 
   @override
   State<_EditSetMaximalHost> createState() => _EditSetMaximalHostState();
@@ -148,8 +155,9 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
   bool _loading = false;
   List<CustomerMeasurement> _measurements = const [];
   List<MaximalCustomKg> _customs = const [];
+  MaximalRef? _localRef;
 
-  MaximalRef? get _ref => widget.exercise?.maximalRef;
+  MaximalRef? get _ref => _localRef;
 
   String? get _customerId {
     final id = widget.customerId?.trim();
@@ -164,6 +172,7 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
   @override
   void initState() {
     super.initState();
+    _localRef = widget.exercise?.maximalRef;
     _loadData();
   }
 
@@ -172,6 +181,7 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.customerId != widget.customerId ||
         oldWidget.exercise?.maximalRef != widget.exercise?.maximalRef) {
+      _localRef = widget.exercise?.maximalRef;
       _loadData();
     }
   }
@@ -234,11 +244,25 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
         2;
   }
 
-  void _onSetMaximalStub() {
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    messenger?.showSnackBar(
-      SnackBar(content: Text(AppLocalizations.of(context).maximalSetCtaComingSoon)),
+  Future<void> _onSetMaximal() async {
+    final customerId = _customerId;
+    if (customerId == null) return;
+    final result = await showMaximalAssociateSheet(
+      context,
+      customerId: customerId,
+      currentRef: _ref,
+      measurementRepository: widget.measurementRepository,
+      maximalRepository: widget.maximalRepository,
     );
+    if (!mounted || result == null) return;
+    setState(() {
+      _localRef = result.cleared ? null : result.ref;
+    });
+    widget.onMaximalRefChanged?.call(
+      result.ref,
+      clear: result.cleared,
+    );
+    await _loadData();
   }
 
   @override
@@ -257,7 +281,7 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
       onPercentChanged: (p) => setState(() => _percent = p),
       incrementKg: _incrementKg,
       onApplyLoad: (load) => widget.loadController.text = load,
-      onSetMaximal: _onSetMaximalStub,
+      onSetMaximal: _onSetMaximal,
       enabled: hasCustomer,
       loading: _loading,
     );

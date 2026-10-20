@@ -2056,7 +2056,7 @@
     }
   },
   "maximalSetCta": "Set maximal",
-  "maximalSetCtaComingSoon": "Associating a maximal opens in a later update.",
+  "maximalSetCtaChange": "Change",
   "maximalToggleLatest": "Latest",
   "maximalToggleHistoricMax": "Historic max",
   "maximalPercentReadout": "{percent}% → {kg} kg",
@@ -2070,6 +2070,51 @@
       }
     }
   },
+  "maximalAssociateTitle": "Link maximal",
+  "maximalAssociateMeasurementSection": "From measurements (1RM)",
+  "maximalAssociateCustomSection": "Custom maximals",
+  "maximalAssociateCreateCustom": "Create custom maximal",
+  "maximalAssociateClear": "Remove link",
+  "maximalAssociateEditCustom": "Edit",
+  "maximalAssociateEditMeasurement": "Edit 1RM",
+  "maximalAssociateLiftWithKg": "{lift}: {kg} kg",
+  "@maximalAssociateLiftWithKg": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalAssociateLiftEmpty": "{lift}: —",
+  "@maximalAssociateLiftEmpty": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalCustomFormCreateTitle": "New maximal",
+  "maximalCustomFormEditTitle": "Edit maximal",
+  "maximalCustomLabelField": "Label",
+  "maximalCustomWeightField": "Weight (kg)",
+  "maximalCustomLabelRequired": "Enter a label",
+  "maximalCustomWeightRequired": "Enter a valid weight greater than 0",
+  "maximalCustomSaved": "Maximal saved.",
+  "maximalCustomSaveError": "Could not save maximal.",
+  "maximalMeasurement1rmTitle": "Edit {lift} 1RM",
+  "@maximalMeasurement1rmTitle": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalMeasurement1rmSaved": "1RM updated.",
+  "maximalMeasurement1rmSaveError": "Could not update 1RM.",
+
   "settingsBackupModuleTitle": "Backup & Sync",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Export JSON backup (Local)",

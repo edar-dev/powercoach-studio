@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
 import 'workout_superset_actions.dart';
@@ -56,6 +57,8 @@ class WorkoutSupersetBlock extends StatelessWidget {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise;
 

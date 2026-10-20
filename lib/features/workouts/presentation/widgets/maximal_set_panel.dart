@@ -9,7 +9,7 @@ import 'maximal_percent_slider.dart';
 /// Massimale header + resolve-mode toggle + % chips/slider for the set editor.
 ///
 /// Pure presentation: callers resolve kg and supply [onApplyLoad] with a
-/// formatted load string (e.g. `"80kg"`). Association sheets are PR5.
+/// formatted load string (e.g. `"80kg"`). [onSetMaximal] opens associate/edit.
 class MaximalSetPanel extends StatelessWidget {
   const MaximalSetPanel({
     super.key,
@@ -182,14 +182,14 @@ class _Header extends StatelessWidget {
             height: 18,
             child: CircularProgressIndicator(strokeWidth: 2),
           )
-        else if (!hasKg)
+        else
           TextButton(
             onPressed: enabled ? onSetMaximal : null,
             style: TextButton.styleFrom(
               visualDensity: VisualDensity.compact,
               padding: const EdgeInsets.symmetric(horizontal: 8),
             ),
-            child: Text(l10n.maximalSetCta),
+            child: Text(hasKg ? l10n.maximalSetCtaChange : l10n.maximalSetCta),
           ),
       ],
     );

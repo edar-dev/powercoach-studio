@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
 
@@ -29,6 +30,7 @@ class WorkoutExerciseCard extends StatelessWidget {
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
     this.customerId,
+    this.onMaximalRefChanged,
   });
 
   final ThemeData theme;
@@ -40,6 +42,9 @@ class WorkoutExerciseCard extends StatelessWidget {
   final bool showBottomDivider;
   /// Customer id for Massimali resolve in the set editor (null in sandbox).
   final String? customerId;
+  /// Persists [Exercise.maximalRef] when the set editor associate sheet changes it.
+  final void Function(MaximalRef? ref, {required bool clear})?
+      onMaximalRefChanged;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -380,6 +385,7 @@ class WorkoutExerciseCard extends StatelessWidget {
                                   onUpdateSet!(i, sets, reps, load, note),
                               exercise: exercise,
                               customerId: customerId,
+                              onMaximalRefChanged: onMaximalRefChanged,
                             ),
                           ),
                         if (onRemoveSet != null && details.length > 1)

@@ -4,6 +4,7 @@ import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../workout_builder_session_controller.dart';
 import 'workout_dashed_button.dart';
 import 'workout_training_helpers.dart';
@@ -42,6 +43,8 @@ Future<void> showWorkoutBuilderSupersetEditorSheet({
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise,
 }) {

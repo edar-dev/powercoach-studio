@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 
 import '../data/workout_routine_model.dart';
 import '../domain/exercise_prescription_scope.dart';
+import '../domain/maximal_ref.dart';
 import '../domain/workout_exercise_mutations.dart';
 import '../domain/workout_routine_mutations.dart';
 
@@ -440,6 +441,8 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef = false,
   }) {
     return _replace(
       updateExerciseInRoutine(
@@ -455,6 +458,8 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
         shortName: shortName,
         prescriptionScope: prescriptionScope,
         setDetails: setDetails,
+        maximalRef: maximalRef,
+        clearMaximalRef: clearMaximalRef,
       ),
     );
   }

@@ -297,6 +297,8 @@ void main() {
                   shortName,
                   prescriptionScope,
                   setDetails,
+                  maximalRef,
+                  bool clearMaximalRef = false,
                 }) {},
                 onAddSetToExercise: (_, _, _) {},
                 onUpdateExerciseSet: (
@@ -401,6 +403,8 @@ void main() {
                   shortName,
                   prescriptionScope,
                   setDetails,
+                  maximalRef,
+                  bool clearMaximalRef = false,
                 }) {},
                 onAddSetToExercise: (_, _, _) {},
                 onUpdateExerciseSet: (

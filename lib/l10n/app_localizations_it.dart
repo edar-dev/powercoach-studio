@@ -4321,8 +4321,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get maximalSetCta => 'Imposta massimale';
 
   @override
-  String get maximalSetCtaComingSoon =>
-      'L\'associazione del massimale arriverà in un aggiornamento successivo.';
+  String get maximalSetCtaChange => 'Modifica';
 
   @override
   String get maximalToggleLatest => 'Ultimo';
@@ -4334,6 +4333,73 @@ class AppLocalizationsIt extends AppLocalizations {
   String maximalPercentReadout(int percent, String kg) {
     return '$percent% → $kg kg';
   }
+
+  @override
+  String get maximalAssociateTitle => 'Collega massimale';
+
+  @override
+  String get maximalAssociateMeasurementSection => 'Da misure (1RM)';
+
+  @override
+  String get maximalAssociateCustomSection => 'Massimali personalizzati';
+
+  @override
+  String get maximalAssociateCreateCustom => 'Crea massimale personalizzato';
+
+  @override
+  String get maximalAssociateClear => 'Rimuovi collegamento';
+
+  @override
+  String get maximalAssociateEditCustom => 'Modifica';
+
+  @override
+  String get maximalAssociateEditMeasurement => 'Modifica 1RM';
+
+  @override
+  String maximalAssociateLiftWithKg(String lift, String kg) {
+    return '$lift: $kg kg';
+  }
+
+  @override
+  String maximalAssociateLiftEmpty(String lift) {
+    return '$lift: —';
+  }
+
+  @override
+  String get maximalCustomFormCreateTitle => 'Nuovo massimale';
+
+  @override
+  String get maximalCustomFormEditTitle => 'Modifica massimale';
+
+  @override
+  String get maximalCustomLabelField => 'Etichetta';
+
+  @override
+  String get maximalCustomWeightField => 'Peso (kg)';
+
+  @override
+  String get maximalCustomLabelRequired => 'Inserisci un\'etichetta';
+
+  @override
+  String get maximalCustomWeightRequired =>
+      'Inserisci un peso valido maggiore di 0';
+
+  @override
+  String get maximalCustomSaved => 'Massimale salvato.';
+
+  @override
+  String get maximalCustomSaveError => 'Impossibile salvare il massimale.';
+
+  @override
+  String maximalMeasurement1rmTitle(String lift) {
+    return 'Modifica 1RM $lift';
+  }
+
+  @override
+  String get maximalMeasurement1rmSaved => '1RM aggiornato.';
+
+  @override
+  String get maximalMeasurement1rmSaveError => 'Impossibile aggiornare il 1RM.';
 
   @override
   String get settingsBackupModuleTitle => 'Backup & Sincronizzazione';

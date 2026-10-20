@@ -4278,8 +4278,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maximalSetCta => 'Set maximal';
 
   @override
-  String get maximalSetCtaComingSoon =>
-      'Associating a maximal opens in a later update.';
+  String get maximalSetCtaChange => 'Change';
 
   @override
   String get maximalToggleLatest => 'Latest';
@@ -4291,6 +4290,73 @@ class AppLocalizationsEn extends AppLocalizations {
   String maximalPercentReadout(int percent, String kg) {
     return '$percent% → $kg kg';
   }
+
+  @override
+  String get maximalAssociateTitle => 'Link maximal';
+
+  @override
+  String get maximalAssociateMeasurementSection => 'From measurements (1RM)';
+
+  @override
+  String get maximalAssociateCustomSection => 'Custom maximals';
+
+  @override
+  String get maximalAssociateCreateCustom => 'Create custom maximal';
+
+  @override
+  String get maximalAssociateClear => 'Remove link';
+
+  @override
+  String get maximalAssociateEditCustom => 'Edit';
+
+  @override
+  String get maximalAssociateEditMeasurement => 'Edit 1RM';
+
+  @override
+  String maximalAssociateLiftWithKg(String lift, String kg) {
+    return '$lift: $kg kg';
+  }
+
+  @override
+  String maximalAssociateLiftEmpty(String lift) {
+    return '$lift: —';
+  }
+
+  @override
+  String get maximalCustomFormCreateTitle => 'New maximal';
+
+  @override
+  String get maximalCustomFormEditTitle => 'Edit maximal';
+
+  @override
+  String get maximalCustomLabelField => 'Label';
+
+  @override
+  String get maximalCustomWeightField => 'Weight (kg)';
+
+  @override
+  String get maximalCustomLabelRequired => 'Enter a label';
+
+  @override
+  String get maximalCustomWeightRequired =>
+      'Enter a valid weight greater than 0';
+
+  @override
+  String get maximalCustomSaved => 'Maximal saved.';
+
+  @override
+  String get maximalCustomSaveError => 'Could not save maximal.';
+
+  @override
+  String maximalMeasurement1rmTitle(String lift) {
+    return 'Edit $lift 1RM';
+  }
+
+  @override
+  String get maximalMeasurement1rmSaved => '1RM updated.';
+
+  @override
+  String get maximalMeasurement1rmSaveError => 'Could not update 1RM.';
 
   @override
   String get settingsBackupModuleTitle => 'Backup & Sync';

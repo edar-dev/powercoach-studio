@@ -4,6 +4,7 @@ import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../domain/workout_phase_presets.dart';
 import '../workout_builder_session_controller.dart';
 import 'training_phase_day_card.dart';
@@ -96,6 +97,8 @@ class WorkoutTrainingTab extends StatelessWidget {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
@@ -311,6 +314,8 @@ class _PhaseTrainingBody extends StatefulWidget {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;

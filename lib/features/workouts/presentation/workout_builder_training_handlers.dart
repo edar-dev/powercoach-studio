@@ -5,6 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../settings/data/user_preferences_repository.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/exercise_prescription_scope.dart';
+import '../domain/maximal_ref.dart';
 import '../domain/workout_exercise_mutations.dart';
 import '../domain/workout_phase_presets.dart';
 import 'workout_builder_session_controller.dart';
@@ -463,6 +464,8 @@ class WorkoutBuilderTrainingHandlers {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef = false,
   }) {
     if (readOnly) return;
     session.updateExercise(
@@ -477,6 +480,8 @@ class WorkoutBuilderTrainingHandlers {
       shortName: shortName,
       prescriptionScope: prescriptionScope,
       setDetails: setDetails,
+      maximalRef: maximalRef,
+      clearMaximalRef: clearMaximalRef,
     );
   }
 

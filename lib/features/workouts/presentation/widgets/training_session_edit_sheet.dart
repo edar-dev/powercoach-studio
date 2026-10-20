@@ -9,6 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../domain/library_exercise_name_enrichment.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import '../workout_builder_session_controller.dart';
@@ -63,6 +64,8 @@ Future<void> showTrainingSessionEditSheet({
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise,
   required void Function(int, int, String) onAddSetToExercise,
@@ -333,6 +336,8 @@ class TrainingSessionEditBody extends StatefulWidget {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
