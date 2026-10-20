@@ -1994,6 +1994,17 @@
   "settingsNotificationsModuleTitle": "Notifiche & Promemoria",
   "settingsSessionRemindersTitle": "Notifiche sessioni",
   "settingsSessionRemindersSubtitle": "Avviso prima dell'allenamento pianificato",
+  "settingsWorkoutPrefsModuleTitle": "Workout builder",
+  "settingsMaximalWeightRoundingTitle": "Arrotondamento carichi",
+  "settingsMaximalWeightRoundingSubtitle": "Arrotonda i carichi % del massimale all'incremento più vicino",
+  "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
+  "@settingsMaximalWeightRoundingOptionKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackupModuleTitle": "Backup & Sincronizzazione",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Esporta backup JSON (Locale)",

@@ -18,6 +18,7 @@ import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
 import 'package:powercoach_studio/core/routing/go_router_config.dart';
+import 'package:powercoach_studio/features/settings/data/maximal_weight_rounding_controller.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'app.dart';
@@ -146,6 +147,9 @@ class _BootstrapAppState extends State<_BootstrapApp> with WidgetsBindingObserve
 
       await AppLocaleController.instance.load();
       _logStartupStep('locale controller loaded', _bootstrapWatch);
+
+      await MaximalWeightRoundingController.instance.load();
+      _logStartupStep('maximal weight rounding loaded', _bootstrapWatch);
 
       await NotificationSchedulerService.instance.ensureInitialized();
       await NotificationSchedulerService.instance.syncWithNotificationPreference();

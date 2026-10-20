@@ -300,6 +300,7 @@ void main() {
         'settings_calendar_reminder_lead_hours': 12,
         'workout_builder_compact_add_v1': false,
         'workout_builder_include_mobility_default_v1': false,
+        'settings_maximal_weight_rounding_kg_v1': 0.5,
       },
     });
     final parsed = parseUserBackupJson(jsonText, uid);
@@ -309,6 +310,7 @@ void main() {
     expect(parsed.preferences.hasWorkoutBuilderCompactAdd, isTrue);
     expect(parsed.preferences.workoutBuilderCompactAdd, isFalse);
     expect(parsed.preferences.workoutBuilderIncludeMobilityDefault, isFalse);
+    expect(parsed.preferences.maximalWeightRoundingKg, 0.5);
   });
 
   test('parse tolerates legacy pendingOperations and syncMeta without requiring them', () {

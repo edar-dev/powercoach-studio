@@ -322,6 +322,7 @@ abstract final class DataCatalogRegistry {
         'settings_calendar_reminder_lead_hours',
         'workout_builder_compact_add_v1',
         'workout_builder_include_mobility_default_v1',
+        'settings_maximal_weight_rounding_kg_v1',
         'pinned_exercise_ids_json_v1',
         'recent_exercise_ids_json_v1',
       ],

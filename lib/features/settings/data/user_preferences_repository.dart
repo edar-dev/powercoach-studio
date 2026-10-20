@@ -10,6 +10,23 @@ import '../../exercise_library/data/recent_exercises_store.dart';
 /// Default hours before a session when calendar reminders fire.
 const kDefaultCalendarReminderLeadHours = 24;
 
+/// Default kg rounding increment for %‑of‑maximal load math (olympic plates).
+const kDefaultMaximalWeightRoundingKg = 2.5;
+
+/// Allowed coach-global rounding increments (kg).
+const kAllowedMaximalWeightRoundingIncrements = <double>[0.5, 1.0, 2.5];
+
+/// Normalizes a stored/imported rounding value to an allowed increment.
+///
+/// Invalid or unknown values fall back to [kDefaultMaximalWeightRoundingKg].
+double normalizeMaximalWeightRoundingKg(num value) {
+  final asDouble = value.toDouble();
+  for (final allowed in kAllowedMaximalWeightRoundingIncrements) {
+    if ((asDouble - allowed).abs() < 0.001) return allowed;
+  }
+  return kDefaultMaximalWeightRoundingKg;
+}
+
 /// Snapshot of coach app preferences stored in SharedPreferences.
 class UserPreferences {
   const UserPreferences({
@@ -19,6 +36,7 @@ class UserPreferences {
     required this.calendarReminderLeadHours,
     this.workoutBuilderCompactAdd,
     this.workoutBuilderIncludeMobilityDefault = false,
+    this.maximalWeightRoundingKg = kDefaultMaximalWeightRoundingKg,
   });
 
   final String localeCode;
@@ -31,6 +49,9 @@ class UserPreferences {
 
   /// Default mobility tab visibility for newly created workout plans.
   final bool workoutBuilderIncludeMobilityDefault;
+
+  /// Coach-global kg rounding for %‑of‑maximal load math.
+  final double maximalWeightRoundingKg;
 }
 
 /// Reads and writes settings-scoped SharedPreferences keys.
@@ -124,6 +145,25 @@ class UserPreferencesRepository {
     MaterialWriteNotifier.notify();
   }
 
+  Future<double> getMaximalWeightRoundingKg({
+    double defaultValue = kDefaultMaximalWeightRoundingKg,
+  }) async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getDouble(SettingsPrefsKeys.maximalWeightRoundingKg);
+    if (raw == null) return defaultValue;
+    return normalizeMaximalWeightRoundingKg(raw);
+  }
+
+  Future<void> setMaximalWeightRoundingKg(double kg) async {
+    final normalized = normalizeMaximalWeightRoundingKg(kg);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble(
+      SettingsPrefsKeys.maximalWeightRoundingKg,
+      normalized,
+    );
+    MaterialWriteNotifier.notify();
+  }
+
   Future<UserPreferences> loadAll() async {
     return UserPreferences(
       localeCode: await getLocaleCode(),
@@ -133,6 +173,7 @@ class UserPreferencesRepository {
       workoutBuilderCompactAdd: await getWorkoutBuilderCompactAdd(),
       workoutBuilderIncludeMobilityDefault:
           await getWorkoutBuilderIncludeMobilityDefault(),
+      maximalWeightRoundingKg: await getMaximalWeightRoundingKg(),
     );
   }
 
@@ -147,6 +188,7 @@ class UserPreferencesRepository {
           prefs.calendarReminderLeadHours,
       SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault:
           prefs.workoutBuilderIncludeMobilityDefault,
+      SettingsPrefsKeys.maximalWeightRoundingKg: prefs.maximalWeightRoundingKg,
     };
     if (prefs.workoutBuilderCompactAdd != null) {
       map[SettingsPrefsKeys.workoutBuilderCompactAdd] =
@@ -202,6 +244,11 @@ class UserPreferencesRepository {
         prefs[SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault];
     if (mobility is bool) {
       await setWorkoutBuilderIncludeMobilityDefault(mobility);
+    }
+
+    final rounding = prefs[SettingsPrefsKeys.maximalWeightRoundingKg];
+    if (rounding is num) {
+      await setMaximalWeightRoundingKg(rounding.toDouble());
     }
 
     if (prefs.containsKey(SettingsPrefsKeys.pinnedExerciseIdsJson)) {

@@ -4252,6 +4252,21 @@ class AppLocalizationsEn extends AppLocalizations {
       'Alert before a scheduled workout';
 
   @override
+  String get settingsWorkoutPrefsModuleTitle => 'Workout builder';
+
+  @override
+  String get settingsMaximalWeightRoundingTitle => 'Weight rounding';
+
+  @override
+  String get settingsMaximalWeightRoundingSubtitle =>
+      'Round % of maximal loads to the nearest increment';
+
+  @override
+  String settingsMaximalWeightRoundingOptionKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
   String get settingsBackupModuleTitle => 'Backup & Sync';
 
   @override

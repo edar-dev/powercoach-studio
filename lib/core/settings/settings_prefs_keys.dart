@@ -33,6 +33,10 @@ abstract final class SettingsPrefsKeys {
   static const workoutBuilderIncludeMobilityDefault =
       'workout_builder_include_mobility_default_v1';
 
+  /// Coach-global kg rounding for %‑of‑maximal load math (`0.5` / `1` / `2.5`).
+  static const maximalWeightRoundingKg =
+      'settings_maximal_weight_rounding_kg_v1';
+
   /// ISO8601 timestamp of the last successful backup (file export or cloud upload).
   static const lastSuccessfulBackupAt = 'backup_last_successful_at_v1';
 

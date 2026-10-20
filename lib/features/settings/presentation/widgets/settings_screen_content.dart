@@ -11,6 +11,7 @@ import 'settings_hub_nav.dart';
 import 'settings_notifications_module.dart';
 import 'settings_personal_form_card.dart';
 import 'settings_unsaved_bar.dart';
+import 'settings_workout_prefs_module.dart';
 
 /// Stitch dark settings hub body (sidebar + personal / notifications / backup).
 class SettingsScreenContent extends StatelessWidget {
@@ -35,9 +36,11 @@ class SettingsScreenContent extends StatelessWidget {
     required this.notificationsEnabled,
     required this.calendarRemindersEnabled,
     required this.calendarReminderLeadHours,
+    required this.maximalWeightRoundingKg,
     required this.onNotificationsToggle,
     required this.onCalendarRemindersToggle,
     required this.onPickCalendarLeadHours,
+    required this.onMaximalWeightRoundingChanged,
     required this.onExportBackup,
     required this.onImportBackup,
     required this.onUploadCloudBackup,
@@ -78,9 +81,11 @@ class SettingsScreenContent extends StatelessWidget {
   final bool notificationsEnabled;
   final bool calendarRemindersEnabled;
   final int calendarReminderLeadHours;
+  final double maximalWeightRoundingKg;
   final ValueChanged<bool> onNotificationsToggle;
   final ValueChanged<bool> onCalendarRemindersToggle;
   final VoidCallback onPickCalendarLeadHours;
+  final ValueChanged<double> onMaximalWeightRoundingChanged;
   final VoidCallback onExportBackup;
   final VoidCallback onImportBackup;
   final VoidCallback onUploadCloudBackup;
@@ -135,6 +140,11 @@ class SettingsScreenContent extends StatelessWidget {
             emailVerified: emailVerified,
             loadError: profileLoadError,
           ),
+        ),
+        SizedBox(height: phone ? 16 : 24),
+        SettingsWorkoutPrefsModule(
+          maximalWeightRoundingKg: maximalWeightRoundingKg,
+          onRoundingChanged: onMaximalWeightRoundingChanged,
         ),
         SizedBox(height: phone ? 16 : 24),
         LayoutBuilder(

@@ -29,6 +29,7 @@ class BackupPreferences {
     this.workoutBuilderCompactAdd,
     this.hasWorkoutBuilderCompactAdd = false,
     this.workoutBuilderIncludeMobilityDefault,
+    this.maximalWeightRoundingKg,
     this.raw = const {},
   });
 
@@ -42,6 +43,9 @@ class BackupPreferences {
   final bool? workoutBuilderCompactAdd;
   final bool hasWorkoutBuilderCompactAdd;
   final bool? workoutBuilderIncludeMobilityDefault;
+
+  /// Coach-global kg rounding for %‑of‑maximal load math (`0.5` / `1` / `2.5`).
+  final double? maximalWeightRoundingKg;
 
   /// Full preferences map for repository apply helpers.
   final Map<String, dynamic> raw;
@@ -195,6 +199,12 @@ BackupPreferences _parsePreferences(dynamic raw) {
   final mob = prefs[SettingsPrefsKeys.workoutBuilderIncludeMobilityDefault];
   if (mob is bool) mobilityDefault = mob;
 
+  double? maximalWeightRoundingKg;
+  final rounding = prefs[SettingsPrefsKeys.maximalWeightRoundingKg];
+  if (rounding is num) {
+    maximalWeightRoundingKg = rounding.toDouble();
+  }
+
   return BackupPreferences(
     notificationsEnabled: notificationsEnabled,
     localeCode: localeCode,
@@ -203,6 +213,7 @@ BackupPreferences _parsePreferences(dynamic raw) {
     workoutBuilderCompactAdd: compactAdd,
     hasWorkoutBuilderCompactAdd: hasCompact,
     workoutBuilderIncludeMobilityDefault: mobilityDefault,
+    maximalWeightRoundingKg: maximalWeightRoundingKg,
     raw: prefs,
   );
 }
