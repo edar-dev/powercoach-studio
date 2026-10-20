@@ -491,14 +491,15 @@ void main() {
       <Map<String, dynamic>>[
         <String, dynamic>{'id': 'c1', 'type': 'customer'},
         <String, dynamic>{'id': 'n1', 'type': 'customerNote'},
+        <String, dynamic>{'id': 'm1', 'type': 'customerMaximal'},
         <String, dynamic>{'id': 'x1', 'type': 'customExercise'},
         <String, dynamic>{'id': 'legacy', 'type': 'exerciseRecord'},
       ],
       reminders: 2,
     );
     expect(counts.customers, 1);
-    expect(counts.customerRecords, 1);
-    expect(counts.customersGroupTotal, 2);
+    expect(counts.customerRecords, 2); // note + maximal; legacy exerciseRecord skipped
+    expect(counts.customersGroupTotal, 3);
     expect(counts.exerciseLibrary, 1);
     expect(counts.reminders, 2);
   });

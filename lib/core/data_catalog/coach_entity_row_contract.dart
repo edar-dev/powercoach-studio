@@ -1,7 +1,8 @@
 /// Shared row contract for Supabase `public.coach_entities` (cloud SoT).
 ///
-/// Aligned with `supabase/migrations/20261003200000_coach_entities.sql` and
-/// Drift `LocalEntities` cache columns (camelCase locally; snake_case remote).
+/// Aligned with `supabase/migrations/20261003200000_coach_entities.sql`
+/// (+ `20261020085353_coach_entities_customer_maximal.sql`) and Drift
+/// `LocalEntities` cache columns (camelCase locally; snake_case remote).
 abstract final class CoachEntityRowContract {
   static const String remoteTable = 'public.coach_entities';
 
@@ -37,5 +38,6 @@ abstract final class CoachEntityRowContract {
     'measurement',
     'customExercise',
     'customerNote',
+    'customerMaximal',
   ];
 }

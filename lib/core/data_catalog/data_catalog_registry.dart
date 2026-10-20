@@ -18,6 +18,7 @@ abstract final class DataCatalogRegistry {
   static const String measurement = 'measurement';
   static const String customExercise = 'customExercise';
   static const String customerNote = 'customerNote';
+  static const String customerMaximal = 'customerMaximal';
   static const String planData = 'planData';
   static const String userProfile = 'userProfile';
   static const String pdfBrand = 'pdfBrand';
@@ -190,6 +191,33 @@ abstract final class DataCatalogRegistry {
         ),
       ],
       sourcePath: 'lib/features/customers/domain/models/client_note_message.dart',
+    ),
+    EntityCatalogEntry.coachEntity(
+      catalogId: customerMaximal,
+      displayName: 'Customer maximal',
+      driftType: OfflineEntityType.customerMaximal,
+      summary:
+          'Coach-authored custom massimale (1RM-style load) for a client. '
+          'Cloud SoT in coach_entities; Drift cache. scope_id is customerId. '
+          'Not the removed exerciseRecord product surface.',
+      scopeIdPattern: 'customerId',
+      payloadFields: <String>[
+        'id',
+        'customerId',
+        'label',
+        'weightKg',
+        'updatedAt',
+        'linkedExerciseKey',
+      ],
+      references: <SoftReference>[
+        const SoftReference(
+          fieldPath: 'customerId',
+          targetCatalogId: customer,
+          optional: false,
+          description: 'Owning customer id (also mirrored in scope_id).',
+        ),
+      ],
+      sourcePath: 'lib/features/customers/data/models/customer_maximal.dart',
     ),
     const EntityCatalogEntry(
       catalogId: planData,

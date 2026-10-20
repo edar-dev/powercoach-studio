@@ -35,7 +35,7 @@ one-shot migration).
 
 | Locus | Mechanism | Role | Examples |
 |-------|-----------|------|----------|
-| Supabase `public.coach_entities` | `(user_id, type, id)` + `payload` JSONB | **Cloud SoT** | customer, workoutPlan, measurement, customExercise, customerNote |
+| Supabase `public.coach_entities` | `(user_id, type, id)` + `payload` JSONB | **Cloud SoT** | customer, workoutPlan, measurement, customExercise, customerNote, customerMaximal |
 | Drift `LocalEntities` | same logical row, local SQLite | **Cache** (full replace per type on pull) | same five types |
 | Nested JSON | string field inside another payload | Embedded | `workoutPlan.planData` |
 | SharedPreferences | per-user / global keys | Local-only | userProfile, pdfBrand, preferences, drafts |
@@ -68,9 +68,12 @@ Migration: [`supabase/migrations/20261003200000_coach_entities.sql`](../supabase
 - `measurement`
 - `customExercise`
 - `customerNote`
+- `customerMaximal`
 
 Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** in
-the CHECK list.
+the CHECK list. Migration
+`20261020085353_coach_entities_customer_maximal.sql` extends the CHECK with
+`customerMaximal`.
 
 **Indexes:**
 
@@ -109,6 +112,7 @@ erDiagram
   CUSTOMER ||--o{ WORKOUT_PLAN : "customerId in payload"
   CUSTOMER ||--o{ MEASUREMENT : "customerId in payload"
   CUSTOMER ||--o{ CUSTOMER_NOTE : "customerId in payload"
+  CUSTOMER ||--o{ CUSTOMER_MAXIMAL : "customerId in payload"
   CUSTOM_EXERCISE ||--o{ CUSTOM_EXERCISE : "parentId in payload"
   WORKOUT_PLAN ||--|| PLAN_DATA : "planData JSON"
   PLAN_DATA }o--o| CUSTOM_EXERCISE : "customExerciseId"
@@ -124,6 +128,7 @@ flowchart LR
   Plan[workoutPlan]
   Meas[measurement]
   Note[customerNote]
+  Maximal[customerMaximal]
   CustEx[customExercise]
   PlanData[planData_nested]
   Coach -->|JWT RLS| Cloud
@@ -133,10 +138,12 @@ flowchart LR
   Cloud --> Plan
   Cloud --> Meas
   Cloud --> Note
+  Cloud --> Maximal
   Cloud --> CustEx
   Customer -->|customerId| Plan
   Customer -->|customerId| Meas
   Customer -->|customerId| Note
+  Customer -->|customerId| Maximal
   CustEx -->|parentId| CustEx
   Plan --> PlanData
   PlanData -->|customExerciseId| CustEx
@@ -151,6 +158,7 @@ flowchart LR
 | `measurement` | `customerId` | `customerId` → customer | `entities[]` |
 | `customExercise` | `"library"` | `parentId` → customExercise | `entities[]` |
 | `customerNote` | `customerId` | `customerId` → customer | `entities[]` |
+| `customerMaximal` | `customerId` | `customerId` → customer | `entities[]` |
 
 Each catalog entry documents:
 
