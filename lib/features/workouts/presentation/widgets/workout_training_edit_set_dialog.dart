@@ -207,7 +207,8 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
             .toList(growable: false);
         _loading = false;
       });
-    } catch (_) {
+    } catch (e, stack) {
+      debugPrint('MaximalSetPanel data load failed: $e\n$stack');
       if (!mounted) return;
       setState(() {
         _measurements = const [];
