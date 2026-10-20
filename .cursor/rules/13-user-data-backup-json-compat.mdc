@@ -11,7 +11,7 @@ Exports use envelope fields `schemaVersion`, `exportFormat`, `accountUserId`, pl
 **Writers no longer emit** `pendingOperations` or `syncMeta`. Readers still tolerate those keys when present in older files, but restore **ignores** them (does not reinsert into Drift).
 
 `preferences` keys (all optional except readers default notifications to true):
-`settings_notifications_enabled`, `app_locale_code`, `settings_calendar_reminders_enabled`, `settings_calendar_reminder_lead_hours`, `workout_builder_compact_add_v1`, `workout_builder_include_mobility_default_v1`, `pinned_exercise_ids_json_v1`, `recent_exercise_ids_json_v1`.
+`settings_notifications_enabled`, `app_locale_code`, `settings_calendar_reminders_enabled`, `settings_calendar_reminder_lead_hours`, `workout_builder_compact_add_v1`, `workout_builder_include_mobility_default_v1`, `settings_maximal_weight_rounding_kg_v1`, `pinned_exercise_ids_json_v1`, `recent_exercise_ids_json_v1`.
 
 `pdfBrand` (optional top-level object; SharedPreferences only — not Postgres):
 `studioName`, `accentColorArgb`, `disclaimer`, `hidePowerCoachBranding`, optional portable `logoBase64` + `logoExtension`. Do **not** rely on device-local `logoRelativePath` in the envelope. Older backups without `pdfBrand` leave the local brand unchanged on import. Logos larger than the web prefs budget may export metadata-only.

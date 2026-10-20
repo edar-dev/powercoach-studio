@@ -4295,6 +4295,21 @@ class AppLocalizationsIt extends AppLocalizations {
       'Avviso prima dell\'allenamento pianificato';
 
   @override
+  String get settingsWorkoutPrefsModuleTitle => 'Workout builder';
+
+  @override
+  String get settingsMaximalWeightRoundingTitle => 'Arrotondamento carichi';
+
+  @override
+  String get settingsMaximalWeightRoundingSubtitle =>
+      'Arrotonda i carichi % del massimale all\'incremento più vicino';
+
+  @override
+  String settingsMaximalWeightRoundingOptionKg(String kg) {
+    return '$kg kg';
+  }
+
+  @override
   String get settingsBackupModuleTitle => 'Backup & Sincronizzazione';
 
   @override

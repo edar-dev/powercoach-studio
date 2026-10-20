@@ -224,6 +224,7 @@ Map<String, dynamic> _syntheticUserPreferences() => <String, dynamic>{
       'settings_calendar_reminder_lead_hours': '2',
       'workout_builder_compact_add_v1': 'false',
       'workout_builder_include_mobility_default_v1': 'true',
+      'settings_maximal_weight_rounding_kg_v1': '2.5',
       'pinned_exercise_ids_json_v1': <String>['ex_root'],
       'recent_exercise_ids_json_v1': <String>['ex_root'],
     };

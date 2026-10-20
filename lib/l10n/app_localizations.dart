@@ -7632,6 +7632,30 @@ abstract class AppLocalizations {
   /// **'Alert before a scheduled workout'**
   String get settingsSessionRemindersSubtitle;
 
+  /// No description provided for @settingsWorkoutPrefsModuleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Workout builder'**
+  String get settingsWorkoutPrefsModuleTitle;
+
+  /// No description provided for @settingsMaximalWeightRoundingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight rounding'**
+  String get settingsMaximalWeightRoundingTitle;
+
+  /// No description provided for @settingsMaximalWeightRoundingSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Round % of maximal loads to the nearest increment'**
+  String get settingsMaximalWeightRoundingSubtitle;
+
+  /// No description provided for @settingsMaximalWeightRoundingOptionKg.
+  ///
+  /// In en, this message translates to:
+  /// **'{kg} kg'**
+  String settingsMaximalWeightRoundingOptionKg(String kg);
+
   /// No description provided for @settingsBackupModuleTitle.
   ///
   /// In en, this message translates to:

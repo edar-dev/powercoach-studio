@@ -17,6 +17,7 @@ import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/data/local_coach_profile_repository.dart';
+import '../../data/maximal_weight_rounding_controller.dart';
 import '../../data/user_preferences_repository.dart';
 import '../backup_onboarding_dialog.dart';
 import '../settings_backup_handler.dart';
@@ -52,6 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _calendarRemindersEnabled = false;
   int _calendarReminderLeadHours = CalendarReminderScheduler.defaultLeadHours;
+  double _maximalWeightRoundingKg = kDefaultMaximalWeightRoundingKg;
   bool _loading = true;
   bool _saving = false;
   bool _dirty = false;
@@ -128,11 +130,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<void> _loadPreferences() async {
     final snapshot = await loadSettingsNotificationPreferences(_preferences);
+    await MaximalWeightRoundingController.instance.load();
     if (!mounted) return;
     setState(() {
       _notificationsEnabled = snapshot.notificationsEnabled;
       _calendarRemindersEnabled = snapshot.calendarRemindersEnabled;
       _calendarReminderLeadHours = snapshot.calendarReminderLeadHours;
+      _maximalWeightRoundingKg =
+          MaximalWeightRoundingController.instance.incrementKg;
+    });
+  }
+
+  Future<void> _onMaximalWeightRoundingChanged(double kg) async {
+    await MaximalWeightRoundingController.instance.setIncrementKg(kg);
+    if (!mounted) return;
+    setState(() {
+      _maximalWeightRoundingKg =
+          MaximalWeightRoundingController.instance.incrementKg;
     });
   }
 
@@ -409,6 +423,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               notificationsEnabled: _notificationsEnabled,
               calendarRemindersEnabled: _calendarRemindersEnabled,
               calendarReminderLeadHours: _calendarReminderLeadHours,
+              maximalWeightRoundingKg: _maximalWeightRoundingKg,
               onNotificationsToggle: (value) => toggleSettingsNotifications(
                 context: context,
                 l10n: l10n,
@@ -434,6 +449,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onSelected: (hours) =>
                         setState(() => _calendarReminderLeadHours = hours),
                   ),
+              onMaximalWeightRoundingChanged: _onMaximalWeightRoundingChanged,
               onExportBackup: _onExportBackup,
               onImportBackup: () => _backupHandler.importBackup(l10n),
               onUploadCloudBackup: _onUploadCloudBackup,

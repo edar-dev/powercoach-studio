@@ -90,6 +90,57 @@ void main() {
     });
   });
 
+  group('maximal weight rounding', () {
+    test('defaults to 2.5 kg', () async {
+      expect(await repository.getMaximalWeightRoundingKg(), 2.5);
+      expect(normalizeMaximalWeightRoundingKg(99), 2.5);
+    });
+
+    test('persists allowed increments', () async {
+      for (final kg in kAllowedMaximalWeightRoundingIncrements) {
+        await repository.setMaximalWeightRoundingKg(kg);
+        expect(await repository.getMaximalWeightRoundingKg(), kg);
+      }
+    });
+
+    test('normalizes invalid stored value on read', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        SettingsPrefsKeys.maximalWeightRoundingKg: 3.0,
+      });
+      expect(await repository.getMaximalWeightRoundingKg(), 2.5);
+    });
+
+    test('set normalizes invalid input before persist', () async {
+      await repository.setMaximalWeightRoundingKg(7.5);
+      expect(await repository.getMaximalWeightRoundingKg(), 2.5);
+    });
+
+    test('exportForBackup and applyFromBackupMap round-trip', () async {
+      await repository.setMaximalWeightRoundingKg(0.5);
+      final map = await repository.exportForBackup();
+      expect(map[SettingsPrefsKeys.maximalWeightRoundingKg], 0.5);
+
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      await repository.applyFromBackupMap({
+        SettingsPrefsKeys.maximalWeightRoundingKg: 1,
+      });
+      expect(await repository.getMaximalWeightRoundingKg(), 1.0);
+
+      await repository.applyFromBackupMap({
+        SettingsPrefsKeys.maximalWeightRoundingKg: 2.5,
+      });
+      expect(await repository.getMaximalWeightRoundingKg(), 2.5);
+    });
+
+    test('loadAll includes maximalWeightRoundingKg', () async {
+      SharedPreferences.setMockInitialValues(<String, Object>{
+        SettingsPrefsKeys.maximalWeightRoundingKg: 1.0,
+      });
+      final snapshot = await repository.loadAll();
+      expect(snapshot.maximalWeightRoundingKg, 1.0);
+    });
+  });
+
   group('backup pin/recent id lists', () {
     test('exportForBackup emits native Lists', () async {
       await PinnedExercisesStore.instance.replaceAll({'ex-a', 'ex-b'});

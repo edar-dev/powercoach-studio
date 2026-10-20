@@ -2035,6 +2035,17 @@
   "settingsNotificationsModuleTitle": "Notifications & Reminders",
   "settingsSessionRemindersTitle": "Session notifications",
   "settingsSessionRemindersSubtitle": "Alert before a scheduled workout",
+  "settingsWorkoutPrefsModuleTitle": "Workout builder",
+  "settingsMaximalWeightRoundingTitle": "Weight rounding",
+  "settingsMaximalWeightRoundingSubtitle": "Round % of maximal loads to the nearest increment",
+  "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
+  "@settingsMaximalWeightRoundingOptionKg": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "settingsBackupModuleTitle": "Backup & Sync",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Export JSON backup (Local)",
