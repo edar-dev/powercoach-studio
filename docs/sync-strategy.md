@@ -27,6 +27,7 @@ SharedPreferences still hold settings, drafts, pins, and PDF brand (not Postgres
 | `measurement` | Body measurements |
 | `customExercise` | Library exercises (`scope_id = library`) |
 | `customerNote` | Notes threads |
+| `customerMaximal` | Coach-authored custom massimali (`scope_id = customerId`) |
 
 Legacy `exerciseRecord` was removed from Drift (schema v3) and is **not** part of
 `coach_entities`.
