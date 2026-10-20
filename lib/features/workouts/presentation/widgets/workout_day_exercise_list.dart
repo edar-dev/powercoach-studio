@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../data/workout_routine_model.dart';
 import '../workout_builder_session_controller.dart';
 import 'session_exercise_editor_card.dart';
@@ -79,6 +80,8 @@ class WorkoutDayExerciseList extends StatefulWidget {
     String? shortName,
     ExercisePrescriptionScope? prescriptionScope,
     List<ExerciseSet>? setDetails,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef,
   })
   onUpdateExercise;
   final void Function(int, int, String) onAddSetToExercise;
@@ -374,6 +377,16 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       );
     }
 
+    void onMaximalRefChanged(MaximalRef? ref, {required bool clear}) {
+      widget.onUpdateExercise(
+        weekIndex,
+        dayIndex,
+        ex.id,
+        maximalRef: ref,
+        clearMaximalRef: clear,
+      );
+    }
+
     if (widget.sessionEditStyle) {
       final canEdit = !widget.readOnly;
       return SessionExerciseEditorCard(
@@ -407,6 +420,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         onDuplicateLastSet: canEdit ? onDuplicateLastSet : null,
         onUpdateSet: canEdit ? onUpdateSet : null,
         onRemoveSet: canEdit ? onRemoveSet : null,
+        onMaximalRefChanged: canEdit ? onMaximalRefChanged : null,
         supersetOptions: canEdit ? filteredSupersetOptions : const [],
         onAssignToSuperset: canEdit
             ? (groupId) => widget.onAssignToSuperset(
@@ -444,6 +458,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       onAddSet: onAddSet,
       onUpdateSet: onUpdateSet,
       onRemoveSet: onRemoveSet,
+      onMaximalRefChanged: onMaximalRefChanged,
       supersetOptions: filteredSupersetOptions,
       onAssignToSuperset: (groupId) =>
           widget.onAssignToSuperset(

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
 
@@ -35,6 +36,7 @@ class SessionExerciseEditorCard extends StatefulWidget {
     this.onAssignToSuperset,
     this.onRemoveFromSuperset,
     this.customerId,
+    this.onMaximalRefChanged,
   });
 
   final ThemeData theme;
@@ -46,6 +48,9 @@ class SessionExerciseEditorCard extends StatefulWidget {
   final String? athleteName;
   /// Customer id for Massimali resolve in the set editor (null in sandbox).
   final String? customerId;
+  /// Persists [Exercise.maximalRef] when the set editor associate sheet changes it.
+  final void Function(MaximalRef? ref, {required bool clear})?
+      onMaximalRefChanged;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -310,6 +315,8 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                                     ),
                                 exercise: widget.exercise,
                                 customerId: widget.customerId,
+                                onMaximalRefChanged:
+                                    widget.onMaximalRefChanged,
                               ),
                       onRemove: widget.onRemoveSet == null
                           ? null

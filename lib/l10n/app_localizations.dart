@@ -7674,11 +7674,11 @@ abstract class AppLocalizations {
   /// **'Set maximal'**
   String get maximalSetCta;
 
-  /// No description provided for @maximalSetCtaComingSoon.
+  /// No description provided for @maximalSetCtaChange.
   ///
   /// In en, this message translates to:
-  /// **'Associating a maximal opens in a later update.'**
-  String get maximalSetCtaComingSoon;
+  /// **'Change'**
+  String get maximalSetCtaChange;
 
   /// No description provided for @maximalToggleLatest.
   ///
@@ -7697,6 +7697,126 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{percent}% → {kg} kg'**
   String maximalPercentReadout(int percent, String kg);
+
+  /// No description provided for @maximalAssociateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Link maximal'**
+  String get maximalAssociateTitle;
+
+  /// No description provided for @maximalAssociateMeasurementSection.
+  ///
+  /// In en, this message translates to:
+  /// **'From measurements (1RM)'**
+  String get maximalAssociateMeasurementSection;
+
+  /// No description provided for @maximalAssociateCustomSection.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom maximals'**
+  String get maximalAssociateCustomSection;
+
+  /// No description provided for @maximalAssociateCreateCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Create custom maximal'**
+  String get maximalAssociateCreateCustom;
+
+  /// No description provided for @maximalAssociateClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove link'**
+  String get maximalAssociateClear;
+
+  /// No description provided for @maximalAssociateEditCustom.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get maximalAssociateEditCustom;
+
+  /// No description provided for @maximalAssociateEditMeasurement.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit 1RM'**
+  String get maximalAssociateEditMeasurement;
+
+  /// No description provided for @maximalAssociateLiftWithKg.
+  ///
+  /// In en, this message translates to:
+  /// **'{lift}: {kg} kg'**
+  String maximalAssociateLiftWithKg(String lift, String kg);
+
+  /// No description provided for @maximalAssociateLiftEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'{lift}: —'**
+  String maximalAssociateLiftEmpty(String lift);
+
+  /// No description provided for @maximalCustomFormCreateTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New maximal'**
+  String get maximalCustomFormCreateTitle;
+
+  /// No description provided for @maximalCustomFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit maximal'**
+  String get maximalCustomFormEditTitle;
+
+  /// No description provided for @maximalCustomLabelField.
+  ///
+  /// In en, this message translates to:
+  /// **'Label'**
+  String get maximalCustomLabelField;
+
+  /// No description provided for @maximalCustomWeightField.
+  ///
+  /// In en, this message translates to:
+  /// **'Weight (kg)'**
+  String get maximalCustomWeightField;
+
+  /// No description provided for @maximalCustomLabelRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a label'**
+  String get maximalCustomLabelRequired;
+
+  /// No description provided for @maximalCustomWeightRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid weight greater than 0'**
+  String get maximalCustomWeightRequired;
+
+  /// No description provided for @maximalCustomSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximal saved.'**
+  String get maximalCustomSaved;
+
+  /// No description provided for @maximalCustomSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save maximal.'**
+  String get maximalCustomSaveError;
+
+  /// No description provided for @maximalMeasurement1rmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit {lift} 1RM'**
+  String maximalMeasurement1rmTitle(String lift);
+
+  /// No description provided for @maximalMeasurement1rmSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'1RM updated.'**
+  String get maximalMeasurement1rmSaved;
+
+  /// No description provided for @maximalMeasurement1rmSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not update 1RM.'**
+  String get maximalMeasurement1rmSaveError;
 
   /// No description provided for @settingsBackupModuleTitle.
   ///

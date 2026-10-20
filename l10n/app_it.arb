@@ -2015,7 +2015,7 @@
     }
   },
   "maximalSetCta": "Imposta massimale",
-  "maximalSetCtaComingSoon": "L'associazione del massimale arriverà in un aggiornamento successivo.",
+  "maximalSetCtaChange": "Modifica",
   "maximalToggleLatest": "Ultimo",
   "maximalToggleHistoricMax": "Massimo storico",
   "maximalPercentReadout": "{percent}% → {kg} kg",
@@ -2029,6 +2029,50 @@
       }
     }
   },
+  "maximalAssociateTitle": "Collega massimale",
+  "maximalAssociateMeasurementSection": "Da misure (1RM)",
+  "maximalAssociateCustomSection": "Massimali personalizzati",
+  "maximalAssociateCreateCustom": "Crea massimale personalizzato",
+  "maximalAssociateClear": "Rimuovi collegamento",
+  "maximalAssociateEditCustom": "Modifica",
+  "maximalAssociateEditMeasurement": "Modifica 1RM",
+  "maximalAssociateLiftWithKg": "{lift}: {kg} kg",
+  "@maximalAssociateLiftWithKg": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      },
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalAssociateLiftEmpty": "{lift}: —",
+  "@maximalAssociateLiftEmpty": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalCustomFormCreateTitle": "Nuovo massimale",
+  "maximalCustomFormEditTitle": "Modifica massimale",
+  "maximalCustomLabelField": "Etichetta",
+  "maximalCustomWeightField": "Peso (kg)",
+  "maximalCustomLabelRequired": "Inserisci un'etichetta",
+  "maximalCustomWeightRequired": "Inserisci un peso valido maggiore di 0",
+  "maximalCustomSaved": "Massimale salvato.",
+  "maximalCustomSaveError": "Impossibile salvare il massimale.",
+  "maximalMeasurement1rmTitle": "Modifica 1RM {lift}",
+  "@maximalMeasurement1rmTitle": {
+    "placeholders": {
+      "lift": {
+        "type": "String"
+      }
+    }
+  },
+  "maximalMeasurement1rmSaved": "1RM aggiornato.",
+  "maximalMeasurement1rmSaveError": "Impossibile aggiornare il 1RM.",
   "settingsBackupModuleTitle": "Backup & Sincronizzazione",
   "settingsOfflineReadyPill": "Offline Ready",
   "settingsBackupExportLocalTitle": "Esporta backup JSON (Locale)",

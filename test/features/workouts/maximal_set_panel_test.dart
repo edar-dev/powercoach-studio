@@ -73,6 +73,7 @@ void main() {
     );
 
     expect(find.text('Maximal: 100 kg'), findsOneWidget);
+    expect(find.text('Change'), findsOneWidget);
     expect(find.text('Latest'), findsOneWidget);
     expect(find.text('Historic max'), findsOneWidget);
 

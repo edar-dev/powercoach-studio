@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import '../workout_builder_session_controller.dart';
 import 'exercise_library_pick_panel.dart';
@@ -46,6 +47,8 @@ class WorkoutSupersetActions {
       String? shortName,
       ExercisePrescriptionScope? prescriptionScope,
       List<ExerciseSet>? setDetails,
+      MaximalRef? maximalRef,
+      bool clearMaximalRef,
     })
     onUpdateExercise,
   }) {
