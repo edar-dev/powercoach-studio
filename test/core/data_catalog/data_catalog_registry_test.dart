@@ -118,6 +118,11 @@ void main() {
         'customerId',
       );
       expect(
+        DataCatalogRegistry.byDriftType(OfflineEntityType.customerMaximal)!
+            .scopeIdPattern,
+        'customerId',
+      );
+      expect(
         DataCatalogRegistry.byDriftType(OfflineEntityType.customExercise)!
             .scopeIdPattern,
         'library',
@@ -133,6 +138,9 @@ void main() {
       )!;
       final note = DataCatalogRegistry.byCatalogId(
         DataCatalogRegistry.customerNote,
+      )!;
+      final maximal = DataCatalogRegistry.byCatalogId(
+        DataCatalogRegistry.customerMaximal,
       )!;
       final exercise = DataCatalogRegistry.byCatalogId(
         DataCatalogRegistry.customExercise,
@@ -156,6 +164,14 @@ void main() {
       );
       expect(
         note.references.any(
+          (r) =>
+              r.fieldPath == 'customerId' &&
+              r.targetCatalogId == DataCatalogRegistry.customer,
+        ),
+        isTrue,
+      );
+      expect(
+        maximal.references.any(
           (r) =>
               r.fieldPath == 'customerId' &&
               r.targetCatalogId == DataCatalogRegistry.customer,

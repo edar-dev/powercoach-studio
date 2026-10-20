@@ -15,7 +15,7 @@
 - **Backup/restore:** JSON export/import remains disaster recovery; restore must write to Supabase and refresh Drift cache (see `docs/sync-strategy.md`).
 - **Data catalog:** in-repo registry at `lib/core/data_catalog/` — see `docs/data-catalog.md`. Optional OM spike under `tool/openmetadata/`. Read-only quality scanner: `lib/core/data_quality/` (run against pulled/backup data).
 - **Removed product surfaces (do not reintroduce without a plan):** gym hub, plan-diff, coach stats, release notes, density/EMOM blocks, progression chips, session check-in RPE/pain, Day coaching notes, manual ReminderStore, exercise PR records, Hevy.
-- **Entity types in `coach_entities`:** `customer`, `workoutPlan`, `measurement`, `customExercise`, `customerNote` (legacy `exerciseRecord` was removed from Drift and is not uploaded).
+- **Entity types in `coach_entities`:** `customer`, `workoutPlan`, `measurement`, `customExercise`, `customerNote`, `customerMaximal` (legacy `exerciseRecord` was removed from Drift and is not uploaded).
 
 ## CI / Flutter version
 - CI pins **Flutter 3.35.6** (`.flutter-version`, GitHub Actions, Codemagic).

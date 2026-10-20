@@ -16,6 +16,11 @@ void main() {
         tryParseOfflineEntityType('customerNote'),
         OfflineEntityType.customerNote,
       );
+      expect(
+        tryParseOfflineEntityType('customerMaximal'),
+        OfflineEntityType.customerMaximal,
+      );
+      expect(isKnownOfflineEntityTypeName('customerMaximal'), isTrue);
     });
 
     test('rejects removed exerciseRecord name', () {
@@ -29,9 +34,12 @@ void main() {
       expect(tryParseOfflineEntityType(2), OfflineEntityType.measurement);
       expect(tryParseOfflineEntityType(3), isNull); // former exerciseRecord
       expect(tryParseOfflineEntityType(4), OfflineEntityType.customExercise);
+      // Legacy SP index 5 was customerNote; customerMaximal is Drift index 5
+      // via OfflineEntityType.values (name-based parse), not legacy remapping.
       expect(tryParseOfflineEntityType(5), OfflineEntityType.customerNote);
       expect(tryParseOfflineEntityType('4'), OfflineEntityType.customExercise);
       expect(tryParseOfflineEntityType('5'), OfflineEntityType.customerNote);
+      expect(OfflineEntityType.customerMaximal.index, 5);
     });
   });
 

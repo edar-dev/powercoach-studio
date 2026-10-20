@@ -4,12 +4,16 @@ import 'dart:convert';
 ///
 /// Schema v3 removed `exerciseRecord` (former index 3). Migration remaps
 /// `customExercise` 4→3 and `customerNote` 5→4 after deleting type=3 rows.
+///
+/// `customerMaximal` is appended at the end (index 5). Do **not** reuse index 3
+/// for any new type — legacy parsers still treat 3 as removed exerciseRecord.
 enum OfflineEntityType {
   customer,
   workoutPlan,
   measurement,
   customExercise,
   customerNote,
+  customerMaximal,
 }
 
 /// True when [name] matches a current [OfflineEntityType] value.

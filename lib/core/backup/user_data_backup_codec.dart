@@ -323,7 +323,8 @@ BackupPreviewCounts entityCountsFromBackupEntities(
     if (type == OfflineEntityType.customer.name) {
       customers++;
     } else if (type == OfflineEntityType.measurement.name ||
-        type == OfflineEntityType.customerNote.name) {
+        type == OfflineEntityType.customerNote.name ||
+        type == OfflineEntityType.customerMaximal.name) {
       customerRecords++;
     }
     if (type == OfflineEntityType.customExercise.name) {
