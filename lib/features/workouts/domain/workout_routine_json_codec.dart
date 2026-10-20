@@ -3,6 +3,7 @@ import 'dart:convert';
 import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
+import 'maximal_ref.dart';
 import 'session_execution.dart';
 
 const int workoutRoutineJsonSchemaVersion = 1;
@@ -116,6 +117,7 @@ Map<String, dynamic> encodeExercise(Exercise exercise) {
       'supersetGroupId': synced.supersetGroupId,
     if (synced.customExerciseId != null && synced.customExerciseId!.isNotEmpty)
       'customExerciseId': synced.customExerciseId,
+    if (synced.maximalRef != null) 'maximalRef': synced.maximalRef!.toJson(),
   };
 }
 
@@ -145,6 +147,7 @@ Exercise decodeExercise(Map<String, dynamic> json) {
     setDetails: setDetails,
     supersetGroupId: json['supersetGroupId'] as String?,
     customExerciseId: json['customExerciseId'] as String?,
+    maximalRef: MaximalRef.fromJson(json['maximalRef']),
   );
 }
 

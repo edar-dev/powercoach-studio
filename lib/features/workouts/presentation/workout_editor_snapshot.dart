@@ -83,6 +83,8 @@ String buildWorkoutRoutineFingerprint(WorkoutRoutine routine) {
           ..write(exercise.supersetGroupId ?? '')
           ..write(',')
           ..write(exercise.prescriptionScope.name)
+          ..write(',')
+          ..write(exercise.maximalRef?.toJson().toString() ?? '')
           ..write(')');
         for (final set in exercise.effectiveSetDetails) {
           buffer

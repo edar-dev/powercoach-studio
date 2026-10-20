@@ -1,6 +1,7 @@
 // In-memory model for Workout Builder. Serializable via [workout_routine_json_codec.dart].
 
 import '../domain/exercise_prescription_scope.dart';
+import '../domain/maximal_ref.dart';
 import '../domain/session_execution.dart';
 import '../domain/workout_routine_json_codec.dart';
 
@@ -550,6 +551,7 @@ class Exercise {
     this.setDetails,
     this.supersetGroupId,
     this.customExerciseId,
+    this.maximalRef,
   });
 
   final String id;
@@ -571,6 +573,9 @@ class Exercise {
 
   /// When set, this exercise is linked to the user's custom exercise library entry.
   final String? customExerciseId;
+
+  /// Optional link from this plan exercise to a massimale (measurement 1RM or custom).
+  final MaximalRef? maximalRef;
 
   Map<String, dynamic> toJson() => encodeExercise(this);
 
@@ -594,7 +599,9 @@ class Exercise {
     List<ExerciseSet>? setDetails,
     String? supersetGroupId,
     String? customExerciseId,
+    MaximalRef? maximalRef,
     bool clearSupersetGroupId = false,
+    bool clearMaximalRef = false,
   }) => Exercise(
     id: id ?? this.id,
     name: name ?? this.name,
@@ -609,5 +616,6 @@ class Exercise {
         ? null
         : (supersetGroupId ?? this.supersetGroupId),
     customExerciseId: customExerciseId ?? this.customExerciseId,
+    maximalRef: clearMaximalRef ? null : (maximalRef ?? this.maximalRef),
   );
 }
