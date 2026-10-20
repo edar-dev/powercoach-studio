@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_measurement_repository.dart';
+import '../../domain/maximal_kg_parsing.dart';
 import '../../domain/maximal_measurement_write.dart';
 import '../../domain/maximal_ref.dart';
+import 'maximal_kg_form_field.dart';
 
 /// Edit a measurement lift 1RM (updates latest row or creates one).
 ///
@@ -67,7 +68,7 @@ class _MaximalMeasurement1RmBodyState extends State<_MaximalMeasurement1RmBody> 
     super.initState();
     final kg = widget.initialKg;
     _weightController = TextEditingController(
-      text: kg == null ? '' : _formatKgInput(kg),
+      text: kg == null ? '' : formatMaximalKgInput(kg),
     );
   }
 
@@ -81,7 +82,7 @@ class _MaximalMeasurement1RmBodyState extends State<_MaximalMeasurement1RmBody> 
     if (_saving) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final l10n = AppLocalizations.of(context);
-    final weightKg = _parseKg(_weightController.text)!;
+    final weightKg = parseMaximalKgInput(_weightController.text)!;
     setState(() => _saving = true);
     try {
       await upsertMeasurementLift1Rm(
@@ -110,59 +111,24 @@ class _MaximalMeasurement1RmBodyState extends State<_MaximalMeasurement1RmBody> 
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextFormField(
+          MaximalKgFormField(
             controller: _weightController,
             enabled: !_saving,
             autofocus: true,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-            ],
-            decoration: InputDecoration(
-              labelText: l10n.maximalCustomWeightField,
-              isDense: true,
-            ),
-            validator: (value) {
-              final kg = _parseKg(value);
-              if (kg == null || kg <= 0) {
-                return l10n.maximalCustomWeightRequired;
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 16),
-          FilledButton(
-            onPressed: _saving ? null : _save,
-            child: _saving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(l10n.customerSave),
+          MaximalFormSaveButton(
+            saving: _saving,
+            onPressed: _save,
           ),
         ],
       ),
     );
   }
-}
-
-double? _parseKg(String? raw) {
-  if (raw == null) return null;
-  final normalized = raw.trim().replaceAll(',', '.');
-  if (normalized.isEmpty) return null;
-  return double.tryParse(normalized);
-}
-
-String _formatKgInput(double kg) {
-  final asInt = kg.round();
-  if ((kg - asInt).abs() < 1e-6) return asInt.toString();
-  return kg.toString();
 }

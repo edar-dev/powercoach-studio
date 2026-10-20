@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_maximal_repository.dart';
 import '../../../customers/data/models/customer_maximal.dart';
+import '../../domain/maximal_kg_parsing.dart';
+import 'maximal_kg_form_field.dart';
 
 /// Create or edit a custom [CustomerMaximal] via bottom sheet.
 ///
@@ -65,7 +66,7 @@ class _MaximalCustomFormBodyState extends State<_MaximalCustomFormBody> {
     final existing = widget.existing;
     _labelController = TextEditingController(text: existing?.label ?? '');
     _weightController = TextEditingController(
-      text: existing == null ? '' : _formatKgInput(existing.weightKg),
+      text: existing == null ? '' : formatMaximalKgInput(existing.weightKg),
     );
   }
 
@@ -81,7 +82,7 @@ class _MaximalCustomFormBodyState extends State<_MaximalCustomFormBody> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final l10n = AppLocalizations.of(context);
     final label = _labelController.text.trim();
-    final weightKg = _parseKg(_weightController.text)!;
+    final weightKg = parseMaximalKgInput(_weightController.text)!;
     setState(() => _saving = true);
     try {
       final CustomerMaximal saved;
@@ -140,51 +141,17 @@ class _MaximalCustomFormBodyState extends State<_MaximalCustomFormBody> {
             },
           ),
           const SizedBox(height: 12),
-          TextFormField(
+          MaximalKgFormField(
             controller: _weightController,
             enabled: !_saving,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
-            ],
-            decoration: InputDecoration(
-              labelText: l10n.maximalCustomWeightField,
-              isDense: true,
-            ),
-            validator: (value) {
-              final kg = _parseKg(value);
-              if (kg == null || kg <= 0) {
-                return l10n.maximalCustomWeightRequired;
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 16),
-          FilledButton(
-            onPressed: _saving ? null : _save,
-            child: _saving
-                ? const SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Text(l10n.customerSave),
+          MaximalFormSaveButton(
+            saving: _saving,
+            onPressed: _save,
           ),
         ],
       ),
     );
   }
-}
-
-double? _parseKg(String? raw) {
-  if (raw == null) return null;
-  final normalized = raw.trim().replaceAll(',', '.');
-  if (normalized.isEmpty) return null;
-  return double.tryParse(normalized);
-}
-
-String _formatKgInput(double kg) {
-  final asInt = kg.round();
-  if ((kg - asInt).abs() < 1e-6) return asInt.toString();
-  return kg.toString();
 }
