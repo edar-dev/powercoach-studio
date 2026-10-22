@@ -7635,19 +7635,19 @@ abstract class AppLocalizations {
   /// No description provided for @settingsWorkoutPrefsModuleTitle.
   ///
   /// In en, this message translates to:
-  /// **'Workout builder'**
+  /// **'Workout preferences'**
   String get settingsWorkoutPrefsModuleTitle;
 
   /// No description provided for @settingsMaximalWeightRoundingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Weight rounding'**
+  /// **'Maximal % rounding'**
   String get settingsMaximalWeightRoundingTitle;
 
   /// No description provided for @settingsMaximalWeightRoundingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Round % of maximal loads to the nearest increment'**
+  /// **'Round loads calculated as a % of the maximal to the nearest increment (in the set editor)'**
   String get settingsMaximalWeightRoundingSubtitle;
 
   /// No description provided for @settingsMaximalWeightRoundingOptionKg.
@@ -7698,6 +7698,36 @@ abstract class AppLocalizations {
   /// **'{percent}% → {kg} kg'**
   String maximalPercentReadout(int percent, String kg);
 
+  /// No description provided for @maximalEmptyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Link a maximal to calculate load as a %'**
+  String get maximalEmptyHint;
+
+  /// No description provided for @maximalOrphanHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Link is invalid. Re-link or update the maximal.'**
+  String get maximalOrphanHint;
+
+  /// No description provided for @maximalSandboxHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Assign this plan to a client to use maximals'**
+  String get maximalSandboxHint;
+
+  /// No description provided for @maximalLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load maximals.'**
+  String get maximalLoadError;
+
+  /// No description provided for @maximalRoundingIncrementHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rounding: {kg} kg'**
+  String maximalRoundingIncrementHint(String kg);
+
   /// No description provided for @maximalAssociateTitle.
   ///
   /// In en, this message translates to:
@@ -7721,6 +7751,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Create custom maximal'**
   String get maximalAssociateCreateCustom;
+
+  /// No description provided for @maximalAssociateCustomEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No custom maximals yet'**
+  String get maximalAssociateCustomEmpty;
 
   /// No description provided for @maximalAssociateClear.
   ///
@@ -7751,6 +7787,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{lift}: —'**
   String maximalAssociateLiftEmpty(String lift);
+
+  /// No description provided for @maximalAssociateLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load measurements and maximals.'**
+  String get maximalAssociateLoadError;
 
   /// No description provided for @maximalCustomFormCreateTitle.
   ///
@@ -7805,6 +7847,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Edit {lift} 1RM'**
   String maximalMeasurement1rmTitle(String lift);
+
+  /// No description provided for @maximalMeasurement1rmHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Updates the latest measurement 1RM (or creates one if missing).'**
+  String get maximalMeasurement1rmHint;
 
   /// No description provided for @maximalMeasurement1rmSaved.
   ///

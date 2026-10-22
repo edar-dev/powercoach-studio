@@ -4295,14 +4295,14 @@ class AppLocalizationsIt extends AppLocalizations {
       'Avviso prima dell\'allenamento pianificato';
 
   @override
-  String get settingsWorkoutPrefsModuleTitle => 'Workout builder';
+  String get settingsWorkoutPrefsModuleTitle => 'Preferenze workout';
 
   @override
-  String get settingsMaximalWeightRoundingTitle => 'Arrotondamento carichi';
+  String get settingsMaximalWeightRoundingTitle => 'Arrotondamento % massimale';
 
   @override
   String get settingsMaximalWeightRoundingSubtitle =>
-      'Arrotonda i carichi % del massimale all\'incremento più vicino';
+      'Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nel set editor)';
 
   @override
   String settingsMaximalWeightRoundingOptionKg(String kg) {
@@ -4327,11 +4327,31 @@ class AppLocalizationsIt extends AppLocalizations {
   String get maximalToggleLatest => 'Ultimo';
 
   @override
-  String get maximalToggleHistoricMax => 'Massimo storico';
+  String get maximalToggleHistoricMax => 'Max storico';
 
   @override
   String maximalPercentReadout(int percent, String kg) {
     return '$percent% → $kg kg';
+  }
+
+  @override
+  String get maximalEmptyHint =>
+      'Collega un massimale per calcolare il carico in %';
+
+  @override
+  String get maximalOrphanHint =>
+      'Collegamento non valido. Ricollega o aggiorna il massimale.';
+
+  @override
+  String get maximalSandboxHint =>
+      'Assegna la scheda a un cliente per usare i massimali';
+
+  @override
+  String get maximalLoadError => 'Impossibile caricare i massimali.';
+
+  @override
+  String maximalRoundingIncrementHint(String kg) {
+    return 'Arrotondamento: $kg kg';
   }
 
   @override
@@ -4345,6 +4365,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get maximalAssociateCreateCustom => 'Crea massimale personalizzato';
+
+  @override
+  String get maximalAssociateCustomEmpty => 'Nessun massimale personalizzato';
 
   @override
   String get maximalAssociateClear => 'Rimuovi collegamento';
@@ -4364,6 +4387,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String maximalAssociateLiftEmpty(String lift) {
     return '$lift: —';
   }
+
+  @override
+  String get maximalAssociateLoadError =>
+      'Impossibile caricare misure e massimali.';
 
   @override
   String get maximalCustomFormCreateTitle => 'Nuovo massimale';
@@ -4394,6 +4421,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String maximalMeasurement1rmTitle(String lift) {
     return 'Modifica 1RM $lift';
   }
+
+  @override
+  String get maximalMeasurement1rmHint =>
+      'Aggiorna il 1RM più recente (o ne crea uno nuovo se manca).';
 
   @override
   String get maximalMeasurement1rmSaved => '1RM aggiornato.';

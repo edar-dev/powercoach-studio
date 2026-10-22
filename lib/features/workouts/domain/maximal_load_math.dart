@@ -30,22 +30,24 @@ double applyPercentRounded({
   );
 }
 
+/// Formats kg for UI labels (header, readout, associate tiles) without unit.
+///
+/// Whole kilograms omit the decimal; values near `.5` use one decimal place.
+String formatMaximalDisplayKg(double kg) {
+  final asInt = kg.round();
+  if ((kg - asInt).abs() < 1e-6) return asInt.toString();
+  final oneDecimal = (kg * 10).round() / 10.0;
+  if ((oneDecimal - oneDecimal.roundToDouble()).abs() < 1e-9) {
+    return oneDecimal.round().toString();
+  }
+  return oneDecimal.toStringAsFixed(1);
+}
+
 /// Formats a rounded kg value for the set load field (e.g. `"80kg"`, `"107.5kg"`).
 ///
 /// Matches existing load hints (`75kg`) and volume parsers that accept a `kg`
 /// suffix. Whole kilograms omit the decimal; half kilograms use one decimal.
-String formatMaximalLoadKg(double kg) {
-  final asInt = kg.round();
-  if ((kg - asInt).abs() < 1e-6) {
-    return '${asInt}kg';
-  }
-  final oneDecimal = (kg * 10).round() / 10.0;
-  if ((oneDecimal - oneDecimal.roundToDouble()).abs() < 1e-9) {
-    return '${oneDecimal.round()}kg';
-  }
-  final trimmed = oneDecimal.toStringAsFixed(1);
-  return '${trimmed}kg';
-}
+String formatMaximalLoadKg(double kg) => '${formatMaximalDisplayKg(kg)}kg';
 
 /// Coach-oriented % presets for the set-editor chip row.
 const List<int> kMaximalPercentPresets = [

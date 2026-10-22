@@ -181,6 +181,33 @@ void main() {
     expect(result!.ref?.maximalId, created.id);
   });
 
+  testWidgets('empty custom section shows localized empty copy', (tester) async {
+    await tester.pumpWidget(
+      _host(
+        onOpen: (context) async {
+          await showMaximalAssociateSheet(
+            context,
+            customerId: 'c1',
+            measurementRepository: measurementRepo,
+            maximalRepository: maximalRepo,
+          );
+        },
+      ),
+    );
+
+    await tester.tap(find.text('Open'));
+    await tester.pump();
+    await allowDriftWork(tester);
+    await _pumpUntilFound(
+      tester,
+      find.text('From measurements (1RM)'),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('No custom maximals yet'), findsOneWidget);
+    expect(find.text('Create custom maximal'), findsOneWidget);
+  });
+
   testWidgets('clear removes association', (tester) async {
     MaximalAssociateResult? result;
     await tester.pumpWidget(

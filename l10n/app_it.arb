@@ -1994,9 +1994,9 @@
   "settingsNotificationsModuleTitle": "Notifiche & Promemoria",
   "settingsSessionRemindersTitle": "Notifiche sessioni",
   "settingsSessionRemindersSubtitle": "Avviso prima dell'allenamento pianificato",
-  "settingsWorkoutPrefsModuleTitle": "Workout builder",
-  "settingsMaximalWeightRoundingTitle": "Arrotondamento carichi",
-  "settingsMaximalWeightRoundingSubtitle": "Arrotonda i carichi % del massimale all'incremento più vicino",
+  "settingsWorkoutPrefsModuleTitle": "Preferenze workout",
+  "settingsMaximalWeightRoundingTitle": "Arrotondamento % massimale",
+  "settingsMaximalWeightRoundingSubtitle": "Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nel set editor)",
   "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
   "@settingsMaximalWeightRoundingOptionKg": {
     "placeholders": {
@@ -2017,7 +2017,7 @@
   "maximalSetCta": "Imposta massimale",
   "maximalSetCtaChange": "Modifica",
   "maximalToggleLatest": "Ultimo",
-  "maximalToggleHistoricMax": "Massimo storico",
+  "maximalToggleHistoricMax": "Max storico",
   "maximalPercentReadout": "{percent}% → {kg} kg",
   "@maximalPercentReadout": {
     "placeholders": {
@@ -2029,10 +2029,23 @@
       }
     }
   },
+  "maximalEmptyHint": "Collega un massimale per calcolare il carico in %",
+  "maximalOrphanHint": "Collegamento non valido. Ricollega o aggiorna il massimale.",
+  "maximalSandboxHint": "Assegna la scheda a un cliente per usare i massimali",
+  "maximalLoadError": "Impossibile caricare i massimali.",
+  "maximalRoundingIncrementHint": "Arrotondamento: {kg} kg",
+  "@maximalRoundingIncrementHint": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "maximalAssociateTitle": "Collega massimale",
   "maximalAssociateMeasurementSection": "Da misure (1RM)",
   "maximalAssociateCustomSection": "Massimali personalizzati",
   "maximalAssociateCreateCustom": "Crea massimale personalizzato",
+  "maximalAssociateCustomEmpty": "Nessun massimale personalizzato",
   "maximalAssociateClear": "Rimuovi collegamento",
   "maximalAssociateEditCustom": "Modifica",
   "maximalAssociateEditMeasurement": "Modifica 1RM",
@@ -2055,6 +2068,7 @@
       }
     }
   },
+  "maximalAssociateLoadError": "Impossibile caricare misure e massimali.",
   "maximalCustomFormCreateTitle": "Nuovo massimale",
   "maximalCustomFormEditTitle": "Modifica massimale",
   "maximalCustomLabelField": "Etichetta",
@@ -2071,6 +2085,7 @@
       }
     }
   },
+  "maximalMeasurement1rmHint": "Aggiorna il 1RM più recente (o ne crea uno nuovo se manca).",
   "maximalMeasurement1rmSaved": "1RM aggiornato.",
   "maximalMeasurement1rmSaveError": "Impossibile aggiornare il 1RM.",
   "settingsBackupModuleTitle": "Backup & Sincronizzazione",

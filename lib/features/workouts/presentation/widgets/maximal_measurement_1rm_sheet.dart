@@ -103,6 +103,7 @@ class _MaximalMeasurement1RmBodyState extends State<_MaximalMeasurement1RmBody> 
         context,
         e,
         fallbackMessage: l10n.maximalMeasurement1rmSaveError,
+        onRetry: _save,
       );
     } finally {
       if (mounted) setState(() => _saving = false);
@@ -111,12 +112,21 @@ class _MaximalMeasurement1RmBodyState extends State<_MaximalMeasurement1RmBody> 
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
     return Form(
       key: _formKey,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Text(
+            l10n.maximalMeasurement1rmHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 12),
           MaximalKgFormField(
             controller: _weightController,
             enabled: !_saving,

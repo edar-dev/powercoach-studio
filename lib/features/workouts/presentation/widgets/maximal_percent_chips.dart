@@ -54,7 +54,7 @@ class _PercentChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return FilterChip(
-      label: Text('$percent'),
+      label: Text('$percent%'),
       selected: selected,
       showCheckmark: false,
       visualDensity: VisualDensity.compact,

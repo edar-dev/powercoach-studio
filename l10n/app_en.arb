@@ -2035,9 +2035,9 @@
   "settingsNotificationsModuleTitle": "Notifications & Reminders",
   "settingsSessionRemindersTitle": "Session notifications",
   "settingsSessionRemindersSubtitle": "Alert before a scheduled workout",
-  "settingsWorkoutPrefsModuleTitle": "Workout builder",
-  "settingsMaximalWeightRoundingTitle": "Weight rounding",
-  "settingsMaximalWeightRoundingSubtitle": "Round % of maximal loads to the nearest increment",
+  "settingsWorkoutPrefsModuleTitle": "Workout preferences",
+  "settingsMaximalWeightRoundingTitle": "Maximal % rounding",
+  "settingsMaximalWeightRoundingSubtitle": "Round loads calculated as a % of the maximal to the nearest increment (in the set editor)",
   "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
   "@settingsMaximalWeightRoundingOptionKg": {
     "placeholders": {
@@ -2070,10 +2070,23 @@
       }
     }
   },
+  "maximalEmptyHint": "Link a maximal to calculate load as a %",
+  "maximalOrphanHint": "Link is invalid. Re-link or update the maximal.",
+  "maximalSandboxHint": "Assign this plan to a client to use maximals",
+  "maximalLoadError": "Could not load maximals.",
+  "maximalRoundingIncrementHint": "Rounding: {kg} kg",
+  "@maximalRoundingIncrementHint": {
+    "placeholders": {
+      "kg": {
+        "type": "String"
+      }
+    }
+  },
   "maximalAssociateTitle": "Link maximal",
   "maximalAssociateMeasurementSection": "From measurements (1RM)",
   "maximalAssociateCustomSection": "Custom maximals",
   "maximalAssociateCreateCustom": "Create custom maximal",
+  "maximalAssociateCustomEmpty": "No custom maximals yet",
   "maximalAssociateClear": "Remove link",
   "maximalAssociateEditCustom": "Edit",
   "maximalAssociateEditMeasurement": "Edit 1RM",
@@ -2096,6 +2109,7 @@
       }
     }
   },
+  "maximalAssociateLoadError": "Could not load measurements and maximals.",
   "maximalCustomFormCreateTitle": "New maximal",
   "maximalCustomFormEditTitle": "Edit maximal",
   "maximalCustomLabelField": "Label",
@@ -2112,6 +2126,7 @@
       }
     }
   },
+  "maximalMeasurement1rmHint": "Updates the latest measurement 1RM (or creates one if missing).",
   "maximalMeasurement1rmSaved": "1RM updated.",
   "maximalMeasurement1rmSaveError": "Could not update 1RM.",
 

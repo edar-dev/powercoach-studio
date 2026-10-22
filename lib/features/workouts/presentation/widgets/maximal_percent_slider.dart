@@ -36,7 +36,7 @@ class MaximalPercentSlider extends StatelessWidget {
             percent: clamped,
             incrementKg: incrementKg,
           );
-    final kgLabel = kg == null ? '—' : _formatKgLabel(kg);
+    final kgLabel = kg == null ? '—' : formatMaximalDisplayKg(kg);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,13 +64,4 @@ class MaximalPercentSlider extends StatelessWidget {
     );
   }
 
-  static String _formatKgLabel(double kg) {
-    final asInt = kg.round();
-    if ((kg - asInt).abs() < 1e-6) return asInt.toString();
-    final oneDecimal = (kg * 10).round() / 10.0;
-    if ((oneDecimal - oneDecimal.roundToDouble()).abs() < 1e-9) {
-      return oneDecimal.round().toString();
-    }
-    return oneDecimal.toStringAsFixed(1);
-  }
 }

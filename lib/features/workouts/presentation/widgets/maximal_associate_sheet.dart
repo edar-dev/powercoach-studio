@@ -7,6 +7,7 @@ import '../../../customers/data/customer_measurement_repository.dart';
 import '../../../customers/data/models/customer_maximal.dart';
 import '../../../customers/data/models/customer_measurement.dart';
 import '../../domain/maximal_kg_resolver.dart';
+import '../../domain/maximal_load_math.dart';
 import '../../domain/maximal_ref.dart';
 import 'maximal_custom_form_sheet.dart';
 import 'maximal_measurement_1rm_sheet.dart';
@@ -71,6 +72,7 @@ class _MaximalAssociateBody extends StatefulWidget {
 
 class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
   bool _loading = true;
+  bool _loadFailed = false;
   List<CustomerMeasurement> _measurements = const [];
   List<CustomerMaximal> _customs = const [];
 
@@ -81,7 +83,10 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
   }
 
   Future<void> _load() async {
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _loadFailed = false;
+    });
     try {
       final measurements =
           await widget.measurementRepository.getByCustomerId(widget.customerId);
@@ -92,6 +97,7 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
         _measurements = measurements;
         _customs = customs;
         _loading = false;
+        _loadFailed = false;
       });
     } catch (e, stack) {
       debugPrint('MaximalAssociateSheet load failed: $e\n$stack');
@@ -100,6 +106,7 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
         _measurements = const [];
         _customs = const [];
         _loading = false;
+        _loadFailed = true;
       });
     }
   }
@@ -121,16 +128,6 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
       measurements: _measurements,
       mode: MaximalKgResolver.defaultMode,
     );
-  }
-
-  String _formatKg(double kg) {
-    final asInt = kg.round();
-    if ((kg - asInt).abs() < 1e-6) return asInt.toString();
-    final oneDecimal = (kg * 10).round() / 10.0;
-    if ((oneDecimal - oneDecimal.roundToDouble()).abs() < 1e-9) {
-      return oneDecimal.round().toString();
-    }
-    return oneDecimal.toStringAsFixed(1);
   }
 
   Future<void> _editMeasurement(MaximalLift lift) async {
@@ -168,6 +165,18 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
     );
   }
 
+  void _selectMeasurement(MaximalLift lift) {
+    final kg = _liftKg(lift);
+    if (kg == null || kg <= 0) {
+      // Fewer taps: empty lift opens the 1RM editor instead of linking — kg.
+      _editMeasurement(lift);
+      return;
+    }
+    widget.onResult(
+      MaximalAssociateResult.set(MaximalRef.measurement(lift: lift)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -184,6 +193,30 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
             height: 24,
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
+        ),
+      );
+    }
+
+    if (_loadFailed) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              l10n.maximalAssociateLoadError,
+              style: theme.textTheme.bodyMedium?.copyWith(color: cs.error),
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                onPressed: _load,
+                child: Text(l10n.cloudSaveRetryAction),
+              ),
+            ),
+          ],
         ),
       );
     }
@@ -208,16 +241,17 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
               if (kg == null || kg <= 0) {
                 return l10n.maximalAssociateLiftEmpty(label);
               }
-              return l10n.maximalAssociateLiftWithKg(label, _formatKg(kg));
+              return l10n.maximalAssociateLiftWithKg(
+                label,
+                formatMaximalDisplayKg(kg),
+              );
             }(),
             trailing: IconButton(
               tooltip: l10n.maximalAssociateEditMeasurement,
               icon: const Icon(Icons.edit_outlined, size: 20),
               onPressed: () => _editMeasurement(lift),
             ),
-            onTap: () => widget.onResult(
-              MaximalAssociateResult.set(MaximalRef.measurement(lift: lift)),
-            ),
+            onTap: () => _selectMeasurement(lift),
           ),
         const SizedBox(height: 12),
         Text(
@@ -229,9 +263,9 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
         const SizedBox(height: 4),
         if (_customs.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
+            padding: const EdgeInsets.symmetric(vertical: 4),
             child: Text(
-              '—',
+              l10n.maximalAssociateCustomEmpty,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: cs.onSurfaceVariant,
               ),
@@ -244,7 +278,7 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
                   current?.maximalId == custom.id,
               title: l10n.maximalAssociateLiftWithKg(
                 custom.label,
-                _formatKg(custom.weightKg),
+                formatMaximalDisplayKg(custom.weightKg),
               ),
               trailing: IconButton(
                 tooltip: l10n.maximalAssociateEditCustom,

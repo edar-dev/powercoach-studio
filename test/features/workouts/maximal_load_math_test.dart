@@ -79,6 +79,14 @@ void main() {
     });
   });
 
+  group('formatMaximalDisplayKg', () {
+    test('formats whole and half kilograms without unit', () {
+      expect(formatMaximalDisplayKg(80), '80');
+      expect(formatMaximalDisplayKg(107.5), '107.5');
+      expect(formatMaximalDisplayKg(80.0), '80');
+    });
+  });
+
   group('formatMaximalLoadKg', () {
     test('formats whole and half kilograms with kg suffix', () {
       expect(formatMaximalLoadKg(80), '80kg');

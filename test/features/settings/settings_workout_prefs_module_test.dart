@@ -41,6 +41,8 @@ void main() {
       onChanged: (kg) => changedTo = kg,
     );
 
+    expect(find.text('Workout preferences'), findsOneWidget);
+    expect(find.text('Maximal % rounding'), findsOneWidget);
     expect(find.text('0.5 kg'), findsOneWidget);
     expect(find.text('1 kg'), findsOneWidget);
     expect(find.text('2.5 kg'), findsOneWidget);
@@ -58,6 +60,8 @@ void main() {
       locale: const Locale('it'),
     );
 
+    expect(find.text('Preferenze workout'), findsOneWidget);
+    expect(find.text('Arrotondamento % massimale'), findsOneWidget);
     expect(find.text('0,5 kg'), findsOneWidget);
     expect(find.text('2,5 kg'), findsOneWidget);
   });
