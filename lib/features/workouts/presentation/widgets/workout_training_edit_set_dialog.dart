@@ -153,8 +153,11 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
   MaximalResolveMode _mode = MaximalKgResolver.defaultMode;
   int _percent = 80;
   bool _loading = false;
+  bool _loadFailed = false;
   List<CustomerMeasurement> _measurements = const [];
   List<MaximalCustomKg> _customs = const [];
+  /// Labels for custom maximals (id → label) for the panel source subtitle.
+  Map<String, String> _customLabels = const {};
   MaximalRef? _localRef;
 
   MaximalRef? get _ref => _localRef;
@@ -192,13 +195,18 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
       if (!mounted) return;
       setState(() {
         _loading = false;
+        _loadFailed = false;
         _measurements = const [];
         _customs = const [];
+        _customLabels = const {};
       });
       return;
     }
 
-    setState(() => _loading = true);
+    setState(() {
+      _loading = true;
+      _loadFailed = false;
+    });
     try {
       final measurementRepo =
           widget.measurementRepository ?? CustomerMeasurementRepository();
@@ -214,7 +222,11 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
               (m) => MaximalCustomKg(id: m.id, weightKg: m.weightKg),
             )
             .toList(growable: false);
+        _customLabels = {
+          for (final m in maximals) m.id: m.label,
+        };
         _loading = false;
+        _loadFailed = false;
       });
     } catch (e, stack) {
       debugPrint('MaximalSetPanel data load failed: $e\n$stack');
@@ -222,7 +234,9 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
       setState(() {
         _measurements = const [];
         _customs = const [];
+        _customLabels = const {};
         _loading = false;
+        _loadFailed = true;
       });
     }
   }
@@ -242,6 +256,49 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
           lift: ref.lift!,
         ) >=
         2;
+  }
+
+  String? _sourceLabel(AppLocalizations l10n) {
+    final ref = _ref;
+    if (ref == null) return null;
+    if (ref.isMeasurement && ref.lift != null) {
+      switch (ref.lift!) {
+        case MaximalLift.squat:
+          return l10n.measurementSquat;
+        case MaximalLift.bench:
+          return l10n.measurementBench;
+        case MaximalLift.deadlift:
+          return l10n.measurementDeadlift;
+      }
+    }
+    if (ref.isCustom && ref.maximalId != null) {
+      return _customLabels[ref.maximalId!];
+    }
+    return null;
+  }
+
+  void _applyCurrentPercent({required double? maximalKg}) {
+    if (maximalKg == null || maximalKg <= 0) return;
+    final kg = applyPercentRounded(
+      maximalKg: maximalKg,
+      percent: _percent.clamp(
+        kMaximalPercentSliderMin,
+        kMaximalPercentSliderMax,
+      ),
+      incrementKg: _incrementKg,
+    );
+    widget.loadController.text = formatMaximalLoadKg(kg);
+  }
+
+  void _onResolveModeChanged(MaximalResolveMode mode) {
+    final nextKg = MaximalKgResolver.resolve(
+      ref: _ref,
+      measurements: _measurements,
+      customs: _customs,
+      mode: mode,
+    );
+    setState(() => _mode = mode);
+    _applyCurrentPercent(maximalKg: nextKg);
   }
 
   Future<void> _onSetMaximal() async {
@@ -267,12 +324,14 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasCustomer = _customerId != null;
     return MaximalSetPanel(
       maximalRef: _ref,
       maximalKg: _resolvedKg,
+      sourceLabel: _sourceLabel(l10n),
       resolveMode: _mode,
-      onResolveModeChanged: (mode) => setState(() => _mode = mode),
+      onResolveModeChanged: _onResolveModeChanged,
       showResolveModeToggle: _showResolveToggle,
       percent: _percent.clamp(
         kMaximalPercentSliderMin,
@@ -282,8 +341,11 @@ class _EditSetMaximalHostState extends State<_EditSetMaximalHost> {
       incrementKg: _incrementKg,
       onApplyLoad: (load) => widget.loadController.text = load,
       onSetMaximal: _onSetMaximal,
+      onRetryLoad: _loadData,
       enabled: hasCustomer,
+      isSandbox: !hasCustomer,
       loading: _loading,
+      loadFailed: _loadFailed,
     );
   }
 }

@@ -4252,14 +4252,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'Alert before a scheduled workout';
 
   @override
-  String get settingsWorkoutPrefsModuleTitle => 'Workout builder';
+  String get settingsWorkoutPrefsModuleTitle => 'Workout preferences';
 
   @override
-  String get settingsMaximalWeightRoundingTitle => 'Weight rounding';
+  String get settingsMaximalWeightRoundingTitle => 'Maximal % rounding';
 
   @override
   String get settingsMaximalWeightRoundingSubtitle =>
-      'Round % of maximal loads to the nearest increment';
+      'Round loads calculated as a % of the maximal to the nearest increment (in the set editor)';
 
   @override
   String settingsMaximalWeightRoundingOptionKg(String kg) {
@@ -4292,6 +4292,25 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get maximalEmptyHint => 'Link a maximal to calculate load as a %';
+
+  @override
+  String get maximalOrphanHint =>
+      'Link is invalid. Re-link or update the maximal.';
+
+  @override
+  String get maximalSandboxHint =>
+      'Assign this plan to a client to use maximals';
+
+  @override
+  String get maximalLoadError => 'Could not load maximals.';
+
+  @override
+  String maximalRoundingIncrementHint(String kg) {
+    return 'Rounding: $kg kg';
+  }
+
+  @override
   String get maximalAssociateTitle => 'Link maximal';
 
   @override
@@ -4302,6 +4321,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get maximalAssociateCreateCustom => 'Create custom maximal';
+
+  @override
+  String get maximalAssociateCustomEmpty => 'No custom maximals yet';
 
   @override
   String get maximalAssociateClear => 'Remove link';
@@ -4321,6 +4343,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String maximalAssociateLiftEmpty(String lift) {
     return '$lift: —';
   }
+
+  @override
+  String get maximalAssociateLoadError =>
+      'Could not load measurements and maximals.';
 
   @override
   String get maximalCustomFormCreateTitle => 'New maximal';
@@ -4351,6 +4377,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String maximalMeasurement1rmTitle(String lift) {
     return 'Edit $lift 1RM';
   }
+
+  @override
+  String get maximalMeasurement1rmHint =>
+      'Updates the latest measurement 1RM (or creates one if missing).';
 
   @override
   String get maximalMeasurement1rmSaved => '1RM updated.';

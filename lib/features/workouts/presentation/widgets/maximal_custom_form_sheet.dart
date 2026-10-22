@@ -110,6 +110,7 @@ class _MaximalCustomFormBodyState extends State<_MaximalCustomFormBody> {
         context,
         e,
         fallbackMessage: l10n.maximalCustomSaveError,
+        onRetry: _save,
       );
     } finally {
       if (mounted) setState(() => _saving = false);
