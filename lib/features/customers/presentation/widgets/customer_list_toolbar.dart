@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -102,7 +103,7 @@ class CustomerListToolbar extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               FilledButton.icon(
-                onPressed: () => navigateTo(context, '/customers/new'),
+                onPressed: () => navigateTo(context, AppPaths.customersNew),
                 icon: const Icon(Icons.add, size: 18),
                 label: Text(l10n.customersNewCustomer),
                 style: FilledButton.styleFrom(

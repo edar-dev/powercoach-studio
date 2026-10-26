@@ -68,7 +68,6 @@ class _ShellHarnessState extends State<_ShellHarness>
       trainingTab: const Center(child: Text('Training tab body')),
       mobilityTab: const Center(child: Text('Mobility tab body')),
       detailsTab: const Center(child: Text('Details tab body')),
-      showBottomNav: !widget.editorMode,
       editorCustomerName: widget.editorCustomerName,
       hasLoadedPlan: widget.hasLoadedPlan,
       sandboxBanner: widget.showSandboxBanner

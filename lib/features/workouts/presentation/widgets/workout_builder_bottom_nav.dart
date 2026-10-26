@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../../core/routing/app_paths.dart';
 
 class WorkoutBuilderBottomNav extends StatelessWidget {
   const WorkoutBuilderBottomNav({
@@ -20,13 +21,13 @@ class WorkoutBuilderBottomNav extends StatelessWidget {
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
     final items = [
-      (Icons.add_circle, l10n.workoutBuilderNavBuilder, '/workouts/builder'),
+      (Icons.add_circle, l10n.workoutBuilderNavBuilder, AppPaths.workoutBuilder),
       (
         Icons.fitness_center_outlined,
         l10n.workoutBuilderNavLibrary,
-        '/exercise-library',
+        AppPaths.exerciseLibrary,
       ),
-      (Icons.person, l10n.profileTitle, '/settings/personal-info'),
+      (Icons.person, l10n.profileTitle, AppPaths.personalInfo),
     ];
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
@@ -41,7 +42,7 @@ class WorkoutBuilderBottomNav extends StatelessWidget {
           final selected = i == selectedIndex;
           return InkWell(
             onTap: () {
-              if (route != '/workouts/builder' || !selected) {
+              if (route != AppPaths.workoutBuilder || !selected) {
                 GoRouter.of(navContext).go(route);
               }
             },

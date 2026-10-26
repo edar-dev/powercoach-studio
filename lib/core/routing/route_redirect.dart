@@ -3,8 +3,8 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_paths.dart';
 
 bool isProtectedAppPath(String path) {
-  return path.startsWith('/customers') ||
-      path.startsWith('/dashboard') ||
+  return path.startsWith(AppPaths.customers) ||
+      path.startsWith(AppPaths.dashboard) ||
       path.startsWith('/workouts') ||
       // Legacy bookmark paths: still require auth before redirecting.
       path == '/profile' ||
@@ -12,9 +12,9 @@ bool isProtectedAppPath(String path) {
       path.startsWith('/gym/') ||
       path == '/plans/diff' ||
       path.startsWith('/plans/') ||
-      path.startsWith('/settings') ||
+      path.startsWith(AppPaths.settings) ||
       path == AppPaths.subscription ||
-      path == '/exercise-library';
+      path == AppPaths.exerciseLibrary;
 }
 
 /// Returns a safe in-app path from a post-login redirect query parameter.
@@ -53,35 +53,35 @@ String? resolveAppRouteRedirect(GoRouterState state) {
 
   if (isLoggedIn && path == '/login') {
     return safePostLoginRedirect(state.uri.queryParameters['redirect']) ??
-        '/dashboard';
+        AppPaths.dashboard;
   }
 
   if (isLoggedIn && path == '/') {
-    return '/dashboard';
+    return AppPaths.dashboard;
   }
 
   if (path == '/workouts/library') {
-    return redirectPreservingQuery(state.uri, '/exercise-library');
+    return redirectPreservingQuery(state.uri, AppPaths.exerciseLibrary);
   }
 
   // Legacy bookmarks from removed surfaces (Waves A–F).
   if (path == '/gym' || path.startsWith('/gym/')) {
-    return redirectPreservingQuery(state.uri, '/dashboard');
+    return redirectPreservingQuery(state.uri, AppPaths.dashboard);
   }
   if (path == '/profile') {
     return redirectPreservingQuery(state.uri, AppPaths.personalInfo);
   }
-  if (path == '/dashboard/schedule') {
-    return redirectPreservingQuery(state.uri, '/dashboard/calendar');
+  if (path == '${AppPaths.dashboard}/schedule') {
+    return redirectPreservingQuery(state.uri, AppPaths.calendar);
   }
   if (path == '/workouts/stats') {
-    return redirectPreservingQuery(state.uri, '/workouts/diary');
+    return redirectPreservingQuery(state.uri, AppPaths.workoutDiary);
   }
   if (path == '/workouts/templates') {
-    return redirectPreservingQuery(state.uri, '/workouts/builder');
+    return redirectPreservingQuery(state.uri, AppPaths.workoutBuilder);
   }
   if (path == '/plans/diff' || path.startsWith('/plans/')) {
-    return redirectPreservingQuery(state.uri, '/customers');
+    return redirectPreservingQuery(state.uri, AppPaths.customers);
   }
   if (path == '/settings/release-notes') {
     return redirectPreservingQuery(state.uri, AppPaths.settings);

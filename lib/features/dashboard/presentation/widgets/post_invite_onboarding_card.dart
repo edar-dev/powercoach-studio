@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/settings/post_invite_onboarding_store.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -108,8 +109,8 @@ class _PostInviteOnboardingCardState extends State<PostInviteOnboardingCard> {
         planId.isNotEmpty) {
       return customerWorkoutEditorPath(planCustomerId, planId: planId);
     }
-    if (state.hasCustomer) return '/customers';
-    return '/customers/new';
+    if (state.hasCustomer) return AppPaths.customers;
+    return AppPaths.customersNew;
   }
 
   String _step3Path(PostInviteOnboardingState state) {
@@ -125,8 +126,8 @@ class _PostInviteOnboardingCardState extends State<PostInviteOnboardingCard> {
     if (noPlanId != null && noPlanId.isNotEmpty) {
       return customerWorkoutEditorPath(noPlanId);
     }
-    if (state.hasCustomer) return '/customers';
-    return '/customers/new';
+    if (state.hasCustomer) return AppPaths.customers;
+    return AppPaths.customersNew;
   }
 
   @override
@@ -186,7 +187,7 @@ class _PostInviteOnboardingCardState extends State<PostInviteOnboardingCard> {
               actionLabel: l10n.postInviteOnboardingStep1Action,
               onTap: state.hasCustomer
                   ? null
-                  : () => _openPath('/customers/new'),
+                  : () => _openPath(AppPaths.customersNew),
               theme: theme,
               cs: cs,
             ),

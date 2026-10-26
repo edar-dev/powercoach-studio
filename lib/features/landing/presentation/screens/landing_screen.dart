@@ -94,7 +94,7 @@ class _LandingScreenState extends State<LandingScreen> {
   void _navigateStartFree() {
     HapticFeedback.mediumImpact();
     if (_isLoggedIn) {
-      navigateTo(context, '/customers');
+      navigateTo(context, AppPaths.customers);
     } else {
       navigateTo(context, '/login');
     }
@@ -112,7 +112,7 @@ class _LandingScreenState extends State<LandingScreen> {
   void _onNavLibrary() {
     HapticFeedback.mediumImpact();
     if (_isLoggedIn) {
-      navigateTo(context, '/exercise-library');
+      navigateTo(context, AppPaths.exerciseLibrary);
     } else {
       _scrollTo(_featuresKey);
     }
@@ -168,7 +168,7 @@ class _LandingScreenState extends State<LandingScreen> {
               onPrimary: () {
                 HapticFeedback.mediumImpact();
                 if (isLoggedIn) {
-                  navigateTo(context, '/dashboard');
+                  navigateTo(context, AppPaths.dashboard);
                 } else {
                   navigateTo(context, '/login');
                 }

@@ -5,6 +5,7 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/pinned_exercises_store.dart';
@@ -126,32 +127,15 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
-      appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        backgroundColor: cs.surface,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-            navigateBack(context, fallback: AppPaths.dashboard);
-          },
-        ),
-        title: Text(
-          l10n.exerciseLibraryTitle,
-          style: theme.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: cs.onSurface,
-          ),
-        ),
+      appBar: StitchAppBar(
+        title: l10n.exerciseLibraryTitle,
         actions: [
           IconButton(
-            icon: const Icon(Icons.home_outlined),
-            tooltip: l10n.navHomeTooltip,
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.dashboard);
+              navigateTo(context, AppPaths.settings);
             },
           ),
           PopupMenuButton<String>(

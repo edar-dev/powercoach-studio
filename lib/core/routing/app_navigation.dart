@@ -68,10 +68,11 @@ void navigateBackFromSubscription(BuildContext context) {
   );
 }
 
-String customerPath(String customerId) => '/customers/$customerId';
+String customerPath(String customerId) =>
+    '${AppPaths.customers}/$customerId';
 
 String customerWorkoutsPath(String customerId) =>
-    '/customers/$customerId/workouts';
+    '${AppPaths.customers}/$customerId/workouts';
 
 String workoutDiaryPath({
   String? customerId,
@@ -88,15 +89,18 @@ String workoutDiaryPath({
   if (sessionKey != null && sessionKey.isNotEmpty) {
     params['sessionKey'] = sessionKey;
   }
-  if (params.isEmpty) return '/workouts/diary';
-  return Uri(path: '/workouts/diary', queryParameters: params).toString();
+  if (params.isEmpty) return AppPaths.workoutDiary;
+  return Uri(
+    path: AppPaths.workoutDiary,
+    queryParameters: params,
+  ).toString();
 }
 
 String workoutDiaryEntryPath({
   required String planId,
   required String sessionKey,
 }) =>
-    '/workouts/diary/$planId/$sessionKey';
+    '${AppPaths.workoutDiary}/$planId/$sessionKey';
 
 String scheduleSessionDetailPath({
   required String customerId,
@@ -106,7 +110,7 @@ String scheduleSessionDetailPath({
   DateTime? date,
 }) {
   return Uri(
-    path: '/dashboard/schedule/detail',
+    path: '${AppPaths.dashboard}/schedule/detail',
     queryParameters: {
       'customerId': customerId,
       'planId': planId,
@@ -126,8 +130,8 @@ String customerWorkoutEditorPath(
   int? dayIndex,
 }) {
   final path = (planId != null && planId.isNotEmpty)
-      ? '/customers/$customerId/workouts/$planId'
-      : '/customers/$customerId/workouts/new';
+      ? '${AppPaths.customers}/$customerId/workouts/$planId'
+      : '${AppPaths.customers}/$customerId/workouts/new';
   if (weekIndex == null || dayIndex == null) {
     return path;
   }

@@ -5,6 +5,7 @@ import 'package:powercoach_studio/core/analytics/product_analytics.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/billing/entitlement_repository.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/routing/route_redirect.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -92,7 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final redirect = safePostLoginRedirect(
         GoRouterState.of(context).uri.queryParameters['redirect'],
       );
-      context.go(redirect ?? '/dashboard');
+      context.go(redirect ?? AppPaths.dashboard);
     } on AuthException catch (e) {
       await Sentry.captureException(e);
       if (!mounted) return;

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Navigation drawer for the coach dashboard shell.
+/// Legacy navigation drawer (unused by primary hubs after shell IA).
+///
+/// Kept for reference / possible deep-link tooling; hubs use
+/// [PrimaryShellScaffold] instead.
 class DashboardDrawer extends StatelessWidget {
   const DashboardDrawer({super.key});
 
@@ -20,7 +23,9 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).dashboardTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.go('/dashboard');
+                if (context.mounted) {
+                  navigateTo(context, AppPaths.dashboard);
+                }
               },
             ),
             ListTile(
@@ -29,7 +34,7 @@ class DashboardDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) {
-                  navigateTo(context, '/dashboard/calendar');
+                  navigateTo(context, AppPaths.calendar);
                 }
               },
             ),
@@ -38,17 +43,25 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).customersTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.go('/customers');
+                if (context.mounted) {
+                  navigateTo(context, AppPaths.customers);
+                }
               },
             ),
             ListTile(
               leading: const Icon(Icons.fitness_center),
-              title: Text(AppLocalizations.of(context).dashboardWorkoutBuilderDraft),
-              subtitle: Text(AppLocalizations.of(context).dashboardWorkoutBuilder),
+              title: Text(
+                AppLocalizations.of(context).dashboardWorkoutBuilderDraft,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(context).dashboardWorkoutBuilder,
+              ),
               isThreeLine: true,
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) navigateTo(context, '/workouts/builder');
+                if (context.mounted) {
+                  navigateTo(context, AppPaths.workoutBuilder);
+                }
               },
             ),
             ListTile(
@@ -56,7 +69,9 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).exerciseLibraryTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) navigateTo(context, '/exercise-library');
+                if (context.mounted) {
+                  navigateTo(context, AppPaths.exerciseLibrary);
+                }
               },
             ),
             const Divider(),
@@ -66,7 +81,7 @@ class DashboardDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pop();
                 if (context.mounted) {
-                  navigateTo(context, '/settings/personal-info');
+                  navigateTo(context, AppPaths.personalInfo);
                 }
               },
             ),
@@ -75,7 +90,9 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).settingsTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) navigateTo(context, '/settings');
+                if (context.mounted) {
+                  navigateTo(context, AppPaths.settings);
+                }
               },
             ),
           ],

@@ -31,7 +31,6 @@ class WorkoutBuilderScreenTabs {
     required this.loading,
     required this.hideExportMenu,
     required this.showsMobilityTab,
-    required this.showBottomNav,
     required this.planCompleted,
     required this.planArchived,
     required this.readOnly,
@@ -77,7 +76,6 @@ class WorkoutBuilderScreenTabs {
   final bool loading;
   final bool hideExportMenu;
   final bool showsMobilityTab;
-  final bool showBottomNav;
   final bool planCompleted;
   final bool planArchived;
   final bool readOnly;
@@ -229,7 +227,6 @@ class WorkoutBuilderScreenTabs {
         listenable: builderSession,
         builder: (context, _) => buildDetailsTab(theme, cs),
       ),
-      showBottomNav: showBottomNav,
       onPopInvoked: onPopInvoked,
       onBack: onBack,
       onHome: onHome,

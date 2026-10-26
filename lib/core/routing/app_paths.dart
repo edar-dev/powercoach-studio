@@ -11,6 +11,19 @@ abstract final class AppPaths {
   /// Coach hub / Today — authenticated back & Home fallback.
   static const dashboard = '/dashboard';
 
+  /// Calendar nested under Today (shell branch 0).
+  static const calendar = '/dashboard/calendar';
+
+  static const customers = '/customers';
+
+  static const customersNew = '/customers/new';
+
+  static const workoutBuilder = '/workouts/builder';
+
+  static const workoutDiary = '/workouts/diary';
+
+  static const exerciseLibrary = '/exercise-library';
+
   static const subscription = '/subscription';
 
   /// Legacy nested path; kept for redirects and external bookmarks.

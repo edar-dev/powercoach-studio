@@ -14,6 +14,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.onLogoTap,
+    this.bottom,
   });
 
   final String title;
@@ -23,10 +24,16 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Logo tap; defaults to navigating to [AppPaths.dashboard].
   final VoidCallback? onLogoTap;
 
+  /// Optional bottom (e.g. [TabBar]); when null, a 1px outline divider is used.
+  final PreferredSizeWidget? bottom;
+
   static const String _logoAsset = 'assets/images/powercoach_logo.png';
 
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  Size get preferredSize {
+    final bottomHeight = bottom?.preferredSize.height ?? 1;
+    return Size.fromHeight(kToolbarHeight + bottomHeight);
+  }
 
   void _handleLogoTap(BuildContext context) {
     HapticFeedback.mediumImpact();
@@ -72,10 +79,11 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: actions,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(1),
-        child: Container(color: cs.outline, height: 1),
-      ),
+      bottom: bottom ??
+          PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Container(color: cs.outline, height: 1),
+          ),
     );
   }
 }

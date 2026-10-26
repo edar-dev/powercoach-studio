@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_bottom_nav.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_lazy_tab.dart';
@@ -27,7 +26,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.trainingTab,
     required this.mobilityTab,
     required this.detailsTab,
-    required this.showBottomNav,
     required this.onPopInvoked,
     required this.onBack,
     required this.onHome,
@@ -61,7 +59,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final Widget trainingTab;
   final Widget mobilityTab;
   final Widget detailsTab;
-  final bool showBottomNav;
   final Future<void> Function() onPopInvoked;
   final Future<void> Function() onBack;
   final Future<void> Function() onHome;
@@ -207,11 +204,6 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (showBottomNav)
-                    WorkoutBuilderBottomNav(
-                      navContext: context,
-                      selectedIndex: 0,
-                    ),
                 ],
               ),
       ),

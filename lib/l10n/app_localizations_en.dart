@@ -781,6 +781,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navHomeTooltip => 'Go to Today';
 
   @override
+  String get navTabToday => 'Today';
+
+  @override
+  String get navTabCustomers => 'Customers';
+
+  @override
+  String get navTabWorkouts => 'Plans';
+
+  @override
+  String get navTabDiary => 'Diary';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override

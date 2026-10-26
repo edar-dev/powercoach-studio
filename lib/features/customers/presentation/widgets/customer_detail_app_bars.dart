@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -34,7 +35,7 @@ class CustomerDetailFallbackAppBar extends StatelessWidget
         color: MarketingDarkColors.slate300,
         onPressed: () {
           HapticFeedback.mediumImpact();
-          navigateBack(context, fallback: '/customers');
+          navigateBack(context, fallback: AppPaths.customers);
         },
       ),
       title: Text(
@@ -106,7 +107,7 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
         child: TextButton.icon(
           onPressed: () {
             HapticFeedback.mediumImpact();
-            navigateBack(context, fallback: '/customers');
+            navigateBack(context, fallback: AppPaths.customers);
           },
           icon: const Icon(Icons.arrow_back, size: 16),
           label: Text(

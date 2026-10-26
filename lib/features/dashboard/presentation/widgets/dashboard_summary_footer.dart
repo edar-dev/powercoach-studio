@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 
@@ -27,7 +28,7 @@ class DashboardSummaryFooter extends StatelessWidget {
           child: FilledButton.icon(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/workouts/builder');
+              navigateTo(context, AppPaths.workoutBuilder);
             },
             icon: const Icon(Icons.add, size: 20),
             label: Text(l10n.dashboardCreateWorkout),
@@ -46,7 +47,7 @@ class DashboardSummaryFooter extends StatelessWidget {
           child: OutlinedButton.icon(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/customers/new');
+              navigateTo(context, AppPaths.customersNew);
             },
             icon: const Icon(Icons.person_add, size: 20),
             label: Text(l10n.customersAddCustomer),

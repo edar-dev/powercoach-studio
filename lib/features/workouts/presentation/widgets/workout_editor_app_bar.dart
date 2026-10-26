@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 
 class WorkoutEditorAppBar extends StatelessWidget
     implements PreferredSizeWidget {
@@ -110,6 +112,12 @@ class WorkoutEditorAppBar extends StatelessWidget
             icon: const Icon(Icons.home_outlined),
             tooltip: l10n.navHomeTooltip,
             onPressed: () async => onHome(),
+          ),
+        if (!loading)
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
+            onPressed: () => navigateTo(context, AppPaths.settings),
           ),
         if (showLogSessionAction && !loading)
           IconButton(
