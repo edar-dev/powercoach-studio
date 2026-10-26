@@ -126,6 +126,7 @@ class WorkoutBuilderScreenTabsConfig {
       onMarkCompleted: onMarkCompleted,
       onPopInvoked: actions.handleExitAttempt,
       onBack: actions.handleExitAttempt,
+      onHome: actions.handleHomeAttempt,
       onImportJson: actions.importJsonFromFile,
       onExport: actions.handleExportMenu,
       onSave: () => actions.saveRoutine(),

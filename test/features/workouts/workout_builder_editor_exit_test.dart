@@ -39,4 +39,40 @@ void main() {
     expect(find.text('dashboard'), findsOneWidget);
     expect(router.routeInformationProvider.value.uri.path, '/dashboard');
   });
+
+  testWidgets('editor-mode Home always exits to dashboard', (tester) async {
+    final router = GoRouter(
+      initialLocation: '/customers/cust-1/workouts/plan-1',
+      routes: [
+        GoRoute(
+          path: '/dashboard',
+          builder: (_, _) => const Scaffold(body: Text('dashboard')),
+        ),
+        GoRoute(
+          path: '/customers/cust-1/workouts',
+          builder: (_, _) => const Scaffold(body: Text('workouts list')),
+        ),
+        GoRoute(
+          path: '/customers/cust-1/workouts/plan-1',
+          builder: (context, _) {
+            return Scaffold(
+              body: TextButton(
+                onPressed: () => navigateHomeFromWorkoutBuilder(context),
+                child: const Text('home'),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('home'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('dashboard'), findsOneWidget);
+    expect(router.routeInformationProvider.value.uri.path, '/dashboard');
+  });
 }

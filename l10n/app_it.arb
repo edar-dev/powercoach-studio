@@ -253,6 +253,7 @@
   "forgotPasswordSuccessMessage": "Controlla la tua email per il link di reset.",
   "forgotPasswordBackToLogin": "Torna al login",
   "forgotPasswordError": "Impossibile inviare l'email. Riprova.",
+  "navHomeTooltip": "Vai a Oggi",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
   "profileDisplayName": "Nome visualizzato",

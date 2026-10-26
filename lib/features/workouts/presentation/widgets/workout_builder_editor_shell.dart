@@ -30,6 +30,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     required this.showBottomNav,
     required this.onPopInvoked,
     required this.onBack,
+    required this.onHome,
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
@@ -63,6 +64,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
   final bool showBottomNav;
   final Future<void> Function() onPopInvoked;
   final Future<void> Function() onBack;
+  final Future<void> Function() onHome;
   final VoidCallback onImportJson;
   final void Function(String value) onExport;
   final VoidCallback onSave;
@@ -126,6 +128,10 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           onBack: () async {
             unawaited(HapticFeedback.mediumImpact());
             await onBack();
+          },
+          onHome: () async {
+            unawaited(HapticFeedback.mediumImpact());
+            await onHome();
           },
           onImportJson: onImportJson,
           onExport: onExport,

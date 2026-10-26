@@ -8,9 +8,13 @@ import 'package:powercoach_studio/core/routing/app_paths.dart';
 /// `/` → `/customers`) or when navigating between sibling routes under a parent
 /// shell without its own builder (e.g. `/workouts` → `/workouts/builder`).
 ///
-/// Use [navigatePush] only for child routes under the current branch when you
-/// need a return value or `pop` back to the parent (e.g. `/settings` →
-/// `/settings/personal-info`, `/customers/:id` → `/customers/:id/notes`).
+/// Authenticated hub fallback for empty-stack back / Home is
+/// [AppPaths.dashboard] — never `/` while logged in.
+///
+/// Use [navigatePush] only for nested child routes under the current branch when
+/// you need a return value or `pop` back to the parent (e.g. `/settings` →
+/// `/settings/personal-info`). Sibling detail routes such as notes and
+/// measurement history should use [navigateTo] instead.
 void navigateTo(BuildContext context, String location) {
   context.go(location);
 }
@@ -22,7 +26,8 @@ void navigateReplace(BuildContext context, String location) {
 
 /// Pushes [location] so the current route stays on the stack and can refresh on return.
 ///
-/// Avoid for customer workout editor routes on web — [navigateTo] keeps the URL in sync.
+/// Prefer [navigateTo] for sibling routes (notes, measurement history, calendar)
+/// and for customer workout editor routes on web so the URL stays in sync.
 Future<T?> navigatePush<T>(BuildContext context, String location) {
   return context.push<T>(location);
 }
@@ -59,7 +64,7 @@ void navigateBackFromSubscription(BuildContext context) {
   final from = GoRouterState.of(context).uri.queryParameters['from'];
   navigateBack(
     context,
-    fallback: (from != null && from.isNotEmpty) ? from : '/settings',
+    fallback: (from != null && from.isNotEmpty) ? from : AppPaths.dashboard,
   );
 }
 

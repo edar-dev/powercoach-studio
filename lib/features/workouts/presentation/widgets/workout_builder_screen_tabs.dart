@@ -48,6 +48,7 @@ class WorkoutBuilderScreenTabs {
     required this.onMarkCompleted,
     required this.onPopInvoked,
     required this.onBack,
+    required this.onHome,
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
@@ -93,6 +94,7 @@ class WorkoutBuilderScreenTabs {
   final VoidCallback? onMarkCompleted;
   final Future<void> Function() onPopInvoked;
   final Future<void> Function() onBack;
+  final Future<void> Function() onHome;
   final Future<void> Function() onImportJson;
   final void Function(String value) onExport;
   final Future<bool> Function() onSave;
@@ -230,6 +232,7 @@ class WorkoutBuilderScreenTabs {
       showBottomNav: showBottomNav,
       onPopInvoked: onPopInvoked,
       onBack: onBack,
+      onHome: onHome,
       onImportJson: onImportJson,
       onExport: onExport,
       onSave: readOnly ? () async => true : onSave,

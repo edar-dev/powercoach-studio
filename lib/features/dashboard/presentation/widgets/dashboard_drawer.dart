@@ -28,7 +28,9 @@ class DashboardDrawer extends StatelessWidget {
               title: Text(AppLocalizations.of(context).calendarTitle),
               onTap: () {
                 Navigator.of(context).pop();
-                if (context.mounted) context.push('/dashboard/calendar');
+                if (context.mounted) {
+                  navigateTo(context, '/dashboard/calendar');
+                }
               },
             ),
             ListTile(

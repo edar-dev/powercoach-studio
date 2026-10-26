@@ -8,6 +8,9 @@
 /// legacy URL redirects in [resolveAppRouteRedirect] / [buildAppRoutes] only —
 /// do not reintroduce path constants for those destinations.
 abstract final class AppPaths {
+  /// Coach hub / Today — authenticated back & Home fallback.
+  static const dashboard = '/dashboard';
+
   static const subscription = '/subscription';
 
   /// Legacy nested path; kept for redirects and external bookmarks.

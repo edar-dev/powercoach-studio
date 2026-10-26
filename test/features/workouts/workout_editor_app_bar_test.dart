@@ -10,6 +10,7 @@ Future<void> _pumpAppBar(
   required bool logSessionEnabled,
   VoidCallback? onLogSession,
   VoidCallback? onLogSessionUnavailable,
+  Future<void> Function()? onHome,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -32,6 +33,7 @@ Future<void> _pumpAppBar(
               saving: false,
               showManualSaveButton: false,
               onBack: () async {},
+              onHome: onHome ?? () async {},
               onImportJson: () {},
               onExport: (_) {},
               onSave: () {},
@@ -100,5 +102,22 @@ void main() {
 
     expect(_logSessionButton(), findsNothing);
     expect(find.byIcon(Icons.edit_note_outlined), findsNothing);
+  });
+
+  testWidgets('Home icon dispatches onHome', (tester) async {
+    var homeTapped = false;
+    await _pumpAppBar(
+      tester,
+      showLogSessionAction: false,
+      logSessionEnabled: false,
+      onHome: () async {
+        homeTapped = true;
+      },
+    );
+
+    expect(find.byTooltip('Go to Today'), findsOneWidget);
+    await tester.tap(find.byTooltip('Go to Today'));
+    await tester.pump();
+    expect(homeTapped, isTrue);
   });
 }

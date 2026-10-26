@@ -439,57 +439,46 @@ class _SettingsHubHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     if (phone) {
+      // Title lives in StitchSecondaryAppBar; keep badge + subtitle only.
       return Padding(
         padding: const EdgeInsets.only(bottom: 8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l10n.settingsHubTitle,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: StitchMobileColors.onSurface,
-                      fontWeight: FontWeight.w700,
-                      fontSize: StitchMobileColors.headlineSize,
-                      letterSpacing: -0.2,
+            Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: StitchMobileColors.surfaceContainerHigh,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: StitchMobileColors.tertiary,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: StitchMobileColors.surfaceContainerHigh,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: StitchMobileColors.tertiary,
-                          shape: BoxShape.circle,
-                        ),
+                    const SizedBox(width: 6),
+                    Text(
+                      l10n.settingsHubSyncPill,
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: StitchMobileColors.tertiary,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 11,
                       ),
-                      const SizedBox(width: 6),
-                      Text(
-                        l10n.settingsHubSyncPill,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: StitchMobileColors.tertiary,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
             const SizedBox(height: 4),
             Text(

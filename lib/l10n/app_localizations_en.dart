@@ -778,6 +778,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forgotPasswordError => 'Could not send reset email. Try again.';
 
   @override
+  String get navHomeTooltip => 'Go to Today';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override

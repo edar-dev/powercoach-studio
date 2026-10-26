@@ -218,12 +218,10 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       backgroundColor: phone
           ? StitchMobileColors.surface
           : MarketingDarkColors.stitchPageBg,
-      appBar: phone
-          ? null
-          : StitchSecondaryAppBar(
-              title: l10n.settingsSubscriptionTitle,
-              onBack: () => navigateBackFromSubscription(context),
-            ),
+      appBar: StitchSecondaryAppBar(
+        title: l10n.settingsSubscriptionTitle,
+        onBack: () => navigateBackFromSubscription(context),
+      ),
       body: SafeArea(
         bottom: false,
         child: _isLoading
@@ -377,50 +375,30 @@ class _SubscriptionPageHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (phone) {
+      // Back + primary title live in StitchSecondaryAppBar.
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () => navigateBackFromSubscription(context),
-                icon: const Icon(Icons.arrow_back),
-                color: StitchMobileColors.onSurface,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(
-                  minWidth: StitchMobileColors.touchMin,
-                  minHeight: StitchMobileColors.touchMin,
+          Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              decoration: BoxDecoration(
+                color: StitchMobileColors.surfaceContainerHigh,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                isPro
+                    ? l10n.subscriptionProActiveBadge
+                    : l10n.subscriptionFreeLimitedBadge,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: StitchMobileColors.outline,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 11,
                 ),
               ),
-              Expanded(
-                child: Text(
-                  l10n.subscriptionPageTitle,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    color: StitchMobileColors.onSurface,
-                    fontWeight: FontWeight.w700,
-                    fontSize: StitchMobileColors.headlineSize,
-                  ),
-                ),
-              ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: StitchMobileColors.surfaceContainerHigh,
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  isPro
-                      ? l10n.subscriptionProActiveBadge
-                      : l10n.subscriptionFreeLimitedBadge,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: StitchMobileColors.outline,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
           const SizedBox(height: 8),
           Text(

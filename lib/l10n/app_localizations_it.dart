@@ -787,6 +787,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get forgotPasswordError => 'Impossibile inviare l\'email. Riprova.';
 
   @override
+  String get navHomeTooltip => 'Vai a Oggi';
+
+  @override
   String get headerProfile => 'Profilo';
 
   @override

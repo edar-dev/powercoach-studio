@@ -134,6 +134,17 @@ class WorkoutBuilderScreenRoutineActions {
     );
   }
 
+  Future<void> handleHomeAttempt() async {
+    await coordinator.handleExitAttempt(
+      context: context,
+      editorMode: editorMode,
+      customerId: customerId,
+      isDirty: editorMode ? isDirty() : isStandaloneDirty(),
+      onSave: ({bool silent = false}) => saveRoutine(silent: silent),
+      goHome: true,
+    );
+  }
+
   Future<void> importJsonFromFile() async {
     final imported = await exportActions.importJson();
     if (imported == null || !mounted()) return;
