@@ -94,6 +94,16 @@ Widget _app(GoRouter router) {
   );
 }
 
+/// Phone width so [PrimaryShellScaffold] uses [NavigationBar] (not rail).
+Future<void> _pumpPhoneShell(WidgetTester tester, GoRouter router) async {
+  tester.view.physicalSize = const Size(390, 844);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  await tester.pumpWidget(_app(router));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   test('primaryShellBranchForPath maps hubs', () {
     expect(primaryShellBranchForPath(AppPaths.dashboard), 0);
@@ -107,8 +117,7 @@ void main() {
 
   testWidgets('tab taps update URL across primary branches', (tester) async {
     final router = _shellHarnessRouter();
-    await tester.pumpWidget(_app(router));
-    await tester.pumpAndSettle();
+    await _pumpPhoneShell(tester, router);
 
     expect(find.text('Today body'), findsOneWidget);
     expect(router.routeInformationProvider.value.uri.path, AppPaths.dashboard);
@@ -139,8 +148,7 @@ void main() {
     final router = _shellHarnessRouter(
       initialLocation: AppPaths.exerciseLibrary,
     );
-    await tester.pumpWidget(_app(router));
-    await tester.pumpAndSettle();
+    await _pumpPhoneShell(tester, router);
 
     expect(find.text('Library body'), findsOneWidget);
     final nav = tester.widget<NavigationBar>(find.byType(NavigationBar));
@@ -153,8 +161,7 @@ void main() {
 
   testWidgets('calendar path keeps Today branch selected', (tester) async {
     final router = _shellHarnessRouter(initialLocation: AppPaths.calendar);
-    await tester.pumpWidget(_app(router));
-    await tester.pumpAndSettle();
+    await _pumpPhoneShell(tester, router);
 
     expect(find.text('Calendar body'), findsOneWidget);
     final nav = tester.widget<NavigationBar>(find.byType(NavigationBar));
@@ -167,10 +174,14 @@ void main() {
 
   testWidgets('settings icon on hub navigates to settings', (tester) async {
     final router = _shellHarnessRouter();
-    await tester.pumpWidget(_app(router));
-    await tester.pumpAndSettle();
+    await _pumpPhoneShell(tester, router);
 
-    await tester.tap(find.byTooltip('Settings'));
+    await tester.tap(
+      find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byTooltip('Settings'),
+      ),
+    );
     await tester.pumpAndSettle();
 
     expect(find.text('Settings destination'), findsOneWidget);
@@ -186,8 +197,7 @@ void main() {
     final router = _shellHarnessRouter(
       initialLocation: AppPaths.exerciseLibrary,
     );
-    await tester.pumpWidget(_app(router));
-    await tester.pumpAndSettle();
+    await _pumpPhoneShell(tester, router);
     expect(find.text('Library body'), findsOneWidget);
 
     await tester.tap(find.text('Plans'));
