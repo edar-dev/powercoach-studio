@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 
-import '../../../../l10n/app_localizations.dart';
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
@@ -131,13 +132,10 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
         backgroundColor: cs.surface,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           onPressed: () {
             HapticFeedback.mediumImpact();
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/dashboard');
-            }
+            navigateBack(context, fallback: AppPaths.dashboard);
           },
         ),
         title: Text(
@@ -148,6 +146,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           ),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.home_outlined),
+            tooltip: l10n.navHomeTooltip,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              navigateTo(context, AppPaths.dashboard);
+            },
+          ),
           PopupMenuButton<String>(
             enabled: !_loading,
             icon: const Icon(Icons.more_vert),

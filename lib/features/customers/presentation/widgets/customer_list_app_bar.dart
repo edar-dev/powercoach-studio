@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CustomerListAppBar({
@@ -19,6 +22,10 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final onDashboard =
+        GoRouterState.of(context).uri.path == AppPaths.dashboard;
+
     return AppBar(
       backgroundColor: MarketingDarkColors.bgAlt,
       foregroundColor: MarketingDarkColors.text,
@@ -37,14 +44,10 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
           : IconButton(
               icon: const Icon(Icons.arrow_back),
               color: MarketingDarkColors.slate300,
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                final router = GoRouter.of(context);
-                if (router.canPop()) {
-                  router.pop();
-                } else {
-                  router.go('/');
-                }
+                navigateBack(context, fallback: AppPaths.dashboard);
               },
             ),
       title: Text(
@@ -56,6 +59,18 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
         ),
       ),
       centerTitle: false,
+      actions: [
+        if (!onDashboard)
+          IconButton(
+            icon: const Icon(Icons.home_outlined),
+            color: MarketingDarkColors.slate300,
+            tooltip: l10n.navHomeTooltip,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              navigateTo(context, AppPaths.dashboard);
+            },
+          ),
+      ],
       bottom: const PreferredSize(
         preferredSize: Size.fromHeight(1),
         child: ColoredBox(

@@ -209,7 +209,6 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
           context: context,
           customerId: widget.customerId,
           customerName: c.name,
-          onReturn: _loadUnreadNotes,
         ),
         onEdit: () => navigateTo(context, '/customers/${c.id}/edit'),
         onDelete: () => deleteCustomerDetail(

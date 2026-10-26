@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/remote/cloud_save_error_message.dart';
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../../data/customer_notes_repository.dart';
 import '../../domain/models/client_note_message.dart';
 
@@ -117,7 +117,10 @@ class _CustomerNotesScreenState extends State<CustomerNotesScreen> {
         title: Text(title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
+          onPressed: () => navigateBack(
+            context,
+            fallback: customerPath(widget.customerId),
+          ),
         ),
       ),
       body: Column(

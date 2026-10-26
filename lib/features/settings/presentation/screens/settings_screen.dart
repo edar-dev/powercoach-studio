@@ -396,9 +396,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: phone
           ? StitchMobileColors.surface
           : MarketingDarkColors.stitchPageBg,
-      appBar: phone
-          ? null
-          : StitchSecondaryAppBar(title: l10n.settingsTitle),
+      appBar: StitchSecondaryAppBar(title: l10n.settingsTitle),
       body: SafeArea(
         bottom: false,
         child: _loading

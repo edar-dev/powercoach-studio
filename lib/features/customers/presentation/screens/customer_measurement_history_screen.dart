@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/pdf/pdf_export_labels_l10n.dart';
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_measurement_repository.dart';
@@ -96,7 +96,10 @@ class _CustomerMeasurementHistoryScreenState
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: MarketingDarkColors.slate300,
-          onPressed: () => context.pop(),
+          onPressed: () => navigateBack(
+            context,
+            fallback: customerPath(widget.customerId),
+          ),
         ),
         actions: [
           if (_measurements.isNotEmpty)

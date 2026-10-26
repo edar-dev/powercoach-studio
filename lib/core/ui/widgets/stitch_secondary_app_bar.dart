@@ -2,27 +2,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../routing/app_navigation.dart';
+import '../../routing/app_paths.dart';
+import '../../../l10n/app_localizations.dart';
+
 /// App bar per schermate secondarie (profilo, impostazioni, login, ecc.):
 /// pulsante indietro, titolo, bordo inferiore. Usa i colori del tema (light/dark).
-class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidget {
+///
+/// Empty-stack back and Home fall back to [AppPaths.dashboard] (authenticated hub).
+class StitchSecondaryAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
   const StitchSecondaryAppBar({
     super.key,
     required this.title,
     this.onBack,
     this.actions,
+    this.showHome = true,
   });
 
   final String title;
   final VoidCallback? onBack;
   final List<Widget>? actions;
 
+  /// When true (default), shows a Home affordance unless already on dashboard.
+  final bool showHome;
+
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+
+  bool _isOnDashboard(BuildContext context) {
+    final path = GoRouterState.of(context).uri.path;
+    return path == AppPaths.dashboard;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
+    final materialL10n = MaterialLocalizations.of(context);
+    final onDashboard = _isOnDashboard(context);
+
+    final homeAction = showHome && !onDashboard
+        ? IconButton(
+            icon: const Icon(Icons.home_outlined),
+            tooltip: l10n.navHomeTooltip,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              navigateTo(context, AppPaths.dashboard);
+            },
+          )
+        : null;
+
+    final mergedActions = <Widget>[
+      ?homeAction,
+      ...?actions,
+    ];
 
     return AppBar(
       backgroundColor: cs.surface,
@@ -30,6 +65,7 @@ class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidg
       scrolledUnderElevation: 1,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
+        tooltip: materialL10n.backButtonTooltip,
         onPressed: () {
           HapticFeedback.mediumImpact();
           if (onBack != null) {
@@ -37,7 +73,7 @@ class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidg
           } else if (context.canPop()) {
             context.pop();
           } else {
-            context.go('/');
+            navigateBack(context, fallback: AppPaths.dashboard);
           }
         },
       ),
@@ -49,7 +85,7 @@ class StitchSecondaryAppBar extends StatelessWidget implements PreferredSizeWidg
         ),
       ),
       centerTitle: false,
-      actions: actions,
+      actions: mergedActions.isEmpty ? null : mergedActions,
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(1),
         child: Container(color: cs.outline, height: 1),

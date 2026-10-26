@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../routing/app_navigation.dart';
+import '../../routing/app_paths.dart';
+import '../../theme/stitch_m3_theme.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// App bar Stitch: logo + titolo, bordo inferiore, solo Material.
 class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -9,21 +13,35 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.actions,
     this.leading,
+    this.onLogoTap,
   });
 
   final String title;
   final List<Widget>? actions;
   final Widget? leading;
 
+  /// Logo tap; defaults to navigating to [AppPaths.dashboard].
+  final VoidCallback? onLogoTap;
+
   static const String _logoAsset = 'assets/images/powercoach_logo.png';
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
+  void _handleLogoTap(BuildContext context) {
+    HapticFeedback.mediumImpact();
+    if (onLogoTap != null) {
+      onLogoTap!();
+      return;
+    }
+    navigateTo(context, AppPaths.dashboard);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
+    final l10n = AppLocalizations.of(context);
     return AppBar(
       backgroundColor: cs.surface,
       elevation: 0,
@@ -31,7 +49,14 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: leading,
       title: Row(
         children: [
-          const _LogoBadge(logoAsset: _logoAsset),
+          Tooltip(
+            message: l10n.navHomeTooltip,
+            child: InkWell(
+              onTap: () => _handleLogoTap(context),
+              borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+              child: const _LogoBadge(logoAsset: _logoAsset),
+            ),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Text(

@@ -1496,6 +1496,12 @@ abstract class AppLocalizations {
   /// **'Could not send reset email. Try again.'**
   String get forgotPasswordError;
 
+  /// No description provided for @navHomeTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Go to Today'**
+  String get navHomeTooltip;
+
   /// No description provided for @headerProfile.
   ///
   /// In en, this message translates to:
