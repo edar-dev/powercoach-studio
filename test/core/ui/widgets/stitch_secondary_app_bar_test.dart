@@ -15,9 +15,9 @@ void main() {
         routes: [
           GoRoute(
             path: AppPaths.settings,
-            builder: (context, state) => Scaffold(
-              appBar: const StitchSecondaryAppBar(title: 'Settings'),
-              body: const Text('settings-body'),
+            builder: (context, state) => const Scaffold(
+              appBar: StitchSecondaryAppBar(title: 'Settings'),
+              body: Text('settings-body'),
             ),
           ),
           GoRoute(
@@ -66,9 +66,9 @@ void main() {
         routes: [
           GoRoute(
             path: AppPaths.settings,
-            builder: (context, state) => Scaffold(
-              appBar: const StitchSecondaryAppBar(title: 'Settings'),
-              body: const Text('settings-body'),
+            builder: (context, state) => const Scaffold(
+              appBar: StitchSecondaryAppBar(title: 'Settings'),
+              body: Text('settings-body'),
             ),
           ),
           GoRoute(
