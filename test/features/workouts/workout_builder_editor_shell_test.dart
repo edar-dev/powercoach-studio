@@ -78,6 +78,7 @@ class _ShellHarnessState extends State<_ShellHarness>
           : null,
       onPopInvoked: () async {},
       onBack: () async {},
+      onHome: () async {},
       onImportJson: () {},
       onExport: (_) {},
       onSave: () {},

@@ -16,6 +16,7 @@ class WorkoutEditorAppBar extends StatelessWidget
     required this.saving,
     required this.showManualSaveButton,
     required this.onBack,
+    required this.onHome,
     required this.onImportJson,
     required this.onExport,
     required this.onSave,
@@ -37,6 +38,7 @@ class WorkoutEditorAppBar extends StatelessWidget
   final bool saving;
   final bool showManualSaveButton;
   final Future<void> Function() onBack;
+  final Future<void> Function() onHome;
   final VoidCallback onImportJson;
   final void Function(String value) onExport;
   final VoidCallback onSave;
@@ -103,6 +105,12 @@ class WorkoutEditorAppBar extends StatelessWidget
               ],
             ),
       actions: [
+        if (!loading)
+          IconButton(
+            icon: const Icon(Icons.home_outlined),
+            tooltip: l10n.navHomeTooltip,
+            onPressed: () async => onHome(),
+          ),
         if (showLogSessionAction && !loading)
           IconButton(
             icon: Icon(

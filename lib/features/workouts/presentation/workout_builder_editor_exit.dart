@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 enum WorkoutEditorExitAction { save, discard, cancel }
@@ -46,5 +46,10 @@ void navigateBackFromWorkoutBuilder({
   }
   // Standalone builder lives at /workouts/builder with parent /workouts — popping
   // would bounce between the two URLs. Exit to the coach hub instead.
-  context.go('/dashboard');
+  navigateTo(context, AppPaths.dashboard);
+}
+
+/// Home from any builder mode: always Today (`/dashboard`).
+void navigateHomeFromWorkoutBuilder(BuildContext context) {
+  navigateTo(context, AppPaths.dashboard);
 }

@@ -264,13 +264,23 @@ class WorkoutBuilderRoutineCoordinator {
     String? customerId,
     required bool isDirty,
     required Future<bool> Function({bool silent}) onSave,
+    /// When true, leave to Today after save/discard (≤1-tap Home).
+    bool goHome = false,
   }) async {
-    if (!isDirty) {
+    void leave() {
+      if (goHome) {
+        navigateHomeFromWorkoutBuilder(context);
+        return;
+      }
       navigateBackFromWorkoutBuilder(
         context: context,
         editorMode: editorMode,
         customerId: customerId,
       );
+    }
+
+    if (!isDirty) {
+      leave();
       return;
     }
     final action = await showWorkoutEditorUnsavedDialog(context);
@@ -280,20 +290,12 @@ class WorkoutBuilderRoutineCoordinator {
       return;
     }
     if (action == WorkoutEditorExitAction.discard) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: editorMode,
-        customerId: customerId,
-      );
+      leave();
       return;
     }
     final didSave = await onSave();
     if (didSave && context.mounted) {
-      navigateBackFromWorkoutBuilder(
-        context: context,
-        editorMode: editorMode,
-        customerId: customerId,
-      );
+      leave();
     }
   }
 
