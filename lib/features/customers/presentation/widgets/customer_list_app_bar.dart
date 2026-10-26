@@ -23,7 +23,7 @@ class CustomerListAppBar extends StatelessWidget implements PreferredSizeWidget 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final onDashboard =
+    final onDashboard = GoRouter.maybeOf(context) != null &&
         GoRouterState.of(context).uri.path == AppPaths.dashboard;
 
     return AppBar(

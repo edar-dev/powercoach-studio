@@ -31,8 +31,9 @@ class StitchSecondaryAppBar extends StatelessWidget
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   bool _isOnDashboard(BuildContext context) {
-    final path = GoRouterState.of(context).uri.path;
-    return path == AppPaths.dashboard;
+    // Widget tests often mount screens under MaterialApp without GoRouter.
+    if (GoRouter.maybeOf(context) == null) return false;
+    return GoRouterState.of(context).uri.path == AppPaths.dashboard;
   }
 
   @override
