@@ -29,6 +29,7 @@ class WorkoutEditorAppBar extends StatelessWidget
     this.logSessionEnabled = false,
     this.onLogSession,
     this.onLogSessionUnavailable,
+    this.showShellNavActions = true,
   });
 
   final ThemeData theme;
@@ -55,6 +56,9 @@ class WorkoutEditorAppBar extends StatelessWidget
   /// Called when the log action is visible but disabled (sandbox / unsaved).
   final VoidCallback? onLogSessionUnavailable;
 
+  /// Home/Settings cluster. Hide when [NavigationRail] already provides them.
+  final bool showShellNavActions;
+
   String? get _assignedPlanBadge {
     if (!editorMode || !hasLoadedPlan) return null;
     final name = editorCustomerName?.trim();
@@ -71,7 +75,9 @@ class WorkoutEditorAppBar extends StatelessWidget
     final toolbarHeight = badge == null ? kToolbarHeight : kToolbarHeight + 8;
 
     return AppBar(
+      backgroundColor: colorScheme.surface,
       elevation: 0,
+      scrolledUnderElevation: 1,
       toolbarHeight: toolbarHeight,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
@@ -107,13 +113,13 @@ class WorkoutEditorAppBar extends StatelessWidget
               ],
             ),
       actions: [
-        if (!loading)
+        if (showShellNavActions && !loading)
           IconButton(
             icon: const Icon(Icons.home_outlined),
             tooltip: l10n.navHomeTooltip,
             onPressed: () async => onHome(),
           ),
-        if (!loading)
+        if (showShellNavActions && !loading)
           IconButton(
             icon: const Icon(Icons.settings_outlined),
             tooltip: l10n.settingsTitle,

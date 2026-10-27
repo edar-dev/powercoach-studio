@@ -7,6 +7,7 @@ import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
+import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
@@ -86,19 +87,23 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     final metrics =
         showMetrics ? computeCustomerListMetrics(_customers) : null;
 
+    final slimHub = primaryShellUsesRail(context);
+
     return Scaffold(
-      backgroundColor: MarketingDarkColors.bgAlt,
+      backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.customersTitle,
+        showLogo: !slimHub,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: l10n.settingsTitle,
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.settings);
-            },
-          ),
+          if (!slimHub)
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              tooltip: l10n.settingsTitle,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                navigateTo(context, AppPaths.settings);
+              },
+            ),
         ],
       ),
       body: Column(

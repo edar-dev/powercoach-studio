@@ -12,5 +12,6 @@ void main() {
     expect(primaryShellBranchForPath(AppPaths.workoutBuilder), 2);
     expect(primaryShellBranchForPath(AppPaths.exerciseLibrary), 2);
     expect(primaryShellBranchForPath(AppPaths.workoutDiary), 3);
+    expect(primaryShellBranchForPath(AppPaths.settings), 4);
   });
 }

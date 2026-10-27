@@ -6,7 +6,10 @@ import '../../routing/app_paths.dart';
 import '../../theme/stitch_m3_theme.dart';
 import '../../../l10n/app_localizations.dart';
 
-/// App bar Stitch: logo + titolo, bordo inferiore, solo Material.
+/// App bar Stitch: optional logo + titolo, bordo inferiore, solo Material.
+///
+/// On tablet+ inside [PrimaryShellScaffold], set [showLogo] to false — the
+/// [NavigationRail] is the primary chrome and logo/Home is redundant.
 class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StitchAppBar({
     super.key,
@@ -14,6 +17,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.onLogoTap,
+    this.showLogo = true,
     this.bottom,
   });
 
@@ -23,6 +27,9 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// Logo tap; defaults to navigating to [AppPaths.dashboard].
   final VoidCallback? onLogoTap;
+
+  /// When false, renders title only (slim hub chrome beside the rail).
+  final bool showLogo;
 
   /// Optional bottom (e.g. [TabBar]); when null, a 1px outline divider is used.
   final PreferredSizeWidget? bottom;
@@ -54,19 +61,32 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0,
       scrolledUnderElevation: 1,
       leading: leading,
-      title: Row(
-        children: [
-          Tooltip(
-            message: l10n.navHomeTooltip,
-            child: InkWell(
-              onTap: () => _handleLogoTap(context),
-              borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-              child: const _LogoBadge(logoAsset: _logoAsset),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
+      title: showLogo
+          ? Row(
+              children: [
+                Tooltip(
+                  message: l10n.navHomeTooltip,
+                  child: InkWell(
+                    onTap: () => _handleLogoTap(context),
+                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+                    child: const _LogoBadge(logoAsset: _logoAsset),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            )
+          : Text(
               title,
               style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
@@ -75,9 +95,6 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
-          ),
-        ],
-      ),
       actions: actions,
       bottom: bottom ??
           PreferredSize(
