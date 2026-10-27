@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/backup/backup_activity_store.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/settings/backup_onboarding_store.dart';
 
 import '../../../../l10n/app_localizations.dart';
@@ -27,7 +28,7 @@ Future<void> maybeShowBackupOnboardingIfNeeded(
 
   await showBackupOnboardingDialog(
     context,
-    onOpenSettings: () => navigateTo(context, '/settings'),
+    onOpenSettings: () => navigateTo(context, AppPaths.settings),
     onExportBackup: () => backupHandler.exportBackup(l10n),
   );
 

@@ -62,7 +62,6 @@ class _NewCustomerPlanEditorHarnessState extends State<_NewCustomerPlanEditorHar
       trainingTab: const Center(child: Text('Training tab body')),
       mobilityTab: const Center(child: Text('Mobility tab body')),
       detailsTab: const Center(child: Text('Details tab body')),
-      showBottomNav: false,
       onPopInvoked: () async {},
       onBack: () async {},
       onHome: () async {},

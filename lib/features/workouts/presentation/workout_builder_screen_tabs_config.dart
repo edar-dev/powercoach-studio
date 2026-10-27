@@ -100,7 +100,6 @@ class WorkoutBuilderScreenTabsConfig {
       loading: loading,
       hideExportMenu: false,
       showsMobilityTab: showsMobilityTab,
-      showBottomNav: !editorMode,
       planCompleted: planCompleted,
       planArchived: planArchived,
       readOnly: readOnly,

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
@@ -109,7 +110,7 @@ class DashboardTodaySection extends StatelessWidget {
               child: FilledButton.icon(
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  navigateTo(context, '/dashboard/calendar');
+                  navigateTo(context, AppPaths.calendar);
                 },
                 icon: const Icon(Icons.calendar_month_outlined, size: 18),
                 label: Text(l10n.dashboardOpenAgenda),

@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
@@ -234,7 +236,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
 
   void _recordSession() {
     HapticFeedback.selectionClick();
-    navigateTo(context, '/dashboard/calendar');
+    navigateTo(context, AppPaths.calendar);
   }
 
   @override
@@ -254,6 +256,19 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       backgroundColor: phone
           ? StitchMobileColors.surface
           : MarketingDarkColors.stitchPageBgAlt,
+      appBar: StitchAppBar(
+        title: l10n.workoutDiaryTitle,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              navigateTo(context, AppPaths.settings);
+            },
+          ),
+        ],
+      ),
       body: SafeArea(
         child: _loading
             ? Center(

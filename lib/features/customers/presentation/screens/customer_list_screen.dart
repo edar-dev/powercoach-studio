@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
+import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
 import '../customer_list_contacts_import.dart';
 import '../customer_list_filter.dart';
 import '../customer_list_metrics.dart';
 import '../widgets/customer_list_upgrade_banner.dart';
-import '../widgets/customer_list_app_bar.dart';
 import '../widgets/customer_list_empty_body.dart';
 import '../widgets/customer_list_error_body.dart';
 import '../widgets/customer_list_metrics_bar.dart';
@@ -85,7 +88,19 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
     return Scaffold(
       backgroundColor: MarketingDarkColors.bgAlt,
-      appBar: CustomerListAppBar(title: l10n.customersTitle),
+      appBar: StitchAppBar(
+        title: l10n.customersTitle,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              navigateTo(context, AppPaths.settings);
+            },
+          ),
+        ],
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

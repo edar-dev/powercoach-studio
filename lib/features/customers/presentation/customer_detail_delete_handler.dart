@@ -6,6 +6,7 @@ import '../../../core/ui/widgets/app_sheet.dart';
 import '../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../l10n/app_localizations.dart';
 import '../data/customer_repository.dart';
+import '../../../core/routing/app_paths.dart';
 
 Future<void> deleteCustomerDetail({
   required BuildContext context,
@@ -39,7 +40,7 @@ Future<void> deleteCustomerDetail({
         behavior: SnackBarBehavior.floating,
       ),
     );
-    context.go('/customers');
+    context.go(AppPaths.customers);
   } catch (e, stackTrace) {
     await Sentry.captureException(e, stackTrace: stackTrace);
     if (!context.mounted) return;

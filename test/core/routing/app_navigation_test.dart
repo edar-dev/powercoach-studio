@@ -8,14 +8,27 @@ void main() {
   test('customer workout editor paths are customer-scoped', () {
     expect(
       customerWorkoutEditorPath('cust-1'),
-      '/customers/cust-1/workouts/new',
+      '${AppPaths.customers}/cust-1/workouts/new',
     );
     expect(
       customerWorkoutEditorPath('cust-1', planId: 'plan-9'),
-      '/customers/cust-1/workouts/plan-9',
+      '${AppPaths.customers}/cust-1/workouts/plan-9',
     );
-    expect(customerWorkoutsPath('cust-1'), '/customers/cust-1/workouts');
-    expect(customerPath('cust-1'), '/customers/cust-1');
+    expect(
+      customerWorkoutsPath('cust-1'),
+      '${AppPaths.customers}/cust-1/workouts',
+    );
+    expect(customerPath('cust-1'), '${AppPaths.customers}/cust-1');
+  });
+
+  test('hub AppPaths cover primary shell destinations', () {
+    expect(AppPaths.customers, '/customers');
+    expect(AppPaths.customersNew, '/customers/new');
+    expect(AppPaths.workoutBuilder, '/workouts/builder');
+    expect(AppPaths.workoutDiary, '/workouts/diary');
+    expect(AppPaths.exerciseLibrary, '/exercise-library');
+    expect(AppPaths.calendar, '/dashboard/calendar');
+    expect(workoutDiaryPath(), AppPaths.workoutDiary);
   });
 
   test('customer workout editor path supports session deep-link query', () {
@@ -48,7 +61,7 @@ void main() {
     (tester) async {
       late GoRouter router;
       router = GoRouter(
-        initialLocation: '${AppPaths.subscription}?from=/customers',
+        initialLocation: '${AppPaths.subscription}?from=${AppPaths.customers}',
         routes: [
           GoRoute(
             path: AppPaths.subscription,
@@ -60,7 +73,7 @@ void main() {
             ),
           ),
           GoRoute(
-            path: '/customers',
+            path: AppPaths.customers,
             builder: (context, state) =>
                 const Scaffold(body: Text('customers-dest')),
           ),
@@ -79,7 +92,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('customers-dest'), findsOneWidget);
-      expect(router.routeInformationProvider.value.uri.path, '/customers');
+      expect(
+        router.routeInformationProvider.value.uri.path,
+        AppPaths.customers,
+      );
     },
   );
 

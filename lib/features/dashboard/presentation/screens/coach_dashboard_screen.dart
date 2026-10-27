@@ -14,13 +14,12 @@ import '../../../settings/presentation/backup_onboarding_prompt.dart';
 import '../../../settings/presentation/data_health_controller.dart';
 import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
 import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/backup_reminder_banner.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/post_invite_onboarding_card.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_drawer.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_hero_metrics.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_no_plan_section.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_shortcuts_section.dart';
@@ -164,66 +163,19 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
 
     return Scaffold(
       backgroundColor: cs.surfaceContainerHighest,
-      appBar: AppBar(
-        elevation: 0,
-        scrolledUnderElevation: 1,
-        backgroundColor: cs.surface,
-        title: Row(
-          children: [
-            Flexible(
-              child: Text(
-                l10n.dashboardTitle,
-                style: theme.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: cs.onSurface,
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: StitchM3Theme.accent.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-                border: Border.all(
-                  color: StitchM3Theme.accent.withValues(alpha: 0.22),
-                ),
-              ),
-              child: Text(
-                l10n.dashboardCoachStudioBadge,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.4,
-                  color: StitchM3Theme.accent,
-                ),
-              ),
-            ),
-          ],
-        ),
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-        ),
+      appBar: StitchAppBar(
+        title: l10n.dashboardTitle,
         actions: [
           IconButton(
-            icon: const Icon(Icons.person_outline),
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: l10n.settingsTitle,
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.personalInfo);
+              navigateTo(context, AppPaths.settings);
             },
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Container(color: cs.outline, height: 1),
-        ),
       ),
-      drawer: const DashboardDrawer(),
       body: RefreshIndicator(
         onRefresh: _loadStats,
         child: SingleChildScrollView(
@@ -282,7 +234,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                           actionLabel: l10n.dashboardSeeAll,
                           onAction: () {
                             HapticFeedback.mediumImpact();
-                            navigateTo(context, '/dashboard/calendar');
+                            navigateTo(context, AppPaths.calendar);
                           },
                         ),
                         const SizedBox(height: 12),

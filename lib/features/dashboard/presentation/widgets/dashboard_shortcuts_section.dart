@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'dashboard_surface_card.dart';
@@ -27,28 +28,28 @@ class DashboardShortcutsSection extends StatelessWidget {
         iconTint: StitchM3Theme.accent,
         title: l10n.exerciseLibraryTitle,
         subtitle: l10n.dashboardShortcutLibrarySubtitle,
-        path: '/exercise-library',
+        path: AppPaths.exerciseLibrary,
       ),
       _ShortcutItem(
         icon: Icons.construction_outlined,
         iconTint: colorScheme.secondary,
         title: l10n.dashboardWorkoutBuilder,
         subtitle: l10n.dashboardWorkoutBuilderDraft,
-        path: '/workouts/builder',
+        path: AppPaths.workoutBuilder,
       ),
       _ShortcutItem(
         icon: Icons.person_add_alt_1_outlined,
         iconTint: StitchM3Theme.success,
         title: l10n.dashboardShortcutNewAthlete,
         subtitle: l10n.dashboardShortcutNewAthleteSubtitle,
-        path: '/customers/new',
+        path: AppPaths.customersNew,
       ),
       _ShortcutItem(
         icon: Icons.settings_outlined,
         iconTint: colorScheme.onSurfaceVariant,
         title: l10n.settingsTitle,
         subtitle: l10n.dashboardShortcutSettingsSubtitle,
-        path: '/settings',
+        path: AppPaths.settings,
       ),
     ];
 

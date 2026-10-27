@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
 import 'package:powercoach_studio/core/routing/app_paths.dart';
+import 'package:powercoach_studio/core/routing/primary_shell_scaffold.dart';
 import 'package:powercoach_studio/core/routing/root_navigator_key.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:powercoach_studio/features/auth/presentation/screens/login_screen.dart';
@@ -22,9 +24,8 @@ import 'package:powercoach_studio/features/settings/presentation/screens/persona
 import 'package:powercoach_studio/features/settings/presentation/screens/settings_screen.dart';
 import 'package:powercoach_studio/features/settings/presentation/screens/subscription_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_builder_mobility_screen.dart';
-import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
 import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_entry_screen.dart';
-import 'package:powercoach_studio/core/constants/workout_plan_template_scope.dart';
+import 'package:powercoach_studio/features/workouts/presentation/screens/workout_diary_screen.dart';
 
 List<RouteBase> buildAppRoutes() {
   return [
@@ -51,33 +52,84 @@ List<RouteBase> buildAppRoutes() {
       path: '/login',
       builder: (context, state) => const LoginScreen(),
     ),
-    GoRoute(
-      path: '/dashboard',
-      builder: (context, state) => const CoachDashboardScreen(),
-      routes: [
-        GoRoute(
-          path: 'calendar',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const CoachCalendarScreen(),
-        ),
-        // List hub removed (Wave C); keep detail for calendar/today session log.
-        GoRoute(
-          path: 'schedule',
-          parentNavigatorKey: appRootNavigatorKey,
-          redirect: (context, state) {
-            if (state.uri.path == '/dashboard/schedule') {
-              final query = state.uri.query;
-              return query.isEmpty
-                  ? '/dashboard/calendar'
-                  : '/dashboard/calendar?$query';
-            }
-            return null;
-          },
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          PrimaryShellScaffold(navigationShell: navigationShell),
+      branches: [
+        // 0 Today
+        StatefulShellBranch(
           routes: [
             GoRoute(
-              path: 'detail',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) => const ScheduleDetailScreen(),
+              path: AppPaths.dashboard,
+              builder: (context, state) => const CoachDashboardScreen(),
+              routes: [
+                GoRoute(
+                  path: 'calendar',
+                  builder: (context, state) => const CoachCalendarScreen(),
+                ),
+                // List hub removed (Wave C); keep detail for calendar/today session log.
+                GoRoute(
+                  path: 'schedule',
+                  redirect: (context, state) {
+                    if (state.uri.path == '${AppPaths.dashboard}/schedule') {
+                      final query = state.uri.query;
+                      return query.isEmpty
+                          ? AppPaths.calendar
+                          : '${AppPaths.calendar}?$query';
+                    }
+                    return null;
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'detail',
+                      parentNavigatorKey: appRootNavigatorKey,
+                      builder: (context, state) =>
+                          const ScheduleDetailScreen(),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
+        // 1 Clienti — list only
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppPaths.customers,
+              builder: (context, state) => const CustomerListScreen(),
+            ),
+          ],
+        ),
+        // 2 Schede (+ library under branch)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppPaths.workoutBuilder,
+              builder: (_, _) => const WorkoutBuilderMobilityScreen(),
+            ),
+            GoRoute(
+              path: AppPaths.exerciseLibrary,
+              builder: (context, state) => const ExerciseLibraryScreen(),
+            ),
+          ],
+        ),
+        // 3 Diario
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppPaths.workoutDiary,
+              builder: (context, state) => const WorkoutDiaryScreen(),
+              routes: [
+                GoRoute(
+                  path: ':planId/:sessionKey',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  builder: (context, state) => WorkoutDiaryEntryScreen(
+                    planId: state.pathParameters['planId'] ?? '',
+                    sessionKey: state.pathParameters['sessionKey'] ?? '',
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -101,14 +153,18 @@ List<RouteBase> buildAppRoutes() {
       path: '/gym',
       redirect: (context, state) {
         final query = state.uri.query;
-        return query.isEmpty ? '/dashboard' : '/dashboard?$query';
+        return query.isEmpty
+            ? AppPaths.dashboard
+            : '${AppPaths.dashboard}?$query';
       },
       routes: [
         GoRoute(
           path: 'session',
           redirect: (context, state) {
             final query = state.uri.query;
-            return query.isEmpty ? '/dashboard' : '/dashboard?$query';
+            return query.isEmpty
+                ? AppPaths.dashboard
+                : '${AppPaths.dashboard}?$query';
           },
         ),
       ],
@@ -117,11 +173,13 @@ List<RouteBase> buildAppRoutes() {
       path: '/plans/diff',
       redirect: (context, state) {
         final query = state.uri.query;
-        return query.isEmpty ? '/customers' : '/customers?$query';
+        return query.isEmpty
+            ? AppPaths.customers
+            : '${AppPaths.customers}?$query';
       },
     ),
     GoRoute(
-      path: '/settings',
+      path: AppPaths.settings,
       builder: (context, state) => const SettingsScreen(),
       routes: [
         GoRoute(
@@ -162,11 +220,7 @@ List<RouteBase> buildAppRoutes() {
       ],
     ),
     GoRoute(
-      path: '/exercise-library',
-      builder: (context, state) => const ExerciseLibraryScreen(),
-    ),
-    GoRoute(
-      path: '/customers/new',
+      path: AppPaths.customersNew,
       builder: (context, state) => const CustomerCreationScreen(),
     ),
     GoRoute(
@@ -240,15 +294,13 @@ List<RouteBase> buildAppRoutes() {
         ),
       ],
     ),
-    GoRoute(
-      path: '/customers',
-      builder: (context, state) => const CustomerListScreen(),
-    ),
+    // Parent `/workouts` for legacy editor / redirects only — builder & diary
+    // live in the primary shell (do not re-register those paths here).
     GoRoute(
       path: '/workouts',
       redirect: (context, state) {
         if (state.uri.path == '/workouts') {
-          return '/workouts/builder';
+          return AppPaths.workoutBuilder;
         }
         return null;
       },
@@ -260,7 +312,7 @@ List<RouteBase> buildAppRoutes() {
             // Legacy template-scope editor bookmarks → sandbox builder.
             if (state.uri.queryParameters['customerId'] ==
                 kWorkoutPlanTemplateScopeId) {
-              return '/workouts/builder';
+              return AppPaths.workoutBuilder;
             }
             return null;
           },
@@ -278,7 +330,7 @@ List<RouteBase> buildAppRoutes() {
               redirect: (context, state) {
                 if (state.uri.queryParameters['customerId'] ==
                     kWorkoutPlanTemplateScopeId) {
-                  return '/workouts/builder';
+                  return AppPaths.workoutBuilder;
                 }
                 return null;
               },
@@ -297,12 +349,7 @@ List<RouteBase> buildAppRoutes() {
         GoRoute(
           path: 'templates',
           // Legacy bookmarks for removed template library.
-          redirect: (context, state) => '/workouts/builder',
-        ),
-        GoRoute(
-          path: 'builder',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (_, _) => const WorkoutBuilderMobilityScreen(),
+          redirect: (context, state) => AppPaths.workoutBuilder,
         ),
         GoRoute(
           path: 'library',
@@ -310,24 +357,9 @@ List<RouteBase> buildAppRoutes() {
           redirect: (context, state) {
             final query = state.uri.query;
             return query.isEmpty
-                ? '/exercise-library'
-                : '/exercise-library?$query';
+                ? AppPaths.exerciseLibrary
+                : '${AppPaths.exerciseLibrary}?$query';
           },
-        ),
-        GoRoute(
-          path: 'diary',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const WorkoutDiaryScreen(),
-          routes: [
-            GoRoute(
-              path: ':planId/:sessionKey',
-              parentNavigatorKey: appRootNavigatorKey,
-              builder: (context, state) => WorkoutDiaryEntryScreen(
-                planId: state.pathParameters['planId'] ?? '',
-                sessionKey: state.pathParameters['sessionKey'] ?? '',
-              ),
-            ),
-          ],
         ),
         GoRoute(
           path: 'stats',
@@ -335,8 +367,8 @@ List<RouteBase> buildAppRoutes() {
           redirect: (context, state) {
             final query = state.uri.query;
             return query.isEmpty
-                ? '/workouts/diary'
-                : '/workouts/diary?$query';
+                ? AppPaths.workoutDiary
+                : '${AppPaths.workoutDiary}?$query';
           },
         ),
       ],

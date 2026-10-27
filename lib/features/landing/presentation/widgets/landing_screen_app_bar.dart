@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/routing/app_paths.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../landing_colors.dart';
@@ -294,7 +295,7 @@ class _RightActions extends StatelessWidget {
           TextButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/customers');
+              navigateTo(context, AppPaths.customers);
             },
             style: TextButton.styleFrom(
               foregroundColor: LandingColors.slate300,
@@ -304,7 +305,7 @@ class _RightActions extends StatelessWidget {
           TextButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/settings/personal-info');
+              navigateTo(context, AppPaths.personalInfo);
             },
             style: TextButton.styleFrom(
               foregroundColor: LandingColors.slate300,
@@ -315,7 +316,7 @@ class _RightActions extends StatelessWidget {
           FilledButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
-              navigateTo(context, '/dashboard');
+              navigateTo(context, AppPaths.dashboard);
             },
             style: FilledButton.styleFrom(
               backgroundColor: LandingColors.brand,

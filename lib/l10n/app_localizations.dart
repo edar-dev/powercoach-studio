@@ -1502,6 +1502,30 @@ abstract class AppLocalizations {
   /// **'Go to Today'**
   String get navHomeTooltip;
 
+  /// No description provided for @navTabToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get navTabToday;
+
+  /// No description provided for @navTabCustomers.
+  ///
+  /// In en, this message translates to:
+  /// **'Customers'**
+  String get navTabCustomers;
+
+  /// No description provided for @navTabWorkouts.
+  ///
+  /// In en, this message translates to:
+  /// **'Plans'**
+  String get navTabWorkouts;
+
+  /// No description provided for @navTabDiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Diary'**
+  String get navTabDiary;
+
   /// No description provided for @headerProfile.
   ///
   /// In en, this message translates to:

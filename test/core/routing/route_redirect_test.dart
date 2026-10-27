@@ -67,16 +67,16 @@ void main() {
     // what bookmarks must keep stable.
     test('maps removed surfaces to canonical destinations', () {
       const cases = <(String path, String target)>[
-        ('/gym', '/dashboard'),
-        ('/gym/session', '/dashboard'),
+        ('/gym', AppPaths.dashboard),
+        ('/gym/session', AppPaths.dashboard),
         ('/profile', AppPaths.personalInfo),
-        ('/plans/diff', '/customers'),
-        ('/workouts/stats', '/workouts/diary'),
-        ('/dashboard/schedule', '/dashboard/calendar'),
+        ('/plans/diff', AppPaths.customers),
+        ('/workouts/stats', AppPaths.workoutDiary),
+        ('/dashboard/schedule', AppPaths.calendar),
         ('/settings/release-notes', AppPaths.settings),
         ('/settings/subscription', AppPaths.subscription),
-        ('/workouts/library', '/exercise-library'),
-        ('/workouts/templates', '/workouts/builder'),
+        ('/workouts/library', AppPaths.exerciseLibrary),
+        ('/workouts/templates', AppPaths.workoutBuilder),
       ];
 
       for (final (path, target) in cases) {

@@ -1,3 +1,4 @@
+import '../routing/app_paths.dart';
 /// Local reminder shown via [flutter_local_notifications] at [scheduledAtUtc].
 class Reminder {
   const Reminder({
@@ -20,7 +21,7 @@ class Reminder {
 
   /// GoRouter path used as notification payload (tap → navigate).
   String get routePayload =>
-      customerId != null && customerId!.isNotEmpty ? '/customers/$customerId' : '/dashboard';
+      customerId != null && customerId!.isNotEmpty ? '${AppPaths.customers}/$customerId' : AppPaths.dashboard;
 
   /// Stable positive int for OS notification id (collision risk documented in plan).
   static int stableNotificationId(String reminderId) {
