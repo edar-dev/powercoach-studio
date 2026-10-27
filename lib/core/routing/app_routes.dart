@@ -133,6 +133,52 @@ List<RouteBase> buildAppRoutes() {
             ),
           ],
         ),
+        // 4 Settings — keeps NavigationRail; not a primary tab destination.
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AppPaths.settings,
+              builder: (context, state) => const SettingsScreen(),
+              routes: [
+                GoRoute(
+                  path: 'personal-info',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  builder: (context, state) => const PersonalInfoScreen(),
+                ),
+                GoRoute(
+                  path: 'pdf-brand',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  builder: (context, state) => const PdfBrandSettingsScreen(),
+                ),
+                GoRoute(
+                  path: 'data-health',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  builder: (context, state) => const DataHealthScreen(),
+                ),
+                GoRoute(
+                  path: 'subscription',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  redirect: (context, state) {
+                    final query = state.uri.query;
+                    return query.isEmpty
+                        ? AppPaths.subscription
+                        : '${AppPaths.subscription}?$query';
+                  },
+                ),
+                GoRoute(
+                  path: 'release-notes',
+                  parentNavigatorKey: appRootNavigatorKey,
+                  redirect: (context, state) {
+                    final query = state.uri.query;
+                    return query.isEmpty
+                        ? AppPaths.settings
+                        : '${AppPaths.settings}?$query';
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     ),
     GoRoute(
@@ -177,47 +223,6 @@ List<RouteBase> buildAppRoutes() {
             ? AppPaths.customers
             : '${AppPaths.customers}?$query';
       },
-    ),
-    GoRoute(
-      path: AppPaths.settings,
-      builder: (context, state) => const SettingsScreen(),
-      routes: [
-        GoRoute(
-          path: 'personal-info',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const PersonalInfoScreen(),
-        ),
-        GoRoute(
-          path: 'pdf-brand',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const PdfBrandSettingsScreen(),
-        ),
-        GoRoute(
-          path: 'data-health',
-          parentNavigatorKey: appRootNavigatorKey,
-          builder: (context, state) => const DataHealthScreen(),
-        ),
-        GoRoute(
-          path: 'subscription',
-          parentNavigatorKey: appRootNavigatorKey,
-          redirect: (context, state) {
-            final query = state.uri.query;
-            return query.isEmpty
-                ? AppPaths.subscription
-                : '${AppPaths.subscription}?$query';
-          },
-        ),
-        GoRoute(
-          path: 'release-notes',
-          parentNavigatorKey: appRootNavigatorKey,
-          redirect: (context, state) {
-            final query = state.uri.query;
-            return query.isEmpty
-                ? AppPaths.settings
-                : '${AppPaths.settings}?$query';
-          },
-        ),
-      ],
     ),
     GoRoute(
       path: AppPaths.customersNew,

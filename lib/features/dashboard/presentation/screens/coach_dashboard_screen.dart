@@ -7,6 +7,7 @@ import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
+import '../../../../core/routing/hub_chrome.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/dashboard_snapshot_loader.dart';
 import '../../domain/dashboard_snapshot.dart';
@@ -161,19 +162,23 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       l10n.localeName,
     ).format(DateTime.now());
 
+    final slimHub = primaryShellUsesRail(context);
+
     return Scaffold(
-      backgroundColor: cs.surfaceContainerHighest,
+      backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.dashboardTitle,
+        showLogo: !slimHub,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: l10n.settingsTitle,
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.settings);
-            },
-          ),
+          if (!slimHub)
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              tooltip: l10n.settingsTitle,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                navigateTo(context, AppPaths.settings);
+              },
+            ),
         ],
       ),
       body: RefreshIndicator(

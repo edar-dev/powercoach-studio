@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
+import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
@@ -251,22 +252,23 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     final kpis = computeDiaryKpis(visible);
     final groups = groupDiaryEntriesByDay(visible);
     final phone = !Breakpoints.isTabletOrWider(context);
+    final slimHub = primaryShellUsesRail(context);
 
     return Scaffold(
-      backgroundColor: phone
-          ? StitchMobileColors.surface
-          : MarketingDarkColors.stitchPageBgAlt,
+      backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.workoutDiaryTitle,
+        showLogo: !slimHub,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: l10n.settingsTitle,
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.settings);
-            },
-          ),
+          if (!slimHub)
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              tooltip: l10n.settingsTitle,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                navigateTo(context, AppPaths.settings);
+              },
+            ),
         ],
       ),
       body: SafeArea(

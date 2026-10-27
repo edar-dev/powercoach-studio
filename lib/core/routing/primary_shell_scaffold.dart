@@ -4,12 +4,12 @@ import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../ui/breakpoints.dart';
-import 'app_navigation.dart';
-import 'app_paths.dart';
+import 'primary_shell_branch.dart';
 
 /// Adaptive primary shell: [NavigationBar] on phone, [NavigationRail] on wide.
 ///
-/// Owns nav chrome only — hub screens supply their own [StitchAppBar].
+/// Owns nav chrome only — hub screens supply a slim title bar on tablet+
+/// (logo/settings live on the rail). Settings is shell branch 4 (rail stays).
 class PrimaryShellScaffold extends StatelessWidget {
   const PrimaryShellScaffold({
     super.key,
@@ -18,6 +18,9 @@ class PrimaryShellScaffold extends StatelessWidget {
 
   final StatefulNavigationShell navigationShell;
 
+  bool get _onSettings =>
+      navigationShell.currentIndex == primaryShellBranchSettings;
+
   void _onDestinationSelected(int index) {
     navigationShell.goBranch(
       index,
@@ -25,22 +28,28 @@ class PrimaryShellScaffold extends StatelessWidget {
     );
   }
 
-  void _openSettings(BuildContext context) {
+  void _openSettings() {
     HapticFeedback.mediumImpact();
-    navigateTo(context, AppPaths.settings);
+    navigationShell.goBranch(
+      primaryShellBranchSettings,
+      initialLocation:
+          navigationShell.currentIndex == primaryShellBranchSettings,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final wide = Breakpoints.isTabletOrWider(context);
+    // Rail/bar have 4 destinations; settings is branch 4 → no tab selected.
+    final selectedIndex = _onSettings ? null : navigationShell.currentIndex;
 
     if (wide) {
       return Scaffold(
         body: Row(
           children: [
             NavigationRail(
-              selectedIndex: navigationShell.currentIndex,
+              selectedIndex: selectedIndex,
               onDestinationSelected: _onDestinationSelected,
               labelType: NavigationRailLabelType.all,
               destinations: [
@@ -71,9 +80,14 @@ class PrimaryShellScaffold extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16),
                     child: IconButton(
-                      icon: const Icon(Icons.settings_outlined),
+                      icon: Icon(
+                        _onSettings
+                            ? Icons.settings
+                            : Icons.settings_outlined,
+                      ),
                       tooltip: l10n.settingsTitle,
-                      onPressed: () => _openSettings(context),
+                      isSelected: _onSettings,
+                      onPressed: _openSettings,
                     ),
                   ),
                 ),
@@ -88,32 +102,35 @@ class PrimaryShellScaffold extends StatelessWidget {
 
     return Scaffold(
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationShell.currentIndex,
-        onDestinationSelected: _onDestinationSelected,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.today_outlined),
-            selectedIcon: const Icon(Icons.today),
-            label: l10n.navTabToday,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.people_outline),
-            selectedIcon: const Icon(Icons.people),
-            label: l10n.navTabCustomers,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.fitness_center_outlined),
-            selectedIcon: const Icon(Icons.fitness_center),
-            label: l10n.navTabWorkouts,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.menu_book_outlined),
-            selectedIcon: const Icon(Icons.menu_book),
-            label: l10n.navTabDiary,
-          ),
-        ],
-      ),
+      // Settings is not a phone tab; hide bar so secondary chrome owns escape.
+      bottomNavigationBar: _onSettings
+          ? null
+          : NavigationBar(
+              selectedIndex: selectedIndex ?? 0,
+              onDestinationSelected: _onDestinationSelected,
+              destinations: [
+                NavigationDestination(
+                  icon: const Icon(Icons.today_outlined),
+                  selectedIcon: const Icon(Icons.today),
+                  label: l10n.navTabToday,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.people_outline),
+                  selectedIcon: const Icon(Icons.people),
+                  label: l10n.navTabCustomers,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.fitness_center_outlined),
+                  selectedIcon: const Icon(Icons.fitness_center),
+                  label: l10n.navTabWorkouts,
+                ),
+                NavigationDestination(
+                  icon: const Icon(Icons.menu_book_outlined),
+                  selectedIcon: const Icon(Icons.menu_book),
+                  label: l10n.navTabDiary,
+                ),
+              ],
+            ),
     );
   }
 }

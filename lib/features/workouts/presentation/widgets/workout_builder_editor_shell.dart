@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:powercoach_studio/core/routing/hub_chrome.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
@@ -106,6 +107,11 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
+    // Sandbox builder lives in the primary shell; hide Home/Settings when the
+    // rail already provides them. Customer editors stay full-screen → keep them.
+    final showShellNavActions =
+        editorMode || !primaryShellUsesRail(context);
+
     return PopScope(
       canPop: canPop,
       onPopInvokedWithResult: (didPop, _) async {
@@ -113,6 +119,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
         await onPopInvoked();
       },
       child: Scaffold(
+        backgroundColor: hubPageBackground(context),
         appBar: WorkoutEditorAppBar(
           theme: theme,
           colorScheme: cs,
@@ -122,6 +129,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           hideExportMenu: hideExportMenu,
           saving: saving,
           showManualSaveButton: showManualSaveButton,
+          showShellNavActions: showShellNavActions,
           onBack: () async {
             unawaited(HapticFeedback.mediumImpact());
             await onBack();

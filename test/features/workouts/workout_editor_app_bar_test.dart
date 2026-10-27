@@ -11,6 +11,7 @@ Future<void> _pumpAppBar(
   VoidCallback? onLogSession,
   VoidCallback? onLogSessionUnavailable,
   Future<void> Function()? onHome,
+  bool showShellNavActions = true,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -32,6 +33,7 @@ Future<void> _pumpAppBar(
               hideExportMenu: true,
               saving: false,
               showManualSaveButton: false,
+              showShellNavActions: showShellNavActions,
               onBack: () async {},
               onHome: onHome ?? () async {},
               onImportJson: () {},
@@ -119,5 +121,20 @@ void main() {
     await tester.tap(find.byTooltip('Go to Today'));
     await tester.pump();
     expect(homeTapped, isTrue);
+  });
+
+  testWidgets('shell nav actions hidden when showShellNavActions is false', (
+    tester,
+  ) async {
+    await _pumpAppBar(
+      tester,
+      showLogSessionAction: false,
+      logSessionEnabled: false,
+      showShellNavActions: false,
+    );
+
+    expect(find.byTooltip('Go to Today'), findsNothing);
+    expect(find.byTooltip('Settings'), findsNothing);
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
   });
 }

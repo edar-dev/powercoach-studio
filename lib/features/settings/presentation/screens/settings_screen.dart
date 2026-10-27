@@ -11,9 +11,8 @@ import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
-import '../../../../core/theme/marketing_dark_colors.dart';
-import '../../../../core/theme/stitch_mobile_colors.dart';
-import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/data/local_coach_profile_repository.dart';
@@ -390,13 +389,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final phone = !Breakpoints.isTabletOrWider(context);
+    final slimHub = primaryShellUsesRail(context);
 
     return Scaffold(
-      backgroundColor: phone
-          ? StitchMobileColors.surface
-          : MarketingDarkColors.stitchPageBg,
-      appBar: StitchSecondaryAppBar(title: l10n.settingsTitle),
+      backgroundColor: hubPageBackground(context),
+      // Wide: title-only bar (rail provides Home/escape). Phone: secondary bar.
+      appBar: slimHub
+          ? StitchAppBar(
+              title: l10n.settingsTitle,
+              showLogo: false,
+            )
+          : StitchSecondaryAppBar(title: l10n.settingsTitle),
       body: SafeArea(
         bottom: false,
         child: _loading

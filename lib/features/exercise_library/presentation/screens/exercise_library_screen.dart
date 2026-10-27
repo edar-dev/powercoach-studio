@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
+import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
@@ -125,19 +126,23 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
 
+    final slimHub = primaryShellUsesRail(context);
+
     return Scaffold(
-      backgroundColor: cs.surfaceContainerHighest,
+      backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.exerciseLibraryTitle,
+        showLogo: !slimHub,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_outlined),
-            tooltip: l10n.settingsTitle,
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              navigateTo(context, AppPaths.settings);
-            },
-          ),
+          if (!slimHub)
+            IconButton(
+              icon: const Icon(Icons.settings_outlined),
+              tooltip: l10n.settingsTitle,
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                navigateTo(context, AppPaths.settings);
+              },
+            ),
           PopupMenuButton<String>(
             enabled: !_loading,
             icon: const Icon(Icons.more_vert),

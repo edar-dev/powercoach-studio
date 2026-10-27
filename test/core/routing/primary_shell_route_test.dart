@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/routing/app_paths.dart';
+import 'package:powercoach_studio/core/routing/hub_chrome.dart';
 import 'package:powercoach_studio/core/routing/primary_shell_branch.dart';
 import 'package:powercoach_studio/core/routing/primary_shell_scaffold.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
@@ -18,20 +19,23 @@ GoRouter _shellHarnessRouter({String initialLocation = AppPaths.dashboard}) {
             routes: [
               GoRoute(
                 path: AppPaths.dashboard,
-                builder: (context, state) => Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Today hub'),
-                    actions: [
-                      IconButton(
-                        icon: const Icon(Icons.settings_outlined),
-                        tooltip: 'Settings',
-                        onPressed: () =>
-                            context.go(AppPaths.settings),
-                      ),
-                    ],
-                  ),
-                  body: const Text('Today body'),
-                ),
+                builder: (context, state) {
+                  final slimHub = primaryShellUsesRail(context);
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('Today hub'),
+                      actions: [
+                        if (!slimHub)
+                          IconButton(
+                            icon: const Icon(Icons.settings_outlined),
+                            tooltip: 'Settings',
+                            onPressed: () => context.go(AppPaths.settings),
+                          ),
+                      ],
+                    ),
+                    body: const Text('Today body'),
+                  );
+                },
                 routes: [
                   GoRoute(
                     path: 'calendar',
@@ -74,12 +78,16 @@ GoRouter _shellHarnessRouter({String initialLocation = AppPaths.dashboard}) {
               ),
             ],
           ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppPaths.settings,
+                builder: (context, state) =>
+                    const Scaffold(body: Text('Settings destination')),
+              ),
+            ],
+          ),
         ],
-      ),
-      GoRoute(
-        path: AppPaths.settings,
-        builder: (context, state) =>
-            const Scaffold(body: Text('Settings destination')),
       ),
     ],
   );
@@ -104,6 +112,15 @@ Future<void> _pumpPhoneShell(WidgetTester tester, GoRouter router) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> _pumpWideShell(WidgetTester tester, GoRouter router) async {
+  tester.view.physicalSize = const Size(1280, 800);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  await tester.pumpWidget(_app(router));
+  await tester.pumpAndSettle();
+}
+
 void main() {
   test('primaryShellBranchForPath maps hubs', () {
     expect(primaryShellBranchForPath(AppPaths.dashboard), 0);
@@ -113,6 +130,8 @@ void main() {
     expect(primaryShellBranchForPath(AppPaths.workoutBuilder), 2);
     expect(primaryShellBranchForPath(AppPaths.exerciseLibrary), 2);
     expect(primaryShellBranchForPath(AppPaths.workoutDiary), 3);
+    expect(primaryShellBranchForPath(AppPaths.settings), 4);
+    expect(primaryShellBranchForPath(AppPaths.personalInfo), 4);
   });
 
   testWidgets('tab taps update URL across primary branches', (tester) async {
@@ -172,7 +191,9 @@ void main() {
     );
   });
 
-  testWidgets('settings icon on hub navigates to settings', (tester) async {
+  testWidgets('settings icon on hub navigates to settings inside shell', (
+    tester,
+  ) async {
     final router = _shellHarnessRouter();
     await _pumpPhoneShell(tester, router);
 
@@ -185,6 +206,38 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Settings destination'), findsOneWidget);
+    expect(
+      router.routeInformationProvider.value.uri.path,
+      AppPaths.settings,
+    );
+    // Phone hides bottom nav on settings branch (not a 5th tab).
+    expect(find.byType(NavigationBar), findsNothing);
+  });
+
+  testWidgets('wide settings keeps NavigationRail visible', (tester) async {
+    final router = _shellHarnessRouter(initialLocation: AppPaths.settings);
+    await _pumpWideShell(tester, router);
+
+    expect(find.text('Settings destination'), findsOneWidget);
+    expect(find.byType(NavigationRail), findsOneWidget);
+    final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
+    expect(rail.selectedIndex, isNull);
+    expect(
+      router.routeInformationProvider.value.uri.path,
+      AppPaths.settings,
+    );
+  });
+
+  testWidgets('rail settings trailing opens settings branch', (tester) async {
+    final router = _shellHarnessRouter();
+    await _pumpWideShell(tester, router);
+
+    expect(find.byType(NavigationRail), findsOneWidget);
+    await tester.tap(find.byTooltip('Settings'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Settings destination'), findsOneWidget);
+    expect(find.byType(NavigationRail), findsOneWidget);
     expect(
       router.routeInformationProvider.value.uri.path,
       AppPaths.settings,
