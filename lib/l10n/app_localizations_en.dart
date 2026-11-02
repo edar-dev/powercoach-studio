@@ -4471,6 +4471,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDiaryPageTitle => 'Diary & History';
 
   @override
+  String get workoutDiaryDesktopTitle => 'Training diary';
+
+  @override
   String get workoutDiaryPageBadge => 'Live Session Log';
 
   @override

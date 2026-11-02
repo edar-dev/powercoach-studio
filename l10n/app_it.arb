@@ -2121,6 +2121,7 @@
   "settingsBackupDownloadAction": "Download",
   "settingsCloudSyncSnapshot": "Sincronizza snapshot su Supabase",
   "workoutDiaryPageTitle": "Diario & Storico",
+  "workoutDiaryDesktopTitle": "Diario Allenamenti",
   "workoutDiaryPageBadge": "Registro Sessioni Live",
   "workoutDiaryPageSubtitle": "Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.",
   "workoutDiaryLiveSync": "Dati locali attivi",

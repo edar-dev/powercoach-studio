@@ -5,9 +5,14 @@ import 'package:powercoach_studio/features/workouts/presentation/widgets/workout
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('desktop header owns single Diario & Storico heading', (
+  testWidgets('desktop header owns single Diario Allenamenti heading', (
     tester,
   ) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(
       MaterialApp(
         theme: StitchM3Theme.dark,
@@ -20,7 +25,8 @@ void main() {
       ),
     );
 
-    expect(find.text('Diario & Storico'), findsOneWidget);
+    expect(find.text('Diario Allenamenti'), findsOneWidget);
+    expect(find.text('Diario & Storico'), findsNothing);
     expect(find.text('Storico'), findsNothing);
     expect(find.byIcon(Icons.arrow_back), findsNothing);
     expect(find.text('Registra Sessione'), findsOneWidget);
@@ -47,6 +53,7 @@ void main() {
     );
 
     expect(find.text('Diario & Storico'), findsOneWidget);
+    expect(find.text('Diario Allenamenti'), findsNothing);
     expect(find.text('Storico'), findsNothing);
   });
 }

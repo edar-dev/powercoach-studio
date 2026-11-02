@@ -333,9 +333,9 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
                     SliverPadding(
-                      padding: EdgeInsets.fromLTRB(
+                      padding: const EdgeInsets.fromLTRB(
                         StitchMobileColors.marginMobile,
-                        phone ? 12 : 16,
+                        12,
                         StitchMobileColors.marginMobile,
                         0,
                       ),
@@ -346,7 +346,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     SliverPadding(
                       padding: EdgeInsets.fromLTRB(
                         StitchMobileColors.marginMobile,
-                        phone ? 8 : 20,
+                        phone ? 8 : 12,
                         StitchMobileColors.marginMobile,
                         0,
                       ),
@@ -356,7 +356,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     ),
                     if (hasSessionFilter)
                       SliverPadding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        padding: const EdgeInsets.fromLTRB(
+                          StitchMobileColors.marginMobile,
+                          12,
+                          StitchMobileColors.marginMobile,
+                          0,
+                        ),
                         sliver: SliverToBoxAdapter(
                           child: Material(
                             color: phone
@@ -398,7 +403,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     SliverPadding(
                       padding: EdgeInsets.fromLTRB(
                         StitchMobileColors.marginMobile,
-                        phone ? 8 : 16,
+                        phone ? 8 : 12,
                         StitchMobileColors.marginMobile,
                         0,
                       ),
@@ -441,9 +446,9 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                       SliverPadding(
                         padding: EdgeInsets.fromLTRB(
                           StitchMobileColors.marginMobile,
-                          phone ? 12 : 16,
+                          phone ? 12 : 14,
                           StitchMobileColors.marginMobile,
-                          32,
+                          phone ? 32 : 24,
                         ),
                         sliver: SliverToBoxAdapter(
                           child: WorkoutDiaryTimeline(

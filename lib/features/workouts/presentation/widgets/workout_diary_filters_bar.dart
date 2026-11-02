@@ -298,7 +298,7 @@ class _DesktopFilters extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFF131B2A),
         borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
@@ -324,7 +324,7 @@ class _DesktopFilters extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     datePills,
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     athlete,
                   ],
                 );
@@ -332,21 +332,21 @@ class _DesktopFilters extends StatelessWidget {
               return Row(
                 children: [
                   Expanded(child: datePills),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   SizedBox(width: 240, child: athlete),
                 ],
               );
             },
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Divider(
             height: 1,
             color: MarketingDarkColors.stitchBorder.withValues(alpha: 0.8),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 6,
+            runSpacing: 6,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               _StatusChip(
@@ -366,7 +366,7 @@ class _DesktopFilters extends StatelessWidget {
                 onTap: () => onStatusChanged(DiaryStatusFilter.skipped),
                 accent: const Color(0xFFFB7185),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               Text(
                 l10n.workoutDiaryShowingCount(visibleCount),
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -444,7 +444,7 @@ class _DatePill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(6),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           child: Text(
             label,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
@@ -491,7 +491,7 @@ class _AthleteSelector extends StatelessWidget {
             onTap: onTap,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
@@ -559,7 +559,7 @@ class _StatusChip extends StatelessWidget {
         onTap: onTap,
         customBorder: const StadiumBorder(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
