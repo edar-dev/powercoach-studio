@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/dashboard/domain/session_detail_loader.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/session_detail_view.dart';
+import 'package:powercoach_studio/features/dashboard/presentation/widgets/session_logger_actions_bar.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 void main() {
@@ -10,7 +11,6 @@ void main() {
     tester,
   ) async {
     var openBuilderTapped = false;
-    var sessionActionsTapped = false;
 
     final event = PlanCalendarEvent(
       day: DateTime(2026, 6, 15),
@@ -38,7 +38,6 @@ void main() {
           body: SessionDetailView(
             snapshot: snapshot,
             onOpenBuilder: () => openBuilderTapped = true,
-            onSessionActions: () => sessionActionsTapped = true,
           ),
         ),
       ),
@@ -52,8 +51,36 @@ void main() {
 
     await tester.tap(find.text('Open in builder'));
     expect(openBuilderTapped, isTrue);
+  });
 
-    await tester.tap(find.text('Mark as planned'));
-    expect(sessionActionsTapped, isTrue);
+  testWidgets('SessionLoggerActionsBar exposes Skip / Log / Complete', (
+    tester,
+  ) async {
+    var skip = false;
+    var log = false;
+    var complete = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        home: Scaffold(
+          bottomNavigationBar: SessionLoggerActionsBar(
+            onSkip: () => skip = true,
+            onLog: () => log = true,
+            onComplete: () => complete = true,
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Skip'));
+    await tester.tap(find.text('Log'));
+    await tester.tap(find.text('Complete'));
+    expect(skip, isTrue);
+    expect(log, isTrue);
+    expect(complete, isTrue);
   });
 }
