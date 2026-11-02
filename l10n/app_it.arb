@@ -1992,6 +1992,7 @@
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Impostazioni & Profilo",
   "settingsHubSubtitle": "Gestisci le credenziali operative, canali atleti e policy offline-first.",
+  "settingsHubSubtitleShort": "Gestione studio e profilo.",
   "settingsHubSyncPill": "Dati locali attivi",
   "settingsNavPersonalInfo": "Informazioni personali",
   "settingsNavPdfBrand": "Brand PDF",

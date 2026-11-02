@@ -393,11 +393,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       backgroundColor: hubPageBackground(context),
-      // Wide: title-only bar (rail provides Home/escape). Phone: secondary bar.
+      // Wide: chrome-only bar (rail + body hub header own brand/title).
+      // Phone: secondary bar with settings title.
       appBar: slimHub
           ? StitchAppBar(
               title: l10n.settingsTitle,
               showLogo: false,
+              showTitle: false,
             )
           : StitchSecondaryAppBar(title: l10n.settingsTitle),
       body: SafeArea(

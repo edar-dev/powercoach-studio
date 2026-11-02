@@ -7578,6 +7578,12 @@ abstract class AppLocalizations {
   /// **'Manage operational credentials, athlete channels, and offline-first policies.'**
   String get settingsHubSubtitle;
 
+  /// No description provided for @settingsHubSubtitleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio and profile management.'**
+  String get settingsHubSubtitleShort;
+
   /// No description provided for @settingsHubSyncPill.
   ///
   /// In en, this message translates to:
