@@ -60,16 +60,24 @@ class CustomerListPopulatedBody extends StatelessWidget {
       );
     }
 
+    final showColumnHeader = Breakpoints.isDesktop(context);
+    final headerOffset = showColumnHeader ? 1 : 0;
+
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-      itemCount: filtered.length + 1,
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+      itemCount: filtered.length + 1 + headerOffset,
       separatorBuilder: (_, index) {
-        if (index >= filtered.length) return const SizedBox.shrink();
-        return const SizedBox(height: 10);
+        final lastDataIndex = filtered.length - 1 + headerOffset;
+        if (index >= lastDataIndex) return const SizedBox.shrink();
+        return const SizedBox(height: 6);
       },
       itemBuilder: (context, index) {
-        if (index == filtered.length) {
+        if (showColumnHeader && index == 0) {
+          return const _DesktopColumnHeader();
+        }
+        final dataIndex = index - headerOffset;
+        if (dataIndex == filtered.length) {
           return Padding(
             padding: const EdgeInsets.only(top: 4, bottom: 8),
             child: Text(
@@ -81,13 +89,56 @@ class CustomerListPopulatedBody extends StatelessWidget {
             ),
           );
         }
-        final c = filtered[index];
+        final c = filtered[dataIndex];
         return CustomerListTile(
           customer: c,
           theme: theme,
           colorScheme: colorScheme,
         );
       },
+    );
+  }
+}
+
+class _DesktopColumnHeader extends StatelessWidget {
+  const _DesktopColumnHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final style = theme.textTheme.labelSmall?.copyWith(
+      color: MarketingDarkColors.slate500,
+      fontWeight: FontWeight.w600,
+      letterSpacing: 0.3,
+    );
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(14, 0, 14, 2),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 3,
+            child: Text(l10n.customersColumnAthlete, style: style),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(l10n.customersColumnStatus, style: style),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(l10n.customersColumnProgram, style: style),
+          ),
+          SizedBox(
+            width: 108,
+            child: Text(
+              l10n.customersColumnActions,
+              style: style,
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

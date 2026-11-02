@@ -1473,6 +1473,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customersTitle => 'Clienti';
 
   @override
+  String get customersSubtitle =>
+      'Gestisci il roster atleti, monitora le schede attive e lo stato.';
+
+  @override
+  String get customersColumnAthlete => 'Atleta';
+
+  @override
+  String get customersColumnStatus => 'Stato';
+
+  @override
+  String get customersColumnProgram => 'Programma';
+
+  @override
+  String get customersColumnActions => 'Azioni';
+
+  @override
   String get exerciseLibraryTitle => 'Libreria esercizi';
 
   @override

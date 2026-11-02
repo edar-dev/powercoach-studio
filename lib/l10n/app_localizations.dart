@@ -2672,6 +2672,36 @@ abstract class AppLocalizations {
   /// **'Customers'**
   String get customersTitle;
 
+  /// No description provided for @customersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your athlete roster, active plans, and status.'**
+  String get customersSubtitle;
+
+  /// No description provided for @customersColumnAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete'**
+  String get customersColumnAthlete;
+
+  /// No description provided for @customersColumnStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get customersColumnStatus;
+
+  /// No description provided for @customersColumnProgram.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get customersColumnProgram;
+
+  /// No description provided for @customersColumnActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get customersColumnActions;
+
   /// No description provided for @exerciseLibraryTitle.
   ///
   /// In en, this message translates to:
