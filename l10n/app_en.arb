@@ -259,6 +259,11 @@
   "navTabWorkouts": "Plans",
   "navTabDiary": "Diary",
   "shellGlobalSearchHint": "Search clients, plans, exercises...",
+  "shellHelpTooltip": "Help",
+  "shellNotificationsTooltip": "Notifications",
+  "shellProfileTooltip": "Profile",
+  "shellHelpDialogTitle": "Tip",
+  "shellHelpDialogBody": "Use the top search to find clients. Settings and local reminders are available from the Settings menu.",
   "headerProfile": "Profile",
   "profileTitle": "Profile",
   "profileDisplayName": "Display name",
@@ -689,6 +694,8 @@
   "customersFilterActive": "Active",
   "customersFilterPaused": "Paused",
   "customersFilterUnassigned": "Unassigned",
+  "customersFilterExpiring": "Expiring soon",
+  "customersFilterExpired": "Expired",
   "customersFilterCount": "({count})",
   "@customersFilterCount": {
     "placeholders": {
@@ -697,6 +704,17 @@
       }
     }
   },
+  "customersPaginationRange": "{from}–{to} of {total}",
+  "@customersPaginationRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "customersPageSizeLabel": "Per page",
+  "customersPaginationPrev": "Previous page",
+  "customersPaginationNext": "Next page",
   "customersEmptyStep1Title": "Add a client",
   "customersEmptyStep1Body": "Create the first athlete profile.",
   "customersEmptyStep2Title": "Create a workout plan",

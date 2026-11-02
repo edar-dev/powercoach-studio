@@ -1532,6 +1532,36 @@ abstract class AppLocalizations {
   /// **'Search clients, plans, exercises...'**
   String get shellGlobalSearchHint;
 
+  /// No description provided for @shellHelpTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Help'**
+  String get shellHelpTooltip;
+
+  /// No description provided for @shellNotificationsTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get shellNotificationsTooltip;
+
+  /// No description provided for @shellProfileTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get shellProfileTooltip;
+
+  /// No description provided for @shellHelpDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tip'**
+  String get shellHelpDialogTitle;
+
+  /// No description provided for @shellHelpDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the top search to find clients. Settings and local reminders are available from the Settings menu.'**
+  String get shellHelpDialogBody;
+
   /// No description provided for @headerProfile.
   ///
   /// In en, this message translates to:
@@ -3086,11 +3116,47 @@ abstract class AppLocalizations {
   /// **'Unassigned'**
   String get customersFilterUnassigned;
 
+  /// No description provided for @customersFilterExpiring.
+  ///
+  /// In en, this message translates to:
+  /// **'Expiring soon'**
+  String get customersFilterExpiring;
+
+  /// No description provided for @customersFilterExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Expired'**
+  String get customersFilterExpired;
+
   /// No description provided for @customersFilterCount.
   ///
   /// In en, this message translates to:
   /// **'({count})'**
   String customersFilterCount(int count);
+
+  /// No description provided for @customersPaginationRange.
+  ///
+  /// In en, this message translates to:
+  /// **'{from}–{to} of {total}'**
+  String customersPaginationRange(int from, int to, int total);
+
+  /// No description provided for @customersPageSizeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Per page'**
+  String get customersPageSizeLabel;
+
+  /// No description provided for @customersPaginationPrev.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous page'**
+  String get customersPaginationPrev;
+
+  /// No description provided for @customersPaginationNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next page'**
+  String get customersPaginationNext;
 
   /// No description provided for @customersEmptyStep1Title.
   ///

@@ -796,6 +796,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellGlobalSearchHint => 'Search clients, plans, exercises...';
 
   @override
+  String get shellHelpTooltip => 'Help';
+
+  @override
+  String get shellNotificationsTooltip => 'Notifications';
+
+  @override
+  String get shellProfileTooltip => 'Profile';
+
+  @override
+  String get shellHelpDialogTitle => 'Tip';
+
+  @override
+  String get shellHelpDialogBody =>
+      'Use the top search to find clients. Settings and local reminders are available from the Settings menu.';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override
@@ -1696,9 +1712,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersFilterUnassigned => 'Unassigned';
 
   @override
+  String get customersFilterExpiring => 'Expiring soon';
+
+  @override
+  String get customersFilterExpired => 'Expired';
+
+  @override
   String customersFilterCount(int count) {
     return '($count)';
   }
+
+  @override
+  String customersPaginationRange(int from, int to, int total) {
+    return '$from–$to of $total';
+  }
+
+  @override
+  String get customersPageSizeLabel => 'Per page';
+
+  @override
+  String get customersPaginationPrev => 'Previous page';
+
+  @override
+  String get customersPaginationNext => 'Next page';
 
   @override
   String get customersEmptyStep1Title => 'Add a client';

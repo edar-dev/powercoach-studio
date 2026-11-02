@@ -259,6 +259,11 @@
   "navTabWorkouts": "Schede",
   "navTabDiary": "Diario",
   "shellGlobalSearchHint": "Cerca clienti, schede, esercizi...",
+  "shellHelpTooltip": "Aiuto",
+  "shellNotificationsTooltip": "Notifiche",
+  "shellProfileTooltip": "Profilo",
+  "shellHelpDialogTitle": "Suggerimento",
+  "shellHelpDialogBody": "Usa la ricerca in alto per trovare clienti. Impostazioni e promemoria locali sono disponibili dal menu Impostazioni.",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
   "profileDisplayName": "Nome visualizzato",
@@ -689,6 +694,8 @@
   "customersFilterActive": "Attivi",
   "customersFilterPaused": "In pausa",
   "customersFilterUnassigned": "Da assegnare",
+  "customersFilterExpiring": "In scadenza",
+  "customersFilterExpired": "Scaduti",
   "customersFilterCount": "({count})",
   "@customersFilterCount": {
     "placeholders": {
@@ -697,6 +704,17 @@
       }
     }
   },
+  "customersPaginationRange": "{from}–{to} di {total}",
+  "@customersPaginationRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "customersPageSizeLabel": "Per pagina",
+  "customersPaginationPrev": "Pagina precedente",
+  "customersPaginationNext": "Pagina successiva",
   "customersEmptyStep1Title": "Aggiungi un cliente",
   "customersEmptyStep1Body": "Crea l'anagrafica del primo atleta.",
   "customersEmptyStep2Title": "Crea una scheda",

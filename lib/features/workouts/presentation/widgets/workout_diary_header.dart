@@ -37,7 +37,8 @@ class _PhoneHeader extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          l10n.workoutDiaryPageTitle,
+          // Shorter phone H1 matching desktop diary density (not "Diario & Storico").
+          l10n.workoutDiaryDesktopTitle,
           style: const TextStyle(
             color: StitchMobileColors.onSurface,
             fontSize: StitchMobileColors.headlineSize,

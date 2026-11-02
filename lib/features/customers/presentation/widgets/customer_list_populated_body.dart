@@ -11,7 +11,9 @@ import 'customer_new_workout_sheet.dart';
 
 const Color _slate200 = Color(0xFFE2E8F0);
 
-class CustomerListPopulatedBody extends StatelessWidget {
+const List<int> kCustomerListPageSizes = [10, 25];
+
+class CustomerListPopulatedBody extends StatefulWidget {
   const CustomerListPopulatedBody({
     super.key,
     required this.theme,
@@ -30,13 +32,33 @@ class CustomerListPopulatedBody extends StatelessWidget {
   final CustomerListSort sort;
 
   @override
+  State<CustomerListPopulatedBody> createState() =>
+      _CustomerListPopulatedBodyState();
+}
+
+class _CustomerListPopulatedBodyState extends State<CustomerListPopulatedBody> {
+  int _page = 0;
+  int _pageSize = kCustomerListPageSizes.first;
+
+  @override
+  void didUpdateWidget(covariant CustomerListPopulatedBody oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.searchQuery != widget.searchQuery ||
+        oldWidget.statusFilter != widget.statusFilter ||
+        oldWidget.sort != widget.sort ||
+        oldWidget.customers != widget.customers) {
+      _page = 0;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final filtered = filterCustomerList(
-      customers: customers,
-      searchQuery: searchQuery,
-      statusFilter: statusFilter,
-      sort: sort,
+      customers: widget.customers,
+      searchQuery: widget.searchQuery,
+      statusFilter: widget.statusFilter,
+      sort: widget.sort,
     );
 
     if (filtered.isEmpty) {
@@ -60,42 +82,168 @@ class CustomerListPopulatedBody extends StatelessWidget {
       );
     }
 
+    final pageCount = (filtered.length / _pageSize).ceil().clamp(1, 0x7fffffff);
+    final page = _page.clamp(0, pageCount - 1);
+    final start = page * _pageSize;
+    final end = (start + _pageSize).clamp(0, filtered.length);
+    final pageItems = filtered.sublist(start, end);
+
     final showColumnHeader = Breakpoints.isDesktop(context);
     final headerOffset = showColumnHeader ? 1 : 0;
 
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
-      itemCount: filtered.length + 1 + headerOffset,
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      itemCount: pageItems.length + 1 + headerOffset,
       separatorBuilder: (_, index) {
-        final lastDataIndex = filtered.length - 1 + headerOffset;
+        final lastDataIndex = pageItems.length - 1 + headerOffset;
         if (index >= lastDataIndex) return const SizedBox.shrink();
-        return const SizedBox(height: 6);
+        return const SizedBox(height: 4);
       },
       itemBuilder: (context, index) {
         if (showColumnHeader && index == 0) {
           return const _DesktopColumnHeader();
         }
         final dataIndex = index - headerOffset;
-        if (dataIndex == filtered.length) {
-          return Padding(
-            padding: const EdgeInsets.only(top: 4, bottom: 8),
-            child: Text(
-              l10n.customersShownOfTotal(filtered.length, customers.length),
-              style: const TextStyle(
-                fontSize: 12,
-                color: MarketingDarkColors.slate400,
-              ),
-            ),
+        if (dataIndex == pageItems.length) {
+          return _PaginationFooter(
+            from: start + 1,
+            to: end,
+            filteredTotal: filtered.length,
+            allTotal: widget.customers.length,
+            page: page,
+            pageCount: pageCount,
+            pageSize: _pageSize,
+            onPageSizeChanged: (size) {
+              setState(() {
+                _pageSize = size;
+                _page = 0;
+              });
+            },
+            onPrev: page > 0 ? () => setState(() => _page = page - 1) : null,
+            onNext: page < pageCount - 1
+                ? () => setState(() => _page = page + 1)
+                : null,
           );
         }
-        final c = filtered[dataIndex];
+        final c = pageItems[dataIndex];
         return CustomerListTile(
           customer: c,
-          theme: theme,
-          colorScheme: colorScheme,
+          theme: widget.theme,
+          colorScheme: widget.colorScheme,
         );
       },
+    );
+  }
+}
+
+class _PaginationFooter extends StatelessWidget {
+  const _PaginationFooter({
+    required this.from,
+    required this.to,
+    required this.filteredTotal,
+    required this.allTotal,
+    required this.page,
+    required this.pageCount,
+    required this.pageSize,
+    required this.onPageSizeChanged,
+    required this.onPrev,
+    required this.onNext,
+  });
+
+  final int from;
+  final int to;
+  final int filteredTotal;
+  final int allTotal;
+  final int page;
+  final int pageCount;
+  final int pageSize;
+  final ValueChanged<int> onPageSizeChanged;
+  final VoidCallback? onPrev;
+  final VoidCallback? onNext;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 8, bottom: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.customersShownOfTotal(filteredTotal, allTotal),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: MarketingDarkColors.slate400,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: MarketingDarkColors.surface900.withValues(alpha: 0.7),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: MarketingDarkColors.border),
+            ),
+            child: Row(
+              children: [
+                Text(
+                  l10n.customersPageSizeLabel,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: MarketingDarkColors.slate400,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton<int>(
+                    value: pageSize,
+                    isDense: true,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: cs.onSurface,
+                    ),
+                    dropdownColor: MarketingDarkColors.surface,
+                    items: [
+                      for (final size in kCustomerListPageSizes)
+                        DropdownMenuItem(value: size, child: Text('$size')),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) onPageSizeChanged(v);
+                    },
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  l10n.customersPaginationRange(from, to, filteredTotal),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: MarketingDarkColors.slate300,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.customersPaginationPrev,
+                  icon: const Icon(Icons.chevron_left, size: 20),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onPrev,
+                ),
+                Text(
+                  '${page + 1}/$pageCount',
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: MarketingDarkColors.slate400,
+                  ),
+                ),
+                IconButton(
+                  tooltip: l10n.customersPaginationNext,
+                  icon: const Icon(Icons.chevron_right, size: 20),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: onNext,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -187,7 +335,7 @@ class CustomerListTile extends StatelessWidget {
                   BorderRadius.circular(MarketingDarkColors.radiusXl),
               border: Border.all(color: MarketingDarkColors.border),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: wide
                 ? _WideRow(
                     customer: customer,

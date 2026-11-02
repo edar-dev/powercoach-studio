@@ -175,8 +175,8 @@ class CustomerListToolbar extends StatelessWidget {
     return switch (f) {
       CustomerListStatusFilter.all => l10n.customersFilterAll,
       CustomerListStatusFilter.active => l10n.customersFilterActive,
-      CustomerListStatusFilter.paused => l10n.customersFilterPaused,
-      CustomerListStatusFilter.unassigned => l10n.customersFilterUnassigned,
+      CustomerListStatusFilter.expiring => l10n.customersFilterExpiring,
+      CustomerListStatusFilter.expired => l10n.customersFilterExpired,
     };
   }
 }
