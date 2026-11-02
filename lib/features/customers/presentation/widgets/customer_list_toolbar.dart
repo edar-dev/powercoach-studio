@@ -9,7 +9,7 @@ import '../../data/models/customer.dart';
 import '../customer_list_filter.dart';
 
 /// Search + status chips + sort + New customer CTA (Stitch control bar).
-class CustomerListToolbar extends StatelessWidget {
+class CustomerListToolbar extends StatefulWidget {
   const CustomerListToolbar({
     super.key,
     required this.customers,
@@ -32,6 +32,37 @@ class CustomerListToolbar extends StatelessWidget {
   final bool showNewCustomerButton;
 
   @override
+  State<CustomerListToolbar> createState() => _CustomerListToolbarState();
+}
+
+class _CustomerListToolbarState extends State<CustomerListToolbar> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController(text: widget.searchQuery);
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomerListToolbar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.searchQuery != oldWidget.searchQuery &&
+        widget.searchQuery != _searchController.text) {
+      _searchController.value = TextEditingValue(
+        text: widget.searchQuery,
+        selection: TextSelection.collapsed(offset: widget.searchQuery.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
@@ -52,7 +83,8 @@ class CustomerListToolbar extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
-                  onChanged: onSearchChanged,
+                  controller: _searchController,
+                  onChanged: widget.onSearchChanged,
                   style: const TextStyle(
                     color: MarketingDarkColors.text,
                     fontSize: 13,
@@ -103,7 +135,7 @@ class CustomerListToolbar extends StatelessWidget {
                   ),
                 ),
               ),
-              if (showNewCustomerButton) ...[
+              if (widget.showNewCustomerButton) ...[
                 const SizedBox(width: 12),
                 FilledButton.icon(
                   onPressed: () => navigateTo(context, AppPaths.customersNew),
@@ -152,17 +184,17 @@ class CustomerListToolbar extends StatelessWidget {
                       for (final f in customerListStatusFilters)
                         _StatusChip(
                           label: _labelFor(l10n, f),
-                          count: countForStatusFilter(customers, f),
-                          selected: statusFilter == f,
-                          onTap: () => onStatusFilterSelected(f),
+                          count: countForStatusFilter(widget.customers, f),
+                          selected: widget.statusFilter == f,
+                          onTap: () => widget.onStatusFilterSelected(f),
                         ),
                     ],
                   ),
                 ),
               ),
               _SortControl(
-                sort: sort,
-                onSortChanged: onSortChanged,
+                sort: widget.sort,
+                onSortChanged: widget.onSortChanged,
               ),
             ],
           ),

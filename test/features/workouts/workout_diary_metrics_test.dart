@@ -37,11 +37,11 @@ void main() {
             dayIndex: 0,
             status: PlanSessionStatus.completed,
             sessionDate: DateTime(2026, 1, 1),
-            exercises: [
+            exercises: const [
               ExecutedExercise(
                 exerciseId: 'ex1',
                 name: 'Squat',
-                sets: const [
+                sets: [
                   ExecutedSet(load: '100@8', reps: '5'),
                   ExecutedSet(load: '100@9', reps: '5'),
                 ],
