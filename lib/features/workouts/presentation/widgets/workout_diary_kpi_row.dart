@@ -94,7 +94,7 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
           return Row(
             children: [
               for (var i = 0; i < cards.length; i++) ...[
-                if (i > 0) const SizedBox(width: 12),
+                if (i > 0) const SizedBox(width: 8),
                 Expanded(child: cards[i]),
               ],
             ],
@@ -105,11 +105,11 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
             Row(
               children: [
                 Expanded(child: cards[0]),
-                const SizedBox(width: 12),
+                const SizedBox(width: 8),
                 Expanded(child: cards[1]),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             cards[2],
           ],
         );
@@ -201,7 +201,7 @@ class _KpiCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: MarketingDarkColors.stitchCardElevated,
         borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
@@ -226,7 +226,7 @@ class _KpiCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: iconBg,
                   borderRadius: BorderRadius.circular(8),
@@ -236,7 +236,7 @@ class _KpiCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 6),
           Text(
             value,
             style: theme.textTheme.headlineSmall?.copyWith(
@@ -245,7 +245,7 @@ class _KpiCard extends StatelessWidget {
             ),
           ),
           if (hint != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               hint!,
               style: theme.textTheme.bodySmall?.copyWith(

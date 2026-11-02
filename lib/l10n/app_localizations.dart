@@ -8022,6 +8022,12 @@ abstract class AppLocalizations {
   /// **'Diary & History'**
   String get workoutDiaryPageTitle;
 
+  /// No description provided for @workoutDiaryDesktopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Training diary'**
+  String get workoutDiaryDesktopTitle;
+
   /// No description provided for @workoutDiaryPageBadge.
   ///
   /// In en, this message translates to:

@@ -4515,6 +4515,9 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutDiaryPageTitle => 'Diario & Storico';
 
   @override
+  String get workoutDiaryDesktopTitle => 'Diario Allenamenti';
+
+  @override
   String get workoutDiaryPageBadge => 'Registro Sessioni Live';
 
   @override

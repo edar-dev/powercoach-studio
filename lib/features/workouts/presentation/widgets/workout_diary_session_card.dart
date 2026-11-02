@@ -252,7 +252,7 @@ class _DesktopCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
             border: Border.all(
@@ -273,7 +273,7 @@ class _DesktopCard extends StatelessWidget {
                     statusColor: statusColor,
                     isSkipped: isSkipped,
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -323,9 +323,9 @@ class _DesktopCard extends StatelessWidget {
                           ],
                         ),
                         if (!isSkipped) ...[
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 6),
                           Wrap(
-                            spacing: 16,
+                            spacing: 12,
                             runSpacing: 4,
                             children: [
                               _MetaChip(
@@ -354,9 +354,9 @@ class _DesktopCard extends StatelessWidget {
                 ],
               ),
               if (notes.isNotEmpty) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: const Color(0x990E1522),
                     borderRadius: BorderRadius.circular(8),
@@ -416,8 +416,8 @@ class _Avatar extends StatelessWidget {
       clipBehavior: Clip.none,
       children: [
         Container(
-          width: 44,
-          height: 44,
+          width: 40,
+          height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
