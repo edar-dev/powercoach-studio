@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/data_quality/data_quality.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
+import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/screens/coach_dashboard_screen.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_plan_api_model.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
@@ -94,6 +95,7 @@ void main() {
       expect(s.todayItems, hasLength(1));
       expect(s.todayItems.single.planId, 'p1');
       expect(s.todayItems.single.clientName, 'Anna');
+      expect(s.todayItems.single.status, PlanSessionStatus.planned);
       expect(s.recentPlanCustomerId, 'c1');
       expect(s.recentPlanId, 'p1');
     });
@@ -173,11 +175,17 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      expect(find.text('Today'), findsOneWidget);
+      // Default test surface is tablet-wide → slimHub uses appointments title.
+      expect(
+        find.text("Today's appointments and sessions"),
+        findsOneWidget,
+      );
+      expect(find.text('Today'), findsNothing);
       expect(find.text('Needs attention'), findsOneWidget);
       expect(find.text('Clients without a program'), findsOneWidget);
       expect(find.text('Plans to refresh'), findsOneWidget);
       expect(find.text('Open data health'), findsNothing);
+      expect(find.text('Management shortcuts'), findsNothing);
     });
 
     testWidgets('surfaces actionable data-health findings in Attention',

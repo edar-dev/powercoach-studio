@@ -6724,6 +6724,54 @@ abstract class AppLocalizations {
   /// **'alerts'**
   String get dashboardMetricAlertsSuffix;
 
+  /// No description provided for @dashboardGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String dashboardGreeting(String name);
+
+  /// No description provided for @dashboardGreetingFallbackName.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get dashboardGreetingFallbackName;
+
+  /// No description provided for @dashboardMetricActiveClients.
+  ///
+  /// In en, this message translates to:
+  /// **'Active clients'**
+  String get dashboardMetricActiveClients;
+
+  /// No description provided for @dashboardMetricSessionsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions today'**
+  String get dashboardMetricSessionsToday;
+
+  /// No description provided for @dashboardMetricPendingReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending reviews'**
+  String get dashboardMetricPendingReviews;
+
+  /// No description provided for @dashboardOpenCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Open calendar'**
+  String get dashboardOpenCalendar;
+
+  /// No description provided for @dashboardOpenDiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open diary'**
+  String get dashboardOpenDiary;
+
+  /// No description provided for @dashboardSectionAppointmentsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s appointments and sessions'**
+  String get dashboardSectionAppointmentsToday;
+
   /// No description provided for @dashboardTodayEmptyHint.
   ///
   /// In en, this message translates to:

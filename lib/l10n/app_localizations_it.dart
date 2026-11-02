@@ -3776,6 +3776,33 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardMetricAlertsSuffix => 'avvisi';
 
   @override
+  String dashboardGreeting(String name) {
+    return 'Buongiorno, $name';
+  }
+
+  @override
+  String get dashboardGreetingFallbackName => 'Coach';
+
+  @override
+  String get dashboardMetricActiveClients => 'Clienti attivi';
+
+  @override
+  String get dashboardMetricSessionsToday => 'Sessioni oggi';
+
+  @override
+  String get dashboardMetricPendingReviews => 'Revisioni in attesa';
+
+  @override
+  String get dashboardOpenCalendar => 'Apri calendario';
+
+  @override
+  String get dashboardOpenDiary => 'Apri diario';
+
+  @override
+  String get dashboardSectionAppointmentsToday =>
+      'Appuntamenti e sessioni di oggi';
+
+  @override
   String get dashboardTodayEmptyHint =>
       'Nessuna sessione o promemoria pianificato per questa data. Apri il calendario.';
 
