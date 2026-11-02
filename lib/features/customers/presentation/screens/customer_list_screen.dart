@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
@@ -35,6 +36,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
   bool _loading = true;
   String? _error;
   String _searchQuery = '';
+  String? _lastRouteSearchQ;
   CustomerListStatusFilter _statusFilter = CustomerListStatusFilter.all;
   CustomerListSort _sort = CustomerListSort.recent;
 
@@ -45,6 +47,18 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       if (!mounted) return;
       _load();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Shell global search seeds the local filter via `?q=` (no backend index).
+    final q = GoRouterState.of(context).uri.queryParameters['q'] ?? '';
+    if (q == _lastRouteSearchQ) return;
+    _lastRouteSearchQ = q;
+    if (q != _searchQuery) {
+      _searchQuery = q;
+    }
   }
 
   Future<void> _load() async {

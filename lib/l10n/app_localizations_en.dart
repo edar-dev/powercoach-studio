@@ -793,6 +793,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get navTabDiary => 'Diary';
 
   @override
+  String get shellGlobalSearchHint => 'Search clients, plans, exercises...';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override

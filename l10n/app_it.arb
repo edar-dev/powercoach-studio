@@ -258,6 +258,7 @@
   "navTabCustomers": "Clienti",
   "navTabWorkouts": "Schede",
   "navTabDiary": "Diario",
+  "shellGlobalSearchHint": "Cerca clienti, schede, esercizi...",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
   "profileDisplayName": "Nome visualizzato",

@@ -139,6 +139,41 @@ class StitchM3Theme {
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
+      navigationRailTheme: const NavigationRailThemeData(
+        backgroundColor: bg,
+        indicatorColor: accentLight,
+        selectedIconTheme: IconThemeData(color: accent, size: 22),
+        unselectedIconTheme: IconThemeData(color: textMuted, size: 22),
+        selectedLabelTextStyle: TextStyle(
+          color: accent,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelTextStyle: TextStyle(
+          color: textMuted,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: bg,
+        indicatorColor: accentLight,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return TextStyle(
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? accent : textMuted,
+          );
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return IconThemeData(
+            size: 22,
+            color: selected ? accent : textMuted,
+          );
+        }),
+      ),
       textTheme: _textTheme,
     );
   }
@@ -233,6 +268,44 @@ class StitchM3Theme {
           ),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
+      ),
+      navigationRailTheme: const NavigationRailThemeData(
+        backgroundColor: bgDark,
+        indicatorColor: Color(0xFF1E3A5F),
+        selectedIconTheme: IconThemeData(color: Colors.white, size: 22),
+        unselectedIconTheme: IconThemeData(
+          color: onSurfaceVariantDark,
+          size: 22,
+        ),
+        selectedLabelTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelTextStyle: TextStyle(
+          color: onSurfaceVariantDark,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: bgDark,
+        indicatorColor: const Color(0xFF1E3A5F),
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return TextStyle(
+            fontSize: 12,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+            color: selected ? Colors.white : onSurfaceVariantDark,
+          );
+        }),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
+          return IconThemeData(
+            size: 22,
+            color: selected ? Colors.white : onSurfaceVariantDark,
+          );
+        }),
       ),
       textTheme: _textThemeDark,
     );
