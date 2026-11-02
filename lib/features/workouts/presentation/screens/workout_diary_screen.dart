@@ -256,9 +256,11 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
 
     return Scaffold(
       backgroundColor: hubPageBackground(context),
+      // Page H1 lives in [WorkoutDiaryHeader] — avoid a second "Storico" bar.
       appBar: StitchAppBar(
-        title: l10n.workoutDiaryTitle,
+        title: l10n.workoutDiaryPageTitle,
         showLogo: !slimHub,
+        showTitle: false,
         actions: [
           if (!slimHub)
             IconButton(

@@ -30,6 +30,7 @@ class WorkoutEditorAppBar extends StatelessWidget
     this.onLogSession,
     this.onLogSessionUnavailable,
     this.showShellNavActions = true,
+    this.slimShellChrome = false,
   });
 
   final ThemeData theme;
@@ -59,6 +60,11 @@ class WorkoutEditorAppBar extends StatelessWidget
   /// Home/Settings cluster. Hide when [NavigationRail] already provides them.
   final bool showShellNavActions;
 
+  /// Sandbox builder beside the rail: omit back + hub title; keep editor actions.
+  ///
+  /// Customer editors and phone sandbox keep full chrome (back + dirty-guard exit).
+  final bool slimShellChrome;
+
   String? get _assignedPlanBadge {
     if (!editorMode || !hasLoadedPlan) return null;
     final name = editorCustomerName?.trim();
@@ -70,37 +76,37 @@ class WorkoutEditorAppBar extends StatelessWidget
   Widget build(BuildContext context) {
     final titleText =
         editorMode ? l10n.workoutBuilderTitle : l10n.workoutBuilderSandboxTitle;
-    final badge = _assignedPlanBadge;
+    final badge = slimShellChrome ? null : _assignedPlanBadge;
 
     final toolbarHeight = badge == null ? kToolbarHeight : kToolbarHeight + 8;
+    final titleStyle = theme.textTheme.titleLarge?.copyWith(
+      fontWeight: FontWeight.w700,
+      color: colorScheme.onSurface,
+    );
 
     return AppBar(
       backgroundColor: colorScheme.surface,
       elevation: 0,
       scrolledUnderElevation: 1,
       toolbarHeight: toolbarHeight,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () async => onBack(),
-      ),
-      title: badge == null
-          ? Text(
-              titleText,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface,
-              ),
-            )
+      automaticallyImplyLeading: !slimShellChrome,
+      leading: slimShellChrome
+          ? null
+          : IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () async => onBack(),
+            ),
+      title: slimShellChrome
+          ? null
+          : badge == null
+          ? Text(titleText, style: titleStyle)
           : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   titleText,
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: colorScheme.onSurface,
-                  ),
+                  style: titleStyle,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
@@ -203,7 +209,7 @@ class WorkoutEditorAppBar extends StatelessWidget
 
   @override
   Size get preferredSize {
-    final hasBadge = _assignedPlanBadge != null;
+    final hasBadge = !slimShellChrome && _assignedPlanBadge != null;
     return Size.fromHeight(kToolbarHeight + 1 + (hasBadge ? 8 : 0));
   }
 }

@@ -164,13 +164,39 @@ void main() {
     );
   });
 
-  testWidgets('sandbox mode shows distinct draft builder title', (tester) async {
+  testWidgets(
+    'wide sandbox slims chrome: no back/title, keeps Salva and export',
+    (tester) async {
+      // Default surface (800) is tablet+ → rail chrome → slimShellChrome.
+      await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: true)));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.text('Builder bozza'), findsNothing);
+      expect(find.text('Editor scheda'), findsNothing);
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+      expect(find.text('Salva'), findsOneWidget);
+      expect(find.byIcon(Icons.upload_file), findsOneWidget);
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+    },
+  );
+
+  testWidgets('phone sandbox keeps draft title and back affordance', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
     await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: true)));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
 
     expect(find.text('Builder bozza'), findsOneWidget);
     expect(find.text('Editor scheda'), findsNothing);
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.text('Salva'), findsOneWidget);
   });
 
   testWidgets('editor mode shows assigned badge only after plan is loaded', (

@@ -5,7 +5,9 @@ import '../ui/breakpoints.dart';
 /// Whether the primary shell shows [NavigationRail] (tablet+).
 ///
 /// On wide layouts the rail already provides logo-equivalent Home (Today tab)
-/// and Settings — hub [AppBar]s should omit those duplicates.
+/// and Settings — hub [AppBar]s should omit those duplicates via
+/// `showLogo: false` / no shell settings action, and share [StitchAppBar]
+/// title density (`titleLarge` + `kToolbarHeight`).
 bool primaryShellUsesRail(BuildContext context) =>
     Breakpoints.isTabletOrWider(context);
 
