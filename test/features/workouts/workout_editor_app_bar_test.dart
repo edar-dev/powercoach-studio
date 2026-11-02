@@ -12,6 +12,10 @@ Future<void> _pumpAppBar(
   VoidCallback? onLogSessionUnavailable,
   Future<void> Function()? onHome,
   bool showShellNavActions = true,
+  bool editorMode = true,
+  bool slimShellChrome = false,
+  bool showManualSaveButton = false,
+  bool hideExportMenu = true,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -28,12 +32,13 @@ Future<void> _pumpAppBar(
               theme: theme,
               colorScheme: theme.colorScheme,
               l10n: l10n,
-              editorMode: true,
+              editorMode: editorMode,
               loading: false,
-              hideExportMenu: true,
+              hideExportMenu: hideExportMenu,
               saving: false,
-              showManualSaveButton: false,
+              showManualSaveButton: showManualSaveButton,
               showShellNavActions: showShellNavActions,
+              slimShellChrome: slimShellChrome,
               onBack: () async {},
               onHome: onHome ?? () async {},
               onImportJson: () {},
@@ -136,5 +141,45 @@ void main() {
     expect(find.byTooltip('Go to Today'), findsNothing);
     expect(find.byTooltip('Settings'), findsNothing);
     expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+  });
+
+  testWidgets(
+    'slimShellChrome omits back and title but keeps editor actions',
+    (tester) async {
+      await _pumpAppBar(
+        tester,
+        showLogSessionAction: false,
+        logSessionEnabled: false,
+        editorMode: false,
+        slimShellChrome: true,
+        showShellNavActions: false,
+        showManualSaveButton: true,
+        hideExportMenu: false,
+      );
+
+      expect(find.byIcon(Icons.arrow_back), findsNothing);
+      expect(find.text('Draft builder'), findsNothing);
+      expect(find.text('Workout Builder'), findsNothing);
+      expect(find.byTooltip('Go to Today'), findsNothing);
+      expect(find.byIcon(Icons.upload_file), findsOneWidget);
+      expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      expect(find.text('Save'), findsOneWidget);
+    },
+  );
+
+  testWidgets('editor mode keeps back and title even when shell nav hidden', (
+    tester,
+  ) async {
+    await _pumpAppBar(
+      tester,
+      showLogSessionAction: false,
+      logSessionEnabled: false,
+      editorMode: true,
+      slimShellChrome: false,
+      showShellNavActions: false,
+    );
+
+    expect(find.byIcon(Icons.arrow_back), findsOneWidget);
+    expect(find.text('Workout Builder'), findsOneWidget);
   });
 }

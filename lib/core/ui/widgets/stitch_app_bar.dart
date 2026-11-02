@@ -10,6 +10,9 @@ import '../../../l10n/app_localizations.dart';
 ///
 /// On tablet+ inside [PrimaryShellScaffold], set [showLogo] to false — the
 /// [NavigationRail] is the primary chrome and logo/Home is redundant.
+///
+/// Set [showTitle] to false when the page body already owns the H1 (e.g. Diary
+/// hero header) so the bar does not repeat the same heading.
 class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const StitchAppBar({
     super.key,
@@ -18,6 +21,7 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leading,
     this.onLogoTap,
     this.showLogo = true,
+    this.showTitle = true,
     this.bottom,
   });
 
@@ -30,6 +34,9 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// When false, renders title only (slim hub chrome beside the rail).
   final bool showLogo;
+
+  /// When false, omits the title text (page body / hero owns the heading).
+  final bool showTitle;
 
   /// Optional bottom (e.g. [TabBar]); when null, a 1px outline divider is used.
   final PreferredSizeWidget? bottom;
@@ -51,50 +58,55 @@ class StitchAppBar extends StatelessWidget implements PreferredSizeWidget {
     navigateTo(context, AppPaths.dashboard);
   }
 
+  TextStyle? _titleStyle(ThemeData theme, ColorScheme cs) =>
+      theme.textTheme.titleLarge?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: cs.onSurface,
+      );
+
+  Widget? _buildTitle(BuildContext context, ThemeData theme, ColorScheme cs) {
+    if (!showLogo && !showTitle) return null;
+
+    final titleText = showTitle
+        ? Text(
+            title,
+            style: _titleStyle(theme, cs),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          )
+        : null;
+
+    if (!showLogo) return titleText;
+
+    final l10n = AppLocalizations.of(context);
+    return Row(
+      children: [
+        Tooltip(
+          message: l10n.navHomeTooltip,
+          child: InkWell(
+            onTap: () => _handleLogoTap(context),
+            borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
+            child: const _LogoBadge(logoAsset: _logoAsset),
+          ),
+        ),
+        if (titleText != null) ...[
+          const SizedBox(width: 12),
+          Expanded(child: titleText),
+        ],
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final l10n = AppLocalizations.of(context);
     return AppBar(
       backgroundColor: cs.surface,
       elevation: 0,
       scrolledUnderElevation: 1,
       leading: leading,
-      title: showLogo
-          ? Row(
-              children: [
-                Tooltip(
-                  message: l10n.navHomeTooltip,
-                  child: InkWell(
-                    onTap: () => _handleLogoTap(context),
-                    borderRadius: BorderRadius.circular(StitchM3Theme.radiusMd),
-                    child: const _LogoBadge(logoAsset: _logoAsset),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                      color: cs.onSurface,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
-                ),
-              ],
-            )
-          : Text(
-              title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-                color: cs.onSurface,
-              ),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-            ),
+      title: _buildTitle(context, theme, cs),
       actions: actions,
       bottom: bottom ??
           PreferredSize(

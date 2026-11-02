@@ -109,8 +109,11 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
 
     // Sandbox builder lives in the primary shell; hide Home/Settings when the
     // rail already provides them. Customer editors stay full-screen → keep them.
-    final showShellNavActions =
-        editorMode || !primaryShellUsesRail(context);
+    final railPresent = primaryShellUsesRail(context);
+    final showShellNavActions = editorMode || !railPresent;
+    // Wide sandbox: rail is hub context — slim to actions-only (keep Salva/export).
+    // Nested customer editor + phone sandbox keep back for dirty-guard exit.
+    final slimShellChrome = !editorMode && railPresent;
 
     return PopScope(
       canPop: canPop,
@@ -130,6 +133,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           saving: saving,
           showManualSaveButton: showManualSaveButton,
           showShellNavActions: showShellNavActions,
+          slimShellChrome: slimShellChrome,
           onBack: () async {
             unawaited(HapticFeedback.mediumImpact());
             await onBack();

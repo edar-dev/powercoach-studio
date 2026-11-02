@@ -40,4 +40,48 @@ void main() {
     expect(find.text('Hub'), findsOneWidget);
     expect(find.byTooltip('Go to Today'), findsOneWidget);
   });
+
+  testWidgets('showTitle false omits title text while keeping logo', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: StitchM3Theme.dark,
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          appBar: StitchAppBar(title: 'Hub', showTitle: false),
+          body: SizedBox.shrink(),
+        ),
+      ),
+    );
+
+    expect(find.text('Hub'), findsNothing);
+    expect(find.byTooltip('Go to Today'), findsOneWidget);
+  });
+
+  testWidgets('showTitle false and showLogo false yields empty title slot', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: StitchM3Theme.dark,
+        locale: const Locale('en'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: const Scaffold(
+          appBar: StitchAppBar(
+            title: 'Hub',
+            showLogo: false,
+            showTitle: false,
+          ),
+          body: SizedBox.shrink(),
+        ),
+      ),
+    );
+
+    expect(find.text('Hub'), findsNothing);
+    expect(find.byTooltip('Go to Today'), findsNothing);
+  });
 }
