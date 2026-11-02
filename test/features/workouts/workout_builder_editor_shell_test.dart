@@ -165,7 +165,7 @@ void main() {
   });
 
   testWidgets(
-    'wide sandbox slims chrome: no back/title, keeps Salva and export',
+    'wide sandbox slims chrome: no back/title, keeps Salva, export, and tabs',
     (tester) async {
       // Default surface (800) is tablet+ → rail chrome → slimShellChrome.
       await tester.pumpWidget(app(const _ShellHarness(showsMobilityTab: true)));
@@ -178,6 +178,12 @@ void main() {
       expect(find.text('Salva'), findsOneWidget);
       expect(find.byIcon(Icons.upload_file), findsOneWidget);
       expect(find.byIcon(Icons.ios_share), findsOneWidget);
+      // Dense config header still exposes routine title + section tabs.
+      expect(find.text('Programma test'), findsOneWidget);
+      expect(find.text('Allenamento'), findsOneWidget);
+      expect(find.text('Mobilità'), findsOneWidget);
+      expect(find.text('Dettagli'), findsOneWidget);
+      expect(find.byType(TabBar), findsOneWidget);
     },
   );
 
