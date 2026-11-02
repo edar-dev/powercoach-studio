@@ -10,6 +10,7 @@ class WorkoutRoutineNameBar extends StatefulWidget {
     required this.l10n,
     this.readOnly = false,
     this.emptyHint,
+    this.compact = false,
   });
 
   final TextEditingController controller;
@@ -18,6 +19,9 @@ class WorkoutRoutineNameBar extends StatefulWidget {
 
   /// Softer placeholder when the routine has no title yet (e.g. customer name).
   final String? emptyHint;
+
+  /// Denser padding when nested in slim sandbox config chrome.
+  final bool compact;
 
   @override
   State<WorkoutRoutineNameBar> createState() => _WorkoutRoutineNameBarState();
@@ -97,8 +101,10 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
     final showField = widget.readOnly || _editing || _hasTitle;
     final hint = _hintText;
 
+    final hPad = widget.compact ? 0.0 : 12.0;
+    final vPad = showField ? 2.0 : 0.0;
     return Padding(
-      padding: EdgeInsets.fromLTRB(16, showField ? 4 : 0, 16, 0),
+      padding: EdgeInsets.fromLTRB(hPad, vPad, hPad, 0),
       child: showField
           ? TextField(
               controller: widget.controller,
@@ -111,7 +117,9 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
               onSubmitted: (_) => _focusNode.unfocus(),
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding: const EdgeInsets.symmetric(vertical: 6),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: widget.compact ? 4 : 6,
+                ),
                 border: InputBorder.none,
                 hintText: hint,
                 hintStyle: _titleStyle(theme, cs, hint: true),
@@ -130,7 +138,9 @@ class _WorkoutRoutineNameBarState extends State<WorkoutRoutineNameBar> {
                     onTap: _startEditing,
                     borderRadius: BorderRadius.circular(6),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        vertical: widget.compact ? 2 : 4,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [

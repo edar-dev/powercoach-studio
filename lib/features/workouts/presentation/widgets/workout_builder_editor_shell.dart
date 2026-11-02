@@ -101,6 +101,37 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
     );
   }
 
+  /// Wide sandbox: denser surface card around routine name + section tabs.
+  Widget _buildConfigChrome({
+    required bool slimShellChrome,
+    required ColorScheme colorScheme,
+    required Widget nameBar,
+    required Widget sectionTabs,
+  }) {
+    final chrome = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [nameBar, sectionTabs],
+    );
+    if (!slimShellChrome) return chrome;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: colorScheme.outlineVariant.withValues(alpha: 0.55),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(14, 12, 14, 4),
+          child: chrome,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -169,23 +200,31 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          WorkoutRoutineNameBar(
-                            controller: routineNameController,
-                            l10n: l10n,
-                            readOnly: showReadOnlyBanner,
-                            emptyHint: routineTitleHint,
-                          ),
-                          TabBar(
-                            controller: sectionTabController,
-                            labelColor: StitchM3Theme.accent,
-                            unselectedLabelColor: cs.onSurfaceVariant,
-                            indicatorColor: StitchM3Theme.accent,
-                            tabs: [
-                              Tab(text: l10n.workoutBuilderTabTraining),
-                              if (showsMobilityTab)
-                                Tab(text: l10n.workoutBuilderTabMobility),
-                              Tab(text: l10n.workoutBuilderTabDetails),
-                            ],
+                          _buildConfigChrome(
+                            slimShellChrome: slimShellChrome,
+                            colorScheme: cs,
+                            nameBar: WorkoutRoutineNameBar(
+                              controller: routineNameController,
+                              l10n: l10n,
+                              readOnly: showReadOnlyBanner,
+                              emptyHint: routineTitleHint,
+                              compact: slimShellChrome,
+                            ),
+                            sectionTabs: TabBar(
+                              controller: sectionTabController,
+                              labelColor: StitchM3Theme.accent,
+                              unselectedLabelColor: cs.onSurfaceVariant,
+                              indicatorColor: StitchM3Theme.accent,
+                              labelPadding: slimShellChrome
+                                  ? const EdgeInsets.symmetric(horizontal: 12)
+                                  : null,
+                              tabs: [
+                                Tab(text: l10n.workoutBuilderTabTraining),
+                                if (showsMobilityTab)
+                                  Tab(text: l10n.workoutBuilderTabMobility),
+                                Tab(text: l10n.workoutBuilderTabDetails),
+                              ],
+                            ),
                           ),
                           Expanded(
                             child: TabBarView(

@@ -101,8 +101,8 @@ class TrainingPhaseDetailHeader extends StatelessWidget {
               crossAxisCount: columns,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
               childAspectRatio: columns == 1 ? 4.8 : 3.6,
               children: chips,
             );
@@ -131,7 +131,7 @@ class _MetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: cs.surface.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(10),
@@ -182,7 +182,7 @@ class _ProgressMetaChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: cs.surface.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(10),
@@ -197,7 +197,7 @@ class _ProgressMetaChip extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 8),
           Expanded(
             child: ClipRRect(
               borderRadius: BorderRadius.circular(99),

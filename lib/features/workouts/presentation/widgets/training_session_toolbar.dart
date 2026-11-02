@@ -101,7 +101,7 @@ class TrainingSessionToolbar extends StatelessWidget {
             ),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(16, 4, 8, 4),
+        padding: const EdgeInsets.fromLTRB(12, 2, 6, 2),
         child: Row(
           children: [
             _WeekMenuButton(
@@ -117,21 +117,21 @@ class TrainingSessionToolbar extends StatelessWidget {
               onDeleteWeek: onDeleteWeek,
               onEditWeek: onEditWeek,
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
                     for (var i = 0; i < days.length; i++) ...[
-                      if (i > 0) const SizedBox(width: 6),
+                      if (i > 0) const SizedBox(width: 4),
                       _DayChip(
                         label: _displaySectionName(days[i].name),
                         selected: i == dayIndex,
                         onTap: () => onSelectDay(i),
                       ),
                     ],
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 4),
                     _DayChip(
                       label: '+ ${l10n.workoutBuilderAddDayChip}',
                       selected: false,
@@ -361,7 +361,7 @@ class _SessionChip extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
         color: selected
             ? StitchM3Theme.accent
