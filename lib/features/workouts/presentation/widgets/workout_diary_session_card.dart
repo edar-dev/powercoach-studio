@@ -67,112 +67,117 @@ class _PhoneCard extends StatelessWidget {
     final volumeText = metrics.hasParsableVolume
         ? '${formatVolumeKg(metrics.volumeKg)} kg'
         : '—';
+    final rpeText = metrics.hasRpeSamples && metrics.avgRpe != null
+        ? formatAvgRpe(metrics.avgRpe!)
+        : null;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: StitchMobileColors.surfaceContainer,
+    return Material(
+      color: StitchMobileColors.surfaceContainer,
+      borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  statusLabel,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  customerName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: StitchMobileColors.onSurfaceVariant,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            title,
-            style: const TextStyle(
-              color: StitchMobileColors.onSurface,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          if (!isSkipped) ...[
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: StitchMobileColors.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
-              ),
-              child: Row(
+              Row(
                 children: [
-                  Expanded(
-                    child: _MetricCell(
-                      label: l10n.workoutDiaryExercisesMetric,
-                      value: '${metrics.exerciseCount}',
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: statusColor.withValues(alpha: 0.3),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      statusLabel,
+                      style: TextStyle(
+                        color: statusColor,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
+                  const SizedBox(width: 8),
                   Expanded(
-                    child: _MetricCell(
-                      label: l10n.workoutDiarySetsMetric,
-                      value: '${metrics.setCount}',
+                    child: Text(
+                      customerName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: StitchMobileColors.onSurfaceVariant,
+                        fontSize: 11,
+                      ),
                     ),
                   ),
-                  Expanded(
-                    child: _MetricCell(
-                      label: l10n.workoutDiaryVolumeMetric,
-                      value: volumeText,
-                      valueColor: StitchMobileColors.secondary,
-                    ),
+                  const Icon(
+                    Icons.chevron_right,
+                    size: 18,
+                    color: StitchMobileColors.onSurfaceVariant,
                   ),
                 ],
               ),
-            ),
-          ],
-          const SizedBox(height: 12),
-          SizedBox(
-            height: 44,
-            child: Material(
-              color: StitchMobileColors.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
-              child: InkWell(
-                onTap: onTap,
-                borderRadius: BorderRadius.circular(StitchMobileColors.radiusLg),
-                child: Center(
-                  child: Text(
-                    l10n.workoutDiarySeeExerciseLog,
-                    style: const TextStyle(
-                      color: StitchMobileColors.onSurface,
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+              const SizedBox(height: 6),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: StitchMobileColors.onSurface,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
+              if (!isSkipped) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: StitchMobileColors.surfaceContainerLow,
+                    borderRadius:
+                        BorderRadius.circular(StitchMobileColors.radiusLg),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _MetricCell(
+                          label: l10n.workoutDiaryExercisesMetric,
+                          value: '${metrics.exerciseCount}',
+                        ),
+                      ),
+                      Expanded(
+                        child: _MetricCell(
+                          label: l10n.workoutDiarySetsMetric,
+                          value: '${metrics.setCount}',
+                        ),
+                      ),
+                      Expanded(
+                        child: _MetricCell(
+                          label: l10n.workoutDiaryVolumeMetric,
+                          value: volumeText,
+                          valueColor: StitchMobileColors.secondary,
+                        ),
+                      ),
+                      if (rpeText != null)
+                        Expanded(
+                          child: _MetricCell(
+                            label: l10n.workoutDiaryColRpe,
+                            value: rpeText,
+                            valueColor: StitchMobileColors.tertiary,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

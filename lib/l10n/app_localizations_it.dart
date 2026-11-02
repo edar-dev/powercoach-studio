@@ -3274,7 +3274,20 @@ class AppLocalizationsIt extends AppLocalizations {
       'Cartella Download non disponibile su questo dispositivo. Usa Condividi.';
 
   @override
-  String get customerTabWorkouts => 'Workout';
+  String get customerTabWorkouts => 'Schede';
+
+  @override
+  String get customerTabNotes => 'Note';
+
+  @override
+  String get customerTabMaximals => 'Massimali';
+
+  @override
+  String get customerMaximalsEmpty => 'Nessun massimale registrato.';
+
+  @override
+  String get customerMaximalsMeasurementEmpty =>
+      'Nessun 1RM nelle misure ancora.';
 
   @override
   String get dashboardWorkoutBuilderDraft => 'Builder bozza';
@@ -3639,6 +3652,15 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get sessionSkipped => 'Saltata';
+
+  @override
+  String get sessionLoggerSkipAction => 'Salta';
+
+  @override
+  String get sessionLoggerLogAction => 'Registra';
+
+  @override
+  String get sessionLoggerCompleteAction => 'Completa';
 
   @override
   String get sessionPlanned => 'Pianificata';
@@ -4570,16 +4592,25 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutDiaryExportAction => 'Esporta';
 
   @override
+  String get workoutDiaryExportHistory => 'Esporta storico';
+
+  @override
+  String get workoutDiaryExportSuccess => 'Esportazione diario pronta.';
+
+  @override
+  String get workoutDiaryExportFailed => 'Impossibile esportare il diario.';
+
+  @override
   String get workoutDiaryRecordAction => 'Registra Sessione';
 
   @override
   String get workoutDiarySeeExerciseLog => 'Vedi Log Esercizi';
 
   @override
-  String get workoutDiaryKpiSessions => 'Completate';
+  String get workoutDiaryKpiSessions => 'Sessioni';
 
   @override
-  String get workoutDiaryKpiVolume => 'Volume Carico';
+  String get workoutDiaryKpiVolume => 'Volume';
 
   @override
   String get workoutDiaryKpiVolumeUnit => 'kg';
@@ -4591,9 +4622,30 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutDiaryKpiCompliance => 'Compliance';
 
   @override
+  String get workoutDiaryKpiAdherence => 'Aderenza';
+
+  @override
+  String get workoutDiaryKpiAvgRpe => 'Media RPE';
+
+  @override
   String workoutDiaryKpiSkipped(int count) {
     return '$count saltate';
   }
+
+  @override
+  String get workoutDiaryColDate => 'Data';
+
+  @override
+  String get workoutDiaryColAthlete => 'Atleta';
+
+  @override
+  String get workoutDiaryColStatus => 'Stato';
+
+  @override
+  String get workoutDiaryColVolume => 'Volume';
+
+  @override
+  String get workoutDiaryColRpe => 'RPE';
 
   @override
   String get workoutDiaryFilterAthlete => 'Filtra atleta';

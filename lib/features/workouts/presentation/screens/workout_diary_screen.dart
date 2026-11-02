@@ -3,18 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+import '../../../../core/export/export_share.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../domain/session_execution_service.dart';
+import '../../domain/workout_diary_export_service.dart';
 import '../../domain/workout_diary_filter.dart';
 import '../../domain/workout_diary_metrics.dart';
 import '../widgets/workout_diary_filters_bar.dart';

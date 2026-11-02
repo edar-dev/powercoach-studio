@@ -20,7 +20,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: WorkoutDiaryHeader(onRecord: () {}),
+          body: WorkoutDiaryHeader(onRecord: () {}, onExport: () {}),
         ),
       ),
     );
@@ -30,9 +30,10 @@ void main() {
     expect(find.text('Storico'), findsNothing);
     expect(find.byIcon(Icons.arrow_back), findsNothing);
     expect(find.text('Registra Sessione'), findsOneWidget);
+    expect(find.text('Esporta'), findsOneWidget);
   });
 
-  testWidgets('phone header owns single Diario & Storico heading', (
+  testWidgets('phone header owns single Diario Allenamenti heading', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(390, 844);
@@ -47,13 +48,14 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
-          body: WorkoutDiaryHeader(onRecord: () {}),
+          body: WorkoutDiaryHeader(onRecord: () {}, onExport: () {}),
         ),
       ),
     );
 
-    expect(find.text('Diario & Storico'), findsOneWidget);
-    expect(find.text('Diario Allenamenti'), findsNothing);
+    expect(find.text('Diario Allenamenti'), findsOneWidget);
+    expect(find.text('Diario & Storico'), findsNothing);
     expect(find.text('Storico'), findsNothing);
+    expect(find.byTooltip('Esporta storico'), findsOneWidget);
   });
 }

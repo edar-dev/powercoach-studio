@@ -34,6 +34,8 @@ void main() {
                     setCount: 24,
                     exerciseCount: 8,
                     compliancePercent: 75,
+                    avgRpe: 8.0,
+                    hasRpeSamples: true,
                   ),
                 ),
               ),
@@ -56,7 +58,9 @@ void main() {
       ),
     );
 
-    expect(find.text('COMPLETATE'), findsOneWidget);
+    expect(find.text('SESSIONI'), findsOneWidget);
+    expect(find.text('MEDIA RPE'), findsOneWidget);
+    expect(find.text('ADERENZA'), findsOneWidget);
     expect(find.text('Tutti gli stati'), findsOneWidget);
     expect(find.textContaining('Mostrando 3'), findsOneWidget);
   });

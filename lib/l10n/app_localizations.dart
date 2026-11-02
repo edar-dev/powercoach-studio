@@ -5827,8 +5827,32 @@ abstract class AppLocalizations {
   /// No description provided for @customerTabWorkouts.
   ///
   /// In en, this message translates to:
-  /// **'Workout'**
+  /// **'Plans'**
   String get customerTabWorkouts;
+
+  /// No description provided for @customerTabNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get customerTabNotes;
+
+  /// No description provided for @customerTabMaximals.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximals'**
+  String get customerTabMaximals;
+
+  /// No description provided for @customerMaximalsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No maximals recorded yet.'**
+  String get customerMaximalsEmpty;
+
+  /// No description provided for @customerMaximalsMeasurementEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No 1RM values in measurements yet.'**
+  String get customerMaximalsMeasurementEmpty;
 
   /// No description provided for @dashboardWorkoutBuilderDraft.
   ///
@@ -6495,6 +6519,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skipped'**
   String get sessionSkipped;
+
+  /// No description provided for @sessionLoggerSkipAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get sessionLoggerSkipAction;
+
+  /// No description provided for @sessionLoggerLogAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Log'**
+  String get sessionLoggerLogAction;
+
+  /// No description provided for @sessionLoggerCompleteAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Complete'**
+  String get sessionLoggerCompleteAction;
 
   /// No description provided for @sessionPlanned.
   ///
@@ -8124,6 +8166,24 @@ abstract class AppLocalizations {
   /// **'Export'**
   String get workoutDiaryExportAction;
 
+  /// No description provided for @workoutDiaryExportHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Export history'**
+  String get workoutDiaryExportHistory;
+
+  /// No description provided for @workoutDiaryExportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Diary export ready.'**
+  String get workoutDiaryExportSuccess;
+
+  /// No description provided for @workoutDiaryExportFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not export the diary.'**
+  String get workoutDiaryExportFailed;
+
   /// No description provided for @workoutDiaryRecordAction.
   ///
   /// In en, this message translates to:
@@ -8139,13 +8199,13 @@ abstract class AppLocalizations {
   /// No description provided for @workoutDiaryKpiSessions.
   ///
   /// In en, this message translates to:
-  /// **'Completed'**
+  /// **'Sessions'**
   String get workoutDiaryKpiSessions;
 
   /// No description provided for @workoutDiaryKpiVolume.
   ///
   /// In en, this message translates to:
-  /// **'Load Volume'**
+  /// **'Volume'**
   String get workoutDiaryKpiVolume;
 
   /// No description provided for @workoutDiaryKpiVolumeUnit.
@@ -8166,11 +8226,53 @@ abstract class AppLocalizations {
   /// **'Compliance'**
   String get workoutDiaryKpiCompliance;
 
+  /// No description provided for @workoutDiaryKpiAdherence.
+  ///
+  /// In en, this message translates to:
+  /// **'Adherence'**
+  String get workoutDiaryKpiAdherence;
+
+  /// No description provided for @workoutDiaryKpiAvgRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'Avg RPE'**
+  String get workoutDiaryKpiAvgRpe;
+
   /// No description provided for @workoutDiaryKpiSkipped.
   ///
   /// In en, this message translates to:
   /// **'{count} skipped'**
   String workoutDiaryKpiSkipped(int count);
+
+  /// No description provided for @workoutDiaryColDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get workoutDiaryColDate;
+
+  /// No description provided for @workoutDiaryColAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete'**
+  String get workoutDiaryColAthlete;
+
+  /// No description provided for @workoutDiaryColStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get workoutDiaryColStatus;
+
+  /// No description provided for @workoutDiaryColVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get workoutDiaryColVolume;
+
+  /// No description provided for @workoutDiaryColRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'RPE'**
+  String get workoutDiaryColRpe;
 
   /// No description provided for @workoutDiaryFilterAthlete.
   ///
