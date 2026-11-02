@@ -2672,6 +2672,36 @@ abstract class AppLocalizations {
   /// **'Customers'**
   String get customersTitle;
 
+  /// No description provided for @customersSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your athlete roster, active plans, and status.'**
+  String get customersSubtitle;
+
+  /// No description provided for @customersColumnAthlete.
+  ///
+  /// In en, this message translates to:
+  /// **'Athlete'**
+  String get customersColumnAthlete;
+
+  /// No description provided for @customersColumnStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Status'**
+  String get customersColumnStatus;
+
+  /// No description provided for @customersColumnProgram.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get customersColumnProgram;
+
+  /// No description provided for @customersColumnActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Actions'**
+  String get customersColumnActions;
+
   /// No description provided for @exerciseLibraryTitle.
   ///
   /// In en, this message translates to:
@@ -6724,6 +6754,54 @@ abstract class AppLocalizations {
   /// **'alerts'**
   String get dashboardMetricAlertsSuffix;
 
+  /// No description provided for @dashboardGreeting.
+  ///
+  /// In en, this message translates to:
+  /// **'Good morning, {name}'**
+  String dashboardGreeting(String name);
+
+  /// No description provided for @dashboardGreetingFallbackName.
+  ///
+  /// In en, this message translates to:
+  /// **'Coach'**
+  String get dashboardGreetingFallbackName;
+
+  /// No description provided for @dashboardMetricActiveClients.
+  ///
+  /// In en, this message translates to:
+  /// **'Active clients'**
+  String get dashboardMetricActiveClients;
+
+  /// No description provided for @dashboardMetricSessionsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Sessions today'**
+  String get dashboardMetricSessionsToday;
+
+  /// No description provided for @dashboardMetricPendingReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending reviews'**
+  String get dashboardMetricPendingReviews;
+
+  /// No description provided for @dashboardOpenCalendar.
+  ///
+  /// In en, this message translates to:
+  /// **'Open calendar'**
+  String get dashboardOpenCalendar;
+
+  /// No description provided for @dashboardOpenDiary.
+  ///
+  /// In en, this message translates to:
+  /// **'Open diary'**
+  String get dashboardOpenDiary;
+
+  /// No description provided for @dashboardSectionAppointmentsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today\'s appointments and sessions'**
+  String get dashboardSectionAppointmentsToday;
+
   /// No description provided for @dashboardTodayEmptyHint.
   ///
   /// In en, this message translates to:
@@ -7500,6 +7578,12 @@ abstract class AppLocalizations {
   /// **'Manage operational credentials, athlete channels, and offline-first policies.'**
   String get settingsHubSubtitle;
 
+  /// No description provided for @settingsHubSubtitleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio and profile management.'**
+  String get settingsHubSubtitleShort;
+
   /// No description provided for @settingsHubSyncPill.
   ///
   /// In en, this message translates to:
@@ -7943,6 +8027,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Diary & History'**
   String get workoutDiaryPageTitle;
+
+  /// No description provided for @workoutDiaryDesktopTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Training diary'**
+  String get workoutDiaryDesktopTitle;
 
   /// No description provided for @workoutDiaryPageBadge.
   ///

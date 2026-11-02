@@ -133,15 +133,15 @@ class _DesktopHeader extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
-              l10n.workoutDiaryPageTitle,
+              l10n.workoutDiaryDesktopTitle,
               style: theme.textTheme.headlineSmall?.copyWith(
                 color: MarketingDarkColors.text,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               l10n.workoutDiaryPageSubtitle,
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -155,8 +155,8 @@ class _DesktopHeader extends StatelessWidget {
             backgroundColor: MarketingDarkColors.cyanBright,
             foregroundColor: MarketingDarkColors.cyanOn,
             padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 10,
+              horizontal: 12,
+              vertical: 8,
             ),
           ),
           onPressed: onRecord,
@@ -168,7 +168,7 @@ class _DesktopHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               titleBlock,
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Align(alignment: Alignment.centerLeft, child: actions),
             ],
           );
@@ -177,7 +177,7 @@ class _DesktopHeader extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(child: titleBlock),
-            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             actions,
           ],
         );

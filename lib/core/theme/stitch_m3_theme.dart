@@ -157,7 +157,11 @@ class StitchM3Theme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: bg,
+        elevation: 0,
+        height: 64,
         indicatorColor: accentLight,
+        indicatorShape: const CircleBorder(),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(
@@ -290,7 +294,12 @@ class StitchM3Theme {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: bgDark,
-        indicatorColor: const Color(0xFF1E3A5F),
+        elevation: 0,
+        height: 64,
+        // Stitch mobile selected pill: solid accent circle behind icon.
+        indicatorColor: accent,
+        indicatorShape: const CircleBorder(),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return TextStyle(

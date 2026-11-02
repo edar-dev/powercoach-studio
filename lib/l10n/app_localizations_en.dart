@@ -1459,6 +1459,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersTitle => 'Customers';
 
   @override
+  String get customersSubtitle =>
+      'Manage your athlete roster, active plans, and status.';
+
+  @override
+  String get customersColumnAthlete => 'Athlete';
+
+  @override
+  String get customersColumnStatus => 'Status';
+
+  @override
+  String get customersColumnProgram => 'Plan';
+
+  @override
+  String get customersColumnActions => 'Actions';
+
+  @override
   String get exerciseLibraryTitle => 'Exercise library';
 
   @override
@@ -3737,6 +3753,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardMetricAlertsSuffix => 'alerts';
 
   @override
+  String dashboardGreeting(String name) {
+    return 'Good morning, $name';
+  }
+
+  @override
+  String get dashboardGreetingFallbackName => 'Coach';
+
+  @override
+  String get dashboardMetricActiveClients => 'Active clients';
+
+  @override
+  String get dashboardMetricSessionsToday => 'Sessions today';
+
+  @override
+  String get dashboardMetricPendingReviews => 'Pending reviews';
+
+  @override
+  String get dashboardOpenCalendar => 'Open calendar';
+
+  @override
+  String get dashboardOpenDiary => 'Open diary';
+
+  @override
+  String get dashboardSectionAppointmentsToday =>
+      'Today\'s appointments and sessions';
+
+  @override
   String get dashboardTodayEmptyHint =>
       'No sessions or reminders planned for this date. Open the calendar.';
 
@@ -4185,6 +4228,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Manage operational credentials, athlete channels, and offline-first policies.';
 
   @override
+  String get settingsHubSubtitleShort => 'Studio and profile management.';
+
+  @override
   String get settingsHubSyncPill => 'Local data active';
 
   @override
@@ -4426,6 +4472,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutDiaryPageTitle => 'Diary & History';
+
+  @override
+  String get workoutDiaryDesktopTitle => 'Training diary';
 
   @override
   String get workoutDiaryPageBadge => 'Live Session Log';

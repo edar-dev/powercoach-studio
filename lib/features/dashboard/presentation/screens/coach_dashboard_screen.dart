@@ -4,32 +4,33 @@ import 'package:intl/intl.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/auth/supabase_bootstrap.dart';
+import '../../../../core/billing/billing_alert_banner.dart';
+import '../../../../core/backup/web_persistence_coordinator.dart';
 import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../data/dashboard_snapshot_loader.dart';
-import '../../domain/dashboard_snapshot.dart';
+import '../../../auth/data/local_coach_profile_repository.dart';
 import '../../../settings/presentation/backup_onboarding_prompt.dart';
 import '../../../settings/presentation/data_health_controller.dart';
-import 'package:powercoach_studio/core/backup/web_persistence_coordinator.dart';
-import 'package:powercoach_studio/core/billing/billing_alert_banner.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/backup_reminder_banner.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/post_invite_onboarding_card.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_coach_tools_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_attention_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_hero_metrics.dart';
-import '../../../../core/ui/widgets/stitch_app_bar.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_no_plan_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_section_header.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_shortcuts_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_stale_plans_section.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_summary_footer.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_surface_card.dart';
-import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_today_section.dart';
-
+import '../../data/dashboard_snapshot_loader.dart';
+import '../../domain/dashboard_snapshot.dart';
 import '../today_session_log_handler.dart';
+import '../widgets/backup_reminder_banner.dart';
+import '../widgets/dashboard_attention_section.dart';
+import '../widgets/dashboard_coach_tools_section.dart';
+import '../widgets/dashboard_hero_header.dart';
+import '../widgets/dashboard_hero_metrics.dart';
+import '../widgets/dashboard_no_plan_section.dart';
+import '../widgets/dashboard_section_header.dart';
+import '../widgets/dashboard_shortcuts_section.dart';
+import '../widgets/dashboard_stale_plans_section.dart';
+import '../widgets/dashboard_summary_footer.dart';
+import '../widgets/dashboard_surface_card.dart';
+import '../widgets/dashboard_today_section.dart';
+import '../widgets/post_invite_onboarding_card.dart';
 
 /// Coach Dashboard — command center for "what to do today" plus summary stats.
 class CoachDashboardScreen extends StatefulWidget {
@@ -60,14 +61,38 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
   bool _loading = true;
   bool _backupOnboardingScheduled = false;
   bool _loggingTodaySession = false;
+  String _coachDisplayName = '';
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      _loadCoachDisplayName();
       _loadStats();
     });
+  }
+
+  Future<void> _loadCoachDisplayName() async {
+    final l10n = AppLocalizations.of(context);
+    final fallback = l10n.dashboardGreetingFallbackName;
+    final uid = SupabaseBootstrap.currentUser?.id;
+    if (uid == null || uid.isEmpty) {
+      if (!mounted) return;
+      setState(() => _coachDisplayName = fallback);
+      return;
+    }
+    try {
+      final profile =
+          await LocalCoachProfileRepository.instance.getProfile(uid);
+      if (!mounted) return;
+      final name = profile.displayName.trim();
+      setState(() => _coachDisplayName = name.isEmpty ? fallback : name);
+    } catch (e, stackTrace) {
+      await Sentry.captureException(e, stackTrace: stackTrace);
+      if (!mounted) return;
+      setState(() => _coachDisplayName = fallback);
+    }
   }
 
   Future<void> _loadStats() async {
@@ -161,14 +186,19 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
       'EEEE, d MMMM',
       l10n.localeName,
     ).format(DateTime.now());
+    final greetingName = _coachDisplayName.isEmpty
+        ? l10n.dashboardGreetingFallbackName
+        : _coachDisplayName;
 
     final slimHub = primaryShellUsesRail(context);
+    final sectionGap = slimHub ? 16.0 : 24.0;
 
     return Scaffold(
       backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.dashboardTitle,
         showLogo: !slimHub,
+        showTitle: !slimHub,
         actions: [
           if (!slimHub)
             IconButton(
@@ -216,17 +246,25 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: sectionGap),
                 ],
                 if (snap != null && !snap.hasError) ...[
+                  if (slimHub) ...[
+                    DashboardHeroHeader(
+                      displayName: greetingName,
+                      dateLabel: todaySubtitle,
+                    ),
+                    SizedBox(height: sectionGap),
+                  ],
                   DashboardHeroMetrics(
                     theme: theme,
                     colorScheme: cs,
                     l10n: l10n,
                     snapshot: snap,
                     loading: _loading,
+                    attentionExtraCount: _actionableFindings.length,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: sectionGap),
                   Semantics(
                     container: true,
                     label: l10n.dashboardSemanticTodayList,
@@ -234,7 +272,9 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         DashboardSectionHeader(
-                          title: l10n.dashboardSectionToday,
+                          title: slimHub
+                              ? l10n.dashboardSectionAppointmentsToday
+                              : l10n.dashboardSectionToday,
                           subtitle: todaySubtitle,
                           actionLabel: l10n.dashboardSeeAll,
                           onAction: () {
@@ -267,11 +307,11 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: sectionGap),
                 ],
-                if (snap != null) ...[
+                if (snap != null && !slimHub) ...[
                   const DashboardCoachToolsSection(),
-                  const SizedBox(height: 24),
+                  SizedBox(height: sectionGap),
                 ],
                 if (snap != null && !snap.hasError) ...[
                   Semantics(
@@ -293,7 +333,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: sectionGap),
                   Semantics(
                     container: true,
                     label: l10n.dashboardSemanticNoPlanList,
@@ -317,7 +357,7 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: sectionGap),
                   Semantics(
                     container: true,
                     label: l10n.dashboardSemanticStaleList,
@@ -338,20 +378,24 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  DashboardShortcutsSection(
+                  SizedBox(height: sectionGap),
+                  if (!slimHub) ...[
+                    DashboardShortcutsSection(
+                      theme: theme,
+                      colorScheme: cs,
+                      l10n: l10n,
+                    ),
+                    SizedBox(height: sectionGap),
+                  ],
+                ],
+                if (!slimHub) ...[
+                  DashboardSummaryFooter(
                     theme: theme,
                     colorScheme: cs,
                     l10n: l10n,
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
                 ],
-                DashboardSummaryFooter(
-                  theme: theme,
-                  colorScheme: cs,
-                  l10n: l10n,
-                ),
-                const SizedBox(height: 20),
                 Text(
                   l10n.dashboardOfflineFooter,
                   textAlign: TextAlign.center,

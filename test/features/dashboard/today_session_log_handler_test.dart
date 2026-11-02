@@ -117,6 +117,7 @@ DashboardTodayItem _item({
     clientName: 'Anna',
     programName: 'Strength',
     date: DateTime(2026, 5, 12),
+    status: PlanSessionStatus.planned,
   );
 }
 

@@ -585,6 +585,11 @@
   "backupOnboardingCloseSemantic": "Close",
   "customerCreationLocalDataHint": "Client data is saved locally on this device. No welcome email is sent.",
   "customersTitle": "Customers",
+  "customersSubtitle": "Manage your athlete roster, active plans, and status.",
+  "customersColumnAthlete": "Athlete",
+  "customersColumnStatus": "Status",
+  "customersColumnProgram": "Plan",
+  "customersColumnActions": "Actions",
   "exerciseLibraryTitle": "Exercise library",
   "exerciseLibraryBack": "Back",
   "exerciseLibraryImport": "Import",
@@ -1715,6 +1720,21 @@
   "dashboardMetricWeeklyUpdates": "Weekly updates",
   "dashboardMetricCoachAttention": "Coach attention",
   "dashboardMetricAlertsSuffix": "alerts",
+  "dashboardGreeting": "Good morning, {name}",
+  "@dashboardGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardGreetingFallbackName": "Coach",
+  "dashboardMetricActiveClients": "Active clients",
+  "dashboardMetricSessionsToday": "Sessions today",
+  "dashboardMetricPendingReviews": "Pending reviews",
+  "dashboardOpenCalendar": "Open calendar",
+  "dashboardOpenDiary": "Open diary",
+  "dashboardSectionAppointmentsToday": "Today's appointments and sessions",
   "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the calendar.",
   "dashboardOpenAgenda": "Open agenda",
   "dashboardCoachToolsAvailable": "{count} tools available",
@@ -2013,6 +2033,7 @@
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Settings & Profile",
   "settingsHubSubtitle": "Manage operational credentials, athlete channels, and offline-first policies.",
+  "settingsHubSubtitleShort": "Studio and profile management.",
   "settingsHubSyncPill": "Local data active",
   "settingsNavPersonalInfo": "Personal info",
   "settingsNavPdfBrand": "PDF brand",
@@ -2143,6 +2164,7 @@
   "settingsBackupDownloadAction": "Download",
   "settingsCloudSyncSnapshot": "Sync snapshot to Supabase",
   "workoutDiaryPageTitle": "Diary & History",
+  "workoutDiaryDesktopTitle": "Training diary",
   "workoutDiaryPageBadge": "Live Session Log",
   "workoutDiaryPageSubtitle": "Review session logs, monitor compliance, and check recorded training volume.",
   "workoutDiaryLiveSync": "Local data active",

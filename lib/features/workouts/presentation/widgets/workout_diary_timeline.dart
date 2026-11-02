@@ -58,13 +58,13 @@ class WorkoutDiaryTimeline extends StatelessWidget {
       } else {
         children.add(
           Padding(
-            padding: EdgeInsets.only(top: i == 0 ? 0 : 8, bottom: 12),
+            padding: EdgeInsets.only(top: i == 0 ? 0 : 6, bottom: 8),
             child: Row(
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 4,
+                    horizontal: 8,
+                    vertical: 3,
                   ),
                   decoration: BoxDecoration(
                     color: MarketingDarkColors.surface800.withValues(alpha: 0.6),
@@ -84,7 +84,7 @@ class WorkoutDiaryTimeline extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 const Expanded(
                   child: Divider(
                     color: MarketingDarkColors.stitchBorder,
@@ -100,7 +100,7 @@ class WorkoutDiaryTimeline extends StatelessWidget {
       for (final entry in group.value) {
         children.add(
           Padding(
-            padding: const EdgeInsets.only(bottom: 12),
+            padding: EdgeInsets.only(bottom: phone ? 12 : 8),
             child: WorkoutDiarySessionCard(
               entry: entry,
               customerName: customerNameOf(entry.customerId),

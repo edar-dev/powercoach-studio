@@ -19,6 +19,7 @@ class CustomerListToolbar extends StatelessWidget {
     required this.onSearchChanged,
     required this.onStatusFilterSelected,
     required this.onSortChanged,
+    this.showNewCustomerButton = true,
   });
 
   final List<Customer> customers;
@@ -28,6 +29,7 @@ class CustomerListToolbar extends StatelessWidget {
   final ValueChanged<String> onSearchChanged;
   final ValueChanged<CustomerListStatusFilter> onStatusFilterSelected;
   final ValueChanged<CustomerListSort> onSortChanged;
+  final bool showNewCustomerButton;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class CustomerListToolbar extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
       decoration: const BoxDecoration(
         color: MarketingDarkColors.bgAlt,
         border: Border(
@@ -101,29 +103,32 @@ class CustomerListToolbar extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
-              FilledButton.icon(
-                onPressed: () => navigateTo(context, AppPaths.customersNew),
-                icon: const Icon(Icons.add, size: 18),
-                label: Text(l10n.customersNewCustomer),
-                style: FilledButton.styleFrom(
-                  backgroundColor: MarketingDarkColors.brand,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 12,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  elevation: 4,
-                  shadowColor: MarketingDarkColors.brand.withValues(alpha: 0.35),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              if (showNewCustomerButton) ...[
+                const SizedBox(width: 12),
+                FilledButton.icon(
+                  onPressed: () => navigateTo(context, AppPaths.customersNew),
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(l10n.customersNewCustomer),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: MarketingDarkColors.brand,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 12,
+                    ),
+                    textStyle: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    elevation: 4,
+                    shadowColor:
+                        MarketingDarkColors.brand.withValues(alpha: 0.35),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
           const SizedBox(height: 10),

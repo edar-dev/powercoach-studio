@@ -19,6 +19,7 @@ import '../widgets/customer_list_upgrade_banner.dart';
 import '../widgets/customer_list_empty_body.dart';
 import '../widgets/customer_list_error_body.dart';
 import '../widgets/customer_list_metrics_bar.dart';
+import '../widgets/customer_list_page_header.dart';
 import '../widgets/customer_list_populated_body.dart';
 import '../widgets/customer_list_toolbar.dart';
 
@@ -108,6 +109,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       appBar: StitchAppBar(
         title: l10n.customersTitle,
         showLogo: !slimHub,
+        showTitle: !slimHub,
         actions: [
           if (!slimHub)
             IconButton(
@@ -124,6 +126,16 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           CustomerListUpgradeBanner(activeCustomerCount: activeCount),
+          if (slimHub)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: CustomerListPageHeader(
+                onNewCustomer: () {
+                  HapticFeedback.mediumImpact();
+                  navigateTo(context, AppPaths.customersNew);
+                },
+              ),
+            ),
           if (metrics != null) CustomerListMetricsBar(metrics: metrics),
           if (showToolbar)
             CustomerListToolbar(
@@ -135,6 +147,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               onStatusFilterSelected: (f) =>
                   setState(() => _statusFilter = f),
               onSortChanged: (s) => setState(() => _sort = s),
+              showNewCustomerButton: !slimHub,
             ),
           Expanded(
             child: RefreshIndicator(

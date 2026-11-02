@@ -82,7 +82,7 @@ class TrainingPhaseRail extends StatelessWidget {
           child: Row(
             children: [
               for (var i = 0; i < pills.length; i++) ...[
-                if (i > 0) const SizedBox(width: 10),
+                if (i > 0) const SizedBox(width: 8),
                 pills[i],
               ],
             ],
@@ -96,7 +96,7 @@ class TrainingPhaseRail extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               pillsRow,
-              const SizedBox(height: 12),
+              const SizedBox(height: 8),
               Align(
                 alignment: Alignment.centerRight,
                 child: Wrap(
@@ -113,7 +113,7 @@ class TrainingPhaseRail extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(child: pillsRow),
-            const SizedBox(width: 12),
+            const SizedBox(width: 8),
             ...[
               for (var i = 0; i < trailing.length; i++) ...[
                 if (i > 0) const SizedBox(width: 8),
@@ -171,7 +171,7 @@ class _PhasePill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: border),
@@ -180,7 +180,7 @@ class _PhasePill extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               _PulseDot(active: selected, cs: cs),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -194,7 +194,7 @@ class _PhasePill extends StatelessWidget {
                       height: 1.1,
                     ),
                   ),
-                  const SizedBox(height: 3),
+                  const SizedBox(height: 2),
                   Text(
                     label,
                     style: theme.textTheme.titleSmall?.copyWith(
@@ -205,9 +205,9 @@ class _PhasePill extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
                   color: selected
                       ? cs.onPrimary.withValues(alpha: 0.14)
@@ -328,7 +328,7 @@ class _DashedActionChip extends StatelessWidget {
             radius: 12,
           ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -374,7 +374,7 @@ class _OutlineActionChip extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(10),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.8)),

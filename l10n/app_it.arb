@@ -585,6 +585,11 @@
   "backupOnboardingCloseSemantic": "Chiudi",
   "customerCreationLocalDataHint": "I dati del cliente sono salvati localmente su questo dispositivo. Non viene inviata alcuna email di benvenuto.",
   "customersTitle": "Clienti",
+  "customersSubtitle": "Gestisci il roster atleti, monitora le schede attive e lo stato.",
+  "customersColumnAthlete": "Atleta",
+  "customersColumnStatus": "Stato",
+  "customersColumnProgram": "Programma",
+  "customersColumnActions": "Azioni",
   "exerciseLibraryTitle": "Libreria esercizi",
   "exerciseLibraryBack": "Indietro",
   "exerciseLibraryImport": "Importa",
@@ -1715,6 +1720,21 @@
   "dashboardMetricWeeklyUpdates": "Aggiornamenti settimana",
   "dashboardMetricCoachAttention": "Attenzione coach",
   "dashboardMetricAlertsSuffix": "avvisi",
+  "dashboardGreeting": "Buongiorno, {name}",
+  "@dashboardGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardGreetingFallbackName": "Coach",
+  "dashboardMetricActiveClients": "Clienti attivi",
+  "dashboardMetricSessionsToday": "Sessioni oggi",
+  "dashboardMetricPendingReviews": "Revisioni in attesa",
+  "dashboardOpenCalendar": "Apri calendario",
+  "dashboardOpenDiary": "Apri diario",
+  "dashboardSectionAppointmentsToday": "Appuntamenti e sessioni di oggi",
   "dashboardTodayEmptyHint": "Nessuna sessione o promemoria pianificato per questa data. Apri il calendario.",
   "dashboardOpenAgenda": "Apri agenda",
   "dashboardCoachToolsAvailable": "{count} strumenti disponibili",
@@ -1972,6 +1992,7 @@
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Impostazioni & Profilo",
   "settingsHubSubtitle": "Gestisci le credenziali operative, canali atleti e policy offline-first.",
+  "settingsHubSubtitleShort": "Gestione studio e profilo.",
   "settingsHubSyncPill": "Dati locali attivi",
   "settingsNavPersonalInfo": "Informazioni personali",
   "settingsNavPdfBrand": "Brand PDF",
@@ -2101,6 +2122,7 @@
   "settingsBackupDownloadAction": "Download",
   "settingsCloudSyncSnapshot": "Sincronizza snapshot su Supabase",
   "workoutDiaryPageTitle": "Diario & Storico",
+  "workoutDiaryDesktopTitle": "Diario Allenamenti",
   "workoutDiaryPageBadge": "Registro Sessioni Live",
   "workoutDiaryPageSubtitle": "Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.",
   "workoutDiaryLiveSync": "Dati locali attivi",

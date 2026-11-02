@@ -1473,6 +1473,22 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customersTitle => 'Clienti';
 
   @override
+  String get customersSubtitle =>
+      'Gestisci il roster atleti, monitora le schede attive e lo stato.';
+
+  @override
+  String get customersColumnAthlete => 'Atleta';
+
+  @override
+  String get customersColumnStatus => 'Stato';
+
+  @override
+  String get customersColumnProgram => 'Programma';
+
+  @override
+  String get customersColumnActions => 'Azioni';
+
+  @override
   String get exerciseLibraryTitle => 'Libreria esercizi';
 
   @override
@@ -3776,6 +3792,33 @@ class AppLocalizationsIt extends AppLocalizations {
   String get dashboardMetricAlertsSuffix => 'avvisi';
 
   @override
+  String dashboardGreeting(String name) {
+    return 'Buongiorno, $name';
+  }
+
+  @override
+  String get dashboardGreetingFallbackName => 'Coach';
+
+  @override
+  String get dashboardMetricActiveClients => 'Clienti attivi';
+
+  @override
+  String get dashboardMetricSessionsToday => 'Sessioni oggi';
+
+  @override
+  String get dashboardMetricPendingReviews => 'Revisioni in attesa';
+
+  @override
+  String get dashboardOpenCalendar => 'Apri calendario';
+
+  @override
+  String get dashboardOpenDiary => 'Apri diario';
+
+  @override
+  String get dashboardSectionAppointmentsToday =>
+      'Appuntamenti e sessioni di oggi';
+
+  @override
   String get dashboardTodayEmptyHint =>
       'Nessuna sessione o promemoria pianificato per questa data. Apri il calendario.';
 
@@ -4227,6 +4270,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'Gestisci le credenziali operative, canali atleti e policy offline-first.';
 
   @override
+  String get settingsHubSubtitleShort => 'Gestione studio e profilo.';
+
+  @override
   String get settingsHubSyncPill => 'Dati locali attivi';
 
   @override
@@ -4470,6 +4516,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutDiaryPageTitle => 'Diario & Storico';
+
+  @override
+  String get workoutDiaryDesktopTitle => 'Diario Allenamenti';
 
   @override
   String get workoutDiaryPageBadge => 'Registro Sessioni Live';

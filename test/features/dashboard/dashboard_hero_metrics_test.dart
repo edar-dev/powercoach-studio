@@ -19,7 +19,7 @@ DashboardSnapshot _emptySnap() => const DashboardSnapshot(
     );
 
 void main() {
-  testWidgets('DashboardHeroMetrics renders four KPI labels and values', (
+  testWidgets('DashboardHeroMetrics renders three KPI labels and values', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -46,15 +46,13 @@ void main() {
       ),
     );
 
-    expect(find.text('Athletes followed'), findsOneWidget);
-    expect(find.text('Active plans'), findsOneWidget);
-    expect(find.text('Weekly updates'), findsOneWidget);
-    expect(find.text('Coach attention'), findsOneWidget);
+    expect(find.text('Active clients'), findsOneWidget);
+    expect(find.text('Sessions today'), findsOneWidget);
+    expect(find.text('Pending reviews'), findsOneWidget);
+    expect(find.text('Athletes followed'), findsNothing);
+    expect(find.text('Active plans'), findsNothing);
     expect(find.text('4'), findsOneWidget);
-    expect(find.text('7'), findsOneWidget);
-    expect(find.text('2'), findsOneWidget);
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('alerts'), findsOneWidget);
+    expect(find.text('0'), findsNWidgets(2));
   });
 
   testWidgets('positive empty states for no-plan and stale sections', (
