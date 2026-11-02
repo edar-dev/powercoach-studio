@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
+import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/dashboard/presentation/widgets/dashboard_today_section.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -15,6 +16,7 @@ DashboardTodayItem _todayItem() {
     clientName: 'Anna Bianchi',
     programName: 'Strength',
     date: DateTime(2026, 5, 12),
+    status: PlanSessionStatus.planned,
   );
 }
 
@@ -105,6 +107,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Anna Bianchi'), findsOneWidget);
+      expect(find.text('In programma'), findsOneWidget);
       await tester.tap(find.text('Anna Bianchi'));
       await tester.pumpAndSettle();
 
@@ -117,6 +120,7 @@ void main() {
       expect(tapped!.clientName, item.clientName);
       expect(tapped!.programName, item.programName);
       expect(tapped!.date, item.date);
+      expect(tapped!.status, PlanSessionStatus.planned);
     },
   );
 }

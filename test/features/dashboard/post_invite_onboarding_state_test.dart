@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/dashboard/domain/dashboard_snapshot.dart';
+import 'package:powercoach_studio/features/dashboard/domain/plan_calendar_event.dart';
 import 'package:powercoach_studio/features/dashboard/domain/post_invite_onboarding_state.dart';
 
 DashboardSnapshot _snap({
@@ -111,6 +112,7 @@ void main() {
             clientName: 'T',
             programName: 'P',
             date: DateTime(2026, 3, 1),
+            status: PlanSessionStatus.planned,
           ),
         ],
       ),
@@ -137,6 +139,7 @@ void main() {
             clientName: 'T',
             programName: 'P',
             date: DateTime(2026, 3, 1),
+            status: PlanSessionStatus.planned,
           ),
         ],
       ),

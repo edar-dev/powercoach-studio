@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import '../../customers/data/models/customer.dart';
 import '../../workouts/data/workout_plan_api_model.dart';
 import 'calendar_event_loader.dart';
+import 'plan_calendar_event.dart';
 
 /// Max rows shown per dashboard section before "See all".
 const int kDashboardSectionRowLimit = 5;
@@ -22,6 +23,7 @@ class DashboardTodayItem {
     required this.clientName,
     required this.programName,
     required this.date,
+    required this.status,
   });
 
   final String customerId;
@@ -32,6 +34,7 @@ class DashboardTodayItem {
   final String clientName;
   final String programName;
   final DateTime date;
+  final PlanSessionStatus status;
 }
 
 /// Stale plan row (needs refresh).
@@ -169,6 +172,7 @@ DashboardSnapshot buildDashboardSnapshot({
           clientName: event.customerName,
           programName: event.programName,
           date: event.day,
+          status: event.status,
         ),
       )
       .toList();
