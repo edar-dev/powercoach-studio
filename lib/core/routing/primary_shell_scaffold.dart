@@ -3,13 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../theme/stitch_m3_theme.dart';
 import '../ui/breakpoints.dart';
+import '../ui/widgets/stitch_brand_mark.dart';
+import 'hub_chrome.dart';
 import 'primary_shell_branch.dart';
+import 'primary_shell_top_chrome.dart';
 
-/// Adaptive primary shell: [NavigationBar] on phone, [NavigationRail] on wide.
+/// Adaptive primary shell: [NavigationBar] on phone, extended [NavigationRail]
+/// on wide (Stitch Nov 2026 drawer-style chrome).
 ///
-/// Owns nav chrome only — hub screens supply a slim title bar on tablet+
-/// (logo/settings live on the rail). Settings is shell branch 4 (rail stays).
+/// Owns nav chrome only — hub screens supply a slim title bar on tablet+.
+/// Wide layouts also show [PrimaryShellTopChrome] search above hub content.
+/// Settings is shell branch 4 (rail stays; not a primary tab).
 class PrimaryShellScaffold extends StatelessWidget {
   const PrimaryShellScaffold({
     super.key,
@@ -37,6 +43,15 @@ class PrimaryShellScaffold extends StatelessWidget {
     );
   }
 
+  void _goToday() {
+    HapticFeedback.selectionClick();
+    navigationShell.goBranch(
+      primaryShellBranchToday,
+      initialLocation:
+          navigationShell.currentIndex == primaryShellBranchToday,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -45,13 +60,31 @@ class PrimaryShellScaffold extends StatelessWidget {
     final selectedIndex = _onSettings ? null : navigationShell.currentIndex;
 
     if (wide) {
+      final cs = Theme.of(context).colorScheme;
       return Scaffold(
         body: Row(
           children: [
             NavigationRail(
+              extended: true,
+              minExtendedWidth: kPrimaryShellRailExtendedWidth,
+              // Extended rail requires [NavigationRailLabelType.none].
+              labelType: NavigationRailLabelType.none,
               selectedIndex: selectedIndex,
               onDestinationSelected: _onDestinationSelected,
-              labelType: NavigationRailLabelType.all,
+              backgroundColor: cs.surface,
+              // NavigationRail measures leading with loose width; pin to the
+              // extended rail width so the brand Row + Expanded can lay out.
+              leading: SizedBox(
+                width: kPrimaryShellRailExtendedWidth,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 8, 12, 16),
+                  child: StitchBrandMark(
+                    size: 32,
+                    showTitle: true,
+                    onTap: _goToday,
+                  ),
+                ),
+              ),
               destinations: [
                 NavigationRailDestination(
                   icon: const Icon(Icons.today_outlined),
@@ -77,24 +110,29 @@ class PrimaryShellScaffold extends StatelessWidget {
               trailing: Expanded(
                 child: Align(
                   alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: IconButton(
-                      icon: Icon(
-                        _onSettings
-                            ? Icons.settings
-                            : Icons.settings_outlined,
+                  child: SizedBox(
+                    width: kPrimaryShellRailExtendedWidth,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
+                      child: _RailSettingsButton(
+                        selected: _onSettings,
+                        label: l10n.settingsTitle,
+                        onPressed: _openSettings,
                       ),
-                      tooltip: l10n.settingsTitle,
-                      isSelected: _onSettings,
-                      onPressed: _openSettings,
                     ),
                   ),
                 ),
               ),
             ),
-            const VerticalDivider(width: 1),
-            Expanded(child: navigationShell),
+            VerticalDivider(width: 1, color: cs.outline),
+            Expanded(
+              child: Column(
+                children: [
+                  const PrimaryShellTopChrome(),
+                  Expanded(child: navigationShell),
+                ],
+              ),
+            ),
           ],
         ),
       );
@@ -131,6 +169,64 @@ class PrimaryShellScaffold extends StatelessWidget {
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// Labeled settings control for the extended rail (Stitch trailing gear + copy).
+class _RailSettingsButton extends StatelessWidget {
+  const _RailSettingsButton({
+    required this.selected,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final bool selected;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final bg = selected ? cs.primary.withValues(alpha: 0.16) : null;
+    final fg = selected ? cs.primary : cs.onSurfaceVariant;
+
+    return Tooltip(
+      message: label,
+      child: Material(
+        color: bg ?? Colors.transparent,
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+            child: Row(
+              children: [
+                Icon(
+                  selected ? Icons.settings : Icons.settings_outlined,
+                  color: fg,
+                  size: 22,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: fg,
+                      fontWeight:
+                          selected ? FontWeight.w600 : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

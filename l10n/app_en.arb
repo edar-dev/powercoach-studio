@@ -258,6 +258,7 @@
   "navTabCustomers": "Customers",
   "navTabWorkouts": "Plans",
   "navTabDiary": "Diary",
+  "shellGlobalSearchHint": "Search clients, plans, exercises...",
   "headerProfile": "Profile",
   "profileTitle": "Profile",
   "profileDisplayName": "Display name",

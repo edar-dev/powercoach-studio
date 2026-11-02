@@ -244,6 +244,38 @@ void main() {
     );
   });
 
+  testWidgets('wide rail is extended with brand and search chrome', (
+    tester,
+  ) async {
+    final router = _shellHarnessRouter();
+    await _pumpWideShell(tester, router);
+
+    final rail = tester.widget<NavigationRail>(find.byType(NavigationRail));
+    expect(rail.extended, isTrue);
+    expect(rail.minExtendedWidth, kPrimaryShellRailExtendedWidth);
+    expect(find.text('PowerCoach Studio'), findsWidgets);
+    expect(
+      find.text('Search clients, plans, exercises...'),
+      findsOneWidget,
+    );
+    expect(find.text('Today'), findsWidgets);
+    expect(find.text('Settings'), findsWidgets);
+  });
+
+  testWidgets('wide shell search submits to customers with q', (tester) async {
+    final router = _shellHarnessRouter();
+    await _pumpWideShell(tester, router);
+
+    await tester.enterText(find.byType(TextField), 'Rossi');
+    await tester.testTextInput.receiveAction(TextInputAction.search);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Customers body'), findsOneWidget);
+    final uri = router.routeInformationProvider.value.uri;
+    expect(uri.path, AppPaths.customers);
+    expect(uri.queryParameters['q'], 'Rossi');
+  });
+
   testWidgets('re-tapping Schede from library returns to builder', (
     tester,
   ) async {

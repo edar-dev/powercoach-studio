@@ -1526,6 +1526,12 @@ abstract class AppLocalizations {
   /// **'Diary'**
   String get navTabDiary;
 
+  /// No description provided for @shellGlobalSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search clients, plans, exercises...'**
+  String get shellGlobalSearchHint;
+
   /// No description provided for @headerProfile.
   ///
   /// In en, this message translates to:
