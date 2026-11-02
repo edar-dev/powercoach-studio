@@ -4270,6 +4270,9 @@ class AppLocalizationsIt extends AppLocalizations {
       'Gestisci le credenziali operative, canali atleti e policy offline-first.';
 
   @override
+  String get settingsHubSubtitleShort => 'Gestione studio e profilo.';
+
+  @override
   String get settingsHubSyncPill => 'Dati locali attivi';
 
   @override

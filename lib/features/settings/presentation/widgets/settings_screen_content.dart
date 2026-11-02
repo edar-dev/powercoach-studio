@@ -121,7 +121,7 @@ class SettingsScreenContent extends StatelessWidget {
       onSelect: onSectionSelected,
       horizontal: !desktop,
     );
-    final edge = phone ? 16.0 : 24.0;
+    final edge = phone ? 16.0 : (desktop ? 16.0 : 20.0);
     final bottomPad = isDirty ? (phone ? 120.0 : 88.0) : (phone ? 32.0 : 24.0);
 
     final mainColumn = Column(
@@ -387,7 +387,7 @@ class SettingsScreenContent extends StatelessWidget {
           controller: scrollController,
           slivers: [
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(edge, phone ? 8 : 24, edge, 8),
+              padding: EdgeInsets.fromLTRB(edge, phone ? 8 : 16, edge, 8),
               sliver: SliverToBoxAdapter(child: header),
             ),
             if (!desktop && !phone)
@@ -396,7 +396,7 @@ class SettingsScreenContent extends StatelessWidget {
                 sliver: SliverToBoxAdapter(child: nav),
               ),
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(edge, 0, edge, phone ? 16 : 24),
+              padding: EdgeInsets.fromLTRB(edge, 0, edge, phone ? 16 : 20),
               sliver: SliverToBoxAdapter(
                 child: desktop
                     ? Row(
@@ -406,7 +406,7 @@ class SettingsScreenContent extends StatelessWidget {
                             width: 280,
                             child: nav,
                           ),
-                          const SizedBox(width: 28),
+                          const SizedBox(width: 18),
                           Expanded(child: mainColumn),
                         ],
                       )
@@ -515,7 +515,7 @@ class _SettingsHubHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  l10n.settingsHubSubtitle,
+                  l10n.settingsHubSubtitleShort,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: MarketingDarkColors.slate400,
                   ),

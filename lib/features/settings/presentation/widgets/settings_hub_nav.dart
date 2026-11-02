@@ -108,7 +108,7 @@ class SettingsHubNav extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: MarketingDarkColors.stitchCard,
         borderRadius: BorderRadius.circular(MarketingDarkColors.radius2xl),
@@ -121,7 +121,7 @@ class SettingsHubNav extends StatelessWidget {
         children: [
           for (final item in items)
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 2),
               child: _SidebarNavButton(
                 item: item,
                 selected: active == item.section,
@@ -129,12 +129,12 @@ class SettingsHubNav extends StatelessWidget {
               ),
             ),
           const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8),
+            padding: EdgeInsets.symmetric(vertical: 6),
             child: Divider(height: 1, color: MarketingDarkColors.stitchBorder),
           ),
           for (final item in legal)
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 2),
               child: _SidebarNavButton(
                 item: item,
                 selected: false,
@@ -181,6 +181,7 @@ class _SidebarNavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
     final fg = selected
         ? Colors.white
         : item.muted
@@ -193,26 +194,23 @@ class _SidebarNavButton extends StatelessWidget {
             : MarketingDarkColors.slate400;
 
     return Material(
-      color: selected ? MarketingDarkColors.brand : Colors.transparent,
+      color: selected ? primary : Colors.transparent,
       borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(MarketingDarkColors.radiusXl),
         child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: selected ? 12 : 10,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           child: Row(
             children: [
-              Icon(item.icon, size: 20, color: iconColor),
-              const SizedBox(width: 12),
+              Icon(item.icon, size: 18, color: iconColor),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   item.label,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: fg,
-                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   ),
                 ),
               ),
@@ -220,14 +218,20 @@ class _SidebarNavButton extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
-                    color: MarketingDarkColors.stitchCardElevated,
+                    color: selected
+                        ? Colors.white.withValues(alpha: 0.18)
+                        : MarketingDarkColors.stitchCardElevated,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: MarketingDarkColors.stitchBorderMuted),
+                    border: Border.all(
+                      color: selected
+                          ? Colors.white.withValues(alpha: 0.28)
+                          : MarketingDarkColors.stitchBorderMuted,
+                    ),
                   ),
                   child: Text(
                     item.badge!,
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: MarketingDarkColors.brandLight,
+                      color: selected ? Colors.white : MarketingDarkColors.brandLight,
                       fontFamily: 'monospace',
                       fontWeight: FontWeight.w600,
                     ),
@@ -237,7 +241,9 @@ class _SidebarNavButton extends StatelessWidget {
                 Text(
                   item.trailingText!,
                   style: theme.textTheme.labelSmall?.copyWith(
-                    color: MarketingDarkColors.slate400,
+                    color: selected
+                        ? Colors.white.withValues(alpha: 0.85)
+                        : MarketingDarkColors.slate400,
                   ),
                 )
               else
@@ -270,22 +276,19 @@ class _ChipNavButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final primary = theme.colorScheme.primary;
     return Material(
-      color: selected
-          ? MarketingDarkColors.brand
-          : MarketingDarkColors.stitchCard,
+      color: selected ? primary : MarketingDarkColors.stitchCard,
       borderRadius: BorderRadius.circular(999),
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(999),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: selected
-                  ? MarketingDarkColors.brand
-                  : MarketingDarkColors.stitchBorderMuted,
+              color: selected ? primary : MarketingDarkColors.stitchBorderMuted,
             ),
           ),
           child: Row(
@@ -301,7 +304,7 @@ class _ChipNavButton extends StatelessWidget {
                 item.label,
                 style: theme.textTheme.labelMedium?.copyWith(
                   color: selected ? Colors.white : MarketingDarkColors.slate300,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               if (item.badge != null) ...[
