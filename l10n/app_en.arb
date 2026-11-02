@@ -2033,6 +2033,7 @@
   "backupImportTypeConfirmHint": "IMPORT",
   "settingsHubTitle": "Settings & Profile",
   "settingsHubSubtitle": "Manage operational credentials, athlete channels, and offline-first policies.",
+  "settingsHubSubtitleShort": "Studio and profile management.",
   "settingsHubSyncPill": "Local data active",
   "settingsNavPersonalInfo": "Personal info",
   "settingsNavPdfBrand": "PDF brand",

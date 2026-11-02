@@ -4228,6 +4228,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Manage operational credentials, athlete channels, and offline-first policies.';
 
   @override
+  String get settingsHubSubtitleShort => 'Studio and profile management.';
+
+  @override
   String get settingsHubSyncPill => 'Local data active';
 
   @override
