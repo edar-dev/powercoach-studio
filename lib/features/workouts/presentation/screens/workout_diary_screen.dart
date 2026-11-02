@@ -247,9 +247,9 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   Future<void> _exportVisible() async {
-    HapticFeedback.selectionClick();
     final l10n = AppLocalizations.of(context);
     final visible = _visibleEntries;
+    await HapticFeedback.selectionClick();
     try {
       final artifact = await exportWorkoutDiaryToCsv(
         entries: visible,
