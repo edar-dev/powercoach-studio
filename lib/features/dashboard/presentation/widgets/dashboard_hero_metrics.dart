@@ -5,7 +5,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
 import 'dashboard_surface_card.dart';
 
-/// Four-tile KPI strip at the top of the coach dashboard (Stitch hero metrics).
+/// Three-tile KPI strip at the top of the coach dashboard (Stitch hero metrics).
 class DashboardHeroMetrics extends StatelessWidget {
   const DashboardHeroMetrics({
     super.key,
@@ -14,6 +14,7 @@ class DashboardHeroMetrics extends StatelessWidget {
     required this.l10n,
     required this.snapshot,
     required this.loading,
+    this.attentionExtraCount = 0,
   });
 
   final ThemeData theme;
@@ -22,18 +23,21 @@ class DashboardHeroMetrics extends StatelessWidget {
   final DashboardSnapshot? snapshot;
   final bool loading;
 
+  /// Extra attention items (e.g. actionable data-quality findings).
+  final int attentionExtraCount;
+
   @override
   Widget build(BuildContext context) {
     final showPlaceholder = loading && snapshot == null;
     final clients = showPlaceholder ? '–' : '${snapshot?.clientCount ?? 0}';
-    final programs = showPlaceholder ? '–' : '${snapshot?.activePrograms ?? 0}';
-    final weekly = showPlaceholder ? '–' : '${snapshot?.weeklyUpdates ?? 0}';
+    final sessionsToday =
+        showPlaceholder ? '–' : '${snapshot?.todayItems.length ?? 0}';
     final attentionCount = showPlaceholder
         ? null
         : (snapshot?.stalePlans.length ?? 0) +
-            (snapshot?.customersWithoutPlan.length ?? 0);
-    final attentionValue =
-        attentionCount == null ? '–' : '$attentionCount';
+            (snapshot?.customersWithoutPlan.length ?? 0) +
+            attentionExtraCount;
+    final attentionValue = attentionCount == null ? '–' : '$attentionCount';
     final attentionOk = attentionCount != null && attentionCount == 0;
 
     return LayoutBuilder(
@@ -43,7 +47,7 @@ class DashboardHeroMetrics extends StatelessWidget {
           _HeroMetricTile(
             theme: theme,
             colorScheme: colorScheme,
-            label: l10n.dashboardMetricAthletes,
+            label: l10n.dashboardMetricActiveClients,
             value: clients,
             icon: Icons.groups_outlined,
             iconTint: StitchM3Theme.accent,
@@ -51,27 +55,16 @@ class DashboardHeroMetrics extends StatelessWidget {
           _HeroMetricTile(
             theme: theme,
             colorScheme: colorScheme,
-            label: l10n.dashboardMetricActivePlans,
-            value: programs,
-            icon: Icons.assignment_outlined,
+            label: l10n.dashboardMetricSessionsToday,
+            value: sessionsToday,
+            icon: Icons.event_available_outlined,
             iconTint: colorScheme.secondary,
           ),
           _HeroMetricTile(
             theme: theme,
             colorScheme: colorScheme,
-            label: l10n.dashboardMetricWeeklyUpdates,
-            value: weekly,
-            icon: Icons.trending_up,
-            iconTint: StitchM3Theme.success,
-          ),
-          _HeroMetricTile(
-            theme: theme,
-            colorScheme: colorScheme,
-            label: l10n.dashboardMetricCoachAttention,
+            label: l10n.dashboardMetricPendingReviews,
             value: attentionValue,
-            valueSuffix: attentionCount == null
-                ? null
-                : l10n.dashboardMetricAlertsSuffix,
             valueColor: attentionOk ? StitchM3Theme.success : null,
             icon: attentionOk
                 ? Icons.check_circle_outline
@@ -93,6 +86,7 @@ class DashboardHeroMetrics extends StatelessWidget {
           );
         }
 
+        // Narrow: first two side-by-side, third full width.
         return Column(
           children: [
             Row(
@@ -103,13 +97,7 @@ class DashboardHeroMetrics extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(child: tiles[2]),
-                const SizedBox(width: 12),
-                Expanded(child: tiles[3]),
-              ],
-            ),
+            tiles[2],
           ],
         );
       },
@@ -125,7 +113,6 @@ class _HeroMetricTile extends StatelessWidget {
     required this.value,
     required this.icon,
     required this.iconTint,
-    this.valueSuffix,
     this.valueColor,
   });
 
@@ -133,7 +120,6 @@ class _HeroMetricTile extends StatelessWidget {
   final ColorScheme colorScheme;
   final String label;
   final String value;
-  final String? valueSuffix;
   final Color? valueColor;
   final IconData icon;
   final Color iconTint;
@@ -158,29 +144,12 @@ class _HeroMetricTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        value,
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          color: valueColor ?? colorScheme.onSurface,
-                        ),
-                      ),
-                    ),
-                    if (valueSuffix != null) ...[
-                      const SizedBox(width: 4),
-                      Text(
-                        valueSuffix!,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ],
+                Text(
+                  value,
+                  style: theme.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    color: valueColor ?? colorScheme.onSurface,
+                  ),
                 ),
               ],
             ),

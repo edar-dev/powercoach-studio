@@ -7,6 +7,7 @@ import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
+import '../../domain/plan_calendar_event.dart';
 import 'dashboard_schedule_card.dart';
 import 'dashboard_surface_card.dart';
 
@@ -140,6 +141,7 @@ class DashboardTodaySection extends StatelessWidget {
         final programLabel = item.programName.trim().isEmpty
             ? l10n.dashboardUntitledWorkout
             : item.programName;
+        final (statusLabel, statusColor) = _statusChip(l10n, colorScheme, item.status);
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
           child: DashboardScheduleCard(
@@ -149,6 +151,8 @@ class DashboardTodaySection extends StatelessWidget {
             period: weekdayLabel,
             clientName: item.clientName,
             programName: programLabel,
+            statusLabel: statusLabel,
+            statusColor: statusColor,
             onTap: () {
               HapticFeedback.mediumImpact();
               final tap = onSessionTap;
@@ -172,4 +176,25 @@ class DashboardTodaySection extends StatelessWidget {
       }).toList(),
     );
   }
+}
+
+(String label, Color color) _statusChip(
+  AppLocalizations l10n,
+  ColorScheme colorScheme,
+  PlanSessionStatus status,
+) {
+  return switch (status) {
+    PlanSessionStatus.completed => (
+        l10n.sessionCompleted,
+        StitchM3Theme.success,
+      ),
+    PlanSessionStatus.skipped => (
+        l10n.sessionSkipped,
+        colorScheme.error,
+      ),
+    PlanSessionStatus.planned => (
+        l10n.calendarStatusScheduled,
+        StitchM3Theme.accent,
+      ),
+  };
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
 
 /// Today schedule row on the coach dashboard.
 class DashboardScheduleCard extends StatelessWidget {
@@ -13,6 +13,8 @@ class DashboardScheduleCard extends StatelessWidget {
     required this.clientName,
     required this.programName,
     required this.onTap,
+    this.statusLabel,
+    this.statusColor,
   });
 
   final ThemeData theme;
@@ -22,9 +24,14 @@ class DashboardScheduleCard extends StatelessWidget {
   final String clientName;
   final String programName;
   final VoidCallback onTap;
+  final String? statusLabel;
+  final Color? statusColor;
 
   @override
   Widget build(BuildContext context) {
+    final chipLabel = statusLabel;
+    final chipColor = statusColor ?? colorScheme.primary;
+
     return Material(
       color: colorScheme.surfaceContainerHighest,
       borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
@@ -62,12 +69,44 @@ class DashboardScheduleCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      clientName,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: colorScheme.onSurface,
-                      ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            clientName,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w700,
+                              color: colorScheme.onSurface,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        if (chipLabel != null && chipLabel.isNotEmpty) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: chipColor.withValues(alpha: 0.14),
+                              borderRadius: BorderRadius.circular(
+                                StitchM3Theme.radiusMd,
+                              ),
+                              border: Border.all(
+                                color: chipColor.withValues(alpha: 0.35),
+                              ),
+                            ),
+                            child: Text(
+                              chipLabel,
+                              style: theme.textTheme.labelSmall?.copyWith(
+                                color: chipColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                     const SizedBox(height: 2),
                     Text(

@@ -1715,6 +1715,21 @@
   "dashboardMetricWeeklyUpdates": "Weekly updates",
   "dashboardMetricCoachAttention": "Coach attention",
   "dashboardMetricAlertsSuffix": "alerts",
+  "dashboardGreeting": "Good morning, {name}",
+  "@dashboardGreeting": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "dashboardGreetingFallbackName": "Coach",
+  "dashboardMetricActiveClients": "Active clients",
+  "dashboardMetricSessionsToday": "Sessions today",
+  "dashboardMetricPendingReviews": "Pending reviews",
+  "dashboardOpenCalendar": "Open calendar",
+  "dashboardOpenDiary": "Open diary",
+  "dashboardSectionAppointmentsToday": "Today's appointments and sessions",
   "dashboardTodayEmptyHint": "No sessions or reminders planned for this date. Open the calendar.",
   "dashboardOpenAgenda": "Open agenda",
   "dashboardCoachToolsAvailable": "{count} tools available",
