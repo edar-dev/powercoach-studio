@@ -144,6 +144,10 @@ class PrimaryShellScaffold extends StatelessWidget {
       bottomNavigationBar: _onSettings
           ? null
           : NavigationBar(
+              // Stitch mobile: compact labeled 4-tab bar with circular indicator.
+              height: 64,
+              elevation: 0,
+              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
               selectedIndex: selectedIndex ?? 0,
               onDestinationSelected: _onDestinationSelected,
               destinations: [

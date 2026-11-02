@@ -163,6 +163,21 @@ void main() {
     );
   });
 
+  testWidgets('phone NavigationBar matches Stitch density chrome', (
+    tester,
+  ) async {
+    final router = _shellHarnessRouter();
+    await _pumpPhoneShell(tester, router);
+
+    final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+    expect(bar.height, 64);
+    expect(bar.elevation, 0);
+    expect(bar.labelBehavior, NavigationDestinationLabelBehavior.alwaysShow);
+    expect(bar.destinations, hasLength(4));
+    expect(find.byType(NavigationRail), findsNothing);
+    expect(find.text('Search clients, plans, exercises...'), findsNothing);
+  });
+
   testWidgets('exercise library keeps Schede branch selected', (tester) async {
     final router = _shellHarnessRouter(
       initialLocation: AppPaths.exerciseLibrary,
