@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
@@ -11,12 +12,15 @@ import '../../../../l10n/app_localizations.dart';
 import '../../data/custom_exercise_item.dart';
 import '../../data/pinned_exercises_store.dart';
 import '../../data/custom_exercise_repository.dart';
+import '../../domain/exercise_library_muscle_filter.dart';
 import '../../domain/exercise_library_tree_helpers.dart';
 import '../exercise_library_clear_handler.dart';
 import '../exercise_library_crud_handler.dart';
 import '../exercise_library_export_handler.dart';
 import '../exercise_library_import_handler.dart';
+import '../widgets/exercise_library_page_header.dart';
 import '../widgets/exercise_library_tab_view.dart';
+import '../widgets/exercise_library_toolbar.dart';
 
 class ExerciseLibraryScreen extends StatefulWidget {
   const ExerciseLibraryScreen({super.key});
@@ -34,6 +38,12 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
   bool _loading = true;
   String? _error;
   late final TabController _tabController;
+
+  String _searchQuery = '';
+  String? _lastRouteSearchQ;
+  ExerciseLibraryMuscleGroup _muscleFilter = ExerciseLibraryMuscleGroup.all;
+  ExerciseLibrarySortMode _sortMode = ExerciseLibrarySortMode.alphabetical;
+  ExerciseLibraryViewMode _viewMode = ExerciseLibraryViewMode.grid;
 
   ExerciseLibraryImportHandler get _importHandler => ExerciseLibraryImportHandler(
         context: context,
@@ -71,6 +81,18 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
       if (!mounted) return;
       _load();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Shell global search seeds the local filter via `?q=` (no backend index).
+    final q = GoRouterState.of(context).uri.queryParameters['q'] ?? '';
+    if (q == _lastRouteSearchQ) return;
+    _lastRouteSearchQ = q;
+    if (q != _searchQuery) {
+      _searchQuery = q;
+    }
   }
 
   @override
@@ -120,6 +142,11 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     setState(() => _pinnedIds = latest);
   }
 
+  void _openNewExercise() {
+    HapticFeedback.mediumImpact();
+    _crudHandler.showAddDialog(isMobility: _tabController.index == 1);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -127,12 +154,14 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
     final cs = theme.colorScheme;
 
     final slimHub = primaryShellUsesRail(context);
+    final showToolbar = !_loading && _error == null;
 
     return Scaffold(
       backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
         title: l10n.exerciseLibraryTitle,
         showLogo: !slimHub,
+        showTitle: !slimHub,
         actions: [
           if (!slimHub)
             IconButton(
@@ -198,48 +227,80 @@ class _ExerciseLibraryScreenState extends State<ExerciseLibraryScreen>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ExerciseLibraryTabView(
-            isMobility: false,
-            loading: _loading,
-            error: _error,
-            allItemsEmpty: _items.isEmpty,
-            onRefresh: _load,
-            buildList: () => filterExerciseRootsByMobility(_items, false),
-            onEdit: _crudHandler.showEditDialog,
-            onDelete: _crudHandler.confirmDelete,
-            onAddVariant: _crudHandler.showAddVariantDialog,
-            onTogglePin: _togglePin,
-            isPinned: (item) => _pinnedIds.contains(item.id),
-          ),
-          ExerciseLibraryTabView(
-            isMobility: true,
-            loading: _loading,
-            error: _error,
-            allItemsEmpty: _items.isEmpty,
-            onRefresh: _load,
-            buildList: () => filterExerciseRootsByMobility(_items, true),
-            onEdit: _crudHandler.showEditDialog,
-            onDelete: _crudHandler.confirmDelete,
-            onAddVariant: _crudHandler.showAddVariantDialog,
-            onTogglePin: _togglePin,
-            isPinned: (item) => _pinnedIds.contains(item.id),
+          if (slimHub)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: ExerciseLibraryPageHeader(
+                onNewExercise: _loading ? null : _openNewExercise,
+              ),
+            ),
+          if (showToolbar)
+            ExerciseLibraryToolbar(
+              searchQuery: _searchQuery,
+              muscleFilter: _muscleFilter,
+              sortMode: _sortMode,
+              viewMode: _viewMode,
+              onSearchChanged: (v) => setState(() => _searchQuery = v),
+              onMuscleFilterSelected: (f) =>
+                  setState(() => _muscleFilter = f),
+              onSortChanged: (s) => setState(() => _sortMode = s),
+              onViewModeChanged: (m) => setState(() => _viewMode = m),
+            ),
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                ExerciseLibraryTabView(
+                  isMobility: false,
+                  loading: _loading,
+                  error: _error,
+                  allItemsEmpty: _items.isEmpty,
+                  onRefresh: _load,
+                  buildList: () => filterExerciseRootsByMobility(_items, false),
+                  searchQuery: _searchQuery,
+                  muscleFilter: _muscleFilter,
+                  sortMode: _sortMode,
+                  viewMode: _viewMode,
+                  onEdit: _crudHandler.showEditDialog,
+                  onDelete: _crudHandler.confirmDelete,
+                  onAddVariant: _crudHandler.showAddVariantDialog,
+                  onTogglePin: _togglePin,
+                  isPinned: (item) => _pinnedIds.contains(item.id),
+                ),
+                ExerciseLibraryTabView(
+                  isMobility: true,
+                  loading: _loading,
+                  error: _error,
+                  allItemsEmpty: _items.isEmpty,
+                  onRefresh: _load,
+                  buildList: () => filterExerciseRootsByMobility(_items, true),
+                  searchQuery: _searchQuery,
+                  muscleFilter: _muscleFilter,
+                  sortMode: _sortMode,
+                  viewMode: _viewMode,
+                  onEdit: _crudHandler.showEditDialog,
+                  onDelete: _crudHandler.confirmDelete,
+                  onAddVariant: _crudHandler.showAddVariantDialog,
+                  onTogglePin: _togglePin,
+                  isPinned: (item) => _pinnedIds.contains(item.id),
+                ),
+              ],
+            ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _loading
-            ? null
-            : () => _crudHandler.showAddDialog(
-                  isMobility: _tabController.index == 1,
-                ),
-        icon: const Icon(Icons.add),
-        label: Text(l10n.exerciseLibraryAddExercise),
-        backgroundColor: StitchM3Theme.accent,
-        foregroundColor: Colors.white,
-      ),
+      floatingActionButton: slimHub
+          ? null
+          : FloatingActionButton.extended(
+              onPressed: _loading ? null : _openNewExercise,
+              icon: const Icon(Icons.add),
+              label: Text(l10n.exerciseLibraryAddExercise),
+              backgroundColor: StitchM3Theme.accent,
+              foregroundColor: Colors.white,
+            ),
     );
   }
 }
