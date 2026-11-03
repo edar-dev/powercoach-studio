@@ -104,7 +104,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _applySectionQuery() {
-    final section = GoRouterState.of(context).uri.queryParameters['section'];
+    // Widget tests mount SettingsScreen without a GoRouter ancestor.
+    final router = GoRouter.maybeOf(context);
+    if (router == null) return;
+    final section = router.state.uri.queryParameters['section'];
     final target = switch (section) {
       'notifications' => SettingsHubSection.notifications,
       'backup' => SettingsHubSection.backup,
