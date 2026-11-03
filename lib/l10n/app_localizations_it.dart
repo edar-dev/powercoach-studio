@@ -1508,6 +1508,61 @@ class AppLocalizationsIt extends AppLocalizations {
   String get exerciseLibraryTitle => 'Libreria esercizi';
 
   @override
+  String get exerciseLibrarySubtitle =>
+      'Catalogo esercizi con filtri muscolari e ricerca.';
+
+  @override
+  String get exerciseLibrarySearchDenseHint =>
+      'Cerca esercizio per nome o movimento…';
+
+  @override
+  String get exerciseLibraryAddShort => 'Aggiungi';
+
+  @override
+  String get exerciseLibraryDetails => 'Dettagli';
+
+  @override
+  String get exerciseLibraryNewExercise => 'Nuovo esercizio';
+
+  @override
+  String get exerciseLibraryMuscleAll => 'Tutti';
+
+  @override
+  String get exerciseLibraryMuscleChest => 'Petto';
+
+  @override
+  String get exerciseLibraryMuscleBack => 'Schiena';
+
+  @override
+  String get exerciseLibraryMuscleLegs => 'Gambe';
+
+  @override
+  String get exerciseLibraryMuscleShoulders => 'Spalle';
+
+  @override
+  String get exerciseLibraryMuscleArms => 'Braccia';
+
+  @override
+  String get exerciseLibraryMuscleCore => 'Core';
+
+  @override
+  String exerciseLibraryPaginationRange(int from, int to, int total) {
+    return 'Mostrando $from–$to di $total esercizi';
+  }
+
+  @override
+  String get exerciseLibraryPaginationPrev => 'Precedente';
+
+  @override
+  String get exerciseLibraryPaginationNext => 'Successivo';
+
+  @override
+  String get exerciseLibraryViewGrid => 'Griglia';
+
+  @override
+  String get exerciseLibraryViewList => 'Elenco';
+
+  @override
   String get exerciseLibraryBack => 'Indietro';
 
   @override
@@ -2950,6 +3005,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutSessionColLoadRpe => 'CARICO / RPE';
 
   @override
+  String get workoutSessionColPercent => 'TARGET %';
+
+  @override
+  String get workoutSessionColLoad => 'KG';
+
+  @override
+  String get workoutSessionColRpe => 'RPE';
+
+  @override
   String get workoutSessionColNote => 'NOTE';
 
   @override
@@ -4324,6 +4388,78 @@ class AppLocalizationsIt extends AppLocalizations {
   String get settingsHubTitle => 'Impostazioni & Profilo';
 
   @override
+  String get settingsHubTitleShort => 'Impostazioni';
+
+  @override
+  String get settingsLocalizationTitle => 'Localizzazione UI';
+
+  @override
+  String get settingsLocalizationSubtitle =>
+      'Lingua, anteprima formati e fuso orario dello studio.';
+
+  @override
+  String get settingsLocalizationApply => 'Applica localizzazione';
+
+  @override
+  String get settingsLocalizationPreviewTitle => 'Anteprima live';
+
+  @override
+  String get settingsLocalizationPreviewBadge => 'Formato attivo';
+
+  @override
+  String get settingsLocalizationDefaultBadge => 'Predefinito per lo studio';
+
+  @override
+  String get settingsLocalizationRegionalTitle => 'Formati regionali';
+
+  @override
+  String get settingsLocalizationDateFormatLabel => 'Formato data';
+
+  @override
+  String get settingsLocalizationNumberFormatLabel => 'Formato numerico';
+
+  @override
+  String get settingsLocalizationFirstDayLabel =>
+      'Primo giorno della settimana';
+
+  @override
+  String get settingsLocalizationTimezoneTitle => 'Area geografica e orario';
+
+  @override
+  String get settingsLocalizationTimezoneHint =>
+      'Sincronizza prenotazioni clienti e report con questo fuso. Attualmente usa l’orario di sistema.';
+
+  @override
+  String get settingsLocalizationTimezoneSystem => 'Fuso di sistema';
+
+  @override
+  String get settingsLocalizationItalianDesc =>
+      'Interfaccia e formati in italiano';
+
+  @override
+  String get settingsLocalizationEnglishDesc =>
+      'Interface and formats in English';
+
+  @override
+  String get pdfBrandPreviewTitle => 'Anteprima live intestazione PDF';
+
+  @override
+  String get pdfBrandPreviewA4Badge => 'A4 Standard';
+
+  @override
+  String get pdfBrandPreviewLiveNote =>
+      'L’anteprima si aggiorna in tempo reale con le modifiche.';
+
+  @override
+  String get pdfBrandPreviewDocType => 'Report Allenamento & Performance';
+
+  @override
+  String get pdfBrandPreviewDateLabel => 'Anteprima data generazione';
+
+  @override
+  String get pdfBrandReset => 'Ripristina';
+
+  @override
   String get settingsHubSubtitle =>
       'Gestisci le credenziali operative, canali atleti e policy offline-first.';
 
@@ -4440,7 +4576,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get maximalSetCta => 'Imposta massimale';
+  String get maximalSetCta => 'Collega massimale';
 
   @override
   String get maximalSetCtaChange => 'Modifica';

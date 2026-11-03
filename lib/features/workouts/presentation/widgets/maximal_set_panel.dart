@@ -80,7 +80,7 @@ class MaximalSetPanel extends StatelessWidget {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
+        padding: const EdgeInsets.all(8),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -96,7 +96,7 @@ class MaximalSetPanel extends StatelessWidget {
               onSetMaximal: onSetMaximal,
             ),
             if (isSandbox) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 l10n.maximalSandboxHint,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -104,7 +104,7 @@ class MaximalSetPanel extends StatelessWidget {
                 ),
               ),
             ] else if (loadFailed) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Row(
                 children: [
                   Expanded(
@@ -127,7 +127,7 @@ class MaximalSetPanel extends StatelessWidget {
                 ],
               ),
             ] else if (!_hasResolvedKg && !loading) ...[
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Text(
                 _hasOrphanLink ? l10n.maximalOrphanHint : l10n.maximalEmptyHint,
                 style: theme.textTheme.bodySmall?.copyWith(
@@ -136,7 +136,7 @@ class MaximalSetPanel extends StatelessWidget {
               ),
             ],
             if (showResolveModeToggle && _hasResolvedKg) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               SegmentedButton<MaximalResolveMode>(
                 segments: [
                   ButtonSegment(
@@ -163,13 +163,13 @@ class MaximalSetPanel extends StatelessWidget {
               ),
             ],
             if (_hasResolvedKg) ...[
-              const SizedBox(height: 10),
+              const SizedBox(height: 6),
               MaximalPercentChips(
                 selectedPercent: percent,
                 enabled: _canApply,
                 onPercentSelected: _applyPercent,
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 2),
               MaximalPercentSlider(
                 percent: percent,
                 maximalKg: maximalKg,
@@ -225,16 +225,19 @@ class _Header extends StatelessWidget {
     final source = sourceLabel?.trim();
     final showSource = source != null && source.isNotEmpty && hasKg;
 
+    final headerStyle = theme.textTheme.labelLarge?.copyWith(
+      fontWeight: hasKg ? FontWeight.w700 : FontWeight.w600,
+      color: hasKg ? null : colorScheme.onSurfaceVariant,
+    );
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: loading
               ? Text(
                   l10n.maximalLabel,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: headerStyle,
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -245,16 +248,13 @@ class _Header extends StatelessWidget {
                               formatMaximalDisplayKg(maximalKg!),
                             )
                           : '${l10n.maximalLabel}: —',
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: hasKg ? FontWeight.w700 : FontWeight.w600,
-                        color: hasKg ? null : colorScheme.onSurfaceVariant,
-                      ),
+                      style: headerStyle,
                     ),
                     if (showSource) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
                       Text(
                         source,
-                        style: theme.textTheme.labelMedium?.copyWith(
+                        style: theme.textTheme.labelSmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
                       ),
@@ -263,21 +263,18 @@ class _Header extends StatelessWidget {
                 ),
         ),
         if (loading)
-          const Padding(
-            padding: EdgeInsets.only(top: 2),
-            child: SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
+          const SizedBox(
+            width: 16,
+            height: 16,
+            child: CircularProgressIndicator(strokeWidth: 2),
           )
         else if (!hasKg && !hasOrphanLink)
           FilledButton.tonal(
             onPressed: enabled ? onSetMaximal : null,
             style: FilledButton.styleFrom(
               visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              minimumSize: const Size(0, 36),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              minimumSize: const Size(0, 32),
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(l10n.maximalSetCta),
@@ -287,7 +284,9 @@ class _Header extends StatelessWidget {
             onPressed: enabled ? onSetMaximal : null,
             style: TextButton.styleFrom(
               visualDensity: VisualDensity.compact,
-              padding: const EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              minimumSize: const Size(0, 32),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             child: Text(l10n.maximalSetCtaChange),
           ),

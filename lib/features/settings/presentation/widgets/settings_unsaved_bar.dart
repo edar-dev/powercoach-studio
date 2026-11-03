@@ -5,18 +5,32 @@ import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Sticky bottom bar shown when personal profile edits are dirty.
+/// Sticky bottom bar shown when settings child edits are dirty.
 class SettingsUnsavedBar extends StatelessWidget {
   const SettingsUnsavedBar({
     super.key,
     required this.saving,
     required this.onCancel,
     required this.onSave,
+    this.saveLabel,
+    this.onReset,
+    this.resetLabel,
+    this.showUnsavedHint = true,
   });
 
   final bool saving;
   final VoidCallback onCancel;
   final VoidCallback onSave;
+
+  /// Overrides the primary save button label (defaults to settingsSaveChanges).
+  final String? saveLabel;
+
+  /// Optional tertiary reset action (e.g. PDF brand Ripristina).
+  final VoidCallback? onReset;
+  final String? resetLabel;
+
+  /// When false, hides the desktop amber unsaved hint (compact CTA row).
+  final bool showUnsavedHint;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +38,14 @@ class SettingsUnsavedBar extends StatelessWidget {
     return phone ? _buildPhone(context) : _buildDesktop(context);
   }
 
+  String _resolvedSaveLabel(AppLocalizations l10n) =>
+      saveLabel ?? l10n.settingsSaveChanges;
+
   Widget _buildPhone(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final bottomInset = MediaQuery.paddingOf(context).bottom;
+    final primaryLabel = _resolvedSaveLabel(l10n);
 
     return Material(
       color: Colors.transparent,
@@ -38,6 +56,24 @@ class SettingsUnsavedBar extends StatelessWidget {
         ),
         child: Row(
           children: [
+            if (onReset != null) ...[
+              SizedBox(
+                height: 48,
+                child: OutlinedButton(
+                  onPressed: saving ? null : onReset,
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: StitchMobileColors.onSurface,
+                    side: const BorderSide(color: StitchMobileColors.outline),
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(StitchMobileColors.radiusLg),
+                    ),
+                  ),
+                  child: Text(resetLabel ?? l10n.pdfBrandReset),
+                ),
+              ),
+              const SizedBox(width: 8),
+            ],
             Expanded(
               flex: 1,
               child: SizedBox(
@@ -92,7 +128,9 @@ class SettingsUnsavedBar extends StatelessWidget {
                           ),
                         )
                       : Text(
-                          l10n.settingsSaveChanges,
+                          primaryLabel,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.labelLarge?.copyWith(
                             fontWeight: FontWeight.w700,
                             color: StitchMobileColors.onPrimaryContainer,
@@ -110,6 +148,7 @@ class SettingsUnsavedBar extends StatelessWidget {
   Widget _buildDesktop(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
+    final primaryLabel = _resolvedSaveLabel(l10n);
 
     return Material(
       color: Colors.transparent,
@@ -130,27 +169,47 @@ class SettingsUnsavedBar extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Expanded(
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.warning_amber_rounded,
-                    size: 18,
-                    color: MarketingDarkColors.amber,
-                  ),
-                  const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(
-                      l10n.settingsUnsavedChanges,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: MarketingDarkColors.slate400,
+            if (showUnsavedHint)
+              Expanded(
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.warning_amber_rounded,
+                      size: 18,
+                      color: MarketingDarkColors.amber,
+                    ),
+                    const SizedBox(width: 8),
+                    Flexible(
+                      child: Text(
+                        l10n.settingsUnsavedChanges,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: MarketingDarkColors.slate400,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
+                  ],
+                ),
+              )
+            else
+              const Spacer(),
             const SizedBox(width: 12),
+            if (onReset != null) ...[
+              OutlinedButton(
+                onPressed: saving ? null : onReset,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: MarketingDarkColors.slate300,
+                  side: const BorderSide(
+                    color: MarketingDarkColors.stitchBorderMuted,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(MarketingDarkColors.radiusXl),
+                  ),
+                ),
+                child: Text(resetLabel ?? l10n.pdfBrandReset),
+              ),
+              const SizedBox(width: 8),
+            ],
             OutlinedButton(
               onPressed: saving ? null : onCancel,
               style: OutlinedButton.styleFrom(
@@ -175,7 +234,7 @@ class SettingsUnsavedBar extends StatelessWidget {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.check, size: 18),
-              label: Text(l10n.settingsSaveChanges),
+              label: Text(primaryLabel),
               style: FilledButton.styleFrom(
                 backgroundColor: MarketingDarkColors.brand,
                 foregroundColor: Colors.white,

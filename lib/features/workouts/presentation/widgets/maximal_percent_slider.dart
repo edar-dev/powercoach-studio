@@ -43,22 +43,31 @@ class MaximalPercentSlider extends StatelessWidget {
       children: [
         Text(
           l10n.maximalPercentReadout(clamped, kgLabel),
-          style: theme.textTheme.labelLarge?.copyWith(
+          style: theme.textTheme.labelMedium?.copyWith(
             color: enabled
                 ? cs.onSurface
                 : cs.onSurface.withValues(alpha: 0.38),
             fontWeight: FontWeight.w600,
           ),
         ),
-        Slider(
-          value: clamped.toDouble(),
-          min: kMaximalPercentSliderMin.toDouble(),
-          max: kMaximalPercentSliderMax.toDouble(),
-          divisions: kMaximalPercentSliderMax - kMaximalPercentSliderMin,
-          label: '$clamped%',
-          onChanged: enabled
-              ? (value) => onChanged(value.round())
-              : null,
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            trackHeight: 2,
+            overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 7),
+            showValueIndicator: ShowValueIndicator.never,
+          ),
+          child: Slider(
+            value: clamped.toDouble(),
+            min: kMaximalPercentSliderMin.toDouble(),
+            max: kMaximalPercentSliderMax.toDouble(),
+            divisions: kMaximalPercentSliderMax - kMaximalPercentSliderMin,
+            label: '$clamped%',
+            onChanged: enabled
+                ? (value) => onChanged(value.round())
+                : null,
+            padding: const EdgeInsets.symmetric(vertical: 4),
+          ),
         ),
       ],
     );

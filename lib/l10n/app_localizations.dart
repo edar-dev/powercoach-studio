@@ -2738,6 +2738,108 @@ abstract class AppLocalizations {
   /// **'Exercise library'**
   String get exerciseLibraryTitle;
 
+  /// No description provided for @exerciseLibrarySubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercise catalog with muscle filters and search.'**
+  String get exerciseLibrarySubtitle;
+
+  /// No description provided for @exerciseLibrarySearchDenseHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search exercise by name or movement…'**
+  String get exerciseLibrarySearchDenseHint;
+
+  /// No description provided for @exerciseLibraryAddShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get exerciseLibraryAddShort;
+
+  /// No description provided for @exerciseLibraryDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get exerciseLibraryDetails;
+
+  /// No description provided for @exerciseLibraryNewExercise.
+  ///
+  /// In en, this message translates to:
+  /// **'New exercise'**
+  String get exerciseLibraryNewExercise;
+
+  /// No description provided for @exerciseLibraryMuscleAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get exerciseLibraryMuscleAll;
+
+  /// No description provided for @exerciseLibraryMuscleChest.
+  ///
+  /// In en, this message translates to:
+  /// **'Chest'**
+  String get exerciseLibraryMuscleChest;
+
+  /// No description provided for @exerciseLibraryMuscleBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get exerciseLibraryMuscleBack;
+
+  /// No description provided for @exerciseLibraryMuscleLegs.
+  ///
+  /// In en, this message translates to:
+  /// **'Legs'**
+  String get exerciseLibraryMuscleLegs;
+
+  /// No description provided for @exerciseLibraryMuscleShoulders.
+  ///
+  /// In en, this message translates to:
+  /// **'Shoulders'**
+  String get exerciseLibraryMuscleShoulders;
+
+  /// No description provided for @exerciseLibraryMuscleArms.
+  ///
+  /// In en, this message translates to:
+  /// **'Arms'**
+  String get exerciseLibraryMuscleArms;
+
+  /// No description provided for @exerciseLibraryMuscleCore.
+  ///
+  /// In en, this message translates to:
+  /// **'Core'**
+  String get exerciseLibraryMuscleCore;
+
+  /// No description provided for @exerciseLibraryPaginationRange.
+  ///
+  /// In en, this message translates to:
+  /// **'Showing {from}–{to} of {total} exercises'**
+  String exerciseLibraryPaginationRange(int from, int to, int total);
+
+  /// No description provided for @exerciseLibraryPaginationPrev.
+  ///
+  /// In en, this message translates to:
+  /// **'Previous'**
+  String get exerciseLibraryPaginationPrev;
+
+  /// No description provided for @exerciseLibraryPaginationNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get exerciseLibraryPaginationNext;
+
+  /// No description provided for @exerciseLibraryViewGrid.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid'**
+  String get exerciseLibraryViewGrid;
+
+  /// No description provided for @exerciseLibraryViewList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get exerciseLibraryViewList;
+
   /// No description provided for @exerciseLibraryBack.
   ///
   /// In en, this message translates to:
@@ -5254,6 +5356,24 @@ abstract class AppLocalizations {
   /// **'LOAD / RPE'**
   String get workoutSessionColLoadRpe;
 
+  /// No description provided for @workoutSessionColPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'TARGET %'**
+  String get workoutSessionColPercent;
+
+  /// No description provided for @workoutSessionColLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'KG'**
+  String get workoutSessionColLoad;
+
+  /// No description provided for @workoutSessionColRpe.
+  ///
+  /// In en, this message translates to:
+  /// **'RPE'**
+  String get workoutSessionColRpe;
+
   /// No description provided for @workoutSessionColNote.
   ///
   /// In en, this message translates to:
@@ -7680,6 +7800,138 @@ abstract class AppLocalizations {
   /// **'Settings & Profile'**
   String get settingsHubTitle;
 
+  /// No description provided for @settingsHubTitleShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsHubTitleShort;
+
+  /// No description provided for @settingsLocalizationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'UI localization'**
+  String get settingsLocalizationTitle;
+
+  /// No description provided for @settingsLocalizationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Language, format preview, and studio timezone.'**
+  String get settingsLocalizationSubtitle;
+
+  /// No description provided for @settingsLocalizationApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Apply localization'**
+  String get settingsLocalizationApply;
+
+  /// No description provided for @settingsLocalizationPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live preview'**
+  String get settingsLocalizationPreviewTitle;
+
+  /// No description provided for @settingsLocalizationPreviewBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Active format'**
+  String get settingsLocalizationPreviewBadge;
+
+  /// No description provided for @settingsLocalizationDefaultBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Studio default'**
+  String get settingsLocalizationDefaultBadge;
+
+  /// No description provided for @settingsLocalizationRegionalTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Regional formats'**
+  String get settingsLocalizationRegionalTitle;
+
+  /// No description provided for @settingsLocalizationDateFormatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Date format'**
+  String get settingsLocalizationDateFormatLabel;
+
+  /// No description provided for @settingsLocalizationNumberFormatLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Number format'**
+  String get settingsLocalizationNumberFormatLabel;
+
+  /// No description provided for @settingsLocalizationFirstDayLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'First day of week'**
+  String get settingsLocalizationFirstDayLabel;
+
+  /// No description provided for @settingsLocalizationTimezoneTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Geographic area and time'**
+  String get settingsLocalizationTimezoneTitle;
+
+  /// No description provided for @settingsLocalizationTimezoneHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Keeps client bookings and reports aligned. Currently uses the system timezone.'**
+  String get settingsLocalizationTimezoneHint;
+
+  /// No description provided for @settingsLocalizationTimezoneSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System timezone'**
+  String get settingsLocalizationTimezoneSystem;
+
+  /// No description provided for @settingsLocalizationItalianDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Italian UI and formats'**
+  String get settingsLocalizationItalianDesc;
+
+  /// No description provided for @settingsLocalizationEnglishDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'English UI and formats'**
+  String get settingsLocalizationEnglishDesc;
+
+  /// No description provided for @pdfBrandPreviewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live PDF header preview'**
+  String get pdfBrandPreviewTitle;
+
+  /// No description provided for @pdfBrandPreviewA4Badge.
+  ///
+  /// In en, this message translates to:
+  /// **'A4 Standard'**
+  String get pdfBrandPreviewA4Badge;
+
+  /// No description provided for @pdfBrandPreviewLiveNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview updates in real time as you edit.'**
+  String get pdfBrandPreviewLiveNote;
+
+  /// No description provided for @pdfBrandPreviewDocType.
+  ///
+  /// In en, this message translates to:
+  /// **'Training & Performance Report'**
+  String get pdfBrandPreviewDocType;
+
+  /// No description provided for @pdfBrandPreviewDateLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview generation date'**
+  String get pdfBrandPreviewDateLabel;
+
+  /// No description provided for @pdfBrandReset.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset'**
+  String get pdfBrandReset;
+
   /// No description provided for @settingsHubSubtitle.
   ///
   /// In en, this message translates to:
@@ -7899,7 +8151,7 @@ abstract class AppLocalizations {
   /// No description provided for @maximalSetCta.
   ///
   /// In en, this message translates to:
-  /// **'Set maximal'**
+  /// **'Link maximal'**
   String get maximalSetCta;
 
   /// No description provided for @maximalSetCtaChange.

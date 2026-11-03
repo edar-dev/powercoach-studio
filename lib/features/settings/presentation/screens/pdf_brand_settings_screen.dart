@@ -11,8 +11,12 @@ import '../../../../core/billing/plan_gate.dart';
 import '../../../../core/pdf/pdf_brand_store.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../widgets/pdf_brand_a4_preview_panel.dart';
+import '../widgets/settings_child_shell.dart';
+import '../widgets/settings_hub_nav.dart';
 import '../widgets/settings_unsaved_bar.dart';
 
 /// Settings sub-page for PDF brand kit (studio name, accent, logo, disclaimer).
@@ -173,6 +177,35 @@ class _PdfBrandSettingsScreenState extends State<PdfBrandSettingsScreen> {
       _pendingLogoExtension = null;
       _dirty = false;
     });
+    // Reload logo bytes from last successful save snapshot when needed.
+    unawaited(_restoreLogoPreview());
+  }
+
+  Future<void> _restoreLogoPreview() async {
+    final user = SupabaseBootstrap.currentUser;
+    if (user == null || !_savedHadLogo) {
+      if (mounted) setState(() => _logoBytes = null);
+      return;
+    }
+    final logo = await PdfBrandStore.instance.loadLogoBytes(user.id);
+    if (!mounted) return;
+    setState(() => _logoBytes = logo);
+  }
+
+  /// Clears brand fields to empty/default (dirty until Save).
+  void _resetToDefaults() {
+    setState(() {
+      _studioNameController.text = '';
+      _disclaimerController.text = '';
+      _hidePowerCoachBranding = false;
+      _accentColorArgb = null;
+      _hexController.text = '';
+      _logoRemoved = _savedHadLogo;
+      _pendingLogoBytes = null;
+      _pendingLogoExtension = null;
+      _logoBytes = null;
+    });
+    _recomputeDirty();
   }
 
   Future<void> _pickLogo() async {
@@ -331,220 +364,248 @@ class _PdfBrandSettingsScreenState extends State<PdfBrandSettingsScreen> {
     final previewColor = _accentColorArgb == null
         ? StitchM3Theme.accent
         : Color(_accentColorArgb!);
+    final wide = Breakpoints.isDesktop(context);
+    final form = _buildForm(context, l10n, theme, previewColor);
+    final preview = PdfBrandA4PreviewPanel(
+      studioName: _studioNameController.text,
+      accentColor: previewColor,
+      disclaimer: _disclaimerController.text,
+      hidePowerCoachBranding: _hidePowerCoachBranding,
+      logoBytes: (_logoBytes != null && !_logoRemoved) ? _logoBytes : null,
+    );
 
-    return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBg,
-      appBar: StitchSecondaryAppBar(title: l10n.pdfBrandSettingsTitle),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.fromLTRB(24, 24, 24, _dirty ? 100 : 24),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 640),
-                child: Column(
+    return SettingsChildShell(
+      activeSection: SettingsHubSection.pdfBrand,
+      title: l10n.pdfBrandSettingsTitle,
+      footer: _dirty
+          ? SettingsUnsavedBar(
+              saving: _isSaving,
+              onCancel: _cancelChanges,
+              onSave: _save,
+              onReset: _resetToDefaults,
+              resetLabel: l10n.pdfBrandReset,
+            )
+          : null,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.fromLTRB(24, 16, 24, _dirty ? 110 : 24),
+          child: wide
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 5, child: form),
+                    const SizedBox(width: 24),
+                    Expanded(flex: 4, child: preview),
+                  ],
+                )
+              : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
-                      l10n.pdfBrandSettingsSubtitle,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: MarketingDarkColors.slate400,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      l10n.pdfBrandStudioNameLabel,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: MarketingDarkColors.slate300,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _studioNameController,
-                      textInputAction: TextInputAction.next,
-                      decoration: _decoration(
-                        hint: l10n.pdfBrandStudioNameHint,
-                      ),
-                      style: const TextStyle(color: MarketingDarkColors.text),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      l10n.pdfBrandAccentLabel,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: MarketingDarkColors.slate300,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        for (final color in _presetColors)
-                          _ColorChip(
-                            color: color,
-                            selected: _accentColorArgb == color.toARGB32(),
-                            onTap: () {
-                              setState(() {
-                                _accentColorArgb = color.toARGB32();
-                                _hexController.text = _argbToHex(color.toARGB32());
-                              });
-                              _recomputeDirty();
-                            },
-                          ),
-                        _ColorChip(
-                          color: StitchM3Theme.accent,
-                          selected: _accentColorArgb == null,
-                          label: l10n.pdfBrandAccentDefault,
-                          onTap: () {
-                            setState(() {
-                              _accentColorArgb = null;
-                              _hexController.text = '';
-                            });
-                            _recomputeDirty();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _hexController,
-                      textInputAction: TextInputAction.next,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'[0-9a-fA-F#]'),
-                        ),
-                        LengthLimitingTextInputFormatter(9),
-                      ],
-                      decoration: _decoration(
-                        hint: l10n.pdfBrandAccentHexHint,
-                        prefix: Container(
-                          width: 18,
-                          height: 18,
-                          margin: const EdgeInsets.only(right: 8),
-                          decoration: BoxDecoration(
-                            color: previewColor,
-                            borderRadius: BorderRadius.circular(4),
-                            border: Border.all(
-                              color: MarketingDarkColors.stitchBorderMuted,
-                            ),
-                          ),
-                        ),
-                      ),
-                      style: const TextStyle(color: MarketingDarkColors.text),
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      l10n.pdfBrandDisclaimerLabel,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: MarketingDarkColors.slate300,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _disclaimerController,
-                      maxLines: 3,
-                      decoration: _decoration(
-                        hint: l10n.pdfBrandDisclaimerHint,
-                      ),
-                      style: const TextStyle(color: MarketingDarkColors.text),
-                    ),
-                    const SizedBox(height: 12),
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      value: _hidePowerCoachBranding,
-                      onChanged: (v) {
-                        setState(() => _hidePowerCoachBranding = v);
-                        _recomputeDirty();
-                      },
-                      title: Text(
-                        l10n.pdfBrandWhiteLabelLabel,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: MarketingDarkColors.text,
-                        ),
-                      ),
-                      subtitle: Text(
-                        l10n.pdfBrandWhiteLabelSubtitle,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: MarketingDarkColors.slate400,
-                        ),
-                      ),
-                      activeThumbColor: MarketingDarkColors.brand,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      l10n.pdfBrandLogoLabel,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: MarketingDarkColors.slate300,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      l10n.pdfBrandLogoLocalHint,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: MarketingDarkColors.slate400,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    if (_logoBytes != null && !_logoRemoved)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.memory(
-                            _logoBytes!,
-                            width: 72,
-                            height: 72,
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: [
-                        OutlinedButton.icon(
-                          onPressed: _pickLogo,
-                          icon: const Icon(Icons.upload_file, size: 18),
-                          label: Text(
-                            _logoBytes == null || _logoRemoved
-                                ? l10n.pdfBrandLogoPick
-                                : l10n.pdfBrandLogoReplace,
-                          ),
-                        ),
-                        if ((_logoBytes != null && !_logoRemoved) ||
-                            _savedHadLogo)
-                          TextButton(
-                            onPressed: _removeLogo,
-                            child: Text(l10n.pdfBrandLogoRemove),
-                          ),
-                      ],
-                    ),
-                    if (_loadError != null) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        _loadError!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.error,
-                        ),
-                      ),
-                    ],
+                    form,
+                    const SizedBox(height: 24),
+                    preview,
                   ],
+                ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildForm(
+    BuildContext context,
+    AppLocalizations l10n,
+    ThemeData theme,
+    Color previewColor,
+  ) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 640),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            l10n.pdfBrandSettingsSubtitle,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: MarketingDarkColors.slate400,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.pdfBrandStudioNameLabel,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: MarketingDarkColors.slate300,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _studioNameController,
+            textInputAction: TextInputAction.next,
+            decoration: _decoration(
+              hint: l10n.pdfBrandStudioNameHint,
+            ),
+            style: const TextStyle(color: MarketingDarkColors.text),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.pdfBrandAccentLabel,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: MarketingDarkColors.slate300,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: [
+              for (final color in _presetColors)
+                _ColorChip(
+                  color: color,
+                  selected: _accentColorArgb == color.toARGB32(),
+                  onTap: () {
+                    setState(() {
+                      _accentColorArgb = color.toARGB32();
+                      _hexController.text = _argbToHex(color.toARGB32());
+                    });
+                    _recomputeDirty();
+                  },
+                ),
+              _ColorChip(
+                color: StitchM3Theme.accent,
+                selected: _accentColorArgb == null,
+                label: l10n.pdfBrandAccentDefault,
+                onTap: () {
+                  setState(() {
+                    _accentColorArgb = null;
+                    _hexController.text = '';
+                  });
+                  _recomputeDirty();
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _hexController,
+            textInputAction: TextInputAction.next,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(
+                RegExp(r'[0-9a-fA-F#]'),
+              ),
+              LengthLimitingTextInputFormatter(9),
+            ],
+            decoration: _decoration(
+              hint: l10n.pdfBrandAccentHexHint,
+              prefix: Container(
+                width: 18,
+                height: 18,
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  color: previewColor,
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: MarketingDarkColors.stitchBorderMuted,
+                  ),
                 ),
               ),
             ),
+            style: const TextStyle(color: MarketingDarkColors.text),
           ),
-          if (_dirty)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SettingsUnsavedBar(
-                saving: _isSaving,
-                onCancel: _cancelChanges,
-                onSave: _save,
+          const SizedBox(height: 20),
+          Text(
+            l10n.pdfBrandDisclaimerLabel,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: MarketingDarkColors.slate300,
+            ),
+          ),
+          const SizedBox(height: 8),
+          TextField(
+            controller: _disclaimerController,
+            maxLines: 3,
+            decoration: _decoration(
+              hint: l10n.pdfBrandDisclaimerHint,
+            ),
+            style: const TextStyle(color: MarketingDarkColors.text),
+          ),
+          const SizedBox(height: 12),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            value: _hidePowerCoachBranding,
+            onChanged: (v) {
+              setState(() => _hidePowerCoachBranding = v);
+              _recomputeDirty();
+            },
+            title: Text(
+              l10n.pdfBrandWhiteLabelLabel,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: MarketingDarkColors.text,
               ),
             ),
+            subtitle: Text(
+              l10n.pdfBrandWhiteLabelSubtitle,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: MarketingDarkColors.slate400,
+              ),
+            ),
+            activeThumbColor: MarketingDarkColors.brand,
+          ),
+          const SizedBox(height: 20),
+          Text(
+            l10n.pdfBrandLogoLabel,
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: MarketingDarkColors.slate300,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            l10n.pdfBrandLogoLocalHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: MarketingDarkColors.slate400,
+            ),
+          ),
+          const SizedBox(height: 12),
+          if (_logoBytes != null && !_logoRemoved)
+            Align(
+              alignment: Alignment.centerLeft,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(
+                  _logoBytes!,
+                  width: 72,
+                  height: 72,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              OutlinedButton.icon(
+                onPressed: _pickLogo,
+                icon: const Icon(Icons.upload_file, size: 18),
+                label: Text(
+                  _logoBytes == null || _logoRemoved
+                      ? l10n.pdfBrandLogoPick
+                      : l10n.pdfBrandLogoReplace,
+                ),
+              ),
+              if ((_logoBytes != null && !_logoRemoved) || _savedHadLogo)
+                TextButton(
+                  onPressed: _removeLogo,
+                  child: Text(l10n.pdfBrandLogoRemove),
+                ),
+            ],
+          ),
+          if (_loadError != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              _loadError!,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.error,
+              ),
+            ),
+          ],
         ],
       ),
     );

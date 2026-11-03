@@ -7,6 +7,8 @@ import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/data/local_coach_profile_repository.dart';
+import '../widgets/settings_child_shell.dart';
+import '../widgets/settings_hub_nav.dart';
 import '../widgets/settings_personal_form_card.dart';
 import '../widgets/settings_unsaved_bar.dart';
 
@@ -228,39 +230,32 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
       );
     }
 
-    return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBg,
-      appBar: StitchSecondaryAppBar(title: l10n.settingsPersonalInfoTitle),
-      body: Stack(
-        children: [
-          SafeArea(
-            child: SingleChildScrollView(
-              keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: EdgeInsets.fromLTRB(24, 24, 24, _dirty ? 100 : 24),
-              child: SettingsPersonalFormCard(
-                formKey: _formKey,
-                displayNameController: _displayNameController,
-                emailController: _emailController,
-                phoneController: _phoneController,
-                bioController: _bioController,
-                avatarUrlController: _avatarUrlController,
-                websiteController: _websiteController,
-                emailVerified: _emailVerified,
-                loadError: _loadError,
-              ),
-            ),
+    return SettingsChildShell(
+      activeSection: SettingsHubSection.personalInfo,
+      title: l10n.settingsPersonalInfoTitle,
+      footer: _dirty
+          ? SettingsUnsavedBar(
+              saving: _isSaving,
+              onCancel: _cancelChanges,
+              onSave: _save,
+            )
+          : null,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.fromLTRB(24, 24, 24, _dirty ? 100 : 24),
+          child: SettingsPersonalFormCard(
+            formKey: _formKey,
+            displayNameController: _displayNameController,
+            emailController: _emailController,
+            phoneController: _phoneController,
+            bioController: _bioController,
+            avatarUrlController: _avatarUrlController,
+            websiteController: _websiteController,
+            emailVerified: _emailVerified,
+            loadError: _loadError,
           ),
-          if (_dirty)
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: SettingsUnsavedBar(
-                saving: _isSaving,
-                onCancel: _cancelChanges,
-                onSave: _save,
-              ),
-            ),
-        ],
+        ),
       ),
     );
   }

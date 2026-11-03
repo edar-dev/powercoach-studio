@@ -227,13 +227,13 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
       children: [
         Text(
           l10n.maximalAssociateMeasurementSection,
-          style: theme.textTheme.titleSmall?.copyWith(
+          style: theme.textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 4),
         for (final lift in MaximalLift.values)
-          _AssociateTile(
+          _AssociateRow(
             selected: current?.isMeasurement == true && current?.lift == lift,
             title: () {
               final kg = _liftKg(lift);
@@ -248,32 +248,35 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
             }(),
             trailing: IconButton(
               tooltip: l10n.maximalAssociateEditMeasurement,
-              icon: const Icon(Icons.edit_outlined, size: 20),
+              icon: const Icon(Icons.edit_outlined, size: 18),
+              visualDensity: VisualDensity.compact,
+              constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+              padding: EdgeInsets.zero,
               onPressed: () => _editMeasurement(lift),
             ),
             onTap: () => _selectMeasurement(lift),
           ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 4),
         Text(
           l10n.maximalAssociateCustomSection,
-          style: theme.textTheme.titleSmall?.copyWith(
+          style: theme.textTheme.labelLarge?.copyWith(
             fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 4),
         if (_customs.isEmpty)
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
+            padding: const EdgeInsets.symmetric(vertical: 2),
             child: Text(
               l10n.maximalAssociateCustomEmpty,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: theme.textTheme.bodySmall?.copyWith(
                 color: cs.onSurfaceVariant,
               ),
             ),
           )
         else
           for (final custom in _customs)
-            _AssociateTile(
+            _AssociateRow(
               selected: current?.isCustom == true &&
                   current?.maximalId == custom.id,
               title: l10n.maximalAssociateLiftWithKg(
@@ -282,7 +285,10 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
               ),
               trailing: IconButton(
                 tooltip: l10n.maximalAssociateEditCustom,
-                icon: const Icon(Icons.edit_outlined, size: 20),
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                visualDensity: VisualDensity.compact,
+                constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
+                padding: EdgeInsets.zero,
                 onPressed: () => _createOrEditCustom(existing: custom),
               ),
               onTap: () => widget.onResult(
@@ -295,16 +301,23 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
             onPressed: () => _createOrEditCustom(),
+            style: TextButton.styleFrom(
+              visualDensity: VisualDensity.compact,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+            ),
             icon: const Icon(Icons.add, size: 18),
             label: Text(l10n.maximalAssociateCreateCustom),
           ),
         ),
         if (current != null) ...[
-          const Divider(height: 20),
+          const Divider(height: 12),
           TextButton(
             onPressed: () =>
                 widget.onResult(const MaximalAssociateResult.clear()),
-            style: TextButton.styleFrom(foregroundColor: cs.error),
+            style: TextButton.styleFrom(
+              foregroundColor: cs.error,
+              visualDensity: VisualDensity.compact,
+            ),
             child: Text(l10n.maximalAssociateClear),
           ),
         ],
@@ -313,8 +326,9 @@ class _MaximalAssociateBodyState extends State<_MaximalAssociateBody> {
   }
 }
 
-class _AssociateTile extends StatelessWidget {
-  const _AssociateTile({
+/// Compact selectable row (replaces bulky [ListTile] for Stitch density).
+class _AssociateRow extends StatelessWidget {
+  const _AssociateRow({
     required this.title,
     required this.onTap,
     required this.selected,
@@ -328,16 +342,33 @@ class _AssociateTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return ListTile(
-      dense: true,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-      selected: selected,
-      selectedTileColor: cs.primaryContainer.withValues(alpha: 0.35),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      title: Text(title),
-      trailing: trailing,
-      onTap: onTap,
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Material(
+      color: selected
+          ? cs.primaryContainer.withValues(alpha: 0.35)
+          : Colors.transparent,
+      borderRadius: BorderRadius.circular(8),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(8, 6, 2, 6),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  ),
+                ),
+              ),
+              if (trailing != null) trailing!,
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -6,9 +6,10 @@ import '../../../../core/auth/supabase_bootstrap.dart';
 import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
-import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../data_health_controller.dart';
+import '../widgets/settings_child_shell.dart';
+import '../widgets/settings_hub_nav.dart';
 
 /// Settings sub-page: local data quality scan + safe prefs orphan repair.
 class DataHealthScreen extends StatefulWidget {
@@ -126,18 +127,16 @@ class _DataHealthScreenState extends State<DataHealthScreen> {
     final hasPrefsOrphans =
         report != null && DataHealthController.hasPreferenceOrphans(report);
 
-    return Scaffold(
-      backgroundColor: MarketingDarkColors.stitchPageBg,
-      appBar: StitchSecondaryAppBar(
-        title: l10n.dataHealthTitle,
-        actions: [
-          IconButton(
-            tooltip: l10n.dataHealthRescanAction,
-            onPressed: _isScanning || _isRepairing ? null : _runScan,
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
-      ),
+    return SettingsChildShell(
+      activeSection: SettingsHubSection.dataHealth,
+      title: l10n.dataHealthTitle,
+      actions: [
+        IconButton(
+          tooltip: l10n.dataHealthRescanAction,
+          onPressed: _isScanning || _isRepairing ? null : _runScan,
+          icon: const Icon(Icons.refresh),
+        ),
+      ],
       body: SafeArea(
         child: _buildBody(
           context: context,

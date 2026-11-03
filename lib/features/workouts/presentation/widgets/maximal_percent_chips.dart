@@ -19,8 +19,8 @@ class MaximalPercentChips extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Wrap(
-      spacing: 6,
-      runSpacing: 6,
+      spacing: 4,
+      runSpacing: 4,
       children: [
         for (final percent in kMaximalPercentPresets)
           _PercentChip(
@@ -57,11 +57,11 @@ class _PercentChip extends StatelessWidget {
       label: Text('$percent%'),
       selected: selected,
       showCheckmark: false,
-      visualDensity: VisualDensity.compact,
+      visualDensity: const VisualDensity(horizontal: -2, vertical: -2),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      labelPadding: const EdgeInsets.symmetric(horizontal: 4),
-      labelStyle: theme.textTheme.labelMedium?.copyWith(
+      padding: const EdgeInsets.symmetric(horizontal: 2),
+      labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+      labelStyle: theme.textTheme.labelSmall?.copyWith(
         fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
         color: !enabled
             ? colorScheme.onSurface.withValues(alpha: 0.38)
@@ -78,7 +78,7 @@ class _PercentChip extends StatelessWidget {
             ? colorScheme.primary
             : colorScheme.outlineVariant.withValues(alpha: 0.7),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onSelected: enabled ? (_) => onSelected() : null,
     );
   }

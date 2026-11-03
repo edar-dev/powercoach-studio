@@ -31,6 +31,7 @@ void main() {
     expect(isProtectedAppPath('/workouts/diary/plan-1/0-0'), isTrue);
     expect(isProtectedAppPath('/settings'), isTrue);
     expect(isProtectedAppPath('/settings/personal-info'), isTrue);
+    expect(isProtectedAppPath('/settings/localization'), isTrue);
     expect(isProtectedAppPath('/subscription'), isTrue);
     expect(isProtectedAppPath('/settings/subscription'), isTrue);
     expect(isProtectedAppPath('/profile'), isTrue);

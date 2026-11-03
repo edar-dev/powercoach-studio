@@ -36,14 +36,18 @@ Future<void> _pumpSheetFrames(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 350));
 }
 
-Future<void> _tapListTileWithTitle(WidgetTester tester, String title) async {
+Future<void> _tapAssociateRowWithTitle(
+  WidgetTester tester,
+  String title,
+) async {
   final titleFinder = find.textContaining(title);
   await tester.ensureVisible(titleFinder);
-  final listTile = find.ancestor(
+  // Prefer InkWell row (dense associate sheet); fall back to the text itself.
+  final inkWell = find.ancestor(
     of: titleFinder,
-    matching: find.byType(ListTile),
+    matching: find.byType(InkWell),
   );
-  await tester.tap(listTile);
+  await tester.tap(inkWell.evaluate().isNotEmpty ? inkWell.first : titleFinder);
   await _pumpSheetFrames(tester);
 }
 
@@ -129,7 +133,7 @@ void main() {
 
     expect(find.textContaining('Bench press: 100 kg'), findsOneWidget);
 
-    await _tapListTileWithTitle(tester, 'Bench press: 100 kg');
+    await _tapAssociateRowWithTitle(tester, 'Bench press: 100 kg');
 
     expect(result, isNotNull);
     expect(result!.cleared, isFalse);
@@ -174,7 +178,7 @@ void main() {
 
     expect(find.textContaining('Military press: 60 kg'), findsOneWidget);
 
-    await _tapListTileWithTitle(tester, 'Military press: 60 kg');
+    await _tapAssociateRowWithTitle(tester, 'Military press: 60 kg');
 
     expect(result, isNotNull);
     expect(result!.ref?.isCustom, isTrue);
