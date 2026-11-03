@@ -141,8 +141,10 @@ Future<void> navigateSettingsHubSection(
       openTermsOfService();
       return;
     case SettingsHubSection.notifications:
+      navigateTo(context, '${AppPaths.settings}?section=notifications');
+      return;
     case SettingsHubSection.backup:
-      navigateTo(context, AppPaths.settings);
+      navigateTo(context, '${AppPaths.settings}?section=backup');
       return;
   }
 }

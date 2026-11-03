@@ -31,7 +31,7 @@ class PdfBrandA4PreviewPanel extends StatelessWidget {
     final locale = Localizations.localeOf(context).toString();
     final dateLabel = DateFormat.yMMMd(locale).format(DateTime.now());
     final resolvedName =
-        studioName.trim().isEmpty ? 'PowerCoach Studio' : studioName.trim();
+        studioName.trim().isEmpty ? l10n.pdfBrandName : studioName.trim();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -244,7 +244,7 @@ class PdfBrandA4PreviewPanel extends StatelessWidget {
                               ? disclaimer.trim()
                               : (hidePowerCoachBranding
                                   ? resolvedName
-                                  : 'PowerCoach Studio'),
+                                  : l10n.pdfBrandName),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,

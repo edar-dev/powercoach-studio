@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../../../core/auth/supabase_bootstrap.dart';
@@ -97,8 +98,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
     // Defer InheritedWidget lookups (l10n) until after the first frame.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      _applySectionQuery();
       _bootstrap();
     });
+  }
+
+  void _applySectionQuery() {
+    final section = GoRouterState.of(context).uri.queryParameters['section'];
+    final target = switch (section) {
+      'notifications' => SettingsHubSection.notifications,
+      'backup' => SettingsHubSection.backup,
+      'personal' || 'personal-info' || 'personalInfo' =>
+        SettingsHubSection.personalInfo,
+      _ => null,
+    };
+    if (target == null) return;
+    setState(() => _activeSection = target);
+    final key = switch (target) {
+      SettingsHubSection.personalInfo => _personalKey,
+      SettingsHubSection.notifications => _notificationsKey,
+      SettingsHubSection.backup => _backupKey,
+      _ => null,
+    };
+    if (key != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _scrollTo(key);
+      });
+    }
   }
 
   @override

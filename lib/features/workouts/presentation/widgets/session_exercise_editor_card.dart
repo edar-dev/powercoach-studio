@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../customers/data/customer_maximal_repository.dart';
+import '../../../customers/data/customer_measurement_repository.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_kg_resolver.dart';
 import '../../domain/maximal_ref.dart';
 import '../../domain/set_load_display.dart';
 import '../../data/workout_routine_model.dart';
@@ -98,11 +101,19 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   late final TextEditingController _noteController;
   Timer? _noteDebounce;
   bool _showSavedHint = false;
+  double? _loadedMaximalKg;
+  int _maximalLoadToken = 0;
+
+  double? get _effectiveMaximalKg =>
+      widget.resolvedMaximalKg ?? _loadedMaximalKg;
 
   @override
   void initState() {
     super.initState();
     _noteController = TextEditingController(text: widget.exercise.note);
+    if (widget.expanded) {
+      unawaited(_loadResolvedMaximalKg());
+    }
   }
 
   @override
@@ -113,6 +124,18 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
             widget.exercise.note != _noteController.text)) {
       _noteController.text = widget.exercise.note;
     }
+    final refChanged =
+        oldWidget.exercise.maximalRef != widget.exercise.maximalRef ||
+            oldWidget.customerId != widget.customerId ||
+            oldWidget.resolvedMaximalKg != widget.resolvedMaximalKg;
+    if (refChanged) {
+      _loadedMaximalKg = null;
+    }
+    if (widget.expanded &&
+        (refChanged || !oldWidget.expanded) &&
+        widget.resolvedMaximalKg == null) {
+      unawaited(_loadResolvedMaximalKg());
+    }
   }
 
   @override
@@ -120,6 +143,41 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     _noteDebounce?.cancel();
     _noteController.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadResolvedMaximalKg() async {
+    final customerId = widget.customerId;
+    final ref = widget.exercise.maximalRef;
+    if (widget.resolvedMaximalKg != null ||
+        customerId == null ||
+        customerId.isEmpty ||
+        ref == null) {
+      if (mounted && _loadedMaximalKg != null) {
+        setState(() => _loadedMaximalKg = null);
+      }
+      return;
+    }
+    final token = ++_maximalLoadToken;
+    try {
+      final measurements =
+          await CustomerMeasurementRepository().getByCustomerId(customerId);
+      final maximals =
+          await CustomerMaximalRepository().getByCustomerId(customerId);
+      if (!mounted || token != _maximalLoadToken) return;
+      final kg = MaximalKgResolver.resolve(
+        ref: ref,
+        measurements: measurements,
+        customs: maximals
+            .map((m) => MaximalCustomKg(id: m.id, weightKg: m.weightKg))
+            .toList(growable: false),
+      );
+      if (!mounted || token != _maximalLoadToken) return;
+      setState(() => _loadedMaximalKg = kg);
+    } catch (e, stack) {
+      debugPrint('Session set table maximal resolve failed: $e\n$stack');
+      if (!mounted || token != _maximalLoadToken) return;
+      setState(() => _loadedMaximalKg = null);
+    }
   }
 
   void _onNoteChanged(String value) {
@@ -299,7 +357,7 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                       setNumber: i + 1,
                       set: s,
                       hasMaximalRef: exercise.maximalRef != null,
-                      resolvedMaximalKg: widget.resolvedMaximalKg,
+                      resolvedMaximalKg: _effectiveMaximalKg,
                       canRemove: details.length > 1 && widget.onRemoveSet != null,
                       onEdit: widget.onUpdateSet == null
                           ? null
