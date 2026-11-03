@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/maximal_ref.dart';
+import '../../domain/set_load_display.dart';
 import '../../data/workout_routine_model.dart';
 import 'workout_training_helpers.dart';
 
@@ -37,6 +38,7 @@ class SessionExerciseEditorCard extends StatefulWidget {
     this.onRemoveFromSuperset,
     this.customerId,
     this.onMaximalRefChanged,
+    this.resolvedMaximalKg,
   });
 
   final ThemeData theme;
@@ -51,6 +53,8 @@ class SessionExerciseEditorCard extends StatefulWidget {
   /// Persists [Exercise.maximalRef] when the set editor associate sheet changes it.
   final void Function(MaximalRef? ref, {required bool clear})?
       onMaximalRefChanged;
+  /// Optional already-resolved maximal kg for TARGET % display (no per-row async).
+  final double? resolvedMaximalKg;
   final VoidCallback? onDuplicate;
   final VoidCallback? onRemove;
   final VoidCallback? onMoveUp;
@@ -294,6 +298,8 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                       l10n: l10n,
                       setNumber: i + 1,
                       set: s,
+                      hasMaximalRef: exercise.maximalRef != null,
+                      resolvedMaximalKg: widget.resolvedMaximalKg,
                       canRemove: details.length > 1 && widget.onRemoveSet != null,
                       onEdit: widget.onUpdateSet == null
                           ? null
@@ -534,9 +540,11 @@ class _SetTableHeader extends StatelessWidget {
     );
     return Row(
       children: [
-        SizedBox(width: 40, child: Text(l10n.workoutSessionColSet, style: style)),
+        SizedBox(width: 36, child: Text(l10n.workoutSessionColSet, style: style)),
         Expanded(child: Text(l10n.workoutSessionColReps, style: style)),
-        Expanded(flex: 2, child: Text(l10n.workoutSessionColLoadRpe, style: style)),
+        Expanded(child: Text(l10n.workoutSessionColPercent, style: style)),
+        Expanded(child: Text(l10n.workoutSessionColLoad, style: style)),
+        Expanded(child: Text(l10n.workoutSessionColRpe, style: style)),
         Expanded(child: Text(l10n.workoutSessionColNote, style: style)),
         const SizedBox(width: 88),
       ],
@@ -551,7 +559,9 @@ class _SetTableRow extends StatelessWidget {
     required this.l10n,
     required this.setNumber,
     required this.set,
+    required this.hasMaximalRef,
     required this.canRemove,
+    this.resolvedMaximalKg,
     this.onEdit,
     this.onRemove,
   });
@@ -561,6 +571,8 @@ class _SetTableRow extends StatelessWidget {
   final AppLocalizations l10n;
   final int setNumber;
   final ExerciseSet set;
+  final bool hasMaximalRef;
+  final double? resolvedMaximalKg;
   final bool canRemove;
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
@@ -575,7 +587,11 @@ class _SetTableRow extends StatelessWidget {
       color: colorScheme.onSurfaceVariant,
     );
     final reps = set.reps.trim().isEmpty ? '—' : set.reps.trim();
-    final load = set.rpe.trim().isEmpty ? '—' : set.rpe.trim();
+    final display = formatSetLoadDisplay(
+      set.rpe,
+      resolvedMaximalKg: resolvedMaximalKg,
+      hasMaximalRef: hasMaximalRef,
+    );
     final note = set.note.trim();
 
     return Padding(
@@ -584,14 +600,31 @@ class _SetTableRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 40,
+            width: 36,
             child: Text(
               '$setNumber',
               style: cellStyle?.copyWith(fontWeight: FontWeight.w700),
             ),
           ),
           Expanded(child: Text(reps, style: cellStyle)),
-          Expanded(flex: 2, child: Text(load, style: cellStyle)),
+          Expanded(
+            child: Text(
+              display.percentLabel,
+              style: display.percentLabel == '—' ? muted : cellStyle,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              display.loadLabel,
+              style: display.loadLabel == '—' ? muted : cellStyle,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              display.rpeLabel,
+              style: display.rpeLabel == '—' ? muted : cellStyle,
+            ),
+          ),
           Expanded(
             child: Text(
               note.isEmpty ? '—' : note,

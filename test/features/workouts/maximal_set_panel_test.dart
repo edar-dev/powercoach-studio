@@ -47,7 +47,7 @@ void main() {
     );
 
     expect(find.textContaining('Maximal'), findsWidgets);
-    expect(find.text('Set maximal'), findsOneWidget);
+    expect(find.text('Link maximal'), findsOneWidget);
     expect(
       find.text('Link a maximal to calculate load as a %'),
       findsOneWidget,
@@ -106,7 +106,7 @@ void main() {
       findsOneWidget,
     );
     final cta = tester.widget<FilledButton>(
-      find.widgetWithText(FilledButton, 'Set maximal'),
+      find.widgetWithText(FilledButton, 'Link maximal'),
     );
     expect(cta.onPressed, isNull);
   });
@@ -165,7 +165,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Imposta massimale'), findsOneWidget);
+    expect(find.text('Collega massimale'), findsOneWidget);
     expect(find.textContaining('Massimale'), findsWidgets);
     expect(
       find.text('Collega un massimale per calcolare il carico in %'),
