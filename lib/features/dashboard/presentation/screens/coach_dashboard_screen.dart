@@ -10,6 +10,7 @@ import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/data/local_coach_profile_repository.dart';
@@ -191,25 +192,18 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
         : _coachDisplayName;
 
     final slimHub = primaryShellUsesRail(context);
-    final sectionGap = slimHub ? 16.0 : 24.0;
+    // Phone denser gaps toward Stitch; slim hub already compact beside the rail.
+    final sectionGap = slimHub ? 16.0 : 14.0;
 
     return Scaffold(
       backgroundColor: hubPageBackground(context),
       appBar: StitchAppBar(
-        title: l10n.dashboardTitle,
+        title: slimHub ? l10n.dashboardTitle : l10n.navTabToday,
         showLogo: !slimHub,
         showTitle: !slimHub,
-        actions: [
-          if (!slimHub)
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              tooltip: l10n.settingsTitle,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                navigateTo(context, AppPaths.settings);
-              },
-            ),
-        ],
+        actions: slimHub
+            ? null
+            : phoneHubUtilityActions(includeSettings: true),
       ),
       body: RefreshIndicator(
         onRefresh: _loadStats,
@@ -255,6 +249,30 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
                       dateLabel: todaySubtitle,
                     ),
                     SizedBox(height: sectionGap),
+                  ] else ...[
+                    // Phone: compact greeting + date (Stitch density); CTAs stay
+                    // in later sections / shortcuts to avoid a tall hero stack.
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          todaySubtitle,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: cs.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          l10n.dashboardGreeting(greetingName),
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: cs.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: sectionGap > 16 ? 16.0 : sectionGap),
                   ],
                   DashboardHeroMetrics(
                     theme: theme,

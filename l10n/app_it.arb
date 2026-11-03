@@ -259,6 +259,11 @@
   "navTabWorkouts": "Schede",
   "navTabDiary": "Diario",
   "shellGlobalSearchHint": "Cerca clienti, schede, esercizi...",
+  "shellHelpTooltip": "Aiuto",
+  "shellNotificationsTooltip": "Notifiche",
+  "shellProfileTooltip": "Profilo",
+  "shellHelpDialogTitle": "Suggerimento",
+  "shellHelpDialogBody": "Usa la ricerca in alto per trovare clienti. Impostazioni e promemoria locali sono disponibili dal menu Impostazioni.",
   "headerProfile": "Profilo",
   "profileTitle": "Profilo",
   "profileDisplayName": "Nome visualizzato",
@@ -689,6 +694,8 @@
   "customersFilterActive": "Attivi",
   "customersFilterPaused": "In pausa",
   "customersFilterUnassigned": "Da assegnare",
+  "customersFilterExpiring": "In scadenza",
+  "customersFilterExpired": "Scaduti",
   "customersFilterCount": "({count})",
   "@customersFilterCount": {
     "placeholders": {
@@ -697,6 +704,17 @@
       }
     }
   },
+  "customersPaginationRange": "{from}–{to} di {total}",
+  "@customersPaginationRange": {
+    "placeholders": {
+      "from": { "type": "int" },
+      "to": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "customersPageSizeLabel": "Per pagina",
+  "customersPaginationPrev": "Pagina precedente",
+  "customersPaginationNext": "Pagina successiva",
   "customersEmptyStep1Title": "Aggiungi un cliente",
   "customersEmptyStep1Body": "Crea l'anagrafica del primo atleta.",
   "customersEmptyStep2Title": "Crea una scheda",
@@ -1446,7 +1464,11 @@
   "pdfExportSharedSuccess": "PDF condiviso.",
   "pdfExportSavedSuccess": "PDF salvato in Download.",
   "pdfExportSaveUnavailable": "Cartella Download non disponibile su questo dispositivo. Usa Condividi.",
-  "customerTabWorkouts": "Workout",
+  "customerTabWorkouts": "Schede",
+  "customerTabNotes": "Note",
+  "customerTabMaximals": "Massimali",
+  "customerMaximalsEmpty": "Nessun massimale registrato.",
+  "customerMaximalsMeasurementEmpty": "Nessun 1RM nelle misure ancora.",
   "dashboardWorkoutBuilderDraft": "Builder bozza",
   "workoutBuilderSandboxTitle": "Builder bozza",
   "workoutBuilderSandboxBanner": "Bozza locale su questo dispositivo — non è sul cliente",
@@ -1610,6 +1632,9 @@
   "calendarUpcomingSessions": "Prossime sessioni",
   "sessionCompleted": "Completata",
   "sessionSkipped": "Saltata",
+  "sessionLoggerSkipAction": "Salta",
+  "sessionLoggerLogAction": "Registra",
+  "sessionLoggerCompleteAction": "Completa",
   "sessionPlanned": "Pianificata",
   "sessionMarkPlanned": "Segna come pianificata",
   "sessionDetailOpenBuilder": "Apri nel builder",
@@ -2127,13 +2152,18 @@
   "workoutDiaryPageSubtitle": "Visualizza i log delle sessioni, monitora la compliance e consulta il volume registrato.",
   "workoutDiaryLiveSync": "Dati locali attivi",
   "workoutDiaryExportAction": "Esporta",
+  "workoutDiaryExportHistory": "Esporta storico",
+  "workoutDiaryExportSuccess": "Esportazione diario pronta.",
+  "workoutDiaryExportFailed": "Impossibile esportare il diario.",
   "workoutDiaryRecordAction": "Registra Sessione",
   "workoutDiarySeeExerciseLog": "Vedi Log Esercizi",
-  "workoutDiaryKpiSessions": "Completate",
-  "workoutDiaryKpiVolume": "Volume Carico",
+  "workoutDiaryKpiSessions": "Sessioni",
+  "workoutDiaryKpiVolume": "Volume",
   "workoutDiaryKpiVolumeUnit": "kg",
   "workoutDiaryKpiVolumeTonsUnit": "tonn",
   "workoutDiaryKpiCompliance": "Compliance",
+  "workoutDiaryKpiAdherence": "Aderenza",
+  "workoutDiaryKpiAvgRpe": "Media RPE",
   "workoutDiaryKpiSkipped": "{count} saltate",
   "@workoutDiaryKpiSkipped": {
     "placeholders": {
@@ -2142,6 +2172,11 @@
       }
     }
   },
+  "workoutDiaryColDate": "Data",
+  "workoutDiaryColAthlete": "Atleta",
+  "workoutDiaryColStatus": "Stato",
+  "workoutDiaryColVolume": "Volume",
+  "workoutDiaryColRpe": "RPE",
   "workoutDiaryFilterAthlete": "Filtra atleta",
   "workoutDiaryFilterStatusAllShort": "Tutti",
   "workoutDiaryShowingCount": "Mostrando {count} sessioni",

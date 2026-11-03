@@ -6,28 +6,34 @@ import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 
-/// Page header for the Stitch diary redesign (badge, title, record CTA).
+/// Page header for the Stitch diary redesign (badge, title, export + record CTAs).
 ///
 /// Owns the single diary H1 — the shell [StitchAppBar] omits its title so the
 /// heading is not duplicated as "Storico" + "Diario & Storico".
 class WorkoutDiaryHeader extends StatelessWidget {
-  const WorkoutDiaryHeader({super.key, required this.onRecord});
+  const WorkoutDiaryHeader({
+    super.key,
+    required this.onRecord,
+    this.onExport,
+  });
 
   final VoidCallback onRecord;
+  final VoidCallback? onExport;
 
   @override
   Widget build(BuildContext context) {
     if (!Breakpoints.isTabletOrWider(context)) {
-      return _PhoneHeader(onRecord: onRecord);
+      return _PhoneHeader(onRecord: onRecord, onExport: onExport);
     }
-    return _DesktopHeader(onRecord: onRecord);
+    return _DesktopHeader(onRecord: onRecord, onExport: onExport);
   }
 }
 
 class _PhoneHeader extends StatelessWidget {
-  const _PhoneHeader({required this.onRecord});
+  const _PhoneHeader({required this.onRecord, this.onExport});
 
   final VoidCallback onRecord;
+  final VoidCallback? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +42,32 @@ class _PhoneHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          l10n.workoutDiaryPageTitle,
-          style: const TextStyle(
-            color: StitchMobileColors.onSurface,
-            fontSize: StitchMobileColors.headlineSize,
-            fontWeight: FontWeight.w700,
-          ),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                // Shorter phone H1 matching desktop diary density.
+                l10n.workoutDiaryDesktopTitle,
+                style: const TextStyle(
+                  color: StitchMobileColors.onSurface,
+                  fontSize: StitchMobileColors.headlineSize,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            if (onExport != null)
+              IconButton(
+                tooltip: l10n.workoutDiaryExportHistory,
+                onPressed: () {
+                  HapticFeedback.selectionClick();
+                  onExport!();
+                },
+                icon: const Icon(
+                  Icons.ios_share_outlined,
+                  color: StitchMobileColors.onSurfaceVariant,
+                ),
+              ),
+          ],
         ),
         const SizedBox(height: 4),
         Row(
@@ -96,9 +121,10 @@ class _PhoneHeader extends StatelessWidget {
 }
 
 class _DesktopHeader extends StatelessWidget {
-  const _DesktopHeader({required this.onRecord});
+  const _DesktopHeader({required this.onRecord, this.onExport});
 
   final VoidCallback onRecord;
+  final VoidCallback? onExport;
 
   @override
   Widget build(BuildContext context) {
@@ -150,18 +176,43 @@ class _DesktopHeader extends StatelessWidget {
             ),
           ],
         );
-        final actions = FilledButton.icon(
-          style: FilledButton.styleFrom(
-            backgroundColor: MarketingDarkColors.cyanBright,
-            foregroundColor: MarketingDarkColors.cyanOn,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
+        final actions = Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onExport != null) ...[
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: MarketingDarkColors.slate300,
+                  side: BorderSide(
+                    color: MarketingDarkColors.stitchBorder.withValues(
+                      alpha: 0.9,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                ),
+                onPressed: onExport,
+                icon: const Icon(Icons.download_outlined, size: 16),
+                label: Text(l10n.workoutDiaryExportAction),
+              ),
+              const SizedBox(width: 8),
+            ],
+            FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: MarketingDarkColors.cyanBright,
+                foregroundColor: MarketingDarkColors.cyanOn,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+              ),
+              onPressed: onRecord,
+              icon: const Icon(Icons.add, size: 16),
+              label: Text(l10n.workoutDiaryRecordAction),
             ),
-          ),
-          onPressed: onRecord,
-          icon: const Icon(Icons.add, size: 16),
-          label: Text(l10n.workoutDiaryRecordAction),
+          ],
         );
         if (stacked) {
           return Column(

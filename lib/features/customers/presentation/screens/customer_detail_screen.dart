@@ -17,8 +17,11 @@ import '../customer_detail_data_loader.dart';
 import '../customer_detail_delete_handler.dart';
 import '../customer_detail_navigation.dart';
 import '../widgets/customer_detail_app_bars.dart';
+import '../widgets/customer_detail_athlete_hero.dart';
 import '../widgets/customer_detail_error_body.dart';
+import '../widgets/customer_detail_maximals_tab.dart';
 import '../widgets/customer_detail_measurements_tab.dart';
+import '../widgets/customer_detail_notes_tab.dart';
 import '../widgets/customer_detail_overview_tab.dart';
 import '../widgets/customer_new_workout_sheet.dart';
 import '../widgets/customer_workout_plans_body.dart';
@@ -54,7 +57,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
     SupabaseBootstrap.refreshTick.addListener(_onAuthRefresh);
     _load();
   }
@@ -168,6 +171,21 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
     }
   }
 
+  void _assignWorkout({String? planId}) {
+    if (planId != null) {
+      openCustomerWorkoutEditor(
+        context: context,
+        customerId: widget.customerId,
+        planId: planId,
+      );
+      return;
+    }
+    showCustomerNewWorkoutSheet(
+      context,
+      customerId: widget.customerId,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authLoading = authRouteLoadingOrNull();
@@ -197,6 +215,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
 
     final c = _customer!;
     final goalLabel = c.goals ?? '';
+    final locale = Localizations.localeOf(context).toString();
 
     return Scaffold(
       backgroundColor: MarketingDarkColors.bgAlt,
@@ -205,11 +224,9 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
         tabController: _tabController,
         customer: c,
         unreadNotesCount: _unreadNotesCount,
-        onOpenNotes: () => openCustomerDetailNotes(
-          context: context,
-          customerId: widget.customerId,
-          customerName: c.name,
-        ),
+        onOpenNotes: () {
+          _tabController.animateTo(3);
+        },
         onEdit: () => navigateTo(context, '/customers/${c.id}/edit'),
         onDelete: () => deleteCustomerDetail(
           context: context,
@@ -217,55 +234,71 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
         ),
       ),
       body: SafeArea(
-        child: TabBarView(
-          controller: _tabController,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            CustomerDetailOverviewTab(
-              customer: c,
-              customerId: widget.customerId,
-              goalLabel: goalLabel,
-              measurements: _measurements,
-              measurementsLoading: _measurementsLoading,
-              progressSnapshot: _progressSnapshot,
-              progressLoading: _progressLoading,
-              workoutPlans: _workoutPlans,
-              workoutPlansLoading: _workoutPlansLoading,
-              onAssignWorkout: ({String? planId}) {
-                if (planId != null) {
-                  openCustomerWorkoutEditor(
-                    context: context,
-                    customerId: widget.customerId,
-                    planId: planId,
-                  );
-                  return;
-                }
-                showCustomerNewWorkoutSheet(
-                  context,
-                  customerId: widget.customerId,
-                );
-              },
-              onOpenMeasurementHistory: () => openCustomerMeasurementHistory(
-                context: context,
-                customerId: widget.customerId,
-                customerName: c.name,
-              ),
-              onReloadMeasurements: _loadMeasurements,
-              onReloadWorkoutPlans: _loadWorkoutPlans,
-            ),
-            CustomerDetailMeasurementsTab(
-              customerId: widget.customerId,
-              measurements: _measurements,
-              loading: _measurementsLoading,
-              measurementRepo: _measurementRepo,
-              onReload: _loadMeasurements,
-              customerName: c.name,
-            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-              child: CustomerWorkoutPlansBody(
-                customerId: widget.customerId,
-                embeddedInTab: true,
-                onPlansChanged: _loadWorkoutPlans,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: CustomerDetailAthleteHero(
+                customer: c,
+                goalLabel: goalLabel,
+                progressSnapshot: _progressSnapshot,
+                l10n: l10n,
+                locale: locale,
+                onAssignWorkout: () => _assignWorkout(),
+                onEditProfile: () =>
+                    navigateTo(context, '/customers/${c.id}/edit'),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  CustomerDetailOverviewTab(
+                    customer: c,
+                    customerId: widget.customerId,
+                    goalLabel: goalLabel,
+                    measurements: _measurements,
+                    measurementsLoading: _measurementsLoading,
+                    progressSnapshot: _progressSnapshot,
+                    progressLoading: _progressLoading,
+                    workoutPlans: _workoutPlans,
+                    workoutPlansLoading: _workoutPlansLoading,
+                    onAssignWorkout: _assignWorkout,
+                    onOpenMeasurementHistory: () =>
+                        openCustomerMeasurementHistory(
+                      context: context,
+                      customerId: widget.customerId,
+                      customerName: c.name,
+                    ),
+                    onReloadMeasurements: _loadMeasurements,
+                    onReloadWorkoutPlans: _loadWorkoutPlans,
+                  ),
+                  CustomerDetailMeasurementsTab(
+                    customerId: widget.customerId,
+                    measurements: _measurements,
+                    loading: _measurementsLoading,
+                    measurementRepo: _measurementRepo,
+                    onReload: _loadMeasurements,
+                    customerName: c.name,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    child: CustomerWorkoutPlansBody(
+                      customerId: widget.customerId,
+                      embeddedInTab: true,
+                      onPlansChanged: _loadWorkoutPlans,
+                    ),
+                  ),
+                  CustomerDetailNotesTab(
+                    customerId: widget.customerId,
+                    onNotesChanged: _loadUnreadNotes,
+                  ),
+                  CustomerDetailMaximalsTab(
+                    customerId: widget.customerId,
+                    measurements: _measurements,
+                  ),
+                ],
               ),
             ),
           ],

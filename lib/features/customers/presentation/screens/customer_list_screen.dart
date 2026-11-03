@@ -9,6 +9,7 @@ import 'package:powercoach_studio/l10n/app_localizations.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../data/customer_repository.dart';
 import '../../data/models/customer.dart';
@@ -110,17 +111,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         title: l10n.customersTitle,
         showLogo: !slimHub,
         showTitle: !slimHub,
-        actions: [
-          if (!slimHub)
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              tooltip: l10n.settingsTitle,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                navigateTo(context, AppPaths.settings);
-              },
-            ),
-        ],
+        actions: slimHub
+            ? null
+            : phoneHubUtilityActions(includeSettings: true),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -796,6 +796,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shellGlobalSearchHint => 'Search clients, plans, exercises...';
 
   @override
+  String get shellHelpTooltip => 'Help';
+
+  @override
+  String get shellNotificationsTooltip => 'Notifications';
+
+  @override
+  String get shellProfileTooltip => 'Profile';
+
+  @override
+  String get shellHelpDialogTitle => 'Tip';
+
+  @override
+  String get shellHelpDialogBody =>
+      'Use the top search to find clients. Settings and local reminders are available from the Settings menu.';
+
+  @override
   String get headerProfile => 'Profile';
 
   @override
@@ -1696,9 +1712,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersFilterUnassigned => 'Unassigned';
 
   @override
+  String get customersFilterExpiring => 'Expiring soon';
+
+  @override
+  String get customersFilterExpired => 'Expired';
+
+  @override
   String customersFilterCount(int count) {
     return '($count)';
   }
+
+  @override
+  String customersPaginationRange(int from, int to, int total) {
+    return '$from–$to of $total';
+  }
+
+  @override
+  String get customersPageSizeLabel => 'Per page';
+
+  @override
+  String get customersPaginationPrev => 'Previous page';
+
+  @override
+  String get customersPaginationNext => 'Next page';
 
   @override
   String get customersEmptyStep1Title => 'Add a client';
@@ -3207,7 +3243,20 @@ class AppLocalizationsEn extends AppLocalizations {
       'Downloads folder is not available on this device. Use Share instead.';
 
   @override
-  String get customerTabWorkouts => 'Workout';
+  String get customerTabWorkouts => 'Plans';
+
+  @override
+  String get customerTabNotes => 'Notes';
+
+  @override
+  String get customerTabMaximals => 'Maximals';
+
+  @override
+  String get customerMaximalsEmpty => 'No maximals recorded yet.';
+
+  @override
+  String get customerMaximalsMeasurementEmpty =>
+      'No 1RM values in measurements yet.';
 
   @override
   String get dashboardWorkoutBuilderDraft => 'Draft builder';
@@ -3566,6 +3615,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sessionSkipped => 'Skipped';
+
+  @override
+  String get sessionLoggerSkipAction => 'Skip';
+
+  @override
+  String get sessionLoggerLogAction => 'Log';
+
+  @override
+  String get sessionLoggerCompleteAction => 'Complete';
 
   @override
   String get sessionPlanned => 'Planned';
@@ -4490,16 +4548,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDiaryExportAction => 'Export';
 
   @override
+  String get workoutDiaryExportHistory => 'Export history';
+
+  @override
+  String get workoutDiaryExportSuccess => 'Diary export ready.';
+
+  @override
+  String get workoutDiaryExportFailed => 'Could not export the diary.';
+
+  @override
   String get workoutDiaryRecordAction => 'Log Session';
 
   @override
   String get workoutDiarySeeExerciseLog => 'See Exercise Log';
 
   @override
-  String get workoutDiaryKpiSessions => 'Completed';
+  String get workoutDiaryKpiSessions => 'Sessions';
 
   @override
-  String get workoutDiaryKpiVolume => 'Load Volume';
+  String get workoutDiaryKpiVolume => 'Volume';
 
   @override
   String get workoutDiaryKpiVolumeUnit => 'kg';
@@ -4511,9 +4578,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutDiaryKpiCompliance => 'Compliance';
 
   @override
+  String get workoutDiaryKpiAdherence => 'Adherence';
+
+  @override
+  String get workoutDiaryKpiAvgRpe => 'Avg RPE';
+
+  @override
   String workoutDiaryKpiSkipped(int count) {
     return '$count skipped';
   }
+
+  @override
+  String get workoutDiaryColDate => 'Date';
+
+  @override
+  String get workoutDiaryColAthlete => 'Athlete';
+
+  @override
+  String get workoutDiaryColStatus => 'Status';
+
+  @override
+  String get workoutDiaryColVolume => 'Volume';
+
+  @override
+  String get workoutDiaryColRpe => 'RPE';
 
   @override
   String get workoutDiaryFilterAthlete => 'Filter athlete';

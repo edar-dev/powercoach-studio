@@ -6,7 +6,7 @@ import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/workout_diary_metrics.dart';
 
-/// Three KPI summary cards for the diary (sessions, volume, compliance).
+/// Four KPI summary cards for the diary (sessions, volume, avg RPE, adherence).
 class WorkoutDiaryKpiRow extends StatelessWidget {
   const WorkoutDiaryKpiRow({super.key, required this.kpis});
 
@@ -24,12 +24,15 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
         : kpis.setCount > 0
         ? l10n.workoutDiarySetsCount(kpis.setCount)
         : l10n.workoutDiaryExercisesCount(kpis.exerciseCount);
-    final complianceValue = kpis.compliancePercent == null
+    final adherenceValue = kpis.compliancePercent == null
         ? '—'
         : '${kpis.compliancePercent}%';
-    final complianceHint = kpis.skippedCount > 0
+    final adherenceHint = kpis.skippedCount > 0
         ? l10n.workoutDiaryKpiSkipped(kpis.skippedCount)
         : null;
+    final rpeValue = kpis.hasRpeSamples && kpis.avgRpe != null
+        ? formatAvgRpe(kpis.avgRpe!)
+        : '—';
 
     if (phone) {
       return GridView.count(
@@ -50,10 +53,15 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
             valueColor: StitchMobileColors.secondary,
           ),
           _PhoneKpiCard(
-            label: l10n.workoutDiaryKpiCompliance,
-            value: complianceValue,
+            label: l10n.workoutDiaryKpiAvgRpe,
+            value: rpeValue,
+            valueColor: StitchMobileColors.tertiary,
+          ),
+          _PhoneKpiCard(
+            label: l10n.workoutDiaryKpiAdherence,
+            value: adherenceValue,
             valueColor: StitchMobileColors.primary,
-            hint: complianceHint,
+            hint: adherenceHint,
           ),
         ],
       );
@@ -80,9 +88,17 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
             iconBorder: MarketingDarkColors.cyanBright.withValues(alpha: 0.2),
           ),
           _KpiCard(
-            label: l10n.workoutDiaryKpiCompliance,
-            value: complianceValue,
-            hint: complianceHint,
+            label: l10n.workoutDiaryKpiAvgRpe,
+            value: rpeValue,
+            icon: Icons.speed_outlined,
+            iconBg: MarketingDarkColors.amber.withValues(alpha: 0.12),
+            iconColor: MarketingDarkColors.amber,
+            iconBorder: MarketingDarkColors.amber.withValues(alpha: 0.25),
+          ),
+          _KpiCard(
+            label: l10n.workoutDiaryKpiAdherence,
+            value: adherenceValue,
+            hint: adherenceHint,
             icon: Icons.track_changes_outlined,
             iconBg: MarketingDarkColors.brand.withValues(alpha: 0.12),
             iconColor: MarketingDarkColors.brandLight,
@@ -110,7 +126,13 @@ class WorkoutDiaryKpiRow extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            cards[2],
+            Row(
+              children: [
+                Expanded(child: cards[2]),
+                const SizedBox(width: 8),
+                Expanded(child: cards[3]),
+              ],
+            ),
           ],
         );
       },

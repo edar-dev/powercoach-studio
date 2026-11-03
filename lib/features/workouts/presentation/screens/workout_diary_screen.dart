@@ -3,17 +3,23 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+import '../../../../core/export/export_share.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
+import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_repository.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../domain/session_execution_service.dart';
+import '../../domain/workout_diary_export_service.dart';
 import '../../domain/workout_diary_filter.dart';
 import '../../domain/workout_diary_metrics.dart';
 import '../widgets/workout_diary_filters_bar.dart';
@@ -240,6 +246,32 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     navigateTo(context, AppPaths.calendar);
   }
 
+  Future<void> _exportVisible() async {
+    final l10n = AppLocalizations.of(context);
+    final visible = _visibleEntries;
+    await HapticFeedback.selectionClick();
+    try {
+      final artifact = await exportWorkoutDiaryToCsv(
+        entries: visible,
+        customerNameOf: _customerName,
+      );
+      await downloadExportArtifact(artifact);
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        content: Text(l10n.workoutDiaryExportSuccess),
+      );
+    } catch (error, stackTrace) {
+      await Sentry.captureException(error, stackTrace: stackTrace);
+      if (!mounted) return;
+      showAppSnackBar(
+        context,
+        content: Text(l10n.workoutDiaryExportFailed),
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -258,20 +290,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       backgroundColor: hubPageBackground(context),
       // Page H1 lives in [WorkoutDiaryHeader] — avoid a second "Storico" bar.
       appBar: StitchAppBar(
-        title: l10n.workoutDiaryPageTitle,
+        title: l10n.workoutDiaryDesktopTitle,
         showLogo: !slimHub,
         showTitle: false,
-        actions: [
-          if (!slimHub)
-            IconButton(
-              icon: const Icon(Icons.settings_outlined),
-              tooltip: l10n.settingsTitle,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                navigateTo(context, AppPaths.settings);
-              },
-            ),
-        ],
+        actions: slimHub
+            ? null
+            : phoneHubUtilityActions(includeSettings: true),
       ),
       body: SafeArea(
         child: _loading
@@ -340,7 +364,10 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                         0,
                       ),
                       sliver: SliverToBoxAdapter(
-                        child: WorkoutDiaryHeader(onRecord: _recordSession),
+                        child: WorkoutDiaryHeader(
+                          onRecord: _recordSession,
+                          onExport: _exportVisible,
+                        ),
                       ),
                     ),
                     SliverPadding(

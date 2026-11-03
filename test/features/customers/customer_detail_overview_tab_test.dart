@@ -1,11 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
+import 'package:powercoach_studio/features/customers/presentation/widgets/customer_detail_athlete_hero.dart';
 import 'package:powercoach_studio/features/customers/presentation/widgets/customer_detail_overview_tab.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 void main() {
-  testWidgets('overview hero shows name, back-facing CTAs, and journey chip', (
+  testWidgets('shared athlete hero shows name and journey chip', (tester) async {
+    final customer = Customer(
+      id: 'cust-abc12345',
+      userId: 'u1',
+      name: 'Edoardo Moretti',
+      email: 'edo@example.com',
+      goals: 'Prep. Atletica',
+      dateOfBirth: '1999-05-14',
+      createdAt: DateTime(2023, 9, 12),
+      updatedAt: DateTime(2026, 1, 1),
+    );
+
+    await tester.pumpWidget(
+      MaterialApp(
+        locale: const Locale('it'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Scaffold(
+          body: Builder(
+            builder: (context) {
+              final l10n = AppLocalizations.of(context);
+              return CustomerDetailAthleteHero(
+                customer: customer,
+                goalLabel: customer.goals!,
+                progressSnapshot: null,
+                l10n: l10n,
+                locale: 'it',
+                onAssignWorkout: () {},
+                onEditProfile: () {},
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Edoardo Moretti'), findsOneWidget);
+    expect(find.textContaining('Obiettivo'), findsOneWidget);
+    expect(find.text('Assegna workout'), findsWidgets);
+    expect(find.text('Modifica profilo'), findsOneWidget);
+    expect(find.textContaining('Inizio percorso'), findsOneWidget);
+  });
+
+  testWidgets('overview tab still shows biometric section without hero', (
     tester,
   ) async {
     final customer = Customer(
@@ -45,11 +90,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Edoardo Moretti'), findsOneWidget);
-    expect(find.textContaining('Obiettivo'), findsOneWidget);
-    expect(find.text('Assegna workout'), findsWidgets);
-    expect(find.text('Modifica profilo'), findsOneWidget);
-    expect(find.textContaining('Inizio percorso'), findsOneWidget);
     expect(find.textContaining('PARAMETRI BIOMETRICI'), findsOneWidget);
+    expect(find.text('Edoardo Moretti'), findsNothing);
   });
 }

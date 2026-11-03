@@ -3,13 +3,15 @@ import 'package:flutter/services.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../theme/stitch_m3_theme.dart';
+import '../ui/widgets/shell_utility_actions.dart';
 import 'app_navigation.dart';
 import 'app_paths.dart';
 
-/// Wide-layout top chrome: global search without a new backend index.
+/// Wide-layout top chrome: global search + profile / bell / help actions.
 ///
 /// Submitting navigates to Clienti with `?q=` so the list screen can seed its
 /// local filter. Empty submit opens Clienti unfiltered.
+/// Settings stays on the extended rail — not duplicated here.
 class PrimaryShellTopChrome extends StatefulWidget {
   const PrimaryShellTopChrome({super.key});
 
@@ -63,41 +65,49 @@ class _PrimaryShellTopChromeState extends State<PrimaryShellTopChrome> {
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
             child: SizedBox(
               height: 44,
-              child: TextField(
-                controller: _controller,
-                textInputAction: TextInputAction.search,
-                onSubmitted: _submit,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cs.onSurface,
-                ),
-                decoration: InputDecoration(
-                  hintText: l10n.shellGlobalSearchHint,
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: cs.onSurfaceVariant,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: _submit,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: cs.onSurface,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: l10n.shellGlobalSearchHint,
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: cs.onSurfaceVariant,
+                        ),
+                        filled: true,
+                        fillColor: cs.surfaceContainerHighest,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(StitchM3Theme.radiusLg),
+                          borderSide: BorderSide(color: cs.outline),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(StitchM3Theme.radiusLg),
+                          borderSide: BorderSide(color: cs.outline),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.circular(StitchM3Theme.radiusLg),
+                          borderSide: BorderSide(color: cs.primary, width: 2),
+                        ),
+                      ),
+                    ),
                   ),
-                  filled: true,
-                  fillColor: cs.surfaceContainerHighest,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 10,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(StitchM3Theme.radiusLg),
-                    borderSide: BorderSide(color: cs.outline),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(StitchM3Theme.radiusLg),
-                    borderSide: BorderSide(color: cs.outline),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(StitchM3Theme.radiusLg),
-                    borderSide: BorderSide(color: cs.primary, width: 2),
-                  ),
-                ),
+                  const SizedBox(width: 12),
+                  const ShellUtilityActions(),
+                ],
               ),
             ),
           ),

@@ -52,19 +52,3 @@ CustomerListMetrics computeCustomerListMetrics(
     needsUpdateCount: needsUpdate,
   );
 }
-
-/// Non-archived customer whose last plan update is older than [stalePlanDays].
-bool customerPlanIsStale(
-  Customer customer, {
-  DateTime? now,
-  int stalePlanDays = kStalePlanDays,
-}) {
-  if (customer.isArchived || !customerHasAssignedPlan(customer)) return false;
-  final updated = DateTime.tryParse(customer.lastPlanUpdateDate!.trim());
-  if (updated == null) return false;
-  final clock = now ?? DateTime.now();
-  final cutoff = DateTime(clock.year, clock.month, clock.day)
-      .subtract(Duration(days: stalePlanDays));
-  final day = DateTime(updated.year, updated.month, updated.day);
-  return day.isBefore(cutoff);
-}

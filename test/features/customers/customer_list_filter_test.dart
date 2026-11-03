@@ -32,10 +32,11 @@ Customer _c({
 
 void main() {
   group('filter + sort', () {
+    final now = DateTime(2024, 6, 20);
     final customers = [
       _c(
         name: 'Anna',
-        lastPlanUpdateDate: '2024-01-01',
+        lastPlanUpdateDate: '2024-01-01', // stale / expiring
         updatedAt: DateTime(2024, 6, 10),
       ),
       _c(
@@ -48,16 +49,21 @@ void main() {
         name: 'Carla',
         updatedAt: DateTime(2024, 6, 14),
       ),
+      _c(
+        name: 'Dario',
+        lastPlanUpdateDate: '2024-06-18', // fresh plan
+        updatedAt: DateTime(2024, 6, 15),
+      ),
     ];
 
-    test('filters by status', () {
+    test('filters by status (Stitch: all/active/expiring/expired)', () {
       expect(
         filterCustomerList(
           customers: customers,
           searchQuery: '',
           statusFilter: CustomerListStatusFilter.all,
         ).length,
-        3,
+        4,
       );
       expect(
         filterCustomerList(
@@ -65,24 +71,36 @@ void main() {
           searchQuery: '',
           statusFilter: CustomerListStatusFilter.active,
         ).map((c) => c.name),
-        ['Carla', 'Anna'],
+        ['Dario', 'Carla', 'Anna'],
       );
       expect(
         filterCustomerList(
           customers: customers,
           searchQuery: '',
-          statusFilter: CustomerListStatusFilter.paused,
+          statusFilter: CustomerListStatusFilter.expiring,
+          now: now,
+          stalePlanDays: kStalePlanDays,
+        ).map((c) => c.name),
+        ['Anna'],
+      );
+      expect(
+        filterCustomerList(
+          customers: customers,
+          searchQuery: '',
+          statusFilter: CustomerListStatusFilter.expired,
         ).map((c) => c.name),
         ['Bruno'],
       );
-      expect(
-        filterCustomerList(
-          customers: customers,
-          searchQuery: '',
-          statusFilter: CustomerListStatusFilter.unassigned,
-        ).map((c) => c.name),
-        ['Carla'],
+    });
+
+    test('unassigned athletes remain under Tutti/Attivi', () {
+      final active = filterCustomerList(
+        customers: customers,
+        searchQuery: '',
+        statusFilter: CustomerListStatusFilter.active,
       );
+      expect(active.any((c) => c.name == 'Carla'), isTrue);
+      expect(customerListRowStatus(customers[2]), CustomerListRowStatus.unassigned);
     });
 
     test('search matches name', () {
@@ -100,7 +118,7 @@ void main() {
         searchQuery: '',
         statusFilter: CustomerListStatusFilter.all,
       );
-      expect(result.map((c) => c.name), ['Carla', 'Bruno', 'Anna']);
+      expect(result.map((c) => c.name), ['Dario', 'Carla', 'Bruno', 'Anna']);
     });
 
     test('sorts by name ascending', () {
@@ -110,7 +128,7 @@ void main() {
         statusFilter: CustomerListStatusFilter.all,
         sort: CustomerListSort.nameAsc,
       );
-      expect(result.map((c) => c.name), ['Anna', 'Bruno', 'Carla']);
+      expect(result.map((c) => c.name), ['Anna', 'Bruno', 'Carla', 'Dario']);
     });
   });
 
