@@ -95,10 +95,10 @@ void main() {
         locale: const Locale('it'),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: SettingsChildShell(
+        home: const SettingsChildShell(
           activeSection: SettingsHubSection.language,
           title: 'Localizzazione UI',
-          body: const Center(child: Text('body')),
+          body: Center(child: Text('body')),
         ),
       ),
     );
