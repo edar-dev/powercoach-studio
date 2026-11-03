@@ -1494,6 +1494,61 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exerciseLibraryTitle => 'Exercise library';
 
   @override
+  String get exerciseLibrarySubtitle =>
+      'Exercise catalog with muscle filters and search.';
+
+  @override
+  String get exerciseLibrarySearchDenseHint =>
+      'Search exercise by name or movement…';
+
+  @override
+  String get exerciseLibraryAddShort => 'Add';
+
+  @override
+  String get exerciseLibraryDetails => 'Details';
+
+  @override
+  String get exerciseLibraryNewExercise => 'New exercise';
+
+  @override
+  String get exerciseLibraryMuscleAll => 'All';
+
+  @override
+  String get exerciseLibraryMuscleChest => 'Chest';
+
+  @override
+  String get exerciseLibraryMuscleBack => 'Back';
+
+  @override
+  String get exerciseLibraryMuscleLegs => 'Legs';
+
+  @override
+  String get exerciseLibraryMuscleShoulders => 'Shoulders';
+
+  @override
+  String get exerciseLibraryMuscleArms => 'Arms';
+
+  @override
+  String get exerciseLibraryMuscleCore => 'Core';
+
+  @override
+  String exerciseLibraryPaginationRange(int from, int to, int total) {
+    return 'Showing $from–$to of $total exercises';
+  }
+
+  @override
+  String get exerciseLibraryPaginationPrev => 'Previous';
+
+  @override
+  String get exerciseLibraryPaginationNext => 'Next';
+
+  @override
+  String get exerciseLibraryViewGrid => 'Grid';
+
+  @override
+  String get exerciseLibraryViewList => 'List';
+
+  @override
   String get exerciseLibraryBack => 'Back';
 
   @override
@@ -2924,6 +2979,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutSessionColLoadRpe => 'LOAD / RPE';
 
   @override
+  String get workoutSessionColPercent => 'TARGET %';
+
+  @override
+  String get workoutSessionColLoad => 'KG';
+
+  @override
+  String get workoutSessionColRpe => 'RPE';
+
+  @override
   String get workoutSessionColNote => 'NOTES';
 
   @override
@@ -4282,6 +4346,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsHubTitle => 'Settings & Profile';
 
   @override
+  String get settingsHubTitleShort => 'Settings';
+
+  @override
+  String get settingsLocalizationTitle => 'UI localization';
+
+  @override
+  String get settingsLocalizationSubtitle =>
+      'Language, format preview, and studio timezone.';
+
+  @override
+  String get settingsLocalizationApply => 'Apply localization';
+
+  @override
+  String get settingsLocalizationPreviewTitle => 'Live preview';
+
+  @override
+  String get settingsLocalizationPreviewBadge => 'Active format';
+
+  @override
+  String get settingsLocalizationDefaultBadge => 'Studio default';
+
+  @override
+  String get settingsLocalizationRegionalTitle => 'Regional formats';
+
+  @override
+  String get settingsLocalizationDateFormatLabel => 'Date format';
+
+  @override
+  String get settingsLocalizationNumberFormatLabel => 'Number format';
+
+  @override
+  String get settingsLocalizationFirstDayLabel => 'First day of week';
+
+  @override
+  String get settingsLocalizationTimezoneTitle => 'Geographic area and time';
+
+  @override
+  String get settingsLocalizationTimezoneHint =>
+      'Keeps client bookings and reports aligned. Currently uses the system timezone.';
+
+  @override
+  String get settingsLocalizationTimezoneSystem => 'System timezone';
+
+  @override
+  String get settingsLocalizationItalianDesc => 'Italian UI and formats';
+
+  @override
+  String get settingsLocalizationEnglishDesc => 'English UI and formats';
+
+  @override
+  String get pdfBrandPreviewTitle => 'Live PDF header preview';
+
+  @override
+  String get pdfBrandPreviewA4Badge => 'A4 Standard';
+
+  @override
+  String get pdfBrandPreviewLiveNote =>
+      'Preview updates in real time as you edit.';
+
+  @override
+  String get pdfBrandPreviewDocType => 'Training & Performance Report';
+
+  @override
+  String get pdfBrandPreviewDateLabel => 'Preview generation date';
+
+  @override
+  String get pdfBrandReset => 'Reset';
+
+  @override
   String get settingsHubSubtitle =>
       'Manage operational credentials, athlete channels, and offline-first policies.';
 
@@ -4397,7 +4530,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get maximalSetCta => 'Set maximal';
+  String get maximalSetCta => 'Link maximal';
 
   @override
   String get maximalSetCtaChange => 'Change';
