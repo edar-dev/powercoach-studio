@@ -345,7 +345,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         navigatePush(context, AppPaths.dataHealth);
         return;
       case SettingsHubSection.language:
-        showSettingsLanguagePicker(context: context, l10n: AppLocalizations.of(context));
+        navigatePush(context, AppPaths.localization);
         return;
       case SettingsHubSection.privacy:
         openPrivacyPolicy();

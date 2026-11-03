@@ -507,7 +507,7 @@ class _SettingsHubHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  l10n.settingsHubTitle,
+                  l10n.settingsHubTitleShort,
                   style: theme.textTheme.headlineSmall?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,

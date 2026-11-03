@@ -39,4 +39,7 @@ abstract final class AppPaths {
 
   /// Local data health scan and safe preference orphan repair.
   static const dataHealth = '/settings/data-health';
+
+  /// UI localization (language + format preview).
+  static const localization = '/settings/localization';
 }

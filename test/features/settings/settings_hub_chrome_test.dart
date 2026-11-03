@@ -85,7 +85,7 @@ void main() {
     expect(selected, SettingsHubSection.subscription);
   });
 
-  testWidgets('wide settings content shows one hub title and short subtitle', (
+  testWidgets('wide settings content shows short hub H1 and short subtitle', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(1200, 900));
@@ -160,9 +160,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Impostazioni & Profilo'), findsOneWidget);
+    expect(find.text('Impostazioni'), findsOneWidget);
+    expect(find.text('Impostazioni & Profilo'), findsNothing);
     expect(find.text('Gestione studio e profilo.'), findsOneWidget);
-    expect(find.text('Impostazioni'), findsNothing);
     expect(find.text('Informazioni personali'), findsOneWidget);
     expect(find.text('Abbonamento'), findsOneWidget);
   });
