@@ -2612,10 +2612,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderAddExercise => 'Add exercise';
 
   @override
-  String get workoutBuilderAddSet => 'Add set';
+  String get workoutBuilderAddSet => 'Add block';
 
   @override
-  String get workoutBuilderPrescriptionPlaceholder => 'Add sets';
+  String get workoutBuilderPrescriptionPlaceholder => 'Add block';
 
   @override
   String get workoutBuilderAddExerciseTitle => 'Add exercise';
@@ -2652,7 +2652,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Select an exercise from the library, or type the exact name.';
 
   @override
-  String get workoutBuilderSetLabel => 'Set';
+  String get workoutBuilderSetLabel => 'Sets';
 
   @override
   String get workoutBuilderSetsLabel => 'Sets';
@@ -2676,7 +2676,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderNoteLabel => 'Note';
 
   @override
-  String get workoutBuilderEditSetTitle => 'Edit set';
+  String get workoutBuilderEditSetTitle => 'Edit block';
 
   @override
   String get workoutBuilderTrainingProgram => 'Training program';
@@ -2962,15 +2962,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutSessionSavedHint => 'Saved';
 
   @override
-  String get workoutSessionDuplicateLastSet => 'Duplicate last set';
+  String get workoutSessionDuplicateLastSet => 'Duplicate last block';
 
   @override
   String workoutSessionDuplicateLastSetN(int n) {
-    return 'Duplicate last set (Set $n)';
+    return 'Duplicate last block ($n)';
   }
 
   @override
-  String get workoutSessionColSet => 'SET';
+  String get workoutSessionColSet => 'BLOCK';
 
   @override
   String get workoutSessionColReps => 'REPS';
@@ -4514,7 +4514,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get settingsMaximalWeightRoundingSubtitle =>
-      'Round loads calculated as a % of the maximal to the nearest increment (in the set editor)';
+      'Round loads calculated as a % of the maximal to the nearest increment (in the block editor)';
 
   @override
   String settingsMaximalWeightRoundingOptionKg(String kg) {

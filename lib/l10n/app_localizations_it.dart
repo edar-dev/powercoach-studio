@@ -2637,10 +2637,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderAddExercise => 'Aggiungi esercizio';
 
   @override
-  String get workoutBuilderAddSet => 'Aggiungi serie';
+  String get workoutBuilderAddSet => 'Aggiungi blocco';
 
   @override
-  String get workoutBuilderPrescriptionPlaceholder => 'Aggiungi serie';
+  String get workoutBuilderPrescriptionPlaceholder => 'Aggiungi blocco';
 
   @override
   String get workoutBuilderAddExerciseTitle => 'Aggiungi esercizio';
@@ -2677,7 +2677,7 @@ class AppLocalizationsIt extends AppLocalizations {
       'Seleziona un esercizio dalla libreria, oppure digita il nome esatto.';
 
   @override
-  String get workoutBuilderSetLabel => 'Set';
+  String get workoutBuilderSetLabel => 'Serie';
 
   @override
   String get workoutBuilderSetsLabel => 'Serie';
@@ -2701,7 +2701,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutBuilderNoteLabel => 'Note';
 
   @override
-  String get workoutBuilderEditSetTitle => 'Modifica serie';
+  String get workoutBuilderEditSetTitle => 'Modifica blocco';
 
   @override
   String get workoutBuilderTrainingProgram => 'Programma di allenamento';
@@ -2988,15 +2988,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutSessionSavedHint => 'Salvato';
 
   @override
-  String get workoutSessionDuplicateLastSet => 'Duplica ultima serie';
+  String get workoutSessionDuplicateLastSet => 'Duplica ultimo blocco';
 
   @override
   String workoutSessionDuplicateLastSetN(int n) {
-    return 'Duplica ultima serie (Set $n)';
+    return 'Duplica ultimo blocco ($n)';
   }
 
   @override
-  String get workoutSessionColSet => 'SET';
+  String get workoutSessionColSet => 'BLOCCO';
 
   @override
   String get workoutSessionColReps => 'RIPETIZIONI';
@@ -4560,7 +4560,7 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get settingsMaximalWeightRoundingSubtitle =>
-      'Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nel set editor)';
+      'Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nell\'editor del blocco)';
 
   @override
   String settingsMaximalWeightRoundingOptionKg(String kg) {

@@ -1160,8 +1160,8 @@
   "workoutBuilderAddShort": "Aggiungi",
   "workoutBuilderSectionHeading": "Sezione",
   "workoutBuilderAddExercise": "Aggiungi esercizio",
-  "workoutBuilderAddSet": "Aggiungi serie",
-  "workoutBuilderPrescriptionPlaceholder": "Aggiungi serie",
+  "workoutBuilderAddSet": "Aggiungi blocco",
+  "workoutBuilderPrescriptionPlaceholder": "Aggiungi blocco",
   "workoutBuilderAddExerciseTitle": "Aggiungi esercizio",
   "workoutBuilderEditExerciseTitle": "Modifica esercizio",
   "workoutBuilderExerciseLabel": "Esercizio",
@@ -1172,7 +1172,7 @@
   "workoutBuilderCouldNotCreateExercise": "Impossibile creare l’esercizio. Riprova o aggiungi senza salvare in libreria.",
   "workoutBuilderEnterNameOrSelect": "Inserisci un nome o seleziona un esercizio.",
   "workoutBuilderSelectLibraryExercise": "Seleziona un esercizio dalla libreria, oppure digita il nome esatto.",
-  "workoutBuilderSetLabel": "Set",
+  "workoutBuilderSetLabel": "Serie",
   "workoutBuilderSetsLabel": "Serie",
   "workoutBuilderRepsLabel": "Rip",
   "workoutBuilderLoadLabel": "Carico",
@@ -1180,7 +1180,7 @@
   "workoutBuilderNoteOptionalLabel": "Note (facoltative)",
   "workoutBuilderNameLabel": "Nome",
   "workoutBuilderNoteLabel": "Note",
-  "workoutBuilderEditSetTitle": "Modifica serie",
+  "workoutBuilderEditSetTitle": "Modifica blocco",
   "workoutBuilderTrainingProgram": "Programma di allenamento",
   "workoutBuilderNewWeek": "Nuova settimana",
   "workoutBuilderDuplicateWeek": "Duplica settimana",
@@ -1360,8 +1360,8 @@
     }
   },
   "workoutSessionSavedHint": "Salvato",
-  "workoutSessionDuplicateLastSet": "Duplica ultima serie",
-  "workoutSessionDuplicateLastSetN": "Duplica ultima serie (Set {n})",
+  "workoutSessionDuplicateLastSet": "Duplica ultimo blocco",
+  "workoutSessionDuplicateLastSetN": "Duplica ultimo blocco ({n})",
   "@workoutSessionDuplicateLastSetN": {
     "placeholders": {
       "n": {
@@ -1369,7 +1369,7 @@
       }
     }
   },
-  "workoutSessionColSet": "SET",
+  "workoutSessionColSet": "BLOCCO",
   "workoutSessionColReps": "RIPETIZIONI",
   "workoutSessionColLoadRpe": "CARICO / RPE",
   "workoutSessionColPercent": "TARGET %",
@@ -2097,7 +2097,7 @@
   "settingsSessionRemindersSubtitle": "Avviso prima dell'allenamento pianificato",
   "settingsWorkoutPrefsModuleTitle": "Preferenze workout",
   "settingsMaximalWeightRoundingTitle": "Arrotondamento % massimale",
-  "settingsMaximalWeightRoundingSubtitle": "Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nel set editor)",
+  "settingsMaximalWeightRoundingSubtitle": "Arrotonda al kg più vicino i carichi calcolati in percentuale del massimale (nell'editor del blocco)",
   "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
   "@settingsMaximalWeightRoundingOptionKg": {
     "placeholders": {

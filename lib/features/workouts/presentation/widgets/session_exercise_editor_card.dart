@@ -631,7 +631,10 @@ class _SetTableHeader extends StatelessWidget {
     );
     return Row(
       children: [
-        SizedBox(width: 36, child: Text(l10n.workoutSessionColSet, style: style)),
+        SizedBox(
+          width: _blockIndexColumnWidth,
+          child: Text(l10n.workoutSessionColSet, style: style),
+        ),
         Expanded(child: Text(l10n.workoutSessionColReps, style: style)),
         Expanded(child: Text(l10n.workoutSessionColPercent, style: style)),
         Expanded(child: Text(l10n.workoutSessionColLoad, style: style)),
@@ -642,6 +645,9 @@ class _SetTableHeader extends StatelessWidget {
     );
   }
 }
+
+/// Wide enough for IT `BLOCCO` / EN `BLOCK` header labels.
+const double _blockIndexColumnWidth = 56;
 
 class _SetTableRow extends StatelessWidget {
   const _SetTableRow({
@@ -704,7 +710,7 @@ class _SetTableRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 36,
+            width: _blockIndexColumnWidth,
             child: Text(
               '$setNumber',
               style: cellStyle?.copyWith(fontWeight: FontWeight.w700),

@@ -4759,13 +4759,13 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderAddSet.
   ///
   /// In en, this message translates to:
-  /// **'Add set'**
+  /// **'Add block'**
   String get workoutBuilderAddSet;
 
   /// No description provided for @workoutBuilderPrescriptionPlaceholder.
   ///
   /// In en, this message translates to:
-  /// **'Add sets'**
+  /// **'Add block'**
   String get workoutBuilderPrescriptionPlaceholder;
 
   /// No description provided for @workoutBuilderAddExerciseTitle.
@@ -4831,7 +4831,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderSetLabel.
   ///
   /// In en, this message translates to:
-  /// **'Set'**
+  /// **'Sets'**
   String get workoutBuilderSetLabel;
 
   /// No description provided for @workoutBuilderSetsLabel.
@@ -4879,7 +4879,7 @@ abstract class AppLocalizations {
   /// No description provided for @workoutBuilderEditSetTitle.
   ///
   /// In en, this message translates to:
-  /// **'Edit set'**
+  /// **'Edit block'**
   String get workoutBuilderEditSetTitle;
 
   /// No description provided for @workoutBuilderTrainingProgram.
@@ -5329,19 +5329,19 @@ abstract class AppLocalizations {
   /// No description provided for @workoutSessionDuplicateLastSet.
   ///
   /// In en, this message translates to:
-  /// **'Duplicate last set'**
+  /// **'Duplicate last block'**
   String get workoutSessionDuplicateLastSet;
 
   /// No description provided for @workoutSessionDuplicateLastSetN.
   ///
   /// In en, this message translates to:
-  /// **'Duplicate last set (Set {n})'**
+  /// **'Duplicate last block ({n})'**
   String workoutSessionDuplicateLastSetN(int n);
 
   /// No description provided for @workoutSessionColSet.
   ///
   /// In en, this message translates to:
-  /// **'SET'**
+  /// **'BLOCK'**
   String get workoutSessionColSet;
 
   /// No description provided for @workoutSessionColReps.
@@ -8127,7 +8127,7 @@ abstract class AppLocalizations {
   /// No description provided for @settingsMaximalWeightRoundingSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Round loads calculated as a % of the maximal to the nearest increment (in the set editor)'**
+  /// **'Round loads calculated as a % of the maximal to the nearest increment (in the block editor)'**
   String get settingsMaximalWeightRoundingSubtitle;
 
   /// No description provided for @settingsMaximalWeightRoundingOptionKg.
