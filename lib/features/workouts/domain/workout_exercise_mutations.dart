@@ -45,19 +45,21 @@ Exercise buildExerciseFromPrescription({
   String? supersetGroupId,
 }) {
   final list = setDetails.isEmpty ? [const ExerciseSet()] : setDetails;
-  return Exercise(
-    id: id,
-    name: name,
-    sets: '${list.length}',
-    reps: list
-        .map((s) => s.displayText)
-        .where((r) => r.isNotEmpty)
-        .join(' | '),
-    rpe: '',
-    note: note,
-    setDetails: list,
-    customExerciseId: customExerciseId,
-    supersetGroupId: supersetGroupId,
+  return ExerciseSummarySync.apply(
+    Exercise(
+      id: id,
+      name: name,
+      sets: '${list.length}',
+      reps: list
+          .map((s) => s.displayText)
+          .where((r) => r.isNotEmpty)
+          .join(' | '),
+      rpe: '',
+      note: note,
+      setDetails: list,
+      customExerciseId: customExerciseId,
+      supersetGroupId: supersetGroupId,
+    ),
   );
 }
 

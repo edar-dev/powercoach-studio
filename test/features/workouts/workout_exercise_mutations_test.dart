@@ -31,6 +31,18 @@ void main() {
   }
 
   group('workout_exercise_mutations', () {
+    test('buildExerciseFromPrescription sums block size into legacy sets', () {
+      final exercise = buildExerciseFromPrescription(
+        id: 'e-new',
+        name: 'Bench',
+        note: '',
+        setDetails: const [ExerciseSet(sets: '3', reps: '8')],
+      );
+      expect(exercise.sets, '3');
+      expect(exercise.reps, contains('3x8'));
+      expect(exercise.effectiveSetDetails.single.displayText, '3x8');
+    });
+
     test('addExerciseToDayInRoutine appends exercise', () {
       final routine = routineWithOneExercise();
       final updated = addExerciseToDayInRoutine(
