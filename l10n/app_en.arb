@@ -1160,8 +1160,8 @@
   "workoutBuilderAddShort": "Add",
   "workoutBuilderSectionHeading": "Section",
   "workoutBuilderAddExercise": "Add exercise",
-  "workoutBuilderAddSet": "Add set",
-  "workoutBuilderPrescriptionPlaceholder": "Add sets",
+  "workoutBuilderAddSet": "Add block",
+  "workoutBuilderPrescriptionPlaceholder": "Add block",
   "workoutBuilderAddExerciseTitle": "Add exercise",
   "workoutBuilderEditExerciseTitle": "Edit exercise",
   "workoutBuilderExerciseLabel": "Exercise",
@@ -1172,7 +1172,7 @@
   "workoutBuilderCouldNotCreateExercise": "Could not create exercise. Try again or add without saving to library.",
   "workoutBuilderEnterNameOrSelect": "Enter a name or select an exercise.",
   "workoutBuilderSelectLibraryExercise": "Select an exercise from the library, or type the exact name.",
-  "workoutBuilderSetLabel": "Set",
+  "workoutBuilderSetLabel": "Sets",
   "workoutBuilderSetsLabel": "Sets",
   "workoutBuilderRepsLabel": "Reps",
   "workoutBuilderLoadLabel": "Load",
@@ -1180,7 +1180,7 @@
   "workoutBuilderNoteOptionalLabel": "Note (optional)",
   "workoutBuilderNameLabel": "Name",
   "workoutBuilderNoteLabel": "Note",
-  "workoutBuilderEditSetTitle": "Edit set",
+  "workoutBuilderEditSetTitle": "Edit block",
   "workoutBuilderTrainingProgram": "Training program",
   "workoutBuilderNewWeek": "New week",
   "workoutBuilderDuplicateWeek": "Duplicate week",
@@ -1360,8 +1360,8 @@
     }
   },
   "workoutSessionSavedHint": "Saved",
-  "workoutSessionDuplicateLastSet": "Duplicate last set",
-  "workoutSessionDuplicateLastSetN": "Duplicate last set (Set {n})",
+  "workoutSessionDuplicateLastSet": "Duplicate last block",
+  "workoutSessionDuplicateLastSetN": "Duplicate last block ({n})",
   "@workoutSessionDuplicateLastSetN": {
     "placeholders": {
       "n": {
@@ -1369,7 +1369,7 @@
       }
     }
   },
-  "workoutSessionColSet": "SET",
+  "workoutSessionColSet": "BLOCK",
   "workoutSessionColReps": "REPS",
   "workoutSessionColLoadRpe": "LOAD / RPE",
   "workoutSessionColPercent": "TARGET %",
@@ -2138,7 +2138,7 @@
   "settingsSessionRemindersSubtitle": "Alert before a scheduled workout",
   "settingsWorkoutPrefsModuleTitle": "Workout preferences",
   "settingsMaximalWeightRoundingTitle": "Maximal % rounding",
-  "settingsMaximalWeightRoundingSubtitle": "Round loads calculated as a % of the maximal to the nearest increment (in the set editor)",
+  "settingsMaximalWeightRoundingSubtitle": "Round loads calculated as a % of the maximal to the nearest increment (in the block editor)",
   "settingsMaximalWeightRoundingOptionKg": "{kg} kg",
   "@settingsMaximalWeightRoundingOptionKg": {
     "placeholders": {
