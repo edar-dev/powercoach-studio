@@ -31,6 +31,18 @@ void main() {
   }
 
   group('workout_exercise_mutations', () {
+    test('buildExerciseFromPrescription sums block size into legacy sets', () {
+      final exercise = buildExerciseFromPrescription(
+        id: 'e-new',
+        name: 'Bench',
+        note: '',
+        setDetails: const [ExerciseSet(sets: '3', reps: '8')],
+      );
+      expect(exercise.sets, '3');
+      expect(exercise.reps, contains('3x8'));
+      expect(exercise.effectiveSetDetails.single.displayText, '3x8');
+    });
+
     test('addExerciseToDayInRoutine appends exercise', () {
       final routine = routineWithOneExercise();
       final updated = addExerciseToDayInRoutine(
@@ -319,6 +331,89 @@ void main() {
             .line,
         '3x5 @9',
       );
+    });
+
+    test('updateExerciseSetInRoutine syncs block sets×reps to legacy summary',
+        () {
+      final routine = routineWithOneExercise().copyWith(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(
+                id: 'd1',
+                name: 'Day A',
+                exercises: [
+                  Exercise(
+                    id: 'e1',
+                    name: 'Squat',
+                    sets: '1',
+                    reps: '8',
+                    rpe: '',
+                    setDetails: [ExerciseSet(sets: '1', reps: '8')],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+      final updated = updateExerciseSetInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e1',
+        setIndex: 0,
+        sets: '3',
+        reps: '8',
+      )!;
+      final exercise = updated.weeks.single.days.single.exercises.single;
+      expect(exercise.effectiveSetDetails.first.displayText, '3x8');
+      expect(exercise.sets, '3');
+      expect(exercise.reps, contains('3x8'));
+    });
+
+    test(
+        'updateExerciseInRoutine with legacy sets/reps updates single setDetail',
+        () {
+      final routine = routineWithOneExercise().copyWith(
+        weeks: [
+          const Week(
+            id: 'w1',
+            name: 'Week 1',
+            days: [
+              Day(
+                id: 'd1',
+                name: 'Day A',
+                exercises: [
+                  Exercise(
+                    id: 'e1',
+                    name: 'Squat',
+                    sets: '1',
+                    reps: '8',
+                    rpe: '',
+                    setDetails: [ExerciseSet(sets: '1', reps: '8')],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      );
+      final updated = updateExerciseInRoutine(
+        routine: routine,
+        weekIndex: 0,
+        dayIndex: 0,
+        exerciseId: 'e1',
+        sets: '3',
+        reps: '8',
+      )!;
+      final exercise = updated.weeks.single.days.single.exercises.single;
+      expect(exercise.effectiveSetDetails.single.sets, '3');
+      expect(exercise.effectiveSetDetails.single.reps, '8');
+      expect(exercise.effectiveSetDetails.single.displayText, '3x8');
+      expect(exercise.sets, '3');
     });
 
     test('removeExerciseSetInRoutine keeps at least one set', () {

@@ -4,6 +4,17 @@ import '../data/workout_routine_model.dart';
 class ExerciseSummarySync {
   ExerciseSummarySync._();
 
+  /// Sum of block sizes across [details], matching [SessionDayMetrics] /
+  /// day-card `_totalSets` (non-positive / unparseable → 1).
+  static int totalSetsFromDetails(List<ExerciseSet> details) {
+    var total = 0;
+    for (final set in details) {
+      final parsed = int.tryParse(set.sets.trim());
+      total += (parsed == null || parsed <= 0) ? 1 : parsed;
+    }
+    return total;
+  }
+
   static Exercise apply(Exercise exercise) {
     final details = exercise.setDetails;
     if (details == null || details.isEmpty) return exercise;
@@ -15,7 +26,7 @@ class ExerciseSummarySync {
     if (displayParts.isEmpty) return exercise;
 
     return exercise.copyWith(
-      sets: details.length.toString(),
+      sets: totalSetsFromDetails(details).toString(),
       reps: displayParts.join(' | '),
       rpe: '',
     );

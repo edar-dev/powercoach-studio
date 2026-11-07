@@ -327,4 +327,24 @@ void main() {
     );
     expect(encodeExercise(exercise).containsKey('maximalRef'), isFalse);
   });
+
+  test('decodeExercise seeds setDetails.sets from top-level sets without setDetails',
+      () {
+    final decoded = decodeExercise({
+      'id': 'e1',
+      'name': 'Squat',
+      'sets': '3',
+      'reps': '8',
+      'rpe': '',
+      'note': '',
+    });
+    expect(decoded.effectiveSetDetails, hasLength(1));
+    expect(decoded.effectiveSetDetails.first.sets, '3');
+    expect(decoded.effectiveSetDetails.first.displayText, '3x8');
+
+    final roundTripped = decodeExercise(encodeExercise(decoded));
+    expect(roundTripped.effectiveSetDetails.first.sets, '3');
+    expect(roundTripped.effectiveSetDetails.first.displayText, '3x8');
+    expect(roundTripped.sets, '3');
+  });
 }

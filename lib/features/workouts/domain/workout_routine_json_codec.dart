@@ -129,9 +129,17 @@ Exercise decodeExercise(Map<String, dynamic> json) {
         .map((e) => decodeExerciseSet(e as Map<String, dynamic>))
         .toList();
   } else {
+    // No setDetails in JSON: synthesize one row from legacy fields.
+    // Seed [ExerciseSet.sets] from top-level sets when reps is a plain value
+    // (not already a "Nx…" scheme — displayText handles that case).
     final repsStr = json['reps'] as String? ?? '';
     final rpeStr = json['rpe'] as String? ?? '';
-    setDetails = [ExerciseSet(reps: repsStr, rpe: rpeStr)];
+    final setsRaw = (json['sets'] as String? ?? '').trim();
+    final repsLooksLikeScheme = RegExp(r'^\d+x').hasMatch(repsStr.trim());
+    final setsStr = repsLooksLikeScheme
+        ? '1'
+        : (setsRaw.isEmpty ? '1' : setsRaw);
+    setDetails = [ExerciseSet(sets: setsStr, reps: repsStr, rpe: rpeStr)];
   }
   return Exercise(
     id: json['id'] as String? ?? '',

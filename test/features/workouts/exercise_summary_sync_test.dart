@@ -21,4 +21,22 @@ void main() {
     expect(synced.reps, '1x5 77.5 | 1x4 82.5');
     expect(synced.rpe, '');
   });
+
+  test('apply sums block size for single ExerciseSet(sets:3, reps:8)', () {
+    const exercise = Exercise(
+      id: 'e1',
+      name: 'Squat',
+      sets: '1',
+      reps: 'legacy',
+      rpe: '',
+      setDetails: [
+        ExerciseSet(sets: '3', reps: '8'),
+      ],
+    );
+
+    final synced = ExerciseSummarySync.apply(exercise);
+    expect(synced.sets, '3');
+    expect(synced.reps, contains('3x8'));
+    expect(synced.rpe, '');
+  });
 }

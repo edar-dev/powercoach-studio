@@ -45,19 +45,21 @@ Exercise buildExerciseFromPrescription({
   String? supersetGroupId,
 }) {
   final list = setDetails.isEmpty ? [const ExerciseSet()] : setDetails;
-  return Exercise(
-    id: id,
-    name: name,
-    sets: '${list.length}',
-    reps: list
-        .map((s) => s.displayText)
-        .where((r) => r.isNotEmpty)
-        .join(' | '),
-    rpe: '',
-    note: note,
-    setDetails: list,
-    customExerciseId: customExerciseId,
-    supersetGroupId: supersetGroupId,
+  return ExerciseSummarySync.apply(
+    Exercise(
+      id: id,
+      name: name,
+      sets: '${list.length}',
+      reps: list
+          .map((s) => s.displayText)
+          .where((r) => r.isNotEmpty)
+          .join(' | '),
+      rpe: '',
+      note: note,
+      setDetails: list,
+      customExerciseId: customExerciseId,
+      supersetGroupId: supersetGroupId,
+    ),
   );
 }
 
@@ -191,6 +193,21 @@ WorkoutRoutine? updateExerciseInRoutine({
     update: (exercises) => exercises
         .map((e) {
           if (e.id != exerciseId) return e;
+          // When caller updates legacy sets/reps without passing setDetails,
+          // keep a single existing detail row in sync so ExerciseSummarySync
+          // does not re-derive stale 1xN from a synthesized row.
+          var nextDetails = setDetails ?? e.setDetails;
+          if (setDetails == null &&
+              (sets != null || reps != null) &&
+              e.effectiveSetDetails.length == 1) {
+            final cur = e.effectiveSetDetails.first;
+            nextDetails = [
+              cur.copyWith(
+                sets: sets ?? cur.sets,
+                reps: reps ?? cur.reps,
+              ),
+            ];
+          }
           return ExerciseSummarySync.apply(
             e.copyWith(
               name: name ?? e.name,
@@ -200,7 +217,7 @@ WorkoutRoutine? updateExerciseInRoutine({
               note: note ?? e.note,
               shortName: shortName ?? e.shortName,
               prescriptionScope: prescriptionScope ?? e.prescriptionScope,
-              setDetails: setDetails ?? e.setDetails,
+              setDetails: nextDetails,
               maximalRef: maximalRef,
               clearMaximalRef: clearMaximalRef,
             ),
@@ -224,7 +241,7 @@ WorkoutRoutine? addSetToExerciseInRoutine({
         .map((e) {
           if (e.id != exerciseId) return e;
           final details = [...e.effectiveSetDetails, const ExerciseSet()];
-          return e.copyWith(setDetails: details);
+          return ExerciseSummarySync.apply(e.copyWith(setDetails: details));
         })
         .toList(),
   );
@@ -277,7 +294,7 @@ WorkoutRoutine? updateExerciseSetInRoutine({
           } else {
             newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
           }
-          return e.copyWith(setDetails: newDetails);
+          return ExerciseSummarySync.apply(e.copyWith(setDetails: newDetails));
         })
         .toList(),
   );
@@ -301,7 +318,7 @@ WorkoutRoutine? removeExerciseSetInRoutine({
           if (details.length <= 1) return e;
           if (setIndex < 0 || setIndex >= details.length) return e;
           final newDetails = List<ExerciseSet>.from(details)..removeAt(setIndex);
-          return e.copyWith(setDetails: newDetails);
+          return ExerciseSummarySync.apply(e.copyWith(setDetails: newDetails));
         })
         .toList(),
   );

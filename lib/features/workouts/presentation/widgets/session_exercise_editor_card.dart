@@ -204,6 +204,19 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     });
   }
 
+  /// Collapsed header prescription (displayText join), matching day-card preview.
+  String _prescriptionSubtitle() {
+    final texts = widget.exercise.effectiveSetDetails
+        .map((s) => s.displayText.trim())
+        .where((t) => t.isNotEmpty)
+        .toList();
+    if (texts.isEmpty) return '';
+    if (texts.length == 1 && RegExp(r'^\d+$').hasMatch(texts.first)) {
+      return '';
+    }
+    return texts.join(' · ');
+  }
+
   void _openEditDialog(BuildContext context, {bool focusNote = false}) {
     final onEdit = widget.onEdit;
     if (onEdit == null) return;
@@ -261,6 +274,8 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     final notesLabel = athlete.isEmpty
         ? l10n.workoutSessionTechnicalNotes
         : l10n.workoutSessionTechnicalNotesForAthlete(athlete);
+    final collapsedRx =
+        widget.expanded ? '' : _prescriptionSubtitle();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -307,14 +322,32 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                     onTap: () =>
                         widget.onExpandedChanged(!widget.expanded),
                     borderRadius: BorderRadius.circular(8),
-                    child: Text(
-                      exercise.name,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: cs.onSurface,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          exercise.name,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w700,
+                            color: cs.onSurface,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (collapsedRx.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              collapsedRx,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: cs.onSurfaceVariant,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
@@ -635,6 +668,19 @@ class _SetTableRow extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
 
+  /// REPS cell: show block sets×reps when [set.sets] > 1 and reps is plain.
+  static String repsCellLabel(ExerciseSet set) {
+    final reps = set.reps.trim();
+    if (reps.isEmpty) return '—';
+    final blockSets = int.tryParse(set.sets.trim());
+    if (blockSets != null &&
+        blockSets > 1 &&
+        !RegExp(r'^\d+x', caseSensitive: false).hasMatch(reps)) {
+      return '$blockSets×$reps';
+    }
+    return reps;
+  }
+
   @override
   Widget build(BuildContext context) {
     final cellStyle = theme.textTheme.bodyMedium?.copyWith(
@@ -644,7 +690,7 @@ class _SetTableRow extends StatelessWidget {
     final muted = theme.textTheme.bodySmall?.copyWith(
       color: colorScheme.onSurfaceVariant,
     );
-    final reps = set.reps.trim().isEmpty ? '—' : set.reps.trim();
+    final reps = repsCellLabel(set);
     final display = formatSetLoadDisplay(
       set.rpe,
       resolvedMaximalKg: resolvedMaximalKg,
