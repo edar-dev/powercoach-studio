@@ -145,7 +145,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _load,
-              color: MarketingDarkColors.brandLight,
+              color: Theme.of(context).colorScheme.primary,
               backgroundColor: MarketingDarkColors.surface,
               child: _loading
                   ? const Center(

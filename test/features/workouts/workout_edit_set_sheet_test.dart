@@ -50,6 +50,15 @@ Future<void> _setViewSize(WidgetTester tester, Size size) async {
   await tester.pump();
 }
 
+TextField _fieldByLabel(WidgetTester tester, String label) {
+  final fields = tester.widgetList<TextField>(find.byType(TextField)).toList();
+  for (final field in fields) {
+    final decoration = field.decoration;
+    if (decoration?.labelText == label) return field;
+  }
+  fail('TextField with label "$label" not found');
+}
+
 void main() {
   testWidgets('phone edit-set sheet is nearly full height', (tester) async {
     const phone = Size(390, 844);
@@ -85,5 +94,40 @@ void main() {
 
     expect(find.text('Modifica blocco'), findsOneWidget);
     expect(find.text('Salva'), findsOneWidget);
+  });
+
+  testWidgets('edit-set fields use Serie→Rip→Carico→Note focus actions', (
+    tester,
+  ) async {
+    const phone = Size(390, 844);
+    await _setViewSize(tester, phone);
+
+    await tester.pumpWidget(_harness());
+    await tester.tap(find.text('Open set'));
+    await tester.pumpAndSettle();
+
+    final sets = _fieldByLabel(tester, 'Serie');
+    final reps = _fieldByLabel(tester, 'Rip');
+    final load = _fieldByLabel(tester, 'Carico');
+    final note = _fieldByLabel(tester, 'Note');
+
+    expect(sets.textInputAction, TextInputAction.next);
+    expect(reps.textInputAction, TextInputAction.next);
+    expect(load.textInputAction, TextInputAction.next);
+    expect(note.textInputAction, TextInputAction.done);
+  });
+
+  testWidgets('edit-set sheet shows Material drag handle chrome', (
+    tester,
+  ) async {
+    const phone = Size(390, 844);
+    await _setViewSize(tester, phone);
+
+    await tester.pumpWidget(_harness());
+    await tester.tap(find.text('Open set'));
+    await tester.pumpAndSettle();
+
+    final sheet = tester.widget<BottomSheet>(find.byType(BottomSheet));
+    expect(sheet.showDragHandle, isTrue);
   });
 }

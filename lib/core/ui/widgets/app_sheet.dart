@@ -2,8 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/breakpoints.dart';
+import '../../theme/stitch_m3_theme.dart';
+import '../breakpoints.dart';
+import 'keyboard_dismiss.dart';
 
 typedef AppSheetBodyBuilder = Widget Function(BuildContext context);
 
@@ -31,11 +32,13 @@ Future<T?> showAppBottomSheet<T>({
   bool useRootNavigator = false,
 }) {
   final cs = Theme.of(context).colorScheme;
+  final showDragHandle = enableDrag;
 
   return showModalBottomSheet<T>(
     context: context,
     isDismissible: isDismissible,
     enableDrag: enableDrag,
+    showDragHandle: showDragHandle,
     isScrollControlled: true,
     backgroundColor: cs.surface,
     useSafeArea: true,
@@ -55,6 +58,7 @@ Future<T?> showAppBottomSheet<T>({
         onPrimaryAction: onPrimaryAction,
         wrapContent: wrapContent,
         scrollBody: scrollBody,
+        compactTitleChrome: showDragHandle,
         child: bodyBuilder(sheetContext),
       );
 
@@ -68,9 +72,16 @@ Future<T?> showAppBottomSheet<T>({
               child: scaffold,
             );
 
-      return Padding(
-        padding: EdgeInsets.only(bottom: bottomInset),
-        child: sheet,
+      return PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop) return;
+          KeyboardDismiss.unfocus();
+        },
+        child: Padding(
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: sheet,
+        ),
       );
     },
   );
@@ -201,6 +212,7 @@ class _AppSheetScaffold extends StatelessWidget {
     this.onPrimaryAction,
     this.wrapContent = false,
     this.scrollBody = true,
+    this.compactTitleChrome = false,
   });
 
   final String title;
@@ -210,6 +222,8 @@ class _AppSheetScaffold extends StatelessWidget {
   final VoidCallback? onPrimaryAction;
   final bool wrapContent;
   final bool scrollBody;
+  /// When Material 3 already shows a drag handle, tighten title-row top padding.
+  final bool compactTitleChrome;
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +232,9 @@ class _AppSheetScaffold extends StatelessWidget {
     final titleStyle = wrapContent
         ? theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)
         : theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700);
+    final titleTop = compactTitleChrome
+        ? (wrapContent ? 2.0 : 4.0)
+        : (wrapContent ? 8.0 : 12.0);
 
     final Widget body;
     if (scrollBody) {
@@ -226,13 +243,13 @@ class _AppSheetScaffold extends StatelessWidget {
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           padding: EdgeInsets.fromLTRB(16, wrapContent ? 12 : 16, 16, 16),
-          child: child,
+          child: KeyboardDismiss(child: child),
         ),
       );
     } else {
       body = Padding(
         padding: EdgeInsets.fromLTRB(16, wrapContent ? 12 : 16, 16, 16),
-        child: child,
+        child: KeyboardDismiss(child: child),
       );
     }
 
@@ -240,7 +257,7 @@ class _AppSheetScaffold extends StatelessWidget {
       mainAxisSize: wrapContent ? MainAxisSize.min : MainAxisSize.max,
       children: [
         Padding(
-          padding: EdgeInsets.fromLTRB(16, wrapContent ? 8 : 12, 8, 8),
+          padding: EdgeInsets.fromLTRB(16, titleTop, 8, 8),
           child: Row(
             children: [
               Expanded(

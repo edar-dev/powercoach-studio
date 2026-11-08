@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
-import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../../../core/routing/app_navigation.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/keyboard_dismiss.dart';
+import '../../../../core/ui/widgets/truncated_text.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../data/workout_routine_model.dart';
@@ -523,114 +525,128 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     final showPreview =
         editorMode && (planId ?? '').isNotEmpty && !readOnly;
     final pinBottomCtas = !isDesktop && !readOnly;
+    final phoneLandscape =
+        !isDesktop &&
+        MediaQuery.orientationOf(context) == Orientation.landscape;
     final close =
         onClose ?? () => Navigator.of(context).maybePop();
 
-    return ColoredBox(
-      color: _SessionEditColors.backdrop,
-      child: SafeArea(
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxWidth),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isDesktop ? 16 : 0,
-                vertical: isDesktop ? 16 : 0,
-              ),
-              child: Material(
-                color: _SessionEditColors.card,
-                elevation: isDesktop ? 8 : 0,
-                shadowColor: Colors.black54,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(isDesktop ? 16 : 0),
-                  side: isDesktop
-                      ? const BorderSide(color: _SessionEditColors.border)
-                      : BorderSide.none,
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) return;
+        KeyboardDismiss.unfocus();
+      },
+      child: ColoredBox(
+        color: _SessionEditColors.backdrop,
+        // Sticky phone footer owns home-indicator padding (SettingsUnsavedBar).
+        child: SafeArea(
+          bottom: !pinBottomCtas,
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: maxWidth),
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: isDesktop ? 16 : 0,
+                  vertical: isDesktop ? 16 : 0,
                 ),
-                clipBehavior: Clip.antiAlias,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _SessionEditHeader(
-                      theme: theme,
-                      cs: cs,
-                      l10n: l10n,
-                      dayName: dayName,
-                      subtitle: subtitle,
-                      readOnly: readOnly,
-                      editorMode: editorMode,
-                      customerName: customerName,
-                      showHistory: editorMode && (planId ?? '').isNotEmpty,
-                      showClone: onCloneDayToTarget != null && !readOnly,
-                      showPrimaryActions: isDesktop,
-                      onClose: close,
-                      onRename: readOnly ? null : onRenameDay,
-                      onLogSession: readOnly || onLogSession == null
-                          ? null
-                          : onLogSession,
-                      onClone: readOnly || onCloneDayToTarget == null
-                          ? null
-                          : () => onCloneDayToTarget(
-                                globalWeekIndex,
-                                dayIndex,
-                              ),
-                      onHistory: () => _openHistory(context),
-                      onDelete: readOnly ? null : onDeleteDay,
-                      onCancel: close,
-                      onSave: close,
-                    ),
-                    _SessionMetricsBar(
-                      theme: theme,
-                      l10n: l10n,
-                      metrics: metrics,
-                    ),
-                    Expanded(
-                      child: WorkoutDayExerciseList(
+                child: Material(
+                  color: _SessionEditColors.card,
+                  elevation: isDesktop ? 8 : 0,
+                  shadowColor: Colors.black54,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(isDesktop ? 16 : 0),
+                    side: isDesktop
+                        ? const BorderSide(color: _SessionEditColors.border)
+                        : BorderSide.none,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _SessionEditHeader(
                         theme: theme,
-                        colorScheme: cs,
-                        session: session,
-                        weekIndex: globalWeekIndex,
-                        dayIndex: dayIndex,
-                        day: day,
-                        sessionEditStyle: true,
-                        pinBottomCtas: pinBottomCtas,
-                        athleteName: customerName,
-                        customerId: widget.customerId,
+                        cs: cs,
+                        l10n: l10n,
+                        dayName: dayName,
+                        subtitle: subtitle,
                         readOnly: readOnly,
-                        onAddExercise: readOnly
+                        editorMode: editorMode,
+                        customerName: customerName,
+                        showHistory: editorMode && (planId ?? '').isNotEmpty,
+                        showClone: onCloneDayToTarget != null && !readOnly,
+                        showPrimaryActions: isDesktop,
+                        compact: phoneLandscape,
+                        onClose: close,
+                        onRename: readOnly ? null : onRenameDay,
+                        onLogSession: readOnly || onLogSession == null
                             ? null
-                            : (w, d) => _openLibraryPicker(context),
-                        onCreateSuperset:
-                            readOnly ? null : _createSuperset,
-                        onDuplicateExercise: onDuplicateExercise,
-                        onRemoveExercise: onRemoveExercise,
-                        onMoveExercise: onMoveExercise,
-                        onMoveExerciseWithinSuperset:
-                            onMoveExerciseWithinSuperset,
-                        onUpdateExercise: onUpdateExercise,
-                        onAddSetToExercise: onAddSetToExercise,
-                        onUpdateExerciseSet: onUpdateExerciseSet,
-                        onRemoveExerciseSet: onRemoveExerciseSet,
-                        onAssignToSuperset: onAssignToSuperset,
-                        onRemoveFromSuperset: onRemoveFromSuperset,
-                        onAddExerciseToSuperset: onAddExerciseToSuperset,
+                            : onLogSession,
+                        onClone: readOnly || onCloneDayToTarget == null
+                            ? null
+                            : () => onCloneDayToTarget(
+                                  globalWeekIndex,
+                                  dayIndex,
+                                ),
+                        onHistory: () => _openHistory(context),
+                        onDelete: readOnly ? null : onDeleteDay,
+                        onCancel: close,
+                        onSave: close,
                       ),
-                    ),
-                    _SessionEditFooter(
-                      theme: theme,
-                      l10n: l10n,
-                      showAthletePreview: showPreview,
-                      onAthletePreview: () => _openAthletePreview(context),
-                      stickyPhoneActions: pinBottomCtas,
-                      hasExercises: day.exercises.isNotEmpty,
-                      onSave: close,
-                      onAddFromLibrary: readOnly
-                          ? null
-                          : () => _openLibraryPicker(context),
-                      onCreateSuperset: readOnly ? null : _createSuperset,
-                    ),
-                  ],
+                      if (!phoneLandscape)
+                        _SessionMetricsBar(
+                          theme: theme,
+                          l10n: l10n,
+                          metrics: metrics,
+                        ),
+                      Expanded(
+                        child: WorkoutDayExerciseList(
+                          theme: theme,
+                          colorScheme: cs,
+                          session: session,
+                          weekIndex: globalWeekIndex,
+                          dayIndex: dayIndex,
+                          day: day,
+                          sessionEditStyle: true,
+                          pinBottomCtas: pinBottomCtas,
+                          athleteName: customerName,
+                          customerId: widget.customerId,
+                          readOnly: readOnly,
+                          onAddExercise: readOnly
+                              ? null
+                              : (w, d) => _openLibraryPicker(context),
+                          onCreateSuperset:
+                              readOnly ? null : _createSuperset,
+                          onDuplicateExercise: onDuplicateExercise,
+                          onRemoveExercise: onRemoveExercise,
+                          onMoveExercise: onMoveExercise,
+                          onMoveExerciseWithinSuperset:
+                              onMoveExerciseWithinSuperset,
+                          onUpdateExercise: onUpdateExercise,
+                          onAddSetToExercise: onAddSetToExercise,
+                          onUpdateExerciseSet: onUpdateExerciseSet,
+                          onRemoveExerciseSet: onRemoveExerciseSet,
+                          onAssignToSuperset: onAssignToSuperset,
+                          onRemoveFromSuperset: onRemoveFromSuperset,
+                          onAddExerciseToSuperset: onAddExerciseToSuperset,
+                        ),
+                      ),
+                      _SessionEditFooter(
+                        theme: theme,
+                        l10n: l10n,
+                        showAthletePreview: showPreview,
+                        onAthletePreview: () => _openAthletePreview(context),
+                        stickyPhoneActions: pinBottomCtas,
+                        hasExercises: day.exercises.isNotEmpty,
+                        onSave: close,
+                        onAddFromLibrary: readOnly
+                            ? null
+                            : () => _openLibraryPicker(context),
+                        onCreateSuperset: readOnly ? null : _createSuperset,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -654,6 +670,7 @@ class _SessionEditHeader extends StatelessWidget {
     required this.showHistory,
     required this.showClone,
     this.showPrimaryActions = true,
+    this.compact = false,
     required this.onClose,
     this.onRename,
     this.onLogSession,
@@ -676,6 +693,8 @@ class _SessionEditHeader extends StatelessWidget {
   final bool showClone;
   /// When false (phone sticky footer), omit Cancel / Salva from the header Wrap.
   final bool showPrimaryActions;
+  /// Phone landscape: tighter vertical chrome.
+  final bool compact;
   final VoidCallback onClose;
   final VoidCallback? onRename;
   final VoidCallback? onLogSession;
@@ -688,6 +707,7 @@ class _SessionEditHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final assigned = (customerName ?? '').trim();
+    final title = l10n.workoutSessionEditTitleWithDay(dayName);
     return Material(
       color: _SessionEditColors.header,
       child: Container(
@@ -696,7 +716,7 @@ class _SessionEditHeader extends StatelessWidget {
             bottom: BorderSide(color: _SessionEditColors.border),
           ),
         ),
-        padding: const EdgeInsets.fromLTRB(8, 10, 12, 12),
+        padding: EdgeInsets.fromLTRB(8, compact ? 4 : 10, 12, compact ? 6 : 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -710,8 +730,8 @@ class _SessionEditHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 Container(
-                  width: 40,
-                  height: 40,
+                  width: compact ? 32 : 40,
+                  height: compact ? 32 : 40,
                   decoration: BoxDecoration(
                     color: StitchM3Theme.accent.withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(10),
@@ -719,9 +739,9 @@ class _SessionEditHeader extends StatelessWidget {
                       color: StitchM3Theme.accent.withValues(alpha: 0.4),
                     ),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.fitness_center,
-                    size: 20,
+                    size: compact ? 16 : 20,
                     color: StitchM3Theme.accent,
                   ),
                 ),
@@ -733,13 +753,13 @@ class _SessionEditHeader extends StatelessWidget {
                       Row(
                         children: [
                           Flexible(
-                            child: Text(
-                              l10n.workoutSessionEditTitleWithDay(dayName),
+                            child: TruncatedText(
+                              title,
                               style: theme.textTheme.titleMedium?.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
                               maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+                              tooltip: title,
                             ),
                           ),
                           if (onRename != null)
@@ -795,14 +815,14 @@ class _SessionEditHeader extends StatelessWidget {
                           ),
                         ),
                       ],
-                      if (subtitle.isNotEmpty) ...[
+                      if (subtitle.isNotEmpty && !compact) ...[
                         const SizedBox(height: 4),
                         Text(
                           subtitle,
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: cs.onSurfaceVariant,
                           ),
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
@@ -1060,7 +1080,11 @@ class _SessionEditFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final keyboardInset = MediaQuery.viewInsetsOf(context).bottom;
+    final safeBottom = stickyPhoneActions
+        ? MediaQuery.paddingOf(context).bottom
+        : 0.0;
+    final bottomInset = keyboardInset + safeBottom;
     final showStickyCtas = stickyPhoneActions &&
         hasExercises &&
         (onAddFromLibrary != null || onCreateSuperset != null);

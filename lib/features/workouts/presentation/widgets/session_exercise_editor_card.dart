@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/haptics.dart';
+import '../../../../core/ui/widgets/keyboard_dismiss.dart';
+import '../../../../core/ui/widgets/truncated_text.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/data/customer_maximal_repository.dart';
 import '../../../customers/data/customer_measurement_repository.dart';
 import '../../domain/collapsed_prescription_summary.dart';
@@ -311,8 +314,10 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                 const SizedBox(width: 10),
                 Expanded(
                   child: InkWell(
-                    onTap: () =>
-                        widget.onExpandedChanged(!widget.expanded),
+                    onTap: () {
+                      AppHaptics.selection();
+                      widget.onExpandedChanged(!widget.expanded);
+                    },
                     borderRadius: BorderRadius.circular(8),
                     child: ConstrainedBox(
                       constraints: const BoxConstraints(minHeight: 44),
@@ -322,14 +327,14 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            TruncatedText(
                               exercise.name,
                               style: theme.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                                 color: cs.onSurface,
                               ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              tooltip: exercise.name,
                             ),
                             if (collapsedRx.isNotEmpty)
                               Padding(
@@ -363,8 +368,10 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                         : Icons.expand_more,
                     color: cs.onSurfaceVariant,
                   ),
-                  onPressed: () =>
-                      widget.onExpandedChanged(!widget.expanded),
+                  onPressed: () {
+                    AppHaptics.selection();
+                    widget.onExpandedChanged(!widget.expanded);
+                  },
                 ),
                 if (hasMenu) _buildMenu(l10n),
               ],
@@ -483,6 +490,9 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                     enabled: widget.onEdit != null,
                     maxLines: 3,
                     minLines: 2,
+                    textInputAction: TextInputAction.done,
+                    onTapOutside: (_) => KeyboardDismiss.unfocus(),
+                    onSubmitted: (_) => KeyboardDismiss.unfocus(),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: cs.onSurface,
                     ),
@@ -736,56 +746,63 @@ class _HorizontallyScrollableWithEdgeFadeState
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          controller: _controller,
-          scrollDirection: Axis.horizontal,
-          child: SizedBox(
-            width: widget.minContentWidth,
-            child: widget.child,
+    // Absorb horizontal scroll notifications so a parent RefreshIndicator
+    // does not treat sideways drag as vertical overscroll / pull-to-refresh.
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) =>
+          notification.metrics.axis == Axis.horizontal,
+      child: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _controller,
+            scrollDirection: Axis.horizontal,
+            primary: false,
+            child: SizedBox(
+              width: widget.minContentWidth,
+              child: widget.child,
+            ),
           ),
-        ),
-        if (_showLeftFade)
-          Positioned(
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 20,
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      widget.fadeColor,
-                      widget.fadeColor.withValues(alpha: 0),
-                    ],
+          if (_showLeftFade)
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 20,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        widget.fadeColor,
+                        widget.fadeColor.withValues(alpha: 0),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        if (_showRightFade)
-          Positioned(
-            right: 0,
-            top: 0,
-            bottom: 0,
-            width: 20,
-            child: IgnorePointer(
-              child: DecoratedBox(
-                key: const Key('session_set_table_right_fade'),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      widget.fadeColor.withValues(alpha: 0),
-                      widget.fadeColor,
-                    ],
+          if (_showRightFade)
+            Positioned(
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: 20,
+              child: IgnorePointer(
+                child: DecoratedBox(
+                  key: const Key('session_set_table_right_fade'),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        widget.fadeColor.withValues(alpha: 0),
+                        widget.fadeColor,
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-      ],
+        ],
+      ),
     );
   }
 }

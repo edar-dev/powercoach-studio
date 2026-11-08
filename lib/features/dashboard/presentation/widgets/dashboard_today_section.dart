@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../domain/plan_calendar_event.dart';
@@ -105,12 +105,12 @@ class DashboardTodaySection extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
-            Align(
-              alignment: Alignment.centerLeft,
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
               child: FilledButton.icon(
                 onPressed: () {
-                  HapticFeedback.mediumImpact();
+                  AppHaptics.selection();
                   navigateTo(context, AppPaths.calendar);
                 },
                 icon: const Icon(Icons.calendar_month_outlined, size: 18),
@@ -120,6 +120,7 @@ class DashboardTodaySection extends StatelessWidget {
                       const WidgetStatePropertyAll(StitchM3Theme.accent),
                   foregroundColor:
                       const WidgetStatePropertyAll(Colors.white),
+                  minimumSize: const WidgetStatePropertyAll(Size(0, 44)),
                 ),
               ),
             ),
@@ -154,7 +155,7 @@ class DashboardTodaySection extends StatelessWidget {
             statusLabel: statusLabel,
             statusColor: statusColor,
             onTap: () {
-              HapticFeedback.mediumImpact();
+              AppHaptics.selection();
               final tap = onSessionTap;
               if (tap != null) {
                 tap(item);

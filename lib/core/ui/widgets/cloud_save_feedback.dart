@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../remote/cloud_save_error_message.dart';
+import '../haptics.dart';
 import 'app_snackbar.dart';
 
 /// Shows a floating error SnackBar for cloud-save failures.
@@ -20,6 +21,7 @@ void showCloudSaveErrorSnackBar(
       fallbackMessage ??
       cloudSaveErrorMessage(error, l10n);
 
+  AppHaptics.medium();
   showAppSnackBar(
     context,
     content: Text(
@@ -44,6 +46,7 @@ void showCloudSaveSuccessSnackBar(
 }) {
   final l10n = AppLocalizations.of(context);
   final colorScheme = Theme.of(context).colorScheme;
+  AppHaptics.light();
   showAppSnackBar(
     context,
     content: Text(
