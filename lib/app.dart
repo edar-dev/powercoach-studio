@@ -36,6 +36,8 @@ class PowerCoachStudioApp extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp.router(
           title: 'PowerCoach Studio',
+          // Enables Scrollable.restorationId (customer list / diary, etc.).
+          restorationScopeId: 'powercoach_studio',
           debugShowCheckedModeBanner: false,
           theme: StitchM3Theme.light,
           darkTheme: StitchM3Theme.dark,

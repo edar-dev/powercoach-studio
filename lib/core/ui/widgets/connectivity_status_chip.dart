@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../../platform/web_online_status.dart';
+import '../../platform/network_reachability.dart';
 
 /// Discreet offline chip. Hidden while online to avoid stealing chrome.
 ///
-/// Uses [isNavigatorOnline] (stub always true on non-web; navigator.onLine on
-/// web). Polls periodically and refreshes on app resume.
+/// Web uses [navigator.onLine]; native probes DNS via [probeNetworkReachability]
+/// (no new dependency). Polls periodically and refreshes on app resume.
 class ConnectivityStatusChip extends StatefulWidget {
   const ConnectivityStatusChip({
     super.key,
@@ -20,7 +20,7 @@ class ConnectivityStatusChip extends StatefulWidget {
   final Duration pollInterval;
   final bool dense;
 
-  /// Test injection — when non-null, skips [isNavigatorOnline].
+  /// Test injection — when non-null, skips network probe.
   final bool Function()? isOnlineOverride;
 
   @override
@@ -31,13 +31,16 @@ class _ConnectivityStatusChipState extends State<ConnectivityStatusChip>
     with WidgetsBindingObserver {
   bool _online = true;
   Timer? _timer;
+  int _refreshToken = 0;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _refresh();
-    _timer = Timer.periodic(widget.pollInterval, (_) => _refresh());
+    unawaited(_refresh());
+    _timer = Timer.periodic(widget.pollInterval, (_) {
+      unawaited(_refresh());
+    });
   }
 
   @override
@@ -50,13 +53,16 @@ class _ConnectivityStatusChipState extends State<ConnectivityStatusChip>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      _refresh();
+      unawaited(_refresh());
     }
   }
 
-  void _refresh() {
-    final online = widget.isOnlineOverride?.call() ?? isNavigatorOnline();
-    if (!mounted) return;
+  Future<void> _refresh() async {
+    final token = ++_refreshToken;
+    final online = widget.isOnlineOverride != null
+        ? widget.isOnlineOverride!()
+        : await probeNetworkReachability();
+    if (!mounted || token != _refreshToken) return;
     if (online != _online) {
       setState(() => _online = online);
     }
