@@ -75,7 +75,7 @@ Future<T?> showAppBottomSheet<T>({
       return PopScope(
         canPop: true,
         onPopInvokedWithResult: (didPop, result) {
-          if (!didPop) return;
+          // Always clear focus so the keyboard collapses with the sheet.
           KeyboardDismiss.unfocus();
         },
         child: Padding(

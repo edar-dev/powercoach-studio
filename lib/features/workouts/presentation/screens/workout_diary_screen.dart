@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +11,7 @@ import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
@@ -231,7 +231,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   void _openEntry(SessionExecutionEntry entry) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection();
     navigateTo(
       context,
       workoutDiaryEntryPath(
@@ -242,14 +242,14 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   void _recordSession() {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection();
     navigateTo(context, AppPaths.calendar);
   }
 
   Future<void> _exportVisible() async {
     final l10n = AppLocalizations.of(context);
     final visible = _visibleEntries;
-    await HapticFeedback.selectionClick();
+    await AppHaptics.selection();
     try {
       final artifact = await exportWorkoutDiaryToCsv(
         entries: visible,

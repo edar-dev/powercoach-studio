@@ -534,7 +534,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     return PopScope(
       canPop: true,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) return;
+        // Always clear focus so the keyboard collapses with the route/sheet.
         KeyboardDismiss.unfocus();
       },
       child: ColoredBox(
