@@ -78,45 +78,56 @@ class WorkoutExpandableCard extends StatelessWidget {
                               borderRadius: BorderRadius.circular(
                                 StitchM3Theme.radiusMd,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 2,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minHeight: 44,
                                 ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          title,
-                                          if (summary != null &&
-                                              summary!.trim().isNotEmpty) ...[
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              summary!,
-                                              style: theme.textTheme.bodyMedium
-                                                  ?.copyWith(
-                                                color: cs.onSurfaceVariant,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
-                                    ),
-                                    Icon(
-                                      expanded
-                                          ? Icons.expand_less
-                                          : Icons.expand_more,
-                                      size: 22,
-                                      color: cs.onSurfaceVariant,
-                                    ),
-                                  ],
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      title,
+                                      if (summary != null &&
+                                          summary!.trim().isNotEmpty) ...[
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          summary!,
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
+                                            color: cs.onSurfaceVariant,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
+                          ),
+                          IconButton(
+                            constraints: const BoxConstraints(
+                              minWidth: 44,
+                              minHeight: 44,
+                            ),
+                            padding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                            tooltip: expanded
+                                ? MaterialLocalizations.of(context)
+                                    .expandedIconTapHint
+                                : MaterialLocalizations.of(context)
+                                    .collapsedIconTapHint,
+                            icon: Icon(
+                              expanded
+                                  ? Icons.expand_less
+                                  : Icons.expand_more,
+                              size: 22,
+                              color: cs.onSurfaceVariant,
+                            ),
+                            onPressed: () => onExpandedChanged(!expanded),
                           ),
                           if (trailing != null) trailing!,
                         ],

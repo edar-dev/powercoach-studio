@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_maximal_repository.dart';
@@ -44,10 +45,13 @@ void showEditSetDialog(
     isDense: true,
     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
   );
+  final isDesktop = AppBreakpoints.isDesktop(context);
   showAppBottomSheet<void>(
     context: context,
     title: l10n.workoutBuilderEditSetTitle,
-    wrapContent: true,
+    // Phone: nearly full-height so sticky Salva stays above the keyboard.
+    wrapContent: isDesktop,
+    fullScreen: !isDesktop,
     maxHeightFraction: 0.88,
     bodyBuilder: (sheetContext) => Column(
       mainAxisSize: MainAxisSize.min,
