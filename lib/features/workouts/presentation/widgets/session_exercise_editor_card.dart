@@ -314,32 +314,39 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                     onTap: () =>
                         widget.onExpandedChanged(!widget.expanded),
                     borderRadius: BorderRadius.circular(8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          exercise.name,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w700,
-                            color: cs.onSurface,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (collapsedRx.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 2),
-                            child: Text(
-                              collapsedRx,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: cs.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(minHeight: 44),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              exercise.name,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w700,
+                                color: cs.onSurface,
                               ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                      ],
+                            if (collapsedRx.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 2),
+                                child: Text(
+                                  collapsedRx,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: cs.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -370,48 +377,38 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _SetTableHeader(theme: theme, l10n: l10n),
-                  const SizedBox(height: 6),
-                  ...details.asMap().entries.map((entry) {
-                    final i = entry.key;
-                    final s = entry.value;
-                    return _SetTableRow(
-                      theme: theme,
-                      colorScheme: cs,
-                      l10n: l10n,
-                      setNumber: i + 1,
-                      set: s,
-                      hasMaximalRef: exercise.maximalRef != null,
-                      resolvedMaximalKg: _effectiveMaximalKg,
-                      canRemove: details.length > 1 && widget.onRemoveSet != null,
-                      onEdit: widget.onUpdateSet == null
-                          ? null
-                          : () => showEditSetDialog(
-                                context,
-                                theme,
-                                cs,
-                                s.sets,
-                                s.reps,
-                                s.rpe,
-                                s.note,
-                                (sets, reps, load, note) =>
-                                    widget.onUpdateSet!(
-                                      i,
-                                      sets,
-                                      reps,
-                                      load,
-                                      note,
-                                    ),
-                                exercise: widget.exercise,
-                                customerId: widget.customerId,
-                                onMaximalRefChanged:
-                                    widget.onMaximalRefChanged,
-                              ),
-                      onRemove: widget.onRemoveSet == null
-                          ? null
-                          : () => widget.onRemoveSet!(i),
-                    );
-                  }),
+                  _SetTable(
+                    theme: theme,
+                    colorScheme: cs,
+                    l10n: l10n,
+                    details: details,
+                    hasMaximalRef: exercise.maximalRef != null,
+                    resolvedMaximalKg: _effectiveMaximalKg,
+                    onEditSet: widget.onUpdateSet == null
+                        ? null
+                        : (i, s) => showEditSetDialog(
+                              context,
+                              theme,
+                              cs,
+                              s.sets,
+                              s.reps,
+                              s.rpe,
+                              s.note,
+                              (sets, reps, load, note) =>
+                                  widget.onUpdateSet!(
+                                    i,
+                                    sets,
+                                    reps,
+                                    load,
+                                    note,
+                                  ),
+                              exercise: widget.exercise,
+                              customerId: widget.customerId,
+                              onMaximalRefChanged:
+                                  widget.onMaximalRefChanged,
+                            ),
+                    onRemoveSet: widget.onRemoveSet,
+                  ),
                   if (widget.onAddSet != null ||
                       widget.onDuplicateLastSet != null)
                     Padding(
@@ -429,6 +426,7 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                               style: TextButton.styleFrom(
                                 foregroundColor: StitchM3Theme.accent,
                                 visualDensity: VisualDensity.compact,
+                                minimumSize: const Size(0, 44),
                               ),
                             ),
                           if (widget.onDuplicateLastSet != null)
@@ -437,6 +435,7 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                               style: TextButton.styleFrom(
                                 foregroundColor: cs.onSurfaceVariant,
                                 visualDensity: VisualDensity.compact,
+                                minimumSize: const Size(0, 44),
                               ),
                               child: Text(
                                 details.isEmpty
@@ -608,11 +607,199 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   }
 }
 
+/// Wide enough for IT `BLOCCO` / EN `BLOCK` header labels.
+const double _blockIndexColumnWidth = 68;
+const double _colRepsWidth = 64;
+const double _colPercentWidth = 72;
+const double _colLoadWidth = 64;
+const double _colRpeWidth = 48;
+const double _colNoteWidth = 96;
+const double _colActionsWidth = 88;
+
+/// Min content width before the set table switches to horizontal scroll.
+const double _setTableMinScrollWidth = 540;
+
+class _SetTable extends StatelessWidget {
+  const _SetTable({
+    required this.theme,
+    required this.colorScheme,
+    required this.l10n,
+    required this.details,
+    required this.hasMaximalRef,
+    this.resolvedMaximalKg,
+    this.onEditSet,
+    this.onRemoveSet,
+  });
+
+  final ThemeData theme;
+  final ColorScheme colorScheme;
+  final AppLocalizations l10n;
+  final List<ExerciseSet> details;
+  final bool hasMaximalRef;
+  final double? resolvedMaximalKg;
+  final void Function(int index, ExerciseSet set)? onEditSet;
+  final void Function(int setIndex)? onRemoveSet;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scrollMode = constraints.maxWidth < _setTableMinScrollWidth;
+        final table = Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _SetTableHeader(theme: theme, l10n: l10n, fixedColumns: scrollMode),
+            const SizedBox(height: 6),
+            ...details.asMap().entries.map((entry) {
+              final i = entry.key;
+              final s = entry.value;
+              return _SetTableRow(
+                theme: theme,
+                colorScheme: colorScheme,
+                l10n: l10n,
+                setNumber: i + 1,
+                set: s,
+                hasMaximalRef: hasMaximalRef,
+                resolvedMaximalKg: resolvedMaximalKg,
+                canRemove: details.length > 1 && onRemoveSet != null,
+                fixedColumns: scrollMode,
+                onEdit: onEditSet == null ? null : () => onEditSet!(i, s),
+                onRemove: onRemoveSet == null ? null : () => onRemoveSet!(i),
+              );
+            }),
+          ],
+        );
+
+        if (!scrollMode) return table;
+
+        return _HorizontallyScrollableWithEdgeFade(
+          key: const Key('session_set_table_scroll'),
+          minContentWidth: _setTableMinScrollWidth,
+          fadeColor: SessionExerciseEditorCard._cardBg,
+          child: table,
+        );
+      },
+    );
+  }
+}
+
+/// Horizontal scroll with optional left/right edge fades when content overflows.
+class _HorizontallyScrollableWithEdgeFade extends StatefulWidget {
+  const _HorizontallyScrollableWithEdgeFade({
+    super.key,
+    required this.child,
+    required this.minContentWidth,
+    required this.fadeColor,
+  });
+
+  final Widget child;
+  final double minContentWidth;
+  final Color fadeColor;
+
+  @override
+  State<_HorizontallyScrollableWithEdgeFade> createState() =>
+      _HorizontallyScrollableWithEdgeFadeState();
+}
+
+class _HorizontallyScrollableWithEdgeFadeState
+    extends State<_HorizontallyScrollableWithEdgeFade> {
+  final _controller = ScrollController();
+  var _showLeftFade = false;
+  var _showRightFade = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(_updateFades);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateFades());
+  }
+
+  @override
+  void dispose() {
+    _controller.removeListener(_updateFades);
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _updateFades() {
+    if (!_controller.hasClients) return;
+    final pos = _controller.position;
+    final showLeft = pos.pixels > 1;
+    final showRight = pos.pixels < pos.maxScrollExtent - 1;
+    if (showLeft != _showLeftFade || showRight != _showRightFade) {
+      setState(() {
+        _showLeftFade = showLeft;
+        _showRightFade = showRight;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        SingleChildScrollView(
+          controller: _controller,
+          scrollDirection: Axis.horizontal,
+          child: SizedBox(
+            width: widget.minContentWidth,
+            child: widget.child,
+          ),
+        ),
+        if (_showLeftFade)
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 20,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      widget.fadeColor,
+                      widget.fadeColor.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        if (_showRightFade)
+          Positioned(
+            right: 0,
+            top: 0,
+            bottom: 0,
+            width: 20,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                key: const Key('session_set_table_right_fade'),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      widget.fadeColor.withValues(alpha: 0),
+                      widget.fadeColor,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class _SetTableHeader extends StatelessWidget {
-  const _SetTableHeader({required this.theme, required this.l10n});
+  const _SetTableHeader({
+    required this.theme,
+    required this.l10n,
+    required this.fixedColumns,
+  });
 
   final ThemeData theme;
   final AppLocalizations l10n;
+  final bool fixedColumns;
 
   @override
   Widget build(BuildContext context) {
@@ -621,29 +808,31 @@ class _SetTableHeader extends StatelessWidget {
       fontWeight: FontWeight.w700,
       letterSpacing: 0.4,
     );
+    Widget cell(String label, {required double width, bool flex = false}) {
+      final text = FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(label, style: style),
+      );
+      if (fixedColumns || !flex) {
+        return SizedBox(width: width, child: text);
+      }
+      return Expanded(child: text);
+    }
+
     return Row(
       children: [
-        SizedBox(
-          width: _blockIndexColumnWidth,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(l10n.workoutSessionColSet, style: style),
-          ),
-        ),
-        Expanded(child: Text(l10n.workoutSessionColReps, style: style)),
-        Expanded(child: Text(l10n.workoutSessionColPercent, style: style)),
-        Expanded(child: Text(l10n.workoutSessionColLoad, style: style)),
-        Expanded(child: Text(l10n.workoutSessionColRpe, style: style)),
-        Expanded(child: Text(l10n.workoutSessionColNote, style: style)),
-        const SizedBox(width: 88),
+        cell(l10n.workoutSessionColSet, width: _blockIndexColumnWidth),
+        cell(l10n.workoutSessionColReps, width: _colRepsWidth, flex: true),
+        cell(l10n.workoutSessionColPercent, width: _colPercentWidth, flex: true),
+        cell(l10n.workoutSessionColLoad, width: _colLoadWidth, flex: true),
+        cell(l10n.workoutSessionColRpe, width: _colRpeWidth, flex: true),
+        cell(l10n.workoutSessionColNote, width: _colNoteWidth, flex: true),
+        const SizedBox(width: _colActionsWidth),
       ],
     );
   }
 }
-
-/// Wide enough for IT `BLOCCO` / EN `BLOCK` header labels.
-const double _blockIndexColumnWidth = 68;
 
 class _SetTableRow extends StatelessWidget {
   const _SetTableRow({
@@ -654,6 +843,7 @@ class _SetTableRow extends StatelessWidget {
     required this.set,
     required this.hasMaximalRef,
     required this.canRemove,
+    required this.fixedColumns,
     this.resolvedMaximalKg,
     this.onEdit,
     this.onRemove,
@@ -667,6 +857,7 @@ class _SetTableRow extends StatelessWidget {
   final bool hasMaximalRef;
   final double? resolvedMaximalKg;
   final bool canRemove;
+  final bool fixedColumns;
   final VoidCallback? onEdit;
   final VoidCallback? onRemove;
 
@@ -681,6 +872,17 @@ class _SetTableRow extends StatelessWidget {
       return '$blockSets×$reps';
     }
     return reps;
+  }
+
+  Widget _cell(
+    Widget child, {
+    required double width,
+    bool flex = false,
+  }) {
+    if (fixedColumns || !flex) {
+      return SizedBox(width: width, child: child);
+    }
+    return Expanded(child: child);
   }
 
   @override
@@ -705,50 +907,58 @@ class _SetTableRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(
-            width: _blockIndexColumnWidth,
-            child: Text(
+          _cell(
+            Text(
               '$setNumber',
               style: cellStyle?.copyWith(fontWeight: FontWeight.w700),
             ),
+            width: _blockIndexColumnWidth,
           ),
-          Expanded(child: Text(reps, style: cellStyle)),
-          Expanded(
-            child: Text(
+          _cell(Text(reps, style: cellStyle), width: _colRepsWidth, flex: true),
+          _cell(
+            Text(
               display.percentLabel,
               style: display.percentLabel == '—' ? muted : cellStyle,
             ),
+            width: _colPercentWidth,
+            flex: true,
           ),
-          Expanded(
-            child: Text(
+          _cell(
+            Text(
               display.loadLabel,
               style: display.loadLabel == '—' ? muted : cellStyle,
             ),
+            width: _colLoadWidth,
+            flex: true,
           ),
-          Expanded(
-            child: Text(
+          _cell(
+            Text(
               display.rpeLabel,
               style: display.rpeLabel == '—' ? muted : cellStyle,
             ),
+            width: _colRpeWidth,
+            flex: true,
           ),
-          Expanded(
-            child: Text(
+          _cell(
+            Text(
               note.isEmpty ? '—' : note,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: note.isEmpty ? muted : cellStyle,
             ),
+            width: _colNoteWidth,
+            flex: true,
           ),
           SizedBox(
-            width: 88,
+            width: _colActionsWidth,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 if (onEdit != null)
                   IconButton(
                     constraints: const BoxConstraints(
-                      minWidth: 40,
-                      minHeight: 40,
+                      minWidth: 44,
+                      minHeight: 44,
                     ),
                     padding: EdgeInsets.zero,
                     tooltip: l10n.workoutBuilderEditSetTitle,
@@ -758,8 +968,8 @@ class _SetTableRow extends StatelessWidget {
                 if (canRemove && onRemove != null)
                   IconButton(
                     constraints: const BoxConstraints(
-                      minWidth: 40,
-                      minHeight: 40,
+                      minWidth: 44,
+                      minHeight: 44,
                     ),
                     padding: EdgeInsets.zero,
                     tooltip: MaterialLocalizations.of(

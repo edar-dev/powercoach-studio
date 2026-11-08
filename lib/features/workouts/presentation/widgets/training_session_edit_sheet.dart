@@ -522,6 +522,9 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
     final metrics = SessionDayMetrics.fromDay(day);
     final showPreview =
         editorMode && (planId ?? '').isNotEmpty && !readOnly;
+    final pinBottomCtas = !isDesktop && !readOnly;
+    final close =
+        onClose ?? () => Navigator.of(context).maybePop();
 
     return ColoredBox(
       color: _SessionEditColors.backdrop,
@@ -560,8 +563,8 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                       customerName: customerName,
                       showHistory: editorMode && (planId ?? '').isNotEmpty,
                       showClone: onCloneDayToTarget != null && !readOnly,
-                      onClose:
-                          onClose ?? () => Navigator.of(context).maybePop(),
+                      showPrimaryActions: isDesktop,
+                      onClose: close,
                       onRename: readOnly ? null : onRenameDay,
                       onLogSession: readOnly || onLogSession == null
                           ? null
@@ -574,10 +577,8 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                               ),
                       onHistory: () => _openHistory(context),
                       onDelete: readOnly ? null : onDeleteDay,
-                      onCancel:
-                          onClose ?? () => Navigator.of(context).maybePop(),
-                      onSave:
-                          onClose ?? () => Navigator.of(context).maybePop(),
+                      onCancel: close,
+                      onSave: close,
                     ),
                     _SessionMetricsBar(
                       theme: theme,
@@ -593,6 +594,7 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                         dayIndex: dayIndex,
                         day: day,
                         sessionEditStyle: true,
+                        pinBottomCtas: pinBottomCtas,
                         athleteName: customerName,
                         customerId: widget.customerId,
                         readOnly: readOnly,
@@ -613,13 +615,20 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                         onAssignToSuperset: onAssignToSuperset,
                         onRemoveFromSuperset: onRemoveFromSuperset,
                         onAddExerciseToSuperset: onAddExerciseToSuperset,
-                                ),
+                      ),
                     ),
                     _SessionEditFooter(
                       theme: theme,
                       l10n: l10n,
                       showAthletePreview: showPreview,
                       onAthletePreview: () => _openAthletePreview(context),
+                      stickyPhoneActions: pinBottomCtas,
+                      hasExercises: day.exercises.isNotEmpty,
+                      onSave: close,
+                      onAddFromLibrary: readOnly
+                          ? null
+                          : () => _openLibraryPicker(context),
+                      onCreateSuperset: readOnly ? null : _createSuperset,
                     ),
                   ],
                 ),
@@ -644,6 +653,7 @@ class _SessionEditHeader extends StatelessWidget {
     this.customerName,
     required this.showHistory,
     required this.showClone,
+    this.showPrimaryActions = true,
     required this.onClose,
     this.onRename,
     this.onLogSession,
@@ -664,6 +674,8 @@ class _SessionEditHeader extends StatelessWidget {
   final String? customerName;
   final bool showHistory;
   final bool showClone;
+  /// When false (phone sticky footer), omit Cancel / Salva from the header Wrap.
+  final bool showPrimaryActions;
   final VoidCallback onClose;
   final VoidCallback? onRename;
   final VoidCallback? onLogSession;
@@ -864,7 +876,7 @@ class _SessionEditHeader extends StatelessWidget {
                             ],
                           ),
                         ),
-                      if (!readOnly) ...[
+                      if (!readOnly && showPrimaryActions) ...[
                         TextButton(
                           onPressed: onCancel,
                           child: Text(l10n.workoutEditorCancel),
@@ -1029,46 +1041,91 @@ class _SessionEditFooter extends StatelessWidget {
     required this.l10n,
     required this.showAthletePreview,
     required this.onAthletePreview,
+    this.stickyPhoneActions = false,
+    this.hasExercises = false,
+    this.onSave,
+    this.onAddFromLibrary,
+    this.onCreateSuperset,
   });
 
   final ThemeData theme;
   final AppLocalizations l10n;
   final bool showAthletePreview;
   final VoidCallback onAthletePreview;
+  final bool stickyPhoneActions;
+  final bool hasExercises;
+  final VoidCallback? onSave;
+  final VoidCallback? onAddFromLibrary;
+  final VoidCallback? onCreateSuperset;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: const BoxDecoration(
-        color: _SessionEditColors.footer,
-        border: Border(top: BorderSide(color: _SessionEditColors.border)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 8,
-            height: 8,
-            decoration: const BoxDecoration(
-              color: Color(0xFF34D399),
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              l10n.workoutSessionAutosaveActive,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: const Color(0xFF94A3B8),
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final showStickyCtas = stickyPhoneActions &&
+        hasExercises &&
+        (onAddFromLibrary != null || onCreateSuperset != null);
+
+    return Material(
+      color: _SessionEditColors.footer,
+      child: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: _SessionEditColors.border)),
+        ),
+        padding: EdgeInsets.fromLTRB(16, 10, 16, 10 + bottomInset),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (stickyPhoneActions && onSave != null) ...[
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: onSave,
+                  icon: const Icon(Icons.check, size: 18),
+                  label: Text(l10n.workoutSessionSaveChanges),
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size(0, 48),
+                  ),
+                ),
               ),
+              if (showStickyCtas) ...[
+                const SizedBox(height: 10),
+                SessionDayBottomCtas(
+                  l10n: l10n,
+                  onAddFromLibrary: onAddFromLibrary,
+                  onCreateSuperset: onCreateSuperset,
+                ),
+              ],
+              const SizedBox(height: 10),
+            ],
+            Row(
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF34D399),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    l10n.workoutSessionAutosaveActive,
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      color: const Color(0xFF94A3B8),
+                    ),
+                  ),
+                ),
+                if (showAthletePreview)
+                  TextButton(
+                    onPressed: onAthletePreview,
+                    child: Text(l10n.workoutSessionAthletePreview),
+                  ),
+              ],
             ),
-          ),
-          if (showAthletePreview)
-            TextButton(
-              onPressed: onAthletePreview,
-              child: Text(l10n.workoutSessionAthletePreview),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -296,8 +296,8 @@ class StitchM3Theme {
         backgroundColor: bgDark,
         elevation: 0,
         height: 64,
-        // Stitch mobile selected pill: solid accent circle behind icon.
-        indicatorColor: accent,
+        // Match dark rail: quiet indicator, accent icon/label (not white-on-solid).
+        indicatorColor: const Color(0xFF1E3A5F),
         indicatorShape: const CircleBorder(),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
@@ -305,14 +305,14 @@ class StitchM3Theme {
           return TextStyle(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-            color: selected ? Colors.white : onSurfaceVariantDark,
+            color: selected ? accent : onSurfaceVariantDark,
           );
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           final selected = states.contains(WidgetState.selected);
           return IconThemeData(
             size: 22,
-            color: selected ? Colors.white : onSurfaceVariantDark,
+            color: selected ? accent : onSurfaceVariantDark,
           );
         }),
       ),

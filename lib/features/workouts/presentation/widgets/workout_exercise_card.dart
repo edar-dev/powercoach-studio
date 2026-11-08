@@ -152,49 +152,52 @@ class WorkoutExerciseCard extends StatelessWidget {
                 child: InkWell(
                   onTap: () => onExpandedChanged(!expanded),
                   borderRadius: BorderRadius.circular(8),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            exercise.name,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onSurface,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (linked) ...[
-                          const SizedBox(width: 6),
-                          const Icon(
-                            Icons.link,
-                            size: 16,
-                            color: StitchM3Theme.accent,
-                          ),
-                        ],
-                        if (!expanded) ...[
-                          const SizedBox(width: 12),
-                          ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 160),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 44),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Row(
+                        children: [
+                          Flexible(
                             child: Text(
-                              prescription,
-                              textAlign: TextAlign.end,
-                              maxLines: 1,
+                              exercise.name,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.onSurface,
+                              ),
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: secondaryColor,
-                                fontStyle: isPlaceholder
-                                    ? FontStyle.italic
-                                    : FontStyle.normal,
-                                fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          if (linked) ...[
+                            const SizedBox(width: 6),
+                            const Icon(
+                              Icons.link,
+                              size: 16,
+                              color: StitchM3Theme.accent,
+                            ),
+                          ],
+                          if (!expanded) ...[
+                            const SizedBox(width: 12),
+                            ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 160),
+                              child: Text(
+                                prescription,
+                                textAlign: TextAlign.end,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: secondaryColor,
+                                  fontStyle: isPlaceholder
+                                      ? FontStyle.italic
+                                      : FontStyle.normal,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),

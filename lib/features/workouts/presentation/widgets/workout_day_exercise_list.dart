@@ -27,6 +27,7 @@ class WorkoutDayExerciseList extends StatefulWidget {
     this.onAddExercise,
     this.onCreateSuperset,
     this.sessionEditStyle = false,
+    this.pinBottomCtas = false,
     this.athleteName,
     this.customerId,
     this.readOnly = false,
@@ -56,6 +57,11 @@ class WorkoutDayExerciseList extends StatefulWidget {
 
   /// When true, renders Stitch session cards + dual bottom CTAs.
   final bool sessionEditStyle;
+
+  /// When true with [sessionEditStyle], omit trailing CTAs from the scroll
+  /// sliver so a parent sticky footer can own them. Empty-state CTAs stay
+  /// visible in the empty body.
+  final bool pinBottomCtas;
   final String? athleteName;
 
   /// Customer id for Massimali resolve in set editors (null in sandbox).
@@ -149,6 +155,10 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         day.exercises.isNotEmpty && widget.onAddExercise != null;
     final showSessionCtas = widget.sessionEditStyle &&
         (widget.onAddExercise != null || widget.onCreateSuperset != null);
+    // Pinning moves non-empty trailing CTAs to a sticky footer; empty body
+    // keeps CTAs in-place so the empty state stays actionable.
+    final showInScrollSessionCtas =
+        showSessionCtas && !widget.pinBottomCtas;
 
     if (day.exercises.isEmpty) {
       return Align(
@@ -173,7 +183,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
               ),
               const SizedBox(height: 16),
               if (widget.sessionEditStyle && showSessionCtas)
-                _SessionBottomCtas(
+                SessionDayBottomCtas(
                   l10n: l10n,
                   onAddFromLibrary: widget.onAddExercise == null
                       ? null
@@ -203,7 +213,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final allSupersetOptions = getSupersetGroupOptions(day);
 
     final trailingCount = widget.sessionEditStyle
-        ? (showSessionCtas ? 1 : 0)
+        ? (showInScrollSessionCtas ? 1 : 0)
         : (showTrailingAdd ? 1 : 0);
 
     return RepaintBoundary(
@@ -218,7 +228,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                     if (widget.sessionEditStyle) {
                       return Padding(
                         padding: const EdgeInsets.only(top: 8),
-                        child: _SessionBottomCtas(
+                        child: SessionDayBottomCtas(
                           l10n: l10n,
                           onAddFromLibrary: widget.onAddExercise == null
                               ? null
@@ -474,8 +484,10 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
   }
 }
 
-class _SessionBottomCtas extends StatelessWidget {
-  const _SessionBottomCtas({
+/// Dual day CTAs shared by the in-scroll trailing row and sticky phone footer.
+class SessionDayBottomCtas extends StatelessWidget {
+  const SessionDayBottomCtas({
+    super.key,
     required this.l10n,
     this.onAddFromLibrary,
     this.onCreateSuperset,
