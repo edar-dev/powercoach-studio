@@ -33,14 +33,20 @@ class _ConnectivityStatusChipState extends State<ConnectivityStatusChip>
   Timer? _timer;
   int _refreshToken = 0;
 
+  static const bool _inFlutterTest =
+      bool.fromEnvironment('FLUTTER_TEST');
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     unawaited(_refresh());
-    _timer = Timer.periodic(widget.pollInterval, (_) {
-      unawaited(_refresh());
-    });
+    // Skip periodic polling under widget tests — FakeTimers would leak.
+    if (!_inFlutterTest) {
+      _timer = Timer.periodic(widget.pollInterval, (_) {
+        unawaited(_refresh());
+      });
+    }
   }
 
   @override
@@ -59,9 +65,15 @@ class _ConnectivityStatusChipState extends State<ConnectivityStatusChip>
 
   Future<void> _refresh() async {
     final token = ++_refreshToken;
-    final online = widget.isOnlineOverride != null
-        ? widget.isOnlineOverride!()
-        : await probeNetworkReachability();
+    final bool online;
+    if (widget.isOnlineOverride != null) {
+      online = widget.isOnlineOverride!();
+    } else if (_inFlutterTest) {
+      // Avoid InternetAddress.lookup / orphan Timers in widget tests.
+      online = true;
+    } else {
+      online = await probeNetworkReachability();
+    }
     if (!mounted || token != _refreshToken) return;
     if (online != _online) {
       setState(() => _online = online);
