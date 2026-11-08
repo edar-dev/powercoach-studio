@@ -896,7 +896,7 @@
   "pdfBrandName": "PowerCoach Studio",
   "pdfCoachPrefix": "Coach:",
   "pdfColExercise": "Esercizio",
-  "pdfColSets": "Ser.",
+  "pdfColSets": "Serie",
   "pdfColReps": "Rip.",
   "pdfColLoadRpe": "Carico",
   "pdfColNotes": "Note",
@@ -1933,8 +1933,8 @@
   "sessionLogExercisesLabel": "Esercizi eseguiti",
   "sessionLogSetReps": "Reps",
   "sessionLogSetLoad": "Carico",
-  "sessionLogAddSet": "Aggiungi set",
-  "sessionLogSetLabel": "Set {number}",
+  "sessionLogAddSet": "Aggiungi serie",
+  "sessionLogSetLabel": "Serie {number}",
   "@sessionLogSetLabel": {
     "placeholders": {
       "number": {
@@ -1942,8 +1942,8 @@
       }
     }
   },
-  "sessionLogExpandSets": "Mostra set",
-  "sessionLogCollapseSets": "Nascondi set",
+  "sessionLogExpandSets": "Mostra serie",
+  "sessionLogCollapseSets": "Nascondi serie",
   "customerProgressTitle": "Progresso allenamento",
   "customerProgressAdherence": "Aderenza (30 giorni)",
   "customerProgressLastSession": "Ultima sessione",
@@ -2107,6 +2107,7 @@
     }
   },
   "maximalLabel": "Massimale",
+  "maximalHeaderEmpty": "Nessun massimale",
   "maximalHeaderWithKg": "Massimale: {kg} kg",
   "@maximalHeaderWithKg": {
     "placeholders": {

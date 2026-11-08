@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../domain/collapsed_prescription_summary.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/maximal_ref.dart';
 import '../../data/workout_routine_model.dart';
@@ -114,19 +115,12 @@ class WorkoutExerciseCard extends StatelessWidget {
       exercise.effectiveSetDetails.any((s) => s.note.trim().isNotEmpty);
 
   String _prescriptionLabel(AppLocalizations l10n) {
-    final details = exercise.effectiveSetDetails;
-    final texts = details
-        .map((s) => s.displayText.trim())
-        .where((t) => t.isNotEmpty)
-        .toList();
-    if (texts.isEmpty) {
+    final summary =
+        collapsedPrescriptionSummary(exercise.effectiveSetDetails);
+    if (summary.isEmpty) {
       return l10n.workoutBuilderPrescriptionPlaceholder;
     }
-    // Bare set count without reps (e.g. "1") is not a useful prescription.
-    if (texts.length == 1 && RegExp(r'^\d+$').hasMatch(texts.first)) {
-      return l10n.workoutBuilderPrescriptionPlaceholder;
-    }
-    return texts.join(' · ');
+    return summary;
   }
 
   @override
@@ -327,9 +321,11 @@ class WorkoutExerciseCard extends StatelessWidget {
                 ...details.asMap().entries.map((entry) {
                   final i = entry.key;
                   final s = entry.value;
-                  final setLabel = s.displayText.trim().isEmpty
+                  final formatted =
+                      collapsedPrescriptionSummary([s]);
+                  final setLabel = formatted.isEmpty
                       ? l10n.workoutBuilderPrescriptionPlaceholder
-                      : s.displayText;
+                      : formatted;
                   final setNote = s.note.trim();
                   return Padding(
                     padding: EdgeInsets.only(

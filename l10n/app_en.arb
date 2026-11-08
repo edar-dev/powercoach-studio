@@ -2148,6 +2148,7 @@
     }
   },
   "maximalLabel": "Maximal",
+  "maximalHeaderEmpty": "No maximal linked",
   "maximalHeaderWithKg": "Maximal: {kg} kg",
   "@maximalHeaderWithKg": {
     "placeholders": {

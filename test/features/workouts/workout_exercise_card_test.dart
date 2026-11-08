@@ -59,8 +59,8 @@ void main() {
 
       expect(find.text('Fermo 2"'), findsOneWidget);
       expect(find.text('Aggiungi nota…'), findsNothing);
-      // Expanded: header prescription hidden; set row still shows it.
-      expect(find.text('3x5 @9'), findsOneWidget);
+      // Expanded: header prescription hidden; set row uses × summary.
+      expect(find.text('3×5 @9'), findsOneWidget);
     },
   );
 
@@ -97,13 +97,14 @@ void main() {
         ),
       );
 
-      expect(find.text('3x5 @9'), findsOneWidget);
+      // Collapsed header uses × from collapsedPrescriptionSummary.
+      expect(find.text('3×5 @9'), findsOneWidget);
 
       await tester.tap(find.text('Good Morning'));
       await tester.pump();
       expect(expanded, isTrue);
-      // Still one: set row only (header prescription hidden).
-      expect(find.text('3x5 @9'), findsOneWidget);
+      // Header hidden; expanded set row keeps the same × summary (one match).
+      expect(find.text('3×5 @9'), findsOneWidget);
       expect(find.text('Aggiungi nota…'), findsOneWidget);
     },
   );

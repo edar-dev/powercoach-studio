@@ -39,4 +39,40 @@ void main() {
     expect(synced.reps, contains('3x8'));
     expect(synced.rpe, '');
   });
+
+  test('totalSetsFromDetails sums physical block sizes', () {
+    const details = [
+      ExerciseSet(sets: '3', reps: '5'),
+      ExerciseSet(sets: '4', reps: '8'),
+    ];
+    expect(ExerciseSummarySync.totalSetsFromDetails(details), 7);
+  });
+
+  test('totalSetsFromExercises sums physical sets not row count', () {
+    const exercises = [
+      Exercise(
+        id: 'e1',
+        name: 'Bench',
+        sets: '1',
+        reps: '',
+        rpe: '',
+        setDetails: [
+          ExerciseSet(sets: '3', reps: '5'),
+          ExerciseSet(sets: '4', reps: '8'),
+        ],
+      ),
+      Exercise(
+        id: 'e2',
+        name: 'Squat',
+        sets: '1',
+        reps: '',
+        rpe: '',
+        setDetails: [
+          ExerciseSet(sets: '2', reps: '3'),
+        ],
+      ),
+    ];
+    // Physical sum: 3+4+2 = 9 (not row count 3).
+    expect(ExerciseSummarySync.totalSetsFromExercises(exercises), 9);
+  });
 }
