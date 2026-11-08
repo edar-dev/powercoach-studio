@@ -13,6 +13,8 @@ import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/app_snackbar.dart';
+import '../../../../core/ui/widgets/inline_error_banner.dart';
+import '../../../../core/ui/widgets/list_skeleton.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -299,58 +301,21 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       ),
       body: SafeArea(
         child: _loading
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: phone
-                      ? StitchMobileColors.primary
-                      : MarketingDarkColors.cyanBright,
-                ),
-              )
+            ? const CardListSkeleton(rowCount: 5)
             : _loadError != null
             ? Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: phone
-                            ? StitchMobileColors.error
-                            : const Color(0xFFFB7185),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        _loadError!,
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          color: phone
-                              ? StitchMobileColors.onSurfaceVariant
-                              : MarketingDarkColors.slate400,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      FilledButton(
-                        style: FilledButton.styleFrom(
-                          backgroundColor: phone
-                              ? StitchMobileColors.primaryContainer
-                              : MarketingDarkColors.cyanBright,
-                          foregroundColor: phone
-                              ? StitchMobileColors.onPrimaryContainer
-                              : MarketingDarkColors.cyanOn,
-                        ),
-                        onPressed: () => _load(reset: true),
-                        child: Text(l10n.customersRetry),
-                      ),
-                    ],
-                  ),
+                child: InlineErrorBanner(
+                  message: _loadError!,
+                  onRetry: () => _load(reset: true),
+                  retryLabel: l10n.customersRetry,
                 ),
               )
             : RefreshIndicator(
                 color: Theme.of(context).colorScheme.primary,
                 onRefresh: () => _load(reset: true),
                 child: CustomScrollView(
+                  key: const PageStorageKey<String>('workout-diary-scroll'),
+                  restorationId: 'workout-diary-scroll',
                   controller: _scrollController,
                   physics: const AlwaysScrollableScrollPhysics(),
                   slivers: [
@@ -489,21 +454,18 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                         ),
                       )
                     else
-                      SliverPadding(
+                      ...WorkoutDiaryTimeline.buildSlivers(
+                        context: context,
+                        groups: groups,
+                        dateFormat: dateFormat,
+                        customerNameOf: _customerName,
+                        onOpenEntry: _openEntry,
+                        loadingMore: _loadingMore,
                         padding: EdgeInsets.fromLTRB(
                           StitchMobileColors.marginMobile,
                           phone ? 12 : 14,
                           StitchMobileColors.marginMobile,
                           phone ? 32 : 24,
-                        ),
-                        sliver: SliverToBoxAdapter(
-                          child: WorkoutDiaryTimeline(
-                            groups: groups,
-                            dateFormat: dateFormat,
-                            customerNameOf: _customerName,
-                            onOpenEntry: _openEntry,
-                            loadingMore: _loadingMore,
-                          ),
                         ),
                       ),
                   ],

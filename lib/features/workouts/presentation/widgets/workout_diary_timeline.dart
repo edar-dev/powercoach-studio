@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/pinned_section_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../domain/session_execution_service.dart';
@@ -13,7 +14,8 @@ import 'workout_diary_session_card.dart';
 /// Date-grouped timeline list for diary entries.
 ///
 /// On tablet+ uses a compact history table (Date / Athlete / Status / Volume /
-/// RPE) instead of large cards.
+/// RPE) instead of large cards. Prefer [buildSlivers] inside a
+/// [CustomScrollView] so day labels can pin on phone.
 class WorkoutDiaryTimeline extends StatelessWidget {
   const WorkoutDiaryTimeline({
     super.key,
@@ -34,8 +36,171 @@ class WorkoutDiaryTimeline extends StatelessWidget {
   /// When null, defaults to compact table on tablet+.
   final bool? compactTable;
 
+  /// Builds pinned day headers + session cards as CustomScrollView slivers.
+  static List<Widget> buildSlivers({
+    required BuildContext context,
+    required List<MapEntry<DateTime, List<SessionExecutionEntry>>> groups,
+    required DateFormat dateFormat,
+    required String Function(String customerId) customerNameOf,
+    required ValueChanged<SessionExecutionEntry> onOpenEntry,
+    required bool loadingMore,
+    bool? compactTable,
+    EdgeInsets padding = EdgeInsets.zero,
+  }) {
+    final phone = !Breakpoints.isTabletOrWider(context);
+    final useTable = compactTable ?? !phone;
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context);
+    final today = DateUtils.dateOnly(DateTime.now());
+
+    if (useTable && !phone) {
+      return [
+        SliverPadding(
+          padding: padding,
+          sliver: SliverToBoxAdapter(
+            child: _DesktopTable(
+              groups: groups,
+              dateFormat: dateFormat,
+              customerNameOf: customerNameOf,
+              onOpenEntry: onOpenEntry,
+              loadingMore: loadingMore,
+              theme: theme,
+              l10n: l10n,
+            ),
+          ),
+        ),
+      ];
+    }
+
+    final slivers = <Widget>[];
+    if (padding.top > 0) {
+      slivers.add(SliverToBoxAdapter(child: SizedBox(height: padding.top)));
+    }
+
+    for (var i = 0; i < groups.length; i++) {
+      final group = groups[i];
+      final day = DateUtils.dateOnly(group.key);
+      final isToday = day == today;
+
+      final Widget headerChild;
+      if (phone) {
+        final label = isToday
+            ? '${l10n.calendarToday} · ${DateFormat('d MMMM', l10n.localeName).format(group.key)}'
+            : dateFormat.format(group.key);
+        headerChild = Padding(
+          padding: EdgeInsets.only(top: i == 0 ? 0 : 4, bottom: 4),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: StitchMobileColors.onSurface,
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        );
+      } else {
+        headerChild = Padding(
+          padding: EdgeInsets.only(top: i == 0 ? 0 : 6, bottom: 8),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: MarketingDarkColors.surface800.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: MarketingDarkColors.stitchBorderMuted.withValues(
+                      alpha: 0.6,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  dateFormat.format(group.key).toUpperCase(),
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: MarketingDarkColors.slate400,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Divider(
+                  color: MarketingDarkColors.stitchBorder,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
+      slivers.add(
+        SliverPadding(
+          padding: EdgeInsets.only(left: padding.left, right: padding.right),
+          sliver: PinnedSectionHeader(
+            height: phone ? 36 : 40,
+            backgroundColor: phone
+                ? StitchMobileColors.surface
+                : MarketingDarkColors.bg,
+            child: headerChild,
+          ),
+        ),
+      );
+
+      slivers.add(
+        SliverPadding(
+          padding: EdgeInsets.only(left: padding.left, right: padding.right),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final entry = group.value[index];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: WorkoutDiarySessionCard(
+                    entry: entry,
+                    customerName: customerNameOf(entry.customerId),
+                    onTap: () => onOpenEntry(entry),
+                  ),
+                );
+              },
+              childCount: group.value.length,
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (loadingMore) {
+      slivers.add(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: phone
+                    ? StitchMobileColors.primary
+                    : MarketingDarkColors.cyanBright,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (padding.bottom > 0) {
+      slivers.add(SliverToBoxAdapter(child: SizedBox(height: padding.bottom)));
+    }
+
+    return slivers;
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Fallback for non-sliver call sites: render as a column (no pin).
     final phone = !Breakpoints.isTabletOrWider(context);
     final useTable = compactTable ?? !phone;
     final theme = Theme.of(context);

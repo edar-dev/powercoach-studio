@@ -9173,6 +9173,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Privacy policy'**
   String get analyticsConsentPrivacyLink;
+
+  /// No description provided for @connectivityOffline.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline'**
+  String get connectivityOffline;
+
+  /// No description provided for @connectivityOnline.
+  ///
+  /// In en, this message translates to:
+  /// **'Online'**
+  String get connectivityOnline;
 }
 
 class _AppLocalizationsDelegate

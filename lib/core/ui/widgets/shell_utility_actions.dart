@@ -8,6 +8,7 @@ import '../../routing/app_paths.dart';
 import '../../theme/stitch_m3_theme.dart';
 import '../../../features/auth/data/local_coach_profile_repository.dart';
 import '../../../l10n/app_localizations.dart';
+import 'connectivity_status_chip.dart';
 
 String _shellProfileInitials(String name) {
   final parts = name
@@ -138,6 +139,7 @@ class _ShellUtilityActionsState extends State<ShellUtilityActions> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        ConnectivityStatusChip(dense: widget.dense),
         IconButton(
           tooltip: l10n.shellHelpTooltip,
           icon: const Icon(Icons.help_outline),

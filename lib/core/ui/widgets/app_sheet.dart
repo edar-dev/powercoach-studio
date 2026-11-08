@@ -179,6 +179,54 @@ Future<bool> showAppConfirmDialog({
   final theme = Theme.of(context);
   final cs = theme.colorScheme;
 
+  // Phone: thumb-friendly bottom sheet with full-width confirm.
+  if (!AppBreakpoints.isTabletOrWider(context)) {
+    final confirmed = await showAppBottomSheet<bool>(
+      context: context,
+      title: title,
+      wrapContent: true,
+      bodyBuilder: (sheetContext) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              message,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: FilledButton(
+                onPressed: () => Navigator.of(sheetContext).pop(true),
+                style: destructive
+                    ? FilledButton.styleFrom(
+                        backgroundColor: cs.error,
+                        foregroundColor: cs.onError,
+                      )
+                    : null,
+                child: Text(confirmLabel),
+              ),
+            ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              height: 44,
+              child: TextButton(
+                onPressed: () => Navigator.of(sheetContext).pop(false),
+                child: Text(cancelLabel),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    return confirmed ?? false;
+  }
+
   final confirmed = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../core/ui/widgets/app_search_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/exercise_library_muscle_filter.dart';
 import '../../domain/exercise_library_tree_helpers.dart';
@@ -81,14 +82,18 @@ class _ExerciseLibraryToolbarState extends State<ExerciseLibraryToolbar> {
           Row(
             children: [
               Expanded(
-                child: TextField(
+                child: AppSearchTextField(
                   controller: _searchController,
-                  onChanged: widget.onSearchChanged,
+                  onChanged: (value) {
+                    setState(() {});
+                    widget.onSearchChanged(value);
+                  },
                   style: const TextStyle(
                     color: MarketingDarkColors.text,
                     fontSize: 13,
                   ),
                   cursorColor: MarketingDarkColors.brandLight,
+                  clearIconColor: MarketingDarkColors.slate500,
                   decoration: InputDecoration(
                     isDense: true,
                     hintText: l10n.exerciseLibrarySearchDenseHint,

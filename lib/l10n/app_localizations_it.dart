@@ -5151,4 +5151,10 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get analyticsConsentPrivacyLink => 'Informativa privacy';
+
+  @override
+  String get connectivityOffline => 'Offline';
+
+  @override
+  String get connectivityOnline => 'Online';
 }

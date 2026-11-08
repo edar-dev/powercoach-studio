@@ -78,7 +78,7 @@ class _PhoneCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(StitchMobileColors.radiusXl),
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -124,7 +124,7 @@ class _PhoneCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 4),
               Tooltip(
                 message: title,
                 child: Text(
@@ -139,7 +139,7 @@ class _PhoneCard extends StatelessWidget {
                 ),
               ),
               if (!isSkipped) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,

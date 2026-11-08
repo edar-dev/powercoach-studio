@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/widgets/app_snackbar.dart';
+import '../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../workouts/data/workout_plan_repository.dart';
 import '../../workouts/data/workout_routine_model.dart';
@@ -102,11 +104,9 @@ class TodaySessionLogHandler {
       );
       if (!context.mounted) return false;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutBuilderLogSessionSuccess),
-          behavior: SnackBarBehavior.floating,
-        ),
+      showCloudSaveSuccessSnackBar(
+        context,
+        message: l10n.workoutBuilderLogSessionSuccess,
       );
       return true;
     } catch (_) {
@@ -117,12 +117,15 @@ class TodaySessionLogHandler {
   }
 
   void _showError(BuildContext context, AppLocalizations l10n) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(l10n.calendarUpdateError),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+    final colorScheme = Theme.of(context).colorScheme;
+    showAppSnackBar(
+      context,
+      content: Text(
+        l10n.calendarUpdateError,
+        style: TextStyle(color: colorScheme.onErrorContainer),
       ),
+      backgroundColor: colorScheme.errorContainer,
+      persistUntilDismissed: true,
     );
   }
 }

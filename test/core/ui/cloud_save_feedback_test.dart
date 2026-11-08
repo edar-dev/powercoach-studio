@@ -46,6 +46,9 @@ void main() {
 
       final l10n = await AppLocalizations.delegate.load(const Locale('en'));
       expect(find.text(l10n.cloudSaveRequiresNetwork), findsOneWidget);
+
+      final snack = tester.widget<SnackBar>(find.byType(SnackBar));
+      expect(snack.duration, const Duration(days: 1));
     },
   );
 
@@ -70,5 +73,8 @@ void main() {
 
     final l10n = await AppLocalizations.delegate.load(const Locale('en'));
     expect(find.text(l10n.cloudSaveSucceeded), findsOneWidget);
+
+    final snack = tester.widget<SnackBar>(find.byType(SnackBar));
+    expect(snack.duration, const Duration(seconds: 2));
   });
 }

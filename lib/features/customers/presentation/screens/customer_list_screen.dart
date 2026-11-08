@@ -9,6 +9,7 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/ui/haptics.dart';
+import '../../../../core/ui/widgets/list_skeleton.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../data/customer_repository.dart';
@@ -148,16 +149,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               color: Theme.of(context).colorScheme.primary,
               backgroundColor: MarketingDarkColors.surface,
               child: _loading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: MarketingDarkColors.brandLight,
-                      ),
-                    )
+                  ? const ListSkeleton()
                   : _error != null
                       ? CustomerListErrorBody(
                           l10n: l10n,
-                          theme: theme,
-                          colorScheme: colorScheme,
                           error: _error,
                           onRetry: _load,
                         )

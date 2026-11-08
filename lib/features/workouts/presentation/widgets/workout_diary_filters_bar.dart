@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/horizontal_fade_scroller.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/models/customer.dart';
 import '../../domain/workout_diary_filter.dart';
@@ -124,10 +125,9 @@ class _PhoneFilters extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        SizedBox(
+        HorizontalFadeScroller(
           height: 32,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
+          child: Row(
             children: [
               _PhoneDatePill(
                 label: l10n.coachStatsPeriod30d,
@@ -150,10 +150,9 @@ class _PhoneFilters extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        SizedBox(
+        HorizontalFadeScroller(
           height: 28,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
+          child: Row(
             children: [
               _PhoneStatusChip(
                 label: l10n.workoutDiaryFilterStatusAllShort,
