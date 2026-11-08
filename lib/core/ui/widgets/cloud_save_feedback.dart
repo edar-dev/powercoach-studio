@@ -29,6 +29,7 @@ void showCloudSaveErrorSnackBar(
       style: TextStyle(color: colorScheme.onErrorContainer),
     ),
     backgroundColor: colorScheme.errorContainer,
+    persistUntilDismissed: true,
     action: onRetry == null
         ? null
         : SnackBarAction(
@@ -54,6 +55,7 @@ void showCloudSaveSuccessSnackBar(
       style: TextStyle(color: colorScheme.onPrimaryContainer),
     ),
     backgroundColor: colorScheme.primaryContainer,
+    duration: const Duration(seconds: 2),
   );
 }
 

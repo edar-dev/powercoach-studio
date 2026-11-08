@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/hub_chrome.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
+import 'package:powercoach_studio/core/ui/widgets/list_skeleton.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_lazy_tab.dart';
@@ -185,7 +186,7 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           onLogSessionUnavailable: onLogSessionUnavailable,
         ),
         body: loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const ListSkeleton(rowCount: 8)
             : Column(
                 children: [
                   if (sandboxBanner != null) sandboxBanner!,

@@ -2447,5 +2447,7 @@
   "analyticsConsentBody": "We use PostHog (EU) to understand how the web app is used and to improve it. Text and form inputs are masked. You can decline; the app still works.",
   "analyticsConsentAccept": "Accept",
   "analyticsConsentDecline": "Decline",
-  "analyticsConsentPrivacyLink": "Privacy policy"
+  "analyticsConsentPrivacyLink": "Privacy policy",
+  "connectivityOffline": "Offline",
+  "connectivityOnline": "Online"
 }

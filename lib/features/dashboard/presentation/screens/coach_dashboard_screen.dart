@@ -10,6 +10,8 @@ import '../../../../core/data_quality/data_quality.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/inline_error_banner.dart';
+import '../../../../core/ui/widgets/list_skeleton.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -29,7 +31,6 @@ import '../widgets/dashboard_section_header.dart';
 import '../widgets/dashboard_shortcuts_section.dart';
 import '../widgets/dashboard_stale_plans_section.dart';
 import '../widgets/dashboard_summary_footer.dart';
-import '../widgets/dashboard_surface_card.dart';
 import '../widgets/dashboard_today_section.dart';
 import '../widgets/post_invite_onboarding_card.dart';
 
@@ -218,28 +219,17 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
               const BackupReminderBanner(),
               PostInviteOnboardingCard(snapshot: snap),
               if (_loading && snap == null)
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 48),
-                  child: Center(child: CircularProgressIndicator()),
+                const SizedBox(
+                  height: 280,
+                  child: ListSkeleton(rowCount: 5, padding: EdgeInsets.zero),
                 )
               else ...[
                 if (snap != null && snap.hasError) ...[
-                  DashboardSurfaceCard(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(Icons.error_outline, color: cs.error, size: 28),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            l10n.dashboardLoadError,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: cs.onSurface,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  InlineErrorBanner(
+                    message: l10n.dashboardLoadError,
+                    onRetry: _loadStats,
+                    retryLabel: l10n.customersRetry,
+                    margin: EdgeInsets.zero,
                   ),
                   SizedBox(height: sectionGap),
                 ],

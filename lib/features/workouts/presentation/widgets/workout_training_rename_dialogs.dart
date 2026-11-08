@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 
@@ -41,6 +42,33 @@ Future<String?> showDuplicateWeekDialog(
   final l10n = AppLocalizations.of(context);
   final controller = TextEditingController(text: defaultName);
   try {
+    if (!AppBreakpoints.isTabletOrWider(context)) {
+      return showAppBottomSheet<String>(
+        context: context,
+        title: l10n.workoutBuilderDuplicateWeekTitle,
+        wrapContent: true,
+        bodyBuilder: (sheetContext) => TextField(
+          controller: controller,
+          decoration: InputDecoration(
+            labelText: l10n.workoutBuilderDuplicateWeekHint,
+          ),
+          autofocus: true,
+          textInputAction: TextInputAction.done,
+          onSubmitted: (_) {
+            final trimmed = controller.text.trim();
+            if (trimmed.isEmpty) return;
+            Navigator.of(sheetContext).pop(trimmed);
+          },
+        ),
+        primaryActionLabel: l10n.workoutBuilderDuplicateWeek,
+        onPrimaryAction: () {
+          final trimmed = controller.text.trim();
+          if (trimmed.isEmpty) return;
+          Navigator.of(context).pop(trimmed);
+        },
+      );
+    }
+
     return showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(

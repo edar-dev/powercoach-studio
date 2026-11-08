@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_search_field.dart';
+import 'package:powercoach_studio/core/ui/widgets/horizontal_fade_scroller.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/models/customer.dart';
@@ -82,14 +84,18 @@ class _CustomerListToolbarState extends State<CustomerListToolbar> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: TextField(
+                child: AppSearchTextField(
                   controller: _searchController,
-                  onChanged: widget.onSearchChanged,
+                  onChanged: (value) {
+                    setState(() {});
+                    widget.onSearchChanged(value);
+                  },
                   style: const TextStyle(
                     color: MarketingDarkColors.text,
                     fontSize: 13,
                   ),
                   cursorColor: MarketingDarkColors.brandLight,
+                  clearIconColor: MarketingDarkColors.slate500,
                   decoration: InputDecoration(
                     isDense: true,
                     hintText: l10n.customersSearchHint,
@@ -164,13 +170,11 @@ class _CustomerListToolbarState extends State<CustomerListToolbar> {
             ],
           ),
           const SizedBox(height: 10),
-          Wrap(
-            spacing: 10,
-            runSpacing: 8,
-            crossAxisAlignment: WrapCrossAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              HorizontalFadeScroller(
+                height: 36,
                 child: Container(
                   padding: const EdgeInsets.all(2),
                   decoration: BoxDecoration(
@@ -192,9 +196,13 @@ class _CustomerListToolbarState extends State<CustomerListToolbar> {
                   ),
                 ),
               ),
-              _SortControl(
-                sort: widget.sort,
-                onSortChanged: widget.onSortChanged,
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _SortControl(
+                  sort: widget.sort,
+                  onSortChanged: widget.onSortChanged,
+                ),
               ),
             ],
           ),

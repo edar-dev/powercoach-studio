@@ -2,7 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'package:powercoach_studio/core/ui/widgets/app_search_field.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/ui/widgets/inline_error_banner.dart';
+import 'package:powercoach_studio/core/ui/widgets/list_skeleton.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
@@ -199,23 +202,14 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
     final cs = widget.cs;
 
     if (_loadingExercises) {
-      return const Center(child: CircularProgressIndicator());
+      return const ListSkeleton(rowCount: 8, padding: EdgeInsets.all(8));
     }
     if (_exerciseLoadFailed) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(l10n.workoutBuilderExerciseLoadError),
-              const SizedBox(height: 16),
-              FilledButton(
-                onPressed: _loadExercises,
-                child: Text(l10n.customersRetry),
-              ),
-            ],
-          ),
+        child: InlineErrorBanner(
+          message: l10n.workoutBuilderExerciseLoadError,
+          onRetry: _loadExercises,
+          retryLabel: l10n.customersRetry,
         ),
       );
     }
@@ -226,8 +220,9 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
+        AppSearchTextField(
           controller: _searchController,
+          onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: l10n.workoutBuilderCompactAddSearchHint,
             prefixIcon: const Icon(Icons.search),
@@ -238,7 +233,6 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
               borderSide: BorderSide.none,
             ),
           ),
-          onChanged: (_) => setState(() {}),
         ),
         if (showRecent && _recentExercises.isNotEmpty) ...[
           const SizedBox(height: 12),

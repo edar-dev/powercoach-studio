@@ -5,6 +5,7 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/haptics.dart';
+import '../../../../core/ui/widgets/list_skeleton.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../domain/dashboard_snapshot.dart';
 import '../../domain/plan_calendar_event.dart';
@@ -35,9 +36,12 @@ class DashboardTodaySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (loading && snapshot.todayItems.isEmpty && !snapshot.hasError) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
-        child: Center(child: CircularProgressIndicator()),
+      return const SizedBox(
+        height: 160,
+        child: ListSkeleton(
+          rowCount: 3,
+          padding: EdgeInsets.symmetric(vertical: 4),
+        ),
       );
     }
     final items = snapshot.todayItems.take(kDashboardSectionRowLimit).toList();

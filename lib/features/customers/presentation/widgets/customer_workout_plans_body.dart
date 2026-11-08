@@ -9,6 +9,8 @@ import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
+import '../../../../core/ui/widgets/inline_error_banner.dart';
+import '../../../../core/ui/widgets/list_skeleton.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
@@ -157,37 +159,18 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
 
     if (_loading) {
-      return const Center(child: CircularProgressIndicator());
+      return const ListSkeleton();
     }
 
     if (_error != null) {
       return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.error_outline, size: 48, color: cs.error),
-              const SizedBox(height: 16),
-              Text(
-                _error!,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: cs.onSurfaceVariant,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              FilledButton(
-                onPressed: _loadPlans,
-                child: Text(l10n.customersRetry),
-              ),
-            ],
-          ),
+        child: InlineErrorBanner(
+          message: _error!,
+          onRetry: _loadPlans,
+          retryLabel: l10n.customersRetry,
         ),
       );
     }

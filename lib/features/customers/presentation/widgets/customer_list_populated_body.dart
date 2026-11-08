@@ -92,13 +92,15 @@ class _CustomerListPopulatedBodyState extends State<CustomerListPopulatedBody> {
     final headerOffset = showColumnHeader ? 1 : 0;
 
     return ListView.separated(
+      key: const PageStorageKey<String>('customer-list-scroll'),
+      restorationId: 'customer-list-scroll',
       physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       itemCount: pageItems.length + 1 + headerOffset,
       separatorBuilder: (_, index) {
         final lastDataIndex = pageItems.length - 1 + headerOffset;
         if (index >= lastDataIndex) return const SizedBox.shrink();
-        return const SizedBox(height: 4);
+        return const SizedBox(height: 2);
       },
       itemBuilder: (context, index) {
         if (showColumnHeader && index == 0) {
@@ -335,7 +337,10 @@ class CustomerListTile extends StatelessWidget {
                   BorderRadius.circular(MarketingDarkColors.radiusXl),
               border: Border.all(color: MarketingDarkColors.border),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            padding: EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: wide ? 10 : 8,
+            ),
             child: wide
                 ? _WideRow(
                     customer: customer,
@@ -488,7 +493,7 @@ class _NarrowRow extends StatelessWidget {
             _StatusPill(status: status),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 6),
         Text(
           goalLabel,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -498,7 +503,7 @@ class _NarrowRow extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 2),
         Text(
           planLine,
           style: theme.textTheme.bodySmall?.copyWith(
@@ -512,7 +517,7 @@ class _NarrowRow extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 8),
         Align(
           alignment: Alignment.centerLeft,
           child: _QuickActions(customer: customer, status: status),
