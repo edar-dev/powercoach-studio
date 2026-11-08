@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
@@ -9,6 +8,7 @@ import 'package:powercoach_studio/l10n/app_localizations.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../data/customer_repository.dart';
@@ -124,7 +124,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
               child: CustomerListPageHeader(
                 onNewCustomer: () {
-                  HapticFeedback.mediumImpact();
+                  AppHaptics.medium();
                   navigateTo(context, AppPaths.customersNew);
                 },
               ),
@@ -145,7 +145,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
           Expanded(
             child: RefreshIndicator(
               onRefresh: _load,
-              color: MarketingDarkColors.brandLight,
+              color: Theme.of(context).colorScheme.primary,
               backgroundColor: MarketingDarkColors.surface,
               child: _loading
                   ? const Center(

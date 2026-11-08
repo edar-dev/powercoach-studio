@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +11,7 @@ import '../../../../core/routing/hub_chrome.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/shell_utility_actions.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
@@ -231,7 +231,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   void _openEntry(SessionExecutionEntry entry) {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection();
     navigateTo(
       context,
       workoutDiaryEntryPath(
@@ -242,14 +242,14 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
   }
 
   void _recordSession() {
-    HapticFeedback.selectionClick();
+    AppHaptics.selection();
     navigateTo(context, AppPaths.calendar);
   }
 
   Future<void> _exportVisible() async {
     final l10n = AppLocalizations.of(context);
     final visible = _visibleEntries;
-    await HapticFeedback.selectionClick();
+    await AppHaptics.selection();
     try {
       final artifact = await exportWorkoutDiaryToCsv(
         entries: visible,
@@ -348,9 +348,7 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                 ),
               )
             : RefreshIndicator(
-                color: phone
-                    ? StitchMobileColors.primary
-                    : MarketingDarkColors.cyanBright,
+                color: Theme.of(context).colorScheme.primary,
                 onRefresh: () => _load(reset: true),
                 child: CustomScrollView(
                   controller: _scrollController,
@@ -454,18 +452,39 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
                     if (visible.isEmpty)
                       SliverFillRemaining(
                         hasScrollBody: false,
-                        child: Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32),
-                            child: Text(
-                              l10n.workoutDiaryEmpty,
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.bodyLarge?.copyWith(
-                                color: phone
-                                    ? StitchMobileColors.onSurfaceVariant
-                                    : MarketingDarkColors.slate400,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(32, 24, 32, 32),
+                          child: Column(
+                            children: [
+                              const Spacer(),
+                              Text(
+                                l10n.workoutDiaryEmpty,
+                                textAlign: TextAlign.center,
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: phone
+                                      ? StitchMobileColors.onSurfaceVariant
+                                      : MarketingDarkColors.slate400,
+                                ),
                               ),
-                            ),
+                              const Spacer(),
+                              SizedBox(
+                                width: double.infinity,
+                                child: FilledButton.icon(
+                                  onPressed: _recordSession,
+                                  icon: const Icon(Icons.add, size: 18),
+                                  label: Text(l10n.workoutDiaryRecordAction),
+                                  style: FilledButton.styleFrom(
+                                    minimumSize: const Size(0, 48),
+                                    backgroundColor: phone
+                                        ? StitchMobileColors.primaryContainer
+                                        : MarketingDarkColors.cyanBright,
+                                    foregroundColor: phone
+                                        ? StitchMobileColors.onPrimaryContainer
+                                        : MarketingDarkColors.cyanOn,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       )

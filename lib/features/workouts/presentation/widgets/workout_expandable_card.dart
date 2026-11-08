@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
+import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/haptics.dart';
 
 /// Minimal expandable card used across the workout builder.
 ///
@@ -74,7 +75,10 @@ class WorkoutExpandableCard extends StatelessWidget {
                           ],
                           Expanded(
                             child: InkWell(
-                              onTap: () => onExpandedChanged(!expanded),
+                              onTap: () {
+                                AppHaptics.selection();
+                                onExpandedChanged(!expanded);
+                              },
                               borderRadius: BorderRadius.circular(
                                 StitchM3Theme.radiusMd,
                               ),
@@ -127,7 +131,10 @@ class WorkoutExpandableCard extends StatelessWidget {
                               size: 22,
                               color: cs.onSurfaceVariant,
                             ),
-                            onPressed: () => onExpandedChanged(!expanded),
+                            onPressed: () {
+                              AppHaptics.selection();
+                              onExpandedChanged(!expanded);
+                            },
                           ),
                           if (trailing != null) trailing!,
                         ],

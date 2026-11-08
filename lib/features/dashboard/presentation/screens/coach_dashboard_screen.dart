@@ -206,10 +206,11 @@ class _CoachDashboardScreenState extends State<CoachDashboardScreen> {
             : phoneHubUtilityActions(includeSettings: true),
       ),
       body: RefreshIndicator(
+        color: Theme.of(context).colorScheme.primary,
         onRefresh: _loadStats,
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

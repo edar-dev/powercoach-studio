@@ -104,13 +104,16 @@ class _PhoneCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      customerName,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: StitchMobileColors.onSurfaceVariant,
-                        fontSize: 11,
+                    child: Tooltip(
+                      message: customerName,
+                      child: Text(
+                        customerName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: StitchMobileColors.onSurfaceVariant,
+                          fontSize: 11,
+                        ),
                       ),
                     ),
                   ),
@@ -122,12 +125,17 @@ class _PhoneCard extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 6),
-              Text(
-                title,
-                style: const TextStyle(
-                  color: StitchMobileColors.onSurface,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              Tooltip(
+                message: title,
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: StitchMobileColors.onSurface,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               if (!isSkipped) ...[
@@ -288,13 +296,18 @@ class _DesktopCard extends StatelessWidget {
                           runSpacing: 4,
                           crossAxisAlignment: WrapCrossAlignment.center,
                           children: [
-                            Text(
-                              entry.planName,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: isSkipped
-                                    ? MarketingDarkColors.slate300
-                                    : MarketingDarkColors.text,
-                                fontWeight: FontWeight.w700,
+                            Tooltip(
+                              message: entry.planName,
+                              child: Text(
+                                entry.planName,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  color: isSkipped
+                                      ? MarketingDarkColors.slate300
+                                      : MarketingDarkColors.text,
+                                  fontWeight: FontWeight.w700,
+                                ),
                               ),
                             ),
                             Container(

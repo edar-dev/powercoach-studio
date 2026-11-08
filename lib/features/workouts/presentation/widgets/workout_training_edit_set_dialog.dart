@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
+import '../../../../core/ui/widgets/keyboard_dismiss.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../customers/data/customer_maximal_repository.dart';
 import '../../../customers/data/customer_measurement_repository.dart';
@@ -36,15 +37,8 @@ void showEditSetDialog(
   double? roundingIncrementKg,
   void Function(MaximalRef? ref, {required bool clear})? onMaximalRefChanged,
 }) {
-  final setsController = TextEditingController(text: initialSets);
-  final repsController = TextEditingController(text: initialReps);
-  final loadController = TextEditingController(text: initialLoad);
-  final noteController = TextEditingController(text: initialNote);
+  final formKey = GlobalKey<_EditSetFormState>();
   final l10n = AppLocalizations.of(context);
-  const denseDecoration = InputDecoration(
-    isDense: true,
-    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-  );
   final isDesktop = AppBreakpoints.isDesktop(context);
   showAppBottomSheet<void>(
     context: context,
@@ -53,79 +47,193 @@ void showEditSetDialog(
     wrapContent: isDesktop,
     fullScreen: !isDesktop,
     maxHeightFraction: 0.88,
-    bodyBuilder: (sheetContext) => Column(
+    bodyBuilder: (sheetContext) => _EditSetForm(
+      key: formKey,
+      initialSets: initialSets,
+      initialReps: initialReps,
+      initialLoad: initialLoad,
+      initialNote: initialNote,
+      exercise: exercise,
+      customerId: customerId,
+      measurementRepository: measurementRepository,
+      maximalRepository: maximalRepository,
+      roundingIncrementKg: roundingIncrementKg,
+      onMaximalRefChanged: onMaximalRefChanged,
+    ),
+    primaryActionLabel: l10n.customerSave,
+    onPrimaryAction: () {
+      final state = formKey.currentState;
+      if (state == null) return;
+      final values = state.readValues();
+      onSave(values.sets, values.reps, values.load, values.note);
+      Navigator.of(context).pop();
+    },
+  );
+}
+
+class _EditSetForm extends StatefulWidget {
+  const _EditSetForm({
+    super.key,
+    required this.initialSets,
+    required this.initialReps,
+    required this.initialLoad,
+    required this.initialNote,
+    this.exercise,
+    this.customerId,
+    this.measurementRepository,
+    this.maximalRepository,
+    this.roundingIncrementKg,
+    this.onMaximalRefChanged,
+  });
+
+  final String initialSets;
+  final String initialReps;
+  final String initialLoad;
+  final String initialNote;
+  final Exercise? exercise;
+  final String? customerId;
+  final CustomerMeasurementRepository? measurementRepository;
+  final CustomerMaximalRepository? maximalRepository;
+  final double? roundingIncrementKg;
+  final void Function(MaximalRef? ref, {required bool clear})?
+      onMaximalRefChanged;
+
+  @override
+  State<_EditSetForm> createState() => _EditSetFormState();
+}
+
+class _EditSetFormState extends State<_EditSetForm> {
+  static const _denseDecoration = InputDecoration(
+    isDense: true,
+    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+  );
+
+  late final TextEditingController _setsController;
+  late final TextEditingController _repsController;
+  late final TextEditingController _loadController;
+  late final TextEditingController _noteController;
+  late final FocusNode _setsFocus;
+  late final FocusNode _repsFocus;
+  late final FocusNode _loadFocus;
+  late final FocusNode _noteFocus;
+
+  @override
+  void initState() {
+    super.initState();
+    _setsController = TextEditingController(text: widget.initialSets);
+    _repsController = TextEditingController(text: widget.initialReps);
+    _loadController = TextEditingController(text: widget.initialLoad);
+    _noteController = TextEditingController(text: widget.initialNote);
+    _setsFocus = FocusNode();
+    _repsFocus = FocusNode();
+    _loadFocus = FocusNode();
+    _noteFocus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _setsController.dispose();
+    _repsController.dispose();
+    _loadController.dispose();
+    _noteController.dispose();
+    _setsFocus.dispose();
+    _repsFocus.dispose();
+    _loadFocus.dispose();
+    _noteFocus.dispose();
+    super.dispose();
+  }
+
+  ({String sets, String reps, String load, String note}) readValues() {
+    return (
+      sets: _setsController.text.trim(),
+      reps: _repsController.text.trim(),
+      load: _loadController.text.trim(),
+      note: _noteController.text.trim(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _EditSetMaximalHost(
-          exercise: exercise,
-          customerId: customerId,
-          loadController: loadController,
-          measurementRepository: measurementRepository,
-          maximalRepository: maximalRepository,
-          roundingIncrementKg: roundingIncrementKg,
-          onMaximalRefChanged: onMaximalRefChanged,
+          exercise: widget.exercise,
+          customerId: widget.customerId,
+          loadController: _loadController,
+          measurementRepository: widget.measurementRepository,
+          maximalRepository: widget.maximalRepository,
+          roundingIncrementKg: widget.roundingIncrementKg,
+          onMaximalRefChanged: widget.onMaximalRefChanged,
         ),
         const SizedBox(height: 12),
         Row(
           children: [
             Expanded(
               child: TextField(
-                controller: setsController,
-                decoration: denseDecoration.copyWith(
+                controller: _setsController,
+                focusNode: _setsFocus,
+                decoration: _denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderSetLabel,
                   hintText: '1',
                 ),
                 keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                onTapOutside: (_) => KeyboardDismiss.unfocus(),
+                onSubmitted: (_) => _repsFocus.requestFocus(),
                 autofocus: false,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               child: TextField(
-                controller: repsController,
-                decoration: denseDecoration.copyWith(
+                controller: _repsController,
+                focusNode: _repsFocus,
+                decoration: _denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderRepsLabel,
                   hintText: '3',
                 ),
                 keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                onTapOutside: (_) => KeyboardDismiss.unfocus(),
+                onSubmitted: (_) => _loadFocus.requestFocus(),
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
               flex: 2,
               child: TextField(
-                controller: loadController,
-                decoration: denseDecoration.copyWith(
+                controller: _loadController,
+                focusNode: _loadFocus,
+                decoration: _denseDecoration.copyWith(
                   labelText: l10n.workoutBuilderLoadLabel,
                   hintText: '75kg',
                 ),
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
+                onTapOutside: (_) => KeyboardDismiss.unfocus(),
+                onSubmitted: (_) => _noteFocus.requestFocus(),
               ),
             ),
           ],
         ),
         const SizedBox(height: 12),
         TextField(
-          controller: noteController,
-          decoration: denseDecoration.copyWith(
+          controller: _noteController,
+          focusNode: _noteFocus,
+          decoration: _denseDecoration.copyWith(
             labelText: l10n.workoutBuilderNoteLabel,
           ),
           maxLines: 2,
+          textInputAction: TextInputAction.done,
+          onTapOutside: (_) => KeyboardDismiss.unfocus(),
+          onSubmitted: (_) => KeyboardDismiss.unfocus(),
         ),
       ],
-    ),
-    primaryActionLabel: l10n.customerSave,
-    onPrimaryAction: () {
-      onSave(
-        setsController.text.trim(),
-        repsController.text.trim(),
-        loadController.text.trim(),
-        noteController.text.trim(),
-      );
-      Navigator.of(context).pop();
-    },
-  );
+    );
+  }
 }
 
 /// Loads customer massimali data and hosts [MaximalSetPanel] inside the sheet.

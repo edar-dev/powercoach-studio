@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:powercoach_studio/core/routing/app_navigation.dart';
+import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
-import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
-import 'package:powercoach_studio/l10n/app_localizations.dart';
+import '../../../../core/theme/marketing_dark_colors.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Stitch empty customers list body (concentric rings + onboarding steps).
+///
+/// Primary CTA sits in the thumb zone near the bottom of the viewport.
 class CustomerListEmptyBody extends StatelessWidget {
   const CustomerListEmptyBody({
     super.key,
@@ -19,115 +21,141 @@ class CustomerListEmptyBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(24, 32, 24, 48),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 640),
-          child: Column(
-            children: [
-              const _EmptyConcentricGraphic(),
-              const SizedBox(height: 28),
-              Text(
-                l10n.customersEmptyTitle,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: MarketingDarkColors.text,
-                  letterSpacing: -0.3,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight - 56),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 640),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      children: [
+                        const _EmptyConcentricGraphic(),
+                        const SizedBox(height: 28),
+                        Text(
+                          l10n.customersEmptyTitle,
+                          style: const TextStyle(
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
+                            color: MarketingDarkColors.text,
+                            letterSpacing: -0.3,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.customersEmptyMessage,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            height: 1.5,
+                            color: MarketingDarkColors.slate400,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        const SizedBox(height: 28),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: () =>
+                                navigateTo(context, AppPaths.customersNew),
+                            icon: const Icon(Icons.add, size: 20),
+                            label: Text(l10n.customersAddFirstClient),
+                            style: FilledButton.styleFrom(
+                              backgroundColor: MarketingDarkColors.brand,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size(0, 48),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 14,
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              elevation: 6,
+                              shadowColor: MarketingDarkColors.brand
+                                  .withValues(alpha: 0.4),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  MarketingDarkColors.radiusXl,
+                                ),
+                                side: BorderSide(
+                                  color: MarketingDarkColors.brandLight
+                                      .withValues(alpha: 0.25),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        const Divider(
+                          color: MarketingDarkColors.border,
+                          height: 1,
+                        ),
+                        const SizedBox(height: 16),
+                        _OnboardingSteps(l10n: l10n),
+                        if (!kIsWeb) ...[
+                          const SizedBox(height: 24),
+                          OutlinedButton(
+                            onPressed: onImportFromContacts,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: MarketingDarkColors.slate300,
+                              side: const BorderSide(
+                                color: MarketingDarkColors.borderMuted,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                            ),
+                            child: Text(l10n.customersImportContacts),
+                          ),
+                        ],
+                        const SizedBox(height: 24),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.lock_outline,
+                              size: 14,
+                              color: MarketingDarkColors.brand
+                                  .withValues(alpha: 0.8),
+                            ),
+                            const SizedBox(width: 6),
+                            Flexible(
+                              child: Text(
+                                l10n.customersOfflineFirstFooter,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  color: MarketingDarkColors.slate400,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
-              Text(
-                l10n.customersEmptyMessage,
-                style: const TextStyle(
-                  fontSize: 14,
-                  height: 1.5,
-                  color: MarketingDarkColors.slate400,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 28),
-              FilledButton.icon(
-                onPressed: () => navigateTo(context, AppPaths.customersNew),
-                icon: const Icon(Icons.add, size: 20),
-                label: Text(l10n.customersAddFirstClient),
-                style: FilledButton.styleFrom(
-                  backgroundColor: MarketingDarkColors.brand,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 14,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  elevation: 6,
-                  shadowColor:
-                      MarketingDarkColors.brand.withValues(alpha: 0.4),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      MarketingDarkColors.radiusXl,
-                    ),
-                    side: BorderSide(
-                      color: MarketingDarkColors.brandLight.withValues(
-                        alpha: 0.25,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              const Divider(color: MarketingDarkColors.border, height: 1),
-              const SizedBox(height: 16),
-              _OnboardingSteps(l10n: l10n),
-              if (!kIsWeb) ...[
-                const SizedBox(height: 24),
-                OutlinedButton(
-                  onPressed: onImportFromContacts,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: MarketingDarkColors.slate300,
-                    side: const BorderSide(color: MarketingDarkColors.borderMuted),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                  ),
-                  child: Text(l10n.customersImportContacts),
-                ),
-              ],
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.lock_outline,
-                    size: 14,
-                    color: MarketingDarkColors.brand.withValues(alpha: 0.8),
-                  ),
-                  const SizedBox(width: 6),
-                  Flexible(
-                    child: Text(
-                      l10n.customersOfflineFirstFooter,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: MarketingDarkColors.slate400,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

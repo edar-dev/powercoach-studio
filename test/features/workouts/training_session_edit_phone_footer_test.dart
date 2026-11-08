@@ -39,7 +39,11 @@ WorkoutRoutine _routineWithExercise() {
   );
 }
 
-Widget _wrap(Widget child, {required Size size}) {
+Widget _wrap(
+  Widget child, {
+  required Size size,
+  EdgeInsets padding = EdgeInsets.zero,
+}) {
   return MaterialApp(
     theme: StitchM3Theme.light,
     darkTheme: StitchM3Theme.dark,
@@ -48,7 +52,7 @@ Widget _wrap(Widget child, {required Size size}) {
     supportedLocales: const [Locale('it'), Locale('en')],
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     home: MediaQuery(
-      data: MediaQueryData(size: size),
+      data: MediaQueryData(size: size, padding: padding),
       child: child,
     ),
   );
@@ -134,6 +138,43 @@ void main() {
     expect(find.text('Crea Superset / Circuito'), findsOneWidget);
     // Header Cancel should be hidden on phone sticky path.
     expect(find.text('Annulla'), findsNothing);
+  });
+
+  testWidgets('phone sticky footer absorbs home-indicator padding', (
+    tester,
+  ) async {
+    const phone = Size(390, 844);
+    const homeIndicator = EdgeInsets.only(bottom: 34);
+    await tester.binding.setSurfaceSize(phone);
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final session = WorkoutBuilderSessionController(
+      routine: _routineWithExercise(),
+    );
+    final day = session.routine.weeks.first.days.first;
+
+    await tester.pumpWidget(
+      _wrap(
+        size: phone,
+        padding: homeIndicator,
+        Builder(builder: (context) => _body(context, session, day)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final saveButton = find.text('Salva modifiche');
+    expect(saveButton, findsOneWidget);
+    // Footer padding includes safe-area bottom so the CTA clears the gesture bar.
+    final footerPadding = tester.widgetList<Padding>(find.byType(Padding)).where(
+      (p) {
+        final value = p.padding;
+        return value is EdgeInsets &&
+            value.left == 16 &&
+            value.right == 16 &&
+            value.bottom >= 10 + homeIndicator.bottom;
+      },
+    );
+    expect(footerPadding, isNotEmpty);
   });
 
   testWidgets('desktop session edit keeps header Salva modifiche', (

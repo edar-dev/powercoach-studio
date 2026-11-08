@@ -93,7 +93,7 @@ class _CustomerListPopulatedBodyState extends State<CustomerListPopulatedBody> {
 
     return ListView.separated(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
       itemCount: pageItems.length + 1 + headerOffset,
       separatorBuilder: (_, index) {
         final lastDataIndex = pageItems.length - 1 + headerOffset;
@@ -592,16 +592,19 @@ class _AthleteCell extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                customer.name,
-                style: theme.textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: muted
-                      ? MarketingDarkColors.slate300
-                      : MarketingDarkColors.text,
+              Tooltip(
+                message: customer.name,
+                child: Text(
+                  customer.name,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: muted
+                        ? MarketingDarkColors.slate300
+                        : MarketingDarkColors.text,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
               ),
               if (contactLine.isNotEmpty)
                 Text(
