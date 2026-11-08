@@ -46,7 +46,7 @@ void main() {
       ),
     );
 
-    expect(find.textContaining('Maximal'), findsWidgets);
+    expect(find.text('No maximal linked'), findsOneWidget);
     expect(find.text('Link maximal'), findsOneWidget);
     expect(
       find.text('Link a maximal to calculate load as a %'),
@@ -166,7 +166,7 @@ void main() {
     );
 
     expect(find.text('Collega massimale'), findsOneWidget);
-    expect(find.textContaining('Massimale'), findsWidgets);
+    expect(find.text('Nessun massimale'), findsOneWidget);
     expect(
       find.text('Collega un massimale per calcolare il carico in %'),
       findsOneWidget,

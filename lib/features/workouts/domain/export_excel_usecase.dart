@@ -5,6 +5,7 @@ import 'package:excel/excel.dart';
 import '../../../core/export/export_artifact.dart';
 import '../../../core/pdf/pdf_export_labels.dart';
 import '../data/workout_routine_model.dart';
+import 'exercise_summary_sync.dart';
 
 /// Exports [WorkoutRoutine] to an .xlsx file. Layout: plan name, then for each week/day
 /// a table with columns Exercise, Sets, Reps, Load/RPE, Notes.
@@ -31,7 +32,7 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(
 
       // Header row
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue('Exercise');
-      sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue('Sets');
+      sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(labels.colSets);
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue('Reps');
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue('Load/RPE');
       sheet.cell(CellIndex.indexByColumnRow(columnIndex: 4, rowIndex: row)).value = TextCellValue('Notes');
@@ -42,10 +43,12 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(
           final ex = item;
           final details = ex.effectiveSetDetails;
           if (details.length > 1) {
+            final physicalSets =
+                ExerciseSummarySync.totalSetsFromDetails(details);
             for (var i = 0; i < details.length; i++) {
               final s = details[i];
               sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
-              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
+              sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '$physicalSets' : '');
             final disp = s.displayText;
             sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? disp : s.reps);
             sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? '' : s.rpe);
@@ -68,10 +71,12 @@ Future<ExportArtifact> exportWorkoutRoutineToExcel(
           for (final ex in group) {
             final details = ex.effectiveSetDetails;
             if (details.length > 1) {
+              final physicalSets =
+                  ExerciseSummarySync.totalSetsFromDetails(details);
               for (var i = 0; i < details.length; i++) {
                 final s = details[i];
                 sheet.cell(CellIndex.indexByColumnRow(columnIndex: 0, rowIndex: row)).value = TextCellValue(i == 0 ? ex.name : '');
-                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '${details.length}' : '');
+                sheet.cell(CellIndex.indexByColumnRow(columnIndex: 1, rowIndex: row)).value = TextCellValue(i == 0 ? '$physicalSets' : '');
             final disp = s.displayText;
             sheet.cell(CellIndex.indexByColumnRow(columnIndex: 2, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? disp : s.reps);
             sheet.cell(CellIndex.indexByColumnRow(columnIndex: 3, rowIndex: row)).value = TextCellValue(disp.isNotEmpty ? '' : s.rpe);

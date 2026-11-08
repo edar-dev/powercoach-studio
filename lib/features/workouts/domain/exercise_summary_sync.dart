@@ -5,12 +5,21 @@ class ExerciseSummarySync {
   ExerciseSummarySync._();
 
   /// Sum of block sizes across [details], matching [SessionDayMetrics] /
-  /// day-card `_totalSets` (non-positive / unparseable → 1).
+  /// day-card totals (non-positive / unparseable → 1).
   static int totalSetsFromDetails(List<ExerciseSet> details) {
     var total = 0;
     for (final set in details) {
       final parsed = int.tryParse(set.sets.trim());
       total += (parsed == null || parsed <= 0) ? 1 : parsed;
+    }
+    return total;
+  }
+
+  /// Physical sum of sets across [exercises] via [totalSetsFromDetails].
+  static int totalSetsFromExercises(Iterable<Exercise> exercises) {
+    var total = 0;
+    for (final exercise in exercises) {
+      total += totalSetsFromDetails(exercise.effectiveSetDetails);
     }
     return total;
   }

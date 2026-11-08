@@ -9,6 +9,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../data/workout_routine_model.dart';
 import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/exercise_summary_sync.dart';
 import '../../domain/maximal_ref.dart';
 import '../../domain/library_exercise_name_enrichment.dart';
 import '../../domain/workout_exercise_mutations.dart';
@@ -216,13 +217,11 @@ class SessionDayMetrics {
   final double? estimatedVolumeKg;
 
   factory SessionDayMetrics.fromDay(Day day) {
-    var totalSets = 0;
     var volume = 0.0;
     var volumeSamples = 0;
     for (final ex in day.exercises) {
       for (final set in ex.effectiveSetDetails) {
         final setCount = int.tryParse(set.sets.trim()) ?? 1;
-        totalSets += setCount;
         final reps = _parsePositiveNumber(set.reps);
         final load = _parseLoadKg(set.rpe) ?? _parseLoadKg(set.line);
         if (reps != null && load != null) {
@@ -233,7 +232,7 @@ class SessionDayMetrics {
     }
     return SessionDayMetrics(
       exerciseCount: day.exercises.length,
-      totalSets: totalSets,
+      totalSets: ExerciseSummarySync.totalSetsFromExercises(day.exercises),
       estimatedVolumeKg: volumeSamples > 0 ? volume : null,
     );
   }

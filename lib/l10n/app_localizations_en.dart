@@ -4525,6 +4525,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get maximalLabel => 'Maximal';
 
   @override
+  String get maximalHeaderEmpty => 'No maximal linked';
+
+  @override
   String maximalHeaderWithKg(String kg) {
     return 'Maximal: $kg kg';
   }

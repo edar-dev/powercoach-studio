@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/collapsed_prescription_summary.dart';
+import '../../domain/exercise_summary_sync.dart';
 
 /// Stitch-style day session preview card inside a phase week grid.
 class TrainingPhaseDayCard extends StatelessWidget {
@@ -275,20 +277,8 @@ class TrainingPhaseDayCard extends StatelessWidget {
     return match == null;
   }
 
-  static int _totalSets(List<Exercise> exercises) {
-    var total = 0;
-    for (final exercise in exercises) {
-      for (final set in exercise.effectiveSetDetails) {
-        final parsed = int.tryParse(set.sets.trim());
-        if (parsed != null && parsed > 0) {
-          total += parsed;
-        } else if (set.displayText.trim().isNotEmpty) {
-          total += 1;
-        }
-      }
-    }
-    return total;
-  }
+  static int _totalSets(List<Exercise> exercises) =>
+      ExerciseSummarySync.totalSetsFromExercises(exercises);
 }
 
 class _ExercisePreviewRow extends StatelessWidget {
@@ -304,10 +294,8 @@ class _ExercisePreviewRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = exercise.effectiveSetDetails
-        .map((s) => s.displayText.trim())
-        .where((s) => s.isNotEmpty)
-        .join(' · ');
+    final scheme =
+        collapsedPrescriptionSummary(exercise.effectiveSetDetails);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),

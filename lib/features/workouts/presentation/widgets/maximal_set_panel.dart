@@ -247,7 +247,7 @@ class _Header extends StatelessWidget {
                           ? l10n.maximalHeaderWithKg(
                               formatMaximalDisplayKg(maximalKg!),
                             )
-                          : '${l10n.maximalLabel}: —',
+                          : l10n.maximalHeaderEmpty,
                       style: headerStyle,
                     ),
                     if (showSource) ...[

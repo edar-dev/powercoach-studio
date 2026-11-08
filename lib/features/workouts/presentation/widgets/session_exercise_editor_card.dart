@@ -6,6 +6,7 @@ import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../../customers/data/customer_maximal_repository.dart';
 import '../../../customers/data/customer_measurement_repository.dart';
+import '../../domain/collapsed_prescription_summary.dart';
 import '../../domain/exercise_prescription_scope.dart';
 import '../../domain/maximal_kg_resolver.dart';
 import '../../domain/maximal_ref.dart';
@@ -204,18 +205,9 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     });
   }
 
-  /// Collapsed header prescription (displayText join), matching day-card preview.
-  String _prescriptionSubtitle() {
-    final texts = widget.exercise.effectiveSetDetails
-        .map((s) => s.displayText.trim())
-        .where((t) => t.isNotEmpty)
-        .toList();
-    if (texts.isEmpty) return '';
-    if (texts.length == 1 && RegExp(r'^\d+$').hasMatch(texts.first)) {
-      return '';
-    }
-    return texts.join(' · ');
-  }
+  /// Collapsed header prescription, matching day-card preview.
+  String _prescriptionSubtitle() =>
+      collapsedPrescriptionSummary(widget.exercise.effectiveSetDetails);
 
   void _openEditDialog(BuildContext context, {bool focusNote = false}) {
     final onEdit = widget.onEdit;
@@ -633,7 +625,11 @@ class _SetTableHeader extends StatelessWidget {
       children: [
         SizedBox(
           width: _blockIndexColumnWidth,
-          child: Text(l10n.workoutSessionColSet, style: style),
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(l10n.workoutSessionColSet, style: style),
+          ),
         ),
         Expanded(child: Text(l10n.workoutSessionColReps, style: style)),
         Expanded(child: Text(l10n.workoutSessionColPercent, style: style)),
@@ -647,7 +643,7 @@ class _SetTableHeader extends StatelessWidget {
 }
 
 /// Wide enough for IT `BLOCCO` / EN `BLOCK` header labels.
-const double _blockIndexColumnWidth = 56;
+const double _blockIndexColumnWidth = 68;
 
 class _SetTableRow extends StatelessWidget {
   const _SetTableRow({

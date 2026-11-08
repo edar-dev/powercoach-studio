@@ -8142,6 +8142,12 @@ abstract class AppLocalizations {
   /// **'Maximal'**
   String get maximalLabel;
 
+  /// No description provided for @maximalHeaderEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No maximal linked'**
+  String get maximalHeaderEmpty;
+
   /// No description provided for @maximalHeaderWithKg.
   ///
   /// In en, this message translates to:

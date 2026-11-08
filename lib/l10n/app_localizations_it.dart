@@ -2192,7 +2192,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get pdfColExercise => 'Esercizio';
 
   @override
-  String get pdfColSets => 'Ser.';
+  String get pdfColSets => 'Serie';
 
   @override
   String get pdfColReps => 'Rip.';
@@ -4211,18 +4211,18 @@ class AppLocalizationsIt extends AppLocalizations {
   String get sessionLogSetLoad => 'Carico';
 
   @override
-  String get sessionLogAddSet => 'Aggiungi set';
+  String get sessionLogAddSet => 'Aggiungi serie';
 
   @override
   String sessionLogSetLabel(int number) {
-    return 'Set $number';
+    return 'Serie $number';
   }
 
   @override
-  String get sessionLogExpandSets => 'Mostra set';
+  String get sessionLogExpandSets => 'Mostra serie';
 
   @override
-  String get sessionLogCollapseSets => 'Nascondi set';
+  String get sessionLogCollapseSets => 'Nascondi serie';
 
   @override
   String get customerProgressTitle => 'Progresso allenamento';
@@ -4569,6 +4569,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get maximalLabel => 'Massimale';
+
+  @override
+  String get maximalHeaderEmpty => 'Nessun massimale';
 
   @override
   String maximalHeaderWithKg(String kg) {
