@@ -1,4 +1,5 @@
 import '../data/custom_exercise_item.dart';
+import 'exercise_query_match.dart';
 
 /// Root-list sort modes for the exercise library screen.
 enum ExerciseLibrarySortMode {
@@ -82,20 +83,37 @@ List<CustomExerciseItem> filterExerciseNodeByMobility(
 /// When a node itself matches, its full child list is preserved so folder-name
 /// searches still show all variants. When only descendants match, only the
 /// matching subtrees are kept.
+///
+/// Matching uses shared token-AND + normalization ([exerciseTextMatchesQuery]).
+/// Ancestor names are included in the searchable path so queries like
+/// `panca stretta` hit a `Presa stretta` leaf under `Panca piana`.
 List<CustomExerciseItem> filterExerciseTreeByQuery(
   List<CustomExerciseItem> roots,
   String query,
 ) {
-  final q = query.trim().toLowerCase();
-  if (q.isEmpty) return roots;
+  final tokens = tokenizeExerciseSearchQuery(query);
+  if (tokens.isEmpty) return roots;
 
-  CustomExerciseItem? filterNode(CustomExerciseItem node) {
-    final selfMatch = node.name.toLowerCase().contains(q) ||
-        (node.description?.toLowerCase().contains(q) ?? false);
+  bool nodeMatches(CustomExerciseItem node, String ancestorPath) {
+    final pathText =
+        ancestorPath.isEmpty ? node.name : '$ancestorPath ${node.name}';
+    if (exerciseTextMatchesQuery(pathText, query)) return true;
+    final description = node.description;
+    if (description == null || description.isEmpty) return false;
+    return exerciseTextMatchesQuery('$pathText $description', query);
+  }
+
+  CustomExerciseItem? filterNode(
+    CustomExerciseItem node, {
+    String ancestorPath = '',
+  }) {
+    final selfMatch = nodeMatches(node, ancestorPath);
+    final childAncestorPath =
+        ancestorPath.isEmpty ? node.name : '$ancestorPath ${node.name}';
 
     final filteredChildren = <CustomExerciseItem>[];
     for (final child in node.children) {
-      final filtered = filterNode(child);
+      final filtered = filterNode(child, ancestorPath: childAncestorPath);
       if (filtered != null) filteredChildren.add(filtered);
     }
 

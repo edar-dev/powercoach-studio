@@ -24,6 +24,37 @@ void main() {
       );
       expect(result, ['Bench Press']);
     });
+
+    test('token AND matches panca stretta on presa stretta name', () {
+      final result = filterExercisesByQuery<String>(
+        query: 'panca stretta',
+        options: const [
+          'Panca piana presa stretta',
+          'Panca piana',
+          'Rematore presa stretta',
+          'Squat',
+        ],
+        displayName: (v) => v,
+      ).toList();
+
+      expect(result, ['Panca piana presa stretta']);
+      expect(result, isNot(contains('Panca piana')));
+      expect(result, isNot(contains('Rematore presa stretta')));
+      expect(result, isNot(contains('Squat')));
+    });
+
+    test('matches Parent › Variant display paths', () {
+      final result = filterExercisesByQuery<String>(
+        query: 'panca stretta',
+        options: const [
+          'Panca piana › Presa stretta',
+          'Squat › Low bar',
+        ],
+        displayName: (v) => v,
+      ).toList();
+
+      expect(result, ['Panca piana › Presa stretta']);
+    });
   });
 
   group('DebouncedExerciseAutocompleteFilter', () {
