@@ -14,7 +14,8 @@ import 'workout_training_helpers.dart';
 /// Scrollable exercise list for a single training day.
 ///
 /// Keeps a single expanded exercise id in local state so cards stay collapsed
-/// by default and only one detail panel is open at a time.
+/// by default and only one detail panel is open at a time. Newly added
+/// exercises (or their parent superset) are expanded automatically.
 class WorkoutDayExerciseList extends StatefulWidget {
   const WorkoutDayExerciseList({
     super.key,
@@ -125,6 +126,30 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
       if (first.supersetGroupId == null || first.supersetGroupId!.isEmpty) {
         _expandedExerciseId = first.id;
       }
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant WorkoutDayExerciseList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final oldIds = {
+      for (final e in oldWidget.day.exercises) e.id,
+    };
+    final added = widget.day.exercises
+        .where((e) => !oldIds.contains(e.id))
+        .toList(growable: false);
+    if (added.isEmpty) return;
+
+    // Append is the common path (library pick, duplicate, compact/full add).
+    // When several ids appear at once (e.g. day clone), expand the last one.
+    final newest = added.last;
+    final groupId = newest.supersetGroupId;
+    if (groupId != null && groupId.isNotEmpty) {
+      _expandedSupersetId = groupId;
+      _expandedExerciseId = null;
+    } else {
+      _expandedExerciseId = newest.id;
+      _expandedSupersetId = null;
     }
   }
 
