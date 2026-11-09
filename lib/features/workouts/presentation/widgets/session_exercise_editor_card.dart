@@ -770,6 +770,7 @@ class _HorizontallyScrollableWithEdgeFadeState
               width: 20,
               child: IgnorePointer(
                 child: DecoratedBox(
+                  key: const Key('session_set_table_left_fade'),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [

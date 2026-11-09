@@ -162,8 +162,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    final saveButton = find.text('Salva modifiche');
-    expect(saveButton, findsOneWidget);
+    final saveLabel = find.text('Salva modifiche');
+    expect(saveLabel, findsOneWidget);
+    // Header Cancel stays off the sticky phone path.
+    expect(find.text('Annulla'), findsNothing);
+
     // Footer padding includes safe-area bottom so the CTA clears the gesture bar.
     final footerPadding = tester.widgetList<Padding>(find.byType(Padding)).where(
       (p) {
@@ -175,6 +178,29 @@ void main() {
       },
     );
     expect(footerPadding, isNotEmpty);
+
+    // Geometric: Salva label clears the home-indicator band.
+    final saveRect = tester.getRect(saveLabel);
+    expect(saveRect.bottom, lessThanOrEqualTo(phone.height - 34));
+    // Sticky CTA uses FilledButton.icon with minimumSize height 48; find the
+    // nearest Material ink response / sized box via the check icon chrome.
+    expect(find.byIcon(Icons.check), findsWidgets);
+    final checkIcon = find.descendant(
+      of: find.byWidgetPredicate(
+        (w) =>
+            w is SizedBox &&
+            w.width == double.infinity,
+      ),
+      matching: find.byIcon(Icons.check),
+    );
+    expect(checkIcon, findsOneWidget);
+    final ctaBox = find.ancestor(
+      of: checkIcon,
+      matching: find.byWidgetPredicate(
+        (w) => w is SizedBox && w.width == double.infinity,
+      ),
+    );
+    expect(tester.getSize(ctaBox.first).height, greaterThanOrEqualTo(48));
   });
 
   testWidgets('desktop session edit keeps header Salva modifiche', (
