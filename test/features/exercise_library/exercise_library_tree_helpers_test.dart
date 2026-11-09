@@ -120,6 +120,43 @@ void main() {
       final roots = [_item(id: 'a', name: 'Curl')];
       expect(filterExerciseTreeByQuery(roots, '  '), same(roots));
     });
+
+    test('token AND matches panca stretta on presa stretta leaf', () {
+      final roots = [
+        _item(
+          id: 'panca',
+          name: 'Panca piana',
+          children: [
+            _item(id: 'stretta', name: 'Presa stretta'),
+            _item(id: 'larga', name: 'Presa larga'),
+          ],
+        ),
+        _item(id: 'squat', name: 'Squat'),
+      ];
+
+      final filtered = filterExerciseTreeByQuery(roots, 'panca stretta');
+      expect(filtered, hasLength(1));
+      expect(filtered.single.id, 'panca');
+      expect(filtered.single.children.map((e) => e.id), ['stretta']);
+    });
+
+    test('matches description with normalized tokens', () {
+      final now = DateTime(2026, 1, 1);
+      final withDesc = [
+        CustomExerciseItem(
+          id: 'a',
+          name: 'Custom',
+          description: 'Panca piana — presa stretta',
+          isMobility: false,
+          catalogSource: ExerciseCatalogSource.manual,
+          createdAt: now,
+          updatedAt: now,
+        ),
+      ];
+
+      final filtered = filterExerciseTreeByQuery(withDesc, 'panca stretta');
+      expect(filtered.map((e) => e.id), ['a']);
+    });
   });
 
   group('sortExerciseTree', () {
