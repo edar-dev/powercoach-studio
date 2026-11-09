@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../core/analytics/product_analytics.dart';
 import '../../../core/remote/cloud_save_error_message.dart';
 import '../../../core/ui/widgets/app_sheet.dart';
 import '../data/custom_exercise_item.dart';
 import '../data/custom_exercise_repository.dart';
+import '../domain/exercise_catalog_source.dart';
 import '../domain/exercise_library_tree_helpers.dart';
 import 'widgets/custom_exercise_edit_dialog.dart';
 
@@ -62,6 +64,9 @@ class ExerciseLibraryCrudHandler {
               'sortOrder': ?sortOrder,
               'isMobility': isMobility,
             });
+            ProductAnalytics.customExerciseCreated(
+              catalogSource: ExerciseCatalogSource.manual,
+            );
             if (sheetContext.mounted) {
               Navigator.of(sheetContext).pop();
               onReload();

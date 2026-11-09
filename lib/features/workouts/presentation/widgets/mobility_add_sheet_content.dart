@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
+import '../../../exercise_library/domain/exercise_catalog_source.dart';
 
 enum MobilitySource { createNew, fromMobilityLibrary, fromExerciseLibrary }
 
@@ -162,6 +164,9 @@ class AddMobilityExerciseDialogContentState
               'isMobility': true,
             };
             final res = await _customExerciseRepo.create(body);
+            ProductAnalytics.customExerciseCreated(
+              catalogSource: ExerciseCatalogSource.manual,
+            );
             final id = res['id']?.toString();
             if (id != null && mounted) {
               customExerciseId = id;

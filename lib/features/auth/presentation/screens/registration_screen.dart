@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../../core/auth/access_waitlist.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
@@ -61,6 +62,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       );
       if (!mounted) return;
 
+      ProductAnalytics.waitlistSubmitted(
+        alreadyPending: result.alreadyPending,
+      );
       setState(() => _submittedOk = true);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
