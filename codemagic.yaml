@@ -48,7 +48,7 @@ workflows:
       - name: Install dependencies
         script: flutter pub get
       - name: Unit and widget tests
-        script: flutter test test/
+        script: flutter test test/ --concurrency=4
       - name: Build Android APK
         script: flutter build apk --release
       - name: Build Android App Bundle
@@ -129,7 +129,7 @@ workflows:
       - name: Install dependencies
         script: flutter pub get
       - name: Unit and widget tests
-        script: flutter test test/
+        script: flutter test test/ --concurrency=4
       - name: Build Android App Bundle
         script: flutter build appbundle --release
     artifacts:
