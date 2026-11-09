@@ -40,3 +40,4 @@ Agents cannot flip these UI toggles. Complete once on `edar-dev/powercoach-studi
 
 - [sonar-quality.md](sonar-quality.md) — SonarQube Cloud Free setup
 - [testing.md](testing.md) — local/CI test commands
+- [sentry-ops.md](sentry-ops.md) — Sentry release naming, symbol upload secrets, alert UI checklist

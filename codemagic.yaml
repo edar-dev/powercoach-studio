@@ -50,13 +50,31 @@ workflows:
       - name: Unit and widget tests
         script: flutter test test/ --concurrency=4
       - name: Build Android APK
-        script: flutter build apk --release
+        script: |
+          APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+          APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+          flutter build apk --release \
+            --split-debug-info=build/app/symbols \
+            --dart-define="APP_VERSION=${APP_VERSION}" \
+            --dart-define="APP_BUILD=${APP_BUILD}"
       - name: Build Android App Bundle
-        script: flutter build appbundle --release
+        script: |
+          APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+          APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+          flutter build appbundle --release \
+            --split-debug-info=build/app/symbols \
+            --dart-define="APP_VERSION=${APP_VERSION}" \
+            --dart-define="APP_BUILD=${APP_BUILD}"
+      - name: Upload Sentry debug symbols (optional)
+        script: |
+          export APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+          export APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+          bash scripts/sentry-upload.sh
     artifacts:
       - build/app/outputs/flutter-apk/*.apk
       - build/app/outputs/bundle/release/*.aab
       - build/app/outputs/mapping/release/mapping.txt
+      - build/app/symbols
 
   android_play_store:
     name: Android Play Store Publish
@@ -131,10 +149,22 @@ workflows:
       - name: Unit and widget tests
         script: flutter test test/ --concurrency=4
       - name: Build Android App Bundle
-        script: flutter build appbundle --release
+        script: |
+          APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+          APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+          flutter build appbundle --release \
+            --split-debug-info=build/app/symbols \
+            --dart-define="APP_VERSION=${APP_VERSION}" \
+            --dart-define="APP_BUILD=${APP_BUILD}"
+      - name: Upload Sentry debug symbols (optional)
+        script: |
+          export APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+          export APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+          bash scripts/sentry-upload.sh
     artifacts:
       - build/app/outputs/bundle/release/*.aab
       - build/app/outputs/mapping/release/mapping.txt
+      - build/app/symbols
     publishing:
       google_play:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS

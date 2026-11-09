@@ -21,13 +21,15 @@ bash scripts/ensure-env.sh   # copies .env -> .env.example for flutter run/build
 | `SUPABASE_URL` | Yes | Supabase project URL (auth) |
 | `SUPABASE_ANON_KEY` | Yes | Supabase anon key (auth) |
 | `SENTRY_DSN` | No | Error monitoring (release builds only) |
-| `SENTRY_ENVIRONMENT` | No | Sentry environment tag (default `development`) |
+| `SENTRY_ENVIRONMENT` | No | Sentry environment tag (release default `production`; use `development` for local release tests) |
 | `POSTHOG_API_KEY` | No | Product analytics / heatmaps (**Flutter web only**; empty = off) |
 | `POSTHOG_HOST` | No | Ingest host: local default `https://eu.i.posthog.com`; Vercel web prod uses first-party proxy `/pcs-ph` |
 
 ## Monitoring (Sentry)
 
 When `SENTRY_DSN` is set, release builds send errors and navigation traces to [Sentry](https://sentry.io). Leave empty to disable.
+
+Release tag: `powercoach-studio@<pubspec-version>` (plus `dist` = build number). CI can upload web source maps / Android debug symbols when `SENTRY_AUTH_TOKEN` + `SENTRY_ORG` + `SENTRY_PROJECT` are set. Ops checklist (alerts, secrets, verification): [`docs/sentry-ops.md`](docs/sentry-ops.md).
 
 ## Product analytics (PostHog, web)
 
@@ -98,10 +100,11 @@ Configure Codemagic group **`google_credentials`** with:
 
 - `SUPABASE_URL`, `SUPABASE_ANON_KEY` (required)
 - `SENTRY_DSN`, `SENTRY_ENVIRONMENT` (optional)
+- `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` (optional; debug-symbol upload)
 - Android keystore vars (release / Play Store workflows)
 - `GCLOUD_SERVICE_ACCOUNT_CREDENTIALS` (Play Store publish only)
 
-See `docs/play-store-release-guide.md` for the full setup.
+See `docs/play-store-release-guide.md` for the full setup and `docs/sentry-ops.md` for Sentry alerts / symbols.
 
 ## Privacy Policy (GitHub Pages)
 

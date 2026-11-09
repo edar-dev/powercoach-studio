@@ -14,6 +14,7 @@ import 'package:powercoach_studio/core/locale/app_locale_controller.dart';
 import 'package:powercoach_studio/core/notifications/calendar_reminder_scheduler.dart';
 import 'package:powercoach_studio/core/notifications/notification_scheduler_service.dart';
 import 'package:powercoach_studio/core/analytics/posthog_bootstrap.dart';
+import 'package:powercoach_studio/core/monitoring/sentry_release.dart';
 import 'package:powercoach_studio/core/platform/app_env_loader.dart';
 import 'package:powercoach_studio/core/platform/sqlite_android_workaround.dart';
 import 'package:powercoach_studio/core/platform/web_url_strategy.dart';
@@ -56,10 +57,14 @@ Future<void> main() async {
         options.enableAutoNativeBreadcrumbs = true;
         options.attachScreenshot = true;
         options.sendDefaultPii = false;
+        // Release-only init: default production so missing env does not land
+        // prod crashes under "development". Local release tests should set
+        // SENTRY_ENVIRONMENT=development in .env.
+        final env = dotenv.env['SENTRY_ENVIRONMENT']?.trim();
         options.environment =
-            dotenv.env['SENTRY_ENVIRONMENT']?.trim() ?? 'development';
-        options.release =
-            'powercoach-studio@${const String.fromEnvironment('APP_VERSION', defaultValue: '1.0.0')}';
+            (env != null && env.isNotEmpty) ? env : 'production';
+        options.release = SentryReleaseInfo.release;
+        options.dist = SentryReleaseInfo.dist;
       },
       appRunner: () {
         _logStartupStep('Sentry appRunner invoked', startupWatch);
