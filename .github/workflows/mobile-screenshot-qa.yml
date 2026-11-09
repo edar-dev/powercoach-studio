@@ -1,0 +1,132 @@
+# Phase C — optional mobile viewport screenshot capture (non-blocking).
+# Not required on every PR. Complements Phase A/B; CanvasKit captures are
+# artifacts for human review (no hard pixel-diff gate).
+name: Mobile Screenshot QA
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Weekly Monday 04:15 UTC
+    - cron: "15 4 * * 1"
+
+concurrency:
+  group: mobile-screenshot-qa-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: "3.35.6"
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  capture:
+    name: Capture mobile hubs
+    runs-on: ubuntu-latest
+    # Keep the workflow visible but never block merges / required checks.
+    continue-on-error: true
+    steps:
+      - name: Detect secrets
+        id: detect
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NAV_QA_PASSWORD: ${{ secrets.NAV_QA_PASSWORD }}
+          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ] || [ -z "$NAV_QA_PASSWORD" ]; then
+            echo "Missing SUPABASE_URL / SUPABASE_ANON_KEY / NAV_QA_PASSWORD — skipping capture"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "build_web=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "skip=false" >> "$GITHUB_OUTPUT"
+          if [ -n "$QA_BASE_URL" ]; then
+            echo "build_web=false" >> "$GITHUB_OUTPUT"
+            echo "Using pre-deployed QA_BASE_URL"
+          else
+            echo "build_web=true" >> "$GITHUB_OUTPUT"
+            echo "Will build Flutter web and serve on :8080"
+          fi
+
+      - name: Checkout
+        if: steps.detect.outputs.skip != 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Flutter app
+        if: steps.detect.outputs.skip != 'true' && steps.detect.outputs.build_web == 'true'
+        uses: ./.github/actions/setup-flutter-app
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+
+      - name: Build Flutter web
+        if: steps.detect.outputs.skip != 'true' && steps.detect.outputs.build_web == 'true'
+        run: |
+          # Match Vercel web packaging for Drift wasm worker assets when missing.
+          if [ ! -f web/sqlite3.wasm ]; then
+            curl --proto '=https' --tlsv1.2 -fsSL -o web/sqlite3.wasm \
+              "https://github.com/simolus3/sqlite3.dart/releases/download/sqlite3-2.9.4/sqlite3.wasm"
+          fi
+          if [ ! -f web/drift_worker.js ]; then
+            curl --proto '=https' --tlsv1.2 -fsSL -o web/drift_worker.js \
+              "https://github.com/simolus3/drift/releases/download/drift-2.31.0/drift_worker.js"
+          fi
+          flutter build web --release --no-wasm-dry-run
+
+      - name: Setup Node
+        if: steps.detect.outputs.skip != 'true'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: tool/qa/package-lock.json
+
+      - name: Install Playwright harness
+        if: steps.detect.outputs.skip != 'true'
+        working-directory: tool/qa
+        run: npm ci
+
+      - name: Serve web build (SPA fallback)
+        if: steps.detect.outputs.skip != 'true' && steps.detect.outputs.build_web == 'true'
+        working-directory: tool/qa
+        run: |
+          node serve-web.mjs ../../build/web 8080 &
+          for i in $(seq 1 60); do
+            if curl -fsS "http://127.0.0.1:8080/dashboard" >/dev/null; then
+              echo "Web build serving on :8080 (SPA ok)"
+              exit 0
+            fi
+            sleep 1
+          done
+          echo "Timed out waiting for SPA server"
+          exit 1
+
+      - name: Capture mobile hubs
+        if: steps.detect.outputs.skip != 'true'
+        working-directory: tool/qa
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          NAV_QA_PASSWORD: ${{ secrets.NAV_QA_PASSWORD }}
+          NAV_QA_EMAIL: nav.qa@powerstudio.com
+          QA_BASE_URL: ${{ secrets.QA_BASE_URL }}
+          QA_VIEWPORT_WIDTH: "390"
+          QA_VIEWPORT_HEIGHT: "844"
+        run: |
+          if [ -z "$QA_BASE_URL" ]; then
+            export QA_BASE_URL="http://127.0.0.1:8080"
+          fi
+          echo "Capturing against $QA_BASE_URL"
+          npm run capture
+
+      - name: Upload screenshots
+        if: steps.detect.outputs.skip != 'true' && always()
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: mobile-screenshot-qa
+          path: |
+            tool/qa/artifacts/
+            tool/qa/baselines/
+          if-no-files-found: warn
+          retention-days: 14
