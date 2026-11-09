@@ -22,6 +22,57 @@ void main() {
     });
   });
 
+  group('denseDayCanKeepInseparable', () {
+    test('default safety factor 0 always spans (never inseparable)', () {
+      final budget = denseContentBudget(firstPage: false);
+      // Old #251 thresholds would keep short estimates inseparable; factor 0
+      // forces spanning even when estimate is far below the ~806pt page.
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: 180,
+          pageBudget: budget,
+        ),
+        isFalse,
+      );
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: 820.5,
+          pageBudget: 805.89,
+        ),
+        isFalse,
+      );
+      expect(denseDayInseparableSafetyFactor, 0);
+    });
+
+    test('non-zero factor only keeps days safely under budget', () {
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: 100,
+          pageBudget: 800,
+          safetyFactor: 0.5,
+        ),
+        isTrue,
+      );
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: 500,
+          pageBudget: 800,
+          safetyFactor: 0.5,
+        ),
+        isFalse,
+      );
+      // Production-shaped: estimate near page height must not stay inseparable.
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: 820.5,
+          pageBudget: 805.89,
+          safetyFactor: 0.85,
+        ),
+        isFalse,
+      );
+    });
+  });
+
   group('packConsecutiveByHeight', () {
     test('three short days fit in one batch', () {
       final items = [120.0, 120.0, 120.0];
