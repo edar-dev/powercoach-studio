@@ -13,6 +13,7 @@ import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/routing/hub_chrome.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/stitch_app_bar.dart';
 import '../../../../core/ui/widgets/stitch_secondary_app_bar.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -256,13 +257,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     await _loadBackupStatus();
     if (!mounted) return;
     if (synced) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsCloudSyncSuccess)),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.settingsCloudSyncSuccess),
       );
     } else if (_lastAutoCloudError != null &&
         _lastAutoCloudError != previousError) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.settingsCloudBackupErrorGeneric)),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.settingsCloudBackupErrorGeneric),
+        backgroundColor: Theme.of(context).colorScheme.errorContainer,
+        persistUntilDismissed: true,
       );
     }
   }
@@ -341,22 +346,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await LocalCoachProfileRepository.instance.saveProfile(user.id, next);
       if (!mounted) return;
       setState(() => _applySavedProfile(next));
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.profileSavedMessage),
-          backgroundColor: cs.primaryContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.profileSavedMessage),
+        backgroundColor: cs.primaryContainer,
+        duration: const Duration(seconds: 2),
       );
     } catch (e, stackTrace) {
       await Sentry.captureException(e, stackTrace: stackTrace);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.profileSaveError),
-          backgroundColor: cs.errorContainer,
-          behavior: SnackBarBehavior.floating,
-        ),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.profileSaveError),
+        backgroundColor: cs.errorContainer,
+        persistUntilDismissed: true,
       );
     } finally {
       if (mounted) setState(() => _saving = false);

@@ -322,15 +322,18 @@ class SettingsScreenContent extends StatelessWidget {
     required Widget accountTail,
   }) {
     Widget sectionTitle(String title) {
-      return Padding(
-        padding: EdgeInsets.fromLTRB(edge, 4, edge, 4),
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: StitchMobileColors.onSurface,
-                fontWeight: FontWeight.w700,
-                fontSize: 13,
-              ),
+      return Semantics(
+        header: true,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(edge, 4, edge, 4),
+          child: Text(
+            title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: StitchMobileColors.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                ),
+          ),
         ),
       );
     }

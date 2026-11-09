@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../l10n/app_localizations.dart';
 import '../breakpoints.dart';
 import 'app_sheet.dart';
 
@@ -27,19 +26,22 @@ Future<DateTime?> showAppDatePicker({
     );
   }
 
-  final l10n = AppLocalizations.of(context);
+  final materials = MaterialLocalizations.of(context);
   final selected = ValueNotifier<DateTime>(clampedInitial);
+  BuildContext? sheetNavContext;
 
   try {
     return await showAppBottomSheet<DateTime>(
       context: context,
-      title: helpText ?? MaterialLocalizations.of(context).datePickerHelpText,
+      title: helpText ?? materials.datePickerHelpText,
       wrapContent: true,
-      primaryActionLabel: confirmLabel ?? l10n.customerSave,
+      primaryActionLabel: confirmLabel ?? materials.okButtonLabel,
       onPrimaryAction: () {
-        Navigator.of(context).pop(selected.value);
+        final navContext = sheetNavContext ?? context;
+        Navigator.of(navContext).pop(selected.value);
       },
       bodyBuilder: (sheetContext) {
+        sheetNavContext = sheetContext;
         Widget calendar = CalendarDatePicker(
           initialDate: selected.value,
           firstDate: firstDate,
