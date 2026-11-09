@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/widgets/app_date_picker.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_plan_api_model.dart';
 import '../../domain/session_execution_service.dart';
@@ -79,6 +80,7 @@ class _WorkoutFollowUpDialogState extends State<_WorkoutFollowUpDialog> {
             controller: _controller,
             decoration: InputDecoration(
               labelText: l10n.workoutFollowUpNameHint,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             autofocus: true,
           ),
@@ -104,7 +106,7 @@ class _WorkoutFollowUpDialogState extends State<_WorkoutFollowUpDialog> {
               final now = DateTime.now();
               final initial =
                   _selectedStartDate ?? DateTime(now.year, now.month, now.day);
-              final picked = await showDatePicker(
+              final picked = await showAppDatePicker(
                 context: context,
                 initialDate: initial,
                 firstDate: DateTime(2000),

@@ -98,27 +98,35 @@ class _ConnectivityStatusChipState extends State<ConnectivityStatusChip>
         child: Padding(
           padding: const EdgeInsets.only(right: 4),
           child: Material(
-            color: cs.errorContainer.withValues(alpha: 0.85),
+            color: cs.errorContainer,
             borderRadius: BorderRadius.circular(999),
-            child: Padding(
-              padding: pad,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.cloud_off_outlined,
-                    size: widget.dense ? 14 : 16,
-                    color: cs.onErrorContainer,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    label,
-                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: cs.onErrorContainer,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
+                  color: cs.onErrorContainer.withValues(alpha: 0.45),
+                ),
+              ),
+              child: Padding(
+                padding: pad,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.cloud_off_outlined,
+                      size: widget.dense ? 14 : 16,
+                      color: cs.onErrorContainer,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      label,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                            color: cs.onErrorContainer,
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

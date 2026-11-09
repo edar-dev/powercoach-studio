@@ -2407,5 +2407,10 @@
   "analyticsConsentDecline": "Rifiuta",
   "analyticsConsentPrivacyLink": "Informativa privacy",
   "connectivityOffline": "Offline",
-  "connectivityOnline": "Online"
+  "connectivityOnline": "Online",
+  "settingsSectionOther": "Altro",
+  "saveDisabledNeedDisplayName": "Inserisci un nome per salvare",
+  "saveDisabledNeedDayName": "Assegna un nome al giorno per salvare",
+  "saveDisabledNeedChanges": "Compila i campi obbligatori per salvare",
+  "phoneLandscapeEditorHint": "Ruota in verticale per più spazio sull’editor"
 }

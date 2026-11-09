@@ -24,6 +24,7 @@ void showEditMobilitySectionSheet(
             controller: nameController,
             decoration: InputDecoration(
               labelText: l10n.workoutBuilderSectionNameLabel,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             autofocus: false,
           ),
@@ -32,6 +33,7 @@ void showEditMobilitySectionSheet(
             controller: scheduleController,
             decoration: InputDecoration(
               labelText: l10n.mobilitySectionScheduleHintLabel,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
             ),
             maxLines: 2,
           ),

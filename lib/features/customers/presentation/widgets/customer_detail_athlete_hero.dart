@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_avatar.dart';
 import 'package:powercoach_studio/features/customers/data/models/customer.dart';
 import 'package:powercoach_studio/features/customers/domain/customer_progress_metrics.dart';
 import 'package:powercoach_studio/features/customers/presentation/customer_list_filter.dart';
@@ -129,28 +130,19 @@ class _IdentityBlock extends StatelessWidget {
             Stack(
               clipBehavior: Clip.none,
               children: [
-                Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFDBEAFE), Color(0xFFBFDBFE)],
-                    ),
-                    border: Border.all(
-                      color: const Color(0xFF1B2B48),
-                      width: 4,
-                    ),
+                AppAvatar(
+                  size: 96,
+                  initials: customerInitials(customer.name),
+                  foregroundColor: const Color(0xFF1E3A8A),
+                  fontSize: 28,
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFDBEAFE), Color(0xFFBFDBFE)],
                   ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    customerInitials(customer.name),
-                    style: const TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.w800,
-                      color: Color(0xFF1E3A8A),
-                    ),
+                  border: Border.all(
+                    color: const Color(0xFF1B2B48),
+                    width: 4,
                   ),
+                  semanticLabel: customer.name,
                 ),
                 Positioned(
                   right: 2,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/widgets/app_date_picker.dart';
 import '../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../dashboard/domain/plan_calendar_event.dart';
@@ -51,7 +52,7 @@ class CustomerWorkoutPlanSessionHandler {
           originalDay: originalDay,
         );
       } else if (selected == 'override_move') {
-        final picked = await showDatePicker(
+        final picked = await showAppDatePicker(
           context: context,
           initialDate: event.day,
           firstDate: DateTime(2000),

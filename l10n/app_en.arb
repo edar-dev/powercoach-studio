@@ -2449,5 +2449,10 @@
   "analyticsConsentDecline": "Decline",
   "analyticsConsentPrivacyLink": "Privacy policy",
   "connectivityOffline": "Offline",
-  "connectivityOnline": "Online"
+  "connectivityOnline": "Online",
+  "settingsSectionOther": "Other",
+  "saveDisabledNeedDisplayName": "Enter a name to save",
+  "saveDisabledNeedDayName": "Name the day to save",
+  "saveDisabledNeedChanges": "Fill required fields to save",
+  "phoneLandscapeEditorHint": "Rotate to portrait for more editor space"
 }

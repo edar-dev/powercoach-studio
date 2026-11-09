@@ -4,6 +4,7 @@ import '../../../../core/locale/app_locale_controller.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/pinned_section_header.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../backup_onboarding_dialog.dart';
 import 'settings_backup_module.dart';
@@ -60,6 +61,8 @@ class SettingsScreenContent extends StatelessWidget {
     required this.onCancelChanges,
     required this.onSaveProfile,
     this.subscriptionPlanIsPro = false,
+    this.saveEnabled = true,
+    this.saveDisabledHint,
   });
 
   final AppLocalizations l10n;
@@ -105,6 +108,8 @@ class SettingsScreenContent extends StatelessWidget {
   final VoidCallback onCancelChanges;
   final VoidCallback onSaveProfile;
   final bool subscriptionPlanIsPro;
+  final bool saveEnabled;
+  final String? saveDisabledHint;
 
   @override
   Widget build(BuildContext context) {
@@ -121,222 +126,61 @@ class SettingsScreenContent extends StatelessWidget {
       onSelect: onSectionSelected,
       horizontal: !desktop,
     );
-    final edge = phone ? 16.0 : (desktop ? 16.0 : 20.0);
+    final edge = phone ? 12.0 : (desktop ? 16.0 : 20.0);
+    final moduleGap = phone ? 12.0 : 24.0;
     final bottomPad = isDirty ? (phone ? 120.0 : 88.0) : (phone ? 32.0 : 24.0);
 
-    final mainColumn = Column(
+    final personalCard = KeyedSubtree(
+      key: personalKey,
+      child: SettingsPersonalFormCard(
+        formKey: formKey,
+        displayNameController: displayNameController,
+        emailController: emailController,
+        phoneController: phoneController,
+        bioController: bioController,
+        avatarUrlController: avatarUrlController,
+        websiteController: websiteController,
+        emailVerified: emailVerified,
+        loadError: profileLoadError,
+      ),
+    );
+    final workoutPrefs = SettingsWorkoutPrefsModule(
+      maximalWeightRoundingKg: maximalWeightRoundingKg,
+      onRoundingChanged: onMaximalWeightRoundingChanged,
+    );
+    final notifications = KeyedSubtree(
+      key: notificationsKey,
+      child: SettingsNotificationsModule(
+        notificationsEnabled: notificationsEnabled,
+        calendarRemindersEnabled: calendarRemindersEnabled,
+        calendarReminderLeadHours: calendarReminderLeadHours,
+        onNotificationsToggle: onNotificationsToggle,
+        onCalendarRemindersToggle: onCalendarRemindersToggle,
+        onPickCalendarLeadHours: onPickCalendarLeadHours,
+      ),
+    );
+    final backup = KeyedSubtree(
+      key: backupKey,
+      child: SettingsBackupModule(
+        onExportBackup: onExportBackup,
+        onImportBackup: onImportBackup,
+        onUploadCloudBackup: onUploadCloudBackup,
+        onRestoreCloudBackup: onRestoreCloudBackup,
+        autoCloudEnabled: autoCloudEnabled,
+        onAutoCloudToggle: onAutoCloudToggle,
+        showStoragePersistHint: showStoragePersistHint,
+        onDismissStoragePersistHint: onDismissStoragePersistHint,
+        lastBackupAtLabel: lastBackupAtLabel,
+        lastAutoCloudAtLabel: lastAutoCloudAtLabel,
+        lastCloudSyncAtLabel: lastCloudSyncAtLabel,
+        lastErrorLabel: lastErrorLabel,
+        onPullCloudSync: onPullCloudSync,
+      ),
+    );
+
+    final accountTail = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        KeyedSubtree(
-          key: personalKey,
-          child: SettingsPersonalFormCard(
-            formKey: formKey,
-            displayNameController: displayNameController,
-            emailController: emailController,
-            phoneController: phoneController,
-            bioController: bioController,
-            avatarUrlController: avatarUrlController,
-            websiteController: websiteController,
-            emailVerified: emailVerified,
-            loadError: profileLoadError,
-          ),
-        ),
-        SizedBox(height: phone ? 16 : 24),
-        SettingsWorkoutPrefsModule(
-          maximalWeightRoundingKg: maximalWeightRoundingKg,
-          onRoundingChanged: onMaximalWeightRoundingChanged,
-        ),
-        SizedBox(height: phone ? 16 : 24),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final sideBySide = !phone && constraints.maxWidth >= 720;
-            final notifications = KeyedSubtree(
-              key: notificationsKey,
-              child: SettingsNotificationsModule(
-                notificationsEnabled: notificationsEnabled,
-                calendarRemindersEnabled: calendarRemindersEnabled,
-                calendarReminderLeadHours: calendarReminderLeadHours,
-                onNotificationsToggle: onNotificationsToggle,
-                onCalendarRemindersToggle: onCalendarRemindersToggle,
-                onPickCalendarLeadHours: onPickCalendarLeadHours,
-              ),
-            );
-            final backup = KeyedSubtree(
-              key: backupKey,
-              child: SettingsBackupModule(
-                onExportBackup: onExportBackup,
-                onImportBackup: onImportBackup,
-                onUploadCloudBackup: onUploadCloudBackup,
-                onRestoreCloudBackup: onRestoreCloudBackup,
-                autoCloudEnabled: autoCloudEnabled,
-                onAutoCloudToggle: onAutoCloudToggle,
-                showStoragePersistHint: showStoragePersistHint,
-                onDismissStoragePersistHint: onDismissStoragePersistHint,
-                lastBackupAtLabel: lastBackupAtLabel,
-                lastAutoCloudAtLabel: lastAutoCloudAtLabel,
-                lastCloudSyncAtLabel: lastCloudSyncAtLabel,
-                lastErrorLabel: lastErrorLabel,
-                onPullCloudSync: onPullCloudSync,
-              ),
-            );
-            if (!sideBySide) {
-              return Column(
-                children: [
-                  notifications,
-                  SizedBox(height: phone ? 16 : 16),
-                  backup,
-                ],
-              );
-            }
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: notifications),
-                const SizedBox(width: 16),
-                Expanded(child: backup),
-              ],
-            );
-          },
-        ),
-        SizedBox(height: phone ? 16 : 24),
-        if (phone) ...[
-          // Compact language / legal access without hub sidebar.
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.language,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsNavLanguage,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: Text(
-              languageTrailing,
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: StitchMobileColors.outline,
-              ),
-            ),
-            onTap: () => onSectionSelected(SettingsHubSection.language),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.picture_as_pdf_outlined,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsNavPdfBrand,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.chevron_right,
-              size: 16,
-              color: StitchMobileColors.outline,
-            ),
-            onTap: () => onSectionSelected(SettingsHubSection.pdfBrand),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.health_and_safety_outlined,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsNavDataHealth,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.chevron_right,
-              size: 16,
-              color: StitchMobileColors.outline,
-            ),
-            onTap: () => onSectionSelected(SettingsHubSection.dataHealth),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.credit_card_outlined,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsNavSubscription,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: subscriptionPlanIsPro
-                ? Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: StitchMobileColors.primaryContainer.withValues(
-                        alpha: 0.2,
-                      ),
-                      borderRadius: BorderRadius.circular(999),
-                    ),
-                    child: Text(
-                      l10n.settingsProBadge,
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: StitchMobileColors.primary,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 10,
-                      ),
-                    ),
-                  )
-                : Text(
-                    l10n.subscriptionPlanFree,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: StitchMobileColors.outline,
-                    ),
-                  ),
-            onTap: () => onSectionSelected(SettingsHubSection.subscription),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.privacy_tip_outlined,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsLegalPrivacy,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.open_in_new,
-              size: 16,
-              color: StitchMobileColors.outline,
-            ),
-            onTap: () => onSectionSelected(SettingsHubSection.privacy),
-          ),
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: const Icon(
-              Icons.description_outlined,
-              color: StitchMobileColors.onSurfaceVariant,
-            ),
-            title: Text(
-              l10n.settingsLegalTerms,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: StitchMobileColors.onSurface,
-              ),
-            ),
-            trailing: const Icon(
-              Icons.open_in_new,
-              size: 16,
-              color: StitchMobileColors.outline,
-            ),
-            onTap: () => onSectionSelected(SettingsHubSection.terms),
-          ),
-        ],
         Align(
           alignment: Alignment.centerLeft,
           child: TextButton(
@@ -345,6 +189,7 @@ class SettingsScreenContent extends StatelessWidget {
               foregroundColor: phone
                   ? StitchMobileColors.error
                   : theme.colorScheme.error,
+              visualDensity: phone ? VisualDensity.compact : null,
             ),
             child: Text(
               l10n.profileSignOut,
@@ -354,6 +199,8 @@ class SettingsScreenContent extends StatelessWidget {
         ),
         ListTile(
           contentPadding: EdgeInsets.zero,
+          visualDensity: phone ? VisualDensity.compact : null,
+          minVerticalPadding: phone ? 4 : null,
           leading: Icon(
             Icons.person_off_outlined,
             color: phone
@@ -381,6 +228,13 @@ class SettingsScreenContent extends StatelessWidget {
       ],
     );
 
+    final otherList = _PhoneOtherLinks(
+      l10n: l10n,
+      languageTrailing: languageTrailing,
+      subscriptionPlanIsPro: subscriptionPlanIsPro,
+      onSectionSelected: onSectionSelected,
+    );
+
     return Stack(
       children: [
         CustomScrollView(
@@ -395,24 +249,50 @@ class SettingsScreenContent extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(edge, 0, edge, 16),
                 sliver: SliverToBoxAdapter(child: nav),
               ),
-            SliverPadding(
-              padding: EdgeInsets.fromLTRB(edge, 0, edge, phone ? 16 : 20),
-              sliver: SliverToBoxAdapter(
-                child: desktop
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 280,
-                            child: nav,
-                          ),
-                          const SizedBox(width: 18),
-                          Expanded(child: mainColumn),
-                        ],
-                      )
-                    : mainColumn,
+            if (phone)
+              ..._phonePinnedSlivers(
+                context: context,
+                edge: edge,
+                moduleGap: moduleGap,
+                personalCard: personalCard,
+                workoutPrefs: workoutPrefs,
+                notifications: notifications,
+                backup: backup,
+                otherList: otherList,
+                accountTail: accountTail,
+              )
+            else
+              SliverPadding(
+                padding: EdgeInsets.fromLTRB(edge, 0, edge, 20),
+                sliver: SliverToBoxAdapter(
+                  child: desktop
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(width: 280, child: nav),
+                            const SizedBox(width: 18),
+                            Expanded(
+                              child: _DesktopMainColumn(
+                                personalCard: personalCard,
+                                workoutPrefs: workoutPrefs,
+                                notifications: notifications,
+                                backup: backup,
+                                accountTail: accountTail,
+                                moduleGap: moduleGap,
+                              ),
+                            ),
+                          ],
+                        )
+                      : _DesktopMainColumn(
+                          personalCard: personalCard,
+                          workoutPrefs: workoutPrefs,
+                          notifications: notifications,
+                          backup: backup,
+                          accountTail: accountTail,
+                          moduleGap: moduleGap,
+                        ),
+                ),
               ),
-            ),
           ],
         ),
         if (isDirty)
@@ -422,8 +302,266 @@ class SettingsScreenContent extends StatelessWidget {
               saving: isSaving,
               onCancel: onCancelChanges,
               onSave: onSaveProfile,
+              saveEnabled: saveEnabled,
+              disabledHint: saveDisabledHint,
             ),
           ),
+      ],
+    );
+  }
+
+  List<Widget> _phonePinnedSlivers({
+    required BuildContext context,
+    required double edge,
+    required double moduleGap,
+    required Widget personalCard,
+    required Widget workoutPrefs,
+    required Widget notifications,
+    required Widget backup,
+    required Widget otherList,
+    required Widget accountTail,
+  }) {
+    Widget sectionTitle(String title) {
+      return Padding(
+        padding: EdgeInsets.fromLTRB(edge, 4, edge, 4),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                color: StitchMobileColors.onSurface,
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+              ),
+        ),
+      );
+    }
+
+    Widget body(Widget child, {double bottom = 0}) {
+      return SliverPadding(
+        padding: EdgeInsets.fromLTRB(edge, 0, edge, bottom),
+        sliver: SliverToBoxAdapter(
+          child: ListTileTheme(
+            data: const ListTileThemeData(
+              visualDensity: VisualDensity.compact,
+              minVerticalPadding: 4,
+              contentPadding: EdgeInsets.zero,
+            ),
+            child: child,
+          ),
+        ),
+      );
+    }
+
+    return [
+      PinnedSectionHeader(
+        height: 32,
+        backgroundColor: StitchMobileColors.surface,
+        child: sectionTitle(l10n.settingsNavPersonalInfo),
+      ),
+      body(personalCard, bottom: moduleGap),
+      PinnedSectionHeader(
+        height: 32,
+        backgroundColor: StitchMobileColors.surface,
+        child: sectionTitle(l10n.settingsWorkoutPrefsModuleTitle),
+      ),
+      body(workoutPrefs, bottom: moduleGap),
+      PinnedSectionHeader(
+        height: 32,
+        backgroundColor: StitchMobileColors.surface,
+        child: sectionTitle(l10n.settingsNavNotifications),
+      ),
+      body(notifications, bottom: moduleGap),
+      PinnedSectionHeader(
+        height: 32,
+        backgroundColor: StitchMobileColors.surface,
+        child: sectionTitle(l10n.settingsBackupModuleTitle),
+      ),
+      body(backup, bottom: moduleGap),
+      PinnedSectionHeader(
+        height: 32,
+        backgroundColor: StitchMobileColors.surface,
+        child: sectionTitle(l10n.settingsSectionOther),
+      ),
+      body(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            otherList,
+            accountTail,
+          ],
+        ),
+      ),
+    ];
+  }
+}
+
+class _DesktopMainColumn extends StatelessWidget {
+  const _DesktopMainColumn({
+    required this.personalCard,
+    required this.workoutPrefs,
+    required this.notifications,
+    required this.backup,
+    required this.accountTail,
+    required this.moduleGap,
+  });
+
+  final Widget personalCard;
+  final Widget workoutPrefs;
+  final Widget notifications;
+  final Widget backup;
+  final Widget accountTail;
+  final double moduleGap;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final sideBySide = constraints.maxWidth >= 720;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            personalCard,
+            SizedBox(height: moduleGap),
+            workoutPrefs,
+            SizedBox(height: moduleGap),
+            if (!sideBySide) ...[
+              notifications,
+              const SizedBox(height: 16),
+              backup,
+            ] else
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: notifications),
+                  const SizedBox(width: 16),
+                  Expanded(child: backup),
+                ],
+              ),
+            SizedBox(height: moduleGap),
+            accountTail,
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PhoneOtherLinks extends StatelessWidget {
+  const _PhoneOtherLinks({
+    required this.l10n,
+    required this.languageTrailing,
+    required this.subscriptionPlanIsPro,
+    required this.onSectionSelected,
+  });
+
+  final AppLocalizations l10n;
+  final String languageTrailing;
+  final bool subscriptionPlanIsPro;
+  final ValueChanged<SettingsHubSection> onSectionSelected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    Widget tile({
+      required IconData icon,
+      required String title,
+      required VoidCallback onTap,
+      Widget? trailing,
+    }) {
+      return ListTile(
+        contentPadding: EdgeInsets.zero,
+        visualDensity: VisualDensity.compact,
+        minVerticalPadding: 4,
+        leading: Icon(icon, color: StitchMobileColors.onSurfaceVariant),
+        title: Text(
+          title,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: StitchMobileColors.onSurface,
+          ),
+        ),
+        trailing: trailing ??
+            const Icon(
+              Icons.chevron_right,
+              size: 16,
+              color: StitchMobileColors.outline,
+            ),
+        onTap: onTap,
+      );
+    }
+
+    return Column(
+      children: [
+        tile(
+          icon: Icons.language,
+          title: l10n.settingsNavLanguage,
+          trailing: Text(
+            languageTrailing,
+            style: theme.textTheme.labelMedium?.copyWith(
+              color: StitchMobileColors.outline,
+            ),
+          ),
+          onTap: () => onSectionSelected(SettingsHubSection.language),
+        ),
+        tile(
+          icon: Icons.picture_as_pdf_outlined,
+          title: l10n.settingsNavPdfBrand,
+          onTap: () => onSectionSelected(SettingsHubSection.pdfBrand),
+        ),
+        tile(
+          icon: Icons.health_and_safety_outlined,
+          title: l10n.settingsNavDataHealth,
+          onTap: () => onSectionSelected(SettingsHubSection.dataHealth),
+        ),
+        tile(
+          icon: Icons.credit_card_outlined,
+          title: l10n.settingsNavSubscription,
+          trailing: subscriptionPlanIsPro
+              ? Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: StitchMobileColors.primaryContainer.withValues(
+                      alpha: 0.2,
+                    ),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    l10n.settingsProBadge,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: StitchMobileColors.primary,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10,
+                    ),
+                  ),
+                )
+              : Text(
+                  l10n.subscriptionPlanFree,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: StitchMobileColors.outline,
+                  ),
+                ),
+          onTap: () => onSectionSelected(SettingsHubSection.subscription),
+        ),
+        tile(
+          icon: Icons.privacy_tip_outlined,
+          title: l10n.settingsLegalPrivacy,
+          trailing: const Icon(
+            Icons.open_in_new,
+            size: 16,
+            color: StitchMobileColors.outline,
+          ),
+          onTap: () => onSectionSelected(SettingsHubSection.privacy),
+        ),
+        tile(
+          icon: Icons.description_outlined,
+          title: l10n.settingsLegalTerms,
+          trailing: const Icon(
+            Icons.open_in_new,
+            size: 16,
+            color: StitchMobileColors.outline,
+          ),
+          onTap: () => onSectionSelected(SettingsHubSection.terms),
+        ),
       ],
     );
   }

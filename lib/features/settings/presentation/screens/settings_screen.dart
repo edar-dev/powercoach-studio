@@ -505,6 +505,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               isSaving: _saving,
               onCancelChanges: _cancelChanges,
               onSaveProfile: _saveProfile,
+              saveEnabled: _displayNameController.text.trim().isNotEmpty,
+              saveDisabledHint:
+                  _displayNameController.text.trim().isEmpty
+                      ? l10n.saveDisabledNeedDisplayName
+                      : null,
               subscriptionPlanIsPro:
                   _savedSubscriptionPlan.toLowerCase() == 'pro',
             ),

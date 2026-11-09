@@ -5157,4 +5157,21 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get connectivityOnline => 'Online';
+
+  @override
+  String get settingsSectionOther => 'Altro';
+
+  @override
+  String get saveDisabledNeedDisplayName => 'Inserisci un nome per salvare';
+
+  @override
+  String get saveDisabledNeedDayName => 'Assegna un nome al giorno per salvare';
+
+  @override
+  String get saveDisabledNeedChanges =>
+      'Compila i campi obbligatori per salvare';
+
+  @override
+  String get phoneLandscapeEditorHint =>
+      'Ruota in verticale per più spazio sull’editor';
 }

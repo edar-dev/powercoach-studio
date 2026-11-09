@@ -7,6 +7,7 @@ import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../core/ui/widgets/inline_error_banner.dart';
@@ -175,6 +176,70 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       );
     }
 
+    final phone = !Breakpoints.isTabletOrWider(context);
+    final useInlineCta = widget.embeddedInTab && phone;
+    final assignCta = FilledButton.icon(
+      onPressed: _openNewWorkoutSheet,
+      icon: const Icon(Icons.add),
+      label: Text(l10n.customerAssignWorkout),
+      style: FilledButton.styleFrom(
+        backgroundColor: StitchM3Theme.accent,
+        foregroundColor: Colors.white,
+        minimumSize: const Size.fromHeight(48),
+      ),
+    );
+
+    if (useInlineCta) {
+      if (_plans.isEmpty) {
+        return CustomerWorkoutPlanEmptyState(bottomAction: assignCta);
+      }
+      if (_visiblePlans.isEmpty) {
+        return Column(
+          children: [
+            Expanded(
+              child: CustomerWorkoutPlanNoMatchState(
+                selectedFilter: _filter,
+                onSearchQueryChanged: (value) =>
+                    setState(() => _searchQuery = value),
+                onFilterChanged: (filter) => setState(() => _filter = filter),
+              ),
+            ),
+            SafeArea(
+              top: false,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                child: assignCta,
+              ),
+            ),
+          ],
+        );
+      }
+      return Column(
+        children: [
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _loadPlans,
+              child: CustomerWorkoutPlanList(
+                plans: _visiblePlans,
+                selectedFilter: _filter,
+                onSearchQueryChanged: (value) =>
+                    setState(() => _searchQuery = value),
+                onFilterChanged: (filter) => setState(() => _filter = filter),
+                tileBuilder: _buildPlanTile,
+              ),
+            ),
+          ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: assignCta,
+            ),
+          ),
+        ],
+      );
+    }
+
     return Stack(
       children: [
         if (_plans.isEmpty)
@@ -200,8 +265,8 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
           ),
         if (!_loading && _error == null)
           Positioned(
-            right: widget.embeddedInTab ? 0 : 16,
-            bottom: widget.embeddedInTab ? 0 : 16,
+            right: 16,
+            bottom: 16,
             child: FloatingActionButton.extended(
               onPressed: _openNewWorkoutSheet,
               icon: const Icon(Icons.add),

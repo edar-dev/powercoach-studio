@@ -132,6 +132,7 @@ class _MaximalCustomFormBodyState extends State<_MaximalCustomFormBody> {
             textCapitalization: TextCapitalization.sentences,
             decoration: InputDecoration(
               labelText: l10n.maximalCustomLabelField,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
               isDense: true,
             ),
             validator: (value) {

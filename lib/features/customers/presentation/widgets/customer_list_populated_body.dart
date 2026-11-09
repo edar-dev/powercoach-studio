@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_avatar.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/models/customer.dart';
@@ -556,23 +557,14 @@ class _AthleteCell extends StatelessWidget {
         Stack(
           clipBehavior: Clip.none,
           children: [
-            Container(
-              width: 36,
-              height: 36,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: avatar.$1,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: avatar.$2),
-              ),
-              child: Text(
-                customerInitials(customer.name),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w700,
-                  color: avatar.$3,
-                ),
-              ),
+            AppAvatar(
+              size: 36,
+              initials: customerInitials(customer.name),
+              backgroundColor: avatar.$1,
+              foregroundColor: avatar.$3,
+              fontSize: 11,
+              border: Border.all(color: avatar.$2),
+              semanticLabel: customer.name,
             ),
             Positioned(
               right: -2,

@@ -105,6 +105,7 @@ class _EditSetForm extends StatefulWidget {
 class _EditSetFormState extends State<_EditSetForm> {
   static const _denseDecoration = InputDecoration(
     isDense: true,
+    floatingLabelBehavior: FloatingLabelBehavior.always,
     contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
   );
 

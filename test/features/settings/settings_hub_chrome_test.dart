@@ -166,4 +166,85 @@ void main() {
     expect(find.text('Informazioni personali'), findsOneWidget);
     expect(find.text('Abbonamento'), findsOneWidget);
   });
+
+  testWidgets('phone settings pins section headers while scrolling', (
+    tester,
+  ) async {
+    final scrollController = ScrollController();
+    final displayName = TextEditingController(text: 'Coach');
+    final email = TextEditingController();
+    final phoneCtrl = TextEditingController();
+    final bio = TextEditingController();
+    final avatar = TextEditingController();
+    final website = TextEditingController();
+    addTearDown(() {
+      scrollController.dispose();
+      displayName.dispose();
+      email.dispose();
+      phoneCtrl.dispose();
+      bio.dispose();
+      avatar.dispose();
+      website.dispose();
+    });
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: StitchM3Theme.dark,
+        locale: const Locale('it'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: MediaQuery(
+          data: const MediaQueryData(size: Size(390, 844)),
+          child: Scaffold(
+            body: SettingsScreenContent(
+              l10n: lookupAppLocalizations(const Locale('it')),
+              scrollController: scrollController,
+              personalKey: GlobalKey(),
+              notificationsKey: GlobalKey(),
+              backupKey: GlobalKey(),
+              activeSection: SettingsHubSection.personalInfo,
+              onSectionSelected: (_) {},
+              formKey: GlobalKey<FormState>(),
+              displayNameController: displayName,
+              emailController: email,
+              phoneController: phoneCtrl,
+              bioController: bio,
+              avatarUrlController: avatar,
+              websiteController: website,
+              emailVerified: true,
+              profileLoadError: null,
+              notificationsEnabled: true,
+              calendarRemindersEnabled: false,
+              calendarReminderLeadHours: 24,
+              maximalWeightRoundingKg: 1,
+              onNotificationsToggle: (_) {},
+              onCalendarRemindersToggle: (_) {},
+              onPickCalendarLeadHours: () {},
+              onMaximalWeightRoundingChanged: (_) {},
+              onExportBackup: () {},
+              onImportBackup: () {},
+              onUploadCloudBackup: () {},
+              onRestoreCloudBackup: () {},
+              onSignOut: () {},
+              isDirty: false,
+              isSaving: false,
+              onCancelChanges: () {},
+              onSaveProfile: () {},
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CustomScrollView), findsOneWidget);
+    expect(find.text('Informazioni personali'), findsWidgets);
+
+    // Later pinned sections are lazy; scroll to bring them into the viewport.
+    await tester.drag(find.byType(CustomScrollView), const Offset(0, -2400));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Altro'), findsOneWidget);
+    expect(find.byType(SliverPersistentHeader), findsWidgets);
+  });
 }

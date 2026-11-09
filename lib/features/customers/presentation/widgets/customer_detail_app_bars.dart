@@ -118,6 +118,8 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
               controller: tabController,
               isScrollable: true,
               tabAlignment: TabAlignment.start,
+              padding: EdgeInsets.zero,
+              labelPadding: const EdgeInsets.symmetric(horizontal: 10),
               labelColor: MarketingDarkColors.brandLight,
               unselectedLabelColor: MarketingDarkColors.slate400,
               indicatorColor: MarketingDarkColors.brandMid,
@@ -125,11 +127,11 @@ class CustomerDetailLoadedAppBar extends StatelessWidget
               indicatorSize: TabBarIndicatorSize.label,
               dividerColor: MarketingDarkColors.border,
               labelStyle: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
               ),
               unselectedLabelStyle: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w500,
               ),
               tabs: [

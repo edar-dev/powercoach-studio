@@ -16,7 +16,10 @@ void showRenameDayDialog(
     title: l10n.workoutBuilderRenameDayTitle,
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: l10n.workoutBuilderDayNameLabel),
+      decoration: InputDecoration(
+        labelText: l10n.workoutBuilderDayNameLabel,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
       autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();
@@ -51,6 +54,7 @@ Future<String?> showDuplicateWeekDialog(
           controller: controller,
           decoration: InputDecoration(
             labelText: l10n.workoutBuilderDuplicateWeekHint,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
           ),
           autofocus: true,
           textInputAction: TextInputAction.done,
@@ -113,7 +117,10 @@ void showRenameWeekDialog(
     title: l10n.workoutBuilderRenameWeekTitle,
     bodyBuilder: (sheetContext) => TextField(
       controller: controller,
-      decoration: InputDecoration(labelText: l10n.workoutBuilderWeekNameLabel),
+      decoration: InputDecoration(
+        labelText: l10n.workoutBuilderWeekNameLabel,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+      ),
       autofocus: false,
       onSubmitted: (_) {
         final name = controller.text.trim();

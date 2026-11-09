@@ -7,6 +7,7 @@ import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import '../../../../core/ui/widgets/app_date_picker.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/customer_repository.dart';
@@ -107,7 +108,7 @@ class _CustomerCreationScreenState extends State<CustomerCreationScreen> {
 
   Future<void> _pickDateOfBirth() async {
     final now = DateTime.now();
-    final picked = await showDatePicker(
+    final picked = await showAppDatePicker(
       context: context,
       initialDate: _dateOfBirth ?? DateTime(now.year - 28, now.month, now.day),
       firstDate: DateTime(1920),
