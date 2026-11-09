@@ -83,6 +83,10 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 
 Manual CLI deploy still works with `npx vercel deploy --prod`.
 
+## Uptime
+
+Production reachability for this Vercel URL + Supabase Auth is probed by a scheduled GitHub Actions workflow (no paid SaaS). See [uptime-monitoring.md](uptime-monitoring.md).
+
 ## Web limitations
 
 - Local notifications are disabled on web
