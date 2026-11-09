@@ -130,4 +130,37 @@ void main() {
     final sheet = tester.widget<BottomSheet>(find.byType(BottomSheet));
     expect(sheet.showDragHandle, isTrue);
   });
+
+  testWidgets(
+    'phone edit-set sheet keeps Salva hittable above keyboard inset',
+    (tester) async {
+      const phone = Size(390, 844);
+      const keyboardInset = 300.0;
+      await _setViewSize(tester, phone);
+
+      // Open sheet first, then apply keyboard inset so the sheet rebuilds
+      // with MediaQuery.viewInsets (same path as a focused TextField).
+      await tester.pumpWidget(_harness());
+      await tester.tap(find.text('Open set'));
+      await tester.pumpAndSettle();
+
+      tester.view.viewInsets = const FakeViewPadding(bottom: keyboardInset);
+      addTearDown(tester.view.resetViewInsets);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Modifica blocco'), findsOneWidget);
+      expect(find.text('Salva'), findsOneWidget);
+
+      final sheet = tester.widget<BottomSheet>(find.byType(BottomSheet));
+      expect(sheet.showDragHandle, isTrue);
+
+      final saveFinder = find.widgetWithText(FilledButton, 'Salva');
+      expect(saveFinder, findsOneWidget);
+      final saveRect = tester.getRect(saveFinder);
+      // Sheet pads by viewInsets; Salva must stay above the keyboard band.
+      expect(saveRect.bottom, lessThanOrEqualTo(phone.height - keyboardInset + 0.5));
+      expect(saveRect.top, greaterThanOrEqualTo(0));
+      expect(tester.takeException(), isNull);
+    },
+  );
 }

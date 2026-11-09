@@ -103,11 +103,17 @@ Widget _app(GoRouter router) {
 }
 
 /// Phone width so [PrimaryShellScaffold] uses [NavigationBar] (not rail).
-Future<void> _pumpPhoneShell(WidgetTester tester, GoRouter router) async {
+Future<void> _pumpPhoneShell(
+  WidgetTester tester,
+  GoRouter router, {
+  double bottomPadding = 0,
+}) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1.0;
+  tester.view.padding = FakeViewPadding(bottom: bottomPadding);
   addTearDown(tester.view.resetPhysicalSize);
   addTearDown(tester.view.resetDevicePixelRatio);
+  addTearDown(tester.view.resetPadding);
   await tester.pumpWidget(_app(router));
   await tester.pumpAndSettle();
 }
@@ -177,6 +183,42 @@ void main() {
     expect(find.byType(NavigationRail), findsNothing);
     expect(find.text('Search clients, plans, exercises...'), findsNothing);
   });
+
+  testWidgets(
+    'phone shell with home-indicator padding keeps 4 destinations and no overflow',
+    (tester) async {
+      final router = _shellHarnessRouter();
+      await _pumpPhoneShell(tester, router, bottomPadding: 34);
+
+      final barFinder = find.byType(NavigationBar);
+      expect(barFinder, findsOneWidget);
+      final bar = tester.widget<NavigationBar>(barFinder);
+      expect(bar.height, 64);
+      expect(bar.destinations, hasLength(4));
+
+      // Scaffold paints the bar through the home-indicator band; chrome height
+      // stays 64 while the laid-out rect includes padding.bottom (34).
+      final barRect = tester.getRect(barFinder);
+      expect(barRect.height, greaterThanOrEqualTo(64));
+      expect(barRect.bottom, closeTo(844, 0.5));
+      expect(barRect.top, lessThanOrEqualTo(844 - 34 - 64 + 1));
+
+      expect(tester.takeException(), isNull);
+      expect(find.byType(NavigationRail), findsNothing);
+
+      // Settings path still hides the bar with safe padding applied.
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byTooltip('Settings'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.text('Settings destination'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    },
+  );
 
   testWidgets('exercise library keeps Schede branch selected', (tester) async {
     final router = _shellHarnessRouter(
