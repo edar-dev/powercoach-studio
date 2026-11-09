@@ -60,6 +60,10 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           SENTRY_ENVIRONMENT: ${{ secrets.SENTRY_ENVIRONMENT || 'production' }}
+          # Optional: enable source-map upload after web build (docs/sentry-ops.md).
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
           POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
           # Relative first-party proxy (vercel.json + prebuilt routes). Override
           # secret only if you intentionally need a different ingest host.

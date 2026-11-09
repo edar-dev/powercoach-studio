@@ -93,6 +93,17 @@ dev_dependencies:
   drift_dev: ^2.26.0
   build_runner: ^2.4.15
 
+  # CI-only: upload Flutter debug symbols / web source maps (docs/sentry-ops.md)
+  sentry_dart_plugin: ^3.0.0
+
+# Sentry Dart Plugin — org/project/token via env (never commit auth tokens).
+# See docs/sentry-ops.md. Upload is a no-op when SENTRY_AUTH_TOKEN is unset.
+sentry:
+  upload_debug_symbols: true
+  upload_source_maps: true
+  upload_sources: false
+  ignore_missing: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

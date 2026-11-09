@@ -17,6 +17,8 @@
 | `POSTHOG_HOST` | No | Local/default: `https://eu.i.posthog.com`. **Vercel production web:** `/pcs-ph` (first-party reverse proxy; baked by CI when secret unset) |
 | `FLUTTER_VERSION` | No | Defaults to `3.35.6` in `scripts/vercel-build.sh` |
 
+Sentry release naming, source-map upload, and alert checklist: [`docs/sentry-ops.md`](sentry-ops.md).
+
 ## Supabase auth
 
 Add your Vercel URL(s) under **Authentication → URL configuration**:
@@ -71,6 +73,9 @@ Vercel Git auto-deploy is disabled (`git.deploymentEnabled: false` in `vercel.js
 | `SUPABASE_ANON_KEY` | Same value as Vercel Production env |
 | `SENTRY_DSN` | Optional |
 | `SENTRY_ENVIRONMENT` | e.g. `production` |
+| `SENTRY_AUTH_TOKEN` | Optional; with org/project enables web source-map upload after build |
+| `SENTRY_ORG` | Optional; Sentry org slug (required for upload) |
+| `SENTRY_PROJECT` | Optional; Sentry project slug (required for upload) |
 | `POSTHOG_API_KEY` | Optional (web analytics) |
 | `POSTHOG_HOST` | Optional; default `/pcs-ph` (first-party proxy). Set to absolute EU host only for non-proxy debugging. If an old secret still has `https://eu.i.posthog.com`, update it to `/pcs-ph` or delete the secret so the workflow default applies. |
 | `VERCEL_ORG_ID` | Team/user ID from `.vercel/project.json` |
