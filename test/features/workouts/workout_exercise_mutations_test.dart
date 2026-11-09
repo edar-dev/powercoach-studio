@@ -31,6 +31,14 @@ void main() {
   }
 
   group('workout_exercise_mutations', () {
+    test('defaultExerciseSetDetails seeds one block of 1x10', () {
+      final details = defaultExerciseSetDetails();
+      expect(details, hasLength(kDefaultExerciseSetCount));
+      expect(kDefaultExerciseSetCount, 1);
+      expect(details.single.sets, '1');
+      expect(details.single.reps, kDefaultExerciseReps);
+    });
+
     test('buildExerciseFromPrescription sums block size into legacy sets', () {
       final exercise = buildExerciseFromPrescription(
         id: 'e-new',

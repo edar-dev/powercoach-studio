@@ -12,7 +12,7 @@ import '../../domain/exercise_picker_index_helpers.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import 'exercise_add_sheet_loader.dart';
 
-/// Compact gym-mode sheet: recent/pinned + search, one tap adds 3×10 defaults.
+/// Compact gym-mode sheet: recent/pinned + search, one tap adds 1×10 defaults.
 class ExerciseAddCompactSheet extends StatefulWidget {
   const ExerciseAddCompactSheet({
     super.key,
