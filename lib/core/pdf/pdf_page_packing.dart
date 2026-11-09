@@ -15,19 +15,21 @@ double denseContentBudget({required bool firstPage}) {
 
 /// Estimated height of one dense day block (title + table + trailing gap).
 ///
-/// Prefer slight overestimate so packing never under-fills a page into overflow.
+/// Prefer slight overestimate so packing stays conservative. Tall days that
+/// still exceed a page are emitted with Table spanning (see export usecase).
 double estimateDenseDayHeight({
   required int rowCount,
   required int weekCount,
 }) {
   const title = 18.0;
   const headerRow = 14.0;
-  const row = 16.0;
+  // Slightly generous vs typical rendered row height so packing errs early.
+  const row = 18.0;
   const afterGap = 8.0;
   var height = title + headerRow + rowCount * row + afterGap;
-  // Wider week columns can wrap labels; pad a little for 4+ weeks.
+  // Wider week columns can wrap labels; pad more for 4+ weeks.
   if (weekCount >= 4) {
-    height += 8.0;
+    height += 12.0;
   }
   return height;
 }
@@ -60,10 +62,10 @@ bool canAttachMobilityToFirstBatch({
 /// Rules:
 /// - Never split an item across batches.
 /// - If an item is taller than [pageBudget], flush the current batch and emit
-///   that item alone (may still overflow a real page — existing tradeoff).
+///   that item alone (caller may then use Table spanning for overflow).
 /// - Otherwise pack while `used + h <= pageBudget`.
 /// - Cap batch size with [maxItemsPerBatch] (default 3).
-/// - Never uses canSpan (caller wraps batches in Inseparable without canSpan).
+/// - Never uses canSpan; short batches wrap Inseparable, tall days span via Table.
 List<List<T>> packConsecutiveByHeight<T>(
   List<T> items,
   double Function(T) heightOf, {
