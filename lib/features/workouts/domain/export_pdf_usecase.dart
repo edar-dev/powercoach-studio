@@ -543,10 +543,46 @@ class _DenseDayBlock {
   _DenseDayBlock({
     required this.widgets,
     required this.estimatedHeight,
+    required this.rowCount,
   });
 
   final List<pw.Widget> widgets;
   final double estimatedHeight;
+  final int rowCount;
+}
+
+/// Tall / high-row days must expose [pw.Table] as a MultiPage child so rows
+/// can span pages. Threshold is intentionally below a true mega-day so dense
+/// 4-week cells with wrapped notes still take the spanning path.
+bool _denseDayRequiresTableSpanning(_DenseDayBlock day, double pageBudget) =>
+    day.estimatedHeight > pageBudget * 0.85 || day.rowCount >= 8;
+
+/// Emit title + table separately so the table (SpanningWidget) can split by row.
+///
+/// [day.widgets] is always `[title, table, gap]` from [_buildDenseDayBlocks].
+void _emitDenseDayWithTableSpanning(List<pw.Widget> out, _DenseDayBlock day) {
+  final w = day.widgets;
+  assert(w.length >= 2, 'dense day widgets must be [title, table, ...]');
+  out.add(pw.Inseparable(child: w[0])); // title alone (near table when space allows)
+  out.add(w[1]); // pw.Table as direct MultiPage child — spans rows; header repeat:true
+  if (w.length > 2) out.add(w[2]);
+}
+
+/// Emit each day separately: short days stay Inseparable (title+table), tall
+/// days use Table spanning. Avoids multi-day Inseparable columns whose real
+/// height can exceed one page when estimates under-count wrapped cells.
+void _emitDenseDayBatch(
+  List<pw.Widget> out,
+  List<_DenseDayBlock> batch,
+  double pageBudget,
+) {
+  for (final day in batch) {
+    if (_denseDayRequiresTableSpanning(day, pageBudget)) {
+      _emitDenseDayWithTableSpanning(out, day);
+    } else {
+      out.add(_wrapDenseDayBatch([day]));
+    }
+  }
 }
 
 /// Dense MultiPage body: mobility (optional attach) + packed day batches.
@@ -574,54 +610,34 @@ List<pw.Widget> _densePageBodyWidgets(
           dense: true,
         );
 
+  final firstPageBudget = denseContentBudget(firstPage: true);
+  final laterPageBudget = denseContentBudget(firstPage: false);
+
   // First batch uses the tighter page-1 budget (coach band + legend). When
   // short mobility is present, reserve its height so attach can succeed.
   final batches = packConsecutiveByHeightWithFirstPageBudget(
     dayBlocks,
     (b) => b.estimatedHeight,
-    firstPageBudget: denseContentBudget(firstPage: true),
-    laterPageBudget: denseContentBudget(firstPage: false),
+    firstPageBudget: firstPageBudget,
+    laterPageBudget: laterPageBudget,
     reservedFirstPageHeight: mobilityHeight,
   );
 
-  final out = <pw.Widget>[];
-  if (mobilityWidgets.isNotEmpty &&
-      batches.isNotEmpty &&
-      canAttachMobilityToFirstBatch(
-        mobilityHeight: mobilityHeight,
-        firstBatchHeight: batches.first.fold<double>(
-          0,
-          (sum, b) => sum + b.estimatedHeight,
-        ),
-        firstPageBudget: denseContentBudget(firstPage: true),
-      )) {
-    out.add(
-      pw.Inseparable(
-        child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-          children: [
-            ...mobilityWidgets,
-            for (final day in batches.first) ...day.widgets,
-          ],
-        ),
-      ),
-    );
-    for (final batch in batches.skip(1)) {
-      out.add(_wrapDenseDayBatch(batch));
-    }
-    return out;
-  }
-
-  // Keep prior behavior when mobility does not fit with the first batch.
-  out.addAll(mobilityWidgets);
-  for (final batch in batches) {
-    out.add(_wrapDenseDayBatch(batch));
+  // Mobility and days are separate MultiPage children. Packing still reserves
+  // mobility height on page 1 so short mobility + first days share space when
+  // they fit; we never wrap them in one non-spanning Inseparable (overflow risk).
+  final out = <pw.Widget>[
+    ...mobilityWidgets,
+  ];
+  for (var i = 0; i < batches.length; i++) {
+    final budget = i == 0 ? firstPageBudget : laterPageBudget;
+    _emitDenseDayBatch(out, batches[i], budget);
   }
   return out;
 }
 
 pw.Widget _wrapDenseDayBatch(List<_DenseDayBlock> batch) {
-  // One Inseparable per batch — never per-day, never canSpan.
+  // One Inseparable per short batch — never canSpan (Table cannot span inside).
   return pw.Inseparable(
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -808,7 +824,9 @@ List<_DenseDayBlock> _buildDenseDayBlocks(
           rowCount: dayRows.length,
           weekCount: weeks.length,
         ),
-        // Day UI only — batch wrapper owns Inseparable (no canSpan).
+        rowCount: dayRows.length,
+        // Day UI only — short batches wrap Inseparable; tall days emit Table
+        // as a direct MultiPage child so rows can span pages.
         widgets: [
           PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
           pw.Table(
