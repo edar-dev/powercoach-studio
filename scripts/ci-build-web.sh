@@ -33,6 +33,13 @@ POSTHOG_HOST=${POSTHOG_HOST:-https://eu.i.posthog.com}
 EOF
 
 APP_VERSION="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f1)"
+APP_BUILD="$(grep '^version:' pubspec.yaml | awk '{print $2}' | cut -d+ -f2)"
+export APP_VERSION APP_BUILD
 
 # pub get runs once in the workflow before this script.
-flutter build web --release --no-pub --no-wasm-dry-run --dart-define="APP_VERSION=${APP_VERSION}"
+# --source-maps enables Sentry web stack symbolication (see docs/sentry-ops.md).
+flutter build web --release --no-pub --no-wasm-dry-run --source-maps \
+  --dart-define="APP_VERSION=${APP_VERSION}" \
+  --dart-define="APP_BUILD=${APP_BUILD}"
+
+bash scripts/sentry-upload.sh

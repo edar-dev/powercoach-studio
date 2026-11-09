@@ -80,6 +80,7 @@ Still in `google_credentials`, set:
 - `SUPABASE_ANON_KEY` (required)
 - `SENTRY_DSN` (optional)
 - `SENTRY_ENVIRONMENT` (optional)
+- `SENTRY_AUTH_TOKEN`, `SENTRY_ORG`, `SENTRY_PROJECT` (optional; Android debug-symbol upload — see [`sentry-ops.md`](sentry-ops.md))
 
 ## 5) Pipeline Behavior (current `codemagic.yaml`)
 
