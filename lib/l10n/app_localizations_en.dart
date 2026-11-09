@@ -1818,6 +1818,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get customersSearchEmpty => 'No clients match these filters.';
 
   @override
+  String get customersSearchNoResults => 'No results';
+
+  @override
+  String get customersSearchStart => 'Start searching';
+
+  @override
+  String get searchNoResults => 'No results';
+
+  @override
   String get customersMetricTotalAthletes => 'Total athletes';
 
   @override
@@ -3022,6 +3031,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get workoutBuilderMoreActions => 'More actions';
+
+  @override
+  String get workoutBuilderMore => 'More';
 
   @override
   String get workoutBuilderMoveUp => 'Move up';

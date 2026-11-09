@@ -1,14 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/notifications/calendar_reminder_scheduler.dart';
 import '../../../../core/remote/cloud_save_error_message.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/app_sheet.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../core/ui/widgets/inline_error_banner.dart';
 import '../../../../core/ui/widgets/list_skeleton.dart';
@@ -115,15 +116,20 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
         final l10n = AppLocalizations.of(context);
         setState(() {
           _loading = false;
-          _error =
-              tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutPlansLoadError;
+          // Keep existing plans visible on refresh failure.
+          if (_plans.isEmpty) {
+            _error =
+                tryCloudSaveErrorMessage(e, l10n) ?? l10n.workoutPlansLoadError;
+          } else {
+            _error = null;
+          }
         });
       }
     }
   }
 
   void _openNewWorkoutSheet() async {
-    unawaited(HapticFeedback.mediumImpact());
+    unawaited(AppHaptics.medium());
     await showCustomerNewWorkoutSheet(
       context,
       customerId: widget.customerId,
@@ -161,12 +167,14 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    // Skeleton only on first load; keep plans visible while refreshing.
+    final showSkeleton = _loading && _plans.isEmpty;
 
-    if (_loading) {
+    if (showSkeleton) {
       return const ListSkeleton();
     }
 
-    if (_error != null) {
+    if (_error != null && _plans.isEmpty) {
       return Center(
         child: InlineErrorBanner(
           message: _error!,
@@ -199,17 +207,16 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
             Expanded(
               child: CustomerWorkoutPlanNoMatchState(
                 selectedFilter: _filter,
+                searchQuery: _searchQuery,
                 onSearchQueryChanged: (value) =>
                     setState(() => _searchQuery = value),
                 onFilterChanged: (filter) => setState(() => _filter = filter),
               ),
             ),
-            SafeArea(
-              top: false,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: assignCta,
-              ),
+            // Parent customer-detail body already applies bottom SafeArea.
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+              child: assignCta,
             ),
           ],
         );
@@ -229,12 +236,10 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
               ),
             ),
           ),
-          SafeArea(
-            top: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-              child: assignCta,
-            ),
+          // Parent customer-detail body already applies bottom SafeArea.
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+            child: assignCta,
           ),
         ],
       );
@@ -247,6 +252,7 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
         else if (_visiblePlans.isEmpty)
           CustomerWorkoutPlanNoMatchState(
             selectedFilter: _filter,
+            searchQuery: _searchQuery,
             onSearchQueryChanged: (value) =>
                 setState(() => _searchQuery = value),
             onFilterChanged: (filter) => setState(() => _filter = filter),
@@ -311,12 +317,10 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
       if (!mounted) return;
       await _loadPlans();
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutDuplicatedMessage),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.workoutDuplicatedMessage),
+        backgroundColor: StitchM3Theme.accent,
       );
     } catch (e) {
       if (!mounted) return;
@@ -340,15 +344,14 @@ class _CustomerWorkoutPlansBodyState extends State<CustomerWorkoutPlansBody> {
     );
     if (!confirmed || !mounted) return;
     try {
+      // Cloud soft-delete: no undo snack (committed remote delete).
       await _planRepo.delete(plan.id);
       if (!mounted) return;
       unawaited(_loadPlans());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.workoutDeletedMessage),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: StitchM3Theme.accent,
-        ),
+      showAppSnackBar(
+        context,
+        content: Text(l10n.workoutDeletedMessage),
+        backgroundColor: StitchM3Theme.accent,
       );
     } catch (e) {
       if (!mounted) return;

@@ -104,17 +104,22 @@ class CustomerWorkoutPlanNoMatchState extends StatelessWidget {
     required this.selectedFilter,
     required this.onSearchQueryChanged,
     required this.onFilterChanged,
+    this.searchQuery = '',
   });
 
   final WorkoutPlanFilter selectedFilter;
   final ValueChanged<String> onSearchQueryChanged;
   final ValueChanged<WorkoutPlanFilter> onFilterChanged;
+  final String searchQuery;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final hasSearch = searchQuery.trim().isNotEmpty;
+    final emptyLabel =
+        hasSearch ? l10n.searchNoResults : l10n.customerWorkoutsNoMatch;
     final filterBar = CustomerWorkoutPlanFilterBar(
       selectedFilter: selectedFilter,
       onSearchQueryChanged: onSearchQueryChanged,
@@ -129,7 +134,7 @@ class CustomerWorkoutPlanNoMatchState extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Text(
-                l10n.customerWorkoutsNoMatch,
+                emptyLabel,
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: cs.onSurfaceVariant,
                 ),

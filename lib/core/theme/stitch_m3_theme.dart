@@ -195,6 +195,9 @@ class StitchM3Theme {
       surfaceContainerHighest: surfaceContainerDark,
       error: Color(0xFFEF4444),
       onError: Colors.white,
+      // StitchMobileColors WCAG AA dark error surfaces.
+      errorContainer: Color(0xFF93000A),
+      onErrorContainer: Color(0xFFFFDAD6),
     );
 
     return ThemeData(

@@ -63,19 +63,27 @@ class _CustomerListPopulatedBodyState extends State<CustomerListPopulatedBody> {
     );
 
     if (filtered.isEmpty) {
+      final hasSearch = widget.searchQuery.trim().isNotEmpty;
+      final hasStatusFilter =
+          widget.statusFilter != CustomerListStatusFilter.all;
+      final emptyLabel = hasSearch
+          ? l10n.customersSearchNoResults
+          : hasStatusFilter
+              ? l10n.customersSearchEmpty
+              : l10n.customersSearchStart;
       return ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(32),
         children: [
           const SizedBox(height: 48),
-          const Icon(
-            Icons.search_off_rounded,
+          Icon(
+            hasSearch ? Icons.search_off_rounded : Icons.search_rounded,
             size: 48,
             color: MarketingDarkColors.slate500,
           ),
           const SizedBox(height: 12),
           Text(
-            l10n.customersSearchEmpty,
+            emptyLabel,
             textAlign: TextAlign.center,
             style: const TextStyle(color: MarketingDarkColors.slate400),
           ),

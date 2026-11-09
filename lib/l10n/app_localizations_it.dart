@@ -1836,6 +1836,15 @@ class AppLocalizationsIt extends AppLocalizations {
   String get customersSearchEmpty => 'Nessun cliente corrisponde ai filtri.';
 
   @override
+  String get customersSearchNoResults => 'Nessun risultato';
+
+  @override
+  String get customersSearchStart => 'Inizia a cercare';
+
+  @override
+  String get searchNoResults => 'Nessun risultato';
+
+  @override
   String get customersMetricTotalAthletes => 'Totale Atleti';
 
   @override
@@ -3049,6 +3058,9 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get workoutBuilderMoreActions => 'Altre azioni';
+
+  @override
+  String get workoutBuilderMore => 'Altro';
 
   @override
   String get workoutBuilderMoveUp => 'Sposta su';

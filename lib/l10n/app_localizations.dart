@@ -3308,6 +3308,24 @@ abstract class AppLocalizations {
   /// **'No clients match these filters.'**
   String get customersSearchEmpty;
 
+  /// No description provided for @customersSearchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get customersSearchNoResults;
+
+  /// No description provided for @customersSearchStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start searching'**
+  String get customersSearchStart;
+
+  /// No description provided for @searchNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results'**
+  String get searchNoResults;
+
   /// No description provided for @customersMetricTotalAthletes.
   ///
   /// In en, this message translates to:
@@ -5445,6 +5463,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'More actions'**
   String get workoutBuilderMoreActions;
+
+  /// No description provided for @workoutBuilderMore.
+  ///
+  /// In en, this message translates to:
+  /// **'More'**
+  String get workoutBuilderMore;
 
   /// No description provided for @workoutBuilderMoveUp.
   ///

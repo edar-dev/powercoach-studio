@@ -101,8 +101,10 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
       setState(() {
         _loading = true;
         _loadError = null;
-        _entries = const [];
-        _hasMore = false;
+        // Keep existing entries visible while refreshing (no skeleton flash).
+        if (_entries.isEmpty) {
+          _hasMore = false;
+        }
       });
     }
     try {
@@ -125,7 +127,10 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _entries = const [];
+        // Only wipe the list when we had nothing to show.
+        if (_entries.isEmpty) {
+          _entries = const [];
+        }
         _loading = false;
         _loadError = AppLocalizations.of(context).workoutDiaryLoadError;
       });
@@ -300,9 +305,12 @@ class _WorkoutDiaryScreenState extends State<WorkoutDiaryScreen> {
             : phoneHubUtilityActions(includeSettings: true),
       ),
       body: SafeArea(
-        child: _loading
+        // Shell NavigationBar already owns bottom inset; avoid double padding.
+        top: false,
+        bottom: false,
+        child: _loading && _entries.isEmpty
             ? const CardListSkeleton(rowCount: 5)
-            : _loadError != null
+            : _loadError != null && _entries.isEmpty
             ? Center(
                 child: InlineErrorBanner(
                   message: _loadError!,

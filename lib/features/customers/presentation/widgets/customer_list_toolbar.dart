@@ -332,6 +332,7 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final cs = Theme.of(context).colorScheme;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -351,9 +352,7 @@ class _StatusChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-                  color: selected
-                      ? MarketingDarkColors.text
-                      : MarketingDarkColors.slate400,
+                  color: selected ? cs.onSurface : cs.onSurfaceVariant,
                 ),
               ),
               const SizedBox(width: 4),
@@ -362,9 +361,7 @@ class _StatusChip extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w400,
-                  color: selected
-                      ? MarketingDarkColors.slate300
-                      : MarketingDarkColors.slate500,
+                  color: selected ? cs.onSurfaceVariant : cs.outline,
                 ),
               ),
             ],

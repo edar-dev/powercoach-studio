@@ -135,9 +135,17 @@ class _ExerciseLibraryTabViewState extends State<ExerciseLibraryTabView> {
                   builder: (context) {
                     final list = _filteredRoots();
                     if (list.isEmpty) {
-                      final hasFilter = widget.searchQuery.trim().isNotEmpty ||
-                          widget.muscleFilter !=
-                              ExerciseLibraryMuscleGroup.all;
+                      final hasSearch = widget.searchQuery.trim().isNotEmpty;
+                      final hasMuscleFilter = widget.muscleFilter !=
+                          ExerciseLibraryMuscleGroup.all;
+                      final hasFilter = hasSearch || hasMuscleFilter;
+                      final emptyLabel = hasSearch
+                          ? l10n.searchNoResults
+                          : hasMuscleFilter
+                              ? l10n.exerciseLibrarySearchEmpty
+                              : (widget.isMobility
+                                  ? l10n.exerciseLibraryEmptyMobility
+                                  : l10n.exerciseLibraryEmpty);
                       return ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.all(32),
@@ -152,11 +160,7 @@ class _ExerciseLibraryTabViewState extends State<ExerciseLibraryTabView> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            hasFilter
-                                ? l10n.exerciseLibrarySearchEmpty
-                                : (widget.isMobility
-                                    ? l10n.exerciseLibraryEmptyMobility
-                                    : l10n.exerciseLibraryEmpty),
+                            emptyLabel,
                             style: theme.textTheme.bodyLarge,
                             textAlign: TextAlign.center,
                           ),

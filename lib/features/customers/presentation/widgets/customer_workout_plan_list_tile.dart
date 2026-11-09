@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../dashboard/domain/plan_calendar_event.dart';
 import '../../../workouts/data/workout_plan_api_model.dart';
@@ -108,7 +108,7 @@ class CustomerWorkoutPlanListTile extends StatelessWidget {
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 0),
                   onSelected: (value) {
-                    HapticFeedback.mediumImpact();
+                    AppHaptics.medium();
                     switch (value) {
                       case 'follow_up':
                         onCreateFollowUp?.call();

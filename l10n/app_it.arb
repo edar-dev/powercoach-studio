@@ -747,6 +747,9 @@
   "customersEmptyStep3Body": "Genera la scheda da stampare o condividere con l'atleta.",
   "customersOfflineFirstFooter": "I dati si sincronizzano sul cloud quando sei online · cache locale su questo dispositivo",
   "customersSearchEmpty": "Nessun cliente corrisponde ai filtri.",
+  "customersSearchNoResults": "Nessun risultato",
+  "customersSearchStart": "Inizia a cercare",
+  "searchNoResults": "Nessun risultato",
   "customersMetricTotalAthletes": "Totale Atleti",
   "customersMetricActiveCount": "{count} attivi",
   "@customersMetricActiveCount": {
@@ -1387,6 +1390,7 @@
   "workoutBuilderTabDetails": "Dettagli",
   "workoutBuilderNotePlaceholder": "Aggiungi nota…",
   "workoutBuilderMoreActions": "Altre azioni",
+  "workoutBuilderMore": "Altro",
   "workoutBuilderMoveUp": "Sposta su",
   "workoutBuilderMoveDown": "Sposta giù",
   "workoutBuilderEditExercise": "Modifica esercizio",

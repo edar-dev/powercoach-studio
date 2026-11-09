@@ -17,6 +17,7 @@ class CustomerDetailAthleteHero extends StatelessWidget {
     required this.locale,
     required this.onAssignWorkout,
     required this.onEditProfile,
+    this.collapseSecondary = false,
   });
 
   final Customer customer;
@@ -26,6 +27,9 @@ class CustomerDetailAthleteHero extends StatelessWidget {
   final String locale;
   final VoidCallback onAssignWorkout;
   final VoidCallback onEditProfile;
+
+  /// Phone scroll: hide meta/subtitle chips to free list space.
+  final bool collapseSecondary;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +41,9 @@ class CustomerDetailAthleteHero extends StatelessWidget {
     final phone = customer.phone?.trim();
     final lastCheckIn = progressSnapshot?.lastSessionDate;
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
@@ -49,7 +55,7 @@ class CustomerDetailAthleteHero extends StatelessWidget {
         borderRadius: BorderRadius.circular(MarketingDarkColors.radius2xl),
         border: Border.all(color: const Color(0xFF1B2A45)),
       ),
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(collapseSecondary ? 14 : 20),
       child: Column(
         children: [
           LayoutBuilder(
@@ -65,17 +71,19 @@ class CustomerDetailAthleteHero extends StatelessWidget {
                 lastCheckIn: lastCheckIn,
                 l10n: l10n,
                 locale: locale,
+                collapseSecondary: collapseSecondary,
               );
               final actions = _HeroActions(
                 l10n: l10n,
                 onAssignWorkout: onAssignWorkout,
                 onEditProfile: onEditProfile,
+                compact: collapseSecondary,
               );
               if (stacked) {
                 return Column(
                   children: [
                     identity,
-                    const SizedBox(height: 20),
+                    SizedBox(height: collapseSecondary ? 12 : 20),
                     actions,
                   ],
                 );
@@ -107,6 +115,7 @@ class _IdentityBlock extends StatelessWidget {
     required this.lastCheckIn,
     required this.l10n,
     required this.locale,
+    required this.collapseSecondary,
   });
 
   final Customer customer;
@@ -118,9 +127,11 @@ class _IdentityBlock extends StatelessWidget {
   final DateTime? lastCheckIn;
   final AppLocalizations l10n;
   final String locale;
+  final bool collapseSecondary;
 
   @override
   Widget build(BuildContext context) {
+    final avatarSize = collapseSecondary ? 56.0 : 96.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -131,36 +142,37 @@ class _IdentityBlock extends StatelessWidget {
               clipBehavior: Clip.none,
               children: [
                 AppAvatar(
-                  size: 96,
+                  size: avatarSize,
                   initials: customerInitials(customer.name),
                   foregroundColor: const Color(0xFF1E3A8A),
-                  fontSize: 28,
+                  fontSize: collapseSecondary ? 18 : 28,
                   gradient: const LinearGradient(
                     colors: [Color(0xFFDBEAFE), Color(0xFFBFDBFE)],
                   ),
                   border: Border.all(
                     color: const Color(0xFF1B2B48),
-                    width: 4,
+                    width: collapseSecondary ? 2 : 4,
                   ),
                   semanticLabel: customer.name,
                 ),
-                Positioned(
-                  right: 2,
-                  bottom: 2,
-                  child: Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: MarketingDarkColors.brand,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFF0D1629),
-                        width: 2,
+                if (!collapseSecondary)
+                  Positioned(
+                    right: 2,
+                    bottom: 2,
+                    child: Container(
+                      width: 28,
+                      height: 28,
+                      decoration: BoxDecoration(
+                        color: MarketingDarkColors.brand,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFF0D1629),
+                          width: 2,
+                        ),
                       ),
+                      child: const Icon(Icons.check, color: Colors.white, size: 16),
                     ),
-                    child: const Icon(Icons.check, color: Colors.white, size: 16),
                   ),
-                ),
               ],
             ),
             const SizedBox(width: 16),
@@ -175,13 +187,13 @@ class _IdentityBlock extends StatelessWidget {
                     children: [
                       Text(
                         customer.name,
-                        style: const TextStyle(
-                          fontSize: 24,
+                        style: TextStyle(
+                          fontSize: collapseSecondary ? 18 : 24,
                           fontWeight: FontWeight.w700,
                           color: MarketingDarkColors.text,
                         ),
                       ),
-                      if (goalLabel.trim().isNotEmpty)
+                      if (goalLabel.trim().isNotEmpty && !collapseSecondary)
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -216,46 +228,60 @@ class _IdentityBlock extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 16,
-                    runSpacing: 6,
-                    children: [
-                      if (age != null && dob != null)
-                        _MetaIconText(
-                          icon: Icons.calendar_today_outlined,
-                          text: l10n.customerAgeWithDob(
-                            age!,
-                            DateFormat.yMMMd(locale).format(dob!),
+                  AnimatedSize(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    alignment: Alignment.topCenter,
+                    child: collapseSecondary
+                        ? const SizedBox.shrink()
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 8),
+                              Wrap(
+                                spacing: 16,
+                                runSpacing: 6,
+                                children: [
+                                  if (age != null && dob != null)
+                                    _MetaIconText(
+                                      icon: Icons.calendar_today_outlined,
+                                      text: l10n.customerAgeWithDob(
+                                        age!,
+                                        DateFormat.yMMMd(locale).format(dob!),
+                                      ),
+                                    ),
+                                  if (email != null && email!.isNotEmpty)
+                                    _MetaIconText(
+                                      icon: Icons.mail_outline,
+                                      text: email!,
+                                    ),
+                                  if (phone != null && phone!.isNotEmpty)
+                                    _MetaIconText(
+                                      icon: Icons.phone_outlined,
+                                      text: phone!,
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: [
+                                  _MetaChip(
+                                    label: l10n.customerJourneyStart,
+                                    value: DateFormat.yMMMd(locale)
+                                        .format(customer.createdAt),
+                                  ),
+                                  if (lastCheckIn != null)
+                                    _MetaChip(
+                                      label: l10n.customerLastCheckIn,
+                                      value: DateFormat.yMMMd(locale)
+                                          .format(lastCheckIn!),
+                                    ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      if (email != null && email!.isNotEmpty)
-                        _MetaIconText(
-                          icon: Icons.mail_outline,
-                          text: email!,
-                        ),
-                      if (phone != null && phone!.isNotEmpty)
-                        _MetaIconText(
-                          icon: Icons.phone_outlined,
-                          text: phone!,
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _MetaChip(
-                        label: l10n.customerJourneyStart,
-                        value: DateFormat.yMMMd(locale).format(customer.createdAt),
-                      ),
-                      if (lastCheckIn != null)
-                        _MetaChip(
-                          label: l10n.customerLastCheckIn,
-                          value: DateFormat.yMMMd(locale).format(lastCheckIn!),
-                        ),
-                    ],
                   ),
                 ],
               ),
@@ -339,14 +365,49 @@ class _HeroActions extends StatelessWidget {
     required this.l10n,
     required this.onAssignWorkout,
     required this.onEditProfile,
+    this.compact = false,
   });
 
   final AppLocalizations l10n;
   final VoidCallback onAssignWorkout;
   final VoidCallback onEditProfile;
+  final bool compact;
 
   @override
   Widget build(BuildContext context) {
+    if (compact) {
+      return Row(
+        children: [
+          Expanded(
+            child: FilledButton.icon(
+              onPressed: onAssignWorkout,
+              icon: const Icon(Icons.calendar_month_outlined, size: 16),
+              label: Text(l10n.customerAssignWorkout),
+              style: FilledButton.styleFrom(
+                backgroundColor: MarketingDarkColors.brand,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(MarketingDarkColors.radiusXl),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          IconButton.outlined(
+            onPressed: onEditProfile,
+            tooltip: l10n.customerEditProfile,
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            style: IconButton.styleFrom(
+              foregroundColor: MarketingDarkColors.slate300,
+              side: const BorderSide(color: Color(0xFF233352)),
+              backgroundColor: const Color(0xFF131C30),
+            ),
+          ),
+        ],
+      );
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
