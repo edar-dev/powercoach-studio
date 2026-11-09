@@ -9,13 +9,24 @@ flutter analyze
 flutter test test/
 ```
 
-Optional integration tests (require `.env` with Supabase credentials):
+### Integration / emulator smokes
+
+**Phase B phone UI smokes** (no Supabase secrets — local harnesses):
 
 ```bash
-flutter test integration_test/
+flutter test integration_test/phone_smokes/ -d <deviceId>
 ```
 
-Integration tests are **not** run in CI by default (no test-project secrets in the repo).
+These run on **Codemagic nightly only** (`android_integration_nightly` in `codemagic.yaml`). They are **not** part of GitHub PR CI (`flutter test test/` remains the required gate). Schedule the workflow in the Codemagic UI (Scheduled builds → `Android Integration Smokes (Nightly)` on `main`).
+
+Optional login/landing E2E (require `.env` with Supabase credentials):
+
+```bash
+flutter test integration_test/app_test.dart
+flutter test integration_test/landing_flow_test.dart
+```
+
+Those login/landing files are **not** run in CI (no test-project secrets in the repo). Details: `integration_test/README.md`.
 
 ## Covered areas
 
@@ -36,14 +47,15 @@ Integration tests are **not** run in CI by default (no test-project secrets in t
 
 | Area | Reason |
 |------|--------|
-| Full Supabase auth flow | Requires live auth; covered by integration tests locally |
-| Drift schema migrations | Validated manually + smoke tests via `initializeForTest` |
+| Full Supabase auth flow | Requires live auth; covered by local login/landing integration tests only |
+| Drift schema migrations | Validated manually + `debugCloseForTest` / `upsertEntityForUser` round-trips |
 | Mega-screens (builder, customer workouts) | Split in progress ([presentation-split-v1](../.cursor/plans/presentation-split-v1.plan.md)); shell/tab widget tests added incrementally |
 | End-to-end backup file I/O | Export/import UI smoke only; codec tested in unit tests |
 
 ## Test harness patterns
 
-- **Drift / offline:** `OfflineLocalStore.instance.initializeForTest(userId: '…')` with `fake_path_provider_platform.dart`
+- **Drift / offline:** `FakePathProviderPlatform` + `OfflineLocalStore.instance.clear()` / `upsertEntityForUser` / `debugCloseForTest()` (see `test/support/fake_path_provider_platform.dart`)
+- **Phone UI smokes:** `integration_test/support/phone_smoke_harness.dart` (shell router + day editor + Modifica blocco fixtures; no live auth)
 - **SharedPreferences:** `SharedPreferences.setMockInitialValues({})` in `setUp`
 - **macOS notifications in widget tests:** `registerFakeMacOSNotificationsPlatform()` in `test/support/`
 
