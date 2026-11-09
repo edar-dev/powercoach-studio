@@ -1,0 +1,152 @@
+# Production uptime probes for Vercel web + Supabase Auth.
+# Free / low-ops: scheduled GitHub Actions + GitHub Issue alert (optional Slack).
+# No service-role keys — anon key only when available (same secret as other workflows).
+name: Uptime Healthcheck
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 15 minutes (GitHub may delay under load; good enough for solo ops).
+    - cron: "*/15 * * * *"
+
+concurrency:
+  group: uptime-healthcheck
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  UPTIME_WEB_URL: ${{ vars.UPTIME_WEB_URL || 'https://powercoach-studio.vercel.app' }}
+  # Prefer Actions secret (already used by CI/CD); fall back to documented prod URL.
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://owtkzvphhapjdfibmebl.supabase.co' }}
+  SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+  UPTIME_ISSUE_TITLE: "[uptime] Production healthcheck failing"
+
+jobs:
+  probe:
+    name: Probe web + Supabase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Run healthcheck
+        id: check
+        run: |
+          set +e
+          bash scripts/uptime-healthcheck.sh | tee /tmp/uptime-healthcheck.log
+          code=${PIPESTATUS[0]}
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -ne 0 ]; then
+            echo "Healthcheck failed (exit $code)"
+            exit "$code"
+          fi
+
+      - name: Open or update uptime issue on failure
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh label create uptime \
+            --repo "$GITHUB_REPOSITORY" \
+            --description "Production uptime healthcheck" \
+            --color B60205 \
+            --force
+
+          body_file="$(mktemp)"
+          {
+            echo "## Uptime healthcheck failed"
+            echo
+            echo "- **When:** $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "- **Run:** $RUN_URL"
+            echo "- **Web:** \`$UPTIME_WEB_URL\`"
+            echo "- **Supabase:** \`$SUPABASE_URL\`"
+            echo
+            echo "### Probe log"
+            echo '```'
+            cat /tmp/uptime-healthcheck.log
+            echo '```'
+            echo
+            echo "_Auto-opened by \`.github/workflows/uptime-healthcheck.yml\`. Closes automatically when the next successful probe runs._"
+          } > "$body_file"
+
+          existing="$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --label uptime \
+            --json number,title \
+            --jq ".[] | select(.title == \"$UPTIME_ISSUE_TITLE\") | .number" \
+            | head -n1 || true)"
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file "$body_file"
+            echo "Commented on existing uptime issue #$existing"
+          else
+            gh issue create \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$UPTIME_ISSUE_TITLE" \
+              --label "uptime" \
+              --body-file "$body_file"
+            echo "Created uptime issue"
+          fi
+
+      - name: Optional Slack alert on failure
+        if: failure() && steps.check.outcome == 'failure'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+            echo "SLACK_WEBHOOK_URL not set — skipping Slack alert"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json, os, urllib.request
+          log = open("/tmp/uptime-healthcheck.log", encoding="utf-8", errors="replace").read()[:1500]
+          text = (
+              "PowerCoach Studio uptime FAILED\n"
+              f"Web: {os.environ.get('UPTIME_WEB_URL', '')}\n"
+              f"Supabase: {os.environ.get('SUPABASE_URL', '')}\n"
+              f"Run: {os.environ.get('RUN_URL', '')}\n"
+              f"Log:\n{log}"
+          )
+          req = urllib.request.Request(
+              os.environ["SLACK_WEBHOOK_URL"],
+              data=json.dumps({"text": text}).encode(),
+              headers={"Content-Type": "application/json"},
+              method="POST",
+          )
+          with urllib.request.urlopen(req, timeout=20) as resp:
+              print("Slack status", resp.status)
+          PY
+
+      - name: Resolve uptime issue on recovery
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          existing="$(gh issue list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --label uptime \
+            --json number,title \
+            --jq ".[] | select(.title == \"$UPTIME_ISSUE_TITLE\") | .number" \
+            | head -n1 || true)"
+          if [ -z "$existing" ]; then
+            echo "No open uptime issue — nothing to close"
+            exit 0
+          fi
+          gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body \
+            "✅ Healthcheck recovered at $(date -u +%Y-%m-%dT%H:%M:%SZ). Run: $RUN_URL"
+          gh issue close "$existing" --repo "$GITHUB_REPOSITORY" \
+            --reason completed \
+            --comment "Auto-closed: probes passing again."
