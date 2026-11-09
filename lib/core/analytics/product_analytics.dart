@@ -6,9 +6,14 @@ import 'posthog_web.dart';
 abstract final class AnalyticsEvents {
   static const loginCompleted = 'login_completed';
   static const signupCompleted = 'signup_completed';
+  static const landingCtaClicked = 'landing_cta_clicked';
+  static const waitlistSubmitted = 'waitlist_submitted';
   static const customerCreated = 'customer_created';
+  static const exerciseAddedToDay = 'exercise_added_to_day';
   static const workoutPlanCreated = 'workout_plan_created';
   static const workoutPlanSaved = 'workout_plan_saved';
+  static const planAssigned = 'plan_assigned';
+  static const customExerciseCreated = 'custom_exercise_created';
   static const pdfExported = 'pdf_exported';
   static const subscriptionCheckoutStarted = 'subscription_checkout_started';
   static const subscribed = 'subscribed';
@@ -58,12 +63,35 @@ abstract final class ProductAnalytics {
 
   static void signupCompleted() => capture(AnalyticsEvents.signupCompleted);
 
+  static void landingCtaClicked({required String cta}) => capture(
+        AnalyticsEvents.landingCtaClicked,
+        <String, Object?>{'cta': cta},
+      );
+
+  static void waitlistSubmitted({required bool alreadyPending}) => capture(
+        AnalyticsEvents.waitlistSubmitted,
+        <String, Object?>{'already_pending': alreadyPending},
+      );
+
   static void customerCreated() => capture(AnalyticsEvents.customerCreated);
+
+  static void exerciseAddedToDay({required String via}) => capture(
+        AnalyticsEvents.exerciseAddedToDay,
+        <String, Object?>{'via': via},
+      );
 
   static void workoutPlanCreated() =>
       capture(AnalyticsEvents.workoutPlanCreated);
 
   static void workoutPlanSaved() => capture(AnalyticsEvents.workoutPlanSaved);
+
+  static void planAssigned() => capture(AnalyticsEvents.planAssigned);
+
+  static void customExerciseCreated({required String catalogSource}) =>
+      capture(
+        AnalyticsEvents.customExerciseCreated,
+        <String, Object?>{'catalog_source': catalogSource},
+      );
 
   static void pdfExported({required String source}) => capture(
         AnalyticsEvents.pdfExported,

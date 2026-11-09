@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../../../core/analytics/product_analytics.dart';
 import '../data/workout_routine_model.dart';
 import '../domain/exercise_prescription_scope.dart';
 import '../domain/maximal_ref.dart';
@@ -356,8 +357,9 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
     required int weekIndex,
     required int dayIndex,
     required Exercise exercise,
+    String via = 'add',
   }) {
-    return _replace(
+    final ok = _replace(
       addExerciseToDayInRoutine(
         routine: _routine,
         weekIndex: weekIndex,
@@ -365,6 +367,10 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
         exercise: exercise,
       ),
     );
+    if (ok) {
+      ProductAnalytics.exerciseAddedToDay(via: via);
+    }
+    return ok;
   }
 
   bool duplicateExercise({
@@ -377,6 +383,7 @@ class WorkoutBuilderSessionController extends ChangeNotifier {
       weekIndex: weekIndex,
       dayIndex: dayIndex,
       exercise: source.copyWith(id: newExerciseId),
+      via: 'duplicate',
     );
   }
 

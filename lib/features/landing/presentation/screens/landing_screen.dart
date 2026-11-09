@@ -6,6 +6,7 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_paths.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../landing_colors.dart';
@@ -91,7 +92,8 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  void _navigateStartFree() {
+  void _navigateStartFree({String cta = 'start_free'}) {
+    ProductAnalytics.landingCtaClicked(cta: cta);
     HapticFeedback.mediumImpact();
     if (_isLoggedIn) {
       navigateTo(context, AppPaths.customers);
@@ -101,6 +103,7 @@ class _LandingScreenState extends State<LandingScreen> {
   }
 
   void _navigateUpgradePro() {
+    ProductAnalytics.landingCtaClicked(cta: 'pricing_pro');
     HapticFeedback.mediumImpact();
     if (_isLoggedIn) {
       navigateTo(context, AppPaths.subscription);
@@ -166,6 +169,7 @@ class _LandingScreenState extends State<LandingScreen> {
               trustExport: l10n.landingTrustExport,
               previewEditorLabel: l10n.landingPreviewEditorLabel,
               onPrimary: () {
+                ProductAnalytics.landingCtaClicked(cta: 'hero_primary');
                 HapticFeedback.mediumImpact();
                 if (isLoggedIn) {
                   navigateTo(context, AppPaths.dashboard);
@@ -174,6 +178,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 }
               },
               onSecondary: () {
+                ProductAnalytics.landingCtaClicked(cta: 'hero_secondary');
                 HapticFeedback.mediumImpact();
                 _scrollTo(_pricingKey);
               },
@@ -189,7 +194,7 @@ class _LandingScreenState extends State<LandingScreen> {
               key: _phasesKey,
               child: LandingHowItWorksSection(
                 l10n: l10n,
-                onPrimary: _navigateStartFree,
+                onPrimary: () => _navigateStartFree(cta: 'how_primary'),
                 onSecondary: _onNavLibrary,
               ),
             ),
@@ -199,7 +204,7 @@ class _LandingScreenState extends State<LandingScreen> {
               child: LandingPricingSection(
                 l10n: l10n,
                 isLoggedIn: isLoggedIn,
-                onStartFree: _navigateStartFree,
+                onStartFree: () => _navigateStartFree(cta: 'pricing_free'),
                 onUpgradePro: _navigateUpgradePro,
               ),
             ),
@@ -220,9 +225,10 @@ class _LandingScreenState extends State<LandingScreen> {
                 footnote: isLoggedIn ? null : l10n.landingCtaFootnote,
                 onCta: () {
                   if (isLoggedIn) {
+                    ProductAnalytics.landingCtaClicked(cta: 'bottom_cta');
                     navigateTo(context, AppPaths.subscription);
                   } else {
-                    _navigateStartFree();
+                    _navigateStartFree(cta: 'bottom_cta');
                   }
                 },
               ),

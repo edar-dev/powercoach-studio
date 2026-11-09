@@ -139,9 +139,14 @@ POSTHOG_API_KEY=phc_test_key
       ProductAnalytics.capture('login_completed');
       ProductAnalytics.loginCompleted();
       ProductAnalytics.signupCompleted();
+      ProductAnalytics.landingCtaClicked(cta: 'hero_primary');
+      ProductAnalytics.waitlistSubmitted(alreadyPending: false);
       ProductAnalytics.customerCreated();
+      ProductAnalytics.exerciseAddedToDay(via: 'add');
       ProductAnalytics.workoutPlanCreated();
       ProductAnalytics.workoutPlanSaved();
+      ProductAnalytics.planAssigned();
+      ProductAnalytics.customExerciseCreated(catalogSource: 'manual');
       ProductAnalytics.pdfExported(source: 'workout_plan');
       ProductAnalytics.subscriptionCheckoutStarted(billingInterval: 'monthly');
       ProductAnalytics.subscribed();
@@ -156,9 +161,14 @@ POSTHOG_API_KEY=phc_test_key
     test('event name constants are stable', () {
       expect(AnalyticsEvents.loginCompleted, 'login_completed');
       expect(AnalyticsEvents.signupCompleted, 'signup_completed');
+      expect(AnalyticsEvents.landingCtaClicked, 'landing_cta_clicked');
+      expect(AnalyticsEvents.waitlistSubmitted, 'waitlist_submitted');
       expect(AnalyticsEvents.customerCreated, 'customer_created');
+      expect(AnalyticsEvents.exerciseAddedToDay, 'exercise_added_to_day');
       expect(AnalyticsEvents.workoutPlanCreated, 'workout_plan_created');
       expect(AnalyticsEvents.workoutPlanSaved, 'workout_plan_saved');
+      expect(AnalyticsEvents.planAssigned, 'plan_assigned');
+      expect(AnalyticsEvents.customExerciseCreated, 'custom_exercise_created');
       expect(AnalyticsEvents.pdfExported, 'pdf_exported');
       expect(
         AnalyticsEvents.subscriptionCheckoutStarted,

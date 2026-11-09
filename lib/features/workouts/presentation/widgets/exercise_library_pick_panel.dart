@@ -7,11 +7,13 @@ import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
 import 'package:powercoach_studio/core/ui/widgets/inline_error_banner.dart';
 import 'package:powercoach_studio/core/ui/widgets/list_skeleton.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/default_exercise_catalog_seeder.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
+import '../../../exercise_library/domain/exercise_catalog_source.dart';
 import '../../../exercise_library/domain/exercise_library_tree_helpers.dart';
 import '../../../exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
 import '../../domain/exercise_picker_index_helpers.dart';
@@ -162,6 +164,9 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
                 'parentId': selectedParentId,
               'isMobility': isMobility,
             });
+            ProductAnalytics.customExerciseCreated(
+              catalogSource: ExerciseCatalogSource.manual,
+            );
             final item = CustomExerciseItem.fromJson(created);
             if (sheetContext.mounted) {
               Navigator.of(sheetContext).pop();

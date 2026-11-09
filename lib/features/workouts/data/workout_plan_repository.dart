@@ -148,6 +148,10 @@ class WorkoutPlanRepository {
       localOnly: false,
     );
     ProductAnalytics.workoutPlanCreated();
+    if (customerId.isNotEmpty &&
+        customerId != kWorkoutPlanTemplateScopeId) {
+      ProductAnalytics.planAssigned();
+    }
     return WorkoutPlanApiModel.fromJson(localPayload);
   }
 

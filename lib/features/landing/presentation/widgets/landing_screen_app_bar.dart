@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../../core/analytics/product_analytics.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/routing/app_paths.dart';
 import '../../../../core/ui/breakpoints.dart';
@@ -331,6 +332,7 @@ class _RightActions extends StatelessWidget {
         ] else ...[
           TextButton(
             onPressed: () {
+              ProductAnalytics.landingCtaClicked(cta: 'nav_login');
               HapticFeedback.mediumImpact();
               navigateTo(context, '/login');
             },
@@ -342,6 +344,7 @@ class _RightActions extends StatelessWidget {
           const SizedBox(width: 4),
           FilledButton(
             onPressed: () {
+              ProductAnalytics.landingCtaClicked(cta: 'nav_start_free');
               HapticFeedback.mediumImpact();
               navigateTo(context, '/login');
             },
