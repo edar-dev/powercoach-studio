@@ -879,6 +879,7 @@
   "workoutImportJsonError": "Invalid or unsupported JSON file.",
   "workoutExportSuccess": "Download started.",
   "workoutExportError": "Export failed. Try again.",
+  "workoutExportLogoError": "Export failed: the PDF logo is invalid. Remove or replace it in PDF brand settings, then try again.",
   "workoutExportPdfSheetTitle": "Export PDF",
   "workoutPdfLayoutCanonical": "Full (by week)",
   "workoutPdfLayoutDense": "Dense (recommended)",

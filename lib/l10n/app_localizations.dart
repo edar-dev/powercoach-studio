@@ -3872,6 +3872,12 @@ abstract class AppLocalizations {
   /// **'Export failed. Try again.'**
   String get workoutExportError;
 
+  /// No description provided for @workoutExportLogoError.
+  ///
+  /// In en, this message translates to:
+  /// **'Export failed: the PDF logo is invalid. Remove or replace it in PDF brand settings, then try again.'**
+  String get workoutExportLogoError;
+
   /// No description provided for @workoutExportPdfSheetTitle.
   ///
   /// In en, this message translates to:
