@@ -74,39 +74,43 @@ class WorkoutExpandableCard extends StatelessWidget {
                             const SizedBox(width: 8),
                           ],
                           Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                AppHaptics.selection();
-                                onExpandedChanged(!expanded);
-                              },
-                              borderRadius: BorderRadius.circular(
-                                StitchM3Theme.radiusMd,
-                              ),
-                              child: ConstrainedBox(
-                                constraints: const BoxConstraints(
-                                  minHeight: 44,
+                            child: Semantics(
+                              button: true,
+                              expanded: expanded,
+                              child: InkWell(
+                                onTap: () {
+                                  AppHaptics.selection();
+                                  onExpandedChanged(!expanded);
+                                },
+                                borderRadius: BorderRadius.circular(
+                                  StitchM3Theme.radiusMd,
                                 ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      title,
-                                      if (summary != null &&
-                                          summary!.trim().isNotEmpty) ...[
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          summary!,
-                                          style: theme.textTheme.bodyMedium
-                                              ?.copyWith(
-                                            color: cs.onSurfaceVariant,
-                                            fontWeight: FontWeight.w500,
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    minHeight: 44,
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        title,
+                                        if (summary != null &&
+                                            summary!.trim().isNotEmpty) ...[
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            summary!,
+                                            style: theme.textTheme.bodyMedium
+                                                ?.copyWith(
+                                              color: cs.onSurfaceVariant,
+                                              fontWeight: FontWeight.w500,
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ],
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),

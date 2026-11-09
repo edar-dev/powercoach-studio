@@ -257,6 +257,7 @@ class AddMobilityExerciseDialogContentState
                   controller: _titleController,
                   decoration: InputDecoration(
                     labelText: l10n.mobilityTitle,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,
@@ -271,6 +272,7 @@ class AddMobilityExerciseDialogContentState
                   controller: _subtitleController,
                   decoration: InputDecoration(
                     labelText: l10n.mobilitySubtitle,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
                     isDense: true,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 12,

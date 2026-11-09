@@ -152,23 +152,55 @@ class PrimaryShellScaffold extends StatelessWidget {
               onDestinationSelected: _onDestinationSelected,
               destinations: [
                 NavigationDestination(
-                  icon: const Icon(Icons.today_outlined),
-                  selectedIcon: const Icon(Icons.today),
+                  icon: Semantics(
+                    label: l10n.navTabToday,
+                    selected: (selectedIndex ?? 0) == 0,
+                    child: const Icon(Icons.today_outlined),
+                  ),
+                  selectedIcon: Semantics(
+                    label: l10n.navTabToday,
+                    selected: true,
+                    child: const Icon(Icons.today),
+                  ),
                   label: l10n.navTabToday,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.people_outline),
-                  selectedIcon: const Icon(Icons.people),
+                  icon: Semantics(
+                    label: l10n.navTabCustomers,
+                    selected: (selectedIndex ?? 0) == 1,
+                    child: const Icon(Icons.people_outline),
+                  ),
+                  selectedIcon: Semantics(
+                    label: l10n.navTabCustomers,
+                    selected: true,
+                    child: const Icon(Icons.people),
+                  ),
                   label: l10n.navTabCustomers,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.fitness_center_outlined),
-                  selectedIcon: const Icon(Icons.fitness_center),
+                  icon: Semantics(
+                    label: l10n.navTabWorkouts,
+                    selected: (selectedIndex ?? 0) == 2,
+                    child: const Icon(Icons.fitness_center_outlined),
+                  ),
+                  selectedIcon: Semantics(
+                    label: l10n.navTabWorkouts,
+                    selected: true,
+                    child: const Icon(Icons.fitness_center),
+                  ),
                   label: l10n.navTabWorkouts,
                 ),
                 NavigationDestination(
-                  icon: const Icon(Icons.menu_book_outlined),
-                  selectedIcon: const Icon(Icons.menu_book),
+                  icon: Semantics(
+                    label: l10n.navTabDiary,
+                    selected: (selectedIndex ?? 0) == 3,
+                    child: const Icon(Icons.menu_book_outlined),
+                  ),
+                  selectedIcon: Semantics(
+                    label: l10n.navTabDiary,
+                    selected: true,
+                    child: const Icon(Icons.menu_book),
+                  ),
                   label: l10n.navTabDiary,
                 ),
               ],

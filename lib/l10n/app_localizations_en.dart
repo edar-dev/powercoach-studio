@@ -5109,4 +5109,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get connectivityOnline => 'Online';
+
+  @override
+  String get settingsSectionOther => 'Other';
+
+  @override
+  String get saveDisabledNeedDisplayName => 'Enter a name to save';
+
+  @override
+  String get saveDisabledNeedDayName => 'Name the day to save';
+
+  @override
+  String get saveDisabledNeedChanges => 'Fill required fields to save';
+
+  @override
+  String get phoneLandscapeEditorHint =>
+      'Rotate to portrait for more editor space';
 }

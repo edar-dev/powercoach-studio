@@ -8,6 +8,7 @@ import '../../routing/app_paths.dart';
 import '../../theme/stitch_m3_theme.dart';
 import '../../../features/auth/data/local_coach_profile_repository.dart';
 import '../../../l10n/app_localizations.dart';
+import 'app_avatar.dart';
 import 'connectivity_status_chip.dart';
 
 String _shellProfileInitials(String name) {
@@ -164,17 +165,13 @@ class _ShellUtilityActionsState extends State<ShellUtilityActions> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircleAvatar(
-                      radius: 14,
+                    AppAvatar(
+                      size: 28,
+                      initials: initials,
                       backgroundColor: cs.primaryContainer,
                       foregroundColor: cs.onPrimaryContainer,
-                      child: Text(
-                        initials,
-                        style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: cs.onPrimaryContainer,
-                            ),
-                      ),
+                      fontSize: 11,
+                      semanticLabel: name,
                     ),
                     const SizedBox(width: 8),
                     ConstrainedBox(

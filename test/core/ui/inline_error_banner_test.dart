@@ -29,6 +29,11 @@ void main() {
     expect(find.text('Dettaglio'), findsOneWidget);
     expect(find.text('Riprova'), findsOneWidget);
 
+    expect(
+      tester.getSemantics(find.text('Errore di caricamento')).flagsCollection.isLiveRegion,
+      isTrue,
+    );
+
     await tester.tap(find.text('Riprova'));
     await tester.pump();
     expect(retried, isTrue);

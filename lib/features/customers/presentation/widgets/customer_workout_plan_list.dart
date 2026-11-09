@@ -50,7 +50,10 @@ class CustomerWorkoutPlanList extends StatelessWidget {
 }
 
 class CustomerWorkoutPlanEmptyState extends StatelessWidget {
-  const CustomerWorkoutPlanEmptyState({super.key});
+  const CustomerWorkoutPlanEmptyState({super.key, this.bottomAction});
+
+  /// Optional primary CTA (e.g. inline assign when embedded in a phone tab).
+  final Widget? bottomAction;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +87,10 @@ class CustomerWorkoutPlanEmptyState extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
+            if (bottomAction != null) ...[
+              const SizedBox(height: 20),
+              SizedBox(width: double.infinity, child: bottomAction),
+            ],
           ],
         ),
       ),

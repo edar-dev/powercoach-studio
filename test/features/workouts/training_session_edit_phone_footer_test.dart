@@ -203,6 +203,33 @@ void main() {
     expect(tester.getSize(ctaBox.first).height, greaterThanOrEqualTo(48));
   });
 
+  testWidgets('phone landscape keeps sticky Salva with compact header', (
+    tester,
+  ) async {
+    const landscapePhone = Size(844, 390);
+    await tester.binding.setSurfaceSize(landscapePhone);
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    final session = WorkoutBuilderSessionController(
+      routine: _routineWithExercise(),
+    );
+    final day = session.routine.weeks.first.days.first;
+
+    await tester.pumpWidget(
+      _wrap(
+        size: landscapePhone,
+        Builder(builder: (context) => _body(context, session, day)),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Salva modifiche'), findsOneWidget);
+    // Metrics bar is hidden in landscape compact mode (no 4-tile strip).
+    expect(find.byIcon(Icons.grid_view_rounded), findsNothing);
+    expect(find.byIcon(Icons.timer_outlined), findsNothing);
+    expect(find.text('Annulla'), findsNothing);
+  });
+
   testWidgets('desktop session edit keeps header Salva modifiche', (
     tester,
   ) async {

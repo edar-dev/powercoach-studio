@@ -9185,6 +9185,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Online'**
   String get connectivityOnline;
+
+  /// No description provided for @settingsSectionOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get settingsSectionOther;
+
+  /// No description provided for @saveDisabledNeedDisplayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a name to save'**
+  String get saveDisabledNeedDisplayName;
+
+  /// No description provided for @saveDisabledNeedDayName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name the day to save'**
+  String get saveDisabledNeedDayName;
+
+  /// No description provided for @saveDisabledNeedChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill required fields to save'**
+  String get saveDisabledNeedChanges;
+
+  /// No description provided for @phoneLandscapeEditorHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotate to portrait for more editor space'**
+  String get phoneLandscapeEditorHint;
 }
 
 class _AppLocalizationsDelegate

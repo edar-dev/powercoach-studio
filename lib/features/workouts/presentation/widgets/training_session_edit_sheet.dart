@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/keyboard_dismiss.dart';
 import '../../../../core/ui/widgets/truncated_text.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -380,13 +381,33 @@ class TrainingSessionEditBody extends StatefulWidget {
 
 class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
   var _didEnrichNames = false;
+  static var _landscapeHintShownThisSession = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       unawaited(_enrichBareVariantNames());
+      _maybeShowLandscapeHint();
     });
+  }
+
+  void _maybeShowLandscapeHint() {
+    if (!mounted || _landscapeHintShownThisSession || widget.readOnly) return;
+    final size = MediaQuery.sizeOf(context);
+    final phone = !AppBreakpoints.isTabletOrWider(context);
+    final landscape =
+        MediaQuery.orientationOf(context) == Orientation.landscape;
+    // Very constrained phone landscape height (e.g. short phones + sticky footer).
+    if (!phone || !landscape || size.height >= 420) return;
+    _landscapeHintShownThisSession = true;
+    final l10n = AppLocalizations.of(context);
+    showAppSnackBar(
+      context,
+      content: Text(l10n.phoneLandscapeEditorHint),
+      duration: const Duration(seconds: 4),
+      extraBottomOffset: kAppSnackBarStickyFooterClearance,
+    );
   }
 
   Future<void> _enrichBareVariantNames() async {
@@ -639,6 +660,8 @@ class _TrainingSessionEditBodyState extends State<TrainingSessionEditBody> {
                         onAthletePreview: () => _openAthletePreview(context),
                         stickyPhoneActions: pinBottomCtas,
                         hasExercises: day.exercises.isNotEmpty,
+                        // Sticky Salva closes the editor (autosave stays on).
+                        saveEnabled: true,
                         onSave: close,
                         onAddFromLibrary: readOnly
                             ? null
@@ -1063,6 +1086,7 @@ class _SessionEditFooter extends StatelessWidget {
     required this.onAthletePreview,
     this.stickyPhoneActions = false,
     this.hasExercises = false,
+    this.saveEnabled = true,
     this.onSave,
     this.onAddFromLibrary,
     this.onCreateSuperset,
@@ -1074,6 +1098,7 @@ class _SessionEditFooter extends StatelessWidget {
   final VoidCallback onAthletePreview;
   final bool stickyPhoneActions;
   final bool hasExercises;
+  final bool saveEnabled;
   final VoidCallback? onSave;
   final VoidCallback? onAddFromLibrary;
   final VoidCallback? onCreateSuperset;
@@ -1088,6 +1113,8 @@ class _SessionEditFooter extends StatelessWidget {
     final showStickyCtas = stickyPhoneActions &&
         hasExercises &&
         (onAddFromLibrary != null || onCreateSuperset != null);
+    final saveLabel = l10n.workoutSessionSaveChanges;
+    final canSave = saveEnabled && onSave != null;
 
     return Material(
       color: _SessionEditColors.footer,
@@ -1103,12 +1130,17 @@ class _SessionEditFooter extends StatelessWidget {
             if (stickyPhoneActions && onSave != null) ...[
               SizedBox(
                 width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: onSave,
-                  icon: const Icon(Icons.check, size: 18),
-                  label: Text(l10n.workoutSessionSaveChanges),
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(0, 48),
+                child: Semantics(
+                  button: true,
+                  enabled: canSave,
+                  label: saveLabel,
+                  child: FilledButton.icon(
+                    onPressed: canSave ? onSave : null,
+                    icon: const Icon(Icons.check, size: 18),
+                    label: Text(saveLabel),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size(0, 48),
+                    ),
                   ),
                 ),
               ),

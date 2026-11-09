@@ -108,6 +108,7 @@ void showEditExerciseDialog(
               controller: nameController,
               decoration: InputDecoration(
                 labelText: l10n.workoutBuilderNameLabel,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -121,6 +122,7 @@ void showEditExerciseDialog(
               controller: noteController,
               decoration: InputDecoration(
                 labelText: l10n.workoutBuilderNoteOptionalLabel,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -135,6 +137,7 @@ void showEditExerciseDialog(
               controller: shortNameController,
               decoration: InputDecoration(
                 labelText: l10n.workoutExerciseShortNameLabel,
+                floatingLabelBehavior: FloatingLabelBehavior.always,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -164,6 +167,7 @@ void showEditExerciseDialog(
                 controller: setsController,
                 decoration: InputDecoration(
                   isDense: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,
@@ -177,6 +181,7 @@ void showEditExerciseDialog(
                 controller: repsController,
                 decoration: InputDecoration(
                   isDense: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,
@@ -189,6 +194,7 @@ void showEditExerciseDialog(
                 controller: rpeController,
                 decoration: InputDecoration(
                   isDense: true,
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
                     vertical: 10,

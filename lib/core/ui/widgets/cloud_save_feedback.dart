@@ -22,6 +22,8 @@ void showCloudSaveErrorSnackBar(
       cloudSaveErrorMessage(error, l10n);
 
   AppHaptics.medium();
+  // Default phone margin clears NavigationBar; sticky Salva callers can pass
+  // extraBottomOffset: kAppSnackBarStickyFooterClearance.
   showAppSnackBar(
     context,
     content: Text(

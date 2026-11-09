@@ -312,6 +312,7 @@ class AddExerciseDialogContentState extends State<AddExerciseDialogContent> {
             controller: _noteController,
             decoration: InputDecoration(
               labelText: l10n.workoutBuilderNoteOptionalLabel,
+              floatingLabelBehavior: FloatingLabelBehavior.always,
               isDense: true,
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/ui/widgets/app_date_picker.dart';
 import '../data/workout_routine_model.dart';
 
 /// Picks a routine start date; returns normalized date-only value or null.
@@ -10,7 +11,7 @@ Future<DateTime?> pickWorkoutRoutineStartDate(
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day);
   final initial = currentStart ?? today;
-  final picked = await showDatePicker(
+  final picked = await showAppDatePicker(
     context: context,
     initialDate: initial,
     firstDate: DateTime(2000),
@@ -30,7 +31,7 @@ Future<DateTime?> pickWorkoutRoutineEndDate(
   final fallback = DateTime(now.year, now.month, now.day);
   final initial = currentEnd ?? startDate ?? fallback;
   final firstDate = startDate ?? DateTime(2000);
-  final picked = await showDatePicker(
+  final picked = await showAppDatePicker(
     context: context,
     initialDate: initial,
     firstDate: DateTime(firstDate.year, firstDate.month, firstDate.day),

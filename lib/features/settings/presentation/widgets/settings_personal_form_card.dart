@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/theme/stitch_mobile_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/app_avatar.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'settings_stitch_field.dart';
 
@@ -523,28 +524,18 @@ class _PhoneProfileHero extends StatelessWidget {
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomLeft,
-                        end: Alignment.topRight,
-                        colors: [
-                          StitchMobileColors.primaryContainer,
-                          StitchMobileColors.secondary,
-                        ],
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      initials,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        color: StitchMobileColors.onSurface,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 22,
-                      ),
+                  AppAvatar(
+                    size: 64,
+                    initials: initials,
+                    foregroundColor: StitchMobileColors.onSurface,
+                    fontSize: 22,
+                    gradient: const LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        StitchMobileColors.primaryContainer,
+                        StitchMobileColors.secondary,
+                      ],
                     ),
                   ),
                   if (emailVerified)

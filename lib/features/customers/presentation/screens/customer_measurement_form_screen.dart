@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/marketing_dark_colors.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/widgets/app_date_picker.dart';
 import '../../../../core/ui/widgets/cloud_save_feedback.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../widgets/customer_creation_dark_field.dart';
@@ -178,7 +179,7 @@ class _CustomerMeasurementFormScreenState
       l10n: l10n,
       date: _date,
       onPickDate: () async {
-        final picked = await showDatePicker(
+        final picked = await showAppDatePicker(
           context: context,
           initialDate: _date,
           firstDate: DateTime(2000),

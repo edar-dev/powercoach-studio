@@ -56,6 +56,11 @@ void main() {
     expect(expanded, isTrue);
     expect(find.text('Set details'), findsOneWidget);
 
+    final flags =
+        tester.getSemantics(find.text('Bench press')).flagsCollection;
+    expect(flags.isButton, isTrue);
+    expect(flags.isExpanded, isTrue);
+
     await tester.tap(find.text('Set details'));
     await tester.pump();
     expect(expanded, isTrue);

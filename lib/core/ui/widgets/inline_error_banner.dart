@@ -35,68 +35,75 @@ class InlineErrorBanner extends StatelessWidget {
 
     return Padding(
       padding: margin,
-      child: Material(
-        color: cs.errorContainer,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.error_outline, color: cs.onErrorContainer, size: 22),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          message,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: cs.onErrorContainer,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        if (detail != null && detail!.trim().isNotEmpty) ...[
-                          const SizedBox(height: 4),
+      child: Semantics(
+        liveRegion: true,
+        child: Material(
+          color: cs.errorContainer,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: cs.onErrorContainer,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            detail!,
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: cs.onErrorContainer.withValues(alpha: 0.85),
+                            message,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cs.onErrorContainer,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
+                          if (detail != null && detail!.trim().isNotEmpty) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              detail!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: cs.onErrorContainer,
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: filledRetry
-                    ? FilledButton(
-                        onPressed: onRetry,
-                        style: FilledButton.styleFrom(
-                          backgroundColor: cs.error,
-                          foregroundColor: cs.onError,
-                          minimumSize: const Size(0, 40),
-                        ),
-                        child: Text(label),
-                      )
-                    : TextButton(
-                        onPressed: onRetry,
-                        style: TextButton.styleFrom(
-                          foregroundColor: cs.onErrorContainer,
-                          minimumSize: const Size(0, 40),
-                        ),
-                        child: Text(label),
                       ),
-              ),
-            ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: filledRetry
+                      ? FilledButton(
+                          onPressed: onRetry,
+                          style: FilledButton.styleFrom(
+                            backgroundColor: cs.error,
+                            foregroundColor: cs.onError,
+                            minimumSize: const Size(0, 40),
+                          ),
+                          child: Text(label),
+                        )
+                      : TextButton(
+                          onPressed: onRetry,
+                          style: TextButton.styleFrom(
+                            foregroundColor: cs.onErrorContainer,
+                            minimumSize: const Size(0, 40),
+                          ),
+                          child: Text(label),
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
