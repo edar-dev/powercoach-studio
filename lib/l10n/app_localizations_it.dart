@@ -2135,6 +2135,10 @@ class AppLocalizationsIt extends AppLocalizations {
   String get workoutExportError => 'Esportazione fallita. Riprova.';
 
   @override
+  String get workoutExportLogoError =>
+      'Esportazione fallita: logo PDF non valido. Rimuovilo o sostituiscilo nelle impostazioni brand PDF, poi riprova.';
+
+  @override
   String get workoutExportPdfSheetTitle => 'Esporta PDF';
 
   @override

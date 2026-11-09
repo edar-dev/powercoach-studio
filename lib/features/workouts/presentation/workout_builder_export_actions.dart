@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
@@ -10,6 +11,7 @@ import 'package:powercoach_studio/core/settings/post_invite_onboarding_store.dar
 import 'package:powercoach_studio/core/pdf/pdf_brand_store.dart';
 import 'package:powercoach_studio/core/pdf/pdf_coach_header.dart';
 import 'package:powercoach_studio/core/pdf/pdf_export_labels_l10n.dart';
+import 'package:powercoach_studio/core/pdf/pdf_logo_image.dart';
 import 'package:powercoach_studio/core/pdf/pdf_plan_metadata.dart';
 import 'package:powercoach_studio/features/auth/data/local_coach_profile_repository.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
@@ -22,6 +24,7 @@ import 'package:powercoach_studio/features/workouts/domain/export_pdf_usecase.da
 import 'package:powercoach_studio/features/workouts/domain/workout_import_export_coordinator.dart';
 import 'package:powercoach_studio/features/exercise_library/data/import_file_reader.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// PDF / Excel export helpers for the workout builder screen.
@@ -92,6 +95,7 @@ class WorkoutBuilderExportActions {
     final l10n = AppLocalizations.of(context);
     final labels = l10n.toPdfExportLabels();
     final resolved = namedRoutine(routine);
+    final planId = _resolvePlanId(context);
     showPdfExportProgressDialog(context, message: labels.exportGenerating);
     // Yield so the progress dialog paints before heavy PDF work.
     await Future<void>.delayed(Duration.zero);
@@ -134,12 +138,34 @@ class WorkoutBuilderExportActions {
       if (uid != null && uid.isNotEmpty) {
         await PostInviteOnboardingStore.instance.markPdfDone(uid);
       }
-    } catch (_) {
+    } catch (error, stackTrace) {
       stopwatch.stop();
+      final logoDecode = isPdfLogoDecodeError(error);
+      await Sentry.captureException(
+        error,
+        stackTrace: stackTrace,
+        withScope: (scope) {
+          scope.setTag('feature', 'workout_pdf_export');
+          if (logoDecode) {
+            scope.setTag('pdf_export_error_kind', 'logo_decode');
+          }
+          scope.setContexts('workout_pdf_export', <String, dynamic>{
+            'platform': kIsWeb ? 'web' : defaultTargetPlatform.name,
+            'planId': ?planId,
+            'layout': layout.name,
+            'includeMobility': includeMobility,
+            'weekCount': weekIndices?.length ?? resolved.weeks.length,
+            'elapsedMs': stopwatch.elapsedMilliseconds,
+            'errorKind': logoDecode ? 'logo_decode' : 'other',
+          });
+        },
+      );
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.workoutExportError),
+          content: Text(
+            logoDecode ? l10n.workoutExportLogoError : l10n.workoutExportError,
+          ),
           behavior: SnackBarBehavior.floating,
           backgroundColor: Theme.of(context).colorScheme.errorContainer,
         ),
@@ -147,6 +173,15 @@ class WorkoutBuilderExportActions {
     } finally {
       if (context.mounted) hidePdfExportProgressDialog(context);
     }
+  }
+
+  String? _resolvePlanId(BuildContext context) {
+    final state = GoRouterState.of(context);
+    final fromPath = state.pathParameters['planId']?.trim();
+    if (fromPath != null && fromPath.isNotEmpty) return fromPath;
+    final fromQuery = state.uri.queryParameters['planId']?.trim();
+    if (fromQuery != null && fromQuery.isNotEmpty) return fromQuery;
+    return null;
   }
 
   Future<WorkoutRoutine?> importJson() async {

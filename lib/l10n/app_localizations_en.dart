@@ -2116,6 +2116,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutExportError => 'Export failed. Try again.';
 
   @override
+  String get workoutExportLogoError =>
+      'Export failed: the PDF logo is invalid. Remove or replace it in PDF brand settings, then try again.';
+
+  @override
   String get workoutExportPdfSheetTitle => 'Export PDF';
 
   @override

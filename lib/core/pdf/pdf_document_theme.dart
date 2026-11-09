@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'pdf_coach_header.dart';
 import 'pdf_export_labels.dart';
+import 'pdf_logo_image.dart';
 import 'pdf_programming_rows.dart';
 import 'pdf_text_sanitize.dart';
 
@@ -65,6 +66,9 @@ class PdfDocumentTheme {
   static pw.Widget buildCoachHeaderBand(PdfCoachHeaderInfo info) {
     if (!info.hasContent) return pw.SizedBox();
     final barColor = accentFor(info);
+    // Skip corrupt / non-PNG-JPEG logos instead of failing the whole export.
+    final logoImage =
+        info.hasLogo ? tryPdfMemoryImage(info.logoBytes!) : null;
     final textRow = pw.Row(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
@@ -82,7 +86,7 @@ class PdfDocumentTheme {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
       children: [
-        if (info.hasLogo)
+        if (logoImage != null)
           pw.Row(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
@@ -91,7 +95,7 @@ class PdfDocumentTheme {
                 height: 36,
                 margin: const pw.EdgeInsets.only(right: 10),
                 child: pw.Image(
-                  pw.MemoryImage(info.logoBytes!),
+                  logoImage,
                   fit: pw.BoxFit.contain,
                 ),
               ),
