@@ -3,7 +3,7 @@ import 'exercise_prescription_scope.dart';
 import 'exercise_summary_sync.dart';
 import 'maximal_ref.dart';
 
-const int kDefaultExerciseSetCount = 3;
+const int kDefaultExerciseSetCount = 1;
 const String kDefaultExerciseReps = '10';
 
 List<ExerciseSet> defaultExerciseSetDetails({
