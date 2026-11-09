@@ -1,0 +1,19 @@
+{
+  "name": "powercoach-mobile-screenshot-qa",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Optional Phase C mobile viewport screenshot capture (Playwright + session inject)",
+  "type": "module",
+  "scripts": {
+    "capture": "node capture-mobile-hubs.mjs",
+    "capture:update-baselines": "node capture-mobile-hubs.mjs --update-baselines",
+    "serve": "node serve-web.mjs",
+    "postinstall": "npx playwright install chromium"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

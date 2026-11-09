@@ -28,6 +28,18 @@ flutter test integration_test/landing_flow_test.dart
 
 Those login/landing files are **not** run in CI (no test-project secrets in the repo). Details: `integration_test/README.md`.
 
+### Optional mobile screenshot QA (Phase C)
+
+Playwright + Supabase password grant + `localStorage` session inject against Flutter web (CanvasKit), mobile viewport **390×844**. Capture + artifact mode (no hard pixel-diff — CanvasKit goldens flake). **Not** required on PR CI.
+
+```bash
+export NAV_QA_PASSWORD='…'   # from project preferences; never commit
+flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080
+cd tool/qa && npm ci && npm run capture
+```
+
+Baselines: `tool/qa/baselines/` — refresh with `npm run capture:update-baselines`. Docs: [`tool/qa/README.md`](../tool/qa/README.md). Optional workflow: `.github/workflows/mobile-screenshot-qa.yml` (`workflow_dispatch` / weekly schedule).
+
 ## Covered areas
 
 | Area | Location | Notes |
@@ -51,6 +63,7 @@ Those login/landing files are **not** run in CI (no test-project secrets in the 
 | Drift schema migrations | Validated manually + `debugCloseForTest` / `upsertEntityForUser` round-trips |
 | Mega-screens (builder, customer workouts) | Split in progress ([presentation-split-v1](../.cursor/plans/presentation-split-v1.plan.md)); shell/tab widget tests added incrementally |
 | End-to-end backup file I/O | Export/import UI smoke only; codec tested in unit tests |
+| Hard pixel screenshot goldens | CanvasKit antialiasing / overlays flake; Phase C uses capture + CI artifacts instead |
 
 ## Test harness patterns
 
