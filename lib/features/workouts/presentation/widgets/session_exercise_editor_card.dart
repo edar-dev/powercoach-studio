@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../../../core/theme/stitch_m3_theme.dart';
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/keyboard_dismiss.dart';
 import '../../../../core/ui/widgets/truncated_text.dart';
@@ -456,75 +457,118 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                       ),
                     ),
                   const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.chat_bubble_outline,
-                        size: 16,
-                        color: cs.onSurfaceVariant,
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          notesLabel,
-                          style: theme.textTheme.labelMedium?.copyWith(
-                            color: cs.onSurfaceVariant,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      if (_showSavedHint)
-                        Text(
-                          l10n.workoutSessionSavedHint,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: const Color(0xFF34D399),
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  TextField(
-                    controller: _noteController,
-                    onChanged: widget.onEdit == null ? null : _onNoteChanged,
-                    enabled: widget.onEdit != null,
-                    maxLines: 3,
-                    minLines: 2,
-                    textInputAction: TextInputAction.done,
-                    onTapOutside: (_) => KeyboardDismiss.unfocus(),
-                    onSubmitted: (_) => KeyboardDismiss.unfocus(),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: cs.onSurface,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: SessionExerciseEditorCard._inputBg,
-                      hintText: l10n.workoutBuilderNotePlaceholder,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFF28354D)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(color: Color(0xFF28354D)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                          color: StitchM3Theme.accent,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                    ),
+                  _buildSecondaryNotesSection(
+                    context: context,
+                    theme: theme,
+                    cs: cs,
+                    l10n: l10n,
+                    notesLabel: notesLabel,
                   ),
                 ],
               ),
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  /// Note (+ secondary RPE-adjacent controls) — tucked behind "Altro" on phone.
+  Widget _buildSecondaryNotesSection({
+    required BuildContext context,
+    required ThemeData theme,
+    required ColorScheme cs,
+    required AppLocalizations l10n,
+    required String notesLabel,
+  }) {
+    final notesBody = Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.chat_bubble_outline,
+              size: 16,
+              color: cs.onSurfaceVariant,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                notesLabel,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: cs.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            if (_showSavedHint)
+              Text(
+                l10n.workoutSessionSavedHint,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: const Color(0xFF34D399),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: _noteController,
+          onChanged: widget.onEdit == null ? null : _onNoteChanged,
+          enabled: widget.onEdit != null,
+          maxLines: 3,
+          minLines: 2,
+          textInputAction: TextInputAction.done,
+          onTapOutside: (_) => KeyboardDismiss.unfocus(),
+          onSubmitted: (_) => KeyboardDismiss.unfocus(),
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: cs.onSurface,
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: SessionExerciseEditorCard._inputBg,
+            hintText: l10n.workoutBuilderNotePlaceholder,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFF28354D)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(color: Color(0xFF28354D)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: const BorderSide(
+                color: StitchM3Theme.accent,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 10,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    final narrowPhone = !Breakpoints.isTabletOrWider(context) &&
+        MediaQuery.sizeOf(context).width < 540;
+    if (!narrowPhone) return notesBody;
+
+    return Theme(
+      data: theme.copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        tilePadding: EdgeInsets.zero,
+        childrenPadding: const EdgeInsets.only(top: 4),
+        onExpansionChanged: (_) => AppHaptics.selection(),
+        title: Text(
+          l10n.workoutBuilderMore,
+          style: theme.textTheme.labelLarge?.copyWith(
+            color: cs.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        children: [notesBody],
       ),
     );
   }

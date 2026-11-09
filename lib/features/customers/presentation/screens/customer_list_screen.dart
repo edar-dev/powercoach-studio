@@ -82,8 +82,11 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
       if (mounted) {
         setState(() {
           _loading = false;
-          _error = e.toString();
-          _customers = [];
+          // Keep cached clients on refresh failure (no white flash / wipe).
+          if (_customers.isEmpty) {
+            _error = e.toString();
+            _customers = [];
+          }
         });
       }
     }
@@ -99,7 +102,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
     final colorScheme = theme.colorScheme;
 
     final activeCount = _customers.where((c) => !c.isArchived).length;
-    final showToolbar = !_loading && _error == null;
+    // Keep chrome/list visible while refreshing existing data (no skeleton flash).
+    final showSkeleton = _loading && _customers.isEmpty;
+    final showToolbar = !showSkeleton && _error == null;
     final showMetrics = showToolbar && _customers.isNotEmpty;
     final metrics =
         showMetrics ? computeCustomerListMetrics(_customers) : null;
@@ -148,7 +153,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               onRefresh: _load,
               color: Theme.of(context).colorScheme.primary,
               backgroundColor: MarketingDarkColors.surface,
-              child: _loading
+              child: showSkeleton
                   ? const ListSkeleton()
                   : _error != null
                       ? CustomerListErrorBody(

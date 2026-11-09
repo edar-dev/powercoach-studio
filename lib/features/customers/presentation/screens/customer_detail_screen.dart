@@ -5,7 +5,9 @@ import 'package:powercoach_studio/core/auth/supabase_bootstrap.dart';
 import 'package:powercoach_studio/core/routing/app_navigation.dart';
 import 'package:powercoach_studio/core/routing/auth_route_loading.dart';
 import 'package:powercoach_studio/core/theme/marketing_dark_colors.dart';
+import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import 'package:powercoach_studio/core/ui/widgets/cloud_save_feedback.dart';
+import 'package:powercoach_studio/core/ui/widgets/list_skeleton.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 import '../../data/customer_measurement_repository.dart';
@@ -52,6 +54,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
   CustomerProgressSnapshot? _progressSnapshot;
   bool _progressLoading = false;
   int _unreadNotesCount = 0;
+  bool _heroCollapsed = false;
   late TabController _tabController;
 
   @override
@@ -193,13 +196,29 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
 
     final l10n = AppLocalizations.of(context);
 
+    // Keep branded loading until authReady (above) AND customer fetch completes —
+    // never briefly paint a login-like blank spinner on deep-link cold start.
     if (_loading) {
       return Scaffold(
         backgroundColor: MarketingDarkColors.bgAlt,
         appBar: CustomerDetailFallbackAppBar(title: l10n.customersTitle),
-        body: const Center(
-          child: CircularProgressIndicator(
-            color: MarketingDarkColors.brandLight,
+        body: const SafeArea(
+          top: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
+                child: ListSkeleton(
+                  rowCount: 2,
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                ),
+              ),
+              Expanded(
+                child: ListSkeleton(rowCount: 5),
+              ),
+            ],
           ),
         ),
       );
@@ -216,6 +235,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
     final c = _customer!;
     final goalLabel = c.goals ?? '';
     final locale = Localizations.localeOf(context).toString();
+    final phone = !Breakpoints.isTabletOrWider(context);
 
     return Scaffold(
       backgroundColor: MarketingDarkColors.bgAlt,
@@ -234,6 +254,8 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
         ),
       ),
       body: SafeArea(
+        // AppBar owns top inset; keep bottom for home indicator (outside shell).
+        top: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -245,15 +267,28 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
                 progressSnapshot: _progressSnapshot,
                 l10n: l10n,
                 locale: locale,
+                collapseSecondary: phone && _heroCollapsed,
                 onAssignWorkout: () => _assignWorkout(),
                 onEditProfile: () =>
                     navigateTo(context, '/customers/${c.id}/edit'),
               ),
             ),
             Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (!phone) return false;
+                  if (notification.metrics.axis != Axis.vertical) {
+                    return false;
+                  }
+                  final collapsed = notification.metrics.pixels > 24;
+                  if (collapsed != _heroCollapsed) {
+                    setState(() => _heroCollapsed = collapsed);
+                  }
+                  return false;
+                },
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
                   CustomerDetailOverviewTab(
                     customer: c,
                     customerId: widget.customerId,
@@ -299,6 +334,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen>
                     measurements: _measurements,
                   ),
                 ],
+                ),
               ),
             ),
           ],

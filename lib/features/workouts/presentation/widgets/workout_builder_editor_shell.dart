@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:powercoach_studio/core/routing/hub_chrome.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/breakpoints.dart';
+import 'package:powercoach_studio/core/ui/haptics.dart';
 import 'package:powercoach_studio/core/ui/widgets/list_skeleton.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_builder_first_save_banner.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_editor_app_bar.dart';
@@ -167,11 +167,11 @@ class WorkoutBuilderEditorShell extends StatelessWidget {
           showShellNavActions: showShellNavActions,
           slimShellChrome: slimShellChrome,
           onBack: () async {
-            unawaited(HapticFeedback.mediumImpact());
+            unawaited(AppHaptics.medium());
             await onBack();
           },
           onHome: () async {
-            unawaited(HapticFeedback.mediumImpact());
+            unawaited(AppHaptics.medium());
             await onHome();
           },
           onImportJson: onImportJson,

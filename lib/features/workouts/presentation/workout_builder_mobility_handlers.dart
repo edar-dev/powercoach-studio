@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../data/workout_routine_model.dart';
 import 'mobility_builder_controller.dart';
@@ -21,15 +22,13 @@ class WorkoutBuilderMobilityHandlers {
   void _showUndoSnackBar(String message, VoidCallback onUndo) {
     if (!context.mounted) return;
     final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 5),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: l10n.workoutBuilderUndo,
-          onPressed: onUndo,
-        ),
+    showAppSnackBar(
+      context,
+      content: Text(message),
+      duration: const Duration(seconds: 5),
+      action: SnackBarAction(
+        label: l10n.workoutBuilderUndo,
+        onPressed: onUndo,
       ),
     );
   }

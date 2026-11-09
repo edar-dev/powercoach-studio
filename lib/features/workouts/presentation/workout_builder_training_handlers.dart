@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'package:powercoach_studio/core/ui/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../settings/data/user_preferences_repository.dart';
 import '../data/workout_routine_model.dart';
@@ -32,15 +33,13 @@ class WorkoutBuilderTrainingHandlers {
   void _showUndoSnackBar(String message, VoidCallback onUndo) {
     if (!context.mounted) return;
     final l10n = AppLocalizations.of(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 5),
-        behavior: SnackBarBehavior.floating,
-        action: SnackBarAction(
-          label: l10n.workoutBuilderUndo,
-          onPressed: onUndo,
-        ),
+    showAppSnackBar(
+      context,
+      content: Text(message),
+      duration: const Duration(seconds: 5),
+      action: SnackBarAction(
+        label: l10n.workoutBuilderUndo,
+        onPressed: onUndo,
       ),
     );
   }

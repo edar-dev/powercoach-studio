@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/routing/app_navigation.dart';
 import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../core/ui/breakpoints.dart';
+import '../../../../core/ui/haptics.dart';
 import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../core/ui/widgets/keyboard_dismiss.dart';
 import '../../../../core/ui/widgets/truncated_text.dart';
@@ -925,7 +926,10 @@ class _SessionEditHeader extends StatelessWidget {
                           child: Text(l10n.workoutEditorCancel),
                         ),
                         FilledButton.icon(
-                          onPressed: onSave,
+                          onPressed: () {
+                            AppHaptics.light();
+                            onSave();
+                          },
                           icon: const Icon(Icons.check, size: 18),
                           label: Text(l10n.workoutSessionSaveChanges),
                         ),
@@ -1135,7 +1139,12 @@ class _SessionEditFooter extends StatelessWidget {
                   enabled: canSave,
                   label: saveLabel,
                   child: FilledButton.icon(
-                    onPressed: canSave ? onSave : null,
+                    onPressed: canSave
+                        ? () {
+                            AppHaptics.light();
+                            onSave!();
+                          }
+                        : null,
                     icon: const Icon(Icons.check, size: 18),
                     label: Text(saveLabel),
                     style: FilledButton.styleFrom(
