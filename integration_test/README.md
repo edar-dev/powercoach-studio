@@ -1,39 +1,60 @@
-# E2E tests – PowerCoach Studio
+# E2E / integration tests – PowerCoach Studio
 
-Test end-to-end che avviano l’app, simulano tap e navigazione e verificano la UI.
+Stock Flutter `integration_test` (no Patrol). Two suites live here:
 
-## Requisiti
+| Suite | Purpose | Secrets | CI |
+|-------|---------|---------|-----|
+| `app_test.dart`, `landing_flow_test.dart` | Unauthenticated login/landing flows | `.env` Supabase | **Not** in CI |
+| `phone_smokes/` | Phase B phone UI smokes (shell, day editor, Modifica blocco) | **None** — local harness / seed | **Codemagic nightly only** (`android_integration_nightly`) |
 
-- File **`.env`** nella root del progetto con almeno:
-  - `SUPABASE_URL`
-  - `SUPABASE_ANON_KEY`
+Required PR CI remains `flutter test test/` (widget/unit). Emulator smokes are **not** blocking on every PR.
 
-Senza questi, il router potrebbe non inizializzare correttamente e i test possono fallire.
+## Phone UI smokes (Phase B)
 
-## Esecuzione
-
-Dalla root di **powercoach-studio**:
-
-```bash
-# Tutti i test integration
-flutter test integration_test/
-
-# Singolo file
-flutter test integration_test/app_test.dart
-flutter test integration_test/landing_flow_test.dart
-```
-
-Su desktop (Windows/macOS/Linux) Flutter chiederà su quale dispositivo eseguire; scegliere il desktop per esecuzione locale veloce. Su Windows può essere richiesto **Developer Mode** (impostazioni di sistema) per la build con plugin.
-
-## Contenuto dei test
-
-- **app_test.dart**: avvio app, navigazione Login → Registrati / Password dimenticata, ritorno indietro, validazione form login (submit vuoto).
-- **landing_flow_test.dart**: verifica schermata login (campi e link) e, se visibile, landing (hero e sezione funzionalità).
-
-## Widget test
-
-I test in `test/widget_test.dart` usano la stessa inizializzazione (dotenv + Supabase) e verificano che l’app si costruisca mostrando landing o login.
+Harnesses mirror Phase A widget tests: `MaterialApp` + in-memory fixtures / shell router — **no live Supabase auth**.
 
 ```bash
-flutter test test/
+# All three smokes (needs a device / emulator / desktop target)
+flutter test integration_test/phone_smokes/ -d <deviceId>
+
+# Singles
+flutter test integration_test/phone_smokes/shell_smoke_test.dart -d <deviceId>
+flutter test integration_test/phone_smokes/day_editor_smoke_test.dart -d <deviceId>
+flutter test integration_test/phone_smokes/edit_block_smoke_test.dart -d <deviceId>
 ```
+
+Local Android emulator example:
+
+```bash
+flutter emulators --launch <emulator_id>
+adb wait-for-device
+flutter test integration_test/phone_smokes/ -d emulator-5554
+```
+
+On Linux/macOS desktop (no AVD), pass `-d linux` / `-d macos` after enabling the desktop device.
+
+### What they cover
+
+1. **Shell** — 4 primary tabs → Settings hides `NavigationBar`
+2. **Day editor** — sticky `Salva modifiche` clears home-indicator band
+3. **Modifica blocco** — type `Serie`, keyboard inset, `Salva` hittable / dismiss
+
+## Legacy login / landing E2E
+
+Require a synced env asset:
+
+1. Put `SUPABASE_URL` / `SUPABASE_ANON_KEY` in `.env`
+2. `bash scripts/ensure-env.sh`
+3. `flutter test integration_test/app_test.dart`
+
+On Windows, Developer Mode may be required for plugin symlink builds.
+
+## Codemagic nightly
+
+Workflow `android_integration_nightly` in `codemagic.yaml`:
+
+- Linux instance + Android emulator
+- Runs **only** `integration_test/phone_smokes/`
+- **No** push/PR triggers — schedule in Codemagic UI: **Scheduled builds** → workflow `Android Integration Smokes (Nightly)` → branch `main`
+
+See also `docs/testing.md`.

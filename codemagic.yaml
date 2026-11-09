@@ -140,3 +140,47 @@ workflows:
         credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
         track: internal
         submit_as_draft: false
+
+  # Phase B phone UI smokes (stock integration_test). Not triggered on push/PR —
+  # schedule nightly in Codemagic UI: Scheduled builds → this workflow → branch main.
+  # Android emulator needs a Linux instance (Apple Silicon cannot nest-virt AVDs).
+  android_integration_nightly:
+    name: Android Integration Smokes (Nightly)
+    instance_type: linux_x2
+    max_build_duration: 60
+    environment:
+      flutter: 3.35.6
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $CM_BUILD_DIR/build
+        - $HOME/.gradle/caches
+    scripts:
+      - name: Install dependencies
+        script: flutter pub get
+      - name: Launch Android emulator
+        script: |
+          set -euo pipefail
+          flutter emulators --launch emulator &
+          adb wait-for-device
+          # Boot completed can lag after adb "device" appears.
+          timeout 180 adb shell 'while [[ -z $(getprop sys.boot_completed) ]]; do sleep 1; done; echo booted'
+      - name: Phone UI integration smokes
+        script: |
+          set -euo pipefail
+          mkdir -p test-results
+          # Only Phase B harness smokes (no live Supabase). Do not run
+          # integration_test/app_test.dart or landing_flow_test.dart here.
+          # Run files sequentially to avoid Live-binding app relaunch flakes.
+          : > test-results/phone_smokes.json
+          for f in \
+            integration_test/phone_smokes/shell_smoke_test.dart \
+            integration_test/phone_smokes/day_editor_smoke_test.dart \
+            integration_test/phone_smokes/edit_block_smoke_test.dart
+          do
+            flutter -d emulator-5554 test --machine "$f" \
+              >> test-results/phone_smokes.json
+          done
+        test_report: test-results/phone_smokes.json
+    artifacts:
+      - test-results/phone_smokes.json
