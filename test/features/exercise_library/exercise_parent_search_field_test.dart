@@ -44,7 +44,7 @@ Widget _harness({
             selectedParentId: selectedParentId,
             onChanged: onChanged,
           ),
-          if (trailing != null) trailing,
+          ?trailing,
         ],
       ),
     ),
