@@ -67,8 +67,8 @@ WorkoutRoutine updateMobilitySectionInRoutine({
   required String name,
   required String scheduleHint,
 }) {
+  // Empty name is intentional ("unset"); UI shows localized "Sezione N".
   final trimmed = name.trim();
-  if (trimmed.isEmpty) return routine;
   return routine.copyWith(
     mobilitySections: routine.mobilitySections
         .map(

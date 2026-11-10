@@ -18,6 +18,7 @@ import '../builder_session_log_handler.dart';
 import '../mobility_builder_controller.dart';
 import '../workout_builder_export_actions.dart';
 import '../workout_builder_mobility_handlers.dart';
+import '../workout_builder_mobility_tab_remap.dart';
 import '../workout_builder_routine_coordinator.dart';
 import '../workout_builder_screen_load_handler.dart';
 import '../workout_builder_screen_routine_actions.dart';
@@ -75,7 +76,7 @@ class _WorkoutBuilderMobilityScreenState
   int? _pendingSelectedDayIndex;
   bool _didReadDeepLinkSelection = false;
   bool _showOnboardingCard = false;
-  late final TabController _sectionTabController;
+  late TabController _sectionTabController;
   /// Cached shell flag so routine/mobility edits do not force full-screen setState.
   bool? _lastShowsMobilityTab;
 
@@ -310,22 +311,29 @@ class _WorkoutBuilderMobilityScreenState
     final length = _showsMobilityTab ? 3 : 2;
     if (_sectionTabController.length == length) return;
     final previousIndex = _sectionTabController.index;
-    _sectionTabController.dispose();
+    final oldController = _sectionTabController;
+    final initialIndex = remapTabIndexAfterMobilityVisibilityChange(
+      showingMobility: length == 3,
+      previousIndex: previousIndex,
+    ).clamp(0, length - 1);
+    // Assign the replacement first so attached TabBar/TabBarView never hold a
+    // disposed controller across the rebuild boundary.
     _sectionTabController = TabController(
       length: length,
       vsync: this,
-      initialIndex: previousIndex.clamp(0, length - 1),
+      initialIndex: initialIndex,
     );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      oldController.dispose();
+    });
   }
 
   void _onIncludesMobilityTabChanged(bool value) {
+    // Length sync + index remap run via [_onBuilderShellFlagsChanged] →
+    // [_syncTabControllerLength] once [includesMobilityTab] flips.
     _builderSession.setRoutine(
       _builderSession.routine.copyWith(includesMobilityTab: value),
     );
-    _syncTabControllerLength();
-    if (!value && _sectionTabController.index == 1) {
-      _sectionTabController.index = 0;
-    }
   }
 
   @override

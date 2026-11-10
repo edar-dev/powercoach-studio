@@ -59,6 +59,28 @@ void main() {
       expect(mobility.sections.last.name, 'Finisher');
     });
 
+    test('addSection with empty name succeeds and selects new section', () {
+      expect(mobility.addSection(name: ''), isTrue);
+      expect(mobility.sections, hasLength(3));
+      expect(mobility.selectedSectionIndex, 2);
+      expect(mobility.sections.last.name, isEmpty);
+    });
+
+    test('updateSection with empty name persists unset', () {
+      expect(
+        mobility.updateSection(
+          sectionId: 'sec-a',
+          name: '   ',
+          scheduleHint: 'pre',
+        ),
+        isTrue,
+      );
+      final section =
+          session.routine.mobilitySections.firstWhere((s) => s.id == 'sec-a');
+      expect(section.name, isEmpty);
+      expect(section.scheduleHint, 'pre');
+    });
+
     test('deleteSection refuses to remove the last section', () {
       session.setRoutine(
         WorkoutRoutine.empty().copyWith(
