@@ -551,15 +551,11 @@ class _DenseDayBlock {
   final int rowCount;
 }
 
-/// Tall / high-row days must expose [pw.Table] as a MultiPage child so rows
-/// can span pages. Threshold is intentionally below a true mega-day so dense
-/// 4-week cells with wrapped notes still take the spanning path.
-bool _denseDayRequiresTableSpanning(_DenseDayBlock day, double pageBudget) =>
-    day.estimatedHeight > pageBudget * 0.85 || day.rowCount >= 8;
-
 /// Emit title + table separately so the table (SpanningWidget) can split by row.
 ///
 /// [day.widgets] is always `[title, table, gap]` from [_buildDenseDayBlocks].
+/// Never wrap the Table in Inseparable/Column — nesting kills row spanning and
+/// throws when real height exceeds ~806pt (POWERCOACH-STUDIO-G: 820 > 806).
 void _emitDenseDayWithTableSpanning(List<pw.Widget> out, _DenseDayBlock day) {
   final w = day.widgets;
   assert(w.length >= 2, 'dense day widgets must be [title, table, ...]');
@@ -568,19 +564,24 @@ void _emitDenseDayWithTableSpanning(List<pw.Widget> out, _DenseDayBlock day) {
   if (w.length > 2) out.add(w[2]);
 }
 
-/// Emit each day separately: short days stay Inseparable (title+table), tall
-/// days use Table spanning. Avoids multi-day Inseparable columns whose real
-/// height can exceed one page when estimates under-count wrapped cells.
+/// Emit each day separately. Prefer spanning Table as MultiPage child.
+///
+/// Title+table stay Inseparable only when [denseDayCanKeepInseparable] proves
+/// the estimate is safely under the page budget (default: never — factor 0).
 void _emitDenseDayBatch(
   List<pw.Widget> out,
   List<_DenseDayBlock> batch,
   double pageBudget,
 ) {
   for (final day in batch) {
-    if (_denseDayRequiresTableSpanning(day, pageBudget)) {
-      _emitDenseDayWithTableSpanning(out, day);
-    } else {
+    final keepInseparable = denseDayCanKeepInseparable(
+      estimatedHeight: day.estimatedHeight,
+      pageBudget: pageBudget,
+    );
+    if (keepInseparable) {
       out.add(_wrapDenseDayBatch([day]));
+    } else {
+      _emitDenseDayWithTableSpanning(out, day);
     }
   }
 }
@@ -637,7 +638,8 @@ List<pw.Widget> _densePageBodyWidgets(
 }
 
 pw.Widget _wrapDenseDayBatch(List<_DenseDayBlock> batch) {
-  // One Inseparable per short batch — never canSpan (Table cannot span inside).
+  // Only used when denseDayCanKeepInseparable is true (default: never).
+  // Never canSpan — Table cannot span inside Inseparable.
   return pw.Inseparable(
     child: pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.stretch,
@@ -825,8 +827,8 @@ List<_DenseDayBlock> _buildDenseDayBlocks(
           weekCount: weeks.length,
         ),
         rowCount: dayRows.length,
-        // Day UI only — short batches wrap Inseparable; tall days emit Table
-        // as a direct MultiPage child so rows can span pages.
+        // Day UI only — emit path prefers Table as a direct MultiPage child
+        // (spanning); inseparable only when packing helper says it is safe.
         widgets: [
           PdfDocumentTheme.sectionTitle(dayTitle, dense: dense),
           pw.Table(

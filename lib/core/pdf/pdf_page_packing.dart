@@ -17,6 +17,10 @@ double denseContentBudget({required bool firstPage}) {
 ///
 /// Prefer slight overestimate so packing stays conservative. Tall days that
 /// still exceed a page are emitted with Table spanning (see export usecase).
+///
+/// Note: wrapped 4-week prescription cells routinely render far taller than
+/// this estimate (production: ~820pt for content this helper may call ~300).
+/// Never use the estimate alone to keep a Table inside [Inseparable].
 double estimateDenseDayHeight({
   required int rowCount,
   required int weekCount,
@@ -32,6 +36,29 @@ double estimateDenseDayHeight({
     height += 12.0;
   }
   return height;
+}
+
+/// Max fraction of [pageBudget] at which a dense day may stay inseparable
+/// (title+table). Default `0` = always emit Table as a MultiPage child.
+///
+/// Estimates under-count wrapped cells; any non-zero factor must stay far
+/// below real rendered height (POWERCOACH-STUDIO-F / G: ~820 > ~806).
+const double denseDayInseparableSafetyFactor = 0.0;
+
+/// Whether title+table may share one non-spanning Inseparable.
+///
+/// Prefer spanning. Only returns true when [estimatedHeight] is safely under
+/// [pageBudget] * [safetyFactor]. With the default factor of `0`, always
+/// returns false so dense day Tables never nest in Inseparable/Column.
+bool denseDayCanKeepInseparable({
+  required double estimatedHeight,
+  required double pageBudget,
+  double safetyFactor = denseDayInseparableSafetyFactor,
+}) {
+  if (safetyFactor <= 0 || estimatedHeight <= 0 || pageBudget <= 0) {
+    return false;
+  }
+  return estimatedHeight <= pageBudget * safetyFactor;
 }
 
 /// Estimated height of the mobility section block (title + grid + trailing gap).

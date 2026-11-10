@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
 import 'package:powercoach_studio/core/pdf/pdf_export_labels.dart';
+import 'package:powercoach_studio/core/pdf/pdf_page_packing.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/domain/export_pdf_usecase.dart';
 import 'package:powercoach_studio/features/workouts/domain/workout_routine_json_codec.dart';
@@ -91,6 +94,24 @@ List<Exercise> _megaExercises({required String weekTag}) {
   ];
 }
 
+/// Under the old #251 gate (rowCount >= 8), this day stayed Inseparable.
+List<Exercise> _underThresholdWrappedExercises({required String weekTag}) {
+  return [
+    for (var i = 0; i < 7; i++)
+      _ex(
+        id: 'under8_${weekTag}_$i',
+        name:
+            'Long Named Compound Movement Number $i with equipment and tempo cues',
+        sets: '4',
+        reps: '8-10',
+        note: List.filled(
+          5,
+          'Week $weekTag cue $i: scapula set, brace trunk, controlled eccentric, pause, drive, breathe.',
+        ).join(' '),
+      ),
+  ];
+}
+
 Day _day({
   required String id,
   required String name,
@@ -125,6 +146,51 @@ Week _week(int index) {
           _ex(id: '${tag}_bike', name: 'Assault Bike', sets: '1', reps: '10 min'),
         ],
       ),
+    ],
+  );
+}
+
+Week _underThresholdWeek(int index) {
+  final tag = 'w$index';
+  return Week(
+    id: tag,
+    name: 'Settimana $index',
+    days: [
+      _day(
+        id: '${tag}_d0',
+        name: 'Tall under-8-row day',
+        exercises: _underThresholdWrappedExercises(weekTag: tag),
+      ),
+    ],
+  );
+}
+
+/// Reproduces POWERCOACH-STUDIO-G shape: non-spanning widget taller than ~806 page.
+pw.Table _productionShapedTallTable() {
+  // Fixed-ish tall rows so Inseparable exceeds page content height (~805.89).
+  return pw.Table(
+    border: pw.TableBorder.all(),
+    children: [
+      for (var i = 0; i < 14; i++)
+        pw.TableRow(
+          children: [
+            pw.Padding(
+              padding: const pw.EdgeInsets.all(6),
+              child: pw.Text(
+                'Ex $i ${'cue wrap content ' * 16}',
+                style: const pw.TextStyle(fontSize: 9),
+              ),
+            ),
+            for (var w = 0; w < 4; w++)
+              pw.Padding(
+                padding: const pw.EdgeInsets.all(6),
+                child: pw.Text(
+                  'S${w + 1}\n4x8-10 @8\n${'note line\n' * 3}',
+                  style: const pw.TextStyle(fontSize: 9),
+                ),
+              ),
+          ],
+        ),
     ],
   );
 }
@@ -173,6 +239,106 @@ void main() {
       );
 
       expect(artifact.bytes, isNotEmpty);
+    },
+  );
+
+  test(
+    'dense day under old rowCount>=8 threshold still exports (always-span)',
+    () async {
+      // Estimates for 7 rows stay well under 85% budget, so #251 kept
+      // title+table Inseparable. Always-span must still succeed.
+      final estimate = estimateDenseDayHeight(rowCount: 7, weekCount: 4);
+      final laterBudget = denseContentBudget(firstPage: false);
+      expect(estimate, lessThan(laterBudget * 0.85));
+      expect(7, lessThan(8));
+      expect(
+        denseDayCanKeepInseparable(
+          estimatedHeight: estimate,
+          pageBudget: laterBudget,
+        ),
+        isFalse,
+      );
+
+      final routine = WorkoutRoutine(
+        name: 'Under8 Always Span',
+        mobilitySections: const [],
+        mobilityItems: const [],
+        phases: [
+          WorkoutRoutine.defaultPhase(
+            weeks: [for (var i = 1; i <= 4; i++) _underThresholdWeek(i)],
+          ),
+        ],
+        startDate: DateTime(2026, 6, 1),
+        endDate: DateTime(2026, 6, 28),
+      );
+
+      final artifact = await exportWorkoutRoutineToPdf(
+        routine,
+        labels: _labels(),
+        layout: WorkoutPdfLayout.dense,
+        includeMobility: false,
+      );
+      expect(artifact.bytes, isNotEmpty);
+    },
+  );
+
+  test(
+    '~820pt Inseparable day table overflows; spanning MultiPage child succeeds',
+    () async {
+      // Same page geometry as production MultiPage dense margins/header/footer
+      // yielding ~805.89 content height (POWERCOACH-STUDIO-G).
+      const margin = 18.0;
+
+      final inseparableDoc = pw.Document();
+      expect(
+        () => inseparableDoc.addPage(
+          pw.MultiPage(
+            pageFormat: PdfPageFormat.a4,
+            margin: const pw.EdgeInsets.all(margin),
+            header: (c) => pw.SizedBox(height: 36),
+            footer: (c) => pw.SizedBox(height: 28),
+            build: (context) => [
+              pw.Inseparable(
+                child: pw.Column(
+                  crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                  children: [
+                    pw.Text('Mega day title'),
+                    _productionShapedTallTable(),
+                    pw.SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        throwsA(
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            allOf(
+              contains("won't fit into the page"),
+              contains('805.8897637795275'),
+            ),
+          ),
+        ),
+      );
+
+      final spanningDoc = pw.Document();
+      spanningDoc.addPage(
+        pw.MultiPage(
+          pageFormat: PdfPageFormat.a4,
+          margin: const pw.EdgeInsets.all(margin),
+          header: (c) => pw.SizedBox(height: 36),
+          footer: (c) => pw.SizedBox(height: 28),
+          build: (context) => [
+            pw.Inseparable(child: pw.Text('Mega day title')),
+            _productionShapedTallTable(),
+            pw.SizedBox(height: 8),
+          ],
+        ),
+      );
+      final bytes = await spanningDoc.save();
+      expect(bytes, isNotEmpty);
     },
   );
 }
