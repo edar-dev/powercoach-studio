@@ -13,6 +13,17 @@ class ExerciseLibraryImportService {
     required bool fallbackMobilityWhenMissing,
     String catalogSource = ExerciseCatalogSource.manual,
   }) async {
+    // Built-in catalog re-import replaces existing powercoach rows (append would
+    // create duplicate picker labels with different entity ids).
+    if (catalogSource == ExerciseCatalogSource.powercoach) {
+      final existing = await _exerciseRepo.listFlat(
+        catalogSource: ExerciseCatalogSource.powercoach,
+      );
+      for (final item in existing) {
+        await _exerciseRepo.delete(item.id);
+      }
+    }
+
     final importedByLegacyId = <String, String>{};
     var importedCount = 0;
     final pending = List<Map<String, dynamic>>.from(items);

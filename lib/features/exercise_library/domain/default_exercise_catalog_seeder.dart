@@ -10,7 +10,9 @@ import 'exercise_library_import_service.dart';
 ///
 /// Seeds only when there are no rows with
 /// [ExerciseCatalogSource.powercoach] yet (first use / empty library).
-/// Manual re-import from the library UI still replaces that catalog.
+/// Manual re-import from the library UI still replaces that catalog via
+/// [ExerciseLibraryImportService.importItems] (soft-deletes existing
+/// powercoach rows before importing).
 ///
 /// After an intentional "clear library", auto-seed is suppressed until the
 /// user imports the default catalog again (see
