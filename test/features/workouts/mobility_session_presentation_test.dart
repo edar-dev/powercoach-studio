@@ -8,10 +8,10 @@ void main() {
   final l10n = lookupAppLocalizations(const Locale('it'));
 
   test('empty section name displays Sezione N on synthetic day', () {
-    final view = MobilitySectionSessionView(
-      section: const MobilitySection(id: 's1', name: ''),
+    const view = MobilitySectionSessionView(
+      section: MobilitySection(id: 's1', name: ''),
       sectionIndex: 0,
-      items: const [],
+      items: [],
     );
     final day = view.toPresentationDay(l10n);
     expect(day.id, 's1');
@@ -20,10 +20,10 @@ void main() {
   });
 
   test('custom section name is preserved on synthetic day', () {
-    final view = MobilitySectionSessionView(
-      section: const MobilitySection(id: 's2', name: 'Warm-up'),
+    const view = MobilitySectionSessionView(
+      section: MobilitySection(id: 's2', name: 'Warm-up'),
       sectionIndex: 1,
-      items: const [],
+      items: [],
     );
     expect(view.toPresentationDay(l10n).name, 'Warm-up');
   });
@@ -61,10 +61,10 @@ void main() {
   });
 
   test('toPresentationDay maps items to synthetic exercises', () {
-    final view = MobilitySectionSessionView(
-      section: const MobilitySection(id: 's1', name: 'Sezione 1'),
+    const view = MobilitySectionSessionView(
+      section: MobilitySection(id: 's1', name: 'Sezione 1'),
       sectionIndex: 0,
-      items: const [
+      items: [
         MobilityItem(
           id: 'i1',
           title: 'A',
