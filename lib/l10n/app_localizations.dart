@@ -5236,6 +5236,18 @@ abstract class AppLocalizations {
   /// **'No exercises in this session'**
   String get workoutBuilderSessionEmptyTitle;
 
+  /// No description provided for @workoutBuilderMobilityEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No exercises in this section'**
+  String get workoutBuilderMobilityEmptyTitle;
+
+  /// No description provided for @workoutBuilderMobilityEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a mobility exercise to get started.'**
+  String get workoutBuilderMobilityEmptyMessage;
+
   /// No description provided for @workoutSessionEditTitleWithDay.
   ///
   /// In en, this message translates to:

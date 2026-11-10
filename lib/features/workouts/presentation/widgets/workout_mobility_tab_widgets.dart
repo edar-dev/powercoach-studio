@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../l10n/app_localizations.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/core/ui/widgets/app_sheet.dart';
+import 'workout_expandable_card.dart';
 
 /// True when [name] is empty or a legacy auto-numbered default
 /// (`Section 1`, `Sezione 2`, …).
@@ -27,6 +28,7 @@ String mobilitySectionDisplayName({
   return name.trim();
 }
 
+/// Stitch phase-rail style section pill (radius 12, primary when selected).
 class MobilitySectionChip extends StatelessWidget {
   const MobilitySectionChip({
     super.key,
@@ -48,26 +50,41 @@ class MobilitySectionChip extends StatelessWidget {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
+    final bg = selected ? cs.primary : cs.surfaceContainerHighest;
+    final fg = selected ? cs.onPrimary : cs.onSurface;
+    final border = selected
+        ? cs.primary.withValues(alpha: 0.55)
+        : cs.outlineVariant.withValues(alpha: 0.7);
+
     return Material(
-      color: selected
-          ? StitchM3Theme.accent
-          : cs.surfaceContainerHighest,
-      borderRadius: BorderRadius.circular(999),
+      color: bg,
+      elevation: selected ? 2 : 0,
+      shadowColor: cs.primary.withValues(alpha: 0.35),
+      borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(999),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 4, top: 4, bottom: 4),
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+        child: Container(
+          padding: EdgeInsets.only(
+            left: 12,
+            right: selected ? 4 : 12,
+            top: 4,
+            bottom: 4,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+            border: Border.all(color: border),
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: 6),
                 child: Text(
                   label,
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: selected ? Colors.white : cs.onSurface,
-                    fontWeight: FontWeight.w600,
+                    color: fg,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
                   ),
                 ),
               ),
@@ -76,7 +93,7 @@ class MobilitySectionChip extends StatelessWidget {
                   icon: Icon(
                     Icons.more_horiz,
                     size: 18,
-                    color: selected ? Colors.white : cs.onSurfaceVariant,
+                    color: cs.onPrimary,
                   ),
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -101,10 +118,56 @@ class MobilitySectionChip extends StatelessWidget {
                         ),
                       ),
                   ],
-                )
-              else
-                const SizedBox(width: 8),
+                ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Dashed outline chip matching [TrainingPhaseRail] add-phase CTA.
+class MobilityDashedSectionChip extends StatelessWidget {
+  const MobilityDashedSectionChip({
+    super.key,
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
+        child: CustomPaint(
+          painter: _DashedBorderPainter(
+            color: cs.outlineVariant,
+            radius: StitchM3Theme.radiusLg,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add, size: 16, color: cs.onSurfaceVariant),
+                const SizedBox(width: 6),
+                Text(
+                  label,
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: cs.onSurfaceVariant,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -151,174 +214,119 @@ class _MobilityItemCardState extends State<MobilityItemCard> {
         : (widget.shortTitle.trim().isNotEmpty ? widget.shortTitle : null);
     final secondaryColor = cs.onSurface.withValues(alpha: 0.72);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ReorderableDragStartListener(
-                index: widget.index,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 4),
-                  child: Icon(
-                    Icons.drag_indicator,
-                    size: 20,
-                    color: secondaryColor,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () => setState(() => _expanded = !_expanded),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            widget.title,
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: cs.onSurface,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        if (!_expanded && summary != null) ...[
-                          const SizedBox(width: 8),
-                          Flexible(
-                            child: Text(
-                              summary,
-                              textAlign: TextAlign.end,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: secondaryColor,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              IconButton(
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                padding: EdgeInsets.zero,
-                tooltip: _expanded
-                    ? MaterialLocalizations.of(context).expandedIconTapHint
-                    : MaterialLocalizations.of(context).collapsedIconTapHint,
-                icon: Icon(
-                  _expanded ? Icons.expand_less : Icons.chevron_right,
-                  color: cs.onSurfaceVariant,
-                ),
-                onPressed: () => setState(() => _expanded = !_expanded),
-              ),
-              PopupMenuButton<String>(
-                icon: Icon(Icons.more_vert, size: 24, color: cs.onSurfaceVariant),
-                iconSize: 24,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-                onSelected: (value) {
-                  if (value == 'edit' && widget.onEdit != null) {
-                    showEditMobilityItemDialog(
-                      context,
-                      widget.title,
-                      widget.subtitle,
-                      widget.shortTitle,
-                      widget.onEdit!,
-                    );
-                  } else if (value == 'delete') {
-                    widget.onDelete?.call();
-                  }
-                },
-                itemBuilder: (ctx) {
-                  final menuL10n = AppLocalizations.of(ctx);
-                  return [
-                    if (widget.onEdit != null)
-                      PopupMenuItem(
-                        value: 'edit',
-                        child: Text(menuL10n.workoutBuilderEditExercise),
-                      ),
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Text(
-                        menuL10n.workoutBuilderDeleteExercise,
-                        style: const TextStyle(color: StitchM3Theme.danger),
-                      ),
-                    ),
-                  ];
-                },
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: WorkoutExpandableCard(
+        title: Text(
+          widget.title,
+          style: theme.textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            color: cs.onSurface,
           ),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
-        if (_expanded)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(28, 0, 4, 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (widget.shortTitle.trim().isNotEmpty)
-                  Text(
-                    widget.shortTitle,
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: secondaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                if (widget.subtitle.trim().isNotEmpty) ...[
-                  if (widget.shortTitle.trim().isNotEmpty)
-                    const SizedBox(height: 6),
-                  Text(
-                    widget.subtitle,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: cs.onSurface,
-                    ),
-                  ),
-                ],
-                if (widget.subtitle.trim().isEmpty &&
-                    widget.shortTitle.trim().isEmpty)
-                  Text(
-                    l10n.workoutBuilderNotePlaceholder,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: secondaryColor,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                if (widget.onEdit != null) ...[
-                  const SizedBox(height: 8),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: TextButton.icon(
-                      onPressed: () => showEditMobilityItemDialog(
-                        context,
-                        widget.title,
-                        widget.subtitle,
-                        widget.shortTitle,
-                        widget.onEdit!,
-                      ),
-                      icon: const Icon(Icons.edit_outlined, size: 16),
-                      label: Text(l10n.workoutBuilderEditExercise),
-                    ),
-                  ),
-                ],
-              ],
+        summary: _expanded ? null : summary,
+        expanded: _expanded,
+        onExpandedChanged: (value) => setState(() => _expanded = value),
+        leading: ReorderableDragStartListener(
+          index: widget.index,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: Icon(
+              Icons.drag_indicator,
+              size: 20,
+              color: secondaryColor,
             ),
           ),
-        Divider(
-          height: 1,
-          color: cs.outlineVariant.withValues(alpha: 0.5),
         ),
-      ],
+        trailing: PopupMenuButton<String>(
+          icon: Icon(Icons.more_vert, size: 22, color: cs.onSurfaceVariant),
+          iconSize: 22,
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(minWidth: 44, minHeight: 44),
+          onSelected: (value) {
+            if (value == 'edit' && widget.onEdit != null) {
+              showEditMobilityItemDialog(
+                context,
+                widget.title,
+                widget.subtitle,
+                widget.shortTitle,
+                widget.onEdit!,
+              );
+            } else if (value == 'delete') {
+              widget.onDelete?.call();
+            }
+          },
+          itemBuilder: (ctx) {
+            final menuL10n = AppLocalizations.of(ctx);
+            return [
+              if (widget.onEdit != null)
+                PopupMenuItem(
+                  value: 'edit',
+                  child: Text(menuL10n.workoutBuilderEditExercise),
+                ),
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(
+                  menuL10n.workoutBuilderDeleteExercise,
+                  style: const TextStyle(color: StitchM3Theme.danger),
+                ),
+              ),
+            ];
+          },
+        ),
+        expandedChild: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.shortTitle.trim().isNotEmpty)
+              Text(
+                widget.shortTitle,
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: secondaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            if (widget.subtitle.trim().isNotEmpty) ...[
+              if (widget.shortTitle.trim().isNotEmpty)
+                const SizedBox(height: 6),
+              Text(
+                widget.subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: cs.onSurface,
+                ),
+              ),
+            ],
+            if (widget.subtitle.trim().isEmpty &&
+                widget.shortTitle.trim().isEmpty)
+              Text(
+                l10n.workoutBuilderNotePlaceholder,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: secondaryColor,
+                  fontStyle: FontStyle.italic,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            if (widget.onEdit != null) ...[
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => showEditMobilityItemDialog(
+                    context,
+                    widget.title,
+                    widget.subtitle,
+                    widget.shortTitle,
+                    widget.onEdit!,
+                  ),
+                  icon: const Icon(Icons.edit_outlined, size: 16),
+                  label: Text(l10n.workoutBuilderEditExercise),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -371,41 +379,36 @@ void showEditMobilityItemDialog(
   );
 }
 
-class MobilityDashedButton extends StatelessWidget {
-  const MobilityDashedButton({
-    super.key,
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-  });
+class _DashedBorderPainter extends CustomPainter {
+  _DashedBorderPainter({required this.color, required this.radius});
 
-  final IconData icon;
-  final String label;
-  final VoidCallback? onPressed;
+  final Color color;
+  final double radius;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        side: BorderSide(
-          color: onPressed != null
-              ? StitchM3Theme.accent.withValues(alpha: 0.5)
-              : cs.outline.withValues(alpha: 0.35),
-          width: 1.2,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(StitchM3Theme.radiusLg),
-        ),
-        foregroundColor: onPressed != null
-            ? StitchM3Theme.accent
-            : cs.onSurface.withValues(alpha: 0.72),
-        padding: const EdgeInsets.symmetric(vertical: 14),
-      ),
-      icon: Icon(icon, size: 18),
-      label: Text(label),
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.2;
+    final rrect = RRect.fromRectAndRadius(
+      Offset.zero & size,
+      Radius.circular(radius),
     );
+    final path = Path()..addRRect(rrect);
+    for (final metric in path.computeMetrics()) {
+      var distance = 0.0;
+      const dash = 5.0;
+      const gap = 4.0;
+      while (distance < metric.length) {
+        final next = (distance + dash).clamp(0.0, metric.length);
+        canvas.drawPath(metric.extractPath(distance, next), paint);
+        distance = next + gap;
+      }
+    }
   }
+
+  @override
+  bool shouldRepaint(covariant _DashedBorderPainter oldDelegate) =>
+      oldDelegate.color != color || oldDelegate.radius != radius;
 }
