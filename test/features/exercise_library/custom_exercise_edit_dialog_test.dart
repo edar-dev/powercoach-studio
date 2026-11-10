@@ -142,4 +142,61 @@ void main() {
 
     expect(find.byType(ExerciseParentSearchField), findsNothing);
   });
+
+  testWidgets('prefills parent and excludes self plus descendants', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _wrap(
+        CustomExerciseEditDialog(
+          title: 'Edit',
+          name: 'Squat',
+          description: null,
+          isMobility: false,
+          parentId: 'bench',
+          parentTreeRoots: roots,
+          excludeParentIds: const {'squat', 'box'},
+          onSave: (a, b, c, d) {},
+          onCancel: () {},
+        ),
+      ),
+    );
+    await tester.pump();
+
+    final parentField = find.byType(TextFormField).last;
+    expect(
+      tester.widget<TextFormField>(parentField).controller?.text,
+      'Bench press',
+    );
+    expect(find.byIcon(Icons.clear), findsOneWidget);
+
+    // Clear selection so optionsBuilder uses an empty query (no debounce).
+    await tester.tap(find.byIcon(Icons.clear));
+    await tester.pump();
+    await tester.tap(parentField);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 50));
+
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.text('Squat'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.text('Box squat'),
+      ),
+      findsNothing,
+    );
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.text('Bench press'),
+      ),
+      findsOneWidget,
+    );
+  });
 }

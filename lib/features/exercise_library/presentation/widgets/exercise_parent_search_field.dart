@@ -50,6 +50,16 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
   }
 
   @override
+  void didUpdateWidget(covariant ExerciseParentSearchField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedParentId != widget.selectedParentId ||
+        !identical(oldWidget.parentNameById, widget.parentNameById) ||
+        !identical(oldWidget.options, widget.options)) {
+      _syncFieldTextToSelection();
+    }
+  }
+
+  @override
   void dispose() {
     _filter.cancel();
     super.dispose();
@@ -65,16 +75,13 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
     return _displayName(exercise);
   }
 
+  /// Show the None row when the field is empty or the query is a prefix of the
+  /// localized "None" label (avoids hardcoded locale strings / false positives).
   bool _matchesNoneQuery(String query, AppLocalizations l10n) {
     final trimmed = query.trim().toLowerCase();
     if (trimmed.isEmpty) return true;
     final noneLabel = l10n.exerciseLibraryParentNone.toLowerCase();
-    return noneLabel.contains(trimmed) ||
-        trimmed.contains(noneLabel) ||
-        'none'.contains(trimmed) ||
-        trimmed.contains('none') ||
-        'nessuno'.contains(trimmed) ||
-        trimmed.contains('nessuno');
+    return noneLabel.startsWith(trimmed);
   }
 
   CustomExerciseItem? get _selectedExercise {
@@ -84,6 +91,19 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
       if (option.id == id) return option;
     }
     return null;
+  }
+
+  void _syncFieldTextToSelection() {
+    final controller = _fieldController;
+    if (controller == null) return;
+    final selected = _selectedExercise;
+    final text = selected == null ? '' : _displayName(selected);
+    if (controller.text != text) {
+      controller.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    }
   }
 
   void _clearParent() {

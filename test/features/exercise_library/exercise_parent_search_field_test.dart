@@ -27,6 +27,7 @@ Widget _harness({
   required Map<String, String> parentNameById,
   required String? selectedParentId,
   required ValueChanged<String?> onChanged,
+  Widget? trailing,
 }) {
   return MaterialApp(
     theme: StitchM3Theme.light,
@@ -34,12 +35,17 @@ Widget _harness({
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(
-      body: ExerciseParentSearchField(
-        options: options,
-        depthById: depthById,
-        parentNameById: parentNameById,
-        selectedParentId: selectedParentId,
-        onChanged: onChanged,
+      body: Column(
+        children: [
+          ExerciseParentSearchField(
+            options: options,
+            depthById: depthById,
+            parentNameById: parentNameById,
+            selectedParentId: selectedParentId,
+            onChanged: onChanged,
+          ),
+          if (trailing != null) trailing,
+        ],
       ),
     ),
   );
@@ -192,5 +198,98 @@ void main() {
     await tester.pump();
 
     expect(selected, isNull);
+  });
+
+  testWidgets('prefills selected parent display name', (tester) async {
+    await tester.pumpWidget(
+      _harness(
+        options: index.flat,
+        depthById: index.depthById,
+        parentNameById: index.parentNameById,
+        selectedParentId: 'box',
+        onChanged: (_) {},
+      ),
+    );
+    await tester.pump();
+
+    final field = tester.widget<TextFormField>(find.byType(TextFormField));
+    expect(field.controller?.text, 'Squat › Box squat');
+    expect(find.byIcon(Icons.clear), findsOneWidget);
+  });
+
+  testWidgets('syncs field text when selectedParentId is cleared', (
+    tester,
+  ) async {
+    String? selected = 'bench';
+    await tester.pumpWidget(
+      StatefulBuilder(
+        builder: (context, setState) {
+          return _harness(
+            options: index.flat,
+            depthById: index.depthById,
+            parentNameById: index.parentNameById,
+            selectedParentId: selected,
+            onChanged: (id) => setState(() => selected = id),
+            trailing: TextButton(
+              onPressed: () => setState(() => selected = null),
+              child: const Text('external-clear'),
+            ),
+          );
+        },
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      tester.widget<TextFormField>(find.byType(TextFormField)).controller?.text,
+      'Bench press',
+    );
+
+    await tester.tap(find.text('external-clear'));
+    await tester.pump();
+
+    expect(
+      tester.widget<TextFormField>(find.byType(TextFormField)).controller?.text,
+      '',
+    );
+    expect(find.byIcon(Icons.clear), findsNothing);
+  });
+
+  testWidgets('None option follows localized label prefix only', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _harness(
+        options: index.flat,
+        depthById: index.depthById,
+        parentNameById: index.parentNameById,
+        selectedParentId: null,
+        onChanged: (_) {},
+      ),
+    );
+
+    await tester.enterText(find.byType(TextFormField), 'e');
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.text('None'),
+      ),
+      findsNothing,
+    );
+
+    await tester.enterText(find.byType(TextFormField), 'no');
+    await tester.pump(const Duration(milliseconds: 250));
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.byType(ListView),
+        matching: find.text('None'),
+      ),
+      findsOneWidget,
+    );
   });
 }
