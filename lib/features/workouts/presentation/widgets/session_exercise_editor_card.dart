@@ -19,10 +19,16 @@ import '../../data/workout_routine_model.dart';
 import 'workout_session_card_chrome.dart';
 import 'workout_training_helpers.dart';
 
+/// Training vs mobility presentation for the shared session editor card.
+enum SessionExerciseEditorVariant { training, mobility }
+
 /// Stitch-aligned exercise card used only inside the session edit modal.
 ///
 /// Intentionally omits set-type / rest / status / 1RM / warm-up columns that
 /// are not persisted in [ExerciseSet].
+///
+/// When [variant] is [SessionExerciseEditorVariant.mobility], the expanded body
+/// is title / shortTitle / subtitle fields (no set table, supersets, or maximals).
 class SessionExerciseEditorCard extends StatefulWidget {
   const SessionExerciseEditorCard({
     super.key,
@@ -32,6 +38,7 @@ class SessionExerciseEditorCard extends StatefulWidget {
     required this.index,
     required this.expanded,
     required this.onExpandedChanged,
+    this.variant = SessionExerciseEditorVariant.training,
     this.athleteName,
     this.onDuplicate,
     this.onRemove,
@@ -56,6 +63,7 @@ class SessionExerciseEditorCard extends StatefulWidget {
   final int index;
   final bool expanded;
   final ValueChanged<bool> onExpandedChanged;
+  final SessionExerciseEditorVariant variant;
   final String? athleteName;
   /// Customer id for Massimali resolve in the set editor (null in sandbox).
   final String? customerId;
@@ -101,7 +109,10 @@ class SessionExerciseEditorCard extends StatefulWidget {
 
 class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   late final TextEditingController _noteController;
+  late final TextEditingController _titleController;
+  late final TextEditingController _shortTitleController;
   Timer? _noteDebounce;
+  Timer? _mobilityDebounce;
   bool _showSavedHint = false;
   double? _loadedMaximalKg;
   int _maximalLoadToken = 0;
@@ -109,11 +120,17 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   double? get _effectiveMaximalKg =>
       widget.resolvedMaximalKg ?? _loadedMaximalKg;
 
+  bool get _isMobility =>
+      widget.variant == SessionExerciseEditorVariant.mobility;
+
   @override
   void initState() {
     super.initState();
     _noteController = TextEditingController(text: widget.exercise.note);
-    if (widget.expanded) {
+    _titleController = TextEditingController(text: widget.exercise.name);
+    _shortTitleController =
+        TextEditingController(text: widget.exercise.shortName);
+    if (widget.expanded && !_isMobility) {
       unawaited(_loadResolvedMaximalKg());
     }
   }
@@ -126,6 +143,17 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
             widget.exercise.note != _noteController.text)) {
       _noteController.text = widget.exercise.note;
     }
+    if (oldWidget.exercise.id != widget.exercise.id ||
+        (oldWidget.exercise.name != widget.exercise.name &&
+            widget.exercise.name != _titleController.text)) {
+      _titleController.text = widget.exercise.name;
+    }
+    if (oldWidget.exercise.id != widget.exercise.id ||
+        (oldWidget.exercise.shortName != widget.exercise.shortName &&
+            widget.exercise.shortName != _shortTitleController.text)) {
+      _shortTitleController.text = widget.exercise.shortName;
+    }
+    if (_isMobility) return;
     final refChanged =
         oldWidget.exercise.maximalRef != widget.exercise.maximalRef ||
             oldWidget.customerId != widget.customerId ||
@@ -143,7 +171,10 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   @override
   void dispose() {
     _noteDebounce?.cancel();
+    _mobilityDebounce?.cancel();
     _noteController.dispose();
+    _titleController.dispose();
+    _shortTitleController.dispose();
     super.dispose();
   }
 
@@ -210,6 +241,34 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
   String _prescriptionSubtitle() =>
       collapsedPrescriptionSummary(widget.exercise.effectiveSetDetails);
 
+  /// Mobility collapsed secondary line: subtitle (note) or shortTitle.
+  String _mobilityCollapsedSubtitle() {
+    final subtitle = widget.exercise.note.trim();
+    if (subtitle.isNotEmpty) return subtitle;
+    return widget.exercise.shortName.trim();
+  }
+
+  void _scheduleMobilitySave() {
+    _mobilityDebounce?.cancel();
+    _mobilityDebounce = Timer(const Duration(milliseconds: 450), _flushMobility);
+  }
+
+  void _flushMobility() {
+    final onEdit = widget.onEdit;
+    if (onEdit == null) return;
+    final ex = widget.exercise;
+    onEdit(
+      _titleController.text.trim(),
+      ex.sets,
+      ex.reps,
+      ex.rpe,
+      _noteController.text.trim(),
+      setDetails: ex.setDetails,
+      shortName: _shortTitleController.text.trim(),
+      prescriptionScope: ex.prescriptionScope,
+    );
+  }
+
   void _openEditDialog(BuildContext context, {bool focusNote = false}) {
     final onEdit = widget.onEdit;
     if (onEdit == null) return;
@@ -255,20 +314,26 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     final cs = widget.colorScheme;
     final exercise = widget.exercise;
     final details = exercise.effectiveSetDetails;
-    final hasMenu =
-        widget.onEdit != null ||
-        widget.onDuplicate != null ||
-        widget.onRemove != null ||
-        widget.onMoveUp != null ||
-        widget.onMoveDown != null ||
-        widget.onAssignToSuperset != null ||
-        widget.onRemoveFromSuperset != null;
+    final hasMenu = _isMobility
+        ? (widget.onRemove != null ||
+            widget.onMoveUp != null ||
+            widget.onMoveDown != null)
+        : (widget.onEdit != null ||
+            widget.onDuplicate != null ||
+            widget.onRemove != null ||
+            widget.onMoveUp != null ||
+            widget.onMoveDown != null ||
+            widget.onAssignToSuperset != null ||
+            widget.onRemoveFromSuperset != null);
     final athlete = (widget.athleteName ?? '').trim();
     final notesLabel = athlete.isEmpty
         ? l10n.workoutSessionTechnicalNotes
         : l10n.workoutSessionTechnicalNotesForAthlete(athlete);
-    final collapsedRx =
-        widget.expanded ? '' : _prescriptionSubtitle();
+    final collapsedRx = widget.expanded
+        ? ''
+        : (_isMobility ? _mobilityCollapsedSubtitle() : _prescriptionSubtitle());
+    final headerTitle =
+        _isMobility ? _titleController.text : exercise.name;
 
     return WorkoutSessionCardShell(
       child: Column(
@@ -302,13 +367,13 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TruncatedText(
-                              exercise.name,
+                              headerTitle,
                               style: theme.textTheme.titleSmall?.copyWith(
                                 fontWeight: FontWeight.w700,
                                 color: cs.onSurface,
                               ),
                               maxLines: 1,
-                              tooltip: exercise.name,
+                              tooltip: headerTitle,
                             ),
                             if (collapsedRx.isNotEmpty)
                               Padding(
@@ -355,94 +420,176 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
             const Divider(height: 1, color: WorkoutSessionCardChrome.divider),
             Padding(
               padding: WorkoutSessionCardChrome.expandedPadding,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _SetTable(
-                    theme: theme,
-                    colorScheme: cs,
-                    l10n: l10n,
-                    details: details,
-                    hasMaximalRef: exercise.maximalRef != null,
-                    resolvedMaximalKg: _effectiveMaximalKg,
-                    onEditSet: widget.onUpdateSet == null
-                        ? null
-                        : (i, s) => showEditSetDialog(
-                              context,
-                              theme,
-                              cs,
-                              s.sets,
-                              s.reps,
-                              s.rpe,
-                              s.note,
-                              (sets, reps, load, note) =>
-                                  widget.onUpdateSet!(
-                                    i,
-                                    sets,
-                                    reps,
-                                    load,
-                                    note,
+              child: _isMobility
+                  ? _buildMobilityFields(l10n: l10n)
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _SetTable(
+                          theme: theme,
+                          colorScheme: cs,
+                          l10n: l10n,
+                          details: details,
+                          hasMaximalRef: exercise.maximalRef != null,
+                          resolvedMaximalKg: _effectiveMaximalKg,
+                          onEditSet: widget.onUpdateSet == null
+                              ? null
+                              : (i, s) => showEditSetDialog(
+                                    context,
+                                    theme,
+                                    cs,
+                                    s.sets,
+                                    s.reps,
+                                    s.rpe,
+                                    s.note,
+                                    (sets, reps, load, note) =>
+                                        widget.onUpdateSet!(
+                                          i,
+                                          sets,
+                                          reps,
+                                          load,
+                                          note,
+                                        ),
+                                    exercise: widget.exercise,
+                                    customerId: widget.customerId,
+                                    onMaximalRefChanged:
+                                        widget.onMaximalRefChanged,
                                   ),
-                              exercise: widget.exercise,
-                              customerId: widget.customerId,
-                              onMaximalRefChanged:
-                                  widget.onMaximalRefChanged,
+                          onRemoveSet: widget.onRemoveSet,
+                        ),
+                        if (widget.onAddSet != null ||
+                            widget.onDuplicateLastSet != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                if (widget.onAddSet != null)
+                                  TextButton.icon(
+                                    onPressed: widget.onAddSet,
+                                    icon: const Icon(Icons.add, size: 16),
+                                    label: Text(l10n.workoutBuilderAddSet),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: StitchM3Theme.accent,
+                                      visualDensity: VisualDensity.compact,
+                                      minimumSize: const Size(0, 44),
+                                    ),
+                                  ),
+                                if (widget.onDuplicateLastSet != null)
+                                  TextButton(
+                                    onPressed: widget.onDuplicateLastSet,
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: cs.onSurfaceVariant,
+                                      visualDensity: VisualDensity.compact,
+                                      minimumSize: const Size(0, 44),
+                                    ),
+                                    child: Text(
+                                      details.isEmpty
+                                          ? l10n.workoutSessionDuplicateLastSet
+                                          : l10n.workoutSessionDuplicateLastSetN(
+                                              details.length,
+                                            ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                    onRemoveSet: widget.onRemoveSet,
-                  ),
-                  if (widget.onAddSet != null ||
-                      widget.onDuplicateLastSet != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: Wrap(
-                        spacing: 8,
-                        runSpacing: 4,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          if (widget.onAddSet != null)
-                            TextButton.icon(
-                              onPressed: widget.onAddSet,
-                              icon: const Icon(Icons.add, size: 16),
-                              label: Text(l10n.workoutBuilderAddSet),
-                              style: TextButton.styleFrom(
-                                foregroundColor: StitchM3Theme.accent,
-                                visualDensity: VisualDensity.compact,
-                                minimumSize: const Size(0, 44),
-                              ),
-                            ),
-                          if (widget.onDuplicateLastSet != null)
-                            TextButton(
-                              onPressed: widget.onDuplicateLastSet,
-                              style: TextButton.styleFrom(
-                                foregroundColor: cs.onSurfaceVariant,
-                                visualDensity: VisualDensity.compact,
-                                minimumSize: const Size(0, 44),
-                              ),
-                              child: Text(
-                                details.isEmpty
-                                    ? l10n.workoutSessionDuplicateLastSet
-                                    : l10n.workoutSessionDuplicateLastSetN(
-                                        details.length,
-                                      ),
-                              ),
-                            ),
-                        ],
-                      ),
+                          ),
+                        const SizedBox(height: 12),
+                        _buildSecondaryNotesSection(
+                          context: context,
+                          theme: theme,
+                          cs: cs,
+                          l10n: l10n,
+                          notesLabel: notesLabel,
+                        ),
+                      ],
                     ),
-                  const SizedBox(height: 12),
-                  _buildSecondaryNotesSection(
-                    context: context,
-                    theme: theme,
-                    cs: cs,
-                    l10n: l10n,
-                    notesLabel: notesLabel,
-                  ),
-                ],
-              ),
             ),
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildMobilityFields({required AppLocalizations l10n}) {
+    if (widget.onEdit == null) {
+      final short = widget.exercise.shortName.trim();
+      final subtitle = widget.exercise.note.trim();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (short.isNotEmpty)
+            Text(
+              short,
+              style: widget.theme.textTheme.labelMedium?.copyWith(
+                color: widget.colorScheme.onSurface.withValues(alpha: 0.72),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          if (subtitle.isNotEmpty) ...[
+            if (short.isNotEmpty) const SizedBox(height: 6),
+            Text(
+              subtitle,
+              style: widget.theme.textTheme.bodySmall?.copyWith(
+                color: widget.colorScheme.onSurface,
+              ),
+            ),
+          ],
+          if (short.isEmpty && subtitle.isEmpty)
+            Text(
+              l10n.workoutBuilderNotePlaceholder,
+              style: widget.theme.textTheme.bodySmall?.copyWith(
+                color: widget.colorScheme.onSurface.withValues(alpha: 0.72),
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        TextField(
+          controller: _titleController,
+          decoration: InputDecoration(
+            labelText: l10n.mobilityTitle,
+            filled: true,
+            fillColor: WorkoutSessionCardChrome.inputBg,
+          ),
+          onChanged: (_) {
+            setState(() {});
+            _scheduleMobilitySave();
+          },
+          onEditingComplete: _flushMobility,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _shortTitleController,
+          decoration: InputDecoration(
+            labelText: l10n.mobilityShortTitleLabel,
+            filled: true,
+            fillColor: WorkoutSessionCardChrome.inputBg,
+          ),
+          onChanged: (_) => _scheduleMobilitySave(),
+          onEditingComplete: _flushMobility,
+        ),
+        const SizedBox(height: 12),
+        TextField(
+          controller: _noteController,
+          decoration: InputDecoration(
+            labelText: l10n.mobilitySubtitle,
+            filled: true,
+            fillColor: WorkoutSessionCardChrome.inputBg,
+          ),
+          maxLines: 2,
+          onChanged: (_) => _scheduleMobilitySave(),
+          onEditingComplete: _flushMobility,
+        ),
+      ],
     );
   }
 
@@ -585,7 +732,7 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
       itemBuilder: (ctx) {
         final menuL10n = AppLocalizations.of(ctx);
         return [
-          if (widget.onEdit != null)
+          if (!_isMobility && widget.onEdit != null)
             PopupMenuItem(
               value: 'edit',
               child: Text(menuL10n.workoutBuilderEditExercise),
@@ -600,23 +747,24 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
               value: 'down',
               child: Text(menuL10n.workoutBuilderMoveDown),
             ),
-          if (widget.onDuplicate != null)
+          if (!_isMobility && widget.onDuplicate != null)
             PopupMenuItem(
               value: 'duplicate',
               child: Text(menuL10n.workoutBuilderDuplicateExercise),
             ),
-          if (widget.onAssignToSuperset != null)
+          if (!_isMobility && widget.onAssignToSuperset != null)
             PopupMenuItem(
               value: 'new',
               child: Text(menuL10n.workoutBuilderNewSuperset),
             ),
-          ...widget.supersetOptions.map(
-            (o) => PopupMenuItem(
-              value: 'group:${o.id}',
-              child: Text(o.label, overflow: TextOverflow.ellipsis),
+          if (!_isMobility)
+            ...widget.supersetOptions.map(
+              (o) => PopupMenuItem(
+                value: 'group:${o.id}',
+                child: Text(o.label, overflow: TextOverflow.ellipsis),
+              ),
             ),
-          ),
-          if (widget.onRemoveFromSuperset != null)
+          if (!_isMobility && widget.onRemoveFromSuperset != null)
             PopupMenuItem(
               value: 'remove_ss',
               child: Text(

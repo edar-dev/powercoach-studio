@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
-import 'workout_mobility_tab_widgets.dart';
+import '../../domain/mobility_session_presentation.dart';
+import 'session_preview_card.dart';
+import 'training_phase_day_card.dart';
 
 /// Mobilità tab: vertical list of day-style section cards (Allenamento parity).
 ///
@@ -56,29 +58,70 @@ class WorkoutMobilityTab extends StatelessWidget {
                     padding: EdgeInsets.only(
                       top: sections.isEmpty ? 0 : 12,
                     ),
-                    child: MobilityAddSectionCard(
-                      label: l10n.workoutBuilderSectionHeading,
-                      onTap: onAddSection,
+                    child: TrainingPhaseAddDayCard(
+                      title: l10n.workoutBuilderSectionHeading,
+                      onAddDay: onAddSection,
                     ),
                   );
                 }
                 final section = sections[index];
                 final items = itemsForSection(section.id);
+                final preview = items
+                    .take(SessionPreviewCard.previewLimit)
+                    .toList(growable: false);
+                final remaining = items.length - preview.length;
+                final canDelete = sections.length > 1;
                 return Padding(
                   padding: EdgeInsets.only(top: index == 0 ? 0 : 12),
-                  child: MobilitySectionCard(
-                    label: mobilitySectionDisplayName(
+                  child: SessionPreviewCard(
+                    title: mobilitySectionDisplayName(
                       name: section.name,
                       index: index,
                       l10n: l10n,
                     ),
-                    items: items,
-                    scheduleHint: section.scheduleHint,
+                    subtitle: section.scheduleHint,
                     onOpen: () => onOpenSection(index),
-                    onEdit: () => onEditSection(index),
-                    onDelete: sections.length > 1
-                        ? () => onDeleteSection(index)
-                        : null,
+                    previewRows: [
+                      for (final item in preview)
+                        SessionPreviewRowData(
+                          title: item.title,
+                          detail: item.subtitle.trim().isNotEmpty
+                              ? item.subtitle
+                              : (item.shortTitle.trim().isNotEmpty
+                                  ? item.shortTitle
+                                  : null),
+                        ),
+                    ],
+                    remainingCount: remaining,
+                    footerMetricLabel:
+                        l10n.workoutBuilderExerciseCount(items.length),
+                    showMenu: true,
+                    onMenuSelected: (value) {
+                      if (value == 'edit') {
+                        onEditSection(index);
+                      } else if (value == 'delete') {
+                        onDeleteSection(index);
+                      }
+                    },
+                    menuItems: (ctx) {
+                      final menuL10n = AppLocalizations.of(ctx);
+                      return [
+                        PopupMenuItem(
+                          value: 'edit',
+                          child: Text(menuL10n.workoutBuilderEditSectionTitle),
+                        ),
+                        if (canDelete)
+                          PopupMenuItem(
+                            value: 'delete',
+                            child: Text(
+                              menuL10n.workoutBuilderDeleteSection,
+                              style: TextStyle(
+                                color: Theme.of(ctx).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                      ];
+                    },
                   ),
                 );
               },
