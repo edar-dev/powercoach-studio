@@ -79,6 +79,72 @@ void main() {
     expect(formatDenseTablePrescription(exercise), '@7');
   });
 
+  test('dense single-set with multi reps keeps reps before @RPE', () {
+    final exercise = const Exercise(
+      id: 'sumo_top',
+      name: 'Stacco Sumo',
+      sets: '1',
+      reps: '6',
+      rpe: '@6',
+      note: '',
+      setDetails: [ExerciseSet(sets: '1', reps: '6', rpe: '@6')],
+    );
+
+    expect(formatDenseTablePrescription(exercise), '1x6 @6');
+  });
+
+  test('dense single-set with multi reps keeps reps before kg load', () {
+    final exercise = const Exercise(
+      id: 'squat_top',
+      name: 'Squat',
+      sets: '1',
+      reps: '4',
+      rpe: '105kg',
+      note: '',
+      setDetails: [ExerciseSet(sets: '1', reps: '4', rpe: '105kg')],
+    );
+
+    expect(formatDenseTablePrescription(exercise), '4@105kg');
+  });
+
+  test('dense top-set multi-reps plus backoff keeps reps on first block', () {
+    final exercise = const Exercise(
+      id: 'sumo',
+      name: 'Stacco Sumo',
+      sets: '2',
+      reps: '',
+      rpe: '',
+      note: '',
+      setDetails: [
+        ExerciseSet(sets: '1', reps: '6', rpe: '@6'),
+        ExerciseSet(sets: '2', reps: '4', rpe: '-10%'),
+      ],
+    );
+
+    expect(
+      formatDenseTablePrescription(exercise),
+      '1x6 @6\n'
+      '> 2x4 -10%',
+    );
+  });
+
+  test('dense single-set 1x10 @8 matches nearby multi-set style', () {
+    final content = formatDenseBlockContent(
+      const Exercise(
+        id: 'press',
+        name: 'Shoulder Press',
+        sets: '1',
+        reps: '10',
+        rpe: '@8',
+        note: 'Controllato',
+        setDetails: [ExerciseSet(sets: '1', reps: '10', rpe: '@8')],
+      ),
+    );
+
+    expect(content.prescription, '1x10 @8');
+    expect(content.note, 'Controllato');
+  });
+
   test('dense token keeps space between scheme and load', () {
     final exercise = const Exercise(
       id: 'e2',
