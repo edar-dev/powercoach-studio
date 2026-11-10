@@ -4,6 +4,7 @@ import '../../../exercise_library/data/pinned_exercises_store.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/default_exercise_catalog_seeder.dart';
 import '../../domain/exercise_picker_index_helpers.dart';
+import '../../domain/powercoach_catalog_dedupe_cleanup.dart';
 
 /// Loaded exercise picker state for the add-exercise sheet.
 class ExerciseAddSheetPickerData {
@@ -43,6 +44,9 @@ class ExerciseAddSheetLoader {
     await DefaultExerciseCatalogSeeder(
       exerciseRepo: _customExerciseRepo,
     ).ensureSeeded();
+    await ensurePowercoachCatalogDedupeCleanup(
+      exerciseRepo: _customExerciseRepo,
+    );
     final items = await _customExerciseRepo.getTree();
     final index = buildExercisePickerIndex(items);
     final recentIds = await _recentStore.getRecentIds();

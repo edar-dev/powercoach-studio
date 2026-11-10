@@ -119,4 +119,32 @@ void main() {
     expect(find.text('Box squat'), findsOneWidget);
     expect(find.byIcon(Icons.push_pin), findsOneWidget);
   });
+
+  testWidgets('search expand path shows short child names without › labels',
+      (tester) async {
+    final roots = [
+      _item(
+        id: 'squat',
+        name: 'Squat con bilanciere',
+        children: [_item(id: 'hb', name: 'High bar')],
+      ),
+    ];
+
+    await tester.pumpWidget(
+      _wrap(
+        ExercisePickerTreeList(
+          roots: roots,
+          pinnedIds: const {},
+          forceExpandAll: true,
+          onPick: (_) {},
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Squat con bilanciere'), findsOneWidget);
+    expect(find.text('High bar'), findsOneWidget);
+    expect(find.textContaining('›'), findsNothing);
+    expect(find.text('Squat con bilanciere › High bar'), findsNothing);
+  });
 }
