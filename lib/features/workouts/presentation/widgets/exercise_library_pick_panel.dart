@@ -211,8 +211,6 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
     final visibleRoots = searching
         ? filterExerciseTreeByQuery(_treeRoots, query)
         : _treeRoots;
-    final expandIds =
-        searching ? exercisePickerTreeExpandIds(visibleRoots) : null;
     final libraryEmpty = _treeRoots.isEmpty;
 
     return Column(
@@ -299,7 +297,6 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
                   pinnedIds: _pinnedExerciseIds,
                   onPick: _pick,
                   forceExpandAll: searching,
-                  expandedIds: expandIds,
                 ),
         ),
         const SizedBox(height: 8),

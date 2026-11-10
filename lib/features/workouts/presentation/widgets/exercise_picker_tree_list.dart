@@ -147,6 +147,7 @@ class _ExercisePickerTreeNode extends StatelessWidget {
           child: Padding(
             padding: EdgeInsets.only(left: indent, right: 4),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (hasChildren)
                   IconButton(
@@ -181,11 +182,14 @@ class _ExercisePickerTreeNode extends StatelessWidget {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                item.name,
-                                style: theme.textTheme.bodyLarge,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  item.name,
+                                  style: theme.textTheme.bodyLarge,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                               ),
                             ),
                             if (pinned)
