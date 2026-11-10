@@ -100,6 +100,7 @@ class _WorkoutBuilderMobilityScreenState
       WorkoutBuilderMobilityHandlers(
         context: context,
         mobilityController: _mobilityController,
+        customerId: widget.customerId,
         readOnly: _readOnly,
       );
 

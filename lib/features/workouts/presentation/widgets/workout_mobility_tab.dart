@@ -85,11 +85,10 @@ class WorkoutMobilityTab extends StatelessWidget {
                       for (final item in preview)
                         SessionPreviewRowData(
                           title: item.title,
-                          detail: item.subtitle.trim().isNotEmpty
-                              ? item.subtitle
-                              : (item.shortTitle.trim().isNotEmpty
-                                  ? item.shortTitle
-                                  : null),
+                          detail: () {
+                            final detail = mobilityItemPreviewDetail(item);
+                            return detail.isEmpty ? null : detail;
+                          }(),
                         ),
                     ],
                     remainingCount: remaining,

@@ -347,4 +347,70 @@ void main() {
     expect(roundTripped.effectiveSetDetails.first.displayText, '3x8');
     expect(roundTripped.sets, '3');
   });
+
+  test('encode/decode mobility item with setDetails round-trip', () {
+    const item = MobilityItem(
+      id: 'm1',
+      title: 'WGS',
+      subtitle: 'hold',
+      shortTitle: 'W',
+      sectionId: 'sec_upper',
+      sets: '3',
+      reps: '30s',
+      rpe: '8',
+      setDetails: [
+        ExerciseSet(sets: '3', reps: '30s', rpe: '8', note: 'slow'),
+      ],
+      maximalRef: MaximalRef.measurement(lift: MaximalLift.squat),
+    );
+    final encoded = encodeMobilityItem(item);
+    expect(encoded['title'], 'WGS');
+    expect(encoded['subtitle'], 'hold');
+    expect(encoded['shortTitle'], 'W');
+    expect(encoded['setDetails'], isA<List<dynamic>>());
+    expect(encoded['maximalRef'], {'type': 'measurement', 'lift': 'squat'});
+    final restored = decodeMobilityItem(encoded);
+    expect(restored.title, 'WGS');
+    expect(restored.subtitle, 'hold');
+    expect(restored.shortTitle, 'W');
+    expect(restored.setDetails, hasLength(1));
+    expect(restored.setDetails!.single.reps, '30s');
+    expect(restored.setDetails!.single.note, 'slow');
+    expect(restored.maximalRef?.lift, MaximalLift.squat);
+    expect(restored.sectionId, 'sec_upper');
+  });
+
+  test('decode legacy subtitle-only mobility item stays valid', () {
+    final restored = decodeMobilityItem({
+      'id': 'm_legacy',
+      'title': 'Cat-cow',
+      'subtitle': '10 reps',
+      'sectionId': 'sec_upper',
+      'categoryIndex': 0,
+    });
+    expect(restored.title, 'Cat-cow');
+    expect(restored.subtitle, '10 reps');
+    expect(restored.sets, isEmpty);
+    expect(restored.reps, isEmpty);
+    expect(restored.rpe, isEmpty);
+    expect(restored.setDetails, isNull);
+    expect(restored.maximalRef, isNull);
+    expect(encodeMobilityItem(restored).containsKey('setDetails'), isFalse);
+  });
+
+  test('decode mobility item synthesizes setDetails from top-level sets/reps', () {
+    final restored = decodeMobilityItem({
+      'id': 'm2',
+      'title': 'Dead bug',
+      'subtitle': '',
+      'sectionId': 'sec_full',
+      'sets': '3',
+      'reps': '30s',
+      'rpe': '7',
+    });
+    expect(restored.setDetails, hasLength(1));
+    expect(restored.setDetails!.single.sets, '3');
+    expect(restored.setDetails!.single.reps, '30s');
+    expect(restored.setDetails!.single.rpe, '7');
+  });
 }

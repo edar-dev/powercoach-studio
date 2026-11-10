@@ -101,18 +101,63 @@ void main() {
       );
     });
 
-    test('updateMobilityItemInRoutine patches fields', () {
+    test('updateMobilityItemInRoutine replaces full item', () {
       final updated = updateMobilityItemInRoutine(
         routine: routine,
-        itemId: 'm1',
-        title: '90/90',
-        subtitle: '45s',
-        shortTitle: '90',
+        item: const MobilityItem(
+          id: 'm1',
+          title: '90/90',
+          subtitle: '45s',
+          shortTitle: '90',
+          sectionId: 'sec_a',
+          sets: '3',
+          reps: '45s',
+          setDetails: [ExerciseSet(sets: '3', reps: '45s')],
+        ),
       );
       final item = updated.mobilityItems.firstWhere((e) => e.id == 'm1');
       expect(item.title, '90/90');
       expect(item.subtitle, '45s');
       expect(item.shortTitle, '90');
+      expect(item.sets, '3');
+      expect(item.reps, '45s');
+      expect(item.setDetails, hasLength(1));
+    });
+
+    test('add/update/remove set on mobility item persists', () {
+      var updated = addSetToMobilityItemInRoutine(
+        routine: routine,
+        itemId: 'm1',
+      );
+      expect(updated, isNotNull);
+      var item = updated!.mobilityItems.firstWhere((e) => e.id == 'm1');
+      // Seed empty row + new row.
+      expect(item.setDetails, hasLength(2));
+
+      updated = updateMobilityItemSetInRoutine(
+        routine: updated,
+        itemId: 'm1',
+        setIndex: 0,
+        sets: '3',
+        reps: '30s',
+        rpe: '8',
+      );
+      expect(updated, isNotNull);
+      item = updated!.mobilityItems.firstWhere((e) => e.id == 'm1');
+      expect(item.setDetails!.first.sets, '3');
+      expect(item.setDetails!.first.reps, '30s');
+      expect(item.setDetails!.first.rpe, '8');
+      expect(item.sets, isNotEmpty);
+
+      updated = removeSetFromMobilityItemInRoutine(
+        routine: updated,
+        itemId: 'm1',
+        setIndex: 1,
+      );
+      expect(updated, isNotNull);
+      item = updated!.mobilityItems.firstWhere((e) => e.id == 'm1');
+      expect(item.setDetails, hasLength(1));
+      expect(item.setDetails!.single.reps, '30s');
     });
 
     test('updateMobilitySectionInRoutine allows empty name and scheduleHint', () {

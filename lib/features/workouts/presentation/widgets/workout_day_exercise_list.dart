@@ -21,8 +21,8 @@ enum SessionListVariant { training, mobility }
 /// exercises (or their parent superset) are expanded automatically.
 ///
 /// When [variant] is [SessionListVariant.mobility], [session] may be null and
-/// the list skips supersets / set editing — cards use
-/// [SessionExerciseEditorVariant.mobility].
+/// the list skips supersets — cards use [SessionExerciseEditorVariant.mobility]
+/// with the shared set table enabled when editable.
 class WorkoutDayExerciseList extends StatefulWidget {
   const WorkoutDayExerciseList({
     super.key,
@@ -476,7 +476,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
             ? SessionExerciseEditorVariant.mobility
             : SessionExerciseEditorVariant.training,
         athleteName: mobility ? null : widget.athleteName,
-        customerId: mobility ? null : widget.customerId,
+        customerId: widget.customerId,
         onExpandedChanged: (value) {
           _setExpandedExercise(value ? ex.id : null);
         },
@@ -495,12 +495,12 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                 widget.onMoveExercise(weekIndex, dayIndex, ex.id, up: false)
             : null,
         onEdit: canEdit ? onEdit : null,
-        onAddSet: canEdit && !mobility ? onAddSet : null,
-        onDuplicateLastSet: canEdit && !mobility ? onDuplicateLastSet : null,
-        onUpdateSet: canEdit && !mobility ? onUpdateSet : null,
-        onRemoveSet: canEdit && !mobility ? onRemoveSet : null,
-        onMaximalRefChanged:
-            canEdit && !mobility ? onMaximalRefChanged : null,
+        onAddSet: canEdit ? onAddSet : null,
+        onDuplicateLastSet: canEdit ? onDuplicateLastSet : null,
+        onUpdateSet: canEdit ? onUpdateSet : null,
+        onRemoveSet: canEdit ? onRemoveSet : null,
+        onMaximalRefChanged: canEdit ? onMaximalRefChanged : null,
+        // Supersets stay disabled for mobility.
         supersetOptions:
             canEdit && !mobility ? filteredSupersetOptions : const [],
         onAssignToSuperset: canEdit && !mobility

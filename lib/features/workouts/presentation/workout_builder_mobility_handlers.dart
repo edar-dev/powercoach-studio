@@ -14,11 +14,13 @@ class WorkoutBuilderMobilityHandlers {
   WorkoutBuilderMobilityHandlers({
     required this.context,
     required this.mobilityController,
+    this.customerId,
     this.readOnly = false,
   });
 
   final BuildContext context;
   final MobilityBuilderController mobilityController;
+  final String? customerId;
   final bool readOnly;
 
   void _showUndoSnackBar(String message, VoidCallback onUndo) {
@@ -94,12 +96,14 @@ class WorkoutBuilderMobilityHandlers {
       cs: cs,
       mobilityController: mobilityController,
       sectionId: section.id,
+      customerId: customerId,
       readOnly: readOnly,
       onRenameSection: editMobilitySection,
       onDeleteSection: deleteMobilitySection,
-      onUpdateItem: (itemId, title, subtitle, {shortTitle = ''}) {
-        updateMobilityItem(itemId, title, subtitle, shortTitle: shortTitle);
-      },
+      onUpdateItem: updateMobilityItem,
+      onAddSetToItem: addSetToMobilityItem,
+      onUpdateItemSet: updateMobilityItemSet,
+      onRemoveSetFromItem: removeSetFromMobilityItem,
       onDeleteItem: removeMobilityItem,
       onReorderItems: reorderMobility,
     );
@@ -180,18 +184,42 @@ class WorkoutBuilderMobilityHandlers {
     mobilityController.deleteSection(index);
   }
 
-  void updateMobilityItem(
-    String id,
-    String title,
-    String subtitle, {
-    String shortTitle = '',
+  void updateMobilityItem(MobilityItem item) {
+    if (readOnly) return;
+    mobilityController.updateItem(item);
+  }
+
+  void addSetToMobilityItem(String itemId) {
+    if (readOnly) return;
+    mobilityController.addSetToItem(itemId);
+  }
+
+  void updateMobilityItemSet(
+    String itemId,
+    int setIndex, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
   }) {
     if (readOnly) return;
-    mobilityController.updateItem(
-      itemId: id,
-      title: title,
-      subtitle: subtitle,
-      shortTitle: shortTitle,
+    mobilityController.updateItemSet(
+      itemId: itemId,
+      setIndex: setIndex,
+      line: line,
+      sets: sets,
+      reps: reps,
+      rpe: rpe,
+      note: note,
+    );
+  }
+
+  void removeSetFromMobilityItem(String itemId, int setIndex) {
+    if (readOnly) return;
+    mobilityController.removeSetFromItem(
+      itemId: itemId,
+      setIndex: setIndex,
     );
   }
 }

@@ -14,6 +14,7 @@ import '../../../core/pdf/pdf_page_packing.dart';
 import '../../../core/pdf/pdf_plan_metadata.dart';
 import '../../../core/pdf/pdf_programming_rows.dart';
 import '../data/workout_routine_model.dart';
+import 'collapsed_prescription_summary.dart';
 import 'filter_routine_weeks.dart';
 
 export 'filter_routine_weeks.dart';
@@ -190,7 +191,13 @@ List<pw.Widget> _mobilityWidgets(
             (m) => pw.Padding(
               padding: pw.EdgeInsets.only(bottom: dense ? 1.5 : 3),
               child: pw.Text(
-                formatMobilityPdfLine(m.pdfTitle, m.subtitle),
+                formatMobilityPdfLine(
+                  m.pdfTitle,
+                  m.subtitle,
+                  prescriptionSummary: m.hasStructuredPrescription
+                      ? collapsedPrescriptionSummary(m.effectiveSetDetails)
+                      : '',
+                ),
                 style: pw.TextStyle(
                   fontSize: dense
                       ? PdfDocumentTheme.denseTableFontSize
