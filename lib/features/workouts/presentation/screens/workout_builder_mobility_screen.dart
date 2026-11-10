@@ -50,7 +50,7 @@ class WorkoutBuilderMobilityScreen extends StatefulWidget {
 
 class _WorkoutBuilderMobilityScreenState
     extends State<WorkoutBuilderMobilityScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final _routineNameController = TextEditingController();
   final _initialWeekController = TextEditingController(text: '1');
   final _notesController = TextEditingController();
