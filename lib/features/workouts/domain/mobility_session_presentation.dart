@@ -1,7 +1,10 @@
 import '../../../l10n/app_localizations.dart';
 import '../data/workout_routine_model.dart';
 import 'collapsed_prescription_summary.dart';
+import 'exercise_set_patch.dart';
 import 'exercise_summary_sync.dart';
+
+export 'exercise_set_patch.dart' show exerciseSetDetailsAreMeaningful;
 
 /// True when [name] is empty or a legacy auto-numbered default
 /// (`Section 1`, `Sezione 2`, …).
@@ -93,19 +96,6 @@ Exercise mobilityItemToPresentationExercise(MobilityItem item) {
   );
 }
 
-bool _isEmptyPrescriptionSet(ExerciseSet set) {
-  return set.line.trim().isEmpty &&
-      set.reps.trim().isEmpty &&
-      set.rpe.trim().isEmpty &&
-      set.note.trim().isEmpty &&
-      (set.sets.trim().isEmpty || set.sets.trim() == '1');
-}
-
-bool mobilitySetDetailsAreMeaningful(List<ExerciseSet>? details) {
-  if (details == null || details.isEmpty) return false;
-  return details.any((set) => !_isEmptyPrescriptionSet(set));
-}
-
 /// Applies edits from a synthetic presentation [Exercise] back onto [original].
 ///
 /// Preserves [MobilityItem.sectionId] / [MobilityItem.categoryIndex] from
@@ -118,7 +108,7 @@ MobilityItem applyPresentationExerciseToItem(
   MobilityItem original, {
   bool clearMaximalRef = false,
 }) {
-  final incomingMeaningful = mobilitySetDetailsAreMeaningful(ex.setDetails);
+  final incomingMeaningful = exerciseSetDetailsAreMeaningful(ex.setDetails);
   return original.copyWith(
     title: ex.name,
     subtitle: ex.note,

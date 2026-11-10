@@ -1,5 +1,13 @@
 import '../data/workout_routine_model.dart';
+import 'exercise_set_patch.dart';
 import 'mobility_session_presentation.dart';
+
+MobilityItem? _findMobilityItem(WorkoutRoutine routine, String itemId) {
+  for (final e in routine.mobilityItems) {
+    if (e.id == itemId) return e;
+  }
+  return null;
+}
 
 WorkoutRoutine addMobilityItemToRoutine({
   required WorkoutRoutine routine,
@@ -123,13 +131,7 @@ WorkoutRoutine? addSetToMobilityItemInRoutine({
   required WorkoutRoutine routine,
   required String itemId,
 }) {
-  MobilityItem? found;
-  for (final e in routine.mobilityItems) {
-    if (e.id == itemId) {
-      found = e;
-      break;
-    }
-  }
+  final found = _findMobilityItem(routine, itemId);
   if (found == null) return null;
   final details = [...found.effectiveSetDetails, const ExerciseSet()];
   final updated = syncMobilityItemPrescription(
@@ -148,42 +150,18 @@ WorkoutRoutine? updateMobilityItemSetInRoutine({
   String? rpe,
   String? note,
 }) {
-  MobilityItem? found;
-  for (final e in routine.mobilityItems) {
-    if (e.id == itemId) {
-      found = e;
-      break;
-    }
-  }
+  final found = _findMobilityItem(routine, itemId);
   if (found == null) return null;
-  final details = found.effectiveSetDetails;
-  if (setIndex < 0 || setIndex >= details.length) return routine;
-  final newDetails = List<ExerciseSet>.from(details);
-  final cur = details[setIndex];
-  if (line != null) {
-    final trimmed = line.trim();
-    if (trimmed.isNotEmpty) {
-      newDetails[setIndex] = ExerciseSet(
-        line: trimmed,
-        sets: '1',
-        reps: '',
-        rpe: '',
-        note: note ?? cur.note,
-      );
-    } else {
-      newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-    }
-  } else if (sets != null || reps != null || rpe != null) {
-    newDetails[setIndex] = ExerciseSet(
-      line: '',
-      sets: sets ?? cur.sets,
-      reps: reps ?? cur.reps,
-      rpe: rpe ?? cur.rpe,
-      note: note ?? cur.note,
-    );
-  } else {
-    newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-  }
+  final newDetails = patchExerciseSetAt(
+    found.effectiveSetDetails,
+    setIndex,
+    line: line,
+    sets: sets,
+    reps: reps,
+    rpe: rpe,
+    note: note,
+  );
+  if (newDetails == null) return routine;
   final updated = syncMobilityItemPrescription(
     found.copyWith(setDetails: newDetails),
   );
@@ -195,13 +173,7 @@ WorkoutRoutine? removeSetFromMobilityItemInRoutine({
   required String itemId,
   required int setIndex,
 }) {
-  MobilityItem? found;
-  for (final e in routine.mobilityItems) {
-    if (e.id == itemId) {
-      found = e;
-      break;
-    }
-  }
+  final found = _findMobilityItem(routine, itemId);
   if (found == null) return null;
   final details = found.effectiveSetDetails;
   if (details.length <= 1) return routine;

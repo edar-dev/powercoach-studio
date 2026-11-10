@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
+import 'exercise_set_patch.dart';
 import 'exercise_summary_sync.dart';
 import 'maximal_ref.dart';
 import 'session_execution.dart';
@@ -46,14 +47,6 @@ SessionOverride decodeSessionOverride(Map<String, dynamic> json) {
   return const SessionOverride.skipped();
 }
 
-bool _mobilitySetHasContent(ExerciseSet set) {
-  return set.line.trim().isNotEmpty ||
-      set.reps.trim().isNotEmpty ||
-      set.rpe.trim().isNotEmpty ||
-      set.note.trim().isNotEmpty ||
-      (set.sets.trim().isNotEmpty && set.sets.trim() != '1');
-}
-
 Map<String, dynamic> encodeMobilityItem(MobilityItem item) {
   final synced = ExerciseSummarySync.apply(
     Exercise(
@@ -71,9 +64,8 @@ Map<String, dynamic> encodeMobilityItem(MobilityItem item) {
     ),
   );
   final details = synced.setDetails;
-  final meaningfulDetails = details != null && details.any(_mobilitySetHasContent)
-      ? details
-      : null;
+  final meaningfulDetails =
+      exerciseSetDetailsAreMeaningful(details) ? details : null;
   return {
     'id': synced.id,
     'title': synced.name,
@@ -112,20 +104,10 @@ MobilityItem decodeMobilityItem(
   final sets = json['sets'] as String? ?? '';
   final reps = json['reps'] as String? ?? '';
   final rpe = json['rpe'] as String? ?? '';
-  final setDetailsJson = json['setDetails'] as List<dynamic>?;
-  List<ExerciseSet>? setDetails;
-  if (setDetailsJson != null && setDetailsJson.isNotEmpty) {
-    setDetails = setDetailsJson
-        .map((e) => decodeExerciseSet(e as Map<String, dynamic>))
-        .toList();
-  } else if (sets.trim().isNotEmpty || reps.trim().isNotEmpty) {
-    // Top-level sets/reps without setDetails: synthesize one row.
-    final repsLooksLikeScheme = RegExp(r'^\d+x').hasMatch(reps.trim());
-    final setsStr = repsLooksLikeScheme
-        ? '1'
-        : (sets.trim().isEmpty ? '1' : sets);
-    setDetails = [ExerciseSet(sets: setsStr, reps: reps, rpe: rpe)];
-  }
+  final setDetails = decodeSetDetailsFromJson(
+    json,
+    requireTopLevelPrescription: true,
+  );
   return MobilityItem(
     id: json['id'] as String? ?? '',
     title: json['title'] as String? ?? '',
@@ -164,6 +146,33 @@ ExerciseSet decodeExerciseSet(Map<String, dynamic> json) {
   );
 }
 
+/// Builds setDetails from JSON: prefer explicit list, else one row from
+/// top-level sets/reps/rpe. When [requireTopLevelPrescription] is true,
+/// returns null if both top-level sets and reps are empty (mobility legacy).
+List<ExerciseSet>? decodeSetDetailsFromJson(
+  Map<String, dynamic> json, {
+  bool requireTopLevelPrescription = false,
+}) {
+  final setDetailsJson = json['setDetails'] as List<dynamic>?;
+  if (setDetailsJson != null && setDetailsJson.isNotEmpty) {
+    return setDetailsJson
+        .map((e) => decodeExerciseSet(e as Map<String, dynamic>))
+        .toList();
+  }
+  final repsStr = json['reps'] as String? ?? '';
+  final rpeStr = json['rpe'] as String? ?? '';
+  final setsRaw = (json['sets'] as String? ?? '').trim();
+  if (requireTopLevelPrescription &&
+      setsRaw.isEmpty &&
+      repsStr.trim().isEmpty) {
+    return null;
+  }
+  final repsLooksLikeScheme = RegExp(r'^\d+x').hasMatch(repsStr.trim());
+  final setsStr =
+      repsLooksLikeScheme ? '1' : (setsRaw.isEmpty ? '1' : setsRaw);
+  return [ExerciseSet(sets: setsStr, reps: repsStr, rpe: rpeStr)];
+}
+
 Map<String, dynamic> encodeExercise(Exercise exercise) {
   final synced = ExerciseSummarySync.apply(exercise);
   return {
@@ -187,25 +196,7 @@ Map<String, dynamic> encodeExercise(Exercise exercise) {
 }
 
 Exercise decodeExercise(Map<String, dynamic> json) {
-  final setDetailsJson = json['setDetails'] as List<dynamic>?;
-  List<ExerciseSet>? setDetails;
-  if (setDetailsJson != null && setDetailsJson.isNotEmpty) {
-    setDetails = setDetailsJson
-        .map((e) => decodeExerciseSet(e as Map<String, dynamic>))
-        .toList();
-  } else {
-    // No setDetails in JSON: synthesize one row from legacy fields.
-    // Seed [ExerciseSet.sets] from top-level sets when reps is a plain value
-    // (not already a "Nx…" scheme — displayText handles that case).
-    final repsStr = json['reps'] as String? ?? '';
-    final rpeStr = json['rpe'] as String? ?? '';
-    final setsRaw = (json['sets'] as String? ?? '').trim();
-    final repsLooksLikeScheme = RegExp(r'^\d+x').hasMatch(repsStr.trim());
-    final setsStr = repsLooksLikeScheme
-        ? '1'
-        : (setsRaw.isEmpty ? '1' : setsRaw);
-    setDetails = [ExerciseSet(sets: setsStr, reps: repsStr, rpe: rpeStr)];
-  }
+  final setDetails = decodeSetDetailsFromJson(json);
   return Exercise(
     id: json['id'] as String? ?? '',
     name: json['name'] as String? ?? '',

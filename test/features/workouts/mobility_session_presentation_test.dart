@@ -134,7 +134,7 @@ void main() {
     );
     final seeded = mobilityItemToPresentationExercise(legacy);
     expect(seeded.setDetails, isNotEmpty);
-    expect(mobilitySetDetailsAreMeaningful(seeded.setDetails), isFalse);
+    expect(exerciseSetDetailsAreMeaningful(seeded.setDetails), isFalse);
 
     final patched = applyPresentationExerciseToItem(
       seeded.copyWith(note: 'slow breaths'),
