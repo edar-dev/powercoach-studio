@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/ui/breakpoints.dart';
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/ui/breakpoints.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
-import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
+import '../../../exercise_library/domain/exercise_library_tree_helpers.dart';
 import '../../data/workout_routine_model.dart';
-import '../../domain/exercise_picker_index_helpers.dart';
 import '../../domain/workout_exercise_mutations.dart';
 import 'exercise_add_sheet_loader.dart';
+import 'exercise_picker_tree_list.dart';
 
 /// Compact gym-mode sheet: recent/pinned + search, one tap adds 1×10 defaults.
 class ExerciseAddCompactSheet extends StatefulWidget {
@@ -45,12 +45,10 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
   final ExerciseAddSheetLoader _loader = ExerciseAddSheetLoader();
   final RecentExercisesStore _recentStore = RecentExercisesStore.instance;
   final _searchController = TextEditingController();
-  final _exerciseFilter = DebouncedExerciseAutocompleteFilter();
 
-  List<CustomExerciseItem> _exerciseOptions = [];
+  List<CustomExerciseItem> _treeRoots = [];
   List<CustomExerciseItem> _recentExercises = [];
   Set<String> _pinnedExerciseIds = <String>{};
-  final Map<String, String> _exerciseParentName = {};
   bool _loadingExercises = true;
   bool _exerciseLoadFailed = false;
 
@@ -62,7 +60,6 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
 
   @override
   void dispose() {
-    _exerciseFilter.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -78,12 +75,9 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
       final data = await _loader.loadPickerData();
       if (!mounted) return;
       setState(() {
-        _exerciseOptions = data.exerciseOptions;
+        _treeRoots = data.treeRoots;
         _recentExercises = data.recentExercises;
         _pinnedExerciseIds = data.pinnedExerciseIds;
-        _exerciseParentName
-          ..clear()
-          ..addAll(data.exerciseParentName);
         _loadingExercises = false;
       });
     } catch (_) {
@@ -95,10 +89,6 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
     }
   }
 
-  String _displayName(CustomExerciseItem exercise) {
-    return exercisePickerDisplayName(exercise, _exerciseParentName);
-  }
-
   void _addExercise(CustomExerciseItem exercise) {
     unawaited(_recentStore.recordUse(exercise.id));
     widget.onSaveWithSets(
@@ -108,14 +98,6 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
       exercise.id,
     );
     widget.onCancel();
-  }
-
-  List<CustomExerciseItem> get _filteredOptions {
-    return filterExercisesByQuery(
-      query: _searchController.text,
-      options: _exerciseOptions,
-      displayName: _displayName,
-    ).toList();
   }
 
   @override
@@ -146,8 +128,12 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
       );
     }
 
-    final filtered = _filteredOptions;
-    final showRecent = _searchController.text.trim().isEmpty;
+    final query = _searchController.text;
+    final searching = query.trim().isNotEmpty;
+    final visibleRoots = searching
+        ? filterExerciseTreeByQuery(_treeRoots, query)
+        : _treeRoots;
+    final showRecent = !searching;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -194,7 +180,7 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
         ],
         const SizedBox(height: 12),
         Expanded(
-          child: filtered.isEmpty
+          child: visibleRoots.isEmpty
               ? Center(
                   child: Text(
                     l10n.workoutBuilderCompactAddEmpty,
@@ -203,19 +189,11 @@ class _ExerciseAddCompactSheetState extends State<ExerciseAddCompactSheet> {
                     ),
                   ),
                 )
-              : ListView.separated(
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final exercise = filtered[index];
-                    return ListTile(
-                      title: Text(_displayName(exercise)),
-                      trailing: _pinnedExerciseIds.contains(exercise.id)
-                          ? Icon(Icons.push_pin, size: 18, color: cs.primary)
-                          : null,
-                      onTap: () => _addExercise(exercise),
-                    );
-                  },
+              : ExercisePickerTreeList(
+                  roots: visibleRoots,
+                  pinnedIds: _pinnedExerciseIds,
+                  onPick: _addExercise,
+                  forceExpandAll: searching,
                 ),
         ),
         const SizedBox(height: 8),

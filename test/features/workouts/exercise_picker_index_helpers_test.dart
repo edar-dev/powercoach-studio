@@ -319,6 +319,54 @@ void main() {
       expect(exercisePickerTreeExpandIds(filtered), {'squat'});
     });
 
+    test('compact/search path uses short names and no duplicate powercoach roots',
+        () {
+      final older = DateTime(2025, 1, 1);
+      final newer = DateTime(2026, 6, 1);
+      final index = buildExercisePickerIndex([
+        _item(
+          id: 'squat-a',
+          name: 'Squat con bilanciere',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: older,
+          children: [
+            _item(
+              id: 'hb-a',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: older,
+            ),
+          ],
+        ),
+        _item(
+          id: 'squat-b',
+          name: 'Squat con bilanciere',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: newer,
+          children: [
+            _item(
+              id: 'hb-b',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: newer,
+            ),
+          ],
+        ),
+      ]);
+      final filtered =
+          filterExerciseTreeByQuery(index.treeRoots, 'high bar');
+
+      expect(index.treeRoots.map((e) => e.name), ['Squat con bilanciere']);
+      expect(filtered, hasLength(1));
+      expect(filtered.single.name, 'Squat con bilanciere');
+      expect(filtered.single.children.map((e) => e.name), ['High bar']);
+      expect(
+        flattenExerciseTree(filtered).any((e) => e.name.contains('›')),
+        isFalse,
+      );
+      expect(exercisePickerTreeExpandIds(filtered), {'squat-a'});
+    });
+
     test('sortExercisePickerTree pins roots then sorts children A-Z', () {
       final roots = [
         _item(
@@ -335,6 +383,116 @@ void main() {
 
       expect(sorted.map((e) => e.id), ['b', 'a']);
       expect(sorted.first.children.map((e) => e.id), ['b1', 'b2']);
+    });
+  });
+
+  group('powercoachIdsToSoftDelete', () {
+    test('marks newer duplicate squat trees for soft-delete', () {
+      final older = DateTime(2025, 1, 1);
+      final newer = DateTime(2026, 6, 1);
+      final roots = [
+        _item(
+          id: 'squat-a',
+          name: 'Squat con bilanciere',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: older,
+          children: [
+            _item(
+              id: 'hb-a',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: older,
+            ),
+            _item(
+              id: 'lb-a',
+              name: 'Low bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: older,
+            ),
+          ],
+        ),
+        _item(
+          id: 'squat-b',
+          name: 'Squat con bilanciere',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: newer,
+          children: [
+            _item(
+              id: 'hb-b',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: newer,
+            ),
+            _item(
+              id: 'lb-b',
+              name: 'Low bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: newer,
+            ),
+          ],
+        ),
+      ];
+
+      expect(
+        powercoachIdsToSoftDelete(roots),
+        {'squat-b', 'hb-b', 'lb-b'},
+      );
+    });
+
+    test('keeps smaller id when createdAt ties', () {
+      final created = DateTime(2025, 1, 1);
+      final roots = [
+        _item(
+          id: 'squat-z',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: created,
+        ),
+        _item(
+          id: 'squat-a',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: created,
+        ),
+      ];
+
+      expect(powercoachIdsToSoftDelete(roots), {'squat-z'});
+    });
+
+    test('does not soft-delete manual rows with colliding names', () {
+      final older = DateTime(2025, 1, 1);
+      final newer = DateTime(2026, 6, 1);
+      final roots = [
+        _item(
+          id: 'pc-1',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: older,
+        ),
+        _item(
+          id: 'pc-2',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: newer,
+        ),
+        _item(id: 'manual-1', name: 'Squat'),
+        _item(id: 'manual-2', name: 'Squat'),
+      ];
+
+      expect(powercoachIdsToSoftDelete(roots), {'pc-2'});
+    });
+
+    test('returns empty when there are no powercoach duplicates', () {
+      final roots = [
+        _item(
+          id: 'pc-1',
+          name: 'Bench',
+          catalogSource: ExerciseCatalogSource.powercoach,
+        ),
+        _item(id: 'manual-1', name: 'Custom'),
+      ];
+
+      expect(powercoachIdsToSoftDelete(roots), isEmpty);
     });
   });
 

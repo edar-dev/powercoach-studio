@@ -160,6 +160,26 @@ bool _preferPickerDedupeCandidate(
   return candidate.id.compareTo(incumbent.id) < 0;
 }
 
+/// Powercoach catalog ids present in [rawRoots] but dropped by picker dedupe.
+///
+/// Manual / non-powercoach rows are never included, even when display names
+/// collide with a kept PowerCoach exercise.
+Set<String> powercoachIdsToSoftDelete(List<CustomExerciseItem> rawRoots) {
+  final rawFlat = flattenExerciseTree(rawRoots);
+  final rawPowercoachIds = <String>{
+    for (final item in rawFlat)
+      if (item.catalogSource == ExerciseCatalogSource.powercoach) item.id,
+  };
+  if (rawPowercoachIds.isEmpty) return const {};
+
+  final index = buildExercisePickerIndex(rawRoots);
+  final keptIds = {for (final item in index.flat) item.id};
+  return {
+    for (final id in rawPowercoachIds)
+      if (!keptIds.contains(id)) id,
+  };
+}
+
 String exercisePickerDisplayName(
   CustomExerciseItem exercise,
   Map<String, String> parentNameById,

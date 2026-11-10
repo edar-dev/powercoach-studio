@@ -19,6 +19,11 @@ abstract final class SettingsPrefsKeys {
   static const exerciseLibrarySkipAutoSeed =
       'exercise_library_skip_auto_seed_v1';
 
+  /// One-shot soft-delete of duplicate PowerCoach catalog rows (picker dedupe
+  /// keep rules). Set after a successful cleanup pass.
+  static const exerciseLibraryPowercoachDedupeCleanupV1 =
+      'exercise_library_powercoach_dedupe_cleanup_v1';
+
   /// When true, schedule reminders before planned calendar sessions.
   static const calendarRemindersEnabled = 'settings_calendar_reminders_enabled';
 
