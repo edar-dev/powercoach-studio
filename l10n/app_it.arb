@@ -976,7 +976,7 @@
       }
     }
   },
-  "pdfDenseLegend": "S1-S4 = tutte le settimane | \" = stessa prescrizione",
+  "pdfDenseLegend": "Colonne S1-S4 = settimane del piano",
   "pdfClientPlanFor": "Piano per: {name}",
   "@pdfClientPlanFor": {
     "placeholders": {

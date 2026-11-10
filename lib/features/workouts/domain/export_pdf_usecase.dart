@@ -733,23 +733,15 @@ List<_DenseDayBlock> _buildDenseDayBlocks(
           )
           .toList();
 
-      final allSame = denseShouldMergeWeekCells(
-        labelBlock: block,
-        weekContents: weekContents,
-      );
+      // Quiet merge: repeat the short Rx in every week column and keep the
+      // shared coaching note under the exercise label (no S1-S4 / tutte / ").
       final sharedNote = resolveSharedDenseNote(weekContents);
-      final firstPopulatedIndex = weekContents.indexWhere(
-        (content) => content != null && content.prescription.trim().isNotEmpty,
-      );
-
       final cells = <pw.Widget>[
         PdfDocumentTheme.denseExerciseLabelCell(
           label: label,
-          sharedNote: allSame ? null : sharedNote,
+          sharedNote: sharedNote,
         ),
       ];
-
-      final weeksSpanLabel = labels.denseWeeksSpan(1, weeks.length);
 
       for (var wi = 0; wi < weeks.length; wi++) {
         final content = weekContents[wi];
@@ -760,40 +752,6 @@ List<_DenseDayBlock> _buildDenseDayBlocks(
               labels: labels,
               dense: dense,
               blankIfEmpty: true,
-            ),
-          );
-          continue;
-        }
-        if (allSame) {
-          if (wi == firstPopulatedIndex) {
-            cells.add(
-              PdfDocumentTheme.denseMergedWeeksCell(
-                PdfDenseCellContent(
-                  prescription: content.prescription,
-                  note: sharedNote ?? '',
-                ),
-                weeksSpanLabel: weeksSpanLabel,
-                allWeeksLabel: labels.denseAllWeeks,
-                note: sharedNote,
-              ),
-            );
-          } else {
-            cells.add(
-              PdfDocumentTheme.denseMergedWeeksSpacerCell(
-                dittoMark: labels.denseDitto,
-              ),
-            );
-          }
-          continue;
-        }
-        final previous = wi > 0 ? weekContents[wi - 1] : null;
-        if (previous != null &&
-            previous.prescription.trim() == content.prescription.trim() &&
-            content.prescription.trim().isNotEmpty &&
-            previous.note.trim() == content.note.trim()) {
-          cells.add(
-            PdfDocumentTheme.denseMergedWeeksSpacerCell(
-              dittoMark: labels.denseDitto,
             ),
           );
           continue;

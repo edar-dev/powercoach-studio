@@ -73,4 +73,12 @@ void main() {
       isTrue,
     );
   });
+
+  test('identical week prescriptions share one note for quiet repeated Rx', () {
+    const a = PdfDenseCellContent(prescription: '3x6 @6', note: 'Fermo 2"');
+    const b = PdfDenseCellContent(prescription: '3x6 @6', note: 'Fermo 2"');
+
+    expect(denseWeekPrescriptionsIdentical([a, b, a, b]), isTrue);
+    expect(resolveSharedDenseNote([a, b, a, b]), 'Fermo 2"');
+  });
 }

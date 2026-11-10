@@ -4109,7 +4109,7 @@ abstract class AppLocalizations {
   /// No description provided for @pdfDenseLegend.
   ///
   /// In en, this message translates to:
-  /// **'W1-W4 = all weeks | \" = same prescription'**
+  /// **'Columns W1-W4 = plan weeks'**
   String get pdfDenseLegend;
 
   /// No description provided for @pdfClientPlanFor.

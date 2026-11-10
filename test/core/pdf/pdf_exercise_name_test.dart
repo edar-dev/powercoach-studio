@@ -16,6 +16,22 @@ void main() {
     expect(resolveExerciseDisplayNameForPdf(exercise), 'Cable Row (V)');
   });
 
+  test('resolveExerciseDisplayNameForPdf sanitizes tofu separators in shortName', () {
+    const exercise = Exercise(
+      id: 'e2',
+      name: 'Good Morning (Barbell)',
+      sets: '1',
+      reps: '3x6',
+      rpe: '',
+      shortName: 'Good morning \u22C5 Safety bar',
+    );
+
+    expect(
+      resolveExerciseDisplayNameForPdf(exercise),
+      'Good morning - Safety bar',
+    );
+  });
+
   test('abbreviateExerciseNameForPdf strips equipment suffix', () {
     expect(
       abbreviateExerciseNameForPdf('Bench Press (Barbell)'),

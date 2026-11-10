@@ -109,11 +109,16 @@ void main() {
     );
 
     final content = formatDenseBlockContent(exercise);
-    expect(content.prescription, '5@77.5 > 4@82.5 > 3@85');
+    expect(
+      content.prescription,
+      '5@77.5\n'
+      '> 4@82.5\n'
+      '> 3@85',
+    );
     expect(content.note, 'Fermo 1-2"');
   });
 
-  test('dense pyramid wraps long chains in pairs on new lines', () {
+  test('dense pyramid stacks each block on its own line', () {
     final exercise = const Exercise(
       id: 'e1',
       name: 'Bench Press (Barbell)',
@@ -134,14 +139,17 @@ void main() {
 
     expect(
       formatDenseTablePrescription(exercise),
-      '5@77.5 > 4@82.5\n'
-      '3@85 > 2@87.5\n'
-      '3@85 > 4@82.5\n'
-      '5@77.5',
+      '5@77.5\n'
+      '> 4@82.5\n'
+      '> 3@85\n'
+      '> 2@87.5\n'
+      '> 3@85\n'
+      '> 4@82.5\n'
+      '> 5@77.5',
     );
   });
 
-  test('dense pyramid keeps up to four tokens on one line', () {
+  test('dense multi-block Rx stacks descending sets for scanability', () {
     final exercise = const Exercise(
       id: 'e3',
       name: 'Incline DB Press',
@@ -159,7 +167,51 @@ void main() {
 
     expect(
       formatDenseTablePrescription(exercise),
-      '1x12 > 1x10 > 1x8 > 1x6',
+      '1x12\n'
+      '> 1x10\n'
+      '> 1x8\n'
+      '> 1x6',
+    );
+  });
+
+  test('dense top-set plus backoff stacks on > lines', () {
+    final exercise = const Exercise(
+      id: 'e4',
+      name: 'Squat',
+      sets: '2',
+      reps: '',
+      rpe: '',
+      note: '',
+      setDetails: [
+        ExerciseSet(reps: '1', rpe: '@6'),
+        ExerciseSet(sets: '2', reps: '4', rpe: '-10%'),
+      ],
+    );
+
+    expect(
+      formatDenseTablePrescription(exercise),
+      '@6\n'
+      '> 2x4 -10%',
+    );
+  });
+
+  test('dense prescription expands embedded > inside displayText', () {
+    final exercise = const Exercise(
+      id: 'e5',
+      name: 'Bench',
+      sets: '1',
+      reps: '',
+      rpe: '',
+      note: '',
+      setDetails: [
+        ExerciseSet(line: '@6 > 2x4 -10%'),
+      ],
+    );
+
+    expect(
+      formatDenseTablePrescription(exercise),
+      '@6\n'
+      '> 2x4 -10%',
     );
   });
 
