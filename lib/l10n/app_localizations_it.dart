@@ -2274,8 +2274,7 @@ class AppLocalizationsIt extends AppLocalizations {
   }
 
   @override
-  String get pdfDenseLegend =>
-      'S1-S4 = tutte le settimane | \" = stessa prescrizione';
+  String get pdfDenseLegend => 'Colonne S1-S4 = settimane del piano';
 
   @override
   String pdfClientPlanFor(String name) {

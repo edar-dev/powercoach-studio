@@ -293,35 +293,49 @@ class PdfDenseCellContent {
   String get signature => '${prescription.trim()}|${note.trim()}';
 }
 
-/// Arrow between pyramid tokens in dense PDF cells (`5@80 > 4@82.5`).
+/// Arrow between pyramid / multi-block tokens in dense PDF cells.
+///
+/// Multi-block Rx is stacked one block per line with a leading `>` on
+/// continuation lines so athletes can scan top-set → backoff without a
+/// single cryptic horizontal chain (`@6 > 2x4 -10%`).
 const densePyramidTokenSeparator = ' > ';
 
-/// Short pyramids stay on one line; longer chains wrap in pairs for readability.
-const densePyramidSingleLineMaxTokens = 4;
-const densePyramidWrappedTokensPerLine = 2;
-
-/// Compact arrow notation for dense PDF week cells (pyramids with controlled wraps).
+/// Compact arrow notation for dense PDF week cells (one block per line).
 String formatDenseTablePrescription(Exercise exercise) {
-  final tokens = exercise.effectiveSetDetails
+  final rawTokens = exercise.effectiveSetDetails
       .map(_compactDenseSetToken)
       .where((token) => token.isNotEmpty)
       .toList();
+  final tokens = _expandEmbeddedPyramidTokens(rawTokens);
   if (tokens.isEmpty) return '';
   if (tokens.length == 1) return tokens.first;
   return _joinDensePyramidTokens(tokens);
 }
 
+/// Splits tokens that already embed ` > ` (legacy displayText) into blocks.
+List<String> _expandEmbeddedPyramidTokens(List<String> tokens) {
+  final expanded = <String>[];
+  for (final token in tokens) {
+    if (!token.contains(densePyramidTokenSeparator)) {
+      expanded.add(token);
+      continue;
+    }
+    for (final part in token.split(densePyramidTokenSeparator)) {
+      final trimmed = part.trim();
+      if (trimmed.isNotEmpty) expanded.add(trimmed);
+    }
+  }
+  return expanded;
+}
+
 String _joinDensePyramidTokens(List<String> tokens) {
-  if (tokens.length <= densePyramidSingleLineMaxTokens) {
-    return tokens.join(densePyramidTokenSeparator);
+  if (tokens.length == 1) return tokens.first;
+  final buffer = StringBuffer(tokens.first);
+  for (var i = 1; i < tokens.length; i++) {
+    buffer.write('\n> ');
+    buffer.write(tokens[i]);
   }
-  final lines = <String>[];
-  for (var i = 0; i < tokens.length; i += densePyramidWrappedTokensPerLine) {
-    final end = i + densePyramidWrappedTokensPerLine;
-    final slice = tokens.sublist(i, end > tokens.length ? tokens.length : end);
-    lines.add(slice.join(densePyramidTokenSeparator));
-  }
-  return lines.join('\n');
+  return buffer.toString();
 }
 
 String _compactDenseSetToken(ExerciseSet set) {

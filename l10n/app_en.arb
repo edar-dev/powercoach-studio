@@ -976,7 +976,7 @@
       }
     }
   },
-  "pdfDenseLegend": "W1-W4 = all weeks | \" = same prescription",
+  "pdfDenseLegend": "Columns W1-W4 = plan weeks",
   "pdfClientPlanFor": "Plan for: {name}",
   "@pdfClientPlanFor": {
     "placeholders": {

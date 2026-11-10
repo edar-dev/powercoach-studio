@@ -21,4 +21,31 @@ void main() {
     expect(sanitizePdfText('Mobilità'), 'Mobilità');
     expect(sanitizePdfText('Piano per: Edoardo'), 'Piano per: Edoardo');
   });
+
+  test('sanitizePdfText replaces Helvetica-unsafe name↔cue separators', () {
+    // U+22C5 DOT OPERATOR — common tofu between shortName and cue.
+    expect(
+      sanitizePdfText('Good morning \u22C5 Safety bar'),
+      'Good morning - Safety bar',
+    );
+    expect(
+      sanitizePdfText('Hack squat \u2219 Con pausa'),
+      'Hack squat - Con pausa',
+    );
+    expect(
+      sanitizePdfText('Pulley basso \u25A1 Impugnatura stretta'),
+      'Pulley basso - Impugnatura stretta',
+    );
+    expect(
+      sanitizePdfText('Dip \u2022 Zavorrate'),
+      'Dip - Zavorrate',
+    );
+  });
+
+  test('sanitizePdfText strips leftover non-WinAnsi glyphs', () {
+    expect(
+      sanitizePdfText('Core bracing \u2605 Plank'),
+      'Core bracing Plank',
+    );
+  });
 }

@@ -516,19 +516,21 @@ class PdfDocumentTheme {
     );
   }
 
+  /// Legacy helper kept for tests/callers: quiet same-week marker (no loud `"`).
   static pw.Widget denseMergedWeeksSpacerCell({required String dittoMark}) {
+    final mark = sanitizePdfText(dittoMark).trim();
+    // Prefer a muted ASCII dash over ditto quotes (ambiguous with seconds `2"`).
+    final display = (mark.isEmpty || mark == '"') ? '-' : mark;
     return pw.Container(
-      color: tableRowAltBg,
       alignment: pw.Alignment.center,
       padding: const pw.EdgeInsets.symmetric(
         horizontal: denseCellPaddingH,
         vertical: denseCellPaddingV,
       ),
       child: pw.Text(
-        sanitizePdfText(dittoMark),
+        display,
         style: pw.TextStyle(
-          fontSize: denseTableFontSize,
-          fontStyle: pw.FontStyle.italic,
+          fontSize: denseCompactTableFontSize,
           color: textMuted,
         ),
         textAlign: pw.TextAlign.center,
@@ -536,72 +538,22 @@ class PdfDocumentTheme {
     );
   }
 
+  /// Quiet same-across-weeks cell: prescription only (no S1-S4 / tutte chrome).
   static pw.Widget denseMergedWeeksCell(
     PdfDenseCellContent content, {
     required String weeksSpanLabel,
     required String allWeeksLabel,
     String? note,
   }) {
-    final prescription = sanitizePdfText(content.prescription.trim());
-    final noteText =
-        note != null && note.trim().isNotEmpty ? sanitizePdfText(note) : '';
-    final isPyramid =
-        prescription.contains('\n') || prescription.contains(' > ');
-    final compact = !isPyramid && prescription.length > 36;
-    return pw.Container(
-      color: tableRowAltBg,
-      child: pw.Padding(
-        padding: const pw.EdgeInsets.symmetric(
-          horizontal: denseCellPaddingH,
-          vertical: denseCellPaddingV,
-        ),
-        child: pw.Column(
-          crossAxisAlignment: pw.CrossAxisAlignment.center,
-          children: [
-            pw.Text(
-              sanitizePdfText(weeksSpanLabel),
-              style: pw.TextStyle(
-                fontSize: denseCompactTableFontSize - 0.5,
-                fontWeight: pw.FontWeight.bold,
-                color: accent,
-              ),
-            ),
-            pw.SizedBox(height: 0.5),
-            pw.Text(
-              sanitizePdfText(allWeeksLabel),
-              style: pw.TextStyle(
-                fontSize: denseCompactTableFontSize - 1,
-                fontStyle: pw.FontStyle.italic,
-                color: textMuted,
-              ),
-            ),
-            if (prescription.isNotEmpty) ...[
-              pw.SizedBox(height: 1),
-              pw.Text(
-                prescription,
-                style: pw.TextStyle(
-                  fontSize: compact ? denseCompactTableFontSize : denseTableFontSize,
-                  color: textPrimary,
-                  lineSpacing: isPyramid ? 1.15 : 0,
-                ),
-                textAlign: pw.TextAlign.center,
-              ),
-            ],
-            if (noteText.isNotEmpty) ...[
-              pw.SizedBox(height: 1.5),
-              pw.Text(
-                noteText,
-                style: pw.TextStyle(
-                  fontSize: denseCompactTableFontSize - 0.5,
-                  fontStyle: pw.FontStyle.italic,
-                  color: textMuted,
-                ),
-                textAlign: pw.TextAlign.center,
-              ),
-            ],
-          ],
-        ),
+    // Keep named args referenced so the public API stays analyzer-clean.
+    final _ = (weeksSpanLabel, allWeeksLabel);
+    return densePrescriptionCell(
+      PdfDenseCellContent(
+        prescription: content.prescription,
+        note: note ?? content.note,
       ),
+      includeNote: (note ?? content.note).trim().isNotEmpty,
+      center: true,
     );
   }
 
