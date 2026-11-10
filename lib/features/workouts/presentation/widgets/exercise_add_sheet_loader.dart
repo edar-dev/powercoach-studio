@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/pinned_exercises_store.dart';
@@ -44,10 +46,16 @@ class ExerciseAddSheetLoader {
     await DefaultExerciseCatalogSeeder(
       exerciseRepo: _customExerciseRepo,
     ).ensureSeeded();
-    await ensurePowercoachCatalogDedupeCleanup(
-      exerciseRepo: _customExerciseRepo,
-    );
     final items = await _customExerciseRepo.getTree();
+    // Client-side collapse makes the picker correct immediately; soft-delete
+    // of residual powercoach dupes runs in the background (can be hundreds
+    // of remote deletes on first open for heavily duplicated libraries).
+    unawaited(
+      ensurePowercoachCatalogDedupeCleanup(
+        exerciseRepo: _customExerciseRepo,
+        rawRoots: items,
+      ),
+    );
     final index = buildExercisePickerIndex(items);
     final recentIds = await _recentStore.getRecentIds();
     final pinnedIds = await _pinnedStore.getPinnedIds();
