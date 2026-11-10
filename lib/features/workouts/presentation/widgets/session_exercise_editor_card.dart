@@ -16,6 +16,7 @@ import '../../domain/maximal_kg_resolver.dart';
 import '../../domain/maximal_ref.dart';
 import '../../domain/set_load_display.dart';
 import '../../data/workout_routine_model.dart';
+import 'workout_session_card_chrome.dart';
 import 'workout_training_helpers.dart';
 
 /// Stitch-aligned exercise card used only inside the session edit modal.
@@ -92,10 +93,6 @@ class SessionExerciseEditorCard extends StatefulWidget {
   final List<({String id, String label})> supersetOptions;
   final void Function(String groupId)? onAssignToSuperset;
   final VoidCallback? onRemoveFromSuperset;
-
-  static const Color _cardBg = Color(0xFF151D2E);
-  static const Color _cardBorder = Color(0xFF28354D);
-  static const Color _inputBg = Color(0xFF0F172A);
 
   @override
   State<SessionExerciseEditorCard> createState() =>
@@ -273,18 +270,12 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
     final collapsedRx =
         widget.expanded ? '' : _prescriptionSubtitle();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: SessionExerciseEditorCard._cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: SessionExerciseEditorCard._cardBorder),
-      ),
+    return WorkoutSessionCardShell(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(12, 10, 4, 10),
+            padding: WorkoutSessionCardChrome.headerPadding,
             child: Row(
               children: [
                 Icon(
@@ -293,25 +284,7 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
                   color: cs.onSurfaceVariant.withValues(alpha: 0.55),
                 ),
                 const SizedBox(width: 8),
-                Container(
-                  width: 28,
-                  height: 28,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: StitchM3Theme.accent.withValues(alpha: 0.18),
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: StitchM3Theme.accent.withValues(alpha: 0.45),
-                    ),
-                  ),
-                  child: Text(
-                    '${widget.index}',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      color: StitchM3Theme.accent,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
+                WorkoutSessionIndexBadge(index: widget.index, theme: theme),
                 const SizedBox(width: 10),
                 Expanded(
                   child: InkWell(
@@ -379,9 +352,9 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
             ),
           ),
           if (widget.expanded) ...[
-            const Divider(height: 1, color: Color(0xFF28354D)),
+            const Divider(height: 1, color: WorkoutSessionCardChrome.divider),
             Padding(
-              padding: const EdgeInsets.fromLTRB(12, 12, 12, 14),
+              padding: WorkoutSessionCardChrome.expandedPadding,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -526,15 +499,19 @@ class _SessionExerciseEditorCardState extends State<SessionExerciseEditorCard> {
           ),
           decoration: InputDecoration(
             filled: true,
-            fillColor: SessionExerciseEditorCard._inputBg,
+            fillColor: WorkoutSessionCardChrome.inputBg,
             hintText: l10n.workoutBuilderNotePlaceholder,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF28354D)),
+              borderSide: const BorderSide(
+                color: WorkoutSessionCardChrome.cardBorder,
+              ),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF28354D)),
+              borderSide: const BorderSide(
+                color: WorkoutSessionCardChrome.cardBorder,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -729,7 +706,7 @@ class _SetTable extends StatelessWidget {
         return _HorizontallyScrollableWithEdgeFade(
           key: const Key('session_set_table_scroll'),
           minContentWidth: _setTableMinScrollWidth,
-          fadeColor: SessionExerciseEditorCard._cardBg,
+          fadeColor: WorkoutSessionCardChrome.cardBg,
           child: table,
         );
       },
