@@ -346,14 +346,17 @@ String _compactDenseSetToken(ExerciseSet set) {
   final sets = sanitizePdfText(set.sets.trim());
   final reps = formatPdfLoad(set.reps);
   final load = formatPdfLoad(set.rpe);
-  if (load.startsWith('@')) return load;
   if (sets.isNotEmpty && reps.isNotEmpty && load.isNotEmpty) {
+    // Keep sets×reps before @RPE (avoids `@@` and missing-reps bugs).
+    if (load.startsWith('@')) return '${sets}x$reps $load';
     if (sets == '1') return '$reps@$load';
     return '${sets}x$reps $load';
   }
   if (reps.isNotEmpty && load.isNotEmpty) {
+    if (load.startsWith('@')) return '$reps $load';
     return '$reps@$load';
   }
+  // Pure RPE / load token (no reps programmed).
   return [sets, reps, load].where((part) => part.isNotEmpty).join(' ');
 }
 
@@ -363,14 +366,18 @@ String _compactFromDisplayText(String display) {
   final doubledScheme = RegExp(r'^1x(1x\d+@.+)$').firstMatch(display);
   if (doubledScheme != null) return doubledScheme.group(1)!;
 
+  // Sentinel 1x1 @RPE → RPE-only work-up target (not a missing-reps bug).
   final rpeSingle = RegExp(r'^1x1\s+(@\S+)$').firstMatch(display);
   if (rpeSingle != null) return rpeSingle.group(1)!;
 
   final oneSet = RegExp(r'^1x(\S+)\s+(.+)$').firstMatch(display);
   if (oneSet != null) {
+    final reps = oneSet.group(1)!;
     final load = formatPdfLoad(oneSet.group(2)!);
-    if (load.startsWith('@')) return load;
-    return '${oneSet.group(1)}@$load';
+    // Athlete-clear: keep 1xN before @RPE (matches nearby `3x6 @6` rows).
+    // Do not collapse to bare `@6` — that dropped real multi-rep prescriptions.
+    if (load.startsWith('@')) return '1x$reps $load';
+    return '$reps@$load';
   }
 
   final multi = RegExp(r'^(\d+)x(\S+)(?:\s+(.*))?$').firstMatch(display);
