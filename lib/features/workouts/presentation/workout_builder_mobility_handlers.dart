@@ -4,9 +4,11 @@ import '../../../../core/ui/widgets/app_snackbar.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../data/workout_routine_model.dart';
 import 'mobility_builder_controller.dart';
-import 'widgets/mobility_add_sheet.dart';
+import 'widgets/exercise_library_pick_panel.dart';
+import 'widgets/mobility_section_edit_sheet.dart';
 import 'widgets/mobility_section_editor_sheet.dart';
 import 'widgets/workout_mobility_tab_widgets.dart';
+
 /// Mobility-tab UI actions for the workout builder.
 class WorkoutBuilderMobilityHandlers {
   WorkoutBuilderMobilityHandlers({
@@ -33,32 +35,74 @@ class WorkoutBuilderMobilityHandlers {
     );
   }
 
-  void addMobilityItem() {
+  /// Opens the exercise library side panel and appends a mobility item.
+  ///
+  /// When [sectionId] is null, uses the currently selected section.
+  void addMobilityItem({String? sectionId}) {
     if (readOnly) return;
-    final sectionId = mobilityController.selectedSectionId;
-    if (sectionId == null) return;
+    final sections = mobilityController.sections;
+    if (sections.isEmpty) return;
+
+    String targetSectionId;
+    if (sectionId != null) {
+      final exists = sections.any((s) => s.id == sectionId);
+      if (!exists) return;
+      targetSectionId = sectionId;
+      final index = sections.indexWhere((s) => s.id == sectionId);
+      if (index >= 0) mobilityController.selectSection(index);
+    } else {
+      final selected = mobilityController.selectedSectionId;
+      if (selected == null) return;
+      targetSectionId = selected;
+    }
+
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
-    showAddMobilityExerciseDialog(context, theme, cs, (
-      title,
-      subtitle,
-      customExerciseId,
-    ) {
-      final t = title.trim();
-      final s = subtitle.trim();
-      if (t.isEmpty && s.isEmpty) return;
-      final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
-      mobilityController.addItem(
-        MobilityItem(
-          id: id,
-          title: t.isEmpty ? l10n.workoutBuilderNewExerciseDefault : t,
-          subtitle: s,
-          sectionId: sectionId,
-          customExerciseId: customExerciseId,
-        ),
-      );
-    });
+    showExerciseLibraryPickPanel(
+      context: context,
+      theme: theme,
+      cs: cs,
+      onPicked: (item, displayName) {
+        final id = 'm_${DateTime.now().millisecondsSinceEpoch}';
+        final title = displayName.trim().isEmpty
+            ? l10n.workoutBuilderNewExerciseDefault
+            : displayName.trim();
+        mobilityController.addItem(
+          MobilityItem(
+            id: id,
+            title: title,
+            subtitle: '',
+            sectionId: targetSectionId,
+            customExerciseId: item.id,
+          ),
+        );
+      },
+    );
+  }
+
+  /// Opens the fullscreen section editor (Allenamento session-edit parity).
+  void openMobilitySectionEditor(int sectionIndex) {
+    final sections = mobilityController.sections;
+    if (sectionIndex < 0 || sectionIndex >= sections.length) return;
+    final section = sections[sectionIndex];
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    showMobilitySectionEditSheet(
+      context: context,
+      theme: theme,
+      cs: cs,
+      mobilityController: mobilityController,
+      sectionId: section.id,
+      readOnly: readOnly,
+      onRenameSection: editMobilitySection,
+      onDeleteSection: deleteMobilitySection,
+      onUpdateItem: (itemId, title, subtitle, {shortTitle = ''}) {
+        updateMobilityItem(itemId, title, subtitle, shortTitle: shortTitle);
+      },
+      onDeleteItem: removeMobilityItem,
+      onReorderItems: reorderMobility,
+    );
   }
 
   void removeMobilityItem(String id) {

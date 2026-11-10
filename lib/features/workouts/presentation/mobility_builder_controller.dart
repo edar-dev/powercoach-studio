@@ -29,11 +29,11 @@ class MobilityBuilderController extends ChangeNotifier {
   }
 
   void selectSection(int index) {
-    if (sections.isEmpty) {
-      _selectedMobilitySectionIndex = 0;
-    } else {
-      _selectedMobilitySectionIndex = index.clamp(0, sections.length - 1);
-    }
+    final next = sections.isEmpty
+        ? 0
+        : index.clamp(0, sections.length - 1);
+    if (next == _selectedMobilitySectionIndex) return;
+    _selectedMobilitySectionIndex = next;
     notifyListeners();
   }
 
