@@ -72,15 +72,15 @@ WorkoutDayExerciseList _list({
     variant: SessionListVariant.mobility,
     sessionEditStyle: true,
     onAddExercise: onAddExercise,
-    onDuplicateExercise: (_, __, ___) {},
-    onRemoveExercise: (_, __, ___) {},
-    onMoveExercise: (_, __, ___, {required up}) {},
-    onMoveExerciseWithinSuperset: (_, __, ___, {required up}) {},
+    onDuplicateExercise: (_, _, _) {},
+    onRemoveExercise: (_, _, _) {},
+    onMoveExercise: (_, _, _, {required up}) {},
+    onMoveExerciseWithinSuperset: (_, _, _, {required up}) {},
     onUpdateExercise: onUpdateExercise ??
         (
           _,
-          __,
-          ___, {
+          _,
+          _, {
           name,
           sets,
           reps,
@@ -92,22 +92,22 @@ WorkoutDayExerciseList _list({
           maximalRef,
           bool clearMaximalRef = false,
         }) {},
-    onAddSetToExercise: (_, __, ___) {},
+    onAddSetToExercise: (_, _, _) {},
     onUpdateExerciseSet: (
       _,
-      __,
-      ___,
-      ____, {
+      _,
+      _,
+      _, {
       line,
       sets,
       reps,
       rpe,
       note,
     }) {},
-    onRemoveExerciseSet: (_, __, ___, ____) {},
-    onAssignToSuperset: (_, __, ___, ____) {},
-    onRemoveFromSuperset: (_, __, ___) {},
-    onAddExerciseToSuperset: (_, __, ___) {},
+    onRemoveExerciseSet: (_, _, _, _) {},
+    onAssignToSuperset: (_, _, _, _) {},
+    onRemoveFromSuperset: (_, _, _) {},
+    onAddExerciseToSuperset: (_, _, _) {},
   );
 }
 
@@ -184,7 +184,7 @@ void main() {
           day: _day([_item('i1', 'WGS')]),
           onUpdateExercise: (
             _,
-            __,
+            _,
             id, {
             name,
             sets,
@@ -266,7 +266,7 @@ void main() {
       _wrap(
         _list(
           day: _day(const []),
-          onAddExercise: (_, __) => added = true,
+          onAddExercise: (_, _) => added = true,
         ),
       ),
     );
@@ -286,7 +286,7 @@ void main() {
       _wrap(
         _list(
           day: _day([_item('i1', 'WGS')]),
-          onAddExercise: (_, __) => added = true,
+          onAddExercise: (_, _) => added = true,
         ),
       ),
     );

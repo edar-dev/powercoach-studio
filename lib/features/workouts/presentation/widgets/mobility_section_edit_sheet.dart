@@ -223,24 +223,24 @@ class MobilitySectionEditBody extends StatelessWidget {
     ).toPresentationDay(l10n);
     final itemById = {for (final item in items) item.id: item};
 
-    void noopDup(int _, int __, Exercise ___) {}
-    void noopMoveWithin(int _, int __, String ___, {required bool up}) {}
-    void noopAddSet(int _, int __, String ___) {}
+    void noopDup(int _, int _, Exercise _) {}
+    void noopMoveWithin(int _, int _, String _, {required bool up}) {}
+    void noopAddSet(int _, int _, String _) {}
     void noopUpdateSet(
       int _,
-      int __,
-      String ___,
-      int ____, {
+      int _,
+      String _,
+      int _, {
       String? line,
       String? sets,
       String? reps,
       String? rpe,
       String? note,
     }) {}
-    void noopRemoveSet(int _, int __, String ___, int ____) {}
-    void noopAssign(int _, int __, String ___, String ____) {}
-    void noopRemoveSs(int _, int __, String ___) {}
-    void noopAddToSs(int _, int __, String ___) {}
+    void noopRemoveSet(int _, int _, String _, int _) {}
+    void noopAssign(int _, int _, String _, String _) {}
+    void noopRemoveSs(int _, int _, String _) {}
+    void noopAddToSs(int _, int _, String _) {}
 
     return PopScope(
       canPop: true,
@@ -305,10 +305,10 @@ class MobilitySectionEditBody extends StatelessWidget {
                           readOnly: readOnly,
                           onAddExercise: onAddFromLibrary == null
                               ? null
-                              : (_, __) => onAddFromLibrary!(),
+                              : (_, _) => onAddFromLibrary!(),
                           onDuplicateExercise: noopDup,
-                          onRemoveExercise: (_, __, id) => onDeleteItem(id),
-                          onMoveExercise: (_, __, id, {required up}) {
+                          onRemoveExercise: (_, _, id) => onDeleteItem(id),
+                          onMoveExercise: (_, _, id, {required up}) {
                             final idx =
                                 items.indexWhere((e) => e.id == id);
                             if (idx < 0) return;
@@ -321,7 +321,7 @@ class MobilitySectionEditBody extends StatelessWidget {
                           onMoveExerciseWithinSuperset: noopMoveWithin,
                           onUpdateExercise: (
                             _,
-                            __,
+                            _,
                             id, {
                             String? name,
                             String? sets,
