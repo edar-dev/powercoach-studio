@@ -142,54 +142,48 @@ class _ExercisePickerTreeNode extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(minHeight: _minRowHeight),
-          child: Padding(
-            padding: EdgeInsets.only(left: indent, right: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (hasChildren)
-                  IconButton(
-                    visualDensity: VisualDensity.compact,
-                    constraints: const BoxConstraints(
-                      minWidth: 48,
-                      minHeight: 48,
-                    ),
-                    tooltip: expanded
-                        ? MaterialLocalizations.of(context).expandedIconTapHint
-                        : MaterialLocalizations.of(context).collapsedIconTapHint,
-                    onPressed:
-                        forceExpandAll ? null : () => onToggle(item.id),
-                    icon: Icon(
-                      expanded ? Icons.expand_more : Icons.chevron_right,
-                      color: cs.onSurfaceVariant,
-                    ),
-                  )
-                else
-                  const SizedBox(width: 48, height: 48),
-                Expanded(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () => onPick(item),
+        Padding(
+          padding: EdgeInsets.only(left: indent, right: 4),
+          child: Row(
+            children: [
+              if (hasChildren)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  constraints: const BoxConstraints(
+                    minWidth: 48,
+                    minHeight: 48,
+                  ),
+                  tooltip: expanded
+                      ? MaterialLocalizations.of(context).expandedIconTapHint
+                      : MaterialLocalizations.of(context).collapsedIconTapHint,
+                  onPressed: forceExpandAll ? null : () => onToggle(item.id),
+                  icon: Icon(
+                    expanded ? Icons.expand_more : Icons.chevron_right,
+                    color: cs.onSurfaceVariant,
+                  ),
+                )
+              else
+                const SizedBox(width: 48, height: 48),
+              Expanded(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: () => onPick(item),
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: _minRowHeight,
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 12,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: Row(
                           children: [
                             Expanded(
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  item.name,
-                                  style: theme.textTheme.bodyLarge,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                              child: Text(
+                                item.name,
+                                style: theme.textTheme.bodyLarge,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             if (pinned)
@@ -207,8 +201,8 @@ class _ExercisePickerTreeNode extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         if (hasChildren && expanded)
