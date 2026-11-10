@@ -9,6 +9,7 @@ import '../../domain/exercise_picker_index_helpers.dart';
 class ExerciseAddSheetPickerData {
   const ExerciseAddSheetPickerData({
     required this.exerciseOptions,
+    required this.treeRoots,
     required this.recentExercises,
     required this.pinnedExerciseIds,
     required this.exerciseDepth,
@@ -16,6 +17,9 @@ class ExerciseAddSheetPickerData {
   });
 
   final List<CustomExerciseItem> exerciseOptions;
+
+  /// Deduped / pruned forest for the visual tree body.
+  final List<CustomExerciseItem> treeRoots;
   final List<CustomExerciseItem> recentExercises;
   final Set<String> pinnedExerciseIds;
   final Map<String, int> exerciseDepth;
@@ -57,8 +61,13 @@ class ExerciseAddSheetLoader {
         index.parentNameById,
       ),
     );
+    final treeRoots = sortExercisePickerTree(
+      index.treeRoots,
+      pinnedIds: pinnedIds,
+    );
     return ExerciseAddSheetPickerData(
       exerciseOptions: sorted,
+      treeRoots: treeRoots,
       recentExercises: recent.take(6).toList(),
       pinnedExerciseIds: pinnedIds,
       exerciseDepth: Map<String, int>.from(index.depthById),

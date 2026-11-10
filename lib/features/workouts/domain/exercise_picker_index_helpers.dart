@@ -1,16 +1,21 @@
 import '../../exercise_library/data/custom_exercise_item.dart';
 import '../../exercise_library/domain/exercise_catalog_source.dart';
+import '../../exercise_library/domain/exercise_library_tree_helpers.dart';
 
 class ExercisePickerIndex {
   const ExercisePickerIndex({
     required this.flat,
     required this.depthById,
     required this.parentNameById,
+    required this.treeRoots,
   });
 
   final List<CustomExerciseItem> flat;
   final Map<String, int> depthById;
   final Map<String, String> parentNameById;
+
+  /// Deduped forest for the pick panel tree body (orphans lifted).
+  final List<CustomExerciseItem> treeRoots;
 }
 
 ExercisePickerIndex buildExercisePickerIndex(List<CustomExerciseItem> roots) {
@@ -36,6 +41,7 @@ ExercisePickerIndex buildExercisePickerIndex(List<CustomExerciseItem> roots) {
     parentNameById: parentNameById,
   );
   final keptIds = {for (final item in dedupedFlat) item.id};
+  final treeRoots = pruneExerciseTreeToIds(roots, keptIds);
 
   return ExercisePickerIndex(
     flat: dedupedFlat,
@@ -47,6 +53,63 @@ ExercisePickerIndex buildExercisePickerIndex(List<CustomExerciseItem> roots) {
       for (final entry in parentNameById.entries)
         if (keptIds.contains(entry.key)) entry.key: entry.value,
     },
+    treeRoots: treeRoots,
+  );
+}
+
+/// Prune forest to [keptIds], lifting orphans when a parent was deduped away.
+List<CustomExerciseItem> pruneExerciseTreeToIds(
+  List<CustomExerciseItem> roots,
+  Set<String> keptIds,
+) {
+  final out = <CustomExerciseItem>[];
+  for (final root in roots) {
+    out.addAll(_pruneExerciseNodeToIds(root, keptIds));
+  }
+  return out;
+}
+
+List<CustomExerciseItem> _pruneExerciseNodeToIds(
+  CustomExerciseItem node,
+  Set<String> keptIds,
+) {
+  final prunedChildren = <CustomExerciseItem>[];
+  for (final child in node.children) {
+    prunedChildren.addAll(_pruneExerciseNodeToIds(child, keptIds));
+  }
+
+  if (keptIds.contains(node.id)) {
+    return [copyExerciseNode(node, children: prunedChildren)];
+  }
+  return prunedChildren;
+}
+
+/// Ids of every non-leaf node in [roots] (for search auto-expand).
+Set<String> exercisePickerTreeExpandIds(List<CustomExerciseItem> roots) {
+  final ids = <String>{};
+  void visit(CustomExerciseItem node) {
+    if (node.children.isEmpty) return;
+    ids.add(node.id);
+    for (final child in node.children) {
+      visit(child);
+    }
+  }
+
+  for (final root in roots) {
+    visit(root);
+  }
+  return ids;
+}
+
+/// Alphabetical tree sort with pinned roots (and nested pinned) first.
+List<CustomExerciseItem> sortExercisePickerTree(
+  List<CustomExerciseItem> roots, {
+  required Set<String> pinnedIds,
+}) {
+  return sortExerciseTree(
+    roots,
+    mode: ExerciseLibrarySortMode.alphabetical,
+    isPinned: (item) => pinnedIds.contains(item.id),
   );
 }
 
