@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../workouts/domain/exercise_picker_index_helpers.dart';
 import '../../data/custom_exercise_item.dart';
+import 'exercise_parent_search_field.dart';
 
 class CustomExerciseEditDialog extends StatefulWidget {
   const CustomExerciseEditDialog({
@@ -11,7 +13,8 @@ class CustomExerciseEditDialog extends StatefulWidget {
     required this.description,
     required this.isMobility,
     required this.parentId,
-    required this.parentCandidates,
+    required this.parentTreeRoots,
+    this.excludeParentIds = const {},
     required this.onSave,
     required this.onCancel,
   });
@@ -21,8 +24,19 @@ class CustomExerciseEditDialog extends StatefulWidget {
   final String? description;
   final bool isMobility;
   final String? parentId;
-  final List<CustomExerciseItem> parentCandidates;
-  final void Function(String name, String? description, String? parentId, bool isMobility) onSave;
+
+  /// Tree roots for parent selection (not flattened).
+  final List<CustomExerciseItem> parentTreeRoots;
+
+  /// Ids excluded from parent candidates (edited item + descendants).
+  final Set<String> excludeParentIds;
+
+  final void Function(
+    String name,
+    String? description,
+    String? parentId,
+    bool isMobility,
+  ) onSave;
   final VoidCallback onCancel;
 
   @override
@@ -36,8 +50,7 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
   late final TextEditingController _descController;
   String? _selectedParentId;
   late bool _isMobility;
-  late final Map<String, CustomExerciseItem> _itemsById;
-  late final Map<String, int> _depthById;
+  late ExercisePickerIndex _parentIndex;
 
   @override
   void initState() {
@@ -46,11 +59,31 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
     _descController = TextEditingController(text: widget.description ?? '');
     _selectedParentId = widget.parentId;
     _isMobility = widget.isMobility;
+    _rebuildParentIndex();
+  }
 
-    _itemsById = {
-      for (final it in widget.parentCandidates) it.id: it,
-    };
-    _depthById = {};
+  @override
+  void didUpdateWidget(covariant CustomExerciseEditDialog oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.parentTreeRoots, widget.parentTreeRoots) ||
+        oldWidget.excludeParentIds != widget.excludeParentIds) {
+      _rebuildParentIndex();
+    }
+    if (oldWidget.parentId != widget.parentId) {
+      _selectedParentId = widget.parentId;
+    }
+  }
+
+  void _rebuildParentIndex() {
+    _parentIndex = buildParentSelectionIndex(
+      widget.parentTreeRoots,
+      excludeIds: widget.excludeParentIds,
+    );
+    final selected = _selectedParentId;
+    if (selected != null &&
+        !_parentIndex.flat.any((item) => item.id == selected)) {
+      _selectedParentId = null;
+    }
   }
 
   @override
@@ -60,28 +93,11 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
     super.dispose();
   }
 
-  int _computeDepth(String id) {
-    if (_depthById.containsKey(id)) return _depthById[id]!;
-    final visited = <String>{};
-    int depth = 0;
-    var current = _itemsById[id];
-
-    while (current != null && current.parentId != null) {
-      if (!visited.add(current.id)) break;
-      final parentId = current.parentId;
-      final parent = _itemsById[parentId];
-      if (parent == null) break;
-      depth++;
-      current = parent;
-    }
-
-    _depthById[id] = depth;
-    return depth;
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final showParentField = _parentIndex.flat.isNotEmpty;
+
     return Form(
       key: _formKey,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -96,7 +112,9 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
             ),
             textCapitalization: TextCapitalization.words,
             autofocus: false,
-            validator: (value) => (value == null || value.trim().isEmpty) ? l10n.exerciseLibraryNameHint : null,
+            validator: (value) => (value == null || value.trim().isEmpty)
+                ? l10n.exerciseLibraryNameHint
+                : null,
           ),
           const SizedBox(height: 16),
           TextFormField(
@@ -120,36 +138,17 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
             contentPadding: EdgeInsets.zero,
           ),
           const SizedBox(height: 16),
-          if (widget.parentCandidates.isNotEmpty) ...[
+          if (showParentField) ...[
             Text(
               l10n.exerciseLibraryParentLabel,
               style: Theme.of(context).textTheme.labelMedium,
             ),
             const SizedBox(height: 8),
-            DropdownButtonFormField<String?>(
-              initialValue: _selectedParentId,
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                hintText: l10n.exerciseLibraryParentNone,
-              ),
-              items: [
-                DropdownMenuItem<String?>(
-                  value: null,
-                  child: Text(l10n.exerciseLibraryParentNone),
-                ),
-                ...widget.parentCandidates.map(
-                  (e) => DropdownMenuItem<String?>(
-                    value: e.id,
-                    child: Builder(
-                      builder: (context) {
-                        final depth = _computeDepth(e.id);
-                        final indent = List<String>.filled(depth, '  ').join();
-                        return Text('$indent${e.name}');
-                      },
-                    ),
-                  ),
-                ),
-              ],
+            ExerciseParentSearchField(
+              options: _parentIndex.flat,
+              depthById: _parentIndex.depthById,
+              parentNameById: _parentIndex.parentNameById,
+              selectedParentId: _selectedParentId,
               onChanged: (value) => setState(() => _selectedParentId = value),
             ),
           ],
@@ -173,7 +172,7 @@ class _CustomExerciseEditDialogState extends State<CustomExerciseEditDialog> {
                       name,
                       desc.isEmpty ? null : desc,
                       _selectedParentId,
-                    _isMobility,
+                      _isMobility,
                     );
                   },
                   child: Text(l10n.exerciseLibrarySave),

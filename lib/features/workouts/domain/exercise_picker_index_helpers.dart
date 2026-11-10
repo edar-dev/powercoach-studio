@@ -57,6 +57,26 @@ ExercisePickerIndex buildExercisePickerIndex(List<CustomExerciseItem> roots) {
   );
 }
 
+/// Parent-picker index for create/edit exercise dialogs.
+///
+/// Reuses [buildExercisePickerIndex] (same depth / parentName / PowerCoach
+/// dedupe). When [excludeIds] is non-empty, those nodes are pruned first so
+/// edit flows cannot select the item itself or its descendants.
+ExercisePickerIndex buildParentSelectionIndex(
+  List<CustomExerciseItem> treeRoots, {
+  Set<String> excludeIds = const {},
+}) {
+  if (excludeIds.isEmpty) {
+    return buildExercisePickerIndex(treeRoots);
+  }
+  final allIds = {
+    for (final item in flattenExerciseTree(treeRoots)) item.id,
+  };
+  final keptIds = allIds.difference(excludeIds);
+  final pruned = pruneExerciseTreeToIds(treeRoots, keptIds);
+  return buildExercisePickerIndex(pruned);
+}
+
 /// Prune forest to [keptIds], lifting orphans when a parent was deduped away.
 List<CustomExerciseItem> pruneExerciseTreeToIds(
   List<CustomExerciseItem> roots,

@@ -7,7 +7,6 @@ import '../../../core/ui/widgets/app_sheet.dart';
 import '../data/custom_exercise_item.dart';
 import '../data/custom_exercise_repository.dart';
 import '../domain/exercise_catalog_source.dart';
-import '../domain/exercise_library_tree_helpers.dart';
 import 'widgets/custom_exercise_edit_dialog.dart';
 
 /// UI orchestration for exercise library add/edit/delete flows.
@@ -52,7 +51,7 @@ class ExerciseLibraryCrudHandler {
         description: null,
         isMobility: isMobility,
         parentId: parentId,
-        parentCandidates: flattenExerciseTree(items()),
+        parentTreeRoots: items(),
         onSave: (name, description, selectedParentId, isMobility) async {
           try {
             await exerciseRepo.create({
@@ -91,9 +90,6 @@ class ExerciseLibraryCrudHandler {
   void showEditDialog(CustomExerciseItem item) {
     final l10n = AppLocalizations.of(context);
     final excludeIds = {item.id, ...item.flat.map((e) => e.id)};
-    final parentCandidates = flattenExerciseTree(
-      items(),
-    ).where((e) => !excludeIds.contains(e.id)).toList();
     showAppBottomSheet<void>(
       context: context,
       title: l10n.exerciseLibraryEditExercise,
@@ -104,7 +100,8 @@ class ExerciseLibraryCrudHandler {
         description: item.description,
         isMobility: item.isMobility,
         parentId: item.parentId,
-        parentCandidates: parentCandidates,
+        parentTreeRoots: items(),
+        excludeParentIds: excludeIds,
         onSave: (name, description, parentId, isMobility) async {
           try {
             await exerciseRepo.update(item.id, {

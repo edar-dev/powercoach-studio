@@ -135,7 +135,6 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
 
   Future<void> _openCreateExercise() async {
     final l10n = AppLocalizations.of(context);
-    final parentCandidates = flattenExerciseTree(_treeRoots);
 
     await showAppBottomSheet<void>(
       context: context,
@@ -148,7 +147,7 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
         description: null,
         isMobility: false,
         parentId: null,
-        parentCandidates: parentCandidates,
+        parentTreeRoots: _treeRoots,
         onSave: (name, description, selectedParentId, isMobility) async {
           try {
             final created = await _customExerciseRepo.create({

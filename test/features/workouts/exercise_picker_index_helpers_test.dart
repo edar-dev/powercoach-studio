@@ -206,6 +206,114 @@ void main() {
     });
   });
 
+  group('buildParentSelectionIndex', () {
+    test('matches picker depth and parentName maps without excludes', () {
+      final roots = [
+        _item(
+          id: 'root',
+          name: 'Squat',
+          children: [_item(id: 'var', name: 'High bar')],
+        ),
+      ];
+      final picker = buildExercisePickerIndex(roots);
+      final parent = buildParentSelectionIndex(roots);
+
+      expect(parent.flat.map((e) => e.id), picker.flat.map((e) => e.id));
+      expect(parent.depthById, picker.depthById);
+      expect(parent.parentNameById, picker.parentNameById);
+      expect(
+        exercisePickerDisplayName(parent.flat[1], parent.parentNameById),
+        'Squat › High bar',
+      );
+    });
+
+    test('excludeIds removes node and lifts remaining siblings', () {
+      final roots = [
+        _item(
+          id: 'squat',
+          name: 'Squat',
+          children: [
+            _item(id: 'hb', name: 'High bar'),
+            _item(id: 'lb', name: 'Low bar'),
+          ],
+        ),
+        _item(id: 'bench', name: 'Bench'),
+      ];
+
+      final index = buildParentSelectionIndex(
+        roots,
+        excludeIds: {'squat', 'hb', 'lb'},
+      );
+
+      expect(index.flat.map((e) => e.id), ['bench']);
+      expect(index.depthById['bench'], 0);
+      expect(index.parentNameById.containsKey('bench'), isFalse);
+    });
+
+    test('excludeIds on middle node lifts descendants', () {
+      final roots = [
+        _item(
+          id: 'root',
+          name: 'Root',
+          children: [
+            _item(
+              id: 'mid',
+              name: 'Mid',
+              children: [_item(id: 'leaf', name: 'Leaf')],
+            ),
+          ],
+        ),
+      ];
+
+      final index = buildParentSelectionIndex(
+        roots,
+        excludeIds: {'mid'},
+      );
+
+      expect(index.flat.map((e) => e.id), ['root', 'leaf']);
+      expect(index.depthById['leaf'], 1);
+      expect(index.parentNameById['leaf'], 'Root');
+    });
+
+    test('still applies powercoach display-path dedupe', () {
+      final older = DateTime(2025, 1, 1);
+      final newer = DateTime(2026, 6, 1);
+      final roots = [
+        _item(
+          id: 'squat-a',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: older,
+          children: [
+            _item(
+              id: 'hb-a',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: older,
+            ),
+          ],
+        ),
+        _item(
+          id: 'squat-b',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: newer,
+          children: [
+            _item(
+              id: 'hb-b',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: newer,
+            ),
+          ],
+        ),
+      ];
+
+      final index = buildParentSelectionIndex(roots);
+      expect(index.flat.map((e) => e.id), ['squat-a', 'hb-a']);
+    });
+  });
+
   group('pruneExerciseTreeToIds', () {
     test('keeps parent with pruned children', () {
       final roots = [
