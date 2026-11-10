@@ -40,13 +40,23 @@ class ExerciseParentSearchField extends StatefulWidget {
 class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
   static const _minInteractive = 48.0;
 
+  /// Enough room for ~8 interactive rows; framework still clamps to viewport.
+  static const _optionsMaxHeight = _minInteractive * 8;
+
   late final DebouncedExerciseAutocompleteFilter _filter;
   TextEditingController? _fieldController;
+  FocusNode? _focusNode;
+
+  /// Prefer up in create/edit sheets where this field sits near the bottom.
+  OptionsViewOpenDirection _openDirection = OptionsViewOpenDirection.up;
 
   @override
   void initState() {
     super.initState();
     _filter = DebouncedExerciseAutocompleteFilter();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _updateOpenDirection();
+    });
   }
 
   @override
@@ -61,6 +71,7 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
 
   @override
   void dispose() {
+    _focusNode?.removeListener(_onFocusChange);
     _filter.cancel();
     super.dispose();
   }
@@ -111,16 +122,51 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
     widget.onChanged(null);
   }
 
+  void _bindFocusNode(FocusNode focusNode) {
+    if (identical(_focusNode, focusNode)) return;
+    _focusNode?.removeListener(_onFocusChange);
+    _focusNode = focusNode;
+    _focusNode!.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (_focusNode?.hasFocus != true) return;
+    _updateOpenDirection();
+  }
+
+  /// Flutter 3.35 Autocomplete only supports up/down (no mostSpace). Choose
+  /// the side with more room so options are not clamped to ~1 row.
+  void _updateOpenDirection() {
+    final box = context.findRenderObject();
+    if (box is! RenderBox || !box.hasSize) return;
+    final topLeft = box.localToGlobal(Offset.zero);
+    final fieldTop = topLeft.dy;
+    final fieldBottom = fieldTop + box.size.height;
+    final screenHeight = MediaQuery.sizeOf(context).height;
+    final spaceAbove = fieldTop;
+    final spaceBelow = screenHeight - fieldBottom;
+    final next = spaceAbove >= spaceBelow
+        ? OptionsViewOpenDirection.up
+        : OptionsViewOpenDirection.down;
+    if (next == _openDirection || !mounted) return;
+    setState(() => _openDirection = next);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final selected = _selectedExercise;
+    final optionsAlignment = switch (_openDirection) {
+      OptionsViewOpenDirection.up => AlignmentDirectional.bottomStart,
+      OptionsViewOpenDirection.down => AlignmentDirectional.topStart,
+    };
 
     return Autocomplete<ExerciseParentChoice>(
       initialValue: TextEditingValue(
         text: selected == null ? '' : _displayName(selected),
       ),
+      optionsViewOpenDirection: _openDirection,
       optionsBuilder: (TextEditingValue value) async {
         final filtered = await _filter.optionsFor<CustomExerciseItem>(
           query: value.text,
@@ -143,6 +189,7 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
       },
       fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
         _fieldController = controller;
+        _bindFocusNode(focusNode);
         return TextFormField(
           controller: controller,
           focusNode: focusNode,
@@ -169,11 +216,11 @@ class _ExerciseParentSearchFieldState extends State<ExerciseParentSearchField> {
         );
       },
       optionsViewBuilder: (context, onSelected, options) => Align(
-        alignment: Alignment.topLeft,
+        alignment: optionsAlignment,
         child: Material(
           elevation: 4,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 240),
+            constraints: const BoxConstraints(maxHeight: _optionsMaxHeight),
             child: ListView.builder(
               padding: EdgeInsets.zero,
               shrinkWrap: true,

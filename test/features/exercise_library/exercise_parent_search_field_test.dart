@@ -112,6 +112,8 @@ void main() {
         },
       ),
     );
+    // Settle open-direction measurement (up vs down by available space).
+    await tester.pump();
 
     await tester.tap(find.byType(TextFormField));
     await tester.pump();
@@ -145,6 +147,7 @@ void main() {
         },
       ),
     );
+    await tester.pump();
 
     await tester.tap(find.byType(TextFormField));
     await tester.pump();
@@ -292,4 +295,105 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets(
+    'options open upward and stay usable near bottom of clipped sheet',
+    (tester) async {
+      // Simulate create-exercise sheet: field near bottom with little space below.
+      tester.view.physicalSize = const Size(800, 700);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      final manyOptions = buildParentSelectionIndex([
+        for (var i = 0; i < 12; i++) _item(id: 'ex-$i', name: 'Exercise $i'),
+      ]);
+
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: StitchM3Theme.light,
+          locale: const Locale('en'),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: Scaffold(
+            body: Align(
+              alignment: Alignment.bottomCenter,
+              child: Material(
+                clipBehavior: Clip.hardEdge,
+                borderRadius: BorderRadius.circular(16),
+                child: SizedBox(
+                  width: 420,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 120),
+                        ExerciseParentSearchField(
+                          options: manyOptions.flat,
+                          depthById: manyOptions.depthById,
+                          parentNameById: manyOptions.parentNameById,
+                          selectedParentId: null,
+                          onChanged: (_) {},
+                        ),
+                        const SizedBox(height: 16),
+                        const SizedBox(
+                          height: 48,
+                          width: double.infinity,
+                          child: ColoredBox(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+
+      await tester.tap(find.byType(TextFormField));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 50));
+
+      final fieldTop = tester.getTopLeft(find.byType(TextFormField)).dy;
+      final noneCenter = tester.getCenter(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text('None'),
+        ),
+      );
+      final firstOptionCenter = tester.getCenter(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text('Exercise 0'),
+        ),
+      );
+
+      // Options must render above the field (open-up), not into the clipped
+      // sheet bottom where only ~1 row would remain usable.
+      expect(noneCenter.dy, lessThan(fieldTop));
+      expect(firstOptionCenter.dy, lessThan(fieldTop));
+
+      // Several rows must remain hittable (not collapsed to a single clipped row).
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text('Exercise 1'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text('Exercise 2'),
+        ),
+        findsOneWidget,
+      );
+
+      final listHeight = tester.getSize(find.byType(ListView)).height;
+      expect(listHeight, greaterThanOrEqualTo(48.0 * 3));
+    },
+  );
 }
