@@ -134,6 +134,10 @@ class WorkoutBuilderScreenTabs {
       sections: mobilityController.sections,
       selectedSectionIndex: mobilityController.selectedSectionIndex,
       itemsForSelectedSection: mobilityController.itemsForSelectedSection,
+      itemCountForSection: (sectionId) => mobilityController
+          .routine.mobilityItems
+          .where((e) => e.sectionId == sectionId)
+          .length,
       onAddItem: mobilityHandlers.addMobilityItem,
       onAddSection: mobilityHandlers.addMobilitySection,
       onEditSection: mobilityHandlers.editMobilitySection,

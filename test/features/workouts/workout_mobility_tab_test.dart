@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_expandable_card.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab_widgets.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_session_card_chrome.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child) {
@@ -23,7 +23,9 @@ Widget _tab({
   required List<MobilitySection> sections,
   required List<MobilityItem> items,
   int selectedSectionIndex = 0,
+  List<MobilityItem>? allItems,
 }) {
+  final countsSource = allItems ?? items;
   return Builder(
     builder: (context) {
       final theme = Theme.of(context);
@@ -33,6 +35,8 @@ Widget _tab({
         sections: sections,
         selectedSectionIndex: selectedSectionIndex,
         itemsForSelectedSection: items,
+        itemCountForSection: (sectionId) =>
+            countsSource.where((e) => e.sectionId == sectionId).length,
         onAddItem: () {},
         onAddSection: () {},
         onEditSection: (_) {},
@@ -68,7 +72,7 @@ void main() {
     );
   });
 
-  testWidgets('empty section name renders numbered Sezione chip', (
+  testWidgets('empty section name renders numbered Sezione card', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -83,6 +87,8 @@ void main() {
     );
 
     expect(find.text('Sezione 1'), findsOneWidget);
+    expect(find.byType(MobilitySectionCard), findsOneWidget);
+    expect(find.byType(MobilityAddSectionCard), findsOneWidget);
   });
 
   testWidgets('empty items shows mobility empty CTA', (tester) async {
@@ -105,10 +111,13 @@ void main() {
     expect(find.text('Aggiungi esercizio'), findsOneWidget);
     // FilledButton.icon builds _FilledButtonWithIcon, not FilledButton.
     expect(find.byIcon(Icons.add), findsWidgets);
-    expect(find.byType(WorkoutExpandableCard), findsNothing);
+    expect(find.byType(MobilityItemCard), findsNothing);
+    expect(find.byType(WorkoutSessionCardShell), findsNothing);
   });
 
-  testWidgets('populated section shows expandable card title', (tester) async {
+  testWidgets('populated section shows session-chrome item title', (
+    tester,
+  ) async {
     await tester.pumpWidget(
       _wrap(
         _tab(
@@ -128,10 +137,13 @@ void main() {
       ),
     );
 
-    expect(find.byType(WorkoutExpandableCard), findsOneWidget);
+    expect(find.byType(MobilityItemCard), findsOneWidget);
+    expect(find.byType(WorkoutSessionCardShell), findsOneWidget);
     expect(find.text('World Greatest Stretch'), findsOneWidget);
     expect(find.text('3x30s'), findsOneWidget);
     expect(find.text('Aggiungi esercizio'), findsOneWidget);
+    // OutlinedButton.icon builds _OutlinedButtonWithIcon, not OutlinedButton.
+    expect(find.byIcon(Icons.add), findsWidgets);
     expect(find.text('Nessun esercizio in questa sezione'), findsNothing);
   });
 
@@ -147,10 +159,38 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byIcon(Icons.more_horiz));
+    await tester.tap(find.byIcon(Icons.more_vert).first);
     await tester.pumpAndSettle();
 
     expect(find.text('Modifica sezione'), findsOneWidget);
     expect(find.text('Elimina sezione'), findsNothing);
+  });
+
+  testWidgets('section card shows exercise count label', (tester) async {
+    await tester.pumpWidget(
+      _wrap(
+        _tab(
+          sections: const [
+            MobilitySection(id: 's1', name: 'Warm-up'),
+          ],
+          items: const [
+            MobilityItem(
+              id: 'i1',
+              title: 'WGS',
+              subtitle: '',
+              sectionId: 's1',
+            ),
+            MobilityItem(
+              id: 'i2',
+              title: 'Hip opener',
+              subtitle: '',
+              sectionId: 's1',
+            ),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.text('2 esercizi'), findsOneWidget);
   });
 }

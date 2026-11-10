@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/stitch_m3_theme.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
-import 'workout_dashed_button.dart';
 import 'workout_mobility_tab_widgets.dart';
 
 class WorkoutMobilityTab extends StatelessWidget {
@@ -13,6 +13,7 @@ class WorkoutMobilityTab extends StatelessWidget {
     required this.sections,
     required this.selectedSectionIndex,
     required this.itemsForSelectedSection,
+    required this.itemCountForSection,
     required this.onAddItem,
     required this.onAddSection,
     required this.onEditSection,
@@ -28,6 +29,7 @@ class WorkoutMobilityTab extends StatelessWidget {
   final List<MobilitySection> sections;
   final int selectedSectionIndex;
   final List<MobilityItem> itemsForSelectedSection;
+  final int Function(String sectionId) itemCountForSection;
   final VoidCallback onAddItem;
   final VoidCallback onAddSection;
   final void Function(int sectionIndex) onEditSection;
@@ -53,11 +55,9 @@ class WorkoutMobilityTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Text(
-            l10n.workoutBuilderMobilityRoutineTitle.toUpperCase(),
-            style: theme.textTheme.titleSmall?.copyWith(
+            l10n.workoutBuilderMobilityRoutineTitle,
+            style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
-              letterSpacing: 0.6,
-              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -69,12 +69,13 @@ class WorkoutMobilityTab extends StatelessWidget {
               children: [
                 for (var i = 0; i < sections.length; i++) ...[
                   if (i > 0) const SizedBox(width: 8),
-                  MobilitySectionChip(
+                  MobilitySectionCard(
                     label: mobilitySectionDisplayName(
                       name: sections[i].name,
                       index: i,
                       l10n: l10n,
                     ),
+                    itemCount: itemCountForSection(sections[i].id),
                     selected:
                         selectedSectionIndex.clamp(0, sections.length - 1) == i,
                     onTap: () => onSelectSection(i),
@@ -84,8 +85,8 @@ class WorkoutMobilityTab extends StatelessWidget {
                         : null,
                   ),
                 ],
-                const SizedBox(width: 8),
-                MobilityDashedSectionChip(
+                if (sections.isNotEmpty) const SizedBox(width: 8),
+                MobilityAddSectionCard(
                   label: l10n.workoutBuilderSectionHeading,
                   onTap: onAddSection,
                 ),
@@ -142,7 +143,8 @@ class WorkoutMobilityTab extends StatelessWidget {
                           l10n.workoutBuilderMobilityEmptyMessage,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: 0.72),
+                            color:
+                                colorScheme.onSurface.withValues(alpha: 0.72),
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -159,10 +161,24 @@ class WorkoutMobilityTab extends StatelessWidget {
         if (hasItems)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: WorkoutDashedButton(
-              icon: Icons.add,
-              label: l10n.workoutBuilderAddExercise,
+            child: OutlinedButton.icon(
               onPressed: sections.isNotEmpty ? onAddItem : null,
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l10n.workoutBuilderAddExercise),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: StitchM3Theme.accent,
+                side: BorderSide(
+                  color: StitchM3Theme.accent.withValues(alpha: 0.75),
+                  width: 1.5,
+                ),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 14,
+                  horizontal: 12,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
             ),
           ),
       ],
