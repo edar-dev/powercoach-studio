@@ -11,7 +11,6 @@ import '../../../../core/analytics/product_analytics.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
-import '../../../exercise_library/domain/default_exercise_catalog_seeder.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../../exercise_library/domain/exercise_catalog_source.dart';
 import '../../../exercise_library/domain/exercise_library_tree_helpers.dart';
@@ -106,9 +105,10 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
       });
     }
     try {
-      await DefaultExerciseCatalogSeeder().ensureSeeded();
-      final tree = await _customExerciseRepo.getTree();
+      // Seeding happens inside [ExerciseAddSheetLoader.loadPickerData]; load
+      // the tree after so parent candidates include the default catalog.
       final data = await _loader.loadPickerData();
+      final tree = await _customExerciseRepo.getTree();
       if (!mounted) return;
       setState(() {
         _treeItems = tree;

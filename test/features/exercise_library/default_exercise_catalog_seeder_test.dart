@@ -43,6 +43,11 @@ class _FakeRepo extends CustomExerciseRepository {
     stored.add(row);
     return row;
   }
+
+  @override
+  Future<void> delete(String id) async {
+    stored.removeWhere((e) => e['id'] == id);
+  }
 }
 
 void main() {
