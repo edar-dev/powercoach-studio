@@ -114,5 +114,22 @@ void main() {
       expect(item.subtitle, '45s');
       expect(item.shortTitle, '90');
     });
+
+    test('updateMobilitySectionInRoutine allows empty name and scheduleHint', () {
+      final updated = updateMobilitySectionInRoutine(
+        routine: routine,
+        sectionId: 'sec_a',
+        name: '  ',
+        scheduleHint: ' after lift ',
+      );
+      final section =
+          updated.mobilitySections.firstWhere((s) => s.id == 'sec_a');
+      expect(section.name, isEmpty);
+      expect(section.scheduleHint, 'after lift');
+      expect(
+        updated.mobilitySections.firstWhere((s) => s.id == 'sec_b').name,
+        'Cool-down',
+      );
+    });
   });
 }

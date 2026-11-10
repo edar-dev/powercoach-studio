@@ -43,8 +43,8 @@ class MobilityBuilderController extends ChangeNotifier {
   }
 
   bool addSection({required String name, String? sectionId}) {
+    // Empty name is intentional ("unset"); UI shows localized "Sezione N".
     final trimmed = name.trim();
-    if (trimmed.isEmpty) return false;
     final id = sectionId ?? 'sec_${DateTime.now().millisecondsSinceEpoch}';
     _session.setRoutine(
       addMobilitySectionToRoutine(
