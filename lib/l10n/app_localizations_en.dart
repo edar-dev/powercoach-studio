@@ -2908,6 +2908,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get workoutBuilderSessionEmptyTitle => 'No exercises in this session';
 
   @override
+  String get workoutBuilderMobilityEmptyTitle => 'No exercises in this section';
+
+  @override
+  String get workoutBuilderMobilityEmptyMessage =>
+      'Add a mobility exercise to get started.';
+
+  @override
   String workoutSessionEditTitleWithDay(String dayName) {
     return 'Edit Session · $dayName';
   }

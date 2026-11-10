@@ -1310,6 +1310,8 @@
     }
   },
   "workoutBuilderSessionEmptyTitle": "Nessun esercizio in questa sessione",
+  "workoutBuilderMobilityEmptyTitle": "Nessun esercizio in questa sezione",
+  "workoutBuilderMobilityEmptyMessage": "Aggiungi un esercizio di mobilità per iniziare.",
   "workoutSessionEditTitleWithDay": "Modifica Sessione · {dayName}",
   "@workoutSessionEditTitleWithDay": {
     "placeholders": {

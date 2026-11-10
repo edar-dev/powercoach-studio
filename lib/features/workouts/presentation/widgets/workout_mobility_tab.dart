@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import '../../data/workout_routine_model.dart';
+import 'workout_dashed_button.dart';
 import 'workout_mobility_tab_widgets.dart';
 
 class WorkoutMobilityTab extends StatelessWidget {
@@ -53,9 +53,11 @@ class WorkoutMobilityTab extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Text(
-            l10n.workoutBuilderMobilityRoutineTitle,
-            style: theme.textTheme.titleMedium?.copyWith(
+            l10n.workoutBuilderMobilityRoutineTitle.toUpperCase(),
+            style: theme.textTheme.titleSmall?.copyWith(
               fontWeight: FontWeight.w700,
+              letterSpacing: 0.6,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
         ),
@@ -83,29 +85,9 @@ class WorkoutMobilityTab extends StatelessWidget {
                   ),
                 ],
                 const SizedBox(width: 8),
-                InkWell(
+                MobilityDashedSectionChip(
+                  label: l10n.workoutBuilderSectionHeading,
                   onTap: onAddSection,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.add, size: 18, color: StitchM3Theme.accent),
-                        const SizedBox(width: 4),
-                        Text(
-                          l10n.workoutBuilderSectionHeading,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: StitchM3Theme.accent,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),
@@ -147,6 +129,22 @@ class WorkoutMobilityTab extends StatelessWidget {
                           size: 40,
                           color: colorScheme.onSurface.withValues(alpha: 0.72),
                         ),
+                        const SizedBox(height: 12),
+                        Text(
+                          l10n.workoutBuilderMobilityEmptyTitle,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          l10n.workoutBuilderMobilityEmptyMessage,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: colorScheme.onSurface.withValues(alpha: 0.72),
+                          ),
+                        ),
                         const SizedBox(height: 20),
                         FilledButton.icon(
                           onPressed: sections.isNotEmpty ? onAddItem : null,
@@ -161,7 +159,7 @@ class WorkoutMobilityTab extends StatelessWidget {
         if (hasItems)
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: MobilityDashedButton(
+            child: WorkoutDashedButton(
               icon: Icons.add,
               label: l10n.workoutBuilderAddExercise,
               onPressed: sections.isNotEmpty ? onAddItem : null,
