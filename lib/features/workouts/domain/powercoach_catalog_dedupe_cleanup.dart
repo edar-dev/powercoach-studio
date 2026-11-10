@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/settings/settings_prefs_keys.dart';
@@ -13,6 +14,11 @@ import 'exercise_picker_index_helpers.dart';
 ///
 /// Pass [rawRoots] when the caller already loaded the tree so we avoid a
 /// second round-trip before computing delete ids.
+///
+bool _powercoachDedupeCleanupInFlight = false;
+
+/// Failures (offline / auth) are swallowed so unawaited callers do not surface
+/// unhandled async errors; the prefs gate stays unset so the next open retries.
 Future<int> ensurePowercoachCatalogDedupeCleanup({
   required CustomExerciseRepository exerciseRepo,
   SharedPreferences? prefs,
@@ -25,16 +31,31 @@ Future<int> ensurePowercoachCatalogDedupeCleanup({
       true) {
     return 0;
   }
+  if (_powercoachDedupeCleanupInFlight) return 0;
+  _powercoachDedupeCleanupInFlight = true;
 
-  final roots = rawRoots ?? await exerciseRepo.getTree();
-  final toDelete = powercoachIdsToSoftDelete(roots);
-  for (final id in toDelete) {
-    await exerciseRepo.delete(id);
+  try {
+    final roots = rawRoots ?? await exerciseRepo.getTree();
+    final toDelete = powercoachIdsToSoftDelete(roots);
+    for (final id in toDelete) {
+      await exerciseRepo.delete(id);
+    }
+
+    await resolvedPrefs.setBool(
+      SettingsPrefsKeys.exerciseLibraryPowercoachDedupeCleanupV1,
+      true,
+    );
+    return toDelete.length;
+  } catch (e, st) {
+    debugPrint('powercoach catalog dedupe cleanup failed: $e\n$st');
+    return 0;
+  } finally {
+    _powercoachDedupeCleanupInFlight = false;
   }
+}
 
-  await resolvedPrefs.setBool(
-    SettingsPrefsKeys.exerciseLibraryPowercoachDedupeCleanupV1,
-    true,
-  );
-  return toDelete.length;
+/// Test-only: reset the in-flight mutex between cases.
+@visibleForTesting
+void resetPowercoachCatalogDedupeCleanupInFlightForTest() {
+  _powercoachDedupeCleanupInFlight = false;
 }

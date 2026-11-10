@@ -31,6 +31,7 @@ class _FakeRepo extends CustomExerciseRepository {
 void main() {
   setUp(() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
+    resetPowercoachCatalogDedupeCleanupInFlightForTest();
   });
 
   test('soft-deletes duplicate powercoach rows once and skips manuals',
