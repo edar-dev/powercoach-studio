@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/exercise_library/data/custom_exercise_item.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_autocomplete_filter.dart';
 import 'package:powercoach_studio/features/exercise_library/domain/exercise_catalog_source.dart';
+import 'package:powercoach_studio/features/exercise_library/domain/exercise_library_tree_helpers.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
 import 'package:powercoach_studio/features/workouts/domain/exercise_picker_index_helpers.dart';
 import 'package:powercoach_studio/features/workouts/domain/library_exercise_name_enrichment.dart';
@@ -200,6 +201,140 @@ void main() {
         filtered.where((e) => e.catalogSource == ExerciseCatalogSource.manual),
         hasLength(2),
       );
+      expect(index.treeRoots.map((e) => e.id), ['squat-a', 'manual-1', 'manual-2']);
+      expect(index.treeRoots.first.children.map((e) => e.id), ['hb-a']);
+    });
+  });
+
+  group('pruneExerciseTreeToIds', () {
+    test('keeps parent with pruned children', () {
+      final roots = [
+        _item(
+          id: 'squat',
+          name: 'Squat',
+          children: [
+            _item(id: 'hb', name: 'High bar'),
+            _item(id: 'lb', name: 'Low bar'),
+          ],
+        ),
+      ];
+
+      final pruned = pruneExerciseTreeToIds(roots, {'squat', 'hb'});
+
+      expect(pruned, hasLength(1));
+      expect(pruned.first.id, 'squat');
+      expect(pruned.first.children.map((e) => e.id), ['hb']);
+    });
+
+    test('lifts orphan children when parent is dropped', () {
+      final roots = [
+        _item(
+          id: 'parent-drop',
+          name: 'Parent',
+          children: [
+            _item(id: 'child-keep', name: 'Child'),
+            _item(
+              id: 'mid-drop',
+              name: 'Mid',
+              children: [_item(id: 'grand-keep', name: 'Grand')],
+            ),
+          ],
+        ),
+      ];
+
+      final pruned = pruneExerciseTreeToIds(
+        roots,
+        {'child-keep', 'grand-keep'},
+      );
+
+      expect(pruned.map((e) => e.id), ['child-keep', 'grand-keep']);
+      expect(pruned.every((e) => e.children.isEmpty), isTrue);
+    });
+
+    test('duplicate powercoach trees prune to kept ids only', () {
+      final older = DateTime(2025, 1, 1);
+      final newer = DateTime(2026, 6, 1);
+      final roots = [
+        _item(
+          id: 'squat-a',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: older,
+          children: [
+            _item(
+              id: 'hb-a',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: older,
+            ),
+          ],
+        ),
+        _item(
+          id: 'squat-b',
+          name: 'Squat',
+          catalogSource: ExerciseCatalogSource.powercoach,
+          createdAt: newer,
+          children: [
+            _item(
+              id: 'hb-b',
+              name: 'High bar',
+              catalogSource: ExerciseCatalogSource.powercoach,
+              createdAt: newer,
+            ),
+          ],
+        ),
+      ];
+      final index = buildExercisePickerIndex(roots);
+      final keptIds = index.flat.map((e) => e.id).toSet();
+      final pruned = pruneExerciseTreeToIds(roots, keptIds);
+
+      expect(pruned.map((e) => e.id), ['squat-a']);
+      expect(pruned.single.children.map((e) => e.id), ['hb-a']);
+      expect(index.treeRoots.map((e) => e.id), ['squat-a']);
+      expect(index.treeRoots.single.children.map((e) => e.id), ['hb-a']);
+    });
+  });
+
+  group('search filter + expand ids after prune', () {
+    test('keeps parent when child matches and marks parents for expand', () {
+      final roots = [
+        _item(
+          id: 'squat',
+          name: 'Squat',
+          children: [
+            _item(id: 'box', name: 'Box squat'),
+            _item(id: 'pause', name: 'Pause squat'),
+          ],
+        ),
+        _item(id: 'bench', name: 'Bench press'),
+      ];
+      final pruned = pruneExerciseTreeToIds(
+        roots,
+        {'squat', 'box', 'pause', 'bench'},
+      );
+      final filtered = filterExerciseTreeByQuery(pruned, 'box');
+
+      expect(filtered.map((e) => e.id), ['squat']);
+      expect(filtered.single.children.map((e) => e.id), ['box']);
+      expect(exercisePickerTreeExpandIds(filtered), {'squat'});
+    });
+
+    test('sortExercisePickerTree pins roots then sorts children A-Z', () {
+      final roots = [
+        _item(
+          id: 'b',
+          name: 'Beta',
+          children: [
+            _item(id: 'b2', name: 'Zebra'),
+            _item(id: 'b1', name: 'Alpha child'),
+          ],
+        ),
+        _item(id: 'a', name: 'Alpha'),
+      ];
+      final sorted = sortExercisePickerTree(roots, pinnedIds: {'b'});
+
+      expect(sorted.map((e) => e.id), ['b', 'a']);
+      expect(sorted.first.children.map((e) => e.id), ['b1', 'b2']);
     });
   });
 

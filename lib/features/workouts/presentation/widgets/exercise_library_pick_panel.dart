@@ -11,12 +11,12 @@ import '../../../../core/analytics/product_analytics.dart';
 import '../../../exercise_library/data/custom_exercise_item.dart';
 import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
-import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../../exercise_library/domain/exercise_catalog_source.dart';
 import '../../../exercise_library/domain/exercise_library_tree_helpers.dart';
 import '../../../exercise_library/presentation/widgets/custom_exercise_edit_dialog.dart';
 import '../../domain/exercise_picker_index_helpers.dart';
 import 'exercise_add_sheet_loader.dart';
+import 'exercise_picker_tree_list.dart';
 
 /// Opens a pick-only exercise library panel (desktop side panel / mobile sheet).
 ///
@@ -50,7 +50,7 @@ Future<void> showExerciseLibraryPickPanel({
   );
 }
 
-/// Pick-only library UI: search, recent, list, and create-custom CTA.
+/// Pick-only library UI: search, recent, tree, and create-custom CTA.
 class ExerciseLibraryPickPanel extends StatefulWidget {
   const ExerciseLibraryPickPanel({
     super.key,
@@ -77,8 +77,7 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
   final RecentExercisesStore _recentStore = RecentExercisesStore.instance;
   final _searchController = TextEditingController();
 
-  List<CustomExerciseItem> _exerciseOptions = [];
-  List<CustomExerciseItem> _treeItems = [];
+  List<CustomExerciseItem> _treeRoots = [];
   List<CustomExerciseItem> _recentExercises = [];
   Set<String> _pinnedExerciseIds = <String>{};
   final Map<String, String> _exerciseParentName = {};
@@ -105,14 +104,10 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
       });
     }
     try {
-      // Seeding happens inside [ExerciseAddSheetLoader.loadPickerData]; load
-      // the tree after so parent candidates include the default catalog.
       final data = await _loader.loadPickerData();
-      final tree = await _customExerciseRepo.getTree();
       if (!mounted) return;
       setState(() {
-        _treeItems = tree;
-        _exerciseOptions = data.exerciseOptions;
+        _treeRoots = data.treeRoots;
         _recentExercises = data.recentExercises;
         _pinnedExerciseIds = data.pinnedExerciseIds;
         _exerciseParentName
@@ -140,7 +135,7 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
 
   Future<void> _openCreateExercise() async {
     final l10n = AppLocalizations.of(context);
-    final parentCandidates = flattenExerciseTree(_treeItems);
+    final parentCandidates = flattenExerciseTree(_treeRoots);
 
     await showAppBottomSheet<void>(
       context: context,
@@ -192,14 +187,6 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
     );
   }
 
-  List<CustomExerciseItem> get _filteredOptions {
-    return filterExercisesByQuery(
-      query: _searchController.text,
-      options: _exerciseOptions,
-      displayName: _displayName,
-    ).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -219,8 +206,14 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
       );
     }
 
-    final filtered = _filteredOptions;
-    final showRecent = _searchController.text.trim().isEmpty;
+    final query = _searchController.text;
+    final searching = query.trim().isNotEmpty;
+    final visibleRoots = searching
+        ? filterExerciseTreeByQuery(_treeRoots, query)
+        : _treeRoots;
+    final expandIds =
+        searching ? exercisePickerTreeExpandIds(visibleRoots) : null;
+    final libraryEmpty = _treeRoots.isEmpty;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -239,7 +232,7 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
             ),
           ),
         ),
-        if (showRecent && _recentExercises.isNotEmpty) ...[
+        if (!searching && _recentExercises.isNotEmpty) ...[
           const SizedBox(height: 12),
           Text(
             l10n.workoutBuilderCompactAddRecent,
@@ -267,11 +260,11 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
         ],
         const SizedBox(height: 12),
         Expanded(
-          child: filtered.isEmpty
+          child: visibleRoots.isEmpty
               ? Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: showRecent && _exerciseOptions.isEmpty
+                    child: !searching && libraryEmpty
                         ? Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -301,19 +294,12 @@ class _ExerciseLibraryPickPanelState extends State<ExerciseLibraryPickPanel> {
                           ),
                   ),
                 )
-              : ListView.separated(
-                  itemCount: filtered.length,
-                  separatorBuilder: (_, _) => const Divider(height: 1),
-                  itemBuilder: (context, index) {
-                    final exercise = filtered[index];
-                    return ListTile(
-                      title: Text(_displayName(exercise)),
-                      trailing: _pinnedExerciseIds.contains(exercise.id)
-                          ? Icon(Icons.push_pin, size: 18, color: cs.primary)
-                          : null,
-                      onTap: () => _pick(exercise),
-                    );
-                  },
+              : ExercisePickerTreeList(
+                  roots: visibleRoots,
+                  pinnedIds: _pinnedExerciseIds,
+                  onPick: _pick,
+                  forceExpandAll: searching,
+                  expandedIds: expandIds,
                 ),
         ),
         const SizedBox(height: 8),
