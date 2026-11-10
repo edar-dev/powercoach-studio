@@ -132,21 +132,13 @@ class WorkoutBuilderScreenTabs {
       theme: theme,
       colorScheme: cs,
       sections: mobilityController.sections,
-      selectedSectionIndex: mobilityController.selectedSectionIndex,
-      itemsForSelectedSection: mobilityController.itemsForSelectedSection,
-      itemCountForSection: (sectionId) => mobilityController
-          .routine.mobilityItems
+      itemsForSection: (sectionId) => mobilityController.routine.mobilityItems
           .where((e) => e.sectionId == sectionId)
-          .length,
-      onAddItem: mobilityHandlers.addMobilityItem,
+          .toList(growable: false),
+      onOpenSection: mobilityHandlers.openMobilitySectionEditor,
       onAddSection: mobilityHandlers.addMobilitySection,
       onEditSection: mobilityHandlers.editMobilitySection,
       onDeleteSection: mobilityHandlers.deleteMobilitySection,
-      onSelectSection: mobilityController.selectSection,
-      onReorderItems: mobilityHandlers.reorderMobility,
-      onUpdateItem: (itemId, t, s, short) =>
-          mobilityHandlers.updateMobilityItem(itemId, t, s, shortTitle: short),
-      onDeleteItem: mobilityHandlers.removeMobilityItem,
     );
   }
 
