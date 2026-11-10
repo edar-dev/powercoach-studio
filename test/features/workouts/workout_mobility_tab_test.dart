@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/core/theme/stitch_m3_theme.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/mobility_session_presentation.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/session_preview_card.dart';
+import 'package:powercoach_studio/features/workouts/presentation/widgets/training_phase_day_card.dart';
 import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab.dart';
-import 'package:powercoach_studio/features/workouts/presentation/widgets/workout_mobility_tab_widgets.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
 Widget _wrap(Widget child) {
@@ -82,10 +84,8 @@ void main() {
 
     expect(find.text('Sezione 1'), findsOneWidget);
     expect(find.text('Cooldown'), findsOneWidget);
-    expect(find.byType(MobilitySectionCard), findsNWidgets(2));
-    expect(find.byType(MobilityAddSectionCard), findsOneWidget);
-    // No inline item list on the tab surface.
-    expect(find.byType(MobilityItemCard), findsNothing);
+    expect(find.byType(SessionPreviewCard), findsNWidgets(2));
+    expect(find.byType(TrainingPhaseAddDayCard), findsOneWidget);
   });
 
   testWidgets('section card shows item preview and exercise count', (
@@ -135,7 +135,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(MobilitySectionCard));
+    await tester.tap(find.byType(SessionPreviewCard));
     await tester.pump();
     expect(opened, 0);
   });
@@ -190,7 +190,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.byType(MobilityAddSectionCard));
+    await tester.tap(find.byType(TrainingPhaseAddDayCard));
     await tester.pump();
     expect(added, isTrue);
   });

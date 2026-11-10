@@ -11,20 +11,28 @@ import 'workout_exercise_card.dart';
 import 'workout_superset_block.dart';
 import 'workout_training_helpers.dart';
 
-/// Scrollable exercise list for a single training day.
+/// Training vs mobility presentation for the shared day exercise list.
+enum SessionListVariant { training, mobility }
+
+/// Scrollable exercise list for a single training day (or mobility section).
 ///
 /// Keeps a single expanded exercise id in local state so cards stay collapsed
 /// by default and only one detail panel is open at a time. Newly added
 /// exercises (or their parent superset) are expanded automatically.
+///
+/// When [variant] is [SessionListVariant.mobility], [session] may be null and
+/// the list skips supersets / set editing — cards use
+/// [SessionExerciseEditorVariant.mobility].
 class WorkoutDayExerciseList extends StatefulWidget {
   const WorkoutDayExerciseList({
     super.key,
     required this.theme,
     required this.colorScheme,
-    required this.session,
+    this.session,
     required this.weekIndex,
     required this.dayIndex,
     required this.day,
+    this.variant = SessionListVariant.training,
     this.onAddExercise,
     this.onCreateSuperset,
     this.sessionEditStyle = false,
@@ -43,14 +51,20 @@ class WorkoutDayExerciseList extends StatefulWidget {
     required this.onAssignToSuperset,
     required this.onRemoveFromSuperset,
     required this.onAddExerciseToSuperset,
-  });
+  }) : assert(
+          variant == SessionListVariant.mobility || session != null,
+          'session is required for SessionListVariant.training',
+        );
 
   final ThemeData theme;
   final ColorScheme colorScheme;
-  final WorkoutBuilderSessionController session;
+
+  /// Required for [SessionListVariant.training] (superset block needs it).
+  final WorkoutBuilderSessionController? session;
   final int weekIndex;
   final int dayIndex;
   final Day day;
+  final SessionListVariant variant;
   final void Function(int, int)? onAddExercise;
 
   /// Session-edit bottom CTA: creates a new superset group.
@@ -167,6 +181,8 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     });
   }
 
+  bool get _isMobility => widget.variant == SessionListVariant.mobility;
+
   @override
   Widget build(BuildContext context) {
     final theme = widget.theme;
@@ -175,11 +191,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
     final weekIndex = widget.weekIndex;
     final dayIndex = widget.dayIndex;
     final l10n = AppLocalizations.of(context);
-    final partition = partitionExercisesBySuperset(day.exercises);
+    // Mobility never groups supersets — each synthetic exercise is standalone.
+    final partition = _isMobility
+        ? List<Object>.from(day.exercises)
+        : partitionExercisesBySuperset(day.exercises);
     final showTrailingAdd =
         day.exercises.isNotEmpty && widget.onAddExercise != null;
+    final createSuperset = _isMobility ? null : widget.onCreateSuperset;
     final showSessionCtas = widget.sessionEditStyle &&
-        (widget.onAddExercise != null || widget.onCreateSuperset != null);
+        (widget.onAddExercise != null || createSuperset != null);
     // Pinning moves non-empty trailing CTAs to a sticky footer; empty body
     // keeps CTAs in-place so the empty state stays actionable.
     final showInScrollSessionCtas =
@@ -194,26 +214,41 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.fitness_center_outlined,
+                _isMobility
+                    ? Icons.self_improvement_outlined
+                    : Icons.fitness_center_outlined,
                 size: 40,
                 color: colorScheme.onSurface.withValues(alpha: 0.72),
               ),
               const SizedBox(height: 12),
               Text(
-                l10n.workoutBuilderSessionEmptyTitle,
+                _isMobility
+                    ? l10n.workoutBuilderMobilityEmptyTitle
+                    : l10n.workoutBuilderSessionEmptyTitle,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(height: 16),
+              if (_isMobility) ...[
+                const SizedBox(height: 8),
+                Text(
+                  l10n.workoutBuilderMobilityEmptyMessage,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: colorScheme.onSurface.withValues(alpha: 0.72),
+                  ),
+                ),
+                const SizedBox(height: 20),
+              ] else
+                const SizedBox(height: 16),
               if (widget.sessionEditStyle && showSessionCtas)
                 SessionDayBottomCtas(
                   l10n: l10n,
                   onAddFromLibrary: widget.onAddExercise == null
                       ? null
                       : () => widget.onAddExercise!(weekIndex, dayIndex),
-                  onCreateSuperset: widget.onCreateSuperset,
+                  onCreateSuperset: createSuperset,
                 )
               else if (widget.onAddExercise != null)
                 FilledButton.icon(
@@ -259,7 +294,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                               ? null
                               : () =>
                                   widget.onAddExercise!(weekIndex, dayIndex),
-                          onCreateSuperset: widget.onCreateSuperset,
+                          onCreateSuperset: createSuperset,
                         ),
                       );
                     }
@@ -294,13 +329,18 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                           exercises.first.supersetGroupId != null
                       ? exercises.first.supersetGroupId!
                       : null;
+                  final session = widget.session;
+                  assert(
+                    session != null,
+                    'session required to render WorkoutSupersetBlock',
+                  );
                   return RepaintBoundary(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       child: WorkoutSupersetBlock(
                         theme: theme,
                         colorScheme: colorScheme,
-                        session: widget.session,
+                        session: session!,
                         weekIndex: weekIndex,
                         dayIndex: dayIndex,
                         exercises: exercises,
@@ -424,6 +464,7 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
 
     if (widget.sessionEditStyle) {
       final canEdit = !widget.readOnly;
+      final mobility = _isMobility;
       return SessionExerciseEditorCard(
         key: ValueKey(ex.id),
         theme: widget.theme,
@@ -431,12 +472,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
         exercise: ex,
         index: displayIndex,
         expanded: _expandedExerciseId == ex.id,
-        athleteName: widget.athleteName,
-        customerId: widget.customerId,
+        variant: mobility
+            ? SessionExerciseEditorVariant.mobility
+            : SessionExerciseEditorVariant.training,
+        athleteName: mobility ? null : widget.athleteName,
+        customerId: mobility ? null : widget.customerId,
         onExpandedChanged: (value) {
           _setExpandedExercise(value ? ex.id : null);
         },
-        onDuplicate: canEdit
+        onDuplicate: canEdit && !mobility
             ? () => widget.onDuplicateExercise(weekIndex, dayIndex, ex)
             : null,
         onRemove: canEdit
@@ -451,13 +495,15 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                 widget.onMoveExercise(weekIndex, dayIndex, ex.id, up: false)
             : null,
         onEdit: canEdit ? onEdit : null,
-        onAddSet: canEdit ? onAddSet : null,
-        onDuplicateLastSet: canEdit ? onDuplicateLastSet : null,
-        onUpdateSet: canEdit ? onUpdateSet : null,
-        onRemoveSet: canEdit ? onRemoveSet : null,
-        onMaximalRefChanged: canEdit ? onMaximalRefChanged : null,
-        supersetOptions: canEdit ? filteredSupersetOptions : const [],
-        onAssignToSuperset: canEdit
+        onAddSet: canEdit && !mobility ? onAddSet : null,
+        onDuplicateLastSet: canEdit && !mobility ? onDuplicateLastSet : null,
+        onUpdateSet: canEdit && !mobility ? onUpdateSet : null,
+        onRemoveSet: canEdit && !mobility ? onRemoveSet : null,
+        onMaximalRefChanged:
+            canEdit && !mobility ? onMaximalRefChanged : null,
+        supersetOptions:
+            canEdit && !mobility ? filteredSupersetOptions : const [],
+        onAssignToSuperset: canEdit && !mobility
             ? (groupId) => widget.onAssignToSuperset(
                   weekIndex,
                   dayIndex,
@@ -465,9 +511,10 @@ class _WorkoutDayExerciseListState extends State<WorkoutDayExerciseList> {
                   groupId,
                 )
             : null,
-        onRemoveFromSuperset: canEdit && ex.supersetGroupId != null
-            ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
-            : null,
+        onRemoveFromSuperset:
+            canEdit && !mobility && ex.supersetGroupId != null
+                ? () => widget.onRemoveFromSuperset(weekIndex, dayIndex, ex.id)
+                : null,
       );
     }
 

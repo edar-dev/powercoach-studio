@@ -7,11 +7,12 @@ import '../../../../core/ui/widgets/keyboard_dismiss.dart';
 import '../../../../core/ui/widgets/truncated_text.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../data/workout_routine_model.dart';
+import '../../domain/exercise_prescription_scope.dart';
+import '../../domain/maximal_ref.dart';
+import '../../domain/mobility_session_presentation.dart';
 import '../mobility_builder_controller.dart';
 import 'exercise_library_pick_panel.dart';
-import 'mobility_section_exercise_list.dart';
 import 'workout_day_exercise_list.dart';
-import 'workout_mobility_tab_widgets.dart';
 
 /// Stitch dark tokens shared with the training session edit modal.
 abstract final class _MobilitySectionEditColors {
@@ -215,6 +216,31 @@ class MobilitySectionEditBody extends StatelessWidget {
     final scheduleHint = section.scheduleHint.trim();
     final pinBottomCtas = !isDesktop && !readOnly;
     final close = onClose ?? () => Navigator.of(context).maybePop();
+    final presentationDay = MobilitySectionSessionView(
+      section: section,
+      sectionIndex: sectionIndex,
+      items: items,
+    ).toPresentationDay(l10n);
+    final itemById = {for (final item in items) item.id: item};
+
+    void noopDup(int _, int __, Exercise ___) {}
+    void noopMoveWithin(int _, int __, String ___, {required bool up}) {}
+    void noopAddSet(int _, int __, String ___) {}
+    void noopUpdateSet(
+      int _,
+      int __,
+      String ___,
+      int ____, {
+      String? line,
+      String? sets,
+      String? reps,
+      String? rpe,
+      String? note,
+    }) {}
+    void noopRemoveSet(int _, int __, String ___, int ____) {}
+    void noopAssign(int _, int __, String ___, String ____) {}
+    void noopRemoveSs(int _, int __, String ___) {}
+    void noopAddToSs(int _, int __, String ___) {}
 
     return PopScope(
       canPop: true,
@@ -267,20 +293,71 @@ class MobilitySectionEditBody extends StatelessWidget {
                         onSave: close,
                       ),
                       Expanded(
-                        child: MobilitySectionExerciseList(
+                        child: WorkoutDayExerciseList(
                           theme: theme,
                           colorScheme: cs,
-                          items: items,
+                          weekIndex: 0,
+                          dayIndex: 0,
+                          day: presentationDay,
+                          variant: SessionListVariant.mobility,
+                          sessionEditStyle: true,
                           pinBottomCtas: pinBottomCtas,
-                          onAddItem: onAddFromLibrary,
-                          onUpdateItem: (id, t, s, short) => onUpdateItem(
-                            id,
-                            t,
-                            s,
-                            shortTitle: short,
-                          ),
-                          onDeleteItem: onDeleteItem,
-                          onReorderItems: onReorderItems,
+                          readOnly: readOnly,
+                          onAddExercise: onAddFromLibrary == null
+                              ? null
+                              : (_, __) => onAddFromLibrary!(),
+                          onDuplicateExercise: noopDup,
+                          onRemoveExercise: (_, __, id) => onDeleteItem(id),
+                          onMoveExercise: (_, __, id, {required up}) {
+                            final idx =
+                                items.indexWhere((e) => e.id == id);
+                            if (idx < 0) return;
+                            final target = up ? idx - 1 : idx + 1;
+                            if (target < 0 || target >= items.length) {
+                              return;
+                            }
+                            onReorderItems(idx, target);
+                          },
+                          onMoveExerciseWithinSuperset: noopMoveWithin,
+                          onUpdateExercise: (
+                            _,
+                            __,
+                            id, {
+                            String? name,
+                            String? sets,
+                            String? reps,
+                            String? rpe,
+                            String? note,
+                            String? shortName,
+                            ExercisePrescriptionScope? prescriptionScope,
+                            List<ExerciseSet>? setDetails,
+                            MaximalRef? maximalRef,
+                            bool clearMaximalRef = false,
+                          }) {
+                            final original = itemById[id];
+                            if (original == null) return;
+                            final patched = applyPresentationExerciseToItem(
+                              mobilityItemToPresentationExercise(original)
+                                  .copyWith(
+                                name: name ?? original.title,
+                                note: note ?? original.subtitle,
+                                shortName: shortName ?? original.shortTitle,
+                              ),
+                              original,
+                            );
+                            onUpdateItem(
+                              patched.id,
+                              patched.title,
+                              patched.subtitle,
+                              shortTitle: patched.shortTitle,
+                            );
+                          },
+                          onAddSetToExercise: noopAddSet,
+                          onUpdateExerciseSet: noopUpdateSet,
+                          onRemoveExerciseSet: noopRemoveSet,
+                          onAssignToSuperset: noopAssign,
+                          onRemoveFromSuperset: noopRemoveSs,
+                          onAddExerciseToSuperset: noopAddToSs,
                         ),
                       ),
                       _MobilitySectionEditFooter(
