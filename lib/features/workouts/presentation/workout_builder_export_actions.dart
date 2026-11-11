@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:powercoach_studio/core/export/export_artifact.dart';
 import 'package:powercoach_studio/core/export/export_share.dart';
 import 'package:powercoach_studio/core/export/pdf_export_delivery.dart';
 import 'package:powercoach_studio/core/billing/plan_gate.dart';
@@ -102,6 +103,7 @@ class WorkoutBuilderExportActions {
     if (!context.mounted) return;
 
     final stopwatch = Stopwatch()..start();
+    ExportArtifact? artifact;
     try {
       final customer = await loadCustomerIfNeeded();
       final coachHeader = await resolvePdfCoachHeader(customer: customer);
@@ -111,7 +113,7 @@ class WorkoutBuilderExportActions {
         clientName: customer?.name,
         weekIndices: weekIndices,
       );
-      final artifact = await exportWorkoutRoutineToPdf(
+      artifact = await exportWorkoutRoutineToPdf(
         resolved,
         labels: labels,
         coachHeader: coachHeader,
@@ -127,17 +129,6 @@ class WorkoutBuilderExportActions {
         '[perf] pdf-export ${stopwatch.elapsedMilliseconds}ms '
         'weeks=$weekCount layout=$layout',
       );
-      if (!context.mounted) return;
-      hidePdfExportProgressDialog(context);
-      await presentPdfExportArtifactPreviewFirst(
-        context,
-        artifact: artifact,
-        l10n: l10n,
-      );
-      final uid = Supabase.instance.client.auth.currentUser?.id;
-      if (uid != null && uid.isNotEmpty) {
-        await PostInviteOnboardingStore.instance.markPdfDone(uid);
-      }
     } catch (error, stackTrace) {
       stopwatch.stop();
       final logoDecode = isPdfLogoDecodeError(error);
@@ -171,7 +162,21 @@ class WorkoutBuilderExportActions {
         ),
       );
     } finally {
+      // Always dismiss progress before any post-generate UI. A second pop after
+      // the Share/Save/Close dialog would leave the workout builder.
       if (context.mounted) hidePdfExportProgressDialog(context);
+    }
+
+    final ready = artifact;
+    if (ready == null || !context.mounted) return;
+    await presentPdfExportArtifactPreviewFirst(
+      context,
+      artifact: ready,
+      l10n: l10n,
+    );
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid != null && uid.isNotEmpty) {
+      await PostInviteOnboardingStore.instance.markPdfDone(uid);
     }
   }
 
