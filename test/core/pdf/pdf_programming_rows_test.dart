@@ -468,4 +468,29 @@ void main() {
       expect(formatPdfNumber(70.0), '70');
     });
   });
+
+  test('dense multi-exercise labels map parent›variant to ASCII >', () {
+    const parentChild = Exercise(
+      id: 'e1',
+      name: 'Good morning › Safety bar',
+      sets: '3',
+      reps: '6',
+      rpe: '@6',
+    );
+    const other = Exercise(
+      id: 'e2',
+      name: 'Hack squat › Con pausa',
+      sets: '4',
+      reps: '6',
+      rpe: '',
+      note: 'Fermo 2"',
+    );
+
+    final content = formatDenseBlockContent([parentChild, other]);
+    expect(
+      content.prescription,
+      'Good morning > Safety bar: 3x6 @6\n'
+      'Hack squat > Con pausa: 4x6',
+    );
+  });
 }
