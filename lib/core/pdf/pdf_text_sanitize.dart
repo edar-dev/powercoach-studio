@@ -12,6 +12,10 @@ String sanitizePdfText(String text) {
       .replaceAll('\u201C', '"')
       .replaceAll('\u201D', '"')
       .replaceAll('\u2026', '...')
+      // PDF parent/variant path joiner (in-app uses › / U+203A).
+      // Map to ASCII " > " — not " - ", which is reserved for name↔cue.
+      .replaceAll('\u203A', ' > ') // › single right-pointing angle quotation
+      .replaceAll('›', ' > ')
       // Name ↔ cue / list separators that render as tofu in Helvetica.
       .replaceAll('\u00B7', ' - ') // middle dot ·
       .replaceAll('·', ' - ')

@@ -9,6 +9,7 @@ import '../../../exercise_library/data/custom_exercise_repository.dart';
 import '../../../exercise_library/data/recent_exercises_store.dart';
 import '../../../exercise_library/domain/exercise_autocomplete_filter.dart';
 import '../../../exercise_library/domain/exercise_catalog_source.dart';
+import '../../domain/exercise_picker_index_helpers.dart';
 
 enum MobilitySource { createNew, fromMobilityLibrary, fromExerciseLibrary }
 
@@ -61,7 +62,9 @@ class AddMobilityExerciseDialogContentState
     final parentName = useMobility
         ? _mobilityParentName[e.id]
         : _exerciseParentName[e.id];
-    return parentName != null ? '$parentName › ${e.name}' : e.name;
+    return parentName != null
+        ? exerciseDisplayPath(parentName, e.name)
+        : e.name;
   }
 
   @override

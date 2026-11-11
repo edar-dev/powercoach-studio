@@ -200,12 +200,24 @@ Set<String> powercoachIdsToSoftDelete(List<CustomExerciseItem> rawRoots) {
   };
 }
 
+/// In-app parent › variant path joiner (U+203A).
+///
+/// PDF export maps this to ASCII ` > ` via sanitizePdfText — do not change
+/// the in-app glyph without updating PDF sanitization.
+const kExerciseDisplayPathJoiner = ' › ';
+
+/// Joins [parent] and [child] with [kExerciseDisplayPathJoiner].
+String exerciseDisplayPath(String parent, String child) =>
+    '$parent$kExerciseDisplayPathJoiner$child';
+
 String exercisePickerDisplayName(
   CustomExerciseItem exercise,
   Map<String, String> parentNameById,
 ) {
   final parentName = parentNameById[exercise.id];
-  return parentName != null ? '$parentName › ${exercise.name}' : exercise.name;
+  return parentName != null
+      ? exerciseDisplayPath(parentName, exercise.name)
+      : exercise.name;
 }
 
 List<CustomExerciseItem> sortExercisePickerOptions({

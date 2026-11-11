@@ -40,6 +40,26 @@ void main() {
       sanitizePdfText('Dip \u2022 Zavorrate'),
       'Dip - Zavorrate',
     );
+    // Middle dot must stay name↔cue (` - `), not the path joiner.
+    expect(
+      sanitizePdfText('Good morning \u00B7 Safety bar'),
+      'Good morning - Safety bar',
+    );
+  });
+
+  test('sanitizePdfText maps parent›variant path joiner to ASCII >', () {
+    expect(
+      sanitizePdfText('Parent › Variant'),
+      'Parent > Variant',
+    );
+    expect(
+      sanitizePdfText('Good morning \u203A Safety bar'),
+      'Good morning > Safety bar',
+    );
+    expect(
+      sanitizePdfText('Root › Mid › Leaf'),
+      'Root > Mid > Leaf',
+    );
   });
 
   test('sanitizePdfText strips leftover non-WinAnsi glyphs', () {

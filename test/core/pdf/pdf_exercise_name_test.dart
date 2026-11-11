@@ -50,4 +50,30 @@ void main() {
       'Chest Press',
     );
   });
+
+  test(
+    'resolveExerciseDisplayNameForPdf keeps clear > path for hierarchical names',
+    () {
+      const exercise = Exercise(
+        id: 'e3',
+        name: 'Good morning › Safety bar',
+        sets: '1',
+        reps: '3x6',
+        rpe: '',
+      );
+
+      expect(
+        resolveExerciseDisplayNameForPdf(exercise),
+        'Good morning > Safety bar',
+      );
+      expect(
+        abbreviateExerciseNameForPdf('Good morning › Safety bar'),
+        'Good morning > Safety bar',
+      );
+      expect(
+        abbreviateExerciseNameForPdf('Good morning › Safety bar (Barbell)'),
+        'Good morning > Safety bar',
+      );
+    },
+  );
 }
