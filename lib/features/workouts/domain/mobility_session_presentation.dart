@@ -1,5 +1,10 @@
 import '../../../l10n/app_localizations.dart';
 import '../data/workout_routine_model.dart';
+import 'collapsed_prescription_summary.dart';
+import 'exercise_set_patch.dart';
+import 'exercise_summary_sync.dart';
+
+export 'exercise_set_patch.dart' show exerciseSetDetailsAreMeaningful;
 
 /// True when [name] is empty or a legacy auto-numbered default
 /// (`Section 1`, `Sezione 2`, …).
@@ -60,29 +65,78 @@ class MobilitySectionSessionView {
 /// - [Exercise.name] ← [MobilityItem.title]
 /// - [Exercise.note] ← [MobilityItem.subtitle]
 /// - [Exercise.shortName] ← [MobilityItem.shortTitle]
-/// - sets / reps / rpe / setDetails stay empty (no prescription on mobility)
+/// - sets / reps / rpe / setDetails / prescriptionScope / maximalRef mapped 1:1
 Exercise mobilityItemToPresentationExercise(MobilityItem item) {
+  // Prefer explicit setDetails / top-level sets·reps; otherwise seed one empty
+  // row so the shared set table works without copying [subtitle] into set.note.
+  final List<ExerciseSet> details = item.setDetails != null &&
+          item.setDetails!.isNotEmpty
+      ? item.setDetails!
+      : (item.sets.trim().isNotEmpty || item.reps.trim().isNotEmpty)
+          ? [
+              ExerciseSet(
+                sets: item.sets.trim().isEmpty ? '1' : item.sets,
+                reps: item.reps,
+                rpe: item.rpe,
+              ),
+            ]
+          : const [ExerciseSet()];
   return Exercise(
     id: item.id,
     name: item.title,
-    sets: '',
-    reps: '',
-    rpe: '',
+    sets: item.sets,
+    reps: item.reps,
+    rpe: item.rpe,
     note: item.subtitle,
     shortName: item.shortTitle,
-    setDetails: const [],
+    setDetails: details,
+    prescriptionScope: item.prescriptionScope,
     customExerciseId: item.customExerciseId,
+    maximalRef: item.maximalRef,
   );
 }
 
 /// Applies edits from a synthetic presentation [Exercise] back onto [original].
+///
+/// Preserves [MobilityItem.sectionId] / [MobilityItem.categoryIndex] from
+/// [original]. Pass [clearMaximalRef] to drop an existing massimale link.
+///
+/// Empty seeded [Exercise.setDetails] (used so the shared set table has a row)
+/// are not written onto legacy subtitle-only items.
 MobilityItem applyPresentationExerciseToItem(
   Exercise ex,
-  MobilityItem original,
-) {
+  MobilityItem original, {
+  bool clearMaximalRef = false,
+}) {
+  final incomingMeaningful = exerciseSetDetailsAreMeaningful(ex.setDetails);
   return original.copyWith(
     title: ex.name,
     subtitle: ex.note,
     shortTitle: ex.shortName,
+    sets: incomingMeaningful ? ex.sets : original.sets,
+    reps: incomingMeaningful ? ex.reps : original.reps,
+    rpe: incomingMeaningful ? ex.rpe : original.rpe,
+    setDetails: incomingMeaningful ? ex.setDetails : original.setDetails,
+    prescriptionScope: ex.prescriptionScope,
+    maximalRef: clearMaximalRef ? null : (ex.maximalRef ?? original.maximalRef),
+    clearMaximalRef: clearMaximalRef,
+    customExerciseId: ex.customExerciseId ?? original.customExerciseId,
   );
+}
+
+/// Syncs legacy summary fields from [MobilityItem.setDetails] via Exercise bridge.
+MobilityItem syncMobilityItemPrescription(MobilityItem item) {
+  final synced = ExerciseSummarySync.apply(
+    mobilityItemToPresentationExercise(item),
+  );
+  return applyPresentationExerciseToItem(synced, item);
+}
+
+/// Collapsed preview / row detail for a mobility item.
+String mobilityItemPreviewDetail(MobilityItem item) {
+  final rx = collapsedPrescriptionSummary(item.effectiveSetDetails);
+  if (rx.isNotEmpty) return rx;
+  final subtitle = item.subtitle.trim();
+  if (subtitle.isNotEmpty) return subtitle;
+  return item.shortTitle.trim();
 }

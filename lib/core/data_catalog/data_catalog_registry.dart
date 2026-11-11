@@ -226,9 +226,10 @@ abstract final class DataCatalogRegistry {
       summary:
           'Nested JSON object (Map) written into workoutPlan.planData; legacy '
           'JSON strings remain readable. Holds phases/weeks/days/exercises, '
-          'mobility, and sessionExecutions diary. Plan-level lifecycle/schedule '
-          'markers are top-level on workoutPlan (legacy nested keys still '
-          'readable until rewrite).',
+          'mobility (items may carry sets/reps/rpe/setDetails/prescriptionScope/'
+          'maximalRef like training exercises), and sessionExecutions diary. '
+          'Plan-level lifecycle/schedule markers are top-level on workoutPlan '
+          '(legacy nested keys still readable until rewrite).',
       payloadFields: <String>[
         'name',
         'mobilitySections',
@@ -247,6 +248,13 @@ abstract final class DataCatalogRegistry {
           targetCatalogId: customExercise,
           optional: true,
           description: 'Mobility item → library exercise.',
+        ),
+        SoftReference(
+          fieldPath: 'mobilityItems[].maximalRef',
+          targetCatalogId: customerMaximal,
+          optional: true,
+          description:
+              'Mobility item optional massimale link (measurement lift or custom).',
         ),
         SoftReference(
           fieldPath: 'exercises[].customExerciseId',

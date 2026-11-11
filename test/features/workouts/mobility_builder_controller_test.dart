@@ -112,9 +112,12 @@ void main() {
     test('updateItem changes title and subtitle', () {
       expect(
         mobility.updateItem(
-          itemId: 'm1',
-          title: 'Updated',
-          subtitle: '3x10',
+          const MobilityItem(
+            id: 'm1',
+            title: 'Updated',
+            subtitle: '3x10',
+            sectionId: 'sec-a',
+          ),
         ),
         isTrue,
       );

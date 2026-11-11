@@ -14,6 +14,7 @@ MobilityItem _item(
   String title, {
   String subtitle = '',
   String shortTitle = '',
+  List<ExerciseSet>? setDetails,
 }) {
   return MobilityItem(
     id: id,
@@ -21,6 +22,7 @@ MobilityItem _item(
     subtitle: subtitle,
     shortTitle: shortTitle,
     sectionId: 's1',
+    setDetails: setDetails,
   );
 }
 
@@ -61,6 +63,7 @@ WorkoutDayExerciseList _list({
     MaximalRef? maximalRef,
     bool clearMaximalRef,
   })? onUpdateExercise,
+  void Function(int, int, String)? onAddSetToExercise,
   void Function(int, int)? onAddExercise,
 }) {
   return WorkoutDayExerciseList(
@@ -92,7 +95,7 @@ WorkoutDayExerciseList _list({
           maximalRef,
           bool clearMaximalRef = false,
         }) {},
-    onAddSetToExercise: (_, _, _) {},
+    onAddSetToExercise: onAddSetToExercise ?? (_, _, _) {},
     onUpdateExerciseSet: (
       _,
       _,
@@ -112,14 +115,22 @@ WorkoutDayExerciseList _list({
 }
 
 void main() {
+  final l10n = lookupAppLocalizations(const Locale('it'));
+
   testWidgets(
-    'mobility variant expands first item and shows inline TextFields',
+    'mobility variant expands first item and shows set table UI',
     (tester) async {
       await tester.pumpWidget(
         _wrap(
           _list(
             day: _day([
-              _item('i1', 'WGS', subtitle: '3x30s', shortTitle: 'WGS'),
+              _item(
+                'i1',
+                'WGS',
+                subtitle: 'hold',
+                shortTitle: 'WGS',
+                setDetails: const [ExerciseSet(sets: '3', reps: '30s')],
+              ),
             ]),
           ),
         ),
@@ -134,7 +145,9 @@ void main() {
       expect(cards, hasLength(1));
       expect(cards.single.variant, SessionExerciseEditorVariant.mobility);
       expect(cards.single.expanded, isTrue);
-      expect(find.byType(TextField), findsNWidgets(3));
+      expect(find.text(l10n.workoutBuilderAddSet), findsOneWidget);
+      // Notes field (secondary section) — not the old 3 mobility TextFields.
+      expect(find.byType(TextField), findsWidgets);
     },
   );
 
@@ -173,7 +186,26 @@ void main() {
     expect(cards[1].expanded, isTrue);
   });
 
-  testWidgets('editing title updates via onUpdateExercise callback', (
+  testWidgets('Add set invokes onAddSetToExercise for mobility', (
+    tester,
+  ) async {
+    String? addedId;
+    await tester.pumpWidget(
+      _wrap(
+        _list(
+          day: _day([_item('i1', 'WGS')]),
+          onAddSetToExercise: (_, _, id) => addedId = id,
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text(l10n.workoutBuilderAddSet));
+    await tester.pump();
+    expect(addedId, 'i1');
+  });
+
+  testWidgets('Edit menu opens edit sheet and updates via onUpdateExercise', (
     tester,
   ) async {
     String? updatedId;
@@ -205,8 +237,15 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    await tester.enterText(find.byType(TextField).first, 'Updated WGS');
-    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(l10n.workoutBuilderEditExercise));
+    await tester.pumpAndSettle();
+
+    expect(find.text(l10n.workoutBuilderEditExerciseTitle), findsOneWidget);
+    await tester.enterText(find.widgetWithText(TextField, 'WGS'), 'Updated WGS');
+    await tester.tap(find.text(l10n.customerSave));
+    await tester.pumpAndSettle();
 
     expect(updatedId, 'i1');
     expect(updatedName, 'Updated WGS');
@@ -298,7 +337,7 @@ void main() {
     expect(added, isTrue);
   });
 
-  testWidgets('mobility variant hides set table and add-set controls', (
+  testWidgets('mobility variant shows add-set and keeps supersets off', (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -310,7 +349,9 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text(lookupAppLocalizations(const Locale('it')).workoutBuilderAddSet), findsNothing);
-    expect(find.byType(TextField), findsNWidgets(3));
+    expect(find.text(l10n.workoutBuilderAddSet), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.more_vert));
+    await tester.pumpAndSettle();
+    expect(find.text(l10n.workoutBuilderNewSuperset), findsNothing);
   });
 }

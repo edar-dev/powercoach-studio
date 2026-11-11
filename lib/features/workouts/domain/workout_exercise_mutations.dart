@@ -1,5 +1,6 @@
 import '../data/workout_routine_model.dart';
 import 'exercise_prescription_scope.dart';
+import 'exercise_set_patch.dart';
 import 'exercise_summary_sync.dart';
 import 'maximal_ref.dart';
 
@@ -266,34 +267,16 @@ WorkoutRoutine? updateExerciseSetInRoutine({
     update: (exercises) => exercises
         .map((e) {
           if (e.id != exerciseId) return e;
-          final details = e.effectiveSetDetails;
-          if (setIndex < 0 || setIndex >= details.length) return e;
-          final newDetails = List<ExerciseSet>.from(details);
-          final cur = details[setIndex];
-          if (line != null) {
-            final trimmed = line.trim();
-            if (trimmed.isNotEmpty) {
-              newDetails[setIndex] = ExerciseSet(
-                line: trimmed,
-                sets: '1',
-                reps: '',
-                rpe: '',
-                note: note ?? cur.note,
-              );
-            } else {
-              newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-            }
-          } else if (sets != null || reps != null || rpe != null) {
-            newDetails[setIndex] = ExerciseSet(
-              line: '',
-              sets: sets ?? cur.sets,
-              reps: reps ?? cur.reps,
-              rpe: rpe ?? cur.rpe,
-              note: note ?? cur.note,
-            );
-          } else {
-            newDetails[setIndex] = cur.copyWith(note: note ?? cur.note);
-          }
+          final newDetails = patchExerciseSetAt(
+            e.effectiveSetDetails,
+            setIndex,
+            line: line,
+            sets: sets,
+            reps: reps,
+            rpe: rpe,
+            note: note,
+          );
+          if (newDetails == null) return e;
           return ExerciseSummarySync.apply(e.copyWith(setDetails: newDetails));
         })
         .toList(),

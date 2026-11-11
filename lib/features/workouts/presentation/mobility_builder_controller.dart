@@ -136,21 +136,61 @@ class MobilityBuilderController extends ChangeNotifier {
     return true;
   }
 
-  bool updateItem({
-    required String itemId,
-    required String title,
-    required String subtitle,
-    String shortTitle = '',
-  }) {
+  bool updateItem(MobilityItem item) {
     _session.setRoutine(
-      updateMobilityItemInRoutine(
-        routine: routine,
-        itemId: itemId,
-        title: title,
-        subtitle: subtitle,
-        shortTitle: shortTitle,
-      ),
+      updateMobilityItemInRoutine(routine: routine, item: item),
     );
+    notifyListeners();
+    return true;
+  }
+
+  bool addSetToItem(String itemId) {
+    final updated = addSetToMobilityItemInRoutine(
+      routine: routine,
+      itemId: itemId,
+    );
+    if (updated == null) return false;
+    _session.setRoutine(updated);
+    notifyListeners();
+    return true;
+  }
+
+  bool updateItemSet({
+    required String itemId,
+    required int setIndex,
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  }) {
+    final updated = updateMobilityItemSetInRoutine(
+      routine: routine,
+      itemId: itemId,
+      setIndex: setIndex,
+      line: line,
+      sets: sets,
+      reps: reps,
+      rpe: rpe,
+      note: note,
+    );
+    if (updated == null) return false;
+    _session.setRoutine(updated);
+    notifyListeners();
+    return true;
+  }
+
+  bool removeSetFromItem({
+    required String itemId,
+    required int setIndex,
+  }) {
+    final updated = removeSetFromMobilityItemInRoutine(
+      routine: routine,
+      itemId: itemId,
+      setIndex: setIndex,
+    );
+    if (updated == null) return false;
+    _session.setRoutine(updated);
     notifyListeners();
     return true;
   }

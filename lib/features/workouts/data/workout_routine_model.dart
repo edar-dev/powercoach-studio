@@ -357,13 +357,24 @@ class MobilityItem {
     this.shortTitle = '',
     this.categoryIndex = 0,
     this.customExerciseId,
+    this.sets = '',
+    this.reps = '',
+    this.rpe = '',
+    this.setDetails,
+    this.prescriptionScope = ExercisePrescriptionScope.perWeek,
+    this.maximalRef,
   });
 
   final String id;
+
+  /// Display name — maps to [Exercise.name] in session presentation.
   final String title;
+
+  /// Free-form note — maps to [Exercise.note] in session presentation.
   final String subtitle;
 
   /// Compact title for dense PDF rows when [title] is long.
+  /// Maps to [Exercise.shortName].
   final String shortTitle;
 
   /// Id of the [MobilitySection] this item belongs to.
@@ -375,6 +386,23 @@ class MobilityItem {
   /// When set, this item is linked to the user's custom exercise library entry.
   final String? customExerciseId;
 
+  /// Legacy / summary set count (kept in sync with [setDetails] when present).
+  final String sets;
+
+  /// Legacy / summary reps or scheme text.
+  final String reps;
+
+  /// Load / RPE summary field (often empty when encoded from setDetails).
+  final String rpe;
+
+  /// Structured set prescriptions (same shape as [Exercise.setDetails]).
+  final List<ExerciseSet>? setDetails;
+
+  final ExercisePrescriptionScope prescriptionScope;
+
+  /// Optional link to a massimale (same shape as [Exercise.maximalRef]).
+  final MaximalRef? maximalRef;
+
   Map<String, dynamic> toJson() => encodeMobilityItem(this);
 
   static MobilityItem fromJson(
@@ -382,6 +410,30 @@ class MobilityItem {
     List<MobilitySection>? sections,
   ]) =>
       decodeMobilityItem(json, sections);
+
+  /// True when structured or top-level sets/reps prescription is present.
+  bool get hasStructuredPrescription =>
+      (setDetails != null && setDetails!.isNotEmpty) ||
+      sets.trim().isNotEmpty ||
+      reps.trim().isNotEmpty;
+
+  /// Effective set rows for UI/PDF (mirrors [Exercise.effectiveSetDetails]).
+  ///
+  /// When neither [setDetails] nor top-level sets/reps exist, returns a single
+  /// empty row so shared set-table widgets still have a seed row.
+  List<ExerciseSet> get effectiveSetDetails {
+    if (setDetails != null && setDetails!.isNotEmpty) return setDetails!;
+    if (sets.trim().isNotEmpty || reps.trim().isNotEmpty) {
+      return [
+        ExerciseSet(
+          sets: sets.trim().isEmpty ? '1' : sets,
+          reps: reps,
+          rpe: rpe,
+        ),
+      ];
+    }
+    return const [ExerciseSet()];
+  }
 
   MobilityItem copyWith({
     String? id,
@@ -391,6 +443,13 @@ class MobilityItem {
     String? sectionId,
     int? categoryIndex,
     String? customExerciseId,
+    String? sets,
+    String? reps,
+    String? rpe,
+    List<ExerciseSet>? setDetails,
+    ExercisePrescriptionScope? prescriptionScope,
+    MaximalRef? maximalRef,
+    bool clearMaximalRef = false,
   }) => MobilityItem(
     id: id ?? this.id,
     title: title ?? this.title,
@@ -399,6 +458,12 @@ class MobilityItem {
     sectionId: sectionId ?? this.sectionId,
     categoryIndex: categoryIndex ?? this.categoryIndex,
     customExerciseId: customExerciseId ?? this.customExerciseId,
+    sets: sets ?? this.sets,
+    reps: reps ?? this.reps,
+    rpe: rpe ?? this.rpe,
+    setDetails: setDetails ?? this.setDetails,
+    prescriptionScope: prescriptionScope ?? this.prescriptionScope,
+    maximalRef: clearMaximalRef ? null : (maximalRef ?? this.maximalRef),
   );
 
   String get pdfTitle {

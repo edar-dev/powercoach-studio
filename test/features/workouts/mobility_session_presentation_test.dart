@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:powercoach_studio/features/workouts/data/workout_routine_model.dart';
+import 'package:powercoach_studio/features/workouts/domain/exercise_prescription_scope.dart';
+import 'package:powercoach_studio/features/workouts/domain/maximal_ref.dart';
 import 'package:powercoach_studio/features/workouts/domain/mobility_session_presentation.dart';
 import 'package:powercoach_studio/l10n/app_localizations.dart';
 
@@ -28,35 +30,67 @@ void main() {
     expect(view.toPresentationDay(l10n).name, 'Warm-up');
   });
 
-  test('mobility item ↔ presentation exercise round-trip', () {
+  test('mobility item ↔ presentation exercise full prescription round-trip', () {
     const item = MobilityItem(
       id: 'i1',
       title: 'World Greatest Stretch',
-      subtitle: '3x30s',
+      subtitle: 'hold end range',
       shortTitle: 'WGS',
       sectionId: 's1',
       customExerciseId: 'lib_1',
+      sets: '3',
+      reps: '30s',
+      rpe: '8',
+      setDetails: [
+        ExerciseSet(sets: '3', reps: '30s', rpe: '8', note: 'set note'),
+      ],
+      prescriptionScope: ExercisePrescriptionScope.allWeeks,
+      maximalRef: MaximalRef.measurement(lift: MaximalLift.squat),
     );
     final ex = mobilityItemToPresentationExercise(item);
     expect(ex.id, 'i1');
     expect(ex.name, 'World Greatest Stretch');
-    expect(ex.note, '3x30s');
+    expect(ex.note, 'hold end range');
     expect(ex.shortName, 'WGS');
-    expect(ex.sets, isEmpty);
-    expect(ex.reps, isEmpty);
-    expect(ex.rpe, isEmpty);
-    expect(ex.setDetails, isEmpty);
+    expect(ex.sets, '3');
+    expect(ex.reps, '30s');
+    expect(ex.rpe, '8');
+    expect(ex.setDetails, hasLength(1));
+    expect(ex.setDetails!.single.reps, '30s');
+    expect(ex.setDetails!.single.note, 'set note');
+    expect(ex.prescriptionScope, ExercisePrescriptionScope.allWeeks);
+    expect(ex.maximalRef?.lift, MaximalLift.squat);
     expect(ex.customExerciseId, 'lib_1');
 
     final patched = applyPresentationExerciseToItem(
-      ex.copyWith(name: 'Updated', note: 'hold', shortName: 'U'),
+      ex.copyWith(
+        name: 'Updated',
+        note: 'hold',
+        shortName: 'U',
+        sets: '2',
+        reps: '20s',
+        rpe: '7',
+        setDetails: const [
+          ExerciseSet(sets: '2', reps: '20s', rpe: '7'),
+        ],
+        prescriptionScope: ExercisePrescriptionScope.perWeek,
+        clearMaximalRef: true,
+      ),
       item,
+      clearMaximalRef: true,
     );
     expect(patched.id, 'i1');
     expect(patched.sectionId, 's1');
     expect(patched.title, 'Updated');
     expect(patched.subtitle, 'hold');
     expect(patched.shortTitle, 'U');
+    expect(patched.sets, '2');
+    expect(patched.reps, '20s');
+    expect(patched.rpe, '7');
+    expect(patched.setDetails, hasLength(1));
+    expect(patched.setDetails!.single.reps, '20s');
+    expect(patched.prescriptionScope, ExercisePrescriptionScope.perWeek);
+    expect(patched.maximalRef, isNull);
     expect(patched.customExerciseId, 'lib_1');
   });
 
@@ -71,6 +105,8 @@ void main() {
           subtitle: 'sub',
           shortTitle: 'a',
           sectionId: 's1',
+          sets: '3',
+          reps: '30s',
         ),
         MobilityItem(
           id: 'i2',
@@ -84,7 +120,60 @@ void main() {
     expect(day.exercises, hasLength(2));
     expect(day.exercises[0].name, 'A');
     expect(day.exercises[0].note, 'sub');
+    expect(day.exercises[0].sets, '3');
+    expect(day.exercises[0].reps, '30s');
     expect(day.exercises[1].name, 'B');
+  });
+
+  test('note-only edit does not persist seeded empty setDetails on legacy', () {
+    const legacy = MobilityItem(
+      id: 'i1',
+      title: 'Cat-cow',
+      subtitle: '10 reps',
+      sectionId: 's1',
+    );
+    final seeded = mobilityItemToPresentationExercise(legacy);
+    expect(seeded.setDetails, isNotEmpty);
+    expect(exerciseSetDetailsAreMeaningful(seeded.setDetails), isFalse);
+
+    final patched = applyPresentationExerciseToItem(
+      seeded.copyWith(note: 'slow breaths'),
+      legacy,
+    );
+    expect(patched.subtitle, 'slow breaths');
+    expect(patched.setDetails, isNull);
+    expect(patched.sets, isEmpty);
+    expect(patched.reps, isEmpty);
+  });
+
+  test('mobilityItemPreviewDetail prefers prescription then subtitle', () {
+    const withRx = MobilityItem(
+      id: 'i1',
+      title: 'WGS',
+      subtitle: 'note',
+      shortTitle: 'W',
+      sectionId: 's1',
+      setDetails: [ExerciseSet(sets: '3', reps: '30s')],
+    );
+    expect(mobilityItemPreviewDetail(withRx), contains('30s'));
+
+    const legacy = MobilityItem(
+      id: 'i2',
+      title: 'WGS',
+      subtitle: 'hold',
+      shortTitle: 'W',
+      sectionId: 's1',
+    );
+    expect(mobilityItemPreviewDetail(legacy), 'hold');
+
+    const shortOnly = MobilityItem(
+      id: 'i3',
+      title: 'WGS',
+      subtitle: '',
+      shortTitle: 'W',
+      sectionId: 's1',
+    );
+    expect(mobilityItemPreviewDetail(shortOnly), 'W');
   });
 
   test('isUnsetMobilitySectionName covers empty and legacy defaults', () {

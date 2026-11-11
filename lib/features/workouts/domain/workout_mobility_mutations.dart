@@ -1,4 +1,13 @@
 import '../data/workout_routine_model.dart';
+import 'exercise_set_patch.dart';
+import 'mobility_session_presentation.dart';
+
+MobilityItem? _findMobilityItem(WorkoutRoutine routine, String itemId) {
+  for (final e in routine.mobilityItems) {
+    if (e.id == itemId) return e;
+  }
+  return null;
+}
 
 WorkoutRoutine addMobilityItemToRoutine({
   required WorkoutRoutine routine,
@@ -106,24 +115,72 @@ WorkoutRoutine? deleteMobilitySectionFromRoutine({
   );
 }
 
+/// Replaces the mobility item with matching [item.id] (full replacement).
 WorkoutRoutine updateMobilityItemInRoutine({
   required WorkoutRoutine routine,
-  required String itemId,
-  required String title,
-  required String subtitle,
-  String shortTitle = '',
+  required MobilityItem item,
 }) {
   return routine.copyWith(
     mobilityItems: routine.mobilityItems
-        .map(
-          (e) => e.id == itemId
-              ? e.copyWith(
-                  title: title,
-                  subtitle: subtitle,
-                  shortTitle: shortTitle,
-                )
-              : e,
-        )
+        .map((e) => e.id == item.id ? item : e)
         .toList(),
   );
+}
+
+WorkoutRoutine? addSetToMobilityItemInRoutine({
+  required WorkoutRoutine routine,
+  required String itemId,
+}) {
+  final found = _findMobilityItem(routine, itemId);
+  if (found == null) return null;
+  final details = [...found.effectiveSetDetails, const ExerciseSet()];
+  final updated = syncMobilityItemPrescription(
+    found.copyWith(setDetails: details),
+  );
+  return updateMobilityItemInRoutine(routine: routine, item: updated);
+}
+
+WorkoutRoutine? updateMobilityItemSetInRoutine({
+  required WorkoutRoutine routine,
+  required String itemId,
+  required int setIndex,
+  String? line,
+  String? sets,
+  String? reps,
+  String? rpe,
+  String? note,
+}) {
+  final found = _findMobilityItem(routine, itemId);
+  if (found == null) return null;
+  final newDetails = patchExerciseSetAt(
+    found.effectiveSetDetails,
+    setIndex,
+    line: line,
+    sets: sets,
+    reps: reps,
+    rpe: rpe,
+    note: note,
+  );
+  if (newDetails == null) return routine;
+  final updated = syncMobilityItemPrescription(
+    found.copyWith(setDetails: newDetails),
+  );
+  return updateMobilityItemInRoutine(routine: routine, item: updated);
+}
+
+WorkoutRoutine? removeSetFromMobilityItemInRoutine({
+  required WorkoutRoutine routine,
+  required String itemId,
+  required int setIndex,
+}) {
+  final found = _findMobilityItem(routine, itemId);
+  if (found == null) return null;
+  final details = found.effectiveSetDetails;
+  if (details.length <= 1) return routine;
+  if (setIndex < 0 || setIndex >= details.length) return routine;
+  final newDetails = List<ExerciseSet>.from(details)..removeAt(setIndex);
+  final updated = syncMobilityItemPrescription(
+    found.copyWith(setDetails: newDetails),
+  );
+  return updateMobilityItemInRoutine(routine: routine, item: updated);
 }

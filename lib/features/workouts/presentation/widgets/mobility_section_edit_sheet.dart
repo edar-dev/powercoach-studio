@@ -36,14 +36,21 @@ Future<void> showMobilitySectionEditSheet({
   required String sectionId,
   required void Function(int sectionIndex) onRenameSection,
   required void Function(int sectionIndex) onDeleteSection,
+  required void Function(MobilityItem item) onUpdateItem,
+  required void Function(String itemId) onAddSetToItem,
   required void Function(
     String itemId,
-    String title,
-    String subtitle, {
-    String shortTitle,
-  }) onUpdateItem,
+    int setIndex, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  }) onUpdateItemSet,
+  required void Function(String itemId, int setIndex) onRemoveSetFromItem,
   required void Function(String itemId) onDeleteItem,
   required void Function(int oldIndex, int newIndex) onReorderItems,
+  String? customerId,
   bool readOnly = false,
 }) {
   final l10n = AppLocalizations.of(context);
@@ -91,6 +98,7 @@ Future<void> showMobilitySectionEditSheet({
               itemCount: items.length,
               canDelete: mobilityController.sections.length > 1,
               items: items,
+              customerId: customerId,
               readOnly: readOnly,
               onRename: () => onRenameSection(located.index),
               onDelete: () {
@@ -98,6 +106,9 @@ Future<void> showMobilitySectionEditSheet({
                 onDeleteSection(located.index);
               },
               onUpdateItem: onUpdateItem,
+              onAddSetToItem: onAddSetToItem,
+              onUpdateItemSet: onUpdateItemSet,
+              onRemoveSetFromItem: onRemoveSetFromItem,
               onDeleteItem: onDeleteItem,
               onReorderItems: onReorderItems,
               onAddFromLibrary: readOnly
@@ -173,9 +184,13 @@ class MobilitySectionEditBody extends StatelessWidget {
     required this.onRename,
     required this.onDelete,
     required this.onUpdateItem,
+    required this.onAddSetToItem,
+    required this.onUpdateItemSet,
+    required this.onRemoveSetFromItem,
     required this.onDeleteItem,
     required this.onReorderItems,
     this.onAddFromLibrary,
+    this.customerId,
     this.readOnly = false,
     this.onClose,
   });
@@ -189,15 +204,22 @@ class MobilitySectionEditBody extends StatelessWidget {
   final List<MobilityItem> items;
   final VoidCallback onRename;
   final VoidCallback onDelete;
+  final void Function(MobilityItem item) onUpdateItem;
+  final void Function(String itemId) onAddSetToItem;
   final void Function(
     String itemId,
-    String title,
-    String subtitle, {
-    String shortTitle,
-  }) onUpdateItem;
+    int setIndex, {
+    String? line,
+    String? sets,
+    String? reps,
+    String? rpe,
+    String? note,
+  }) onUpdateItemSet;
+  final void Function(String itemId, int setIndex) onRemoveSetFromItem;
   final void Function(String itemId) onDeleteItem;
   final void Function(int oldIndex, int newIndex) onReorderItems;
   final VoidCallback? onAddFromLibrary;
+  final String? customerId;
   final bool readOnly;
   final VoidCallback? onClose;
 
@@ -225,19 +247,6 @@ class MobilitySectionEditBody extends StatelessWidget {
 
     void noopDup(int _, int _, Exercise _) {}
     void noopMoveWithin(int _, int _, String _, {required bool up}) {}
-    void noopAddSet(int _, int _, String _) {}
-    void noopUpdateSet(
-      int _,
-      int _,
-      String _,
-      int _, {
-      String? line,
-      String? sets,
-      String? reps,
-      String? rpe,
-      String? note,
-    }) {}
-    void noopRemoveSet(int _, int _, String _, int _) {}
     void noopAssign(int _, int _, String _, String _) {}
     void noopRemoveSs(int _, int _, String _) {}
     void noopAddToSs(int _, int _, String _) {}
@@ -302,6 +311,7 @@ class MobilitySectionEditBody extends StatelessWidget {
                           variant: SessionListVariant.mobility,
                           sessionEditStyle: true,
                           pinBottomCtas: pinBottomCtas,
+                          customerId: customerId,
                           readOnly: readOnly,
                           onAddExercise: onAddFromLibrary == null
                               ? null
@@ -336,25 +346,53 @@ class MobilitySectionEditBody extends StatelessWidget {
                           }) {
                             final original = itemById[id];
                             if (original == null) return;
-                            final patched = applyPresentationExerciseToItem(
-                              mobilityItemToPresentationExercise(original)
-                                  .copyWith(
-                                name: name ?? original.title,
-                                note: note ?? original.subtitle,
-                                shortName: shortName ?? original.shortTitle,
-                              ),
-                              original,
+                            final presentation =
+                                mobilityItemToPresentationExercise(original)
+                                    .copyWith(
+                              name: name ?? original.title,
+                              sets: sets ?? original.sets,
+                              reps: reps ?? original.reps,
+                              rpe: rpe ?? original.rpe,
+                              note: note ?? original.subtitle,
+                              shortName: shortName ?? original.shortTitle,
+                              prescriptionScope:
+                                  prescriptionScope ?? original.prescriptionScope,
+                              setDetails: setDetails ?? original.setDetails,
+                              maximalRef: maximalRef,
+                              clearMaximalRef: clearMaximalRef,
                             );
                             onUpdateItem(
-                              patched.id,
-                              patched.title,
-                              patched.subtitle,
-                              shortTitle: patched.shortTitle,
+                              applyPresentationExerciseToItem(
+                                presentation,
+                                original,
+                                clearMaximalRef: clearMaximalRef,
+                              ),
                             );
                           },
-                          onAddSetToExercise: noopAddSet,
-                          onUpdateExerciseSet: noopUpdateSet,
-                          onRemoveExerciseSet: noopRemoveSet,
+                          onAddSetToExercise: (_, _, id) => onAddSetToItem(id),
+                          onUpdateExerciseSet: (
+                            _,
+                            _,
+                            id,
+                            setIndex, {
+                            String? line,
+                            String? sets,
+                            String? reps,
+                            String? rpe,
+                            String? note,
+                          }) {
+                            onUpdateItemSet(
+                              id,
+                              setIndex,
+                              line: line,
+                              sets: sets,
+                              reps: reps,
+                              rpe: rpe,
+                              note: note,
+                            );
+                          },
+                          onRemoveExerciseSet: (_, _, id, setIndex) =>
+                              onRemoveSetFromItem(id, setIndex),
                           onAssignToSuperset: noopAssign,
                           onRemoveFromSuperset: noopRemoveSs,
                           onAddExerciseToSuperset: noopAddToSs,
